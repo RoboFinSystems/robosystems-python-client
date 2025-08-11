@@ -1,7 +1,7 @@
 name: Claude Tag Release
 
 concurrency:
-  group: robosystems-sdk-tag-release
+  group: robosystems-client-tag-release
   cancel-in-progress: false
 
 on:
@@ -120,7 +120,7 @@ jobs:
           I need you to generate a concise but informative changelog for a Python MCP (Model Context Protocol) tool release.
 
           **Release Info:**
-          - Package: RoboSystems Python SDK (Python client for RoboSystems financial graph database API)
+          - Package: RoboSystems Python Client (Python client for RoboSystems financial graph database API)
           - Version: $VERSION
           - Previous Version: $LAST_TAG
           - Files Changed: ${{ steps.analyze-changes.outputs.files_changed }}
@@ -140,16 +140,16 @@ jobs:
           **PR References:**
           ${{ steps.analyze-changes.outputs.pr_refs }}
 
-          Please generate a changelog for this Python SDK that includes:
+          Please generate a changelog for this Python Client that includes:
           1. A brief 1-2 sentence summary focusing on functionality improvements
-          2. Key features/improvements (bullet points) - focus on SDK capabilities
+          2. Key features/improvements (bullet points) - focus on Client capabilities
           3. Breaking changes (if any) - clearly marked with ⚠️
           4. Notable technical changes (dependencies, performance, API improvements)
           5. Bug fixes and stability improvements
 
-          Keep it developer-focused since this is a developer SDK. Highlight:
+          Keep it developer-focused since this is a developer Client. Highlight:
           - New API endpoints and methods
-          - SDK improvements and features
+          - Client improvements and features
           - Performance optimizations
           - Type safety and validation enhancements
           - Integration improvements
@@ -229,7 +229,7 @@ jobs:
           tag_name: v${{ steps.get-version.outputs.version }}
           name: Release v${{ steps.get-version.outputs.version }}
           body: |
-            # RoboSystems Python SDK v${{ steps.get-version.outputs.version }}
+            # RoboSystems Python Client v${{ steps.get-version.outputs.version }}
 
             ${{ steps.claude-changelog.outputs.changelog }}
 
@@ -248,16 +248,16 @@ jobs:
 
             ## 🔗 Links
 
-            - **PyPI Package:** [robosystems-sdk](https://pypi.org/project/robosystems-sdk/)
+            - **PyPI Package:** [robosystems-client](https://pypi.org/project/robosystems-client/)
             - **Full Changelog:** [${{ steps.analyze-changes.outputs.last_tag }}...v${{ steps.get-version.outputs.version }}](https://github.com/${{ github.repository }}/compare/${{ steps.analyze-changes.outputs.last_tag }}...v${{ steps.get-version.outputs.version }})
             - **All Releases:** [View all releases](https://github.com/${{ github.repository }}/releases)
 
             ## 🛠️ Installation
 
             ```bash
-            pip install robosystems-sdk
+            pip install robosystems-client
             # or
-            uv add robosystems-sdk
+            uv add robosystems-client
             ```
 
             ---
@@ -272,10 +272,10 @@ jobs:
         run: |
           VERSION="${{ steps.get-version.outputs.version }}"
 
-          echo "## 🚀 RoboSystems Python SDK v$VERSION Released" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 RoboSystems Python Client v$VERSION Released" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Release URL:** [v$VERSION](https://github.com/${{ github.repository }}/releases/tag/v$VERSION)" >> $GITHUB_STEP_SUMMARY
-          echo "**PyPI Package:** [robosystems-sdk](https://pypi.org/project/robosystems-sdk/)" >> $GITHUB_STEP_SUMMARY
+          echo "**PyPI Package:** [robosystems-client](https://pypi.org/project/robosystems-client/)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📊 Python Tool Statistics" >> $GITHUB_STEP_SUMMARY
           echo "- **Commits:** ${{ steps.analyze-changes.outputs.commits_count }}" >> $GITHUB_STEP_SUMMARY

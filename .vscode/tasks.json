@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Generate SDK",
+      "label": "Generate Client",
       "type": "shell",
-      "command": "just generate-sdk ${input:apiUrl}",
+      "command": "just generate-client ${input:apiUrl}",
       "problemMatcher": [],
       "group": "build"
     },
@@ -106,7 +106,7 @@
       "group": "build"
     },
     {
-      "label": "Publish SDK to PyPI",
+      "label": "Publish Client to PyPI",
       "type": "shell",
       "command": "just publish-pypi ${input:versionType}",
       "group": "build",
@@ -128,7 +128,7 @@
     {
       "id": "apiUrl",
       "type": "pickString",
-      "description": "Choose API URL for SDK generation:",
+      "description": "Choose API URL for Client generation:"
       "default": "http://localhost:8000/openapi.json",
       "options": [
         "http://localhost:8000/openapi.json",

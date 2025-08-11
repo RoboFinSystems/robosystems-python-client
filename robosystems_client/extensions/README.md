@@ -1,4 +1,4 @@
-# RoboSystems Python SDK Extensions
+# RoboSystems Python Client Extensions
 
 🚀 **Production-Ready Extensions** for the RoboSystems Financial Knowledge Graph API
 
@@ -7,7 +7,7 @@
 
 ## Overview
 
-The RoboSystems Python SDK Extensions provide enhanced functionality for the auto-generated Python SDK, adding:
+The RoboSystems Python Client Extensions provide enhanced functionality for the auto-generated Python Client, adding:
 
 - **Server-Sent Events (SSE)** streaming with automatic reconnection
 - **Smart Query Execution** with automatic strategy selection
@@ -22,7 +22,7 @@ The RoboSystems Python SDK Extensions provide enhanced functionality for the aut
 ### Installation
 
 ```bash
-# Install the extensions (part of the main SDK)
+# Install the extensions (part of the main client)
 pip install robosystems-client
 
 # Optional dependencies for enhanced features
@@ -606,6 +606,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**RoboSystems Python SDK Extensions** - Production-ready streaming, monitoring, and query capabilities for financial knowledge graphs.
+**RoboSystems Python Client Extensions** - Production-ready streaming, monitoring, and query capabilities for financial knowledge graphs.
 
 *Built with ❤️ by the RoboSystems team*

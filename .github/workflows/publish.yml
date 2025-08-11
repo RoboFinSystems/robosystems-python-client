@@ -1,4 +1,4 @@
-name: Publish Python SDK to PyPI
+name: Publish Python Client to PyPI
 
 on:
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
         id: check-pypi
         run: |
           VERSION="${{ steps.current-version.outputs.current_version }}"
-          PACKAGE_NAME="robosystems-sdk"
+          PACKAGE_NAME="robosystems-client"
           
           # Check if version exists on PyPI
           if curl -s "https://pypi.org/pypi/${PACKAGE_NAME}/${VERSION}/json" | grep -q "\"version\""; then

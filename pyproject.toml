@@ -1,14 +1,14 @@
 [project]
-name = "robosystems-sdk"
+name = "robosystems-client"
 version = "0.1.9"
-description = "Python SDK for RoboSystems financial graph database API"
+description = "Python Client for RoboSystems financial graph database API"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
     {name = "Harbinger FinLab"},
 ]
 license = {text = "MIT"}
-keywords = ["sdk", "robosystems", "financial", "graph", "kuzu", "api", "client"]
+keywords = ["client", "robosystems", "financial", "graph", "kuzu", "api", "sdk"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Framework :: AsyncIO",

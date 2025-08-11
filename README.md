@@ -1,9 +1,9 @@
-# RoboSystems Python SDK
+# RoboSystems Python Client
 
-[![PyPI version](https://badge.fury.io/py/robosystems-sdk.svg)](https://pypi.org/project/robosystems-sdk/)
+[![PyPI version](https://badge.fury.io/py/robosystems-client.svg)](https://pypi.org/project/robosystems-client/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Official Python SDK for the RoboSystems Financial Knowledge Graph API. Access comprehensive financial data including accounting records, SEC filings, and advanced graph analytics through a type-safe, async-ready Python interface.
+Official Python Client for the RoboSystems Financial Knowledge Graph API. Access comprehensive financial data including accounting records, SEC filings, and advanced graph analytics through a type-safe, async-ready Python interface.
 
 ## Features
 
@@ -19,18 +19,18 @@ Official Python SDK for the RoboSystems Financial Knowledge Graph API. Access co
 ## Installation
 
 ```bash
-pip install robosystems-sdk
+pip install robosystems-client
 ```
 
 ## Quick Start
 
 ```python
-from robosystems_client import RoboSystemsClient
+from robosystems_client import RoboSystemsSDK
 from robosystems_client.api.query import execute_cypher_query
 from robosystems_client.models import CypherQueryRequest
 
-# Initialize the client
-client = RoboSystemsClient(
+# Initialize the SDK
+sdk = RoboSystemsSDK(
     base_url="https://api.robosystems.ai",
     token="your-api-key",
     auth_header_name="X-API-Key",
@@ -45,7 +45,7 @@ async def main():
     query = CypherQueryRequest(
         query="MATCH (c:Company)-[:HAS_FILING]->(f:Filing) RETURN c.name, f.form_type, f.filing_date LIMIT 10"
     )
-    result = await execute_cypher_query.asyncio(graph_id="your-graph-id", client=client, body=query)
+    result = await execute_cypher_query.asyncio(graph_id="your-graph-id", client=sdk, body=query)
     
     for row in result.data:
         print(f"{row['c.name']} filed {row['f.form_type']} on {row['f.filing_date']}")
@@ -71,14 +71,14 @@ query_request = CypherQueryRequest(
 )
 results = await execute_cypher_query.asyncio(
     graph_id="your-graph-id", 
-    client=client, 
+    client=sdk, 
     body=query_request
 )
 
 # Get graph analytics and metrics
 metrics = await get_graph_metrics.asyncio(
     graph_id="your-graph-id", 
-    client=client
+    client=sdk
 )
 print(f"Total nodes: {metrics.total_nodes}")
 print(f"Total relationships: {metrics.total_relationships}")
@@ -97,7 +97,7 @@ agent_request = AgentRequest(
 )
 agent_response = await query_financial_agent.asyncio(
     graph_id="your-graph-id", 
-    client=client, 
+    client=sdk, 
     body=agent_request
 )
 print(f"Response: {agent_response.message}")
@@ -129,7 +129,7 @@ from robosystems_client.models import CypherQueryRequest
 extensions = RoboSystemsExtensions()
 
 # Use QueryClient for advanced query operations
-query_client = QueryClient(client)
+query_client = QueryClient(sdk)
 
 # Execute queries with the query client
 query = CypherQueryRequest(
@@ -141,13 +141,13 @@ query = CypherQueryRequest(
 )
 
 # Monitor long-running operations with SSE
-operation_client = OperationClient(client)
+operation_client = OperationClient(sdk)
 
 # Stream operation events
 from robosystems_client.api.operations import stream_operation_events
 await stream_operation_events.asyncio(
     operation_id="op-123",
-    client=client
+    client=sdk
 )
 ```
 
@@ -168,7 +168,7 @@ try:
     # API calls that might fail
     result = await execute_cypher_query.asyncio(
         graph_id="your-graph-id", 
-        client=client, 
+        client=sdk, 
         body=query_request
     )
 except UnexpectedStatus as e:
@@ -198,7 +198,7 @@ from robosystems_client.api.query import execute_cypher_query
 
 response = await execute_cypher_query.asyncio_detailed(
     graph_id="your-graph-id",
-    client=client,
+    client=sdk,
     body=query_request
 )
 
@@ -213,7 +213,7 @@ else:
 
 ## Development
 
-This SDK is auto-generated from the RoboSystems OpenAPI specification to ensure it stays in sync with the latest API changes.
+This Client is auto-generated from the RoboSystems OpenAPI specification to ensure it stays in sync with the latest API changes.
 
 ### Setup
 
@@ -222,19 +222,19 @@ just venv
 just install
 ```
 
-### Regenerating the SDK
+### Regenerating the Client
 
-When the API changes, regenerate the SDK from the OpenAPI spec:
+When the API changes, regenerate the Client from the OpenAPI spec:
 
 ```bash
 # From localhost (development)
-just generate-sdk http://localhost:8000/openapi.json
+just generate-client http://localhost:8000/openapi.json
 
 # From staging
-just generate-sdk https://staging.api.robosystems.ai/openapi.json
+just generate-client https://staging.api.robosystems.ai/openapi.json
 
 # From production
-just generate-sdk https://api.robosystems.ai/openapi.json
+just generate-client https://api.robosystems.ai/openapi.json
 ```
 
 ### Testing
