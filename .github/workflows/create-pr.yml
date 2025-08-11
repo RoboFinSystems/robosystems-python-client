@@ -118,7 +118,7 @@ jobs:
           **Context:**
           - Repository: Application codebase
           - Source Branch: $SOURCE_BRANCH
-          - Target Branch: $TARGET_BRANCH  
+          - Target Branch: $TARGET_BRANCH
           - PR Type: $PR_TYPE
           - Files Changed: $FILES_CHANGED
           - Commits: $COMMITS_COUNT
@@ -154,7 +154,7 @@ jobs:
 
           **Context:**
           - Source Branch: $SOURCE_BRANCH
-          - Target Branch: $TARGET_BRANCH  
+          - Target Branch: $TARGET_BRANCH
           - PR Type: $PR_TYPE
           - Files Changed: $FILES_CHANGED
           - Commits: $COMMITS_COUNT
