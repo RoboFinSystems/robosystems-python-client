@@ -1,19 +1,7 @@
 {
   "version": "2.0.0",
   "tasks": [
-    {
-      "label": "Generate Client",
-      "type": "shell",
-      "command": "just generate-client ${input:apiUrl}",
-      "problemMatcher": [],
-      "group": "build"
-    },
-    {
-      "label": "Claude Code",
-      "type": "shell",
-      "command": "claude --model ${input:claudeModel}",
-      "problemMatcher": []
-    },
+
     {
       "label": "Install Dependencies",
       "type": "shell",
@@ -25,6 +13,13 @@
       "label": "Update Dependencies",
       "type": "shell",
       "command": "just update",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Generate Client",
+      "type": "shell",
+      "command": "just generate-client ${input:apiUrl}",
       "problemMatcher": [],
       "group": "build"
     },
@@ -46,13 +41,6 @@
       "label": "Test All",
       "type": "shell",
       "command": "just test-all",
-      "problemMatcher": [],
-      "group": "test"
-    },
-    {
-      "label": "Test with Coverage",
-      "type": "shell",
-      "command": "just test-cov",
       "problemMatcher": [],
       "group": "test"
     },
@@ -99,14 +87,14 @@
       "group": "build"
     },
     {
-      "label": "Build Python Package",
+      "label": "Build Package",
       "type": "shell",
       "command": "just build-package",
       "problemMatcher": [],
       "group": "build"
     },
     {
-      "label": "Publish Client to PyPI",
+      "label": "Publish to PyPI",
       "type": "shell",
       "command": "just publish-pypi ${input:versionType}",
       "group": "build",
@@ -128,7 +116,7 @@
     {
       "id": "apiUrl",
       "type": "pickString",
-      "description": "Choose API URL for Client generation:"
+      "description": "Choose API URL for Client generation:",
       "default": "http://localhost:8000/openapi.json",
       "options": [
         "http://localhost:8000/openapi.json",
@@ -166,13 +154,6 @@
       "description": "Request Claude review automatically:",
       "default": "true",
       "options": ["true", "false"]
-    },
-    {
-      "id": "claudeModel",
-      "type": "pickString",
-      "description": "Choose model:",
-      "default": "opus",
-      "options": ["opus", "sonnet"]
     }
   ]
 }
