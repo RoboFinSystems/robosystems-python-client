@@ -83,7 +83,7 @@ ATTEMPT=1
 
 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
     echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Checking for created PR..."
-    
+
     # Check if workflow failed
     WORKFLOW_STATUS=$(gh run list --workflow=create-pr.yml --limit=1 --json status --jq '.[0].status' 2>/dev/null || echo "")
     if [ "$WORKFLOW_STATUS" = "failure" ]; then
@@ -91,17 +91,17 @@ while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
         echo "  gh run list --workflow=create-pr.yml"
         exit 1
     fi
-    
+
     # Check if PR exists from current branch to target
     PR_URL=$(gh pr list --head "$CURRENT_BRANCH" --base "$TARGET_BRANCH" --json url --jq '.[0].url' 2>/dev/null || echo "")
-    
+
     if [ -n "$PR_URL" ] && [ "$PR_URL" != "null" ]; then
         echo "✅ PR created successfully!"
         echo "🔗 PR URL: $PR_URL"
         echo ""
         echo "🎉 Claude has analyzed your changes and created a comprehensive PR"
         echo "📝 Review the PR description and make any necessary adjustments"
-        
+
         # Try to open PR in browser
         if command -v open >/dev/null 2>&1; then
             echo "🌐 Opening PR in browser..."
@@ -112,10 +112,10 @@ while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
         else
             echo "💡 Open the PR manually: $PR_URL"
         fi
-        
+
         exit 0
     fi
-    
+
     if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
         echo "❌ Timeout: PR was not created after 5 minutes"
         echo "Check the GitHub Actions workflow status:"
@@ -125,7 +125,7 @@ while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
         echo "  gh pr create --base $TARGET_BRANCH --head $CURRENT_BRANCH"
         exit 1
     fi
-    
+
     echo "PR not yet created, waiting 10 seconds..."
     sleep 10
     ATTEMPT=$((ATTEMPT + 1))
