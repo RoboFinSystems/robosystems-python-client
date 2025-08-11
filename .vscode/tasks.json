@@ -1,0 +1,178 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Generate SDK",
+      "type": "shell",
+      "command": "just generate-sdk ${input:apiUrl}",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Claude Code",
+      "type": "shell",
+      "command": "claude --model ${input:claudeModel}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Install Dependencies",
+      "type": "shell",
+      "command": "just install",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Update Dependencies",
+      "type": "shell",
+      "command": "just update",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Setup Environment",
+      "type": "shell",
+      "command": "just venv",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Test",
+      "type": "shell",
+      "command": "just test",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Test All",
+      "type": "shell",
+      "command": "just test-all",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Test with Coverage",
+      "type": "shell",
+      "command": "just test-cov",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "just lint",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Lint Fix",
+      "type": "shell",
+      "command": "just lint-fix",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Format",
+      "type": "shell",
+      "command": "just format",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Type Check",
+      "type": "shell",
+      "command": "just typecheck",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Create Release",
+      "type": "shell",
+      "command": "just create-release ${input:versionType}",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Create PR",
+      "type": "shell",
+      "command": "just create-pr ${input:targetBranch} ${input:prType} ${input:claudeReview}",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build Python Package",
+      "type": "shell",
+      "command": "just build-package",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Publish SDK to PyPI",
+      "type": "shell",
+      "command": "just publish-pypi ${input:versionType}",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean",
+      "type": "shell",
+      "command": "just clean",
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "apiUrl",
+      "type": "pickString",
+      "description": "Choose API URL for SDK generation:",
+      "default": "http://localhost:8000/openapi.json",
+      "options": [
+        "http://localhost:8000/openapi.json",
+        "https://staging.api.robosystems.ai/openapi.json",
+        "https://api.robosystems.ai/openapi.json"
+      ]
+    },
+    {
+      "id": "versionType",
+      "type": "pickString",
+      "description": "Version type for release",
+      "options": [
+        "patch",
+        "minor",
+        "major"
+      ],
+      "default": "patch"
+    },
+    {
+      "id": "targetBranch",
+      "type": "promptString",
+      "description": "Choose target branch:",
+      "default": "main"
+    },
+    {
+      "id": "prType",
+      "type": "pickString",
+      "description": "Choose PR type:",
+      "default": "release",
+      "options": ["release", "feature", "bugfix", "hotfix"]
+    },
+    {
+      "id": "claudeReview",
+      "type": "pickString",
+      "description": "Request Claude review automatically:",
+      "default": "true",
+      "options": ["true", "false"]
+    },
+    {
+      "id": "claudeModel",
+      "type": "pickString",
+      "description": "Choose model:",
+      "default": "opus",
+      "options": ["opus", "sonnet"]
+    }
+  ]
+}

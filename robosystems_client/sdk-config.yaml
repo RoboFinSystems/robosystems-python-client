@@ -1,0 +1,5 @@
+class_name: RoboSystemsClient
+package_name: robosystems_client
+project_name: robosystems-sdk
+package_description: "Python SDK for RoboSystems financial graph database API"
+package_version: "0.1.0"
