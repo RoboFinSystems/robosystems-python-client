@@ -43,7 +43,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/{graph_id}/mcp/mcp/call-tool",
+    "url": f"/v1/{graph_id}/mcp/call-tool",
     "params": params,
     "cookies": cookies,
   }

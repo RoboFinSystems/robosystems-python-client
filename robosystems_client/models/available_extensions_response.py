@@ -1,14 +1,11 @@
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
   from ..models.available_extension import AvailableExtension
-  from ..models.available_extensions_response_base_info import (
-    AvailableExtensionsResponseBaseInfo,
-  )
 
 
 T = TypeVar("T", bound="AvailableExtensionsResponse")
@@ -18,14 +15,10 @@ T = TypeVar("T", bound="AvailableExtensionsResponse")
 class AvailableExtensionsResponse:
   """
   Attributes:
-      extensions (list['AvailableExtension']): List of available schema extensions
-      default_extensions (list[str]): Default extensions recommended for new companies
-      base_info (AvailableExtensionsResponseBaseInfo): Information about the base schema
+      extensions (list['AvailableExtension']):
   """
 
   extensions: list["AvailableExtension"]
-  default_extensions: list[str]
-  base_info: "AvailableExtensionsResponseBaseInfo"
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -34,17 +27,11 @@ class AvailableExtensionsResponse:
       extensions_item = extensions_item_data.to_dict()
       extensions.append(extensions_item)
 
-    default_extensions = self.default_extensions
-
-    base_info = self.base_info.to_dict()
-
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
         "extensions": extensions,
-        "default_extensions": default_extensions,
-        "base_info": base_info,
       }
     )
 
@@ -53,9 +40,6 @@ class AvailableExtensionsResponse:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.available_extension import AvailableExtension
-    from ..models.available_extensions_response_base_info import (
-      AvailableExtensionsResponseBaseInfo,
-    )
 
     d = dict(src_dict)
     extensions = []
@@ -65,14 +49,8 @@ class AvailableExtensionsResponse:
 
       extensions.append(extensions_item)
 
-    default_extensions = cast(list[str], d.pop("default_extensions"))
-
-    base_info = AvailableExtensionsResponseBaseInfo.from_dict(d.pop("base_info"))
-
     available_extensions_response = cls(
       extensions=extensions,
-      default_extensions=default_extensions,
-      base_info=base_info,
     )
 
     available_extensions_response.additional_properties = d

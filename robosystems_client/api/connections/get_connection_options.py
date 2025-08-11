@@ -84,7 +84,7 @@ def sync_detailed(
 
   This endpoint returns comprehensive information about each supported provider:
 
-  **SEC EDGAR**: Public company financial filings
+  **SEC EDGAR**: Public entity financial filings
   - No authentication required (public data)
   - 10-K, 10-Q, 8-K reports with XBRL data
   - Historical and real-time filing access
@@ -140,7 +140,7 @@ def sync(
 
   This endpoint returns comprehensive information about each supported provider:
 
-  **SEC EDGAR**: Public company financial filings
+  **SEC EDGAR**: Public entity financial filings
   - No authentication required (public data)
   - 10-K, 10-Q, 8-K reports with XBRL data
   - Historical and real-time filing access
@@ -191,7 +191,7 @@ async def asyncio_detailed(
 
   This endpoint returns comprehensive information about each supported provider:
 
-  **SEC EDGAR**: Public company financial filings
+  **SEC EDGAR**: Public entity financial filings
   - No authentication required (public data)
   - 10-K, 10-Q, 8-K reports with XBRL data
   - Historical and real-time filing access
@@ -245,7 +245,7 @@ async def asyncio(
 
   This endpoint returns comprehensive information about each supported provider:
 
-  **SEC EDGAR**: Public company financial filings
+  **SEC EDGAR**: Public entity financial filings
   - No authentication required (public data)
   - 10-K, 10-Q, 8-K reports with XBRL data
   - Historical and real-time filing access

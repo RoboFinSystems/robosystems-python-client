@@ -98,7 +98,7 @@ def sync_detailed(
    AI-powered financial analysis with direct access to graph data.
 
   This endpoint provides intelligent financial analysis using an AI agent that can:
-  - Analyze company financial statements and SEC filings
+  - Analyze entity financial statements and SEC filings
   - Review QuickBooks transactions and accounting data
   - Perform multi-period trend analysis
   - Generate insights from balance sheets and income statements
@@ -185,7 +185,7 @@ def sync(
    AI-powered financial analysis with direct access to graph data.
 
   This endpoint provides intelligent financial analysis using an AI agent that can:
-  - Analyze company financial statements and SEC filings
+  - Analyze entity financial statements and SEC filings
   - Review QuickBooks transactions and accounting data
   - Perform multi-period trend analysis
   - Generate insights from balance sheets and income statements
@@ -267,7 +267,7 @@ async def asyncio_detailed(
    AI-powered financial analysis with direct access to graph data.
 
   This endpoint provides intelligent financial analysis using an AI agent that can:
-  - Analyze company financial statements and SEC filings
+  - Analyze entity financial statements and SEC filings
   - Review QuickBooks transactions and accounting data
   - Perform multi-period trend analysis
   - Generate insights from balance sheets and income statements
@@ -352,7 +352,7 @@ async def asyncio(
    AI-powered financial analysis with direct access to graph data.
 
   This endpoint provides intelligent financial analysis using an AI agent that can:
-  - Analyze company financial statements and SEC filings
+  - Analyze entity financial statements and SEC filings
   - Review QuickBooks transactions and accounting data
   - Perform multi-period trend analysis
   - Generate insights from balance sheets and income statements

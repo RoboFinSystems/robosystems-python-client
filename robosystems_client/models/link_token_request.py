@@ -19,14 +19,14 @@ class LinkTokenRequest:
   """Request to create a link token for embedded authentication.
 
   Attributes:
-      company_id (str): Company identifier
+      entity_id (str): Entity identifier
       user_id (str): User identifier
       provider (Union[LinkTokenRequestProviderType0, None, Unset]): Provider type (defaults based on connection)
       products (Union[None, Unset, list[str]]): Data products to request (provider-specific)
       options (Union['LinkTokenRequestOptionsType0', None, Unset]): Provider-specific options
   """
 
-  company_id: str
+  entity_id: str
   user_id: str
   provider: Union[LinkTokenRequestProviderType0, None, Unset] = UNSET
   products: Union[None, Unset, list[str]] = UNSET
@@ -36,7 +36,7 @@ class LinkTokenRequest:
   def to_dict(self) -> dict[str, Any]:
     from ..models.link_token_request_options_type_0 import LinkTokenRequestOptionsType0
 
-    company_id = self.company_id
+    entity_id = self.entity_id
 
     user_id = self.user_id
 
@@ -69,7 +69,7 @@ class LinkTokenRequest:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "company_id": company_id,
+        "entity_id": entity_id,
         "user_id": user_id,
       }
     )
@@ -87,7 +87,7 @@ class LinkTokenRequest:
     from ..models.link_token_request_options_type_0 import LinkTokenRequestOptionsType0
 
     d = dict(src_dict)
-    company_id = d.pop("company_id")
+    entity_id = d.pop("entity_id")
 
     user_id = d.pop("user_id")
 
@@ -147,7 +147,7 @@ class LinkTokenRequest:
     options = _parse_options(d.pop("options", UNSET))
 
     link_token_request = cls(
-      company_id=company_id,
+      entity_id=entity_id,
       user_id=user_id,
       provider=provider,
       products=products,

@@ -14,13 +14,13 @@ class DatabaseInfoResponse:
   """Response model for database information and statistics.
 
   Attributes:
-      graph_id (str): Graph database identifier Example: company_12345.
-      database_name (str): Database name Example: company_12345.
+      graph_id (str): Graph database identifier Example: entity_12345.
+      database_name (str): Database name Example: entity_12345.
       database_size_bytes (int): Database size in bytes Example: 1048576.
       database_size_mb (float): Database size in MB Example: 1.0.
       node_count (int): Total number of nodes Example: 1250.
       relationship_count (int): Total number of relationships Example: 2340.
-      node_labels (list[str]): List of node labels Example: ['Company', 'Report', 'Fact'].
+      node_labels (list[str]): List of node labels Example: ['Entity', 'Report', 'Fact'].
       relationship_types (list[str]): List of relationship types Example: ['HAS_REPORT', 'REPORTED_IN',
           'HAS_ELEMENT'].
       created_at (str): Database creation timestamp Example: 2024-01-15T10:00:00Z.

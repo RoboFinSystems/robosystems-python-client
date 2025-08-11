@@ -9,7 +9,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
   from ..models.custom_schema_definition import CustomSchemaDefinition
   from ..models.graph_metadata import GraphMetadata
-  from ..models.initial_company_data import InitialCompanyData
+  from ..models.initial_entity_data import InitialEntityData
 
 
 T = TypeVar("T", bound="CreateGraphRequest")
@@ -20,7 +20,7 @@ class CreateGraphRequest:
   """Request model for creating a new graph.
 
   Example:
-      {'initial_company': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'}, 'instance_tier':
+      {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'}, 'instance_tier':
           'standard', 'metadata': {'description': 'Main production graph', 'graph_name': 'Production System',
           'schema_extensions': ['roboledger']}, 'tags': ['production', 'finance']}
 
@@ -28,21 +28,21 @@ class CreateGraphRequest:
       metadata (GraphMetadata): Metadata for graph creation.
       instance_tier (Union[Unset, str]): Instance tier: standard, enterprise, or premium Default: 'standard'.
       custom_schema (Union['CustomSchemaDefinition', None, Unset]): Custom schema definition to apply
-      initial_company (Union['InitialCompanyData', None, Unset]): Optional initial company to create in the graph. If
-          provided, creates a company-focused graph.
+      initial_entity (Union['InitialEntityData', None, Unset]): Optional initial entity to create in the graph. If
+          provided, creates a entity-focused graph.
       tags (Union[None, Unset, list[str]]): Optional tags for organization
   """
 
   metadata: "GraphMetadata"
   instance_tier: Union[Unset, str] = "standard"
   custom_schema: Union["CustomSchemaDefinition", None, Unset] = UNSET
-  initial_company: Union["InitialCompanyData", None, Unset] = UNSET
+  initial_entity: Union["InitialEntityData", None, Unset] = UNSET
   tags: Union[None, Unset, list[str]] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     from ..models.custom_schema_definition import CustomSchemaDefinition
-    from ..models.initial_company_data import InitialCompanyData
+    from ..models.initial_entity_data import InitialEntityData
 
     metadata = self.metadata.to_dict()
 
@@ -56,13 +56,13 @@ class CreateGraphRequest:
     else:
       custom_schema = self.custom_schema
 
-    initial_company: Union[None, Unset, dict[str, Any]]
-    if isinstance(self.initial_company, Unset):
-      initial_company = UNSET
-    elif isinstance(self.initial_company, InitialCompanyData):
-      initial_company = self.initial_company.to_dict()
+    initial_entity: Union[None, Unset, dict[str, Any]]
+    if isinstance(self.initial_entity, Unset):
+      initial_entity = UNSET
+    elif isinstance(self.initial_entity, InitialEntityData):
+      initial_entity = self.initial_entity.to_dict()
     else:
-      initial_company = self.initial_company
+      initial_entity = self.initial_entity
 
     tags: Union[None, Unset, list[str]]
     if isinstance(self.tags, Unset):
@@ -84,8 +84,8 @@ class CreateGraphRequest:
       field_dict["instance_tier"] = instance_tier
     if custom_schema is not UNSET:
       field_dict["custom_schema"] = custom_schema
-    if initial_company is not UNSET:
-      field_dict["initial_company"] = initial_company
+    if initial_entity is not UNSET:
+      field_dict["initial_entity"] = initial_entity
     if tags is not UNSET:
       field_dict["tags"] = tags
 
@@ -95,7 +95,7 @@ class CreateGraphRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.custom_schema_definition import CustomSchemaDefinition
     from ..models.graph_metadata import GraphMetadata
-    from ..models.initial_company_data import InitialCompanyData
+    from ..models.initial_entity_data import InitialEntityData
 
     d = dict(src_dict)
     metadata = GraphMetadata.from_dict(d.pop("metadata"))
@@ -121,9 +121,7 @@ class CreateGraphRequest:
 
     custom_schema = _parse_custom_schema(d.pop("custom_schema", UNSET))
 
-    def _parse_initial_company(
-      data: object,
-    ) -> Union["InitialCompanyData", None, Unset]:
+    def _parse_initial_entity(data: object) -> Union["InitialEntityData", None, Unset]:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -131,14 +129,14 @@ class CreateGraphRequest:
       try:
         if not isinstance(data, dict):
           raise TypeError()
-        initial_company_type_0 = InitialCompanyData.from_dict(data)
+        initial_entity_type_0 = InitialEntityData.from_dict(data)
 
-        return initial_company_type_0
+        return initial_entity_type_0
       except:  # noqa: E722
         pass
-      return cast(Union["InitialCompanyData", None, Unset], data)
+      return cast(Union["InitialEntityData", None, Unset], data)
 
-    initial_company = _parse_initial_company(d.pop("initial_company", UNSET))
+    initial_entity = _parse_initial_entity(d.pop("initial_entity", UNSET))
 
     def _parse_tags(data: object) -> Union[None, Unset, list[str]]:
       if data is None:
@@ -161,7 +159,7 @@ class CreateGraphRequest:
       metadata=metadata,
       instance_tier=instance_tier,
       custom_schema=custom_schema,
-      initial_company=initial_company,
+      initial_entity=initial_entity,
       tags=tags,
     )
 

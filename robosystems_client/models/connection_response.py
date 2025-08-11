@@ -21,7 +21,7 @@ class ConnectionResponse:
   Attributes:
       connection_id (str): Unique connection identifier
       provider (ConnectionResponseProvider): Connection provider type
-      company_id (str): Company identifier
+      entity_id (str): Entity identifier
       status (str): Connection status
       created_at (str): Creation timestamp
       metadata (ConnectionResponseMetadata): Provider-specific metadata
@@ -31,7 +31,7 @@ class ConnectionResponse:
 
   connection_id: str
   provider: ConnectionResponseProvider
-  company_id: str
+  entity_id: str
   status: str
   created_at: str
   metadata: "ConnectionResponseMetadata"
@@ -44,7 +44,7 @@ class ConnectionResponse:
 
     provider = self.provider.value
 
-    company_id = self.company_id
+    entity_id = self.entity_id
 
     status = self.status
 
@@ -70,7 +70,7 @@ class ConnectionResponse:
       {
         "connection_id": connection_id,
         "provider": provider,
-        "company_id": company_id,
+        "entity_id": entity_id,
         "status": status,
         "created_at": created_at,
         "metadata": metadata,
@@ -92,7 +92,7 @@ class ConnectionResponse:
 
     provider = ConnectionResponseProvider(d.pop("provider"))
 
-    company_id = d.pop("company_id")
+    entity_id = d.pop("entity_id")
 
     status = d.pop("status")
 
@@ -121,7 +121,7 @@ class ConnectionResponse:
     connection_response = cls(
       connection_id=connection_id,
       provider=provider,
-      company_id=company_id,
+      entity_id=entity_id,
       status=status,
       created_at=created_at,
       metadata=metadata,

@@ -13,7 +13,6 @@ from .auth_response import AuthResponse
 from .auth_response_user import AuthResponseUser
 from .available_extension import AvailableExtension
 from .available_extensions_response import AvailableExtensionsResponse
-from .available_extensions_response_base_info import AvailableExtensionsResponseBaseInfo
 from .backup_create_request import BackupCreateRequest
 from .backup_export_request import BackupExportRequest
 from .backup_list_response import BackupListResponse
@@ -116,7 +115,7 @@ from .graph_usage_response_storage_usage import GraphUsageResponseStorageUsage
 from .health_status import HealthStatus
 from .health_status_details_type_0 import HealthStatusDetailsType0
 from .http_validation_error import HTTPValidationError
-from .initial_company_data import InitialCompanyData
+from .initial_entity_data import InitialEntityData
 from .kuzu_backup_health_response_kuzubackuphealth import (
   KuzuBackupHealthResponseKuzubackuphealth,
 )
@@ -232,7 +231,6 @@ __all__ = (
   "AuthResponseUser",
   "AvailableExtension",
   "AvailableExtensionsResponse",
-  "AvailableExtensionsResponseBaseInfo",
   "BackupCreateRequest",
   "BackupExportRequest",
   "BackupListResponse",
@@ -301,7 +299,7 @@ __all__ = (
   "HealthStatus",
   "HealthStatusDetailsType0",
   "HTTPValidationError",
-  "InitialCompanyData",
+  "InitialEntityData",
   "KuzuBackupHealthResponseKuzubackuphealth",
   "LinkTokenRequest",
   "LinkTokenRequestOptionsType0",

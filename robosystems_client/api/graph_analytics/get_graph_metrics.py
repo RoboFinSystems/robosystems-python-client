@@ -91,7 +91,7 @@ def sync_detailed(
    Get comprehensive metrics for the graph database.
 
   Provides detailed analytics including:
-  - **Node Statistics**: Counts by type (Company, Report, Account, Transaction)
+  - **Node Statistics**: Counts by type (Entity, Report, Account, Transaction)
   - **Relationship Metrics**: Connection counts and patterns
   - **Data Quality**: Completeness scores and validation results
   - **Performance Metrics**: Query response times and database health
@@ -145,7 +145,7 @@ def sync(
    Get comprehensive metrics for the graph database.
 
   Provides detailed analytics including:
-  - **Node Statistics**: Counts by type (Company, Report, Account, Transaction)
+  - **Node Statistics**: Counts by type (Entity, Report, Account, Transaction)
   - **Relationship Metrics**: Connection counts and patterns
   - **Data Quality**: Completeness scores and validation results
   - **Performance Metrics**: Query response times and database health
@@ -194,7 +194,7 @@ async def asyncio_detailed(
    Get comprehensive metrics for the graph database.
 
   Provides detailed analytics including:
-  - **Node Statistics**: Counts by type (Company, Report, Account, Transaction)
+  - **Node Statistics**: Counts by type (Entity, Report, Account, Transaction)
   - **Relationship Metrics**: Connection counts and patterns
   - **Data Quality**: Completeness scores and validation results
   - **Performance Metrics**: Query response times and database health
@@ -246,7 +246,7 @@ async def asyncio(
    Get comprehensive metrics for the graph database.
 
   Provides detailed analytics including:
-  - **Node Statistics**: Counts by type (Company, Report, Account, Transaction)
+  - **Node Statistics**: Counts by type (Entity, Report, Account, Transaction)
   - **Relationship Metrics**: Connection counts and patterns
   - **Data Quality**: Completeness scores and validation results
   - **Performance Metrics**: Query response times and database health

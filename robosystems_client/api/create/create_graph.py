@@ -74,14 +74,14 @@ def sync_detailed(
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Create New Graph Database
 
-   Create a new graph database with specified schema and optionally an initial company.
+   Create a new graph database with specified schema and optionally an initial entity.
 
   This endpoint starts an asynchronous graph creation operation and returns
   connection details for monitoring progress via Server-Sent Events (SSE).
 
   **Operation Types:**
   - **Generic Graph**: Creates empty graph with schema extensions
-  - **Company Graph**: Creates graph with initial company data
+  - **Entity Graph**: Creates graph with initial entity data
 
   **Monitoring Progress:**
   Use the returned `operation_id` to connect to the SSE stream:
@@ -119,7 +119,7 @@ def sync_detailed(
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
-          {'initial_company': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
+          {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
           'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
           'graph_name': 'Production System', 'schema_extensions': ['roboledger']}, 'tags':
           ['production', 'finance']}.
@@ -154,14 +154,14 @@ def sync(
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Create New Graph Database
 
-   Create a new graph database with specified schema and optionally an initial company.
+   Create a new graph database with specified schema and optionally an initial entity.
 
   This endpoint starts an asynchronous graph creation operation and returns
   connection details for monitoring progress via Server-Sent Events (SSE).
 
   **Operation Types:**
   - **Generic Graph**: Creates empty graph with schema extensions
-  - **Company Graph**: Creates graph with initial company data
+  - **Entity Graph**: Creates graph with initial entity data
 
   **Monitoring Progress:**
   Use the returned `operation_id` to connect to the SSE stream:
@@ -199,7 +199,7 @@ def sync(
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
-          {'initial_company': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
+          {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
           'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
           'graph_name': 'Production System', 'schema_extensions': ['roboledger']}, 'tags':
           ['production', 'finance']}.
@@ -229,14 +229,14 @@ async def asyncio_detailed(
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Create New Graph Database
 
-   Create a new graph database with specified schema and optionally an initial company.
+   Create a new graph database with specified schema and optionally an initial entity.
 
   This endpoint starts an asynchronous graph creation operation and returns
   connection details for monitoring progress via Server-Sent Events (SSE).
 
   **Operation Types:**
   - **Generic Graph**: Creates empty graph with schema extensions
-  - **Company Graph**: Creates graph with initial company data
+  - **Entity Graph**: Creates graph with initial entity data
 
   **Monitoring Progress:**
   Use the returned `operation_id` to connect to the SSE stream:
@@ -274,7 +274,7 @@ async def asyncio_detailed(
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
-          {'initial_company': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
+          {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
           'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
           'graph_name': 'Production System', 'schema_extensions': ['roboledger']}, 'tags':
           ['production', 'finance']}.
@@ -307,14 +307,14 @@ async def asyncio(
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Create New Graph Database
 
-   Create a new graph database with specified schema and optionally an initial company.
+   Create a new graph database with specified schema and optionally an initial entity.
 
   This endpoint starts an asynchronous graph creation operation and returns
   connection details for monitoring progress via Server-Sent Events (SSE).
 
   **Operation Types:**
   - **Generic Graph**: Creates empty graph with schema extensions
-  - **Company Graph**: Creates graph with initial company data
+  - **Entity Graph**: Creates graph with initial entity data
 
   **Monitoring Progress:**
   Use the returned `operation_id` to connect to the SSE stream:
@@ -352,7 +352,7 @@ async def asyncio(
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
-          {'initial_company': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
+          {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
           'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
           'graph_name': 'Production System', 'schema_extensions': ['roboledger']}, 'tags':
           ['production', 'finance']}.

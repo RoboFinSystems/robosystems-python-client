@@ -104,7 +104,7 @@ def sync_detailed(
   This endpoint initiates connections to external data sources:
 
   **SEC Connections**:
-  - Provide company CIK for automatic filing retrieval
+  - Provide entity CIK for automatic filing retrieval
   - No authentication needed
   - Begins immediate data sync
 
@@ -166,7 +166,7 @@ def sync(
   This endpoint initiates connections to external data sources:
 
   **SEC Connections**:
-  - Provide company CIK for automatic filing retrieval
+  - Provide entity CIK for automatic filing retrieval
   - No authentication needed
   - Begins immediate data sync
 
@@ -223,7 +223,7 @@ async def asyncio_detailed(
   This endpoint initiates connections to external data sources:
 
   **SEC Connections**:
-  - Provide company CIK for automatic filing retrieval
+  - Provide entity CIK for automatic filing retrieval
   - No authentication needed
   - Begins immediate data sync
 
@@ -283,7 +283,7 @@ async def asyncio(
   This endpoint initiates connections to external data sources:
 
   **SEC Connections**:
-  - Provide company CIK for automatic filing retrieval
+  - Provide entity CIK for automatic filing retrieval
   - No authentication needed
   - Begins immediate data sync
 

@@ -22,14 +22,14 @@ class CreateConnectionRequest:
 
   Attributes:
       provider (CreateConnectionRequestProvider): Connection provider type
-      company_id (str): Company identifier
+      entity_id (str): Entity identifier
       sec_config (Union['SECConnectionConfig', None, Unset]):
       quickbooks_config (Union['QuickBooksConnectionConfig', None, Unset]):
       plaid_config (Union['PlaidConnectionConfig', None, Unset]):
   """
 
   provider: CreateConnectionRequestProvider
-  company_id: str
+  entity_id: str
   sec_config: Union["SECConnectionConfig", None, Unset] = UNSET
   quickbooks_config: Union["QuickBooksConnectionConfig", None, Unset] = UNSET
   plaid_config: Union["PlaidConnectionConfig", None, Unset] = UNSET
@@ -42,7 +42,7 @@ class CreateConnectionRequest:
 
     provider = self.provider.value
 
-    company_id = self.company_id
+    entity_id = self.entity_id
 
     sec_config: Union[None, Unset, dict[str, Any]]
     if isinstance(self.sec_config, Unset):
@@ -73,7 +73,7 @@ class CreateConnectionRequest:
     field_dict.update(
       {
         "provider": provider,
-        "company_id": company_id,
+        "entity_id": entity_id,
       }
     )
     if sec_config is not UNSET:
@@ -94,7 +94,7 @@ class CreateConnectionRequest:
     d = dict(src_dict)
     provider = CreateConnectionRequestProvider(d.pop("provider"))
 
-    company_id = d.pop("company_id")
+    entity_id = d.pop("entity_id")
 
     def _parse_sec_config(data: object) -> Union["SECConnectionConfig", None, Unset]:
       if data is None:
@@ -153,7 +153,7 @@ class CreateConnectionRequest:
 
     create_connection_request = cls(
       provider=provider,
-      company_id=company_id,
+      entity_id=entity_id,
       sec_config=sec_config,
       quickbooks_config=quickbooks_config,
       plaid_config=plaid_config,

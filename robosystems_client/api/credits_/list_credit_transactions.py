@@ -153,7 +153,7 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
-      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., company_lookup,
+      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
           cypher_query)
       start_date (Union[None, Unset, str]): Start date for filtering (ISO format: YYYY-MM-DD)
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
@@ -224,7 +224,7 @@ def sync(
       graph_id (str): Graph database identifier
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
-      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., company_lookup,
+      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
           cypher_query)
       start_date (Union[None, Unset, str]): Start date for filtering (ISO format: YYYY-MM-DD)
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
@@ -290,7 +290,7 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
-      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., company_lookup,
+      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
           cypher_query)
       start_date (Union[None, Unset, str]): Start date for filtering (ISO format: YYYY-MM-DD)
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
@@ -359,7 +359,7 @@ async def asyncio(
       graph_id (str): Graph database identifier
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
-      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., company_lookup,
+      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
           cypher_query)
       start_date (Union[None, Unset, str]): Start date for filtering (ISO format: YYYY-MM-DD)
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)

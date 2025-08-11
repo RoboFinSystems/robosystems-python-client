@@ -100,7 +100,7 @@ def sync_detailed(
   - Expires after 4 hours
   - Is single-use only
   - Must be used with the matching frontend SDK
-  - Includes user and company context
+  - Includes user and entity context
 
   No credits are consumed for creating link tokens.
 
@@ -153,7 +153,7 @@ def sync(
   - Expires after 4 hours
   - Is single-use only
   - Must be used with the matching frontend SDK
-  - Includes user and company context
+  - Includes user and entity context
 
   No credits are consumed for creating link tokens.
 
@@ -201,7 +201,7 @@ async def asyncio_detailed(
   - Expires after 4 hours
   - Is single-use only
   - Must be used with the matching frontend SDK
-  - Includes user and company context
+  - Includes user and entity context
 
   No credits are consumed for creating link tokens.
 
@@ -252,7 +252,7 @@ async def asyncio(
   - Expires after 4 hours
   - Is single-use only
   - Must be used with the matching frontend SDK
-  - Includes user and company context
+  - Includes user and entity context
 
   No credits are consumed for creating link tokens.
 

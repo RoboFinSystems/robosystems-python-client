@@ -15,21 +15,21 @@ class SECConnectionConfig:
 
   Attributes:
       cik (str): 10-digit CIK number
-      company_name (Union[None, Unset, str]): Company name from SEC
+      entity_name (Union[None, Unset, str]): Entity name from SEC
   """
 
   cik: str
-  company_name: Union[None, Unset, str] = UNSET
+  entity_name: Union[None, Unset, str] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     cik = self.cik
 
-    company_name: Union[None, Unset, str]
-    if isinstance(self.company_name, Unset):
-      company_name = UNSET
+    entity_name: Union[None, Unset, str]
+    if isinstance(self.entity_name, Unset):
+      entity_name = UNSET
     else:
-      company_name = self.company_name
+      entity_name = self.entity_name
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -38,8 +38,8 @@ class SECConnectionConfig:
         "cik": cik,
       }
     )
-    if company_name is not UNSET:
-      field_dict["company_name"] = company_name
+    if entity_name is not UNSET:
+      field_dict["entity_name"] = entity_name
 
     return field_dict
 
@@ -48,18 +48,18 @@ class SECConnectionConfig:
     d = dict(src_dict)
     cik = d.pop("cik")
 
-    def _parse_company_name(data: object) -> Union[None, Unset, str]:
+    def _parse_entity_name(data: object) -> Union[None, Unset, str]:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
       return cast(Union[None, Unset, str], data)
 
-    company_name = _parse_company_name(d.pop("company_name", UNSET))
+    entity_name = _parse_entity_name(d.pop("entity_name", UNSET))
 
     sec_connection_config = cls(
       cik=cik,
-      company_name=company_name,
+      entity_name=entity_name,
     )
 
     sec_connection_config.additional_properties = d

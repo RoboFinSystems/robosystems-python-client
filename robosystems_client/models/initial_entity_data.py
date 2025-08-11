@@ -6,16 +6,16 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="InitialCompanyData")
+T = TypeVar("T", bound="InitialEntityData")
 
 
 @_attrs_define
-class InitialCompanyData:
-  """Initial company data for graph creation.
+class InitialEntityData:
+  """Initial entity data for graph creation.
 
   Attributes:
-      name (str): Company name
-      uri (str): Company website or URI
+      name (str): Entity name
+      uri (str): Entity website or URI
       cik (Union[None, Unset, str]): CIK number for SEC filings
       sic (Union[None, Unset, str]): SIC code
       sic_description (Union[None, Unset, str]): SIC description
@@ -180,7 +180,7 @@ class InitialCompanyData:
 
     ein = _parse_ein(d.pop("ein", UNSET))
 
-    initial_company_data = cls(
+    initial_entity_data = cls(
       name=name,
       uri=uri,
       cik=cik,
@@ -192,8 +192,8 @@ class InitialCompanyData:
       ein=ein,
     )
 
-    initial_company_data.additional_properties = d
-    return initial_company_data
+    initial_entity_data.additional_properties = d
+    return initial_entity_data
 
   @property
   def additional_keys(self) -> list[str]:

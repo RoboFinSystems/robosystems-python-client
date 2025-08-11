@@ -15,7 +15,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  company_id: Union[None, Unset, str] = UNSET,
+  entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
@@ -30,12 +30,12 @@ def _get_kwargs(
 
   params: dict[str, Any] = {}
 
-  json_company_id: Union[None, Unset, str]
-  if isinstance(company_id, Unset):
-    json_company_id = UNSET
+  json_entity_id: Union[None, Unset, str]
+  if isinstance(entity_id, Unset):
+    json_entity_id = UNSET
   else:
-    json_company_id = company_id
-  params["company_id"] = json_company_id
+    json_entity_id = entity_id
+  params["entity_id"] = json_entity_id
 
   json_provider: Union[None, Unset, str]
   if isinstance(provider, Unset):
@@ -104,7 +104,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  company_id: Union[None, Unset, str] = UNSET,
+  entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
@@ -115,7 +115,7 @@ def sync_detailed(
 
   Returns active and inactive connections with their current status.
   Connections can be filtered by:
-  - **Company**: Show connections for a specific company
+  - **Entity**: Show connections for a specific entity
   - **Provider**: Filter by connection type (sec, quickbooks, plaid)
 
   Each connection shows:
@@ -128,7 +128,7 @@ def sync_detailed(
 
   Args:
       graph_id (str): Graph database identifier
-      company_id (Union[None, Unset, str]): Filter by company ID
+      entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
@@ -143,7 +143,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    company_id=company_id,
+    entity_id=entity_id,
     provider=provider,
     authorization=authorization,
     auth_token=auth_token,
@@ -160,7 +160,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  company_id: Union[None, Unset, str] = UNSET,
+  entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
@@ -171,7 +171,7 @@ def sync(
 
   Returns active and inactive connections with their current status.
   Connections can be filtered by:
-  - **Company**: Show connections for a specific company
+  - **Entity**: Show connections for a specific entity
   - **Provider**: Filter by connection type (sec, quickbooks, plaid)
 
   Each connection shows:
@@ -184,7 +184,7 @@ def sync(
 
   Args:
       graph_id (str): Graph database identifier
-      company_id (Union[None, Unset, str]): Filter by company ID
+      entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
@@ -200,7 +200,7 @@ def sync(
   return sync_detailed(
     graph_id=graph_id,
     client=client,
-    company_id=company_id,
+    entity_id=entity_id,
     provider=provider,
     authorization=authorization,
     auth_token=auth_token,
@@ -211,7 +211,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  company_id: Union[None, Unset, str] = UNSET,
+  entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
@@ -222,7 +222,7 @@ async def asyncio_detailed(
 
   Returns active and inactive connections with their current status.
   Connections can be filtered by:
-  - **Company**: Show connections for a specific company
+  - **Entity**: Show connections for a specific entity
   - **Provider**: Filter by connection type (sec, quickbooks, plaid)
 
   Each connection shows:
@@ -235,7 +235,7 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Graph database identifier
-      company_id (Union[None, Unset, str]): Filter by company ID
+      entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
@@ -250,7 +250,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    company_id=company_id,
+    entity_id=entity_id,
     provider=provider,
     authorization=authorization,
     auth_token=auth_token,
@@ -265,7 +265,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  company_id: Union[None, Unset, str] = UNSET,
+  entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
@@ -276,7 +276,7 @@ async def asyncio(
 
   Returns active and inactive connections with their current status.
   Connections can be filtered by:
-  - **Company**: Show connections for a specific company
+  - **Entity**: Show connections for a specific entity
   - **Provider**: Filter by connection type (sec, quickbooks, plaid)
 
   Each connection shows:
@@ -289,7 +289,7 @@ async def asyncio(
 
   Args:
       graph_id (str): Graph database identifier
-      company_id (Union[None, Unset, str]): Filter by company ID
+      entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
@@ -306,7 +306,7 @@ async def asyncio(
     await asyncio_detailed(
       graph_id=graph_id,
       client=client,
-      company_id=company_id,
+      entity_id=entity_id,
       provider=provider,
       authorization=authorization,
       auth_token=auth_token,
