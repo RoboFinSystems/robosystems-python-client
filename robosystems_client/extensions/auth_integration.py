@@ -1,6 +1,6 @@
-"""Authentication Integration for RoboSystems SDK Extensions
+"""Authentication Integration for RoboSystems Client Extensions
 
-Provides proper integration with the generated SDK authentication system.
+Provides proper integration with the generated Client authentication system.
 """
 
 from typing import Dict, Any

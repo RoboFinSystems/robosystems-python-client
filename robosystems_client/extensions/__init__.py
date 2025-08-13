@@ -1,4 +1,4 @@
-"""RoboSystems SDK Extensions for Python
+"""RoboSystems Client Extensions for Python
 
 Enhanced clients with SSE support for the RoboSystems API.
 Provides seamless integration with streaming operations, queue management,

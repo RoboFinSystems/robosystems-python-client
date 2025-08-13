@@ -1,4 +1,4 @@
-"""RoboSystems SDK Extensions - Main entry point
+"""RoboSystems Client Extensions - Main entry point
 
 Enhanced clients with SSE support for the RoboSystems API.
 """

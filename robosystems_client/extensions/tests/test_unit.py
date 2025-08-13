@@ -1,4 +1,4 @@
-"""Unit Tests for RoboSystems SDK Extensions
+"""Unit Tests for RoboSystems Client Extensions
 
 Focused unit tests for individual components.
 """
@@ -14,8 +14,10 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from sse_client import SSEClient, SSEConfig, SSEEvent
-from utils import (
+from robosystems_client.extensions import (
+  SSEClient,
+  SSEConfig,
+  SSEEvent,
   QueryBuilder,
   CacheManager,
   ProgressTracker,

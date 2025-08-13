@@ -1,1 +1,1 @@
-"""Tests for RoboSystems SDK Extensions"""
+"""Tests for RoboSystems Client Extensions"""
