@@ -158,11 +158,8 @@ def sync_detailed(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Credit Consumption:**
-  - Simple tools: 2-5 credits
-  - Schema tools: 5-10 credits
-  - Query tools: 10-50 credits (based on complexity)
-  - Multiplied by graph tier
+  **Note:**
+  MCP tool calls are currently FREE and do not consume credits.
 
   Args:
       graph_id (str): Graph database identifier
@@ -240,11 +237,8 @@ def sync(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Credit Consumption:**
-  - Simple tools: 2-5 credits
-  - Schema tools: 5-10 credits
-  - Query tools: 10-50 credits (based on complexity)
-  - Multiplied by graph tier
+  **Note:**
+  MCP tool calls are currently FREE and do not consume credits.
 
   Args:
       graph_id (str): Graph database identifier
@@ -317,11 +311,8 @@ async def asyncio_detailed(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Credit Consumption:**
-  - Simple tools: 2-5 credits
-  - Schema tools: 5-10 credits
-  - Query tools: 10-50 credits (based on complexity)
-  - Multiplied by graph tier
+  **Note:**
+  MCP tool calls are currently FREE and do not consume credits.
 
   Args:
       graph_id (str): Graph database identifier
@@ -397,11 +388,8 @@ async def asyncio(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Credit Consumption:**
-  - Simple tools: 2-5 credits
-  - Schema tools: 5-10 credits
-  - Query tools: 10-50 credits (based on complexity)
-  - Multiplied by graph tier
+  **Note:**
+  MCP tool calls are currently FREE and do not consume credits.
 
   Args:
       graph_id (str): Graph database identifier

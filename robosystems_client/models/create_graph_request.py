@@ -30,14 +30,14 @@ class CreateGraphRequest:
       custom_schema (Union['CustomSchemaDefinition', None, Unset]): Custom schema definition to apply
       initial_entity (Union['InitialEntityData', None, Unset]): Optional initial entity to create in the graph. If
           provided, creates a entity-focused graph.
-      tags (Union[None, Unset, list[str]]): Optional tags for organization
+      tags (Union[Unset, list[str]]): Optional tags for organization
   """
 
   metadata: "GraphMetadata"
   instance_tier: Union[Unset, str] = "standard"
   custom_schema: Union["CustomSchemaDefinition", None, Unset] = UNSET
   initial_entity: Union["InitialEntityData", None, Unset] = UNSET
-  tags: Union[None, Unset, list[str]] = UNSET
+  tags: Union[Unset, list[str]] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -64,13 +64,8 @@ class CreateGraphRequest:
     else:
       initial_entity = self.initial_entity
 
-    tags: Union[None, Unset, list[str]]
-    if isinstance(self.tags, Unset):
-      tags = UNSET
-    elif isinstance(self.tags, list):
-      tags = self.tags
-
-    else:
+    tags: Union[Unset, list[str]] = UNSET
+    if not isinstance(self.tags, Unset):
       tags = self.tags
 
     field_dict: dict[str, Any] = {}
@@ -138,22 +133,7 @@ class CreateGraphRequest:
 
     initial_entity = _parse_initial_entity(d.pop("initial_entity", UNSET))
 
-    def _parse_tags(data: object) -> Union[None, Unset, list[str]]:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, list):
-          raise TypeError()
-        tags_type_0 = cast(list[str], data)
-
-        return tags_type_0
-      except:  # noqa: E722
-        pass
-      return cast(Union[None, Unset, list[str]], data)
-
-    tags = _parse_tags(d.pop("tags", UNSET))
+    tags = cast(list[str], d.pop("tags", UNSET))
 
     create_graph_request = cls(
       metadata=metadata,

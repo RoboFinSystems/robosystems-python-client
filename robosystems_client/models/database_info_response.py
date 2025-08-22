@@ -14,8 +14,8 @@ class DatabaseInfoResponse:
   """Response model for database information and statistics.
 
   Attributes:
-      graph_id (str): Graph database identifier Example: entity_12345.
-      database_name (str): Database name Example: entity_12345.
+      graph_id (str): Graph database identifier Example: kg1a2b3c4d5.
+      database_name (str): Database name Example: kg1a2b3c4d5.
       database_size_bytes (int): Database size in bytes Example: 1048576.
       database_size_mb (float): Database size in MB Example: 1.0.
       node_count (int): Total number of nodes Example: 1250.

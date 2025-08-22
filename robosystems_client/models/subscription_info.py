@@ -23,12 +23,10 @@ class SubscriptionInfo:
       addon_type (str): Add-on type
       addon_tier (str): Subscription tier
       is_active (bool): Whether subscription is active
-      is_trial (bool): Whether this is a trial subscription
       activated_at (str): Activation date (ISO format)
       monthly_price_cents (int): Monthly price in cents
       features (list[str]): List of features
       metadata (SubscriptionInfoMetadata): Additional metadata
-      trial_ends_at (Union[None, Unset, str]): Trial expiration date (ISO format)
       expires_at (Union[None, Unset, str]): Expiration date (ISO format)
   """
 
@@ -37,12 +35,10 @@ class SubscriptionInfo:
   addon_type: str
   addon_tier: str
   is_active: bool
-  is_trial: bool
   activated_at: str
   monthly_price_cents: int
   features: list[str]
   metadata: "SubscriptionInfoMetadata"
-  trial_ends_at: Union[None, Unset, str] = UNSET
   expires_at: Union[None, Unset, str] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -57,8 +53,6 @@ class SubscriptionInfo:
 
     is_active = self.is_active
 
-    is_trial = self.is_trial
-
     activated_at = self.activated_at
 
     monthly_price_cents = self.monthly_price_cents
@@ -66,12 +60,6 @@ class SubscriptionInfo:
     features = self.features
 
     metadata = self.metadata.to_dict()
-
-    trial_ends_at: Union[None, Unset, str]
-    if isinstance(self.trial_ends_at, Unset):
-      trial_ends_at = UNSET
-    else:
-      trial_ends_at = self.trial_ends_at
 
     expires_at: Union[None, Unset, str]
     if isinstance(self.expires_at, Unset):
@@ -88,15 +76,12 @@ class SubscriptionInfo:
         "addon_type": addon_type,
         "addon_tier": addon_tier,
         "is_active": is_active,
-        "is_trial": is_trial,
         "activated_at": activated_at,
         "monthly_price_cents": monthly_price_cents,
         "features": features,
         "metadata": metadata,
       }
     )
-    if trial_ends_at is not UNSET:
-      field_dict["trial_ends_at"] = trial_ends_at
     if expires_at is not UNSET:
       field_dict["expires_at"] = expires_at
 
@@ -117,8 +102,6 @@ class SubscriptionInfo:
 
     is_active = d.pop("is_active")
 
-    is_trial = d.pop("is_trial")
-
     activated_at = d.pop("activated_at")
 
     monthly_price_cents = d.pop("monthly_price_cents")
@@ -126,15 +109,6 @@ class SubscriptionInfo:
     features = cast(list[str], d.pop("features"))
 
     metadata = SubscriptionInfoMetadata.from_dict(d.pop("metadata"))
-
-    def _parse_trial_ends_at(data: object) -> Union[None, Unset, str]:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(Union[None, Unset, str], data)
-
-    trial_ends_at = _parse_trial_ends_at(d.pop("trial_ends_at", UNSET))
 
     def _parse_expires_at(data: object) -> Union[None, Unset, str]:
       if data is None:
@@ -151,12 +125,10 @@ class SubscriptionInfo:
       addon_type=addon_type,
       addon_tier=addon_tier,
       is_active=is_active,
-      is_trial=is_trial,
       activated_at=activated_at,
       monthly_price_cents=monthly_price_cents,
       features=features,
       metadata=metadata,
-      trial_ends_at=trial_ends_at,
       expires_at=expires_at,
     )
 

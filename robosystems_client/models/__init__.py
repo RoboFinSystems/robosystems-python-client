@@ -71,6 +71,9 @@ from .exchange_token_request_metadata_type_0 import ExchangeTokenRequestMetadata
 from .get_all_credit_summaries_response_getallcreditsummaries import (
   GetAllCreditSummariesResponseGetallcreditsummaries,
 )
+from .get_all_shared_repository_limits_response_getallsharedrepositorylimits import (
+  GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits,
+)
 from .get_backup_download_url_response_getbackupdownloadurl import (
   GetBackupDownloadUrlResponseGetbackupdownloadurl,
 )
@@ -92,9 +95,11 @@ from .get_graph_schema_info_response_getgraphschemainfo import (
 from .get_graph_usage_details_response_getgraphusagedetails import (
   GetGraphUsageDetailsResponseGetgraphusagedetails,
 )
-from .get_mcp_health_response_getmcphealth import GetMCPHealthResponseGetmcphealth
 from .get_operation_status_response_getoperationstatus import (
   GetOperationStatusResponseGetoperationstatus,
+)
+from .get_shared_repository_limits_response_getsharedrepositorylimits import (
+  GetSharedRepositoryLimitsResponseGetsharedrepositorylimits,
 )
 from .get_storage_usage_response_getstorageusage import (
   GetStorageUsageResponseGetstorageusage,
@@ -275,6 +280,7 @@ __all__ = (
   "ExchangeTokenRequest",
   "ExchangeTokenRequestMetadataType0",
   "GetAllCreditSummariesResponseGetallcreditsummaries",
+  "GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits",
   "GetBackupDownloadUrlResponseGetbackupdownloadurl",
   "GetCurrentAuthUserResponseGetcurrentauthuser",
   "GetCurrentGraphBillResponseGetcurrentgraphbill",
@@ -282,8 +288,8 @@ __all__ = (
   "GetGraphMonthlyBillResponseGetgraphmonthlybill",
   "GetGraphSchemaInfoResponseGetgraphschemainfo",
   "GetGraphUsageDetailsResponseGetgraphusagedetails",
-  "GetMCPHealthResponseGetmcphealth",
   "GetOperationStatusResponseGetoperationstatus",
+  "GetSharedRepositoryLimitsResponseGetsharedrepositorylimits",
   "GetStorageUsageResponseGetstorageusage",
   "GraphInfo",
   "GraphMetadata",

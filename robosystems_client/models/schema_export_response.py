@@ -23,9 +23,9 @@ class SchemaExportResponse:
   """Response model for schema export.
 
   Attributes:
-      graph_id (str): Graph ID Example: entity_12345.
+      graph_id (str): Graph ID Example: kg1a2b3c4d5.
       schema_definition (Union['SchemaExportResponseSchemaDefinitionType0', str]): Exported schema definition Example:
-          {'name': 'entity_12345_schema', 'nodes': [{'name': 'Entity', 'properties': []}], 'relationships': [], 'version':
+          {'name': 'kg1a2b3c4d5_schema', 'nodes': [{'name': 'Entity', 'properties': []}], 'relationships': [], 'version':
           '1.0.0'}.
       format_ (str): Export format used Example: json.
       exported_at (str): Export timestamp Example: 2024-01-15T10:30:00Z.

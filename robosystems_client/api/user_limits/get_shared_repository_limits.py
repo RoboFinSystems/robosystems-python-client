@@ -1,12 +1,14 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, Optional, Union
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.get_shared_repository_limits_response_getsharedrepositorylimits import (
+  GetSharedRepositoryLimitsResponseGetsharedrepositorylimits,
+)
 from ...models.http_validation_error import HTTPValidationError
-from ...models.repository_credits_response import RepositoryCreditsResponse
 from ...types import UNSET, Response, Unset
 
 
@@ -26,7 +28,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/user/subscriptions/shared-repositories/credits/{repository}",
+    "url": f"/v1/user/limits/shared-repositories/{repository}",
     "cookies": cookies,
   }
 
@@ -36,17 +38,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
+) -> Optional[
+  Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
+]:
   if response.status_code == 200:
-    response_200 = RepositoryCreditsResponse.from_dict(response.json())
+    response_200 = GetSharedRepositoryLimitsResponseGetsharedrepositorylimits.from_dict(
+      response.json()
+    )
 
     return response_200
-  if response.status_code == 401:
-    response_401 = cast(Any, None)
-    return response_401
-  if response.status_code == 500:
-    response_500 = cast(Any, None)
-    return response_500
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -59,7 +59,9 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
+) -> Response[
+  Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -74,13 +76,23 @@ def sync_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
-  """Get Repository Credits
+) -> Response[
+  Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
+]:
+  """Get shared repository rate limit status
 
-   Get credit balance for a specific shared repository
+   Get current rate limit status and usage for a shared repository.
+
+      Returns:
+      - Current usage across different time windows
+      - Rate limits based on subscription tier
+      - Remaining quota
+      - Reset times
+
+      Note: All queries are FREE - this only shows rate limit status.
 
   Args:
-      repository (str):
+      repository (str): Repository name (e.g., 'sec')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -89,7 +101,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]
+      Response[Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -111,13 +123,23 @@ def sync(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
-  """Get Repository Credits
+) -> Optional[
+  Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
+]:
+  """Get shared repository rate limit status
 
-   Get credit balance for a specific shared repository
+   Get current rate limit status and usage for a shared repository.
+
+      Returns:
+      - Current usage across different time windows
+      - Rate limits based on subscription tier
+      - Remaining quota
+      - Reset times
+
+      Note: All queries are FREE - this only shows rate limit status.
 
   Args:
-      repository (str):
+      repository (str): Repository name (e.g., 'sec')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -126,7 +148,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, RepositoryCreditsResponse]
+      Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -143,13 +165,23 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
-  """Get Repository Credits
+) -> Response[
+  Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
+]:
+  """Get shared repository rate limit status
 
-   Get credit balance for a specific shared repository
+   Get current rate limit status and usage for a shared repository.
+
+      Returns:
+      - Current usage across different time windows
+      - Rate limits based on subscription tier
+      - Remaining quota
+      - Reset times
+
+      Note: All queries are FREE - this only shows rate limit status.
 
   Args:
-      repository (str):
+      repository (str): Repository name (e.g., 'sec')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -158,7 +190,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]
+      Response[Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -178,13 +210,23 @@ async def asyncio(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
-  """Get Repository Credits
+) -> Optional[
+  Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
+]:
+  """Get shared repository rate limit status
 
-   Get credit balance for a specific shared repository
+   Get current rate limit status and usage for a shared repository.
+
+      Returns:
+      - Current usage across different time windows
+      - Rate limits based on subscription tier
+      - Remaining quota
+      - Reset times
+
+      Note: All queries are FREE - this only shows rate limit status.
 
   Args:
-      repository (str):
+      repository (str): Repository name (e.g., 'sec')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -193,7 +235,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, RepositoryCreditsResponse]
+      Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
   """
 
   return (

@@ -42,10 +42,6 @@ def _parse_response(
     response_200 = GraphMetricsResponse.from_dict(response.json())
 
     return response_200
-  if response.status_code == 402:
-    response_402 = ErrorResponse.from_dict(response.json())
-
-    return response_402
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -103,9 +99,8 @@ def sync_detailed(
   - Capacity planning
   - Performance optimization
 
-  Credit consumption:
-  - Base cost: 15.0 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get metrics for
@@ -157,9 +152,8 @@ def sync(
   - Capacity planning
   - Performance optimization
 
-  Credit consumption:
-  - Base cost: 15.0 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get metrics for
@@ -206,9 +200,8 @@ async def asyncio_detailed(
   - Capacity planning
   - Performance optimization
 
-  Credit consumption:
-  - Base cost: 15.0 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get metrics for
@@ -258,9 +251,8 @@ async def asyncio(
   - Capacity planning
   - Performance optimization
 
-  Credit consumption:
-  - Base cost: 15.0 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get metrics for

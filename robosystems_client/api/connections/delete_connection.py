@@ -43,10 +43,6 @@ def _parse_response(
     response_200 = SuccessResponse.from_dict(response.json())
 
     return response_200
-  if response.status_code == 402:
-    response_402 = ErrorResponse.from_dict(response.json())
-
-    return response_402
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -98,9 +94,8 @@ def sync_detailed(
   - Performs provider-specific cleanup
   - Revokes stored credentials
 
-  Credit consumption:
-  - Base cost: 2.0 credits
-  - Multiplied by graph tier
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Only users with admin role can delete connections.
 
@@ -150,9 +145,8 @@ def sync(
   - Performs provider-specific cleanup
   - Revokes stored credentials
 
-  Credit consumption:
-  - Base cost: 2.0 credits
-  - Multiplied by graph tier
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Only users with admin role can delete connections.
 
@@ -197,9 +191,8 @@ async def asyncio_detailed(
   - Performs provider-specific cleanup
   - Revokes stored credentials
 
-  Credit consumption:
-  - Base cost: 2.0 credits
-  - Multiplied by graph tier
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Only users with admin role can delete connections.
 
@@ -247,9 +240,8 @@ async def asyncio(
   - Performs provider-specific cleanup
   - Revokes stored credentials
 
-  Credit consumption:
-  - Base cost: 2.0 credits
-  - Multiplied by graph tier
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Only users with admin role can delete connections.
 

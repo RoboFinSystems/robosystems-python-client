@@ -50,10 +50,6 @@ def _parse_response(
     response_200 = GraphUsageResponse.from_dict(response.json())
 
     return response_200
-  if response.status_code == 402:
-    response_402 = ErrorResponse.from_dict(response.json())
-
-    return response_402
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -114,9 +110,8 @@ def sync_detailed(
   - Usage trend analysis
   - Performance tuning
 
-  Credit consumption:
-  - Base cost: 10.0 credits
-  - Multiplied by graph tier
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get usage stats for
@@ -178,9 +173,8 @@ def sync(
   - Usage trend analysis
   - Performance tuning
 
-  Credit consumption:
-  - Base cost: 10.0 credits
-  - Multiplied by graph tier
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get usage stats for
@@ -237,9 +231,8 @@ async def asyncio_detailed(
   - Usage trend analysis
   - Performance tuning
 
-  Credit consumption:
-  - Base cost: 10.0 credits
-  - Multiplied by graph tier
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get usage stats for
@@ -299,9 +292,8 @@ async def asyncio(
   - Usage trend analysis
   - Performance tuning
 
-  Credit consumption:
-  - Base cost: 10.0 credits
-  - Multiplied by graph tier
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get usage stats for
