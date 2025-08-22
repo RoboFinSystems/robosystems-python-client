@@ -17,9 +17,9 @@
       "group": "build"
     },
     {
-      "label": "Generate Client",
+      "label": "Generate SDK",
       "type": "shell",
-      "command": "just generate-client ${input:apiUrl}",
+      "command": "just generate-sdk ${input:apiUrl}",
       "problemMatcher": [],
       "group": "build"
     },

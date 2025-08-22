@@ -137,10 +137,10 @@ def sync_detailed(
   - Fallback to status polling endpoint if SSE unavailable
 
   **Credit Consumption:**
-  - Variable based on complexity: 3-60 credits
-  - Simple queries: 3-15 credits
-  - Complex analysis: 15-60 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
+  - AI operations consume credits based on actual token usage
+  - Claude 4 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
+  - Claude 4 Sonnet: ~3 credits per 1K input tokens, ~15 credits per 1K output tokens
+  - Credits are consumed after operation completes based on actual usage
 
   The agent automatically determines query complexity or you can force extended analysis.
 
@@ -224,10 +224,10 @@ def sync(
   - Fallback to status polling endpoint if SSE unavailable
 
   **Credit Consumption:**
-  - Variable based on complexity: 3-60 credits
-  - Simple queries: 3-15 credits
-  - Complex analysis: 15-60 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
+  - AI operations consume credits based on actual token usage
+  - Claude 4 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
+  - Claude 4 Sonnet: ~3 credits per 1K input tokens, ~15 credits per 1K output tokens
+  - Credits are consumed after operation completes based on actual usage
 
   The agent automatically determines query complexity or you can force extended analysis.
 
@@ -306,10 +306,10 @@ async def asyncio_detailed(
   - Fallback to status polling endpoint if SSE unavailable
 
   **Credit Consumption:**
-  - Variable based on complexity: 3-60 credits
-  - Simple queries: 3-15 credits
-  - Complex analysis: 15-60 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
+  - AI operations consume credits based on actual token usage
+  - Claude 4 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
+  - Claude 4 Sonnet: ~3 credits per 1K input tokens, ~15 credits per 1K output tokens
+  - Credits are consumed after operation completes based on actual usage
 
   The agent automatically determines query complexity or you can force extended analysis.
 
@@ -391,10 +391,10 @@ async def asyncio(
   - Fallback to status polling endpoint if SSE unavailable
 
   **Credit Consumption:**
-  - Variable based on complexity: 3-60 credits
-  - Simple queries: 3-15 credits
-  - Complex analysis: 15-60 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
+  - AI operations consume credits based on actual token usage
+  - Claude 4 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
+  - Claude 4 Sonnet: ~3 credits per 1K input tokens, ~15 credits per 1K output tokens
+  - Credits are consumed after operation completes based on actual usage
 
   The agent automatically determines query complexity or you can force extended analysis.
 

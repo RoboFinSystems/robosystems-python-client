@@ -18,20 +18,20 @@ class RepositoryCreditsResponse:
   """Response for repository-specific credits.
 
   Attributes:
-      repository_type (str): Repository type
+      repository (str): Repository identifier
       has_access (bool): Whether user has access
       message (Union[Unset, str]): Access message
       credits_ (Union[Unset, CreditSummary]): Credit balance summary.
   """
 
-  repository_type: str
+  repository: str
   has_access: bool
   message: Union[Unset, str] = UNSET
   credits_: Union[Unset, "CreditSummary"] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    repository_type = self.repository_type
+    repository = self.repository
 
     has_access = self.has_access
 
@@ -45,7 +45,7 @@ class RepositoryCreditsResponse:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "repository_type": repository_type,
+        "repository": repository,
         "has_access": has_access,
       }
     )
@@ -61,7 +61,7 @@ class RepositoryCreditsResponse:
     from ..models.credit_summary import CreditSummary
 
     d = dict(src_dict)
-    repository_type = d.pop("repository_type")
+    repository = d.pop("repository")
 
     has_access = d.pop("has_access")
 
@@ -75,7 +75,7 @@ class RepositoryCreditsResponse:
       credits_ = CreditSummary.from_dict(_credits_)
 
     repository_credits_response = cls(
-      repository_type=repository_type,
+      repository=repository,
       has_access=has_access,
       message=message,
       credits_=credits_,

@@ -52,10 +52,6 @@ def _parse_response(
     response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
-  if response.status_code == 402:
-    response_402 = ErrorResponse.from_dict(response.json())
-
-    return response_402
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -118,10 +114,8 @@ def sync_detailed(
   - User completes bank authentication
   - Exchange public token for access
 
-  Credit consumption:
-  - Base cost: 5.0 credits
-  - Multiplied by graph tier
-  - Additional credits consumed during data sync
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): Graph database identifier
@@ -180,10 +174,8 @@ def sync(
   - User completes bank authentication
   - Exchange public token for access
 
-  Credit consumption:
-  - Base cost: 5.0 credits
-  - Multiplied by graph tier
-  - Additional credits consumed during data sync
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): Graph database identifier
@@ -237,10 +229,8 @@ async def asyncio_detailed(
   - User completes bank authentication
   - Exchange public token for access
 
-  Credit consumption:
-  - Base cost: 5.0 credits
-  - Multiplied by graph tier
-  - Additional credits consumed during data sync
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): Graph database identifier
@@ -297,10 +287,8 @@ async def asyncio(
   - User completes bank authentication
   - Exchange public token for access
 
-  Credit consumption:
-  - Base cost: 5.0 credits
-  - Multiplied by graph tier
-  - Additional credits consumed during data sync
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): Graph database identifier

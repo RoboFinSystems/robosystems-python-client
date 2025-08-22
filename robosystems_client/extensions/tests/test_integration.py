@@ -1,7 +1,7 @@
-"""Integration Tests for RoboSystems SDK Extensions
+"""Integration Tests for RoboSystems Client Extensions
 
 These tests demonstrate real usage patterns and verify the extensions work correctly
-with the generated SDK.
+with the generated Client.
 """
 
 import pytest
@@ -438,7 +438,7 @@ class TestUtilityIntegration:
 # Integration test runner
 def run_integration_tests():
   """Run all integration tests manually (for environments without pytest)"""
-  print("Running RoboSystems SDK Extensions Integration Tests...")
+  print("Running RoboSystems Client Extensions Integration Tests...")
 
   # Test classes to run
   test_classes = [

@@ -47,9 +47,6 @@ def _parse_response(
     )
 
     return response_200
-  if response.status_code == 402:
-    response_402 = cast(Any, None)
-    return response_402
   if response.status_code == 403:
     response_403 = cast(Any, None)
     return response_403
@@ -100,10 +97,7 @@ def sync_detailed(
   This is different from custom schema management - it shows what actually exists in the database,
   useful for understanding the current graph structure before writing queries.
 
-  Credit consumption:
-  - Base cost: 2.0 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
-  - Schema information is cached for performance
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph database to get schema for
@@ -152,10 +146,7 @@ def sync(
   This is different from custom schema management - it shows what actually exists in the database,
   useful for understanding the current graph structure before writing queries.
 
-  Credit consumption:
-  - Base cost: 2.0 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
-  - Schema information is cached for performance
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph database to get schema for
@@ -199,10 +190,7 @@ async def asyncio_detailed(
   This is different from custom schema management - it shows what actually exists in the database,
   useful for understanding the current graph structure before writing queries.
 
-  Credit consumption:
-  - Base cost: 2.0 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
-  - Schema information is cached for performance
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph database to get schema for
@@ -249,10 +237,7 @@ async def asyncio(
   This is different from custom schema management - it shows what actually exists in the database,
   useful for understanding the current graph structure before writing queries.
 
-  Credit consumption:
-  - Base cost: 2.0 credits
-  - Multiplied by graph tier (standard=1x, enterprise=2x, premium=4x)
-  - Schema information is cached for performance
+  This operation is FREE - no credit consumption required.
 
   Args:
       graph_id (str): The graph database to get schema for

@@ -73,9 +73,6 @@ def _parse_response(
   if response.status_code == 400:
     response_400 = cast(Any, None)
     return response_400
-  if response.status_code == 402:
-    response_402 = cast(Any, None)
-    return response_402
   if response.status_code == 403:
     response_403 = cast(Any, None)
     return response_403
@@ -136,7 +133,7 @@ def sync_detailed(
   **Response Modes:**
   - `auto` (default): Intelligent automatic selection
   - `sync`: Force synchronous JSON response (best for testing)
-  - `async`: Force queued response with polling URLs
+  - `async`: Force queued response with SSE monitoring endpoints (no polling needed)
   - `stream`: Force streaming response (SSE or NDJSON)
 
   **Client Detection:**
@@ -159,19 +156,19 @@ def sync_detailed(
 
   **Queue Management:**
   - Automatic queuing under high load
-  - SSE-based queue monitoring (no polling needed)
+  - Real-time monitoring via SSE events (no polling needed)
   - Priority based on subscription tier
-  - Queue position updates via SSE events
+  - Queue position and progress updates pushed via SSE
+  - Connect to returned `/v1/operations/{id}/stream` endpoint for updates
 
   **Error Handling:**
   - `429 Too Many Requests`: Rate limit or connection limit exceeded
   - `503 Service Unavailable`: Circuit breaker open or SSE disabled
   - Clients should implement exponential backoff
 
-  **Credit Consumption:**
-  - Variable based on query complexity: 1-50 credits
-  - Streaming queries charged per 1000 rows
-  - Queue position based on subscription tier
+  **Note:**
+  Query operations are FREE - no credit consumption required.
+  Queue position is based on subscription tier for priority.
 
   Args:
       graph_id (str): Graph database identifier
@@ -231,7 +228,7 @@ def sync(
   **Response Modes:**
   - `auto` (default): Intelligent automatic selection
   - `sync`: Force synchronous JSON response (best for testing)
-  - `async`: Force queued response with polling URLs
+  - `async`: Force queued response with SSE monitoring endpoints (no polling needed)
   - `stream`: Force streaming response (SSE or NDJSON)
 
   **Client Detection:**
@@ -254,19 +251,19 @@ def sync(
 
   **Queue Management:**
   - Automatic queuing under high load
-  - SSE-based queue monitoring (no polling needed)
+  - Real-time monitoring via SSE events (no polling needed)
   - Priority based on subscription tier
-  - Queue position updates via SSE events
+  - Queue position and progress updates pushed via SSE
+  - Connect to returned `/v1/operations/{id}/stream` endpoint for updates
 
   **Error Handling:**
   - `429 Too Many Requests`: Rate limit or connection limit exceeded
   - `503 Service Unavailable`: Circuit breaker open or SSE disabled
   - Clients should implement exponential backoff
 
-  **Credit Consumption:**
-  - Variable based on query complexity: 1-50 credits
-  - Streaming queries charged per 1000 rows
-  - Queue position based on subscription tier
+  **Note:**
+  Query operations are FREE - no credit consumption required.
+  Queue position is based on subscription tier for priority.
 
   Args:
       graph_id (str): Graph database identifier
@@ -321,7 +318,7 @@ async def asyncio_detailed(
   **Response Modes:**
   - `auto` (default): Intelligent automatic selection
   - `sync`: Force synchronous JSON response (best for testing)
-  - `async`: Force queued response with polling URLs
+  - `async`: Force queued response with SSE monitoring endpoints (no polling needed)
   - `stream`: Force streaming response (SSE or NDJSON)
 
   **Client Detection:**
@@ -344,19 +341,19 @@ async def asyncio_detailed(
 
   **Queue Management:**
   - Automatic queuing under high load
-  - SSE-based queue monitoring (no polling needed)
+  - Real-time monitoring via SSE events (no polling needed)
   - Priority based on subscription tier
-  - Queue position updates via SSE events
+  - Queue position and progress updates pushed via SSE
+  - Connect to returned `/v1/operations/{id}/stream` endpoint for updates
 
   **Error Handling:**
   - `429 Too Many Requests`: Rate limit or connection limit exceeded
   - `503 Service Unavailable`: Circuit breaker open or SSE disabled
   - Clients should implement exponential backoff
 
-  **Credit Consumption:**
-  - Variable based on query complexity: 1-50 credits
-  - Streaming queries charged per 1000 rows
-  - Queue position based on subscription tier
+  **Note:**
+  Query operations are FREE - no credit consumption required.
+  Queue position is based on subscription tier for priority.
 
   Args:
       graph_id (str): Graph database identifier
@@ -414,7 +411,7 @@ async def asyncio(
   **Response Modes:**
   - `auto` (default): Intelligent automatic selection
   - `sync`: Force synchronous JSON response (best for testing)
-  - `async`: Force queued response with polling URLs
+  - `async`: Force queued response with SSE monitoring endpoints (no polling needed)
   - `stream`: Force streaming response (SSE or NDJSON)
 
   **Client Detection:**
@@ -437,19 +434,19 @@ async def asyncio(
 
   **Queue Management:**
   - Automatic queuing under high load
-  - SSE-based queue monitoring (no polling needed)
+  - Real-time monitoring via SSE events (no polling needed)
   - Priority based on subscription tier
-  - Queue position updates via SSE events
+  - Queue position and progress updates pushed via SSE
+  - Connect to returned `/v1/operations/{id}/stream` endpoint for updates
 
   **Error Handling:**
   - `429 Too Many Requests`: Rate limit or connection limit exceeded
   - `503 Service Unavailable`: Circuit breaker open or SSE disabled
   - Clients should implement exponential backoff
 
-  **Credit Consumption:**
-  - Variable based on query complexity: 1-50 credits
-  - Streaming queries charged per 1000 rows
-  - Queue position based on subscription tier
+  **Note:**
+  Query operations are FREE - no credit consumption required.
+  Queue position is based on subscription tier for priority.
 
   Args:
       graph_id (str): Graph database identifier

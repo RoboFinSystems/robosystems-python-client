@@ -1,4 +1,4 @@
-"""Test the RoboSystems SDK."""
+"""Test the RoboSystems Client."""
 
 from robosystems_client import RoboSystemsSDK, AuthenticatedClient, Client
 

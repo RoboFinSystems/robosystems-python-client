@@ -1,4 +1,4 @@
-"""Utility functions for RoboSystems SDK Extensions
+"""Utility functions for RoboSystems Client Extensions
 
 Common helper functions for working with queries, operations, and data processing.
 """

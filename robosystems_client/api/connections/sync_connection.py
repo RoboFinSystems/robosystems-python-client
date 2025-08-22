@@ -53,10 +53,6 @@ def _parse_response(
     response_200 = SyncConnectionResponseSyncconnection.from_dict(response.json())
 
     return response_200
-  if response.status_code == 402:
-    response_402 = ErrorResponse.from_dict(response.json())
-
-    return response_402
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -125,10 +121,8 @@ def sync_detailed(
   - Updates account balances
   - Categorizes new transactions
 
-  Credit consumption:
-  - Base cost: 20.0 credits
-  - Multiplied by graph tier
-  - Additional credits may be consumed during processing
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Returns a task ID for monitoring sync progress.
 
@@ -195,10 +189,8 @@ def sync(
   - Updates account balances
   - Categorizes new transactions
 
-  Credit consumption:
-  - Base cost: 20.0 credits
-  - Multiplied by graph tier
-  - Additional credits may be consumed during processing
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Returns a task ID for monitoring sync progress.
 
@@ -260,10 +252,8 @@ async def asyncio_detailed(
   - Updates account balances
   - Categorizes new transactions
 
-  Credit consumption:
-  - Base cost: 20.0 credits
-  - Multiplied by graph tier
-  - Additional credits may be consumed during processing
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Returns a task ID for monitoring sync progress.
 
@@ -328,10 +318,8 @@ async def asyncio(
   - Updates account balances
   - Categorizes new transactions
 
-  Credit consumption:
-  - Base cost: 20.0 credits
-  - Multiplied by graph tier
-  - Additional credits may be consumed during processing
+  Note:
+  This operation is FREE - no credit consumption required.
 
   Returns a task ID for monitoring sync progress.
 

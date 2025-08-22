@@ -602,7 +602,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - **Documentation**: [docs.robosystems.ai](https://docs.robosystems.ai)
 - **API Reference**: [api.robosystems.ai/docs](https://api.robosystems.ai/docs)
 - **Issues**: [GitHub Issues](https://github.com/robosystems/python-sdk/issues)
-- **Email**: support@robosystems.ai
+- **Email**: hello@robosystems.ai
 
 ---
 

@@ -27,7 +27,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/user/graphs/select/{graph_id}",
+    "url": f"/v1/user/graphs/{graph_id}/select",
     "cookies": cookies,
   }
 

@@ -14,7 +14,7 @@ class DatabaseHealthResponse:
   """Response model for database health check.
 
   Attributes:
-      graph_id (str): Graph database identifier Example: entity_12345.
+      graph_id (str): Graph database identifier Example: kg1a2b3c4d5.
       status (str): Overall health status Example: healthy.
       connection_status (str): Database connection status Example: connected.
       uptime_seconds (float): Database uptime in seconds Example: 3600.5.

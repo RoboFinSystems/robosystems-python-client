@@ -58,7 +58,7 @@ def sync_detailed(
   applications to display subscription options.
 
   Includes:
-  - Graph subscription tiers (trial, standard, enterprise, premium)
+  - Graph subscription tiers (standard, enterprise, premium)
   - Shared repository subscriptions (SEC, industry, economic data)
   - Operation costs and credit information
   - Features and capabilities for each tier
@@ -98,7 +98,7 @@ def sync(
   applications to display subscription options.
 
   Includes:
-  - Graph subscription tiers (trial, standard, enterprise, premium)
+  - Graph subscription tiers (standard, enterprise, premium)
   - Shared repository subscriptions (SEC, industry, economic data)
   - Operation costs and credit information
   - Features and capabilities for each tier
@@ -134,7 +134,7 @@ async def asyncio_detailed(
   applications to display subscription options.
 
   Includes:
-  - Graph subscription tiers (trial, standard, enterprise, premium)
+  - Graph subscription tiers (standard, enterprise, premium)
   - Shared repository subscriptions (SEC, industry, economic data)
   - Operation costs and credit information
   - Features and capabilities for each tier
@@ -172,7 +172,7 @@ async def asyncio(
   applications to display subscription options.
 
   Includes:
-  - Graph subscription tiers (trial, standard, enterprise, premium)
+  - Graph subscription tiers (standard, enterprise, premium)
   - Shared repository subscriptions (SEC, industry, economic data)
   - Operation costs and credit information
   - Features and capabilities for each tier

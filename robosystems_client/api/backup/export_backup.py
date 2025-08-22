@@ -45,9 +45,6 @@ def _parse_response(
   if response.status_code == 200:
     response_200 = response.json()
     return response_200
-  if response.status_code == 402:
-    response_402 = cast(Any, None)
-    return response_402
   if response.status_code == 403:
     response_403 = cast(Any, None)
     return response_403

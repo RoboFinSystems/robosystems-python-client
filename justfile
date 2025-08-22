@@ -71,8 +71,8 @@ clean:
     find . -type d -name "__pycache__" -exec rm -rf {} +
     find . -type f -name "*.pyc" -delete
 
-# Generate Client from localhost API
-generate-client url="http://localhost:8000/openapi.json":
+# Generate SDK from localhost API
+generate-sdk url="http://localhost:8000/openapi.json":
     @echo "🚀 Generating Client from {{url}}..."
     rm -rf generated
     openapi-python-client generate --url {{url}} --output-path generated --config robosystems_client/sdk-config.yaml

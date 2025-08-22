@@ -18,12 +18,10 @@ class SubscriptionResponse:
   Attributes:
       message (str): Success message
       subscription (SubscriptionInfo): User subscription information.
-      trial_period (int): Trial period in days
   """
 
   message: str
   subscription: "SubscriptionInfo"
-  trial_period: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -31,15 +29,12 @@ class SubscriptionResponse:
 
     subscription = self.subscription.to_dict()
 
-    trial_period = self.trial_period
-
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
         "message": message,
         "subscription": subscription,
-        "trial_period": trial_period,
       }
     )
 
@@ -54,12 +49,9 @@ class SubscriptionResponse:
 
     subscription = SubscriptionInfo.from_dict(d.pop("subscription"))
 
-    trial_period = d.pop("trial_period")
-
     subscription_response = cls(
       message=message,
       subscription=subscription,
-      trial_period=trial_period,
     )
 
     subscription_response.additional_properties = d

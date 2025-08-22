@@ -4,11 +4,13 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="GetMCPHealthResponseGetmcphealth")
+T = TypeVar(
+  "T", bound="GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits"
+)
 
 
 @_attrs_define
-class GetMCPHealthResponseGetmcphealth:
+class GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -22,10 +24,10 @@ class GetMCPHealthResponseGetmcphealth:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    get_mcp_health_response_getmcphealth = cls()
+    get_all_shared_repository_limits_response_getallsharedrepositorylimits = cls()
 
-    get_mcp_health_response_getmcphealth.additional_properties = d
-    return get_mcp_health_response_getmcphealth
+    get_all_shared_repository_limits_response_getallsharedrepositorylimits.additional_properties = d
+    return get_all_shared_repository_limits_response_getallsharedrepositorylimits
 
   @property
   def additional_keys(self) -> list[str]:
