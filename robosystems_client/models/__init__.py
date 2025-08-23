@@ -39,6 +39,8 @@ from .create_api_key_response import CreateAPIKeyResponse
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
+from .create_subgraph_request import CreateSubgraphRequest
+from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
 from .credit_check_request import CreditCheckRequest
 from .credit_summary import CreditSummary
 from .credit_summary_response import CreditSummaryResponse
@@ -56,6 +58,8 @@ from .cypher_query_request import CypherQueryRequest
 from .cypher_query_request_parameters_type_0 import CypherQueryRequestParametersType0
 from .database_health_response import DatabaseHealthResponse
 from .database_info_response import DatabaseInfoResponse
+from .delete_subgraph_request import DeleteSubgraphRequest
+from .delete_subgraph_response import DeleteSubgraphResponse
 from .detailed_transactions_response import DetailedTransactionsResponse
 from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
@@ -131,6 +135,7 @@ from .list_connections_provider_type_0 import ListConnectionsProviderType0
 from .list_schema_extensions_response_listschemaextensions import (
   ListSchemaExtensionsResponseListschemaextensions,
 )
+from .list_subgraphs_response import ListSubgraphsResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .mcp_tool_call import MCPToolCall
@@ -182,6 +187,11 @@ from .sso_exchange_response import SSOExchangeResponse
 from .sso_login_request import SSOLoginRequest
 from .sso_token_response import SSOTokenResponse
 from .storage_limit_response import StorageLimitResponse
+from .subgraph_quota_response import SubgraphQuotaResponse
+from .subgraph_response import SubgraphResponse
+from .subgraph_response_metadata_type_0 import SubgraphResponseMetadataType0
+from .subgraph_summary import SubgraphSummary
+from .subgraph_type import SubgraphType
 from .subscription_info import SubscriptionInfo
 from .subscription_info_metadata import SubscriptionInfoMetadata
 from .subscription_request import SubscriptionRequest
@@ -258,6 +268,8 @@ __all__ = (
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateGraphRequest",
+  "CreateSubgraphRequest",
+  "CreateSubgraphRequestMetadataType0",
   "CreditCheckRequest",
   "CreditsSummaryResponse",
   "CreditsSummaryResponseCreditsByAddonItem",
@@ -271,6 +283,8 @@ __all__ = (
   "CypherQueryRequestParametersType0",
   "DatabaseHealthResponse",
   "DatabaseInfoResponse",
+  "DeleteSubgraphRequest",
+  "DeleteSubgraphResponse",
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
@@ -312,6 +326,7 @@ __all__ = (
   "LinkTokenRequestProviderType0",
   "ListConnectionsProviderType0",
   "ListSchemaExtensionsResponseListschemaextensions",
+  "ListSubgraphsResponse",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "MCPToolCall",
@@ -351,6 +366,11 @@ __all__ = (
   "SSOLoginRequest",
   "SSOTokenResponse",
   "StorageLimitResponse",
+  "SubgraphQuotaResponse",
+  "SubgraphResponse",
+  "SubgraphResponseMetadataType0",
+  "SubgraphSummary",
+  "SubgraphType",
   "SubscriptionInfo",
   "SubscriptionInfoMetadata",
   "SubscriptionRequest",

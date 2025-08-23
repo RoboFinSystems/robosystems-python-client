@@ -138,7 +138,7 @@ def sync_detailed(
 
   **Credit Consumption:**
   - AI operations consume credits based on actual token usage
-  - Claude 4 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
+  - Claude 4/4.1 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
   - Claude 4 Sonnet: ~3 credits per 1K input tokens, ~15 credits per 1K output tokens
   - Credits are consumed after operation completes based on actual usage
 
@@ -225,7 +225,7 @@ def sync(
 
   **Credit Consumption:**
   - AI operations consume credits based on actual token usage
-  - Claude 4 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
+  - Claude 4/4.1 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
   - Claude 4 Sonnet: ~3 credits per 1K input tokens, ~15 credits per 1K output tokens
   - Credits are consumed after operation completes based on actual usage
 
@@ -307,7 +307,7 @@ async def asyncio_detailed(
 
   **Credit Consumption:**
   - AI operations consume credits based on actual token usage
-  - Claude 4 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
+  - Claude 4/4.1 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
   - Claude 4 Sonnet: ~3 credits per 1K input tokens, ~15 credits per 1K output tokens
   - Credits are consumed after operation completes based on actual usage
 
@@ -392,7 +392,7 @@ async def asyncio(
 
   **Credit Consumption:**
   - AI operations consume credits based on actual token usage
-  - Claude 4 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
+  - Claude 4/4.1 Opus: ~15 credits per 1K input tokens, ~75 credits per 1K output tokens
   - Claude 4 Sonnet: ~3 credits per 1K input tokens, ~15 credits per 1K output tokens
   - Credits are consumed after operation completes based on actual usage
 
