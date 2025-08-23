@@ -1,7 +1,10 @@
-name: Publish Python Client to PyPI
+name: Publish to PyPI
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   publish:
@@ -40,7 +43,7 @@ jobs:
         run: |
           VERSION="${{ steps.current-version.outputs.current_version }}"
           PACKAGE_NAME="robosystems-client"
-          
+
           # Check if version exists on PyPI
           if curl -s "https://pypi.org/pypi/${PACKAGE_NAME}/${VERSION}/json" | grep -q "\"version\""; then
             echo "❌ Version ${VERSION} already exists on PyPI"

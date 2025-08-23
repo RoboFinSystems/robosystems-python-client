@@ -599,13 +599,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📞 Support
 
-- **Documentation**: [docs.robosystems.ai](https://docs.robosystems.ai)
-- **API Reference**: [api.robosystems.ai/docs](https://api.robosystems.ai/docs)
-- **Issues**: [GitHub Issues](https://github.com/robosystems/python-sdk/issues)
-- **Email**: hello@robosystems.ai
+- **API Reference**: [api.robosystems.ai](https://api.robosystems.ai)
+- **Issues**: [GitHub Issues](https://github.com/RoboFinSystems/robosystems-python-client/issues)
 
 ---
 
 **RoboSystems Python Client Extensions** - Production-ready streaming, monitoring, and query capabilities for financial knowledge graphs.
-
-*Built with ❤️ by the RoboSystems team*

@@ -16,7 +16,6 @@ class CreditSummaryResponse:
   Attributes:
       graph_id (str):
       graph_tier (str):
-      credit_multiplier (float):
       current_balance (float):
       monthly_allocation (float):
       consumed_this_month (float):
@@ -27,7 +26,6 @@ class CreditSummaryResponse:
 
   graph_id: str
   graph_tier: str
-  credit_multiplier: float
   current_balance: float
   monthly_allocation: float
   consumed_this_month: float
@@ -40,8 +38,6 @@ class CreditSummaryResponse:
     graph_id = self.graph_id
 
     graph_tier = self.graph_tier
-
-    credit_multiplier = self.credit_multiplier
 
     current_balance = self.current_balance
 
@@ -65,7 +61,6 @@ class CreditSummaryResponse:
       {
         "graph_id": graph_id,
         "graph_tier": graph_tier,
-        "credit_multiplier": credit_multiplier,
         "current_balance": current_balance,
         "monthly_allocation": monthly_allocation,
         "consumed_this_month": consumed_this_month,
@@ -84,8 +79,6 @@ class CreditSummaryResponse:
     graph_id = d.pop("graph_id")
 
     graph_tier = d.pop("graph_tier")
-
-    credit_multiplier = d.pop("credit_multiplier")
 
     current_balance = d.pop("current_balance")
 
@@ -111,7 +104,6 @@ class CreditSummaryResponse:
     credit_summary_response = cls(
       graph_id=graph_id,
       graph_tier=graph_tier,
-      credit_multiplier=credit_multiplier,
       current_balance=current_balance,
       monthly_allocation=monthly_allocation,
       consumed_this_month=consumed_this_month,
