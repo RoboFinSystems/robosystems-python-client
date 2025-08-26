@@ -31,8 +31,8 @@ class CustomSchemaDefinition:
       nodes (Union[Unset, list['CustomSchemaDefinitionNodesItem']]): List of node definitions with properties Example:
           [{'name': 'Product', 'properties': [{'name': 'sku', 'type': 'STRING', 'is_primary_key': True}, {'name': 'name',
           'type': 'STRING', 'is_required': True}, {'name': 'price', 'type': 'DOUBLE'}, {'name': 'quantity', 'type':
-          'INT64'}]}, {'name': 'Warehouse', 'properties': [{'name': 'id', 'type': 'STRING', 'is_primary_key': True},
-          {'name': 'location', 'type': 'STRING'}]}].
+          'INT64'}]}, {'name': 'Warehouse', 'properties': [{'name': 'identifier', 'type': 'STRING', 'is_primary_key':
+          True}, {'name': 'location', 'type': 'STRING'}]}].
       relationships (Union[Unset, list['CustomSchemaDefinitionRelationshipsItem']]): List of relationship definitions
           Example: [{'from_node': 'Product', 'name': 'STORED_IN', 'properties': [{'name': 'since', 'type': 'DATE'}],
           'to_node': 'Warehouse'}].

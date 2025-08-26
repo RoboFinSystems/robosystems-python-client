@@ -8,7 +8,6 @@ from ...client import AuthenticatedClient, Client
 from ...models.check_credit_balance_response_checkcreditbalance import (
   CheckCreditBalanceResponseCheckcreditbalance,
 )
-from ...models.credit_check_request import CreditCheckRequest
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
@@ -17,7 +16,8 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreditCheckRequest,
+  operation_type: str,
+  base_cost: Union[None, Unset, float] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
@@ -29,15 +29,25 @@ def _get_kwargs(
   if auth_token is not UNSET:
     cookies["auth-token"] = auth_token
 
+  params: dict[str, Any] = {}
+
+  params["operation_type"] = operation_type
+
+  json_base_cost: Union[None, Unset, float]
+  if isinstance(base_cost, Unset):
+    json_base_cost = UNSET
+  else:
+    json_base_cost = base_cost
+  params["base_cost"] = json_base_cost
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": f"/v1/{graph_id}/credits/check",
+    "method": "get",
+    "url": f"/v1/{graph_id}/credits/balance/check",
+    "params": params,
     "cookies": cookies,
   }
-
-  _kwargs["json"] = body.to_dict()
-
-  headers["Content-Type"] = "application/json"
 
   _kwargs["headers"] = headers
   return _kwargs
@@ -97,7 +107,8 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreditCheckRequest,
+  operation_type: str,
+  base_cost: Union[None, Unset, float] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
@@ -121,9 +132,10 @@ def sync_detailed(
 
   Args:
       graph_id (str): Graph database identifier
+      operation_type (str): Type of operation to check
+      base_cost (Union[None, Unset, float]): Custom base cost (uses default if not provided)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
-      body (CreditCheckRequest): Request to check credit balance.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -135,7 +147,8 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    body=body,
+    operation_type=operation_type,
+    base_cost=base_cost,
     authorization=authorization,
     auth_token=auth_token,
   )
@@ -151,7 +164,8 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreditCheckRequest,
+  operation_type: str,
+  base_cost: Union[None, Unset, float] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
@@ -175,9 +189,10 @@ def sync(
 
   Args:
       graph_id (str): Graph database identifier
+      operation_type (str): Type of operation to check
+      base_cost (Union[None, Unset, float]): Custom base cost (uses default if not provided)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
-      body (CreditCheckRequest): Request to check credit balance.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -190,7 +205,8 @@ def sync(
   return sync_detailed(
     graph_id=graph_id,
     client=client,
-    body=body,
+    operation_type=operation_type,
+    base_cost=base_cost,
     authorization=authorization,
     auth_token=auth_token,
   ).parsed
@@ -200,7 +216,8 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreditCheckRequest,
+  operation_type: str,
+  base_cost: Union[None, Unset, float] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
@@ -224,9 +241,10 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Graph database identifier
+      operation_type (str): Type of operation to check
+      base_cost (Union[None, Unset, float]): Custom base cost (uses default if not provided)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
-      body (CreditCheckRequest): Request to check credit balance.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -238,7 +256,8 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    body=body,
+    operation_type=operation_type,
+    base_cost=base_cost,
     authorization=authorization,
     auth_token=auth_token,
   )
@@ -252,7 +271,8 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreditCheckRequest,
+  operation_type: str,
+  base_cost: Union[None, Unset, float] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
@@ -276,9 +296,10 @@ async def asyncio(
 
   Args:
       graph_id (str): Graph database identifier
+      operation_type (str): Type of operation to check
+      base_cost (Union[None, Unset, float]): Custom base cost (uses default if not provided)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
-      body (CreditCheckRequest): Request to check credit balance.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -292,7 +313,8 @@ async def asyncio(
     await asyncio_detailed(
       graph_id=graph_id,
       client=client,
-      body=body,
+      operation_type=operation_type,
+      base_cost=base_cost,
       authorization=authorization,
       auth_token=auth_token,
     )

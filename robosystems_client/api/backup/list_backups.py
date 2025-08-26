@@ -15,8 +15,13 @@ def _get_kwargs(
   *,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
+  if not isinstance(authorization, Unset):
+    headers["authorization"] = authorization
+
   cookies = {}
   if auth_token is not UNSET:
     cookies["auth-token"] = auth_token
@@ -31,11 +36,12 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/{graph_id}/backup/list",
+    "url": f"/v1/{graph_id}/backups",
     "params": params,
     "cookies": cookies,
   }
 
+  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -73,6 +79,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
@@ -83,6 +90,7 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -97,6 +105,7 @@ def sync_detailed(
     graph_id=graph_id,
     limit=limit,
     offset=offset,
+    authorization=authorization,
     auth_token=auth_token,
   )
 
@@ -113,6 +122,7 @@ def sync(
   client: AuthenticatedClient,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
@@ -123,6 +133,7 @@ def sync(
       graph_id (str): Graph database identifier
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -138,6 +149,7 @@ def sync(
     client=client,
     limit=limit,
     offset=offset,
+    authorization=authorization,
     auth_token=auth_token,
   ).parsed
 
@@ -148,6 +160,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
@@ -158,6 +171,7 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -172,6 +186,7 @@ async def asyncio_detailed(
     graph_id=graph_id,
     limit=limit,
     offset=offset,
+    authorization=authorization,
     auth_token=auth_token,
   )
 
@@ -186,6 +201,7 @@ async def asyncio(
   client: AuthenticatedClient,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
@@ -196,6 +212,7 @@ async def asyncio(
       graph_id (str): Graph database identifier
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -212,6 +229,7 @@ async def asyncio(
       client=client,
       limit=limit,
       offset=offset,
+      authorization=authorization,
       auth_token=auth_token,
     )
   ).parsed

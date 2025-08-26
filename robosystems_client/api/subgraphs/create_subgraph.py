@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, Optional, Union
 
 import httpx
 
@@ -42,29 +42,11 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError, SubgraphResponse]]:
-  if response.status_code == 200:
-    response_200 = SubgraphResponse.from_dict(response.json())
+) -> Optional[Union[HTTPValidationError, SubgraphResponse]]:
+  if response.status_code == 201:
+    response_201 = SubgraphResponse.from_dict(response.json())
 
-    return response_200
-  if response.status_code == 401:
-    response_401 = cast(Any, None)
-    return response_401
-  if response.status_code == 403:
-    response_403 = cast(Any, None)
-    return response_403
-  if response.status_code == 404:
-    response_404 = cast(Any, None)
-    return response_404
-  if response.status_code == 400:
-    response_400 = cast(Any, None)
-    return response_400
-  if response.status_code == 409:
-    response_409 = cast(Any, None)
-    return response_409
-  if response.status_code == 500:
-    response_500 = cast(Any, None)
-    return response_500
+    return response_201
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -77,7 +59,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError, SubgraphResponse]]:
+) -> Response[Union[HTTPValidationError, SubgraphResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -93,47 +75,24 @@ def sync_detailed(
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError, SubgraphResponse]]:
-  """Create New Subgraph
+) -> Response[Union[HTTPValidationError, SubgraphResponse]]:
+  """Create Subgraph
 
-   Create a new subgraph database under an Enterprise or Premium parent graph.
+   Create a new subgraph within a parent graph.
 
   **Requirements:**
-  - Parent graph must be Enterprise or Premium tier
-  - User must have admin access to parent graph
-  - Subgraph name must be unique within parent
-  - Subgraph name must be alphanumeric (1-20 chars)
+  - Valid authentication
+  - Parent graph must exist and be accessible to the user
+  - User must have 'admin' permission on the parent graph
+  - Parent graph tier must support subgraphs (Enterprise or Premium only)
+  - Must be within subgraph quota limits
+  - Subgraph name must be unique within the parent graph
 
-  **Subgraph Benefits:**
-  - Shares parent's infrastructure (no additional cost)
-  - Inherits parent's credit pool
-  - Isolated database on same instance
-  - Full Kuzu database capabilities
-
-  **Use Cases:**
-  - Separate environments (dev/staging/prod)
-  - Department-specific data isolation
-  - Multi-tenant applications
-  - Testing and experimentation
-
-  **Schema Inheritance:**
-  - Subgraphs can use parent's schema or custom extensions
-  - Extensions are additive only
-  - Base schema always included
-
-  **Limits:**
-  - Enterprise: Maximum 10 subgraphs
-  - Premium: Unlimited subgraphs
-  - Standard: Not supported
-
-  **Response includes:**
-  - `graph_id`: Full subgraph identifier
-  - `parent_graph_id`: Parent graph ID
-  - `subgraph_name`: Short name within parent
-  - `status`: Creation status
+  **Returns:**
+  - Created subgraph details including its unique ID
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
       body (CreateSubgraphRequest): Request model for creating a subgraph.
@@ -143,7 +102,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, SubgraphResponse]]
+      Response[Union[HTTPValidationError, SubgraphResponse]]
   """
 
   kwargs = _get_kwargs(
@@ -167,47 +126,24 @@ def sync(
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError, SubgraphResponse]]:
-  """Create New Subgraph
+) -> Optional[Union[HTTPValidationError, SubgraphResponse]]:
+  """Create Subgraph
 
-   Create a new subgraph database under an Enterprise or Premium parent graph.
+   Create a new subgraph within a parent graph.
 
   **Requirements:**
-  - Parent graph must be Enterprise or Premium tier
-  - User must have admin access to parent graph
-  - Subgraph name must be unique within parent
-  - Subgraph name must be alphanumeric (1-20 chars)
+  - Valid authentication
+  - Parent graph must exist and be accessible to the user
+  - User must have 'admin' permission on the parent graph
+  - Parent graph tier must support subgraphs (Enterprise or Premium only)
+  - Must be within subgraph quota limits
+  - Subgraph name must be unique within the parent graph
 
-  **Subgraph Benefits:**
-  - Shares parent's infrastructure (no additional cost)
-  - Inherits parent's credit pool
-  - Isolated database on same instance
-  - Full Kuzu database capabilities
-
-  **Use Cases:**
-  - Separate environments (dev/staging/prod)
-  - Department-specific data isolation
-  - Multi-tenant applications
-  - Testing and experimentation
-
-  **Schema Inheritance:**
-  - Subgraphs can use parent's schema or custom extensions
-  - Extensions are additive only
-  - Base schema always included
-
-  **Limits:**
-  - Enterprise: Maximum 10 subgraphs
-  - Premium: Unlimited subgraphs
-  - Standard: Not supported
-
-  **Response includes:**
-  - `graph_id`: Full subgraph identifier
-  - `parent_graph_id`: Parent graph ID
-  - `subgraph_name`: Short name within parent
-  - `status`: Creation status
+  **Returns:**
+  - Created subgraph details including its unique ID
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
       body (CreateSubgraphRequest): Request model for creating a subgraph.
@@ -217,7 +153,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, SubgraphResponse]
+      Union[HTTPValidationError, SubgraphResponse]
   """
 
   return sync_detailed(
@@ -236,47 +172,24 @@ async def asyncio_detailed(
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError, SubgraphResponse]]:
-  """Create New Subgraph
+) -> Response[Union[HTTPValidationError, SubgraphResponse]]:
+  """Create Subgraph
 
-   Create a new subgraph database under an Enterprise or Premium parent graph.
+   Create a new subgraph within a parent graph.
 
   **Requirements:**
-  - Parent graph must be Enterprise or Premium tier
-  - User must have admin access to parent graph
-  - Subgraph name must be unique within parent
-  - Subgraph name must be alphanumeric (1-20 chars)
+  - Valid authentication
+  - Parent graph must exist and be accessible to the user
+  - User must have 'admin' permission on the parent graph
+  - Parent graph tier must support subgraphs (Enterprise or Premium only)
+  - Must be within subgraph quota limits
+  - Subgraph name must be unique within the parent graph
 
-  **Subgraph Benefits:**
-  - Shares parent's infrastructure (no additional cost)
-  - Inherits parent's credit pool
-  - Isolated database on same instance
-  - Full Kuzu database capabilities
-
-  **Use Cases:**
-  - Separate environments (dev/staging/prod)
-  - Department-specific data isolation
-  - Multi-tenant applications
-  - Testing and experimentation
-
-  **Schema Inheritance:**
-  - Subgraphs can use parent's schema or custom extensions
-  - Extensions are additive only
-  - Base schema always included
-
-  **Limits:**
-  - Enterprise: Maximum 10 subgraphs
-  - Premium: Unlimited subgraphs
-  - Standard: Not supported
-
-  **Response includes:**
-  - `graph_id`: Full subgraph identifier
-  - `parent_graph_id`: Parent graph ID
-  - `subgraph_name`: Short name within parent
-  - `status`: Creation status
+  **Returns:**
+  - Created subgraph details including its unique ID
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
       body (CreateSubgraphRequest): Request model for creating a subgraph.
@@ -286,7 +199,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, SubgraphResponse]]
+      Response[Union[HTTPValidationError, SubgraphResponse]]
   """
 
   kwargs = _get_kwargs(
@@ -308,47 +221,24 @@ async def asyncio(
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError, SubgraphResponse]]:
-  """Create New Subgraph
+) -> Optional[Union[HTTPValidationError, SubgraphResponse]]:
+  """Create Subgraph
 
-   Create a new subgraph database under an Enterprise or Premium parent graph.
+   Create a new subgraph within a parent graph.
 
   **Requirements:**
-  - Parent graph must be Enterprise or Premium tier
-  - User must have admin access to parent graph
-  - Subgraph name must be unique within parent
-  - Subgraph name must be alphanumeric (1-20 chars)
+  - Valid authentication
+  - Parent graph must exist and be accessible to the user
+  - User must have 'admin' permission on the parent graph
+  - Parent graph tier must support subgraphs (Enterprise or Premium only)
+  - Must be within subgraph quota limits
+  - Subgraph name must be unique within the parent graph
 
-  **Subgraph Benefits:**
-  - Shares parent's infrastructure (no additional cost)
-  - Inherits parent's credit pool
-  - Isolated database on same instance
-  - Full Kuzu database capabilities
-
-  **Use Cases:**
-  - Separate environments (dev/staging/prod)
-  - Department-specific data isolation
-  - Multi-tenant applications
-  - Testing and experimentation
-
-  **Schema Inheritance:**
-  - Subgraphs can use parent's schema or custom extensions
-  - Extensions are additive only
-  - Base schema always included
-
-  **Limits:**
-  - Enterprise: Maximum 10 subgraphs
-  - Premium: Unlimited subgraphs
-  - Standard: Not supported
-
-  **Response includes:**
-  - `graph_id`: Full subgraph identifier
-  - `parent_graph_id`: Parent graph ID
-  - `subgraph_name`: Short name within parent
-  - `status`: Creation status
+  **Returns:**
+  - Created subgraph details including its unique ID
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
       body (CreateSubgraphRequest): Request model for creating a subgraph.
@@ -358,7 +248,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, SubgraphResponse]
+      Union[HTTPValidationError, SubgraphResponse]
   """
 
   return (

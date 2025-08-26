@@ -5,15 +5,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.backup_export_request import BackupExportRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
+  backup_id: str,
   *,
-  body: BackupExportRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
@@ -27,13 +26,9 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/{graph_id}/backup/export",
+    "url": f"/v1/{graph_id}/backups/{backup_id}/export",
     "cookies": cookies,
   }
-
-  _kwargs["json"] = body.to_dict()
-
-  headers["Content-Type"] = "application/json"
 
   _kwargs["headers"] = headers
   return _kwargs
@@ -74,9 +69,9 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
+  backup_id: str,
   *,
   client: AuthenticatedClient,
-  body: BackupExportRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
@@ -86,9 +81,9 @@ def sync_detailed(
 
   Args:
       graph_id (str): Graph database identifier
+      backup_id (str): Backup identifier
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
-      body (BackupExportRequest): Request model for exporting a backup.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -100,7 +95,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    body=body,
+    backup_id=backup_id,
     authorization=authorization,
     auth_token=auth_token,
   )
@@ -114,9 +109,9 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
+  backup_id: str,
   *,
   client: AuthenticatedClient,
-  body: BackupExportRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
@@ -126,9 +121,9 @@ def sync(
 
   Args:
       graph_id (str): Graph database identifier
+      backup_id (str): Backup identifier
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
-      body (BackupExportRequest): Request model for exporting a backup.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -140,8 +135,8 @@ def sync(
 
   return sync_detailed(
     graph_id=graph_id,
+    backup_id=backup_id,
     client=client,
-    body=body,
     authorization=authorization,
     auth_token=auth_token,
   ).parsed
@@ -149,9 +144,9 @@ def sync(
 
 async def asyncio_detailed(
   graph_id: str,
+  backup_id: str,
   *,
   client: AuthenticatedClient,
-  body: BackupExportRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
@@ -161,9 +156,9 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Graph database identifier
+      backup_id (str): Backup identifier
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
-      body (BackupExportRequest): Request model for exporting a backup.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -175,7 +170,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    body=body,
+    backup_id=backup_id,
     authorization=authorization,
     auth_token=auth_token,
   )
@@ -187,9 +182,9 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
+  backup_id: str,
   *,
   client: AuthenticatedClient,
-  body: BackupExportRequest,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
@@ -199,9 +194,9 @@ async def asyncio(
 
   Args:
       graph_id (str): Graph database identifier
+      backup_id (str): Backup identifier
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
-      body (BackupExportRequest): Request model for exporting a backup.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -214,8 +209,8 @@ async def asyncio(
   return (
     await asyncio_detailed(
       graph_id=graph_id,
+      backup_id=backup_id,
       client=client,
-      body=body,
       authorization=authorization,
       auth_token=auth_token,
     )

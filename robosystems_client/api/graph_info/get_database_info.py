@@ -5,7 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.database_health_response import DatabaseHealthResponse
+from ...models.database_info_response import DatabaseInfoResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
@@ -26,7 +26,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/{graph_id}/status/health",
+    "url": f"/v1/{graph_id}/info",
     "cookies": cookies,
   }
 
@@ -36,9 +36,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
+) -> Optional[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = DatabaseHealthResponse.from_dict(response.json())
+    response_200 = DatabaseInfoResponse.from_dict(response.json())
 
     return response_200
   if response.status_code == 403:
@@ -62,7 +62,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
+) -> Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -77,26 +77,27 @@ def sync_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
-  """Database Health Check
+) -> Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
+  """Database Information
 
-   Get comprehensive health information for the graph database.
+   Get comprehensive database information and statistics.
 
-  Returns detailed health metrics including:
-  - **Connection Status**: Database connectivity and responsiveness
-  - **Performance Metrics**: Query execution times and throughput
-  - **Resource Usage**: Memory and storage utilization
-  - **Error Monitoring**: Recent error rates and patterns
-  - **Uptime Statistics**: Service availability metrics
+  Returns detailed database metrics including:
+  - **Database Metadata**: Name, path, size, and timestamps
+  - **Schema Information**: Node labels, relationship types, and counts
+  - **Storage Statistics**: Database size and usage metrics
+  - **Data Composition**: Node and relationship counts
+  - **Backup Information**: Available backups and last backup date
+  - **Configuration**: Read-only status and schema version
 
-  Health indicators:
-  - **Status**: healthy, degraded, or unhealthy
-  - **Query Performance**: Average execution times
-  - **Error Rates**: Recent failure percentages
-  - **Resource Usage**: Memory and storage consumption
-  - **Alerts**: Active warnings or issues
+  Database statistics:
+  - **Size**: Storage usage in bytes and MB
+  - **Content**: Node and relationship counts
+  - **Schema**: Available labels and relationship types
+  - **Backup Status**: Backup availability and recency
+  - **Timestamps**: Creation and modification dates
 
-  This endpoint provides essential monitoring data for operational visibility.
+  This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
       graph_id (str): Graph database identifier
@@ -108,7 +109,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]
+      Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -130,26 +131,27 @@ def sync(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
-  """Database Health Check
+) -> Optional[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
+  """Database Information
 
-   Get comprehensive health information for the graph database.
+   Get comprehensive database information and statistics.
 
-  Returns detailed health metrics including:
-  - **Connection Status**: Database connectivity and responsiveness
-  - **Performance Metrics**: Query execution times and throughput
-  - **Resource Usage**: Memory and storage utilization
-  - **Error Monitoring**: Recent error rates and patterns
-  - **Uptime Statistics**: Service availability metrics
+  Returns detailed database metrics including:
+  - **Database Metadata**: Name, path, size, and timestamps
+  - **Schema Information**: Node labels, relationship types, and counts
+  - **Storage Statistics**: Database size and usage metrics
+  - **Data Composition**: Node and relationship counts
+  - **Backup Information**: Available backups and last backup date
+  - **Configuration**: Read-only status and schema version
 
-  Health indicators:
-  - **Status**: healthy, degraded, or unhealthy
-  - **Query Performance**: Average execution times
-  - **Error Rates**: Recent failure percentages
-  - **Resource Usage**: Memory and storage consumption
-  - **Alerts**: Active warnings or issues
+  Database statistics:
+  - **Size**: Storage usage in bytes and MB
+  - **Content**: Node and relationship counts
+  - **Schema**: Available labels and relationship types
+  - **Backup Status**: Backup availability and recency
+  - **Timestamps**: Creation and modification dates
 
-  This endpoint provides essential monitoring data for operational visibility.
+  This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
       graph_id (str): Graph database identifier
@@ -161,7 +163,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, DatabaseHealthResponse, HTTPValidationError]
+      Union[Any, DatabaseInfoResponse, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -178,26 +180,27 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
-  """Database Health Check
+) -> Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
+  """Database Information
 
-   Get comprehensive health information for the graph database.
+   Get comprehensive database information and statistics.
 
-  Returns detailed health metrics including:
-  - **Connection Status**: Database connectivity and responsiveness
-  - **Performance Metrics**: Query execution times and throughput
-  - **Resource Usage**: Memory and storage utilization
-  - **Error Monitoring**: Recent error rates and patterns
-  - **Uptime Statistics**: Service availability metrics
+  Returns detailed database metrics including:
+  - **Database Metadata**: Name, path, size, and timestamps
+  - **Schema Information**: Node labels, relationship types, and counts
+  - **Storage Statistics**: Database size and usage metrics
+  - **Data Composition**: Node and relationship counts
+  - **Backup Information**: Available backups and last backup date
+  - **Configuration**: Read-only status and schema version
 
-  Health indicators:
-  - **Status**: healthy, degraded, or unhealthy
-  - **Query Performance**: Average execution times
-  - **Error Rates**: Recent failure percentages
-  - **Resource Usage**: Memory and storage consumption
-  - **Alerts**: Active warnings or issues
+  Database statistics:
+  - **Size**: Storage usage in bytes and MB
+  - **Content**: Node and relationship counts
+  - **Schema**: Available labels and relationship types
+  - **Backup Status**: Backup availability and recency
+  - **Timestamps**: Creation and modification dates
 
-  This endpoint provides essential monitoring data for operational visibility.
+  This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
       graph_id (str): Graph database identifier
@@ -209,7 +212,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]
+      Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -229,26 +232,27 @@ async def asyncio(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
-  """Database Health Check
+) -> Optional[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
+  """Database Information
 
-   Get comprehensive health information for the graph database.
+   Get comprehensive database information and statistics.
 
-  Returns detailed health metrics including:
-  - **Connection Status**: Database connectivity and responsiveness
-  - **Performance Metrics**: Query execution times and throughput
-  - **Resource Usage**: Memory and storage utilization
-  - **Error Monitoring**: Recent error rates and patterns
-  - **Uptime Statistics**: Service availability metrics
+  Returns detailed database metrics including:
+  - **Database Metadata**: Name, path, size, and timestamps
+  - **Schema Information**: Node labels, relationship types, and counts
+  - **Storage Statistics**: Database size and usage metrics
+  - **Data Composition**: Node and relationship counts
+  - **Backup Information**: Available backups and last backup date
+  - **Configuration**: Read-only status and schema version
 
-  Health indicators:
-  - **Status**: healthy, degraded, or unhealthy
-  - **Query Performance**: Average execution times
-  - **Error Rates**: Recent failure percentages
-  - **Resource Usage**: Memory and storage consumption
-  - **Alerts**: Active warnings or issues
+  Database statistics:
+  - **Size**: Storage usage in bytes and MB
+  - **Content**: Node and relationship counts
+  - **Schema**: Available labels and relationship types
+  - **Backup Status**: Backup availability and recency
+  - **Timestamps**: Creation and modification dates
 
-  This endpoint provides essential monitoring data for operational visibility.
+  This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
       graph_id (str): Graph database identifier
@@ -260,7 +264,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, DatabaseHealthResponse, HTTPValidationError]
+      Union[Any, DatabaseInfoResponse, HTTPValidationError]
   """
 
   return (
