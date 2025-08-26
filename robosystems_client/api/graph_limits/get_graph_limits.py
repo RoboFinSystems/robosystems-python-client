@@ -5,7 +5,9 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.database_info_response import DatabaseInfoResponse
+from ...models.get_graph_limits_response_getgraphlimits import (
+  GetGraphLimitsResponseGetgraphlimits,
+)
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
@@ -26,7 +28,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/{graph_id}/status/info",
+    "url": f"/v1/{graph_id}/limits",
     "cookies": cookies,
   }
 
@@ -36,9 +38,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
+) -> Optional[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = DatabaseInfoResponse.from_dict(response.json())
+    response_200 = GetGraphLimitsResponseGetgraphlimits.from_dict(response.json())
 
     return response_200
   if response.status_code == 403:
@@ -62,7 +64,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
+) -> Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -77,30 +79,25 @@ def sync_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
-  """Database Information
+) -> Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+  """Get Graph Operational Limits
 
-   Get comprehensive database information and statistics.
+   Get comprehensive operational limits for the graph database.
 
-  Returns detailed database metrics including:
-  - **Database Metadata**: Name, path, size, and timestamps
-  - **Schema Information**: Node labels, relationship types, and counts
-  - **Storage Statistics**: Database size and usage metrics
-  - **Data Composition**: Node and relationship counts
-  - **Backup Information**: Available backups and last backup date
-  - **Configuration**: Read-only status and schema version
+  Returns all operational limits that apply to this graph including:
+  - **Storage Limits**: Maximum storage size and current usage
+  - **Query Limits**: Timeouts, complexity, row limits
+  - **Copy/Ingestion Limits**: File sizes, timeouts, concurrent operations
+  - **Backup Limits**: Frequency, retention, size limits
+  - **Rate Limits**: Requests per minute/hour based on tier
+  - **Credit Limits**: AI operation credits (if applicable)
 
-  Database statistics:
-  - **Size**: Storage usage in bytes and MB
-  - **Content**: Node and relationship counts
-  - **Schema**: Available labels and relationship types
-  - **Backup Status**: Backup availability and recency
-  - **Timestamps**: Creation and modification dates
+  This unified endpoint provides all limits in one place for easier client integration.
 
-  This endpoint provides essential database information for capacity planning and monitoring.
+  **Note**: Limits vary based on subscription tier (Standard, Enterprise, Premium).
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str): Graph database identifier (user graph or shared repository)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -109,7 +106,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]
+      Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -131,30 +128,25 @@ def sync(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
-  """Database Information
+) -> Optional[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+  """Get Graph Operational Limits
 
-   Get comprehensive database information and statistics.
+   Get comprehensive operational limits for the graph database.
 
-  Returns detailed database metrics including:
-  - **Database Metadata**: Name, path, size, and timestamps
-  - **Schema Information**: Node labels, relationship types, and counts
-  - **Storage Statistics**: Database size and usage metrics
-  - **Data Composition**: Node and relationship counts
-  - **Backup Information**: Available backups and last backup date
-  - **Configuration**: Read-only status and schema version
+  Returns all operational limits that apply to this graph including:
+  - **Storage Limits**: Maximum storage size and current usage
+  - **Query Limits**: Timeouts, complexity, row limits
+  - **Copy/Ingestion Limits**: File sizes, timeouts, concurrent operations
+  - **Backup Limits**: Frequency, retention, size limits
+  - **Rate Limits**: Requests per minute/hour based on tier
+  - **Credit Limits**: AI operation credits (if applicable)
 
-  Database statistics:
-  - **Size**: Storage usage in bytes and MB
-  - **Content**: Node and relationship counts
-  - **Schema**: Available labels and relationship types
-  - **Backup Status**: Backup availability and recency
-  - **Timestamps**: Creation and modification dates
+  This unified endpoint provides all limits in one place for easier client integration.
 
-  This endpoint provides essential database information for capacity planning and monitoring.
+  **Note**: Limits vary based on subscription tier (Standard, Enterprise, Premium).
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str): Graph database identifier (user graph or shared repository)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -163,7 +155,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, DatabaseInfoResponse, HTTPValidationError]
+      Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -180,30 +172,25 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
-  """Database Information
+) -> Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+  """Get Graph Operational Limits
 
-   Get comprehensive database information and statistics.
+   Get comprehensive operational limits for the graph database.
 
-  Returns detailed database metrics including:
-  - **Database Metadata**: Name, path, size, and timestamps
-  - **Schema Information**: Node labels, relationship types, and counts
-  - **Storage Statistics**: Database size and usage metrics
-  - **Data Composition**: Node and relationship counts
-  - **Backup Information**: Available backups and last backup date
-  - **Configuration**: Read-only status and schema version
+  Returns all operational limits that apply to this graph including:
+  - **Storage Limits**: Maximum storage size and current usage
+  - **Query Limits**: Timeouts, complexity, row limits
+  - **Copy/Ingestion Limits**: File sizes, timeouts, concurrent operations
+  - **Backup Limits**: Frequency, retention, size limits
+  - **Rate Limits**: Requests per minute/hour based on tier
+  - **Credit Limits**: AI operation credits (if applicable)
 
-  Database statistics:
-  - **Size**: Storage usage in bytes and MB
-  - **Content**: Node and relationship counts
-  - **Schema**: Available labels and relationship types
-  - **Backup Status**: Backup availability and recency
-  - **Timestamps**: Creation and modification dates
+  This unified endpoint provides all limits in one place for easier client integration.
 
-  This endpoint provides essential database information for capacity planning and monitoring.
+  **Note**: Limits vary based on subscription tier (Standard, Enterprise, Premium).
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str): Graph database identifier (user graph or shared repository)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -212,7 +199,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, DatabaseInfoResponse, HTTPValidationError]]
+      Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -232,30 +219,25 @@ async def asyncio(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, DatabaseInfoResponse, HTTPValidationError]]:
-  """Database Information
+) -> Optional[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+  """Get Graph Operational Limits
 
-   Get comprehensive database information and statistics.
+   Get comprehensive operational limits for the graph database.
 
-  Returns detailed database metrics including:
-  - **Database Metadata**: Name, path, size, and timestamps
-  - **Schema Information**: Node labels, relationship types, and counts
-  - **Storage Statistics**: Database size and usage metrics
-  - **Data Composition**: Node and relationship counts
-  - **Backup Information**: Available backups and last backup date
-  - **Configuration**: Read-only status and schema version
+  Returns all operational limits that apply to this graph including:
+  - **Storage Limits**: Maximum storage size and current usage
+  - **Query Limits**: Timeouts, complexity, row limits
+  - **Copy/Ingestion Limits**: File sizes, timeouts, concurrent operations
+  - **Backup Limits**: Frequency, retention, size limits
+  - **Rate Limits**: Requests per minute/hour based on tier
+  - **Credit Limits**: AI operation credits (if applicable)
 
-  Database statistics:
-  - **Size**: Storage usage in bytes and MB
-  - **Content**: Node and relationship counts
-  - **Schema**: Available labels and relationship types
-  - **Backup Status**: Backup availability and recency
-  - **Timestamps**: Creation and modification dates
+  This unified endpoint provides all limits in one place for easier client integration.
 
-  This endpoint provides essential database information for capacity planning and monitoring.
+  **Note**: Limits vary based on subscription tier (Standard, Enterprise, Premium).
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str): Graph database identifier (user graph or shared repository)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -264,7 +246,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, DatabaseInfoResponse, HTTPValidationError]
+      Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]
   """
 
   return (

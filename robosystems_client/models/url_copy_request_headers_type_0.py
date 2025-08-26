@@ -4,14 +4,14 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="KuzuBackupHealthResponseKuzubackuphealth")
+T = TypeVar("T", bound="URLCopyRequestHeadersType0")
 
 
 @_attrs_define
-class KuzuBackupHealthResponseKuzubackuphealth:
+class URLCopyRequestHeadersType0:
   """ """
 
-  additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+  additional_properties: dict[str, str] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     field_dict: dict[str, Any] = {}
@@ -22,19 +22,19 @@ class KuzuBackupHealthResponseKuzubackuphealth:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    kuzu_backup_health_response_kuzubackuphealth = cls()
+    url_copy_request_headers_type_0 = cls()
 
-    kuzu_backup_health_response_kuzubackuphealth.additional_properties = d
-    return kuzu_backup_health_response_kuzubackuphealth
+    url_copy_request_headers_type_0.additional_properties = d
+    return url_copy_request_headers_type_0
 
   @property
   def additional_keys(self) -> list[str]:
     return list(self.additional_properties.keys())
 
-  def __getitem__(self, key: str) -> Any:
+  def __getitem__(self, key: str) -> str:
     return self.additional_properties[key]
 
-  def __setitem__(self, key: str, value: Any) -> None:
+  def __setitem__(self, key: str, value: str) -> None:
     self.additional_properties[key] = value
 
   def __delitem__(self, key: str) -> None:

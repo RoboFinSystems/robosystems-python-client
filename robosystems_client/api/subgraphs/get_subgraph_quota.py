@@ -93,8 +93,9 @@ def sync_detailed(
 
   **Tier Limits:**
   - Standard: 0 subgraphs (not supported)
-  - Enterprise: 10 subgraphs maximum
+  - Enterprise: Configurable limit (default: 10 subgraphs)
   - Premium: Unlimited subgraphs
+  - Limits are defined in deployment configuration
 
   **Size Tracking:**
   Provides aggregate size metrics when available.
@@ -145,8 +146,9 @@ def sync(
 
   **Tier Limits:**
   - Standard: 0 subgraphs (not supported)
-  - Enterprise: 10 subgraphs maximum
+  - Enterprise: Configurable limit (default: 10 subgraphs)
   - Premium: Unlimited subgraphs
+  - Limits are defined in deployment configuration
 
   **Size Tracking:**
   Provides aggregate size metrics when available.
@@ -192,8 +194,9 @@ async def asyncio_detailed(
 
   **Tier Limits:**
   - Standard: 0 subgraphs (not supported)
-  - Enterprise: 10 subgraphs maximum
+  - Enterprise: Configurable limit (default: 10 subgraphs)
   - Premium: Unlimited subgraphs
+  - Limits are defined in deployment configuration
 
   **Size Tracking:**
   Provides aggregate size metrics when available.
@@ -242,8 +245,9 @@ async def asyncio(
 
   **Tier Limits:**
   - Standard: 0 subgraphs (not supported)
-  - Enterprise: 10 subgraphs maximum
+  - Enterprise: Configurable limit (default: 10 subgraphs)
   - Premium: Unlimited subgraphs
+  - Limits are defined in deployment configuration
 
   **Size Tracking:**
   Provides aggregate size metrics when available.

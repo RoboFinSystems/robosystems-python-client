@@ -12,7 +12,7 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
   graph_id: str,
-  subgraph_name: str,
+  subgraph_id: str,
   *,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
@@ -27,7 +27,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/{graph_id}/subgraphs/{subgraph_name}/info",
+    "url": f"/v1/{graph_id}/subgraphs/{subgraph_id}/info",
     "cookies": cookies,
   }
 
@@ -80,7 +80,7 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  subgraph_name: str,
+  subgraph_id: str,
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
@@ -110,7 +110,7 @@ def sync_detailed(
 
   Args:
       graph_id (str): Parent graph identifier
-      subgraph_name (str): Subgraph name
+      subgraph_id (str): Subgraph identifier
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -124,7 +124,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    subgraph_name=subgraph_name,
+    subgraph_id=subgraph_id,
     authorization=authorization,
     auth_token=auth_token,
   )
@@ -138,7 +138,7 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  subgraph_name: str,
+  subgraph_id: str,
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
@@ -168,7 +168,7 @@ def sync(
 
   Args:
       graph_id (str): Parent graph identifier
-      subgraph_name (str): Subgraph name
+      subgraph_id (str): Subgraph identifier
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -182,7 +182,7 @@ def sync(
 
   return sync_detailed(
     graph_id=graph_id,
-    subgraph_name=subgraph_name,
+    subgraph_id=subgraph_id,
     client=client,
     authorization=authorization,
     auth_token=auth_token,
@@ -191,7 +191,7 @@ def sync(
 
 async def asyncio_detailed(
   graph_id: str,
-  subgraph_name: str,
+  subgraph_id: str,
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
@@ -221,7 +221,7 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Parent graph identifier
-      subgraph_name (str): Subgraph name
+      subgraph_id (str): Subgraph identifier
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -235,7 +235,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    subgraph_name=subgraph_name,
+    subgraph_id=subgraph_id,
     authorization=authorization,
     auth_token=auth_token,
   )
@@ -247,7 +247,7 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  subgraph_name: str,
+  subgraph_id: str,
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
@@ -277,7 +277,7 @@ async def asyncio(
 
   Args:
       graph_id (str): Parent graph identifier
-      subgraph_name (str): Subgraph name
+      subgraph_id (str): Subgraph identifier
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -292,7 +292,7 @@ async def asyncio(
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      subgraph_name=subgraph_name,
+      subgraph_id=subgraph_id,
       client=client,
       authorization=authorization,
       auth_token=auth_token,

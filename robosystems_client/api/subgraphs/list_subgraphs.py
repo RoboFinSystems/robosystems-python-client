@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, Optional, Union
 
 import httpx
 
@@ -36,23 +36,11 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError, ListSubgraphsResponse]]:
+) -> Optional[Union[HTTPValidationError, ListSubgraphsResponse]]:
   if response.status_code == 200:
     response_200 = ListSubgraphsResponse.from_dict(response.json())
 
     return response_200
-  if response.status_code == 401:
-    response_401 = cast(Any, None)
-    return response_401
-  if response.status_code == 403:
-    response_403 = cast(Any, None)
-    return response_403
-  if response.status_code == 404:
-    response_404 = cast(Any, None)
-    return response_404
-  if response.status_code == 500:
-    response_500 = cast(Any, None)
-    return response_500
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -65,7 +53,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError, ListSubgraphsResponse]]:
+) -> Response[Union[HTTPValidationError, ListSubgraphsResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -80,28 +68,22 @@ def sync_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError, ListSubgraphsResponse]]:
+) -> Response[Union[HTTPValidationError, ListSubgraphsResponse]]:
   """List Subgraphs
 
    List all subgraphs for a parent graph.
 
   **Requirements:**
-  - User must have at least read access to parent graph
+  - Valid authentication
+  - Parent graph must exist and be accessible to the user
+  - User must have at least 'read' permission on the parent graph
 
-  **Response includes:**
-  - List of all subgraphs with metadata
-  - Current usage vs limits
-  - Size and statistics per subgraph
-  - Creation timestamps
-
-  **Filtering:**
-  Currently returns all subgraphs. Future versions will support:
-  - Filtering by status
-  - Filtering by creation date
-  - Pagination for large lists
+  **Returns:**
+  - List of all subgraphs for the parent graph
+  - Each subgraph includes its ID, name, description, type, status, and creation date
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -110,7 +92,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, ListSubgraphsResponse]]
+      Response[Union[HTTPValidationError, ListSubgraphsResponse]]
   """
 
   kwargs = _get_kwargs(
@@ -132,28 +114,22 @@ def sync(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError, ListSubgraphsResponse]]:
+) -> Optional[Union[HTTPValidationError, ListSubgraphsResponse]]:
   """List Subgraphs
 
    List all subgraphs for a parent graph.
 
   **Requirements:**
-  - User must have at least read access to parent graph
+  - Valid authentication
+  - Parent graph must exist and be accessible to the user
+  - User must have at least 'read' permission on the parent graph
 
-  **Response includes:**
-  - List of all subgraphs with metadata
-  - Current usage vs limits
-  - Size and statistics per subgraph
-  - Creation timestamps
-
-  **Filtering:**
-  Currently returns all subgraphs. Future versions will support:
-  - Filtering by status
-  - Filtering by creation date
-  - Pagination for large lists
+  **Returns:**
+  - List of all subgraphs for the parent graph
+  - Each subgraph includes its ID, name, description, type, status, and creation date
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -162,7 +138,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, ListSubgraphsResponse]
+      Union[HTTPValidationError, ListSubgraphsResponse]
   """
 
   return sync_detailed(
@@ -179,28 +155,22 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError, ListSubgraphsResponse]]:
+) -> Response[Union[HTTPValidationError, ListSubgraphsResponse]]:
   """List Subgraphs
 
    List all subgraphs for a parent graph.
 
   **Requirements:**
-  - User must have at least read access to parent graph
+  - Valid authentication
+  - Parent graph must exist and be accessible to the user
+  - User must have at least 'read' permission on the parent graph
 
-  **Response includes:**
-  - List of all subgraphs with metadata
-  - Current usage vs limits
-  - Size and statistics per subgraph
-  - Creation timestamps
-
-  **Filtering:**
-  Currently returns all subgraphs. Future versions will support:
-  - Filtering by status
-  - Filtering by creation date
-  - Pagination for large lists
+  **Returns:**
+  - List of all subgraphs for the parent graph
+  - Each subgraph includes its ID, name, description, type, status, and creation date
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -209,7 +179,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, ListSubgraphsResponse]]
+      Response[Union[HTTPValidationError, ListSubgraphsResponse]]
   """
 
   kwargs = _get_kwargs(
@@ -229,28 +199,22 @@ async def asyncio(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError, ListSubgraphsResponse]]:
+) -> Optional[Union[HTTPValidationError, ListSubgraphsResponse]]:
   """List Subgraphs
 
    List all subgraphs for a parent graph.
 
   **Requirements:**
-  - User must have at least read access to parent graph
+  - Valid authentication
+  - Parent graph must exist and be accessible to the user
+  - User must have at least 'read' permission on the parent graph
 
-  **Response includes:**
-  - List of all subgraphs with metadata
-  - Current usage vs limits
-  - Size and statistics per subgraph
-  - Creation timestamps
-
-  **Filtering:**
-  Currently returns all subgraphs. Future versions will support:
-  - Filtering by status
-  - Filtering by creation date
-  - Pagination for large lists
+  **Returns:**
+  - List of all subgraphs for the parent graph
+  - Each subgraph includes its ID, name, description, type, status, and creation date
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -259,7 +223,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, ListSubgraphsResponse]
+      Union[HTTPValidationError, ListSubgraphsResponse]
   """
 
   return (

@@ -13,18 +13,24 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
+  if not isinstance(authorization, Unset):
+    headers["authorization"] = authorization
+
   cookies = {}
   if auth_token is not UNSET:
     cookies["auth-token"] = auth_token
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/{graph_id}/backup/stats",
+    "url": f"/v1/{graph_id}/backups/stats",
     "cookies": cookies,
   }
 
+  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -60,6 +66,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[BackupStatsResponse, HTTPValidationError]]:
   """Get backup statistics
@@ -68,6 +75,7 @@ def sync_detailed(
 
   Args:
       graph_id (str): Graph database identifier
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -80,6 +88,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
+    authorization=authorization,
     auth_token=auth_token,
   )
 
@@ -94,6 +103,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[BackupStatsResponse, HTTPValidationError]]:
   """Get backup statistics
@@ -102,6 +112,7 @@ def sync(
 
   Args:
       graph_id (str): Graph database identifier
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -115,6 +126,7 @@ def sync(
   return sync_detailed(
     graph_id=graph_id,
     client=client,
+    authorization=authorization,
     auth_token=auth_token,
   ).parsed
 
@@ -123,6 +135,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[BackupStatsResponse, HTTPValidationError]]:
   """Get backup statistics
@@ -131,6 +144,7 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Graph database identifier
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -143,6 +157,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
+    authorization=authorization,
     auth_token=auth_token,
   )
 
@@ -155,6 +170,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[BackupStatsResponse, HTTPValidationError]]:
   """Get backup statistics
@@ -163,6 +179,7 @@ async def asyncio(
 
   Args:
       graph_id (str): Graph database identifier
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -177,6 +194,7 @@ async def asyncio(
     await asyncio_detailed(
       graph_id=graph_id,
       client=client,
+      authorization=authorization,
       auth_token=auth_token,
     )
   ).parsed

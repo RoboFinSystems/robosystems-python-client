@@ -1,14 +1,12 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.database_health_response import DatabaseHealthResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.kuzu_backup_health_response_kuzubackuphealth import (
-  KuzuBackupHealthResponseKuzubackuphealth,
-)
 from ...types import UNSET, Response, Unset
 
 
@@ -28,7 +26,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/{graph_id}/backup/health",
+    "url": f"/v1/{graph_id}/health",
     "cookies": cookies,
   }
 
@@ -38,11 +36,20 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]]:
+) -> Optional[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = KuzuBackupHealthResponseKuzubackuphealth.from_dict(response.json())
+    response_200 = DatabaseHealthResponse.from_dict(response.json())
 
     return response_200
+  if response.status_code == 403:
+    response_403 = cast(Any, None)
+    return response_403
+  if response.status_code == 404:
+    response_404 = cast(Any, None)
+    return response_404
+  if response.status_code == 500:
+    response_500 = cast(Any, None)
+    return response_500
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -55,7 +62,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]]:
+) -> Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -70,10 +77,26 @@ def sync_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]]:
-  """Check Kuzu backup system health
+) -> Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
+  """Database Health Check
 
-   Check the health status of the Kuzu backup system
+   Get comprehensive health information for the graph database.
+
+  Returns detailed health metrics including:
+  - **Connection Status**: Database connectivity and responsiveness
+  - **Performance Metrics**: Query execution times and throughput
+  - **Resource Usage**: Memory and storage utilization
+  - **Error Monitoring**: Recent error rates and patterns
+  - **Uptime Statistics**: Service availability metrics
+
+  Health indicators:
+  - **Status**: healthy, degraded, or unhealthy
+  - **Query Performance**: Average execution times
+  - **Error Rates**: Recent failure percentages
+  - **Resource Usage**: Memory and storage consumption
+  - **Alerts**: Active warnings or issues
+
+  This endpoint provides essential monitoring data for operational visibility.
 
   Args:
       graph_id (str): Graph database identifier
@@ -85,7 +108,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]]
+      Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -107,10 +130,26 @@ def sync(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]]:
-  """Check Kuzu backup system health
+) -> Optional[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
+  """Database Health Check
 
-   Check the health status of the Kuzu backup system
+   Get comprehensive health information for the graph database.
+
+  Returns detailed health metrics including:
+  - **Connection Status**: Database connectivity and responsiveness
+  - **Performance Metrics**: Query execution times and throughput
+  - **Resource Usage**: Memory and storage utilization
+  - **Error Monitoring**: Recent error rates and patterns
+  - **Uptime Statistics**: Service availability metrics
+
+  Health indicators:
+  - **Status**: healthy, degraded, or unhealthy
+  - **Query Performance**: Average execution times
+  - **Error Rates**: Recent failure percentages
+  - **Resource Usage**: Memory and storage consumption
+  - **Alerts**: Active warnings or issues
+
+  This endpoint provides essential monitoring data for operational visibility.
 
   Args:
       graph_id (str): Graph database identifier
@@ -122,7 +161,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]
+      Union[Any, DatabaseHealthResponse, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -139,10 +178,26 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]]:
-  """Check Kuzu backup system health
+) -> Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
+  """Database Health Check
 
-   Check the health status of the Kuzu backup system
+   Get comprehensive health information for the graph database.
+
+  Returns detailed health metrics including:
+  - **Connection Status**: Database connectivity and responsiveness
+  - **Performance Metrics**: Query execution times and throughput
+  - **Resource Usage**: Memory and storage utilization
+  - **Error Monitoring**: Recent error rates and patterns
+  - **Uptime Statistics**: Service availability metrics
+
+  Health indicators:
+  - **Status**: healthy, degraded, or unhealthy
+  - **Query Performance**: Average execution times
+  - **Error Rates**: Recent failure percentages
+  - **Resource Usage**: Memory and storage consumption
+  - **Alerts**: Active warnings or issues
+
+  This endpoint provides essential monitoring data for operational visibility.
 
   Args:
       graph_id (str): Graph database identifier
@@ -154,7 +209,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]]
+      Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -174,10 +229,26 @@ async def asyncio(
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]]:
-  """Check Kuzu backup system health
+) -> Optional[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
+  """Database Health Check
 
-   Check the health status of the Kuzu backup system
+   Get comprehensive health information for the graph database.
+
+  Returns detailed health metrics including:
+  - **Connection Status**: Database connectivity and responsiveness
+  - **Performance Metrics**: Query execution times and throughput
+  - **Resource Usage**: Memory and storage utilization
+  - **Error Monitoring**: Recent error rates and patterns
+  - **Uptime Statistics**: Service availability metrics
+
+  Health indicators:
+  - **Status**: healthy, degraded, or unhealthy
+  - **Query Performance**: Average execution times
+  - **Error Rates**: Recent failure percentages
+  - **Resource Usage**: Memory and storage consumption
+  - **Alerts**: Active warnings or issues
+
+  This endpoint provides essential monitoring data for operational visibility.
 
   Args:
       graph_id (str): Graph database identifier
@@ -189,7 +260,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, KuzuBackupHealthResponseKuzubackuphealth]
+      Union[Any, DatabaseHealthResponse, HTTPValidationError]
   """
 
   return (
