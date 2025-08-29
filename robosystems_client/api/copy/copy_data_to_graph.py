@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 import httpx
 
@@ -50,11 +50,32 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[CopyResponse, HTTPValidationError]]:
+) -> Optional[Union[Any, CopyResponse, HTTPValidationError]]:
   if response.status_code == 200:
     response_200 = CopyResponse.from_dict(response.json())
 
     return response_200
+  if response.status_code == 202:
+    response_202 = cast(Any, None)
+    return response_202
+  if response.status_code == 400:
+    response_400 = cast(Any, None)
+    return response_400
+  if response.status_code == 403:
+    response_403 = cast(Any, None)
+    return response_403
+  if response.status_code == 408:
+    response_408 = cast(Any, None)
+    return response_408
+  if response.status_code == 429:
+    response_429 = cast(Any, None)
+    return response_429
+  if response.status_code == 500:
+    response_500 = cast(Any, None)
+    return response_500
+  if response.status_code == 503:
+    response_503 = cast(Any, None)
+    return response_503
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -67,7 +88,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[CopyResponse, HTTPValidationError]]:
+) -> Response[Union[Any, CopyResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -83,7 +104,7 @@ def sync_detailed(
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[CopyResponse, HTTPValidationError]]:
+) -> Response[Union[Any, CopyResponse, HTTPValidationError]]:
   """Copy Data to Graph
 
    Copy data from external sources into the graph database.
@@ -105,9 +126,45 @@ def sync_detailed(
   - Premium: 100GB max file size, 60 min timeout
 
   **Copy Options:**
-  - `ignore_errors`: Skip duplicate/invalid rows (enables upsert-like behavior)
+  - `ignore_errors`: Skip duplicate/invalid rows (enables upsert-like behavior). Note: When enabled,
+  row counts may not be accurately reported
   - `extended_timeout`: Use extended timeout for large datasets
   - `validate_schema`: Validate source schema against target table
+
+  **Asynchronous Execution with SSE:**
+  For large data imports, this endpoint returns immediately with an operation ID
+  and SSE monitoring endpoint. Connect to the returned stream URL for real-time updates:
+
+  ```javascript
+  const eventSource = new EventSource('/v1/operations/{operation_id}/stream');
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('Progress:', data.message);
+  };
+  ```
+
+  **SSE Events Emitted:**
+  - `operation_started`: Copy operation begins
+  - `operation_progress`: Progress updates during data transfer
+  - `operation_completed`: Copy successful with statistics
+  - `operation_error`: Copy failed with error details
+
+  **SSE Connection Limits:**
+  - Maximum 5 concurrent SSE connections per user
+  - Rate limited to 10 new connections per minute
+  - Automatic circuit breaker for Redis failures
+  - Graceful degradation if event system unavailable
+
+  **Error Handling:**
+  - `403 Forbidden`: Attempted copy to shared repository
+  - `408 Request Timeout`: Operation exceeded timeout limit
+  - `429 Too Many Requests`: Rate limit exceeded
+  - `503 Service Unavailable`: Circuit breaker open or service unavailable
+  - Clients should implement exponential backoff on errors
+
+  **Note:**
+  Copy operations are FREE - no credit consumption required.
+  All copy operations are performed asynchronously with progress monitoring.
 
   Args:
       graph_id (str): Target graph identifier (user graphs only - shared repositories not
@@ -121,7 +178,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[CopyResponse, HTTPValidationError]]
+      Response[Union[Any, CopyResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -145,7 +202,7 @@ def sync(
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[CopyResponse, HTTPValidationError]]:
+) -> Optional[Union[Any, CopyResponse, HTTPValidationError]]:
   """Copy Data to Graph
 
    Copy data from external sources into the graph database.
@@ -167,9 +224,45 @@ def sync(
   - Premium: 100GB max file size, 60 min timeout
 
   **Copy Options:**
-  - `ignore_errors`: Skip duplicate/invalid rows (enables upsert-like behavior)
+  - `ignore_errors`: Skip duplicate/invalid rows (enables upsert-like behavior). Note: When enabled,
+  row counts may not be accurately reported
   - `extended_timeout`: Use extended timeout for large datasets
   - `validate_schema`: Validate source schema against target table
+
+  **Asynchronous Execution with SSE:**
+  For large data imports, this endpoint returns immediately with an operation ID
+  and SSE monitoring endpoint. Connect to the returned stream URL for real-time updates:
+
+  ```javascript
+  const eventSource = new EventSource('/v1/operations/{operation_id}/stream');
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('Progress:', data.message);
+  };
+  ```
+
+  **SSE Events Emitted:**
+  - `operation_started`: Copy operation begins
+  - `operation_progress`: Progress updates during data transfer
+  - `operation_completed`: Copy successful with statistics
+  - `operation_error`: Copy failed with error details
+
+  **SSE Connection Limits:**
+  - Maximum 5 concurrent SSE connections per user
+  - Rate limited to 10 new connections per minute
+  - Automatic circuit breaker for Redis failures
+  - Graceful degradation if event system unavailable
+
+  **Error Handling:**
+  - `403 Forbidden`: Attempted copy to shared repository
+  - `408 Request Timeout`: Operation exceeded timeout limit
+  - `429 Too Many Requests`: Rate limit exceeded
+  - `503 Service Unavailable`: Circuit breaker open or service unavailable
+  - Clients should implement exponential backoff on errors
+
+  **Note:**
+  Copy operations are FREE - no credit consumption required.
+  All copy operations are performed asynchronously with progress monitoring.
 
   Args:
       graph_id (str): Target graph identifier (user graphs only - shared repositories not
@@ -183,7 +276,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[CopyResponse, HTTPValidationError]
+      Union[Any, CopyResponse, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -202,7 +295,7 @@ async def asyncio_detailed(
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[CopyResponse, HTTPValidationError]]:
+) -> Response[Union[Any, CopyResponse, HTTPValidationError]]:
   """Copy Data to Graph
 
    Copy data from external sources into the graph database.
@@ -224,9 +317,45 @@ async def asyncio_detailed(
   - Premium: 100GB max file size, 60 min timeout
 
   **Copy Options:**
-  - `ignore_errors`: Skip duplicate/invalid rows (enables upsert-like behavior)
+  - `ignore_errors`: Skip duplicate/invalid rows (enables upsert-like behavior). Note: When enabled,
+  row counts may not be accurately reported
   - `extended_timeout`: Use extended timeout for large datasets
   - `validate_schema`: Validate source schema against target table
+
+  **Asynchronous Execution with SSE:**
+  For large data imports, this endpoint returns immediately with an operation ID
+  and SSE monitoring endpoint. Connect to the returned stream URL for real-time updates:
+
+  ```javascript
+  const eventSource = new EventSource('/v1/operations/{operation_id}/stream');
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('Progress:', data.message);
+  };
+  ```
+
+  **SSE Events Emitted:**
+  - `operation_started`: Copy operation begins
+  - `operation_progress`: Progress updates during data transfer
+  - `operation_completed`: Copy successful with statistics
+  - `operation_error`: Copy failed with error details
+
+  **SSE Connection Limits:**
+  - Maximum 5 concurrent SSE connections per user
+  - Rate limited to 10 new connections per minute
+  - Automatic circuit breaker for Redis failures
+  - Graceful degradation if event system unavailable
+
+  **Error Handling:**
+  - `403 Forbidden`: Attempted copy to shared repository
+  - `408 Request Timeout`: Operation exceeded timeout limit
+  - `429 Too Many Requests`: Rate limit exceeded
+  - `503 Service Unavailable`: Circuit breaker open or service unavailable
+  - Clients should implement exponential backoff on errors
+
+  **Note:**
+  Copy operations are FREE - no credit consumption required.
+  All copy operations are performed asynchronously with progress monitoring.
 
   Args:
       graph_id (str): Target graph identifier (user graphs only - shared repositories not
@@ -240,7 +369,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[CopyResponse, HTTPValidationError]]
+      Response[Union[Any, CopyResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -262,7 +391,7 @@ async def asyncio(
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[CopyResponse, HTTPValidationError]]:
+) -> Optional[Union[Any, CopyResponse, HTTPValidationError]]:
   """Copy Data to Graph
 
    Copy data from external sources into the graph database.
@@ -284,9 +413,45 @@ async def asyncio(
   - Premium: 100GB max file size, 60 min timeout
 
   **Copy Options:**
-  - `ignore_errors`: Skip duplicate/invalid rows (enables upsert-like behavior)
+  - `ignore_errors`: Skip duplicate/invalid rows (enables upsert-like behavior). Note: When enabled,
+  row counts may not be accurately reported
   - `extended_timeout`: Use extended timeout for large datasets
   - `validate_schema`: Validate source schema against target table
+
+  **Asynchronous Execution with SSE:**
+  For large data imports, this endpoint returns immediately with an operation ID
+  and SSE monitoring endpoint. Connect to the returned stream URL for real-time updates:
+
+  ```javascript
+  const eventSource = new EventSource('/v1/operations/{operation_id}/stream');
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('Progress:', data.message);
+  };
+  ```
+
+  **SSE Events Emitted:**
+  - `operation_started`: Copy operation begins
+  - `operation_progress`: Progress updates during data transfer
+  - `operation_completed`: Copy successful with statistics
+  - `operation_error`: Copy failed with error details
+
+  **SSE Connection Limits:**
+  - Maximum 5 concurrent SSE connections per user
+  - Rate limited to 10 new connections per minute
+  - Automatic circuit breaker for Redis failures
+  - Graceful degradation if event system unavailable
+
+  **Error Handling:**
+  - `403 Forbidden`: Attempted copy to shared repository
+  - `408 Request Timeout`: Operation exceeded timeout limit
+  - `429 Too Many Requests`: Rate limit exceeded
+  - `503 Service Unavailable`: Circuit breaker open or service unavailable
+  - Clients should implement exponential backoff on errors
+
+  **Note:**
+  Copy operations are FREE - no credit consumption required.
+  All copy operations are performed asynchronously with progress monitoring.
 
   Args:
       graph_id (str): Target graph identifier (user graphs only - shared repositories not
@@ -300,7 +465,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[CopyResponse, HTTPValidationError]
+      Union[Any, CopyResponse, HTTPValidationError]
   """
 
   return (
