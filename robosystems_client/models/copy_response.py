@@ -21,8 +21,10 @@ class CopyResponse:
   Attributes:
       status (CopyResponseStatus): Operation status
       source_type (str): Type of source that was copied from
-      execution_time_ms (float): Total execution time in milliseconds
       message (str): Human-readable status message
+      operation_id (Union[None, Unset, str]): Operation ID for SSE monitoring (for long-running operations)
+      sse_url (Union[None, Unset, str]): SSE endpoint URL for monitoring operation progress
+      execution_time_ms (Union[None, Unset, float]): Total execution time in milliseconds (for synchronous operations)
       rows_imported (Union[None, Unset, int]): Number of rows successfully imported
       rows_skipped (Union[None, Unset, int]): Number of rows skipped due to errors (when ignore_errors=true)
       warnings (Union[None, Unset, list[str]]): List of warnings encountered during import
@@ -33,8 +35,10 @@ class CopyResponse:
 
   status: CopyResponseStatus
   source_type: str
-  execution_time_ms: float
   message: str
+  operation_id: Union[None, Unset, str] = UNSET
+  sse_url: Union[None, Unset, str] = UNSET
+  execution_time_ms: Union[None, Unset, float] = UNSET
   rows_imported: Union[None, Unset, int] = UNSET
   rows_skipped: Union[None, Unset, int] = UNSET
   warnings: Union[None, Unset, list[str]] = UNSET
@@ -51,9 +55,25 @@ class CopyResponse:
 
     source_type = self.source_type
 
-    execution_time_ms = self.execution_time_ms
-
     message = self.message
+
+    operation_id: Union[None, Unset, str]
+    if isinstance(self.operation_id, Unset):
+      operation_id = UNSET
+    else:
+      operation_id = self.operation_id
+
+    sse_url: Union[None, Unset, str]
+    if isinstance(self.sse_url, Unset):
+      sse_url = UNSET
+    else:
+      sse_url = self.sse_url
+
+    execution_time_ms: Union[None, Unset, float]
+    if isinstance(self.execution_time_ms, Unset):
+      execution_time_ms = UNSET
+    else:
+      execution_time_ms = self.execution_time_ms
 
     rows_imported: Union[None, Unset, int]
     if isinstance(self.rows_imported, Unset):
@@ -96,10 +116,15 @@ class CopyResponse:
       {
         "status": status,
         "source_type": source_type,
-        "execution_time_ms": execution_time_ms,
         "message": message,
       }
     )
+    if operation_id is not UNSET:
+      field_dict["operation_id"] = operation_id
+    if sse_url is not UNSET:
+      field_dict["sse_url"] = sse_url
+    if execution_time_ms is not UNSET:
+      field_dict["execution_time_ms"] = execution_time_ms
     if rows_imported is not UNSET:
       field_dict["rows_imported"] = rows_imported
     if rows_skipped is not UNSET:
@@ -124,9 +149,34 @@ class CopyResponse:
 
     source_type = d.pop("source_type")
 
-    execution_time_ms = d.pop("execution_time_ms")
-
     message = d.pop("message")
+
+    def _parse_operation_id(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
+
+    operation_id = _parse_operation_id(d.pop("operation_id", UNSET))
+
+    def _parse_sse_url(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
+
+    sse_url = _parse_sse_url(d.pop("sse_url", UNSET))
+
+    def _parse_execution_time_ms(data: object) -> Union[None, Unset, float]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, float], data)
+
+    execution_time_ms = _parse_execution_time_ms(d.pop("execution_time_ms", UNSET))
 
     def _parse_rows_imported(data: object) -> Union[None, Unset, int]:
       if data is None:
@@ -194,8 +244,10 @@ class CopyResponse:
     copy_response = cls(
       status=status,
       source_type=source_type,
-      execution_time_ms=execution_time_ms,
       message=message,
+      operation_id=operation_id,
+      sse_url=sse_url,
+      execution_time_ms=execution_time_ms,
       rows_imported=rows_imported,
       rows_skipped=rows_skipped,
       warnings=warnings,

@@ -8,6 +8,7 @@ from typing import Dict, Any, Optional, Callable
 
 from .query_client import QueryClient
 from .operation_client import OperationClient
+from .copy_client import CopyClient
 from .sse_client import SSEClient
 
 
@@ -39,6 +40,7 @@ class RoboSystemsExtensions:
     }
 
     # Initialize clients
+    self.copy = CopyClient(self.config)
     self.query = QueryClient(self.config)
     self.operations = OperationClient(self.config)
 
@@ -67,6 +69,7 @@ class RoboSystemsExtensions:
 
   def close(self):
     """Clean up all active connections"""
+    self.copy.close()
     self.query.close()
     self.operations.close_all()
 
@@ -92,6 +95,20 @@ class RoboSystemsExtensions:
   def cancel_operation(self, operation_id: str):
     """Cancel an operation using the operation client"""
     return self.operations.cancel_operation(operation_id)
+
+  def copy_from_s3(
+    self,
+    graph_id: str,
+    table_name: str,
+    s3_path: str,
+    access_key_id: str,
+    secret_access_key: str,
+    **kwargs,
+  ):
+    """Copy data from S3 using the copy client"""
+    return self.copy.copy_s3(
+      graph_id, table_name, s3_path, access_key_id, secret_access_key, **kwargs
+    )
 
 
 class AsyncRoboSystemsExtensions:

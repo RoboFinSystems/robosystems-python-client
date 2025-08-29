@@ -15,28 +15,31 @@ T = TypeVar("T", bound="S3CopyRequest")
 class S3CopyRequest:
   r"""Request model for S3 copy operations.
 
-  Attributes:
-      table_name (str): Target Kuzu table name
-      s3_path (str): Full S3 path (s3://bucket/key or s3://bucket/prefix/*.parquet)
-      s3_access_key_id (str): AWS access key ID for S3 access
-      s3_secret_access_key (str): AWS secret access key for S3 access
-      ignore_errors (Union[Unset, bool]): Skip duplicate/invalid rows (enables upsert-like behavior) Default: True.
-      extended_timeout (Union[Unset, bool]): Use extended timeout for large datasets Default: False.
-      validate_schema (Union[Unset, bool]): Validate source schema against target table Default: True.
-      source_type (Union[Literal['s3'], Unset]): Source type identifier Default: 's3'.
-      s3_session_token (Union[None, Unset, str]): AWS session token (for temporary credentials)
-      s3_region (Union[None, Unset, str]): S3 region Default: 'us-east-1'.
-      s3_endpoint (Union[None, Unset, str]): Custom S3 endpoint (for S3-compatible storage)
-      s3_url_style (Union[None, S3CopyRequestS3UrlStyleType0, Unset]): S3 URL style (vhost or path)
-      file_format (Union[Unset, S3CopyRequestFileFormat]): File format of the S3 data Default:
-          S3CopyRequestFileFormat.PARQUET.
-      csv_delimiter (Union[None, Unset, str]): CSV delimiter Default: ','.
-      csv_header (Union[None, Unset, bool]): CSV has header row Default: True.
-      csv_quote (Union[None, Unset, str]): CSV quote character Default: '\\"'.
-      csv_escape (Union[None, Unset, str]): CSV escape character Default: '\\'.
-      csv_skip (Union[None, Unset, int]): Number of rows to skip Default: 0.
-      allow_moved_paths (Union[None, Unset, bool]): Allow moved paths for Iceberg tables Default: False.
-      max_file_size_gb (Union[None, Unset, int]): Maximum total file size limit in GB Default: 10.
+  Copies data from S3 buckets into graph database tables using user-provided
+  AWS credentials. Supports various file formats and bulk loading options.
+
+      Attributes:
+          table_name (str): Target Kuzu table name
+          s3_path (str): Full S3 path (s3://bucket/key or s3://bucket/prefix/*.parquet)
+          s3_access_key_id (str): AWS access key ID for S3 access
+          s3_secret_access_key (str): AWS secret access key for S3 access
+          ignore_errors (Union[Unset, bool]): Skip duplicate/invalid rows (enables upsert-like behavior) Default: True.
+          extended_timeout (Union[Unset, bool]): Use extended timeout for large datasets Default: False.
+          validate_schema (Union[Unset, bool]): Validate source schema against target table Default: True.
+          source_type (Union[Literal['s3'], Unset]): Source type identifier Default: 's3'.
+          s3_session_token (Union[None, Unset, str]): AWS session token (for temporary credentials)
+          s3_region (Union[None, Unset, str]): S3 region Default: 'us-east-1'.
+          s3_endpoint (Union[None, Unset, str]): Custom S3 endpoint (for S3-compatible storage)
+          s3_url_style (Union[None, S3CopyRequestS3UrlStyleType0, Unset]): S3 URL style (vhost or path)
+          file_format (Union[Unset, S3CopyRequestFileFormat]): File format of the S3 data Default:
+              S3CopyRequestFileFormat.PARQUET.
+          csv_delimiter (Union[None, Unset, str]): CSV delimiter Default: ','.
+          csv_header (Union[None, Unset, bool]): CSV has header row Default: True.
+          csv_quote (Union[None, Unset, str]): CSV quote character Default: '\\"'.
+          csv_escape (Union[None, Unset, str]): CSV escape character Default: '\\'.
+          csv_skip (Union[None, Unset, int]): Number of rows to skip Default: 0.
+          allow_moved_paths (Union[None, Unset, bool]): Allow moved paths for Iceberg tables Default: False.
+          max_file_size_gb (Union[None, Unset, int]): Maximum total file size limit in GB Default: 10.
   """
 
   table_name: str
