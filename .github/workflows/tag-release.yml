@@ -1,12 +1,9 @@
 name: Claude Tag Release
 
-concurrency:
-  group: robosystems-client-tag-release
-  cancel-in-progress: false
-
 on:
   push:
-    branches: [main]
+    branches:
+      - "release/**"
 
 jobs:
   action:
@@ -67,13 +64,8 @@ jobs:
           # Get commit messages (limit to prevent memory issues)
           COMMIT_MESSAGES=$(git log --oneline --no-color $COMMIT_RANGE | head -30)
 
-          # Get file changes focusing on Python patterns
+          # Get file changes (limit to prevent memory issues)
           DETAILED_CHANGES=$(git diff --name-status --no-color $COMMIT_RANGE | head -50)
-
-          # Get Python and config file changes
-          PYTHON_CHANGED=$(git diff --name-only $COMMIT_RANGE | grep -E '\.py$' | grep -v 'test\|spec' | wc -l || echo "0")
-          CONFIG_CHANGED=$(git diff --name-only $COMMIT_RANGE | grep -E '\.(toml|yaml|yml|json|ini)$' | wc -l || echo "0")
-          DOCS_CHANGED=$(git diff --name-only $COMMIT_RANGE | grep -E '\.(md|rst|txt)$' | wc -l || echo "0")
 
           # Get PR references from commit messages
           PR_REFS=$(git log --oneline --no-color $COMMIT_RANGE | grep -oE '#[0-9]+' | sort -u | head -10 || echo "")
@@ -85,9 +77,6 @@ jobs:
           echo "commits_count=$COMMITS_COUNT" >> $GITHUB_OUTPUT
           echo "additions=$ADDITIONS" >> $GITHUB_OUTPUT
           echo "deletions=$DELETIONS" >> $GITHUB_OUTPUT
-          echo "python_changed=$PYTHON_CHANGED" >> $GITHUB_OUTPUT
-          echo "config_changed=$CONFIG_CHANGED" >> $GITHUB_OUTPUT
-          echo "docs_changed=$DOCS_CHANGED" >> $GITHUB_OUTPUT
 
           # Save multiline outputs
           {
@@ -117,19 +106,15 @@ jobs:
 
           # Create analysis prompt for Claude
           cat > /tmp/changelog_prompt.txt << PROMPT_EOF
-          I need you to generate a concise but informative changelog for a Python MCP (Model Context Protocol) tool release.
+          I need you to generate a concise but informative changelog for a software release.
 
           **Release Info:**
-          - Package: RoboSystems Python Client (Python client for RoboSystems financial graph database API)
           - Version: $VERSION
           - Previous Version: $LAST_TAG
           - Files Changed: ${{ steps.analyze-changes.outputs.files_changed }}
           - Commits: ${{ steps.analyze-changes.outputs.commits_count }}
           - Lines Added: ${{ steps.analyze-changes.outputs.additions }}
           - Lines Deleted: ${{ steps.analyze-changes.outputs.deletions }}
-          - Python Files Changed: ${{ steps.analyze-changes.outputs.python_changed }}
-          - Config Files Changed: ${{ steps.analyze-changes.outputs.config_changed }}
-          - Documentation Changed: ${{ steps.analyze-changes.outputs.docs_changed }}
 
           **Recent Commits:**
           ${{ steps.analyze-changes.outputs.commit_messages }}
@@ -140,22 +125,18 @@ jobs:
           **PR References:**
           ${{ steps.analyze-changes.outputs.pr_refs }}
 
-          Please generate a changelog for this Python Client that includes:
-          1. A brief 1-2 sentence summary focusing on functionality improvements
-          2. Key features/improvements (bullet points) - focus on Client capabilities
+          Please generate a changelog that includes:
+          1. A brief 1-2 sentence summary of this release
+          2. Key features/improvements (bullet points)
           3. Breaking changes (if any) - clearly marked with ⚠️
-          4. Notable technical changes (dependencies, performance, API improvements)
-          5. Bug fixes and stability improvements
+          4. Notable technical changes worth mentioning
+          5. Bug fixes (if any)
 
-          Keep it developer-focused since this is a developer Client. Highlight:
-          - New API endpoints and methods
-          - Client improvements and features
-          - Performance optimizations
-          - Type safety and validation enhancements
-          - Integration improvements
-          - Documentation and usage improvements
-
+          Keep it concise but informative. Focus on what users and developers need to know.
           Use markdown formatting. Don't include a version header as that will be added separately.
+          If there are security improvements, highlight them.
+          If this appears to be a maintenance/infrastructure release, emphasize that.
+
           Format your response as clean markdown without any prefix text.
           PROMPT_EOF
 
@@ -193,15 +174,15 @@ jobs:
           if echo "$RESPONSE" | jq -e '.error' > /dev/null; then
             echo "❌ Claude API error: $(echo "$RESPONSE" | jq -r '.error.message')"
             echo "Using fallback changelog"
-            CHANGELOG="## What's Changed\n\n- ${{ steps.analyze-changes.outputs.commits_count }} commits with ${{ steps.analyze-changes.outputs.files_changed }} files changed\n- ${{ steps.analyze-changes.outputs.python_changed }} Python files and ${{ steps.analyze-changes.outputs.config_changed }} config files updated\n- ${{ steps.analyze-changes.outputs.additions }} additions and ${{ steps.analyze-changes.outputs.deletions }} deletions\n\nSee commit history for detailed changes."
+            CHANGELOG="## What's Changed\n\n- ${{ steps.analyze-changes.outputs.commits_count }} commits with ${{ steps.analyze-changes.outputs.files_changed }} files changed\n- ${{ steps.analyze-changes.outputs.additions }} additions and ${{ steps.analyze-changes.outputs.deletions }} deletions\n\nSee commit history for detailed changes."
           else
             # Extract changelog from Claude's response
             CHANGELOG=$(echo "$RESPONSE" | jq -r '.content[0].text')
-            
+
             # Validate that Claude returned meaningful content
             if [ -z "$CHANGELOG" ] || [ "$CHANGELOG" = "null" ]; then
               echo "❌ Claude returned empty changelog, using fallback"
-              CHANGELOG="## What's Changed\n\n- ${{ steps.analyze-changes.outputs.commits_count }} commits with ${{ steps.analyze-changes.outputs.files_changed }} files changed\n- ${{ steps.analyze-changes.outputs.python_changed }} Python files and ${{ steps.analyze-changes.outputs.config_changed }} config files updated\n- ${{ steps.analyze-changes.outputs.additions }} additions and ${{ steps.analyze-changes.outputs.deletions }} deletions\n\nSee commit history for detailed changes."
+              CHANGELOG="## What's Changed\n\n- ${{ steps.analyze-changes.outputs.commits_count }} commits with ${{ steps.analyze-changes.outputs.files_changed }} files changed\n- ${{ steps.analyze-changes.outputs.additions }} additions and ${{ steps.analyze-changes.outputs.deletions }} deletions\n\nSee commit history for detailed changes."
             else
               echo "✅ Claude changelog generated successfully"
             fi
@@ -219,10 +200,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Configure git to use the token for authentication
-          git remote set-url origin https://x-access-token:${{ secrets.ACTIONS_TOKEN }}@github.com/${{ github.repository }}.git
-          
           git tag -a "v${{ steps.get-version.outputs.version }}" -m "Release v${{ steps.get-version.outputs.version }}"
           git push origin "v${{ steps.get-version.outputs.version }}"
 
@@ -233,7 +210,7 @@ jobs:
           tag_name: v${{ steps.get-version.outputs.version }}
           name: Release v${{ steps.get-version.outputs.version }}
           body: |
-            # RoboSystems Python Client v${{ steps.get-version.outputs.version }}
+            # RoboSystems Python SDK v${{ steps.get-version.outputs.version }}
 
             ${{ steps.claude-changelog.outputs.changelog }}
 
@@ -243,26 +220,14 @@ jobs:
 
             - **Commits:** ${{ steps.analyze-changes.outputs.commits_count }}
             - **Files Changed:** ${{ steps.analyze-changes.outputs.files_changed }}
-            - **Python Files Updated:** ${{ steps.analyze-changes.outputs.python_changed }}
-            - **Config Files Updated:** ${{ steps.analyze-changes.outputs.config_changed }}
-            - **Documentation Updated:** ${{ steps.analyze-changes.outputs.docs_changed }}
             - **Lines Added:** ${{ steps.analyze-changes.outputs.additions }}
             - **Lines Deleted:** ${{ steps.analyze-changes.outputs.deletions }}
             - **Previous Release:** ${{ steps.analyze-changes.outputs.last_tag }}
 
             ## 🔗 Links
 
-            - **PyPI Package:** [robosystems-client](https://pypi.org/project/robosystems-client/)
-            - **Full Changelog:** [${{ steps.analyze-changes.outputs.last_tag }}...v${{ steps.get-version.outputs.version }}](https://github.com/${{ github.repository }}/compare/${{ steps.analyze-changes.outputs.last_tag }}...v${{ steps.get-version.outputs.version }})
-            - **All Releases:** [View all releases](https://github.com/${{ github.repository }}/releases)
-
-            ## 🛠️ Installation
-
-            ```bash
-            pip install robosystems-client
-            # or
-            uv add robosystems-client
-            ```
+            - **Full Changelog:** [${{ steps.analyze-changes.outputs.last_tag }}...v${{ steps.get-version.outputs.version }}](https://github.com/RoboFinSystems/robosystems-python-client/compare/${{ steps.analyze-changes.outputs.last_tag }}...v${{ steps.get-version.outputs.version }})
+            - **All Releases:** [View all releases](https://github.com/RoboFinSystems/robosystems-python-client/releases)
 
             ---
             🤖 Generated with [Claude Code](https://claude.ai/code)
@@ -276,17 +241,15 @@ jobs:
         run: |
           VERSION="${{ steps.get-version.outputs.version }}"
 
-          echo "## 🚀 RoboSystems Python Client v$VERSION Released" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Release v$VERSION Created" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Release URL:** [v$VERSION](https://github.com/${{ github.repository }}/releases/tag/v$VERSION)" >> $GITHUB_STEP_SUMMARY
-          echo "**PyPI Package:** [robosystems-client](https://pypi.org/project/robosystems-client/)" >> $GITHUB_STEP_SUMMARY
+          echo "**Release URL:** [v$VERSION](https://github.com/RoboFinSystems/robosystems-python-client/releases/tag/v$VERSION)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📊 Python Tool Statistics" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Statistics" >> $GITHUB_STEP_SUMMARY
           echo "- **Commits:** ${{ steps.analyze-changes.outputs.commits_count }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Files Changed:** ${{ steps.analyze-changes.outputs.files_changed }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Python Files Updated:** ${{ steps.analyze-changes.outputs.python_changed }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Config Files Updated:** ${{ steps.analyze-changes.outputs.config_changed }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Documentation Updated:** ${{ steps.analyze-changes.outputs.docs_changed }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Added:** ${{ steps.analyze-changes.outputs.additions }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Deleted:** ${{ steps.analyze-changes.outputs.deletions }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Previous Release:** ${{ steps.analyze-changes.outputs.last_tag }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🤖 Claude-Generated Changelog" >> $GITHUB_STEP_SUMMARY

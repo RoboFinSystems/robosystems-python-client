@@ -3,12 +3,11 @@ set -e
 
 # Create PR script using GitHub Actions
 # Analyzes current branch changes and creates a comprehensive PR with Claude
-# Usage: ./bin/create-pr [target_branch] [pr_type] [claude_review]
+# Usage: ./bin/tools/create-pr.sh [target_branch] [claude_review]
 
 # Default values
 TARGET_BRANCH=${1:-main}
-PR_TYPE=${2:-release}
-CLAUDE_REVIEW=${3:-true}
+CLAUDE_REVIEW=${2:-true}
 
 # Get current branch
 CURRENT_BRANCH=$(git branch --show-current)
@@ -20,16 +19,25 @@ if [ "$CURRENT_BRANCH" = "$TARGET_BRANCH" ]; then
   exit 1
 fi
 
-# Validate target branch
-if [[ "$TARGET_BRANCH" != "main" && "$TARGET_BRANCH" != "staging" ]]; then
-  echo "❌ Invalid target branch: $TARGET_BRANCH. Use 'main' or 'staging'."
+# Validate target branch (only main is allowed as target)
+if [[ "$TARGET_BRANCH" != "main" ]]; then
+  echo "❌ Invalid target branch: $TARGET_BRANCH. Only 'main' is allowed as target."
   exit 1
 fi
 
-# Validate PR type
-if [[ "$PR_TYPE" != "release" && "$PR_TYPE" != "feature" && "$PR_TYPE" != "bugfix" && "$PR_TYPE" != "hotfix" ]]; then
-  echo "❌ Invalid PR type: $PR_TYPE. Use 'release', 'feature', 'bugfix', or 'hotfix'."
-  exit 1
+# Determine PR type from branch prefix
+if [[ "$CURRENT_BRANCH" == release/* ]]; then
+  PR_TYPE="release"
+elif [[ "$CURRENT_BRANCH" == feature/* ]]; then
+  PR_TYPE="feature"
+elif [[ "$CURRENT_BRANCH" == bugfix/* ]]; then
+  PR_TYPE="bugfix"
+elif [[ "$CURRENT_BRANCH" == hotfix/* ]]; then
+  PR_TYPE="hotfix"
+else
+  # Default to feature for any other branch names
+  PR_TYPE="feature"
+  echo "⚠️  Could not determine PR type from branch name '$CURRENT_BRANCH', defaulting to 'feature'"
 fi
 
 # Validate Claude review parameter
@@ -84,11 +92,16 @@ ATTEMPT=1
 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
     echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Checking for created PR..."
 
-    # Check if workflow failed
-    WORKFLOW_STATUS=$(gh run list --workflow=create-pr.yml --limit=1 --json status --jq '.[0].status' 2>/dev/null || echo "")
-    if [ "$WORKFLOW_STATUS" = "failure" ]; then
-        echo "❌ Workflow failed. Check the GitHub Actions logs:"
+    # Check if the workflow run failed
+    LATEST_RUN_STATUS=$(gh run list --workflow=create-pr.yml --limit=1 --json status --jq '.[0].status' 2>/dev/null || echo "")
+    if [ "$LATEST_RUN_STATUS" = "failure" ] || [ "$LATEST_RUN_STATUS" = "cancelled" ]; then
+        echo "❌ GitHub Actions workflow failed or was cancelled"
+        echo "Check the workflow run details:"
         echo "  gh run list --workflow=create-pr.yml"
+        echo "  gh run view --workflow=create-pr.yml"
+        echo ""
+        echo "You can create the PR manually:"
+        echo "  gh pr create --base $TARGET_BRANCH --head $CURRENT_BRANCH"
         exit 1
     fi
 

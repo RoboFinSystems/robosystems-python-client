@@ -13,7 +13,6 @@ on:
         type: choice
         options:
           - main
-          - staging
         default: main
       pr_type:
         description: "Type of PR"
@@ -106,31 +105,28 @@ jobs:
           # Get commit messages (limit to recent commits)
           COMMIT_MESSAGES=$(git log --oneline --no-color $COMMIT_RANGE | head -20)  # Limit to 20 commits
 
-          # Get detailed changes for analysis
+          # Get detailed changes (limit to prevent memory issues)
           DETAILED_CHANGES=$(git diff $COMMIT_RANGE --name-status --no-color | head -100)  # Limit to 100 files
 
-          # Create analysis prompt for Claude using envsubst
-          export SOURCE_BRANCH TARGET_BRANCH PR_TYPE FILES_CHANGED COMMITS_COUNT COMMIT_MESSAGES DIFF_STATS DETAILED_CHANGES
-
-          cat << 'EOF' > /tmp/pr_analysis_template.txt
+          # Create analysis prompt for Claude
+          cat << 'EOF' > /tmp/pr_analysis_prompt.txt
           I need you to analyze the following git changes and create a comprehensive PR title and description.
 
           **Context:**
-          - Repository: Application codebase
-          - Source Branch: $SOURCE_BRANCH
-          - Target Branch: $TARGET_BRANCH
-          - PR Type: $PR_TYPE
-          - Files Changed: $FILES_CHANGED
-          - Commits: $COMMITS_COUNT
+          - Source Branch: ${SOURCE_BRANCH}
+          - Target Branch: ${TARGET_BRANCH}
+          - PR Type: ${PR_TYPE}
+          - Files Changed: ${FILES_CHANGED}
+          - Commits: ${COMMITS_COUNT}
 
           **Commit Messages:**
-          $COMMIT_MESSAGES
+          ${COMMIT_MESSAGES}
 
           **Diff Statistics:**
-          $DIFF_STATS
+          ${DIFF_STATS}
 
           **Detailed Changes:**
-          $DETAILED_CHANGES
+          ${DETAILED_CHANGES}
 
           Please provide:
           1. A concise, descriptive PR title (50-72 characters)
@@ -149,7 +145,7 @@ jobs:
           EOF
 
           # Create the final prompt by writing directly to a file (avoiding envsubst issues)
-          cat > /tmp/pr_analysis_prompt.txt << PROMPT_EOF
+          cat > /tmp/pr_analysis_prompt_final.txt << PROMPT_EOF
           I need you to analyze the following git changes and create a comprehensive PR title and description.
 
           **Context:**
@@ -183,9 +179,12 @@ jobs:
           DESCRIPTION:
           [your description here]
           PROMPT_EOF
+          mv /tmp/pr_analysis_prompt_final.txt /tmp/pr_analysis_prompt.txt
 
           echo "analysis_prompt_file=/tmp/pr_analysis_prompt.txt" >> $GITHUB_OUTPUT
           echo "commit_range=$COMMIT_RANGE" >> $GITHUB_OUTPUT
+          echo "files_changed=$FILES_CHANGED" >> $GITHUB_OUTPUT
+          echo "commits_count=$COMMITS_COUNT" >> $GITHUB_OUTPUT
 
       - name: Call Claude API
         id: claude
@@ -193,8 +192,8 @@ jobs:
           # Call Claude API with the analysis prompt
           PROMPT=$(cat /tmp/pr_analysis_prompt.txt)
 
-          # Create JSON payload using jq to properly escape content
-          RESPONSE=$(jq -n \
+          # Create a proper JSON payload using jq to handle escaping
+          PAYLOAD=$(jq -n \
             --arg model "claude-sonnet-4-20250514" \
             --arg content "$PROMPT" \
             '{
@@ -206,30 +205,79 @@ jobs:
                   "content": $content
                 }
               ]
-            }' | curl -s -X POST "https://api.anthropic.com/v1/messages" \
-            -H "Content-Type: application/json" \
-            -H "x-api-key: ${{ secrets.ANTHROPIC_API_KEY }}" \
-            -H "anthropic-version: 2023-06-01" \
-            -d @-)
+            }')
 
-          # Check for API errors first
-          if echo "$RESPONSE" | jq -e '.error' > /dev/null; then
-            echo "❌ Claude API error: $(echo "$RESPONSE" | jq -r '.error.message')"
-            exit 1
-          fi
+          # Retry logic with exponential backoff
+          MAX_RETRIES=3
+          RETRY_COUNT=0
+          RETRY_DELAY=5
 
-          # Extract title and description from Claude's response
-          CLAUDE_OUTPUT=$(echo "$RESPONSE" | jq -r '.content[0].text')
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            RESPONSE=$(curl -s -X POST "https://api.anthropic.com/v1/messages" \
+              -H "Content-Type: application/json" \
+              -H "x-api-key: ${{ secrets.ANTHROPIC_API_KEY }}" \
+              -H "anthropic-version: 2023-06-01" \
+              -d "$PAYLOAD")
 
-          # Parse the title and description
-          PR_TITLE=$(echo "$CLAUDE_OUTPUT" | grep "^TITLE:" | sed 's/^TITLE: //')
-          PR_DESCRIPTION=$(echo "$CLAUDE_OUTPUT" | sed -n '/^DESCRIPTION:/,$ p' | sed '1d')
+            # Check for API errors
+            if echo "$RESPONSE" | jq -e '.error' > /dev/null; then
+              ERROR_TYPE=$(echo "$RESPONSE" | jq -r '.error.type // "unknown"')
+              ERROR_MSG=$(echo "$RESPONSE" | jq -r '.error.message // "Unknown error"')
 
-          # Validate that Claude returned meaningful content
-          if [ -z "$PR_TITLE" ] || [ -z "$PR_DESCRIPTION" ]; then
-            echo "❌ Claude returned empty title or description"
-            echo "Raw Claude output: $CLAUDE_OUTPUT"
-            exit 1
+              # Check if it's a rate limit or overload error
+              if [[ "$ERROR_TYPE" == "overloaded_error" ]] || [[ "$ERROR_TYPE" == "rate_limit_error" ]] || [[ "$ERROR_MSG" == *"Overloaded"* ]]; then
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                  echo "⚠️  Claude API overloaded (attempt $RETRY_COUNT/$MAX_RETRIES). Retrying in ${RETRY_DELAY}s..."
+                  sleep $RETRY_DELAY
+                  RETRY_DELAY=$((RETRY_DELAY * 2))  # Exponential backoff
+                  continue
+                else
+                  echo "❌ Claude API error after $MAX_RETRIES attempts: $ERROR_MSG"
+                  echo "Using fallback PR description..."
+                  # Set a fallback description
+                  PR_TITLE="PR: ${{ steps.source-branch.outputs.source_branch }} → ${{ inputs.target_branch }}"
+                  PR_DESCRIPTION="Automated PR from ${{ steps.source-branch.outputs.source_branch }} to ${{ inputs.target_branch }}"$'\n\n'"**Type:** ${{ inputs.pr_type }}"$'\n'"**Files Changed:** ${{ steps.analyze.outputs.files_changed }}"$'\n'"**Commits:** ${{ steps.analyze.outputs.commits_count }}"$'\n\n'"Please review the changes in the Files tab."
+                  break
+                fi
+              else
+                echo "❌ Claude API error: $ERROR_MSG"
+                exit 1
+              fi
+            else
+              # Success - break out of retry loop
+              break
+            fi
+          done
+
+          # Only process Claude response if we didn't use fallback
+          if [ -z "$PR_TITLE" ]; then
+            # Check for successful response
+            if echo "$RESPONSE" | jq -e '.content[0].text' > /dev/null; then
+              # Extract title and description from Claude's response
+              CLAUDE_OUTPUT=$(echo "$RESPONSE" | jq -r '.content[0].text')
+
+              # Parse the title and description
+              PR_TITLE=$(echo "$CLAUDE_OUTPUT" | grep "^TITLE:" | sed 's/^TITLE: //')
+              PR_DESCRIPTION=$(echo "$CLAUDE_OUTPUT" | sed -n '/^DESCRIPTION:/,$ p' | sed '1d')
+
+              # Validate that Claude returned meaningful content
+              if [ -z "$PR_TITLE" ] || [ -z "$PR_DESCRIPTION" ]; then
+                echo "⚠️  Claude returned empty title or description, using fallback"
+                PR_TITLE="PR: ${{ steps.source-branch.outputs.source_branch }} → ${{ inputs.target_branch }}"
+                PR_DESCRIPTION="Automated PR from ${{ steps.source-branch.outputs.source_branch }} to ${{ inputs.target_branch }}"
+                PR_DESCRIPTION="${PR_DESCRIPTION}"$'\n\n'"**Type:** ${{ inputs.pr_type }}"
+                PR_DESCRIPTION="${PR_DESCRIPTION}"$'\n'"**Files Changed:** ${{ steps.analyze.outputs.files_changed }}"
+                PR_DESCRIPTION="${PR_DESCRIPTION}"$'\n'"**Commits:** ${{ steps.analyze.outputs.commits_count }}"
+                PR_DESCRIPTION="${PR_DESCRIPTION}"$'\n\n'"Please review the changes in the Files tab."
+              fi
+            else
+              echo "⚠️  Invalid Claude response format, using fallback"
+              PR_TITLE="PR: ${{ steps.source-branch.outputs.source_branch }} → ${{ inputs.target_branch }}"
+              PR_DESCRIPTION="Automated PR from ${{ steps.source-branch.outputs.source_branch }} to ${{ inputs.target_branch }}"
+              PR_DESCRIPTION="${PR_DESCRIPTION}"$'\n\n'"**Type:** ${{ inputs.pr_type }}"
+              PR_DESCRIPTION="${PR_DESCRIPTION}"$'\n\n'"Please review the changes in the Files tab."
+            fi
           fi
 
           # Save to outputs (escape for JSON)

@@ -46,13 +46,17 @@ format:
 typecheck:
     uv run pyright
 
+# Create a feature branch
+create-feature branch_type="feature" branch_name="" base_branch="main":
+    bin/create-feature {{branch_type}} {{branch_name}} {{base_branch}}
+
 # Version management
 create-release type="patch":
     bin/create-release {{type}}
 
 # Create PR
-create-pr target-branch="main" pr-type="release" claude-review="true":
-    bin/create-pr {{target-branch}} {{pr-type}} {{claude-review}}
+create-pr target_branch="main" claude_review="true":
+    bin/create-pr {{target_branch}} {{claude_review}}
 
 # Build python package locally (for testing)
 build-package:

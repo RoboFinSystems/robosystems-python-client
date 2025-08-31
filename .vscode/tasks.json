@@ -1,139 +1,299 @@
 {
   "version": "2.0.0",
   "tasks": [
-
     {
-      "label": "Install Dependencies",
+      "label": "RoboSystems Python SDK Init",
       "type": "shell",
-      "command": "just install",
-      "problemMatcher": [],
-      "group": "build"
+      "command": "bash",
+      "args": [
+        "-c",
+        "pyenv versions | grep -q \"$(cat .python-version)\" || pyenv install $(cat .python-version) && pip install rust-just uv && just venv"
+      ],
+      "problemMatcher": []
     },
     {
-      "label": "Update Dependencies",
+      "label": "RoboSystems Python SDK Start",
       "type": "shell",
-      "command": "just update",
-      "problemMatcher": [],
-      "group": "build"
+      "command": "just start ${input:profileDocker} ${input:envFile} ${input:buildDocker} ${input:detachedDocker}",
+      "problemMatcher": []
     },
     {
-      "label": "Generate SDK",
+      "label": "RoboSystems Python SDK Stop",
       "type": "shell",
-      "command": "just generate-sdk ${input:apiUrl}",
-      "problemMatcher": [],
-      "group": "build"
+      "command": "just stop ${input:profileDocker}",
+      "problemMatcher": []
+    },
+    {
+      "label": "RoboSystems Python SDK Restart",
+      "type": "shell",
+      "command": "just restart ${input:profileDocker} ${input:envFile}",
+      "problemMatcher": []
+    },
+    {
+      "label": "RoboSystems Python SDK Rebuild",
+      "type": "shell",
+      "command": "just rebuild ${input:profileDocker} ${input:envFile}",
+      "problemMatcher": []
+    },
+    {
+      "label": "RoboSystems Python SDK Install Apps",
+      "type": "shell",
+      "command": "just install-apps",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker Logs",
+      "type": "shell",
+      "command": "just logs ${input:containerName}",
+      "problemMatcher": []
     },
     {
       "label": "Setup Environment",
       "type": "shell",
       "command": "just venv",
-      "problemMatcher": [],
-      "group": "build"
+      "problemMatcher": []
+    },
+    {
+      "label": "Install Dependencies",
+      "type": "shell",
+      "command": "just install",
+      "problemMatcher": []
+    },
+    {
+      "label": "Update Dependencies",
+      "type": "shell",
+      "command": "just update",
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate Secure Key",
+      "type": "shell",
+      "command": "just generate-key",
+      "problemMatcher": []
+    },
+    {
+      "label": "Update Arelle",
+      "type": "shell",
+      "command": "just update-arelle",
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude Code",
+      "type": "shell",
+      "command": "claude --model ${input:claudeModel}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Create PR",
+      "type": "shell",
+      "command": "just create-pr ${input:targetBranch} ${input:claudeReview}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Feature Branch",
+      "type": "shell",
+      "command": "just create-feature ${input:branchType} ${input:branchName} ${input:baseBranch}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Create Release",
+      "type": "shell",
+      "command": "just create-release ${input:versionType} ${input:deployTarget}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Deploy",
+      "type": "shell",
+      "command": "just deploy ${input:environment}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Bastion Tunnel",
+      "type": "shell",
+      "command": "just bastion-tunnel ${input:environment} ${input:tunnelService} ${input:sshKey}",
+      "problemMatcher": []
     },
     {
       "label": "Test",
       "type": "shell",
       "command": "just test",
-      "problemMatcher": [],
-      "group": "test"
+      "problemMatcher": []
+    },
+    {
+      "label": "Test Integration",
+      "type": "shell",
+      "command": "just test-integration",
+      "problemMatcher": []
     },
     {
       "label": "Test All",
       "type": "shell",
       "command": "just test-all",
-      "problemMatcher": [],
-      "group": "test"
+      "problemMatcher": []
     },
     {
       "label": "Lint",
       "type": "shell",
       "command": "just lint",
-      "problemMatcher": [],
-      "group": "test"
-    },
-    {
-      "label": "Lint Fix",
-      "type": "shell",
-      "command": "just lint-fix",
-      "problemMatcher": [],
-      "group": "test"
+      "problemMatcher": []
     },
     {
       "label": "Format",
       "type": "shell",
       "command": "just format",
-      "problemMatcher": [],
-      "group": "test"
-    },
-    {
-      "label": "Type Check",
-      "type": "shell",
-      "command": "just typecheck",
-      "problemMatcher": [],
-      "group": "test"
-    },
-    {
-      "label": "Create Release",
-      "type": "shell",
-      "command": "just create-release ${input:versionType}",
-      "problemMatcher": [],
-      "group": "build"
-    },
-    {
-      "label": "Create PR",
-      "type": "shell",
-      "command": "just create-pr ${input:targetBranch} ${input:prType} ${input:claudeReview}",
-      "problemMatcher": [],
-      "group": "build"
-    },
-    {
-      "label": "Build Package",
-      "type": "shell",
-      "command": "just build-package",
-      "problemMatcher": [],
-      "group": "build"
-    },
-    {
-      "label": "Publish to PyPI",
-      "type": "shell",
-      "command": "just publish-pypi ${input:versionType}",
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      },
       "problemMatcher": []
     },
     {
-      "label": "Clean",
+      "label": "Lint Fix",
       "type": "shell",
-      "command": "just clean",
-      "problemMatcher": [],
-      "group": "build"
+      "command": "just lint-fix",
+      "problemMatcher": []
+    },
+    {
+      "label": "Migrate Up",
+      "type": "shell",
+      "command": "just migrate-up ${input:envFile}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Migrate Down",
+      "type": "shell",
+      "command": "just migrate-down ${input:envFile}",
+      "problemMatcher": []
+    },
+    {
+      "label": "Migrate Remote",
+      "type": "shell",
+      "command": "just migrate-remote ${input:environment} ${input:sshKey}",
+      "problemMatcher": []
     }
   ],
   "inputs": [
     {
-      "id": "apiUrl",
+      "id": "buildDocker",
       "type": "pickString",
-      "description": "Choose API URL for Client generation:",
-      "default": "http://localhost:8000/openapi.json",
+      "description": "Choose Docker build type:",
+      "default": "",
+      "options": ["", "--build"]
+    },
+    {
+      "id": "detachedDocker",
+      "type": "pickString",
+      "description": "Choose Docker run type:",
+      "default": "--detach",
+      "options": ["", "--detach"]
+    },
+    {
+      "id": "envFile",
+      "type": "promptString",
+      "description": "Choose .env file:",
+      "default": ".env"
+    },
+    {
+      "id": "environment",
+      "type": "pickString",
+      "description": "Choose environment:",
+      "default": "prod",
+      "options": ["prod", "staging", "dev", "shared", "local"]
+    },
+    {
+      "id": "profileDocker",
+      "type": "pickString",
+      "description": "Choose Docker profile (use 'robosystems' for full stack):",
+      "default": "robosystems",
       "options": [
-        "http://localhost:8000/openapi.json",
-        "https://staging.api.robosystems.ai/openapi.json",
-        "https://api.robosystems.ai/openapi.json"
+        "robosystems",
+        "all",
+        "dev",
+        "apps",
+        "pg",
+        "valkey",
+        "kuzu",
+        "localstack",
+        "api",
+        "worker",
+        "beat",
+        "observability",
+        "roboledger-app",
+        "roboinvestor-app",
+        "robosystems-app"
+      ]
+    },
+    {
+      "id": "containerName",
+      "type": "pickString",
+      "description": "Choose container:",
+      "default": "worker",
+      "options": [
+        "api",
+        "worker",
+        "beat",
+        "kuzu",
+        "pg-iam",
+        "valkey",
+        "grafana",
+        "prometheus",
+        "otel-collector",
+        "localstack",
+        "roboledger-app",
+        "roboinvestor-app",
+        "robosystems-app"
+      ]
+    },
+    {
+      "id": "sshKey",
+      "type": "promptString",
+      "description": "Choose SSH Key:",
+      "default": ""
+    },
+    {
+      "id": "tunnelService",
+      "type": "pickString",
+      "description": "Choose service to tunnel:",
+      "default": "all",
+      "options": [
+        "all",
+        "postgres",
+        "kuzu",
+        "kuzu-direct",
+        "valkey",
+        "migrate",
+        "runner",
+        "runner-direct"
       ]
     },
     {
       "id": "versionType",
       "type": "pickString",
-      "description": "Version type for release",
-      "options": [
-        "patch",
-        "minor",
-        "major"
-      ],
-      "default": "patch"
+      "description": "Choose version type:",
+      "default": "patch",
+      "options": ["major", "minor", "patch"]
+    },
+    {
+      "id": "branchType",
+      "type": "pickString",
+      "description": "Choose branch type:",
+      "default": "feature",
+      "options": ["feature", "bugfix", "hotfix", "chore", "refactor"]
+    },
+    {
+      "id": "branchName",
+      "type": "promptString",
+      "description": "Enter branch name (will be prefixed with type/):",
+      "default": ""
+    },
+    {
+      "id": "baseBranch",
+      "type": "promptString",
+      "description": "Enter base branch (default: main):",
+      "default": "main"
+    },
+    {
+      "id": "deployTarget",
+      "type": "pickString",
+      "description": "Choose initial deployment target:",
+      "default": "staging",
+      "options": ["staging", "prod", "none"]
     },
     {
       "id": "targetBranch",
@@ -142,18 +302,18 @@
       "default": "main"
     },
     {
-      "id": "prType",
-      "type": "pickString",
-      "description": "Choose PR type:",
-      "default": "release",
-      "options": ["release", "feature", "bugfix", "hotfix"]
-    },
-    {
       "id": "claudeReview",
       "type": "pickString",
       "description": "Request Claude review automatically:",
       "default": "true",
       "options": ["true", "false"]
+    },
+    {
+      "id": "claudeModel",
+      "type": "pickString",
+      "description": "Choose model:",
+      "default": "opus",
+      "options": ["opus", "sonnet"]
     }
   ]
 }
