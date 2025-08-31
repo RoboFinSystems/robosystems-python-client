@@ -98,13 +98,13 @@
     {
       "label": "Create Release",
       "type": "shell",
-      "command": "just create-release ${input:versionType} ${input:deployTarget}",
+      "command": "just create-release ${input:versionType}",
       "problemMatcher": []
     },
     {
-      "label": "Deploy",
+      "label": "Publish to PyPI",
       "type": "shell",
-      "command": "just deploy ${input:environment}",
+      "command": "just publish",
       "problemMatcher": []
     },
     {
@@ -287,13 +287,6 @@
       "type": "promptString",
       "description": "Enter base branch (default: main):",
       "default": "main"
-    },
-    {
-      "id": "deployTarget",
-      "type": "pickString",
-      "description": "Choose initial deployment target:",
-      "default": "staging",
-      "options": ["staging", "prod", "none"]
     },
     {
       "id": "targetBranch",
