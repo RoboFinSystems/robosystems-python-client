@@ -87,7 +87,7 @@ jobs:
           uv sync --all-extras
           
           # Commit and push to main
-          git add pyproject.toml uv.lock
+          git add pyproject.toml
           git commit -m "Bump version from $CURRENT_VERSION to $NEW_VERSION"
           git push origin main
       
