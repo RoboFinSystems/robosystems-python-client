@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       version_type:
-        description: 'Version type'
+        description: "Version type"
         required: true
-        default: 'patch'
+        default: "patch"
         type: choice
         options:
           - major
@@ -16,7 +16,7 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,29 +24,29 @@ jobs:
           ref: main
           fetch-depth: 0
           token: ${{ secrets.ACTIONS_TOKEN }}
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      
+          python-version: "3.12"
+
       - name: Install uv
         uses: astral-sh/setup-uv@v6
-      
+
       - name: Get current version
         id: current-version
         run: |
           CURRENT_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
           echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-      
+
       - name: Calculate new version
         id: new-version
         run: |
           CURRENT_VERSION="${{ steps.current-version.outputs.current_version }}"
           VERSION_TYPE="${{ inputs.version_type }}"
-          
+
           IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
-          
+
           case "$VERSION_TYPE" in
             major)
               major=$((major + 1))
@@ -61,50 +61,50 @@ jobs:
               patch=$((patch + 1))
               ;;
           esac
-          
+
           NEW_VERSION="${major}.${minor}.${patch}"
           BRANCH_NAME="release/${NEW_VERSION}"
-          
+
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
-      
+
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-      
+
       - name: Update main branch version
         run: |
           CURRENT_VERSION="${{ steps.current-version.outputs.current_version }}"
           NEW_VERSION="${{ steps.new-version.outputs.new_version }}"
-          
+
           echo "Updating main branch version from $CURRENT_VERSION to $NEW_VERSION"
-          
+
           # Update version in pyproject.toml
           sed -i "s/^version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" pyproject.toml
-          
+
           # Update lock file
           uv sync --all-extras
-          
+
           # Commit and push to main
           git add pyproject.toml
-          git commit -m "Bump version from $CURRENT_VERSION to $NEW_VERSION"
+          git commit -m "Release v$NEW_VERSION"
           git push origin main
-      
+
       - name: Create release branch
         run: |
           BRANCH_NAME="${{ steps.new-version.outputs.branch_name }}"
-          
+
           echo "Creating release branch: $BRANCH_NAME"
-          
+
           # Create new branch from updated main
           git checkout -b "$BRANCH_NAME"
-          
+
           # Push the release branch
           git push origin "$BRANCH_NAME"
-          
+
           echo "✅ Release branch created: $BRANCH_NAME"
-      
+
       - name: Create summary
         run: |
           echo "## 🚀 Python SDK Release Created" >> $GITHUB_STEP_SUMMARY
