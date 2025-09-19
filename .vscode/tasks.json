@@ -80,7 +80,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Create Feature Branch",
+      "label": "Create Feature",
       "type": "shell",
       "command": "just create-feature ${input:branchType} ${input:branchName} ${input:baseBranch}",
       "problemMatcher": []
