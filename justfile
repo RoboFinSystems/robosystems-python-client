@@ -46,35 +46,6 @@ format:
 typecheck:
     uv run pyright
 
-# Create a feature branch
-create-feature branch_type="feature" branch_name="" base_branch="main":
-    bin/create-feature {{branch_type}} {{branch_name}} {{base_branch}}
-
-# Version management
-create-release type="patch":
-    bin/create-release {{type}}
-
-# Create PR
-create-pr target_branch="main" claude_review="true":
-    bin/create-pr {{target_branch}} {{claude_review}}
-
-# Build python package locally (for testing)
-build-package:
-    python -m build
-
-# Publish to PyPI via GitHub Actions
-publish-pypi type="patch":
-    ./scripts/publish-pypi.sh {{type}}
-
-# Clean up development artifacts
-clean:
-    rm -rf .pytest_cache
-    rm -rf .ruff_cache
-    rm -rf __pycache__
-    rm -rf robosystems_client.egg-info
-    find . -type d -name "__pycache__" -exec rm -rf {} +
-    find . -type f -name "*.pyc" -delete
-
 # Generate SDK from localhost API
 generate-sdk url="http://localhost:8000/openapi.json":
     @echo "🚀 Generating Client from {{url}}..."
@@ -93,6 +64,31 @@ generate-sdk url="http://localhost:8000/openapi.json":
     uv run ruff check . --fix
     @just lint
     @echo "✅ Client generation complete!"
+
+# Build python package locally (for testing)
+build-package:
+    python -m build
+
+# Create a feature branch
+create-feature branch_type="feature" branch_name="" base_branch="main":
+    bin/create-feature {{branch_type}} {{branch_name}} {{base_branch}}
+
+# Version management
+create-release type="patch":
+    bin/create-release {{type}}
+
+# Create PR
+create-pr target_branch="main" claude_review="true":
+    bin/create-pr {{target_branch}} {{claude_review}}
+
+# Clean up development artifacts
+clean:
+    rm -rf .pytest_cache
+    rm -rf .ruff_cache
+    rm -rf __pycache__
+    rm -rf robosystems_client.egg-info
+    find . -type d -name "__pycache__" -exec rm -rf {} +
+    find . -type f -name "*.pyc" -delete
 
 # Show help
 help:
