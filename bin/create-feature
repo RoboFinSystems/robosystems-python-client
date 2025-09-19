@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-# Create feature branch script using GitHub Actions
-# Creates a new feature/bugfix/hotfix branch and checks it out locally
-# Usage: ./bin/tools/create-feature.sh [type] [name] [base_branch]
+# Create feature branch script - local Git operations
+# Creates a new feature/bugfix/hotfix branch locally and pushes to remote
+# Usage: ./bin/create-feature [feature|bugfix|hotfix|chore|refactor] [branch-name] [base-branch]
 
 # Default values
 BRANCH_TYPE=${1:-feature}
@@ -25,14 +25,11 @@ if [ -z "$BRANCH_NAME" ]; then
   exit 1
 fi
 
-# Base branch can be any branch, default to main
-# No validation needed - allow feature branches from any branch
-
 # Sanitize branch name
 SANITIZED_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
 FULL_BRANCH="${BRANCH_TYPE}/${SANITIZED_NAME}"
 
-echo "🚀 Creating feature branch via GitHub Actions..."
+echo "🚀 Creating feature branch locally..."
 echo "📋 Details:"
 echo "  Type: $BRANCH_TYPE"
 echo "  Name: $SANITIZED_NAME"
@@ -54,57 +51,54 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   fi
 fi
 
-echo "🚀 Triggering GitHub Actions workflow to create branch..."
-gh workflow run create-feature.yml \
-  --field branch_type="$BRANCH_TYPE" \
-  --field branch_name="$SANITIZED_NAME" \
-  --field branch_from="$BASE_BRANCH"
+# Fetch latest changes from remote
+echo "📥 Fetching latest changes from remote..."
+git fetch origin
 
-echo "⏳ Waiting for branch to be created..."
+# Check if branch already exists (local or remote)
+if git show-ref --verify --quiet refs/heads/$FULL_BRANCH; then
+  echo "❌ Branch $FULL_BRANCH already exists locally"
+  exit 1
+fi
 
-# Wait for the branch to be created (check every 5 seconds for up to 1 minute)
-MAX_ATTEMPTS=12
-ATTEMPT=1
+if git show-ref --verify --quiet refs/remotes/origin/$FULL_BRANCH; then
+  echo "❌ Branch $FULL_BRANCH already exists on remote"
+  echo "💡 To check it out: git checkout -b $FULL_BRANCH origin/$FULL_BRANCH"
+  exit 1
+fi
 
-while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-    echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Checking if branch exists..."
-    
-    # Fetch latest changes from remote
-    git fetch origin --quiet
-    
-    # Check if the branch exists on remote
-    if git show-ref --verify --quiet refs/remotes/origin/$FULL_BRANCH; then
-        echo "✅ Branch $FULL_BRANCH found! Checking it out..."
-        git checkout $FULL_BRANCH
-        git pull origin $FULL_BRANCH
-        
-        echo "🎉 Successfully checked out $FULL_BRANCH"
-        echo ""
-        echo "📝 Next steps:"
-        echo "  1. Make your changes and commit them"
-        echo "  2. Push your changes: git push origin $FULL_BRANCH"
-        echo "  3. Create a PR to merge into main: just create-pr main $BRANCH_TYPE"
-        
-        # Check if we had stashed changes
-        if git stash list | grep -q "Auto-stash before creating branch $FULL_BRANCH"; then
-            read -p "Do you want to apply your stashed changes? (y/N): " -n 1 -r
-            echo
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                git stash pop
-                echo "✅ Stashed changes applied"
-            fi
-        fi
-        
-        exit 0
-    fi
-    
-    if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-        echo "❌ Timeout: Branch $FULL_BRANCH was not created after 1 minute"
-        echo "Check the GitHub Actions workflow status: gh run list --workflow=create-feature.yml"
-        exit 1
-    fi
-    
-    echo "Branch not yet available, waiting 5 seconds..."
-    sleep 5
-    ATTEMPT=$((ATTEMPT + 1))
-done
+# Check if base branch exists on remote
+if ! git show-ref --verify --quiet refs/remotes/origin/$BASE_BRANCH; then
+  echo "❌ Base branch $BASE_BRANCH does not exist on remote"
+  echo "💡 Available branches:"
+  git branch -r | grep -v HEAD | sed 's/origin\///' | head -10
+  exit 1
+fi
+
+# Create and checkout the new branch from the base branch
+echo "🔨 Creating branch $FULL_BRANCH from origin/$BASE_BRANCH..."
+git checkout -b $FULL_BRANCH origin/$BASE_BRANCH
+
+# Push the new branch to remote with upstream tracking
+echo "📤 Pushing branch to remote..."
+git push -u origin $FULL_BRANCH
+
+echo ""
+echo "🎉 Successfully created and checked out $FULL_BRANCH"
+echo ""
+echo "📝 Next steps:"
+echo "  1. Make your changes and commit them"
+echo "  2. Push your changes: git push"
+echo "  3. Create a PR: gh pr create --base $BASE_BRANCH --title \"Your PR title\" --body \"Your PR description\""
+echo "     or use: just create-pr $BASE_BRANCH $BRANCH_TYPE"
+
+# Check if we had stashed changes
+if git stash list | grep -q "Auto-stash before creating branch $FULL_BRANCH"; then
+  echo ""
+  read -p "Do you want to apply your stashed changes? (y/N): " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    git stash pop
+    echo "✅ Stashed changes applied"
+  fi
+fi
