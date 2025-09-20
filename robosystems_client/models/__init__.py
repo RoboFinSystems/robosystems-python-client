@@ -2,11 +2,26 @@
 
 from .account_info import AccountInfo
 from .add_on_credit_info import AddOnCreditInfo
+from .agent_list_response import AgentListResponse
+from .agent_list_response_agents import AgentListResponseAgents
+from .agent_list_response_agents_additional_property import (
+  AgentListResponseAgentsAdditionalProperty,
+)
 from .agent_message import AgentMessage
+from .agent_metadata_response import AgentMetadataResponse
+from .agent_mode import AgentMode
+from .agent_recommendation import AgentRecommendation
+from .agent_recommendation_request import AgentRecommendationRequest
+from .agent_recommendation_request_context_type_0 import (
+  AgentRecommendationRequestContextType0,
+)
+from .agent_recommendation_response import AgentRecommendationResponse
 from .agent_request import AgentRequest
 from .agent_request_context_type_0 import AgentRequestContextType0
 from .agent_response import AgentResponse
+from .agent_response_error_details_type_0 import AgentResponseErrorDetailsType0
 from .agent_response_metadata_type_0 import AgentResponseMetadataType0
+from .agent_response_tokens_used_type_0 import AgentResponseTokensUsedType0
 from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
 from .auth_response import AuthResponse
@@ -19,6 +34,8 @@ from .backup_response import BackupResponse
 from .backup_restore_request import BackupRestoreRequest
 from .backup_stats_response import BackupStatsResponse
 from .backup_stats_response_backup_formats import BackupStatsResponseBackupFormats
+from .batch_agent_request import BatchAgentRequest
+from .batch_agent_response import BatchAgentResponse
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -46,8 +63,8 @@ from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetada
 from .credit_summary import CreditSummary
 from .credit_summary_response import CreditSummaryResponse
 from .credits_summary_response import CreditsSummaryResponse
-from .credits_summary_response_credits_by_addon_item import (
-  CreditsSummaryResponseCreditsByAddonItem,
+from .credits_summary_response_credits_by_addon_type_0_item import (
+  CreditsSummaryResponseCreditsByAddonType0Item,
 )
 from .custom_schema_definition import CustomSchemaDefinition
 from .custom_schema_definition_metadata import CustomSchemaDefinitionMetadata
@@ -187,6 +204,7 @@ from .schema_validation_response_compatibility_type_0 import (
 )
 from .schema_validation_response_stats_type_0 import SchemaValidationResponseStatsType0
 from .sec_connection_config import SECConnectionConfig
+from .selection_criteria import SelectionCriteria
 from .sso_complete_request import SSOCompleteRequest
 from .sso_exchange_request import SSOExchangeRequest
 from .sso_exchange_response import SSOExchangeResponse
@@ -243,11 +261,22 @@ from .validation_error import ValidationError
 __all__ = (
   "AccountInfo",
   "AddOnCreditInfo",
+  "AgentListResponse",
+  "AgentListResponseAgents",
+  "AgentListResponseAgentsAdditionalProperty",
   "AgentMessage",
+  "AgentMetadataResponse",
+  "AgentMode",
+  "AgentRecommendation",
+  "AgentRecommendationRequest",
+  "AgentRecommendationRequestContextType0",
+  "AgentRecommendationResponse",
   "AgentRequest",
   "AgentRequestContextType0",
   "AgentResponse",
+  "AgentResponseErrorDetailsType0",
   "AgentResponseMetadataType0",
+  "AgentResponseTokensUsedType0",
   "APIKeyInfo",
   "APIKeysResponse",
   "AuthResponse",
@@ -260,6 +289,8 @@ __all__ = (
   "BackupRestoreRequest",
   "BackupStatsResponse",
   "BackupStatsResponseBackupFormats",
+  "BatchAgentRequest",
+  "BatchAgentResponse",
   "CancellationResponse",
   "CancelOperationResponseCanceloperation",
   "CheckCreditBalanceResponseCheckcreditbalance",
@@ -281,7 +312,7 @@ __all__ = (
   "CreateSubgraphRequest",
   "CreateSubgraphRequestMetadataType0",
   "CreditsSummaryResponse",
-  "CreditsSummaryResponseCreditsByAddonItem",
+  "CreditsSummaryResponseCreditsByAddonType0Item",
   "CreditSummary",
   "CreditSummaryResponse",
   "CustomSchemaDefinition",
@@ -374,6 +405,7 @@ __all__ = (
   "SchemaValidationResponseCompatibilityType0",
   "SchemaValidationResponseStatsType0",
   "SECConnectionConfig",
+  "SelectionCriteria",
   "SSOCompleteRequest",
   "SSOExchangeRequest",
   "SSOExchangeResponse",

@@ -23,14 +23,10 @@ class ErrorResponse:
               'timestamp': '2024-01-01T00:00:00Z'}
 
       Attributes:
-          detail (str): Human-readable error message explaining what went wrong Example: Insufficient credits for
-              operation.
-          code (Union[None, Unset, str]): Machine-readable error code for programmatic handling Example:
-              INSUFFICIENT_CREDITS.
-          request_id (Union[None, Unset, str]): Unique request ID for tracking and debugging Example:
-              req_1234567890abcdef.
-          timestamp (Union[None, Unset, datetime.datetime]): Timestamp when the error occurred Example:
-              2024-01-01T00:00:00Z.
+          detail (str): Human-readable error message explaining what went wrong
+          code (Union[None, Unset, str]): Machine-readable error code for programmatic handling
+          request_id (Union[None, Unset, str]): Unique request ID for tracking and debugging
+          timestamp (Union[None, Unset, datetime.datetime]): Timestamp when the error occurred
   """
 
   detail: str

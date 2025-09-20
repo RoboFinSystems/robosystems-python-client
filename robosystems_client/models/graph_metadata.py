@@ -14,11 +14,10 @@ class GraphMetadata:
   """Metadata for graph creation.
 
   Attributes:
-      graph_name (str): Display name for the graph Example: Production Inventory.
-      description (Union[None, Unset, str]): Optional description Example: Main inventory tracking system for
-          production environment.
-      schema_extensions (Union[Unset, list[str]]): Schema extensions to enable Example: ['roboledger'].
-      tags (Union[Unset, list[str]]): Tags for organizing graphs Example: ['production', 'inventory', 'retail'].
+      graph_name (str): Display name for the graph
+      description (Union[None, Unset, str]): Optional description
+      schema_extensions (Union[Unset, list[str]]): Schema extensions to enable
+      tags (Union[Unset, list[str]]): Tags for organizing graphs
   """
 
   graph_name: str

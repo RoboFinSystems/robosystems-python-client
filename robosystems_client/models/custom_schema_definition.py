@@ -21,23 +21,16 @@ T = TypeVar("T", bound="CustomSchemaDefinition")
 
 @_attrs_define
 class CustomSchemaDefinition:
-  """Custom schema definition for user-defined graphs.
+  """Custom schema definition for custom graphs.
 
   Attributes:
-      name (str): Schema name Example: inventory_management.
-      version (Union[Unset, str]): Schema version Default: '1.0.0'. Example: 1.0.0.
-      description (Union[None, Unset, str]): Schema description Example: Inventory management system schema.
-      extends (Union[None, Unset, str]): Base schema to extend (e.g., 'base') Example: base.
-      nodes (Union[Unset, list['CustomSchemaDefinitionNodesItem']]): List of node definitions with properties Example:
-          [{'name': 'Product', 'properties': [{'name': 'sku', 'type': 'STRING', 'is_primary_key': True}, {'name': 'name',
-          'type': 'STRING', 'is_required': True}, {'name': 'price', 'type': 'DOUBLE'}, {'name': 'quantity', 'type':
-          'INT64'}]}, {'name': 'Warehouse', 'properties': [{'name': 'identifier', 'type': 'STRING', 'is_primary_key':
-          True}, {'name': 'location', 'type': 'STRING'}]}].
+      name (str): Schema name
+      version (Union[Unset, str]): Schema version Default: '1.0.0'.
+      description (Union[None, Unset, str]): Schema description
+      extends (Union[None, Unset, str]): Base schema to extend (e.g., 'base')
+      nodes (Union[Unset, list['CustomSchemaDefinitionNodesItem']]): List of node definitions with properties
       relationships (Union[Unset, list['CustomSchemaDefinitionRelationshipsItem']]): List of relationship definitions
-          Example: [{'from_node': 'Product', 'name': 'STORED_IN', 'properties': [{'name': 'since', 'type': 'DATE'}],
-          'to_node': 'Warehouse'}].
-      metadata (Union[Unset, CustomSchemaDefinitionMetadata]): Additional schema metadata Example: {'created_by':
-          'inventory_team', 'industry': 'retail'}.
+      metadata (Union[Unset, CustomSchemaDefinitionMetadata]): Additional schema metadata
   """
 
   name: str

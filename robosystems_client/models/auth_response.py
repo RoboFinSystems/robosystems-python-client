@@ -1,8 +1,10 @@
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.auth_response_user import AuthResponseUser
@@ -18,12 +20,12 @@ class AuthResponse:
   Attributes:
       user (AuthResponseUser): User information
       message (str): Success message
-      token (str): JWT authentication token
+      token (Union[None, Unset, str]): JWT authentication token (optional for cookie-based auth)
   """
 
   user: "AuthResponseUser"
   message: str
-  token: str
+  token: Union[None, Unset, str] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -31,7 +33,11 @@ class AuthResponse:
 
     message = self.message
 
-    token = self.token
+    token: Union[None, Unset, str]
+    if isinstance(self.token, Unset):
+      token = UNSET
+    else:
+      token = self.token
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -39,9 +45,10 @@ class AuthResponse:
       {
         "user": user,
         "message": message,
-        "token": token,
       }
     )
+    if token is not UNSET:
+      field_dict["token"] = token
 
     return field_dict
 
@@ -54,7 +61,14 @@ class AuthResponse:
 
     message = d.pop("message")
 
-    token = d.pop("token")
+    def _parse_token(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
+
+    token = _parse_token(d.pop("token", UNSET))
 
     auth_response = cls(
       user=user,

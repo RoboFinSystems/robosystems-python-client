@@ -23,14 +23,11 @@ class SchemaExportResponse:
   """Response model for schema export.
 
   Attributes:
-      graph_id (str): Graph ID Example: kg1a2b3c4d5.
-      schema_definition (Union['SchemaExportResponseSchemaDefinitionType0', str]): Exported schema definition Example:
-          {'name': 'kg1a2b3c4d5_schema', 'nodes': [{'name': 'Entity', 'properties': []}], 'relationships': [], 'version':
-          '1.0.0'}.
-      format_ (str): Export format used Example: json.
-      exported_at (str): Export timestamp Example: 2024-01-15T10:30:00Z.
-      data_stats (Union['SchemaExportResponseDataStatsType0', None, Unset]): Data statistics if requested Example:
-          {'node_counts': {'Entity': 1, 'Report': 25}, 'total_nodes': 26}.
+      graph_id (str): Graph ID
+      schema_definition (Union['SchemaExportResponseSchemaDefinitionType0', str]): Exported schema definition
+      format_ (str): Export format used
+      exported_at (str): Export timestamp
+      data_stats (Union['SchemaExportResponseDataStatsType0', None, Unset]): Data statistics if requested
   """
 
   graph_id: str

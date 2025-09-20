@@ -21,7 +21,7 @@ class SuccessResponse:
       {'data': {'deleted_count': 1}, 'message': 'Resource deleted successfully', 'success': True}
 
   Attributes:
-      message (str): Human-readable success message Example: Operation completed successfully.
+      message (str): Human-readable success message
       success (Union[Unset, bool]): Indicates the operation completed successfully Default: True.
       data (Union['SuccessResponseDataType0', None, Unset]): Optional additional data related to the operation
   """

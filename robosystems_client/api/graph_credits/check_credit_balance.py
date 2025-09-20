@@ -17,7 +17,7 @@ def _get_kwargs(
   graph_id: str,
   *,
   operation_type: str,
-  base_cost: Union[None, Unset, float] = UNSET,
+  base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
@@ -33,7 +33,7 @@ def _get_kwargs(
 
   params["operation_type"] = operation_type
 
-  json_base_cost: Union[None, Unset, float]
+  json_base_cost: Union[None, Unset, float, str]
   if isinstance(base_cost, Unset):
     json_base_cost = UNSET
   else:
@@ -108,7 +108,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   operation_type: str,
-  base_cost: Union[None, Unset, float] = UNSET,
+  base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
@@ -133,7 +133,8 @@ def sync_detailed(
   Args:
       graph_id (str): Graph database identifier
       operation_type (str): Type of operation to check
-      base_cost (Union[None, Unset, float]): Custom base cost (uses default if not provided)
+      base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
+          provided)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -165,7 +166,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   operation_type: str,
-  base_cost: Union[None, Unset, float] = UNSET,
+  base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
@@ -190,7 +191,8 @@ def sync(
   Args:
       graph_id (str): Graph database identifier
       operation_type (str): Type of operation to check
-      base_cost (Union[None, Unset, float]): Custom base cost (uses default if not provided)
+      base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
+          provided)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -217,7 +219,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   operation_type: str,
-  base_cost: Union[None, Unset, float] = UNSET,
+  base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
@@ -242,7 +244,8 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Graph database identifier
       operation_type (str): Type of operation to check
-      base_cost (Union[None, Unset, float]): Custom base cost (uses default if not provided)
+      base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
+          provided)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
@@ -272,7 +275,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   operation_type: str,
-  base_cost: Union[None, Unset, float] = UNSET,
+  base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
@@ -297,7 +300,8 @@ async def asyncio(
   Args:
       graph_id (str): Graph database identifier
       operation_type (str): Type of operation to check
-      base_cost (Union[None, Unset, float]): Custom base cost (uses default if not provided)
+      base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
+          provided)
       authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
