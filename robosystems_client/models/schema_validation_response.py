@@ -23,14 +23,14 @@ class SchemaValidationResponse:
   """Response model for schema validation.
 
   Attributes:
-      valid (bool): Whether the schema is valid Example: True.
-      message (str): Validation message Example: Schema is valid with 1 warning(s).
+      valid (bool): Whether the schema is valid
+      message (str): Validation message
       errors (Union[None, Unset, list[str]]): List of validation errors
-      warnings (Union[None, Unset, list[str]]): List of warnings Example: ['Schema has no relationships defined'].
+      warnings (Union[None, Unset, list[str]]): List of warnings
       stats (Union['SchemaValidationResponseStatsType0', None, Unset]): Schema statistics (nodes, relationships,
-          properties) Example: {'nodes': 2, 'primary_keys': 2, 'relationships': 1, 'total_properties': 6}.
+          properties)
       compatibility (Union['SchemaValidationResponseCompatibilityType0', None, Unset]): Compatibility check results if
-          requested Example: {'checked_extensions': ['roboledger'], 'compatible': True, 'conflicts': []}.
+          requested
   """
 
   valid: bool

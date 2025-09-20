@@ -20,8 +20,8 @@ class HealthStatus:
   """Health check status information.
 
   Attributes:
-      status (str): Current health status Example: healthy.
-      timestamp (datetime.datetime): Time of health check Example: 2024-01-01T00:00:00Z.
+      status (str): Current health status
+      timestamp (datetime.datetime): Time of health check
       details (Union['HealthStatusDetailsType0', None, Unset]): Additional health check details
   """
 

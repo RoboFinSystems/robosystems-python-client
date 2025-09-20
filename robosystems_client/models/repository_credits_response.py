@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union
+from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -20,26 +20,36 @@ class RepositoryCreditsResponse:
   Attributes:
       repository (str): Repository identifier
       has_access (bool): Whether user has access
-      message (Union[Unset, str]): Access message
-      credits_ (Union[Unset, CreditSummary]): Credit balance summary.
+      message (Union[None, Unset, str]): Access message
+      credits_ (Union['CreditSummary', None, Unset]): Credit summary if access available
   """
 
   repository: str
   has_access: bool
-  message: Union[Unset, str] = UNSET
-  credits_: Union[Unset, "CreditSummary"] = UNSET
+  message: Union[None, Unset, str] = UNSET
+  credits_: Union["CreditSummary", None, Unset] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.credit_summary import CreditSummary
+
     repository = self.repository
 
     has_access = self.has_access
 
-    message = self.message
+    message: Union[None, Unset, str]
+    if isinstance(self.message, Unset):
+      message = UNSET
+    else:
+      message = self.message
 
-    credits_: Union[Unset, dict[str, Any]] = UNSET
-    if not isinstance(self.credits_, Unset):
+    credits_: Union[None, Unset, dict[str, Any]]
+    if isinstance(self.credits_, Unset):
+      credits_ = UNSET
+    elif isinstance(self.credits_, CreditSummary):
       credits_ = self.credits_.to_dict()
+    else:
+      credits_ = self.credits_
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -65,14 +75,31 @@ class RepositoryCreditsResponse:
 
     has_access = d.pop("has_access")
 
-    message = d.pop("message", UNSET)
+    def _parse_message(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
 
-    _credits_ = d.pop("credits", UNSET)
-    credits_: Union[Unset, CreditSummary]
-    if isinstance(_credits_, Unset):
-      credits_ = UNSET
-    else:
-      credits_ = CreditSummary.from_dict(_credits_)
+    message = _parse_message(d.pop("message", UNSET))
+
+    def _parse_credits_(data: object) -> Union["CreditSummary", None, Unset]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        credits_type_0 = CreditSummary.from_dict(data)
+
+        return credits_type_0
+      except:  # noqa: E722
+        pass
+      return cast(Union["CreditSummary", None, Unset], data)
+
+    credits_ = _parse_credits_(d.pop("credits", UNSET))
 
     repository_credits_response = cls(
       repository=repository,

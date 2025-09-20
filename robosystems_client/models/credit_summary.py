@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union
+from typing import Any, TypeVar, Union, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -21,8 +21,8 @@ class CreditSummary:
       rollover_credits (float): Credits rolled over from previous month
       allows_rollover (bool): Whether rollover is allowed
       is_active (bool): Whether credit pool is active
-      last_allocation_date (Union[Unset, str]): Last allocation date (ISO format)
-      next_allocation_date (Union[Unset, str]): Next allocation date (ISO format)
+      last_allocation_date (Union[None, Unset, str]): Last allocation date (ISO format)
+      next_allocation_date (Union[None, Unset, str]): Next allocation date (ISO format)
   """
 
   current_balance: float
@@ -32,8 +32,8 @@ class CreditSummary:
   rollover_credits: float
   allows_rollover: bool
   is_active: bool
-  last_allocation_date: Union[Unset, str] = UNSET
-  next_allocation_date: Union[Unset, str] = UNSET
+  last_allocation_date: Union[None, Unset, str] = UNSET
+  next_allocation_date: Union[None, Unset, str] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -51,9 +51,17 @@ class CreditSummary:
 
     is_active = self.is_active
 
-    last_allocation_date = self.last_allocation_date
+    last_allocation_date: Union[None, Unset, str]
+    if isinstance(self.last_allocation_date, Unset):
+      last_allocation_date = UNSET
+    else:
+      last_allocation_date = self.last_allocation_date
 
-    next_allocation_date = self.next_allocation_date
+    next_allocation_date: Union[None, Unset, str]
+    if isinstance(self.next_allocation_date, Unset):
+      next_allocation_date = UNSET
+    else:
+      next_allocation_date = self.next_allocation_date
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -92,9 +100,27 @@ class CreditSummary:
 
     is_active = d.pop("is_active")
 
-    last_allocation_date = d.pop("last_allocation_date", UNSET)
+    def _parse_last_allocation_date(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
 
-    next_allocation_date = d.pop("next_allocation_date", UNSET)
+    last_allocation_date = _parse_last_allocation_date(
+      d.pop("last_allocation_date", UNSET)
+    )
+
+    def _parse_next_allocation_date(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
+
+    next_allocation_date = _parse_next_allocation_date(
+      d.pop("next_allocation_date", UNSET)
+    )
 
     credit_summary = cls(
       current_balance=current_balance,

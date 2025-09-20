@@ -4,12 +4,12 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="CustomSchemaDefinitionMetadata")
+T = TypeVar("T", bound="AgentListResponseAgentsAdditionalProperty")
 
 
 @_attrs_define
-class CustomSchemaDefinitionMetadata:
-  """Additional schema metadata"""
+class AgentListResponseAgentsAdditionalProperty:
+  """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -22,10 +22,10 @@ class CustomSchemaDefinitionMetadata:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    custom_schema_definition_metadata = cls()
+    agent_list_response_agents_additional_property = cls()
 
-    custom_schema_definition_metadata.additional_properties = d
-    return custom_schema_definition_metadata
+    agent_list_response_agents_additional_property.additional_properties = d
+    return agent_list_response_agents_additional_property
 
   @property
   def additional_keys(self) -> list[str]:

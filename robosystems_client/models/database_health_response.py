@@ -14,17 +14,17 @@ class DatabaseHealthResponse:
   """Response model for database health check.
 
   Attributes:
-      graph_id (str): Graph database identifier Example: kg1a2b3c4d5.
-      status (str): Overall health status Example: healthy.
-      connection_status (str): Database connection status Example: connected.
-      uptime_seconds (float): Database uptime in seconds Example: 3600.5.
-      query_count_24h (int): Number of queries executed in last 24 hours Example: 150.
-      avg_query_time_ms (float): Average query execution time in milliseconds Example: 45.2.
-      error_rate_24h (float): Error rate in last 24 hours (percentage) Example: 0.5.
-      last_query_time (Union[None, Unset, str]): Timestamp of last query execution Example: 2024-01-15T10:30:00Z.
-      memory_usage_mb (Union[None, Unset, float]): Memory usage in MB Example: 512.3.
-      storage_usage_mb (Union[None, Unset, float]): Storage usage in MB Example: 1024.7.
-      alerts (Union[Unset, list[str]]): Active alerts or warnings Example: ['High memory usage detected'].
+      graph_id (str): Graph database identifier
+      status (str): Overall health status
+      connection_status (str): Database connection status
+      uptime_seconds (float): Database uptime in seconds
+      query_count_24h (int): Number of queries executed in last 24 hours
+      avg_query_time_ms (float): Average query execution time in milliseconds
+      error_rate_24h (float): Error rate in last 24 hours (percentage)
+      last_query_time (Union[None, Unset, str]): Timestamp of last query execution
+      memory_usage_mb (Union[None, Unset, float]): Memory usage in MB
+      storage_usage_mb (Union[None, Unset, float]): Storage usage in MB
+      alerts (Union[Unset, list[str]]): Active alerts or warnings
   """
 
   graph_id: str

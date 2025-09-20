@@ -14,21 +14,20 @@ class DatabaseInfoResponse:
   """Response model for database information and statistics.
 
   Attributes:
-      graph_id (str): Graph database identifier Example: kg1a2b3c4d5.
-      database_name (str): Database name Example: kg1a2b3c4d5.
-      database_size_bytes (int): Database size in bytes Example: 1048576.
-      database_size_mb (float): Database size in MB Example: 1.0.
-      node_count (int): Total number of nodes Example: 1250.
-      relationship_count (int): Total number of relationships Example: 2340.
-      node_labels (list[str]): List of node labels Example: ['Entity', 'Report', 'Fact'].
-      relationship_types (list[str]): List of relationship types Example: ['HAS_REPORT', 'REPORTED_IN',
-          'HAS_ELEMENT'].
-      created_at (str): Database creation timestamp Example: 2024-01-15T10:00:00Z.
-      last_modified (str): Last modification timestamp Example: 2024-01-15T10:30:00Z.
+      graph_id (str): Graph database identifier
+      database_name (str): Database name
+      database_size_bytes (int): Database size in bytes
+      database_size_mb (float): Database size in MB
+      node_count (int): Total number of nodes
+      relationship_count (int): Total number of relationships
+      node_labels (list[str]): List of node labels
+      relationship_types (list[str]): List of relationship types
+      created_at (str): Database creation timestamp
+      last_modified (str): Last modification timestamp
       read_only (bool): Whether database is read-only
-      backup_count (int): Number of available backups Example: 5.
-      schema_version (Union[None, Unset, str]): Schema version Example: 1.0.0.
-      last_backup_date (Union[None, Unset, str]): Date of last backup Example: 2024-01-15T09:00:00Z.
+      backup_count (int): Number of available backups
+      schema_version (Union[None, Unset, str]): Schema version
+      last_backup_date (Union[None, Unset, str]): Date of last backup
   """
 
   graph_id: str

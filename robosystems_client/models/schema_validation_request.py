@@ -21,12 +21,10 @@ class SchemaValidationRequest:
 
   Attributes:
       schema_definition (Union['SchemaValidationRequestSchemaDefinitionType0', str]): Schema definition as JSON dict
-          or JSON/YAML string Example: {'extends': 'base', 'name': 'inventory_management', 'nodes': [{'name': 'Product',
-          'properties': [{'name': 'sku', 'type': 'STRING', 'is_primary_key': True}, {'name': 'name', 'type': 'STRING',
-          'is_required': True}]}], 'version': '1.0.0'}.
-      format_ (Union[Unset, str]): Schema format: json, yaml, or dict Default: 'json'. Example: json.
+          or JSON/YAML string
+      format_ (Union[Unset, str]): Schema format: json, yaml, or dict Default: 'json'.
       check_compatibility (Union[None, Unset, list[str]]): List of existing schema extensions to check compatibility
-          with Example: ['roboledger'].
+          with
   """
 
   schema_definition: Union["SchemaValidationRequestSchemaDefinitionType0", str]
