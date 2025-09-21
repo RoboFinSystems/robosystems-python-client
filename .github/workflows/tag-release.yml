@@ -37,7 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ inputs.branch_ref }}
           token: ${{ secrets.ACTIONS_TOKEN }}
           fetch-depth: 0
 
