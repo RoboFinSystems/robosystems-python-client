@@ -5,7 +5,7 @@ description = "Python Client for RoboSystems financial graph database API"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    {name = "Harbinger FinLab"},
+    {name = "RFS LLC"},
 ]
 license = {text = "MIT"}
 keywords = ["client", "robosystems", "financial", "graph", "kuzu", "api", "sdk"]
