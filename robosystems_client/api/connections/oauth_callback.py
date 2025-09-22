@@ -17,20 +17,14 @@ def _get_kwargs(
   *,
   body: OAuthCallbackRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/connections/oauth/callback/{provider}",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -91,7 +85,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """OAuth Callback
 
@@ -108,7 +101,7 @@ def sync_detailed(
   - **QuickBooks**: Accounting data integration
 
   Security measures:
-  - State validation prevents CSRF attacks
+  - State validation prevents session hijacking
   - User context is verified
   - Tokens are encrypted before storage
   - Full audit trail is maintained
@@ -119,7 +112,6 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       provider (str): OAuth provider name
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (OAuthCallbackRequest): OAuth callback parameters.
 
   Raises:
@@ -135,7 +127,6 @@ def sync_detailed(
     provider=provider,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -152,7 +143,6 @@ def sync(
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """OAuth Callback
 
@@ -169,7 +159,7 @@ def sync(
   - **QuickBooks**: Accounting data integration
 
   Security measures:
-  - State validation prevents CSRF attacks
+  - State validation prevents session hijacking
   - User context is verified
   - Tokens are encrypted before storage
   - Full audit trail is maintained
@@ -180,7 +170,6 @@ def sync(
       graph_id (str): Graph database identifier
       provider (str): OAuth provider name
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (OAuthCallbackRequest): OAuth callback parameters.
 
   Raises:
@@ -197,7 +186,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -208,7 +196,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """OAuth Callback
 
@@ -225,7 +212,7 @@ async def asyncio_detailed(
   - **QuickBooks**: Accounting data integration
 
   Security measures:
-  - State validation prevents CSRF attacks
+  - State validation prevents session hijacking
   - User context is verified
   - Tokens are encrypted before storage
   - Full audit trail is maintained
@@ -236,7 +223,6 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       provider (str): OAuth provider name
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (OAuthCallbackRequest): OAuth callback parameters.
 
   Raises:
@@ -252,7 +238,6 @@ async def asyncio_detailed(
     provider=provider,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -267,7 +252,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """OAuth Callback
 
@@ -284,7 +268,7 @@ async def asyncio(
   - **QuickBooks**: Accounting data integration
 
   Security measures:
-  - State validation prevents CSRF attacks
+  - State validation prevents session hijacking
   - User context is verified
   - Tokens are encrypted before storage
   - Full audit trail is maintained
@@ -295,7 +279,6 @@ async def asyncio(
       graph_id (str): Graph database identifier
       provider (str): OAuth provider name
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (OAuthCallbackRequest): OAuth callback parameters.
 
   Raises:
@@ -313,6 +296,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

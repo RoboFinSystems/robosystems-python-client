@@ -12,18 +12,18 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
   *,
-  auth_token: Union[None, Unset, str] = UNSET,
+  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
+  headers: dict[str, Any] = {}
+  if not isinstance(authorization, Unset):
+    headers["authorization"] = authorization
 
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": "/v1/auth/logout",
-    "cookies": cookies,
   }
 
+  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -58,14 +58,14 @@ def _build_response(
 def sync_detailed(
   *,
   client: Union[AuthenticatedClient, Client],
-  auth_token: Union[None, Unset, str] = UNSET,
+  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, LogoutUserResponseLogoutuser]]:
   """User Logout
 
    Logout user and invalidate session.
 
   Args:
-      auth_token (Union[None, Unset, str]):
+      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -76,7 +76,7 @@ def sync_detailed(
   """
 
   kwargs = _get_kwargs(
-    auth_token=auth_token,
+    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -89,14 +89,14 @@ def sync_detailed(
 def sync(
   *,
   client: Union[AuthenticatedClient, Client],
-  auth_token: Union[None, Unset, str] = UNSET,
+  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, LogoutUserResponseLogoutuser]]:
   """User Logout
 
    Logout user and invalidate session.
 
   Args:
-      auth_token (Union[None, Unset, str]):
+      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -108,21 +108,21 @@ def sync(
 
   return sync_detailed(
     client=client,
-    auth_token=auth_token,
+    authorization=authorization,
   ).parsed
 
 
 async def asyncio_detailed(
   *,
   client: Union[AuthenticatedClient, Client],
-  auth_token: Union[None, Unset, str] = UNSET,
+  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, LogoutUserResponseLogoutuser]]:
   """User Logout
 
    Logout user and invalidate session.
 
   Args:
-      auth_token (Union[None, Unset, str]):
+      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -133,7 +133,7 @@ async def asyncio_detailed(
   """
 
   kwargs = _get_kwargs(
-    auth_token=auth_token,
+    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -144,14 +144,14 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: Union[AuthenticatedClient, Client],
-  auth_token: Union[None, Unset, str] = UNSET,
+  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, LogoutUserResponseLogoutuser]]:
   """User Logout
 
    Logout user and invalidate session.
 
   Args:
-      auth_token (Union[None, Unset, str]):
+      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -164,6 +164,6 @@ async def asyncio(
   return (
     await asyncio_detailed(
       client=client,
-      auth_token=auth_token,
+      authorization=authorization,
     )
   ).parsed

@@ -18,15 +18,10 @@ def _get_kwargs(
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -45,7 +40,6 @@ def _get_kwargs(
     "method": "post",
     "url": f"/v1/{graph_id}/mcp/call-tool",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -122,7 +116,6 @@ def sync_detailed(
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
 
@@ -166,7 +159,6 @@ def sync_detailed(
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
   Raises:
@@ -183,7 +175,6 @@ def sync_detailed(
     format_=format_,
     test_mode=test_mode,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -201,7 +192,6 @@ def sync(
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
 
@@ -245,7 +235,6 @@ def sync(
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
   Raises:
@@ -263,7 +252,6 @@ def sync(
     format_=format_,
     test_mode=test_mode,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -275,7 +263,6 @@ async def asyncio_detailed(
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
 
@@ -319,7 +306,6 @@ async def asyncio_detailed(
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
   Raises:
@@ -336,7 +322,6 @@ async def asyncio_detailed(
     format_=format_,
     test_mode=test_mode,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -352,7 +337,6 @@ async def asyncio(
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
 
@@ -396,7 +380,6 @@ async def asyncio(
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
   Raises:
@@ -415,6 +398,5 @@ async def asyncio(
       format_=format_,
       test_mode=test_mode,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

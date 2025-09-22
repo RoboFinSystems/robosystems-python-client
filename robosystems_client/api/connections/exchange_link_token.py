@@ -16,20 +16,14 @@ def _get_kwargs(
   *,
   body: ExchangeTokenRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/connections/link/exchange",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -85,7 +79,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: ExchangeTokenRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Exchange Link Token
 
@@ -112,7 +105,6 @@ def sync_detailed(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (ExchangeTokenRequest): Exchange temporary token for permanent credentials.
 
   Raises:
@@ -127,7 +119,6 @@ def sync_detailed(
     graph_id=graph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -143,7 +134,6 @@ def sync(
   client: AuthenticatedClient,
   body: ExchangeTokenRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Exchange Link Token
 
@@ -170,7 +160,6 @@ def sync(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (ExchangeTokenRequest): Exchange temporary token for permanent credentials.
 
   Raises:
@@ -186,7 +175,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -196,7 +184,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: ExchangeTokenRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Exchange Link Token
 
@@ -223,7 +210,6 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (ExchangeTokenRequest): Exchange temporary token for permanent credentials.
 
   Raises:
@@ -238,7 +224,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -252,7 +237,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: ExchangeTokenRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Exchange Link Token
 
@@ -279,7 +263,6 @@ async def asyncio(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (ExchangeTokenRequest): Exchange temporary token for permanent credentials.
 
   Raises:
@@ -296,6 +279,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

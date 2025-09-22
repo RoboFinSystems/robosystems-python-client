@@ -13,8 +13,13 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
   *,
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
+  if not isinstance(authorization, Unset):
+    headers["authorization"] = authorization
+
   cookies = {}
   if auth_token is not UNSET:
     cookies["auth-token"] = auth_token
@@ -25,6 +30,7 @@ def _get_kwargs(
     "cookies": cookies,
   }
 
+  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -63,6 +69,7 @@ def _build_response(
 def sync_detailed(
   *,
   client: Union[AuthenticatedClient, Client],
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
   """Generate SSO Token
@@ -70,6 +77,7 @@ def sync_detailed(
    Generate a temporary SSO token for cross-app authentication.
 
   Args:
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -81,6 +89,7 @@ def sync_detailed(
   """
 
   kwargs = _get_kwargs(
+    authorization=authorization,
     auth_token=auth_token,
   )
 
@@ -94,6 +103,7 @@ def sync_detailed(
 def sync(
   *,
   client: Union[AuthenticatedClient, Client],
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
   """Generate SSO Token
@@ -101,6 +111,7 @@ def sync(
    Generate a temporary SSO token for cross-app authentication.
 
   Args:
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -113,6 +124,7 @@ def sync(
 
   return sync_detailed(
     client=client,
+    authorization=authorization,
     auth_token=auth_token,
   ).parsed
 
@@ -120,6 +132,7 @@ def sync(
 async def asyncio_detailed(
   *,
   client: Union[AuthenticatedClient, Client],
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
   """Generate SSO Token
@@ -127,6 +140,7 @@ async def asyncio_detailed(
    Generate a temporary SSO token for cross-app authentication.
 
   Args:
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -138,6 +152,7 @@ async def asyncio_detailed(
   """
 
   kwargs = _get_kwargs(
+    authorization=authorization,
     auth_token=auth_token,
   )
 
@@ -149,6 +164,7 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: Union[AuthenticatedClient, Client],
+  authorization: Union[None, Unset, str] = UNSET,
   auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
   """Generate SSO Token
@@ -156,6 +172,7 @@ async def asyncio(
    Generate a temporary SSO token for cross-app authentication.
 
   Args:
+      authorization (Union[None, Unset, str]):
       auth_token (Union[None, Unset, str]):
 
   Raises:
@@ -169,6 +186,7 @@ async def asyncio(
   return (
     await asyncio_detailed(
       client=client,
+      authorization=authorization,
       auth_token=auth_token,
     )
   ).parsed

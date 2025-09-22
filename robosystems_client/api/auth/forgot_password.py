@@ -6,24 +6,28 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
+from ...models.forgot_password_request import ForgotPasswordRequest
+from ...models.forgot_password_response_forgotpassword import (
+  ForgotPasswordResponseForgotpassword,
+)
 from ...models.http_validation_error import HTTPValidationError
-from ...models.success_response import SuccessResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
-  graph_id: str,
   *,
-  authorization: Union[None, Unset, str] = UNSET,
+  body: ForgotPasswordRequest,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/user/graphs/{graph_id}/select",
+    "url": "/v1/auth/password/forgot",
   }
+
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
 
   _kwargs["headers"] = headers
   return _kwargs
@@ -31,23 +35,17 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
+) -> Optional[
+  Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]
+]:
   if response.status_code == 200:
-    response_200 = SuccessResponse.from_dict(response.json())
+    response_200 = ForgotPasswordResponseForgotpassword.from_dict(response.json())
 
     return response_200
-  if response.status_code == 403:
-    response_403 = ErrorResponse.from_dict(response.json())
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
 
-    return response_403
-  if response.status_code == 404:
-    response_404 = ErrorResponse.from_dict(response.json())
-
-    return response_404
-  if response.status_code == 500:
-    response_500 = ErrorResponse.from_dict(response.json())
-
-    return response_500
+    return response_429
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -60,7 +58,9 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
+) -> Response[
+  Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -70,30 +70,29 @@ def _build_response(
 
 
 def sync_detailed(
-  graph_id: str,
   *,
-  client: AuthenticatedClient,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
-  """Select User Graph
+  client: Union[AuthenticatedClient, Client],
+  body: ForgotPasswordRequest,
+) -> Response[
+  Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]
+]:
+  """Forgot Password
 
-   Select a specific graph as the active graph for the user.
+   Request password reset email. Always returns success to prevent email enumeration.
 
   Args:
-      graph_id (str):
-      authorization (Union[None, Unset, str]):
+      body (ForgotPasswordRequest): Forgot password request model.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]
+      Response[Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
-    graph_id=graph_id,
-    authorization=authorization,
+    body=body,
   )
 
   response = client.get_httpx_client().request(
@@ -104,59 +103,57 @@ def sync_detailed(
 
 
 def sync(
-  graph_id: str,
   *,
-  client: AuthenticatedClient,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
-  """Select User Graph
+  client: Union[AuthenticatedClient, Client],
+  body: ForgotPasswordRequest,
+) -> Optional[
+  Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]
+]:
+  """Forgot Password
 
-   Select a specific graph as the active graph for the user.
+   Request password reset email. Always returns success to prevent email enumeration.
 
   Args:
-      graph_id (str):
-      authorization (Union[None, Unset, str]):
+      body (ForgotPasswordRequest): Forgot password request model.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, SuccessResponse]
+      Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]
   """
 
   return sync_detailed(
-    graph_id=graph_id,
     client=client,
-    authorization=authorization,
+    body=body,
   ).parsed
 
 
 async def asyncio_detailed(
-  graph_id: str,
   *,
-  client: AuthenticatedClient,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
-  """Select User Graph
+  client: Union[AuthenticatedClient, Client],
+  body: ForgotPasswordRequest,
+) -> Response[
+  Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]
+]:
+  """Forgot Password
 
-   Select a specific graph as the active graph for the user.
+   Request password reset email. Always returns success to prevent email enumeration.
 
   Args:
-      graph_id (str):
-      authorization (Union[None, Unset, str]):
+      body (ForgotPasswordRequest): Forgot password request model.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]
+      Response[Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
-    graph_id=graph_id,
-    authorization=authorization,
+    body=body,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -165,31 +162,30 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-  graph_id: str,
   *,
-  client: AuthenticatedClient,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
-  """Select User Graph
+  client: Union[AuthenticatedClient, Client],
+  body: ForgotPasswordRequest,
+) -> Optional[
+  Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]
+]:
+  """Forgot Password
 
-   Select a specific graph as the active graph for the user.
+   Request password reset email. Always returns success to prevent email enumeration.
 
   Args:
-      graph_id (str):
-      authorization (Union[None, Unset, str]):
+      body (ForgotPasswordRequest): Forgot password request model.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, SuccessResponse]
+      Union[ErrorResponse, ForgotPasswordResponseForgotpassword, HTTPValidationError]
   """
 
   return (
     await asyncio_detailed(
-      graph_id=graph_id,
       client=client,
-      authorization=authorization,
+      body=body,
     )
   ).parsed

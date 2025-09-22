@@ -16,15 +16,10 @@ def _get_kwargs(
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -38,7 +33,6 @@ def _get_kwargs(
     "method": "get",
     "url": f"/v1/{graph_id}/schema/export",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -80,7 +74,6 @@ def sync_detailed(
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, SchemaExportResponse]]:
   """Export Graph Schema
 
@@ -92,7 +85,6 @@ def sync_detailed(
       include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
           Default: False.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -107,7 +99,6 @@ def sync_detailed(
     format_=format_,
     include_data_stats=include_data_stats,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -124,7 +115,6 @@ def sync(
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, SchemaExportResponse]]:
   """Export Graph Schema
 
@@ -136,7 +126,6 @@ def sync(
       include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
           Default: False.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -152,7 +141,6 @@ def sync(
     format_=format_,
     include_data_stats=include_data_stats,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -163,7 +151,6 @@ async def asyncio_detailed(
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, SchemaExportResponse]]:
   """Export Graph Schema
 
@@ -175,7 +162,6 @@ async def asyncio_detailed(
       include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
           Default: False.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -190,7 +176,6 @@ async def asyncio_detailed(
     format_=format_,
     include_data_stats=include_data_stats,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -205,7 +190,6 @@ async def asyncio(
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, SchemaExportResponse]]:
   """Export Graph Schema
 
@@ -217,7 +201,6 @@ async def asyncio(
       include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
           Default: False.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -234,6 +217,5 @@ async def asyncio(
       format_=format_,
       include_data_stats=include_data_stats,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

@@ -14,15 +14,10 @@ def _get_kwargs(
   *,
   from_sequence: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -34,7 +29,6 @@ def _get_kwargs(
     "method": "get",
     "url": f"/v1/operations/{operation_id}/stream",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -83,7 +77,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   from_sequence: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Stream Operation Events
 
@@ -140,7 +133,6 @@ def sync_detailed(
       from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -154,7 +146,6 @@ def sync_detailed(
     operation_id=operation_id,
     from_sequence=from_sequence,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -170,7 +161,6 @@ def sync(
   client: AuthenticatedClient,
   from_sequence: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Stream Operation Events
 
@@ -227,7 +217,6 @@ def sync(
       from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -242,7 +231,6 @@ def sync(
     client=client,
     from_sequence=from_sequence,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -252,7 +240,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   from_sequence: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Stream Operation Events
 
@@ -309,7 +296,6 @@ async def asyncio_detailed(
       from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -323,7 +309,6 @@ async def asyncio_detailed(
     operation_id=operation_id,
     from_sequence=from_sequence,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -337,7 +322,6 @@ async def asyncio(
   client: AuthenticatedClient,
   from_sequence: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Stream Operation Events
 
@@ -394,7 +378,6 @@ async def asyncio(
       from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -410,6 +393,5 @@ async def asyncio(
       client=client,
       from_sequence=from_sequence,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

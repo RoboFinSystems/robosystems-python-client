@@ -5,23 +5,27 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.auth_response import AuthResponse
+from ...models.email_verification_request import EmailVerificationRequest
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.user_usage_summary_response import UserUsageSummaryResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   *,
-  authorization: Union[None, Unset, str] = UNSET,
+  body: EmailVerificationRequest,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
 
   _kwargs: dict[str, Any] = {
-    "method": "get",
-    "url": "/v1/user/analytics/overview",
+    "method": "post",
+    "url": "/v1/auth/email/verify",
   }
+
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
 
   _kwargs["headers"] = headers
   return _kwargs
@@ -29,11 +33,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, UserUsageSummaryResponse]]:
+) -> Optional[Union[AuthResponse, ErrorResponse, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = UserUsageSummaryResponse.from_dict(response.json())
+    response_200 = AuthResponse.from_dict(response.json())
 
     return response_200
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -46,7 +54,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, UserUsageSummaryResponse]]:
+) -> Response[Union[AuthResponse, ErrorResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -57,26 +65,26 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: AuthenticatedClient,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[HTTPValidationError, UserUsageSummaryResponse]]:
-  """Get User Usage Overview
+  client: Union[AuthenticatedClient, Client],
+  body: EmailVerificationRequest,
+) -> Response[Union[AuthResponse, ErrorResponse, HTTPValidationError]]:
+  """Verify Email
 
-   Get a high-level overview of usage statistics for the current user.
+   Verify email address with token from email link. Returns JWT for auto-login.
 
   Args:
-      authorization (Union[None, Unset, str]):
+      body (EmailVerificationRequest): Email verification request model.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, UserUsageSummaryResponse]]
+      Response[Union[AuthResponse, ErrorResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
-    authorization=authorization,
+    body=body,
   )
 
   response = client.get_httpx_client().request(
@@ -88,52 +96,52 @@ def sync_detailed(
 
 def sync(
   *,
-  client: AuthenticatedClient,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[HTTPValidationError, UserUsageSummaryResponse]]:
-  """Get User Usage Overview
+  client: Union[AuthenticatedClient, Client],
+  body: EmailVerificationRequest,
+) -> Optional[Union[AuthResponse, ErrorResponse, HTTPValidationError]]:
+  """Verify Email
 
-   Get a high-level overview of usage statistics for the current user.
+   Verify email address with token from email link. Returns JWT for auto-login.
 
   Args:
-      authorization (Union[None, Unset, str]):
+      body (EmailVerificationRequest): Email verification request model.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, UserUsageSummaryResponse]
+      Union[AuthResponse, ErrorResponse, HTTPValidationError]
   """
 
   return sync_detailed(
     client=client,
-    authorization=authorization,
+    body=body,
   ).parsed
 
 
 async def asyncio_detailed(
   *,
-  client: AuthenticatedClient,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[HTTPValidationError, UserUsageSummaryResponse]]:
-  """Get User Usage Overview
+  client: Union[AuthenticatedClient, Client],
+  body: EmailVerificationRequest,
+) -> Response[Union[AuthResponse, ErrorResponse, HTTPValidationError]]:
+  """Verify Email
 
-   Get a high-level overview of usage statistics for the current user.
+   Verify email address with token from email link. Returns JWT for auto-login.
 
   Args:
-      authorization (Union[None, Unset, str]):
+      body (EmailVerificationRequest): Email verification request model.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, UserUsageSummaryResponse]]
+      Response[Union[AuthResponse, ErrorResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
-    authorization=authorization,
+    body=body,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -143,27 +151,27 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: AuthenticatedClient,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[HTTPValidationError, UserUsageSummaryResponse]]:
-  """Get User Usage Overview
+  client: Union[AuthenticatedClient, Client],
+  body: EmailVerificationRequest,
+) -> Optional[Union[AuthResponse, ErrorResponse, HTTPValidationError]]:
+  """Verify Email
 
-   Get a high-level overview of usage statistics for the current user.
+   Verify email address with token from email link. Returns JWT for auto-login.
 
   Args:
-      authorization (Union[None, Unset, str]):
+      body (EmailVerificationRequest): Email verification request model.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, UserUsageSummaryResponse]
+      Union[AuthResponse, ErrorResponse, HTTPValidationError]
   """
 
   return (
     await asyncio_detailed(
       client=client,
-      authorization=authorization,
+      body=body,
     )
   ).parsed
