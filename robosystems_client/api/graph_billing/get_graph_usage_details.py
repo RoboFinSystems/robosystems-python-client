@@ -18,6 +18,7 @@ def _get_kwargs(
   *,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -39,6 +40,13 @@ def _get_kwargs(
   else:
     json_month = month
   params["month"] = json_month
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -112,6 +120,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
@@ -141,6 +150,7 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -155,6 +165,7 @@ def sync_detailed(
     graph_id=graph_id,
     year=year,
     month=month,
+    token=token,
     authorization=authorization,
   )
 
@@ -171,6 +182,7 @@ def sync(
   client: AuthenticatedClient,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
@@ -200,6 +212,7 @@ def sync(
       graph_id (str): Graph database identifier
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -215,6 +228,7 @@ def sync(
     client=client,
     year=year,
     month=month,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -225,6 +239,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
@@ -254,6 +269,7 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -268,6 +284,7 @@ async def asyncio_detailed(
     graph_id=graph_id,
     year=year,
     month=month,
+    token=token,
     authorization=authorization,
   )
 
@@ -282,6 +299,7 @@ async def asyncio(
   client: AuthenticatedClient,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
@@ -311,6 +329,7 @@ async def asyncio(
       graph_id (str): Graph database identifier
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -327,6 +346,7 @@ async def asyncio(
       client=client,
       year=year,
       month=month,
+      token=token,
       authorization=authorization,
     )
   ).parsed

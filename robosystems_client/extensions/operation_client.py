@@ -71,7 +71,14 @@ class OperationClient:
   def __init__(self, config: Dict[str, Any]):
     self.config = config
     self.base_url = config["base_url"]
+    self.headers = config.get("headers", {})
+    # Get token from config if passed by parent
+    self.token = config.get("token")
     self.active_operations: Dict[str, SSEClient] = {}
+    # Thread safety for operations tracking
+    import threading
+
+    self._lock = threading.Lock()
 
   def monitor_operation(
     self, operation_id: str, options: MonitorOptions = None
@@ -144,7 +151,8 @@ class OperationClient:
     # Connect and monitor
     try:
       sse_client.connect(operation_id)
-      self.active_operations[operation_id] = sse_client
+      with self._lock:
+        self.active_operations[operation_id] = sse_client
 
       # Wait for completion
       import time
@@ -166,10 +174,11 @@ class OperationClient:
         time.sleep(options.poll_interval or 0.1)
 
     finally:
-      # Clean up
-      if operation_id in self.active_operations:
-        self.active_operations[operation_id].close()
-        del self.active_operations[operation_id]
+      # Clean up with thread safety
+      with self._lock:
+        if operation_id in self.active_operations:
+          self.active_operations[operation_id].close()
+          del self.active_operations[operation_id]
 
     return result
 
@@ -179,11 +188,16 @@ class OperationClient:
     from ..api.operations.get_operation_status import (
       sync_detailed as get_operation_status,
     )
-    from ..client import AuthenticatedClient
+    from ..client import Client
 
-    client = AuthenticatedClient(base_url=self.base_url)
+    # Use regular Client with headers instead of AuthenticatedClient
+    client = Client(base_url=self.base_url, headers=self.headers)
     try:
-      response = get_operation_status(operation_id=operation_id, client=client)
+      kwargs = {"operation_id": operation_id, "client": client}
+      # Only add token if it's a valid string
+      if self.token and isinstance(self.token, str) and self.token.strip():
+        kwargs["token"] = self.token
+      response = get_operation_status(**kwargs)
       if response.parsed:
         return {
           "operation_id": operation_id,
@@ -201,21 +215,27 @@ class OperationClient:
     """Cancel an operation"""
     # This would use the generated SDK to call /v1/operations/{operation_id}/cancel
     from ..api.operations.cancel_operation import sync_detailed as cancel_operation
-    from ..client import AuthenticatedClient
+    from ..client import Client
 
-    client = AuthenticatedClient(base_url=self.base_url)
+    # Use regular Client with headers instead of AuthenticatedClient
+    client = Client(base_url=self.base_url, headers=self.headers)
     try:
-      response = cancel_operation(operation_id=operation_id, client=client)
+      kwargs = {"operation_id": operation_id, "client": client}
+      # Only add token if it's a valid string
+      if self.token and isinstance(self.token, str) and self.token.strip():
+        kwargs["token"] = self.token
+      response = cancel_operation(**kwargs)
       if response.parsed:
         return response.parsed.cancelled or False
     except Exception as e:
       print(f"Failed to cancel operation {operation_id}: {e}")
       return False
 
-    # Also close any active SSE connection
-    if operation_id in self.active_operations:
-      self.active_operations[operation_id].close()
-      del self.active_operations[operation_id]
+    # Also close any active SSE connection with thread safety
+    with self._lock:
+      if operation_id in self.active_operations:
+        self.active_operations[operation_id].close()
+        del self.active_operations[operation_id]
 
     return False
 
@@ -226,15 +246,17 @@ class OperationClient:
 
   def close_all(self):
     """Close all active operation monitors"""
-    for sse_client in self.active_operations.values():
-      sse_client.close()
-    self.active_operations.clear()
+    with self._lock:
+      for sse_client in self.active_operations.values():
+        sse_client.close()
+      self.active_operations.clear()
 
   def close_operation(self, operation_id: str):
     """Close monitoring for a specific operation"""
-    if operation_id in self.active_operations:
-      self.active_operations[operation_id].close()
-      del self.active_operations[operation_id]
+    with self._lock:
+      if operation_id in self.active_operations:
+        self.active_operations[operation_id].close()
+        del self.active_operations[operation_id]
 
 
 class AsyncOperationClient:

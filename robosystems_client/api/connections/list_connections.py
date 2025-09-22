@@ -17,6 +17,7 @@ def _get_kwargs(
   *,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -40,6 +41,13 @@ def _get_kwargs(
   else:
     json_provider = provider
   params["provider"] = json_provider
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -100,6 +108,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
   """List Connections
@@ -123,6 +132,7 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -137,6 +147,7 @@ def sync_detailed(
     graph_id=graph_id,
     entity_id=entity_id,
     provider=provider,
+    token=token,
     authorization=authorization,
   )
 
@@ -153,6 +164,7 @@ def sync(
   client: AuthenticatedClient,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
   """List Connections
@@ -176,6 +188,7 @@ def sync(
       graph_id (str): Graph database identifier
       entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -191,6 +204,7 @@ def sync(
     client=client,
     entity_id=entity_id,
     provider=provider,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -201,6 +215,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
   """List Connections
@@ -224,6 +239,7 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -238,6 +254,7 @@ async def asyncio_detailed(
     graph_id=graph_id,
     entity_id=entity_id,
     provider=provider,
+    token=token,
     authorization=authorization,
   )
 
@@ -252,6 +269,7 @@ async def asyncio(
   client: AuthenticatedClient,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
   """List Connections
@@ -275,6 +293,7 @@ async def asyncio(
       graph_id (str): Graph database identifier
       entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -291,6 +310,7 @@ async def asyncio(
       client=client,
       entity_id=entity_id,
       provider=provider,
+      token=token,
       authorization=authorization,
     )
   ).parsed

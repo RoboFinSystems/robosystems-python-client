@@ -13,15 +13,28 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   subscription_id: str,
   *,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
+  params: dict[str, Any] = {}
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
     "method": "delete",
     "url": f"/v1/user/subscriptions/shared-repositories/{subscription_id}",
+    "params": params,
   }
 
   _kwargs["headers"] = headers
@@ -69,6 +82,7 @@ def sync_detailed(
   subscription_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, CancellationResponse, HTTPValidationError]]:
   """Cancel Subscription
@@ -77,6 +91,7 @@ def sync_detailed(
 
   Args:
       subscription_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -89,6 +104,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     subscription_id=subscription_id,
+    token=token,
     authorization=authorization,
   )
 
@@ -103,6 +119,7 @@ def sync(
   subscription_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, CancellationResponse, HTTPValidationError]]:
   """Cancel Subscription
@@ -111,6 +128,7 @@ def sync(
 
   Args:
       subscription_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -124,6 +142,7 @@ def sync(
   return sync_detailed(
     subscription_id=subscription_id,
     client=client,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -132,6 +151,7 @@ async def asyncio_detailed(
   subscription_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, CancellationResponse, HTTPValidationError]]:
   """Cancel Subscription
@@ -140,6 +160,7 @@ async def asyncio_detailed(
 
   Args:
       subscription_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -152,6 +173,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     subscription_id=subscription_id,
+    token=token,
     authorization=authorization,
   )
 
@@ -164,6 +186,7 @@ async def asyncio(
   subscription_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, CancellationResponse, HTTPValidationError]]:
   """Cancel Subscription
@@ -172,6 +195,7 @@ async def asyncio(
 
   Args:
       subscription_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -186,6 +210,7 @@ async def asyncio(
     await asyncio_detailed(
       subscription_id=subscription_id,
       client=client,
+      token=token,
       authorization=authorization,
     )
   ).parsed

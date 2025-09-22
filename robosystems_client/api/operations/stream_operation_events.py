@@ -13,6 +13,7 @@ def _get_kwargs(
   operation_id: str,
   *,
   from_sequence: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -22,6 +23,13 @@ def _get_kwargs(
   params: dict[str, Any] = {}
 
   params["from_sequence"] = from_sequence
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -76,6 +84,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   from_sequence: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Stream Operation Events
@@ -132,6 +141,7 @@ def sync_detailed(
       operation_id (str): Operation identifier from initial submission
       from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -145,6 +155,7 @@ def sync_detailed(
   kwargs = _get_kwargs(
     operation_id=operation_id,
     from_sequence=from_sequence,
+    token=token,
     authorization=authorization,
   )
 
@@ -160,6 +171,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   from_sequence: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Stream Operation Events
@@ -216,6 +228,7 @@ def sync(
       operation_id (str): Operation identifier from initial submission
       from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -230,6 +243,7 @@ def sync(
     operation_id=operation_id,
     client=client,
     from_sequence=from_sequence,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -239,6 +253,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   from_sequence: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Stream Operation Events
@@ -295,6 +310,7 @@ async def asyncio_detailed(
       operation_id (str): Operation identifier from initial submission
       from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -308,6 +324,7 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     operation_id=operation_id,
     from_sequence=from_sequence,
+    token=token,
     authorization=authorization,
   )
 
@@ -321,6 +338,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   from_sequence: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Stream Operation Events
@@ -377,6 +395,7 @@ async def asyncio(
       operation_id (str): Operation identifier from initial submission
       from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -392,6 +411,7 @@ async def asyncio(
       operation_id=operation_id,
       client=client,
       from_sequence=from_sequence,
+      token=token,
       authorization=authorization,
     )
   ).parsed

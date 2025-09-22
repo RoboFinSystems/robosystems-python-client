@@ -15,6 +15,7 @@ def _get_kwargs(
   graph_id: str,
   *,
   include_details: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -24,6 +25,13 @@ def _get_kwargs(
   params: dict[str, Any] = {}
 
   params["include_details"] = include_details
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -78,6 +86,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   include_details: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Usage Statistics
@@ -110,6 +119,7 @@ def sync_detailed(
       graph_id (str): The graph ID to get usage stats for
       include_details (Union[Unset, bool]): Include detailed metrics (may be slower) Default:
           False.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -123,6 +133,7 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     include_details=include_details,
+    token=token,
     authorization=authorization,
   )
 
@@ -138,6 +149,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   include_details: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Usage Statistics
@@ -170,6 +182,7 @@ def sync(
       graph_id (str): The graph ID to get usage stats for
       include_details (Union[Unset, bool]): Include detailed metrics (may be slower) Default:
           False.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -184,6 +197,7 @@ def sync(
     graph_id=graph_id,
     client=client,
     include_details=include_details,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -193,6 +207,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   include_details: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Usage Statistics
@@ -225,6 +240,7 @@ async def asyncio_detailed(
       graph_id (str): The graph ID to get usage stats for
       include_details (Union[Unset, bool]): Include detailed metrics (may be slower) Default:
           False.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -238,6 +254,7 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     include_details=include_details,
+    token=token,
     authorization=authorization,
   )
 
@@ -251,6 +268,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   include_details: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Usage Statistics
@@ -283,6 +301,7 @@ async def asyncio(
       graph_id (str): The graph ID to get usage stats for
       include_details (Union[Unset, bool]): Include detailed metrics (may be slower) Default:
           False.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -298,6 +317,7 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       include_details=include_details,
+      token=token,
       authorization=authorization,
     )
   ).parsed

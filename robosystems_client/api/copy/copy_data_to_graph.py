@@ -17,15 +17,28 @@ def _get_kwargs(
   graph_id: str,
   *,
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
+  params: dict[str, Any] = {}
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/copy",
+    "params": params,
   }
 
   _kwargs["json"]: dict[str, Any]
@@ -96,6 +109,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, CopyResponse, HTTPValidationError]]:
   """Copy Data to Graph
@@ -162,6 +176,7 @@ def sync_detailed(
   Args:
       graph_id (str): Target graph identifier (user graphs only - shared repositories not
           allowed)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (Union['DataFrameCopyRequest', 'S3CopyRequest', 'URLCopyRequest']):
 
@@ -176,6 +191,7 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -191,6 +207,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, CopyResponse, HTTPValidationError]]:
   """Copy Data to Graph
@@ -257,6 +274,7 @@ def sync(
   Args:
       graph_id (str): Target graph identifier (user graphs only - shared repositories not
           allowed)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (Union['DataFrameCopyRequest', 'S3CopyRequest', 'URLCopyRequest']):
 
@@ -272,6 +290,7 @@ def sync(
     graph_id=graph_id,
     client=client,
     body=body,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -281,6 +300,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, CopyResponse, HTTPValidationError]]:
   """Copy Data to Graph
@@ -347,6 +367,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Target graph identifier (user graphs only - shared repositories not
           allowed)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (Union['DataFrameCopyRequest', 'S3CopyRequest', 'URLCopyRequest']):
 
@@ -361,6 +382,7 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -374,6 +396,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: Union["DataFrameCopyRequest", "S3CopyRequest", "URLCopyRequest"],
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, CopyResponse, HTTPValidationError]]:
   """Copy Data to Graph
@@ -440,6 +463,7 @@ async def asyncio(
   Args:
       graph_id (str): Target graph identifier (user graphs only - shared repositories not
           allowed)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (Union['DataFrameCopyRequest', 'S3CopyRequest', 'URLCopyRequest']):
 
@@ -456,6 +480,7 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       body=body,
+      token=token,
       authorization=authorization,
     )
   ).parsed

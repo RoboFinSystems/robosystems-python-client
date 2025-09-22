@@ -71,7 +71,7 @@ class TestAuthenticatedIntegration:
     )
     assert ext.config["headers"]["Authorization"] == "Bearer jwt_token_here"
 
-  @patch("robosystems_client.extensions.auth_integration.sync_detailed")
+  @patch("robosystems_client.api.query.execute_cypher_query.sync_detailed")
   def test_cypher_query_execution(self, mock_sync_detailed, extensions):
     """Test executing Cypher queries through authenticated client"""
     # Mock the response

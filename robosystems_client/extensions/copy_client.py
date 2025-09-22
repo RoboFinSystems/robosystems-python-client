@@ -74,11 +74,10 @@ class CopyClient:
   def __init__(self, config: Dict[str, Any]):
     self.config = config
     self.base_url = config["base_url"]
+    self.headers = config.get("headers", {})
+    # Get token from config if passed by parent
+    self.token = config.get("token")
     self.sse_client: Optional[SSEClient] = None
-
-    # Get client authentication if provided
-    self.auth_token = config.get("auth_token")
-    self.api_key = config.get("api_key")
 
   def copy_from_s3(
     self, graph_id: str, request: S3CopyRequest, options: Optional[CopyOptions] = None
@@ -115,18 +114,18 @@ class CopyClient:
     start_time = time.time()
 
     # Import client here to avoid circular imports
-    from ..client import AuthenticatedClient
+    from ..client import Client
 
-    # Create authenticated client
-    client = AuthenticatedClient(
-      base_url=self.base_url,
-      token=self.auth_token,
-      headers={"X-API-Key": self.api_key} if self.api_key else None,
-    )
+    # Create client with headers
+    client = Client(base_url=self.base_url, headers=self.headers)
 
     try:
-      # Execute the copy request
-      response = copy_data_to_graph(graph_id=graph_id, client=client, body=request)
+      # Execute the copy request with token if available
+      kwargs = {"graph_id": graph_id, "client": client, "body": request}
+      # Only add token if it's a valid string
+      if self.token and isinstance(self.token, str) and self.token.strip():
+        kwargs["token"] = self.token
+      response = copy_data_to_graph(**kwargs)
 
       if response.parsed:
         response_data: CopyResponse = response.parsed
@@ -164,11 +163,24 @@ class CopyClient:
         )
 
     except Exception as e:
-      return CopyResult(
-        status="failed",
-        error=str(e),
-        execution_time_ms=(time.time() - start_time) * 1000,
-      )
+      error_msg = str(e)
+      # Check for authentication errors
+      if (
+        "401" in error_msg or "403" in error_msg or "unauthorized" in error_msg.lower()
+      ):
+        logger.error(f"Authentication failed during copy operation: {e}")
+        return CopyResult(
+          status="failed",
+          error=f"Authentication failed: {error_msg}",
+          execution_time_ms=(time.time() - start_time) * 1000,
+        )
+      else:
+        logger.error(f"Copy operation failed: {e}")
+        return CopyResult(
+          status="failed",
+          error=error_msg,
+          execution_time_ms=(time.time() - start_time) * 1000,
+        )
 
   def _monitor_copy_operation(
     self, operation_id: str, options: CopyOptions, start_time: float
@@ -449,10 +461,8 @@ class AsyncCopyClient:
     self.config = config
     self.base_url = config["base_url"]
     self.sse_client: Optional[AsyncSSEClient] = None
-
-    # Get client authentication if provided
-    self.auth_token = config.get("auth_token")
-    self.api_key = config.get("api_key")
+    # Get token from config if passed by parent
+    self.token = config.get("token")
 
   async def copy_from_s3(
     self, graph_id: str, request: S3CopyRequest, options: Optional[CopyOptions] = None

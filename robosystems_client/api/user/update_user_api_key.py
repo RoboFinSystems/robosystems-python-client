@@ -15,15 +15,28 @@ def _get_kwargs(
   api_key_id: str,
   *,
   body: UpdateAPIKeyRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
+  params: dict[str, Any] = {}
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
     "method": "put",
     "url": f"/v1/user/api-keys/{api_key_id}",
+    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -67,6 +80,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: UpdateAPIKeyRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[APIKeyInfo, HTTPValidationError]]:
   """Update API Key
@@ -75,6 +89,7 @@ def sync_detailed(
 
   Args:
       api_key_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (UpdateAPIKeyRequest): Request model for updating an API key.
 
@@ -89,6 +104,7 @@ def sync_detailed(
   kwargs = _get_kwargs(
     api_key_id=api_key_id,
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -104,6 +120,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: UpdateAPIKeyRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[APIKeyInfo, HTTPValidationError]]:
   """Update API Key
@@ -112,6 +129,7 @@ def sync(
 
   Args:
       api_key_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (UpdateAPIKeyRequest): Request model for updating an API key.
 
@@ -127,6 +145,7 @@ def sync(
     api_key_id=api_key_id,
     client=client,
     body=body,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -136,6 +155,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: UpdateAPIKeyRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[APIKeyInfo, HTTPValidationError]]:
   """Update API Key
@@ -144,6 +164,7 @@ async def asyncio_detailed(
 
   Args:
       api_key_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (UpdateAPIKeyRequest): Request model for updating an API key.
 
@@ -158,6 +179,7 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     api_key_id=api_key_id,
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -171,6 +193,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: UpdateAPIKeyRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[APIKeyInfo, HTTPValidationError]]:
   """Update API Key
@@ -179,6 +202,7 @@ async def asyncio(
 
   Args:
       api_key_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (UpdateAPIKeyRequest): Request model for updating an API key.
 
@@ -195,6 +219,7 @@ async def asyncio(
       api_key_id=api_key_id,
       client=client,
       body=body,
+      token=token,
       authorization=authorization,
     )
   ).parsed

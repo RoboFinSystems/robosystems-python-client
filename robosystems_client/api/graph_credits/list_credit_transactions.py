@@ -20,6 +20,7 @@ def _get_kwargs(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -59,6 +60,13 @@ def _get_kwargs(
   params["limit"] = limit
 
   params["offset"] = offset
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -122,6 +130,7 @@ def sync_detailed(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
   """List Credit Transactions
@@ -152,6 +161,7 @@ def sync_detailed(
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
       limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
       offset (Union[Unset, int]): Number of transactions to skip Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -170,6 +180,7 @@ def sync_detailed(
     end_date=end_date,
     limit=limit,
     offset=offset,
+    token=token,
     authorization=authorization,
   )
 
@@ -190,6 +201,7 @@ def sync(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
   """List Credit Transactions
@@ -220,6 +232,7 @@ def sync(
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
       limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
       offset (Union[Unset, int]): Number of transactions to skip Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -239,6 +252,7 @@ def sync(
     end_date=end_date,
     limit=limit,
     offset=offset,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -253,6 +267,7 @@ async def asyncio_detailed(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
   """List Credit Transactions
@@ -283,6 +298,7 @@ async def asyncio_detailed(
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
       limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
       offset (Union[Unset, int]): Number of transactions to skip Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -301,6 +317,7 @@ async def asyncio_detailed(
     end_date=end_date,
     limit=limit,
     offset=offset,
+    token=token,
     authorization=authorization,
   )
 
@@ -319,6 +336,7 @@ async def asyncio(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
   """List Credit Transactions
@@ -349,6 +367,7 @@ async def asyncio(
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
       limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
       offset (Union[Unset, int]): Number of transactions to skip Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -369,6 +388,7 @@ async def asyncio(
       end_date=end_date,
       limit=limit,
       offset=offset,
+      token=token,
       authorization=authorization,
     )
   ).parsed

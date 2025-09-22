@@ -54,6 +54,47 @@ from .auth_integration import (
   create_development_extensions,
 )
 
+# JWT Token utilities
+from .token_utils import (
+  validate_jwt_format,
+  extract_jwt_from_header,
+  decode_jwt_payload,
+  is_jwt_expired,
+  get_jwt_claims,
+  get_jwt_expiration,
+  extract_token_from_environment,
+  extract_token_from_cookie,
+  find_valid_token,
+  TokenManager,
+  TokenSource,
+)
+
+# DataFrame utilities (optional - requires pandas)
+try:
+  from .dataframe_utils import (
+    query_result_to_dataframe,
+    DataFrameQueryClient,
+    HAS_PANDAS,
+  )
+
+  # Re-export the imported functions for module API
+  from .dataframe_utils import (
+    parse_datetime_columns,
+    stream_to_dataframe as _stream_to_dataframe,
+    dataframe_to_cypher_params,
+    export_query_to_csv,
+    compare_dataframes,
+  )
+except ImportError:
+  HAS_PANDAS = False
+  DataFrameQueryClient = None
+  # Set placeholders for optional functions
+  parse_datetime_columns = None
+  _stream_to_dataframe = None
+  dataframe_to_cypher_params = None
+  export_query_to_csv = None
+  compare_dataframes = None
+
 __all__ = [
   # Core extension classes
   "RoboSystemsExtensions",
@@ -101,6 +142,21 @@ __all__ = [
   "create_extensions",
   "create_production_extensions",
   "create_development_extensions",
+  # JWT Token utilities
+  "validate_jwt_format",
+  "extract_jwt_from_header",
+  "decode_jwt_payload",
+  "is_jwt_expired",
+  "get_jwt_claims",
+  "get_jwt_expiration",
+  "extract_token_from_environment",
+  "extract_token_from_cookie",
+  "find_valid_token",
+  "TokenManager",
+  "TokenSource",
+  # DataFrame utilities (optional)
+  "HAS_PANDAS",
+  "DataFrameQueryClient",
 ]
 
 # Create a default extensions instance
@@ -135,3 +191,17 @@ def copy_from_s3(
   return extensions.copy_from_s3(
     graph_id, table_name, s3_path, access_key_id, secret_access_key, **kwargs
   )
+
+
+# DataFrame convenience functions (if pandas is available)
+if HAS_PANDAS:
+
+  def query_to_dataframe(graph_id: str, query: str, parameters=None, **kwargs):
+    """Execute query and return results as pandas DataFrame"""
+    result = execute_query(graph_id, query, parameters)
+    return query_result_to_dataframe(result, **kwargs)
+
+  def stream_to_dataframe(graph_id: str, query: str, parameters=None, chunk_size=10000):
+    """Stream query results and return as pandas DataFrame"""
+    stream = stream_query(graph_id, query, parameters, chunk_size)
+    return _stream_to_dataframe(stream, chunk_size)

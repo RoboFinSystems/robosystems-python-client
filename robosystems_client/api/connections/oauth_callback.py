@@ -16,15 +16,28 @@ def _get_kwargs(
   provider: str,
   *,
   body: OAuthCallbackRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
+  params: dict[str, Any] = {}
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/connections/oauth/callback/{provider}",
+    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -84,6 +97,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """OAuth Callback
@@ -111,6 +125,7 @@ def sync_detailed(
   Args:
       graph_id (str): Graph database identifier
       provider (str): OAuth provider name
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (OAuthCallbackRequest): OAuth callback parameters.
 
@@ -126,6 +141,7 @@ def sync_detailed(
     graph_id=graph_id,
     provider=provider,
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -142,6 +158,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """OAuth Callback
@@ -169,6 +186,7 @@ def sync(
   Args:
       graph_id (str): Graph database identifier
       provider (str): OAuth provider name
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (OAuthCallbackRequest): OAuth callback parameters.
 
@@ -185,6 +203,7 @@ def sync(
     provider=provider,
     client=client,
     body=body,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -195,6 +214,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """OAuth Callback
@@ -222,6 +242,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Graph database identifier
       provider (str): OAuth provider name
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (OAuthCallbackRequest): OAuth callback parameters.
 
@@ -237,6 +258,7 @@ async def asyncio_detailed(
     graph_id=graph_id,
     provider=provider,
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -251,6 +273,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """OAuth Callback
@@ -278,6 +301,7 @@ async def asyncio(
   Args:
       graph_id (str): Graph database identifier
       provider (str): OAuth provider name
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (OAuthCallbackRequest): OAuth callback parameters.
 
@@ -295,6 +319,7 @@ async def asyncio(
       provider=provider,
       client=client,
       body=body,
+      token=token,
       authorization=authorization,
     )
   ).parsed
