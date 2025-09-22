@@ -19,15 +19,10 @@ def _get_kwargs(
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -51,7 +46,6 @@ def _get_kwargs(
     "method": "get",
     "url": f"/v1/{graph_id}/billing/usage",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -119,7 +113,6 @@ def sync_detailed(
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse, GetGraphUsageDetailsResponseGetgraphusagedetails, HTTPValidationError
@@ -149,7 +142,6 @@ def sync_detailed(
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -164,7 +156,6 @@ def sync_detailed(
     year=year,
     month=month,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -181,7 +172,6 @@ def sync(
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse, GetGraphUsageDetailsResponseGetgraphusagedetails, HTTPValidationError
@@ -211,7 +201,6 @@ def sync(
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -227,7 +216,6 @@ def sync(
     year=year,
     month=month,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -238,7 +226,6 @@ async def asyncio_detailed(
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse, GetGraphUsageDetailsResponseGetgraphusagedetails, HTTPValidationError
@@ -268,7 +255,6 @@ async def asyncio_detailed(
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -283,7 +269,6 @@ async def asyncio_detailed(
     year=year,
     month=month,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -298,7 +283,6 @@ async def asyncio(
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse, GetGraphUsageDetailsResponseGetgraphusagedetails, HTTPValidationError
@@ -328,7 +312,6 @@ async def asyncio(
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -345,6 +328,5 @@ async def asyncio(
       year=year,
       month=month,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

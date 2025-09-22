@@ -85,6 +85,7 @@ from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
 )
 from .detailed_transactions_response_summary import DetailedTransactionsResponseSummary
+from .email_verification_request import EmailVerificationRequest
 from .enhanced_credit_transaction_response import EnhancedCreditTransactionResponse
 from .enhanced_credit_transaction_response_metadata import (
   EnhancedCreditTransactionResponseMetadata,
@@ -92,6 +93,10 @@ from .enhanced_credit_transaction_response_metadata import (
 from .error_response import ErrorResponse
 from .exchange_token_request import ExchangeTokenRequest
 from .exchange_token_request_metadata_type_0 import ExchangeTokenRequestMetadataType0
+from .forgot_password_request import ForgotPasswordRequest
+from .forgot_password_response_forgotpassword import (
+  ForgotPasswordResponseForgotpassword,
+)
 from .get_all_credit_summaries_response_getallcreditsummaries import (
   GetAllCreditSummariesResponseGetallcreditsummaries,
 )
@@ -185,6 +190,11 @@ from .register_request import RegisterRequest
 from .repository_credits_response import RepositoryCreditsResponse
 from .repository_plan import RepositoryPlan
 from .repository_type import RepositoryType
+from .resend_verification_email_response_resendverificationemail import (
+  ResendVerificationEmailResponseResendverificationemail,
+)
+from .reset_password_request import ResetPasswordRequest
+from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
 from .s3_copy_request import S3CopyRequest
 from .s3_copy_request_file_format import S3CopyRequestFileFormat
@@ -330,11 +340,14 @@ __all__ = (
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
+  "EmailVerificationRequest",
   "EnhancedCreditTransactionResponse",
   "EnhancedCreditTransactionResponseMetadata",
   "ErrorResponse",
   "ExchangeTokenRequest",
   "ExchangeTokenRequestMetadataType0",
+  "ForgotPasswordRequest",
+  "ForgotPasswordResponseForgotpassword",
   "GetAllCreditSummariesResponseGetallcreditsummaries",
   "GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits",
   "GetBackupDownloadUrlResponseGetbackupdownloadurl",
@@ -392,6 +405,9 @@ __all__ = (
   "RepositoryCreditsResponse",
   "RepositoryPlan",
   "RepositoryType",
+  "ResendVerificationEmailResponseResendverificationemail",
+  "ResetPasswordRequest",
+  "ResetPasswordValidateResponse",
   "ResponseMode",
   "S3CopyRequest",
   "S3CopyRequestFileFormat",

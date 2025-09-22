@@ -19,15 +19,10 @@ def _get_kwargs(
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -46,7 +41,6 @@ def _get_kwargs(
     "method": "get",
     "url": f"/v1/{graph_id}/credits/balance/check",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -110,7 +104,6 @@ def sync_detailed(
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
@@ -136,7 +129,6 @@ def sync_detailed(
       base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
           provided)
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -151,7 +143,6 @@ def sync_detailed(
     operation_type=operation_type,
     base_cost=base_cost,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -168,7 +159,6 @@ def sync(
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
@@ -194,7 +184,6 @@ def sync(
       base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
           provided)
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -210,7 +199,6 @@ def sync(
     operation_type=operation_type,
     base_cost=base_cost,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -221,7 +209,6 @@ async def asyncio_detailed(
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
@@ -247,7 +234,6 @@ async def asyncio_detailed(
       base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
           provided)
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -262,7 +248,6 @@ async def asyncio_detailed(
     operation_type=operation_type,
     base_cost=base_cost,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -277,7 +262,6 @@ async def asyncio(
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
@@ -303,7 +287,6 @@ async def asyncio(
       base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
           provided)
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -320,6 +303,5 @@ async def asyncio(
       operation_type=operation_type,
       base_cost=base_cost,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

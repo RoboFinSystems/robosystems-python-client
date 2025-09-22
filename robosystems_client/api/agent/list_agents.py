@@ -15,15 +15,10 @@ def _get_kwargs(
   *,
   capability: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -40,7 +35,6 @@ def _get_kwargs(
     "method": "get",
     "url": f"/v1/{graph_id}/agent/list",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -84,7 +78,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   capability: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentListResponse, Any, HTTPValidationError]]:
   """List available agents
 
@@ -103,7 +96,6 @@ def sync_detailed(
       capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -117,7 +109,6 @@ def sync_detailed(
     graph_id=graph_id,
     capability=capability,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -133,7 +124,6 @@ def sync(
   client: AuthenticatedClient,
   capability: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentListResponse, Any, HTTPValidationError]]:
   """List available agents
 
@@ -152,7 +142,6 @@ def sync(
       capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -167,7 +156,6 @@ def sync(
     client=client,
     capability=capability,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -177,7 +165,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   capability: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentListResponse, Any, HTTPValidationError]]:
   """List available agents
 
@@ -196,7 +183,6 @@ async def asyncio_detailed(
       capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -210,7 +196,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     capability=capability,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -224,7 +209,6 @@ async def asyncio(
   client: AuthenticatedClient,
   capability: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentListResponse, Any, HTTPValidationError]]:
   """List available agents
 
@@ -243,7 +227,6 @@ async def asyncio(
       capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -259,6 +242,5 @@ async def asyncio(
       client=client,
       capability=capability,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

@@ -16,20 +16,14 @@ def _get_kwargs(
   *,
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/subgraphs",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -74,7 +68,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, SubgraphResponse]]:
   """Create Subgraph
 
@@ -94,7 +87,6 @@ def sync_detailed(
   Args:
       graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (CreateSubgraphRequest): Request model for creating a subgraph.
 
   Raises:
@@ -109,7 +101,6 @@ def sync_detailed(
     graph_id=graph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -125,7 +116,6 @@ def sync(
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, SubgraphResponse]]:
   """Create Subgraph
 
@@ -145,7 +135,6 @@ def sync(
   Args:
       graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (CreateSubgraphRequest): Request model for creating a subgraph.
 
   Raises:
@@ -161,7 +150,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -171,7 +159,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, SubgraphResponse]]:
   """Create Subgraph
 
@@ -191,7 +178,6 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (CreateSubgraphRequest): Request model for creating a subgraph.
 
   Raises:
@@ -206,7 +192,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -220,7 +205,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, SubgraphResponse]]:
   """Create Subgraph
 
@@ -240,7 +224,6 @@ async def asyncio(
   Args:
       graph_id (str): Parent graph ID (e.g., 'kg1a2b3c4d5')
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (CreateSubgraphRequest): Request model for creating a subgraph.
 
   Raises:
@@ -257,6 +240,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

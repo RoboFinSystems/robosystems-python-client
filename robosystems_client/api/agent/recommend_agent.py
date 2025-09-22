@@ -16,20 +16,14 @@ def _get_kwargs(
   *,
   body: AgentRecommendationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/agent/recommend",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -77,7 +71,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
   """Get agent recommendations
 
@@ -99,7 +92,6 @@ def sync_detailed(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (AgentRecommendationRequest): Request for agent recommendations.
 
   Raises:
@@ -114,7 +106,6 @@ def sync_detailed(
     graph_id=graph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -130,7 +121,6 @@ def sync(
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
   """Get agent recommendations
 
@@ -152,7 +142,6 @@ def sync(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (AgentRecommendationRequest): Request for agent recommendations.
 
   Raises:
@@ -168,7 +157,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -178,7 +166,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
   """Get agent recommendations
 
@@ -200,7 +187,6 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (AgentRecommendationRequest): Request for agent recommendations.
 
   Raises:
@@ -215,7 +201,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -229,7 +214,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
   """Get agent recommendations
 
@@ -251,7 +235,6 @@ async def asyncio(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (AgentRecommendationRequest): Request for agent recommendations.
 
   Raises:
@@ -268,6 +251,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

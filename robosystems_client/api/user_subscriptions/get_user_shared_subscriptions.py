@@ -14,15 +14,10 @@ def _get_kwargs(
   *,
   active_only: Union[Unset, bool] = True,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -34,7 +29,6 @@ def _get_kwargs(
     "method": "get",
     "url": "/v1/user/subscriptions/shared-repositories",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -80,7 +74,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   active_only: Union[Unset, bool] = True,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
   """Get User Subscriptions
 
@@ -89,7 +82,6 @@ def sync_detailed(
   Args:
       active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -102,7 +94,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     active_only=active_only,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -117,7 +108,6 @@ def sync(
   client: AuthenticatedClient,
   active_only: Union[Unset, bool] = True,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
   """Get User Subscriptions
 
@@ -126,7 +116,6 @@ def sync(
   Args:
       active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -140,7 +129,6 @@ def sync(
     client=client,
     active_only=active_only,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -149,7 +137,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   active_only: Union[Unset, bool] = True,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
   """Get User Subscriptions
 
@@ -158,7 +145,6 @@ async def asyncio_detailed(
   Args:
       active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,7 +157,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     active_only=active_only,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -184,7 +169,6 @@ async def asyncio(
   client: AuthenticatedClient,
   active_only: Union[Unset, bool] = True,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
   """Get User Subscriptions
 
@@ -193,7 +177,6 @@ async def asyncio(
   Args:
       active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -208,6 +191,5 @@ async def asyncio(
       client=client,
       active_only=active_only,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

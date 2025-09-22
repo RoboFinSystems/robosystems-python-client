@@ -18,15 +18,10 @@ def _get_kwargs(
   *,
   months: Union[Unset, int] = 6,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -38,7 +33,6 @@ def _get_kwargs(
     "method": "get",
     "url": f"/v1/{graph_id}/billing/history",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -105,7 +99,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   months: Union[Unset, int] = 6,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse,
@@ -135,7 +128,6 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       months (Union[Unset, int]): Number of months to retrieve (1-24) Default: 6.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -149,7 +141,6 @@ def sync_detailed(
     graph_id=graph_id,
     months=months,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -165,7 +156,6 @@ def sync(
   client: AuthenticatedClient,
   months: Union[Unset, int] = 6,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse,
@@ -195,7 +185,6 @@ def sync(
       graph_id (str): Graph database identifier
       months (Union[Unset, int]): Number of months to retrieve (1-24) Default: 6.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -210,7 +199,6 @@ def sync(
     client=client,
     months=months,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -220,7 +208,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   months: Union[Unset, int] = 6,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse,
@@ -250,7 +237,6 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       months (Union[Unset, int]): Number of months to retrieve (1-24) Default: 6.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -264,7 +250,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     months=months,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -278,7 +263,6 @@ async def asyncio(
   client: AuthenticatedClient,
   months: Union[Unset, int] = 6,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse,
@@ -308,7 +292,6 @@ async def asyncio(
       graph_id (str): Graph database identifier
       months (Union[Unset, int]): Number of months to retrieve (1-24) Default: 6.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -324,6 +307,5 @@ async def asyncio(
       client=client,
       months=months,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

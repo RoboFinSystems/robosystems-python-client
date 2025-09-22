@@ -14,20 +14,14 @@ def _get_kwargs(
   *,
   body: CreateGraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": "/v1/create/graph",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -70,7 +64,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateGraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Create New Graph Database
 
@@ -117,7 +110,6 @@ def sync_detailed(
 
   Args:
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
           {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
           'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
@@ -135,7 +127,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -150,7 +141,6 @@ def sync(
   client: AuthenticatedClient,
   body: CreateGraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Create New Graph Database
 
@@ -197,7 +187,6 @@ def sync(
 
   Args:
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
           {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
           'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
@@ -216,7 +205,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -225,7 +213,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateGraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Create New Graph Database
 
@@ -272,7 +259,6 @@ async def asyncio_detailed(
 
   Args:
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
           {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
           'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
@@ -290,7 +276,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -303,7 +288,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateGraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Create New Graph Database
 
@@ -350,7 +334,6 @@ async def asyncio(
 
   Args:
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
           {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
           'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
@@ -370,6 +353,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

@@ -20,20 +20,14 @@ def _get_kwargs(
   *,
   body: SyncConnectionRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/connections/{connection_id}/sync",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -95,7 +89,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[ErrorResponse, HTTPValidationError, SyncConnectionResponseSyncconnection]
 ]:
@@ -130,7 +123,6 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       connection_id (str): Connection identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (SyncConnectionRequest): Request to sync a connection.
 
   Raises:
@@ -146,7 +138,6 @@ def sync_detailed(
     connection_id=connection_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -163,7 +154,6 @@ def sync(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[ErrorResponse, HTTPValidationError, SyncConnectionResponseSyncconnection]
 ]:
@@ -198,7 +188,6 @@ def sync(
       graph_id (str): Graph database identifier
       connection_id (str): Connection identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (SyncConnectionRequest): Request to sync a connection.
 
   Raises:
@@ -215,7 +204,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -226,7 +214,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[ErrorResponse, HTTPValidationError, SyncConnectionResponseSyncconnection]
 ]:
@@ -261,7 +248,6 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       connection_id (str): Connection identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (SyncConnectionRequest): Request to sync a connection.
 
   Raises:
@@ -277,7 +263,6 @@ async def asyncio_detailed(
     connection_id=connection_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -292,7 +277,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[ErrorResponse, HTTPValidationError, SyncConnectionResponseSyncconnection]
 ]:
@@ -327,7 +311,6 @@ async def asyncio(
       graph_id (str): Graph database identifier
       connection_id (str): Connection identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (SyncConnectionRequest): Request to sync a connection.
 
   Raises:
@@ -345,6 +328,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

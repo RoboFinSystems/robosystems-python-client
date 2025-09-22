@@ -18,20 +18,14 @@ def _get_kwargs(
   *,
   body: AgentRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/agent/{agent_type}",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -93,7 +87,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: AgentRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
@@ -110,7 +103,6 @@ def sync_detailed(
       graph_id (str):
       agent_type (str):
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -126,7 +118,6 @@ def sync_detailed(
     agent_type=agent_type,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -143,7 +134,6 @@ def sync(
   client: AuthenticatedClient,
   body: AgentRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
@@ -160,7 +150,6 @@ def sync(
       graph_id (str):
       agent_type (str):
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -177,7 +166,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -188,7 +176,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: AgentRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
@@ -205,7 +192,6 @@ async def asyncio_detailed(
       graph_id (str):
       agent_type (str):
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -221,7 +207,6 @@ async def asyncio_detailed(
     agent_type=agent_type,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -236,7 +221,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: AgentRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
@@ -253,7 +237,6 @@ async def asyncio(
       graph_id (str):
       agent_type (str):
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -271,6 +254,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

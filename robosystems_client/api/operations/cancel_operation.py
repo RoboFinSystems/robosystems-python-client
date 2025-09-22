@@ -16,20 +16,14 @@ def _get_kwargs(
   operation_id: str,
   *,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "delete",
     "url": f"/v1/operations/{operation_id}",
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -81,7 +75,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, CancelOperationResponseCanceloperation, HTTPValidationError]]:
   """Cancel Operation
 
@@ -98,7 +91,6 @@ def sync_detailed(
   Args:
       operation_id (str): Operation identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -111,7 +103,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     operation_id=operation_id,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -126,7 +117,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, CancelOperationResponseCanceloperation, HTTPValidationError]]:
   """Cancel Operation
 
@@ -143,7 +133,6 @@ def sync(
   Args:
       operation_id (str): Operation identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -157,7 +146,6 @@ def sync(
     operation_id=operation_id,
     client=client,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -166,7 +154,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, CancelOperationResponseCanceloperation, HTTPValidationError]]:
   """Cancel Operation
 
@@ -183,7 +170,6 @@ async def asyncio_detailed(
   Args:
       operation_id (str): Operation identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -196,7 +182,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     operation_id=operation_id,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -209,7 +194,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, CancelOperationResponseCanceloperation, HTTPValidationError]]:
   """Cancel Operation
 
@@ -226,7 +210,6 @@ async def asyncio(
   Args:
       operation_id (str): Operation identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -241,6 +224,5 @@ async def asyncio(
       operation_id=operation_id,
       client=client,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

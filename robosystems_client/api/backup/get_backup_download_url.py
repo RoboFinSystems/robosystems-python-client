@@ -18,15 +18,10 @@ def _get_kwargs(
   *,
   expires_in: Union[Unset, int] = 3600,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -38,7 +33,6 @@ def _get_kwargs(
     "method": "get",
     "url": f"/v1/{graph_id}/backups/{backup_id}/download",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -95,7 +89,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
 ]:
@@ -108,7 +101,6 @@ def sync_detailed(
       backup_id (str): Backup identifier
       expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -123,7 +115,6 @@ def sync_detailed(
     backup_id=backup_id,
     expires_in=expires_in,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -140,7 +131,6 @@ def sync(
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
 ]:
@@ -153,7 +143,6 @@ def sync(
       backup_id (str): Backup identifier
       expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -169,7 +158,6 @@ def sync(
     client=client,
     expires_in=expires_in,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -180,7 +168,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
 ]:
@@ -193,7 +180,6 @@ async def asyncio_detailed(
       backup_id (str): Backup identifier
       expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -208,7 +194,6 @@ async def asyncio_detailed(
     backup_id=backup_id,
     expires_in=expires_in,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -223,7 +208,6 @@ async def asyncio(
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
 ]:
@@ -236,7 +220,6 @@ async def asyncio(
       backup_id (str): Backup identifier
       expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -253,6 +236,5 @@ async def asyncio(
       client=client,
       expires_in=expires_in,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

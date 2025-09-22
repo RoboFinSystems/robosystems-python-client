@@ -16,15 +16,10 @@ def _get_kwargs(
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
 
   params: dict[str, Any] = {}
 
@@ -38,7 +33,6 @@ def _get_kwargs(
     "method": "get",
     "url": f"/v1/{graph_id}/backups",
     "params": params,
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -80,7 +74,6 @@ def sync_detailed(
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
 
@@ -91,7 +84,6 @@ def sync_detailed(
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -106,7 +98,6 @@ def sync_detailed(
     limit=limit,
     offset=offset,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -123,7 +114,6 @@ def sync(
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
 
@@ -134,7 +124,6 @@ def sync(
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -150,7 +139,6 @@ def sync(
     limit=limit,
     offset=offset,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -161,7 +149,6 @@ async def asyncio_detailed(
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
 
@@ -172,7 +159,6 @@ async def asyncio_detailed(
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -187,7 +173,6 @@ async def asyncio_detailed(
     limit=limit,
     offset=offset,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -202,7 +187,6 @@ async def asyncio(
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
 
@@ -213,7 +197,6 @@ async def asyncio(
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -230,6 +213,5 @@ async def asyncio(
       limit=limit,
       offset=offset,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

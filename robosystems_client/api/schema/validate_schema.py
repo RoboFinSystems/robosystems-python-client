@@ -16,20 +16,14 @@ def _get_kwargs(
   *,
   body: SchemaValidationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/schema/validate",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -86,7 +80,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, SchemaValidationResponse]]:
   """Validate Schema
 
@@ -116,7 +109,6 @@ def sync_detailed(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (SchemaValidationRequest): Request model for schema validation.
 
   Raises:
@@ -131,7 +123,6 @@ def sync_detailed(
     graph_id=graph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -147,7 +138,6 @@ def sync(
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, SchemaValidationResponse]]:
   """Validate Schema
 
@@ -177,7 +167,6 @@ def sync(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (SchemaValidationRequest): Request model for schema validation.
 
   Raises:
@@ -193,7 +182,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -203,7 +191,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, SchemaValidationResponse]]:
   """Validate Schema
 
@@ -233,7 +220,6 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (SchemaValidationRequest): Request model for schema validation.
 
   Raises:
@@ -248,7 +234,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -262,7 +247,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, SchemaValidationResponse]]:
   """Validate Schema
 
@@ -292,7 +276,6 @@ async def asyncio(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (SchemaValidationRequest): Request model for schema validation.
 
   Raises:
@@ -309,6 +292,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

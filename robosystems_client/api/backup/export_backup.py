@@ -14,20 +14,14 @@ def _get_kwargs(
   backup_id: str,
   *,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/backups/{backup_id}/export",
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -73,7 +67,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Export Kuzu backup for download
 
@@ -83,7 +76,6 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       backup_id (str): Backup identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -97,7 +89,6 @@ def sync_detailed(
     graph_id=graph_id,
     backup_id=backup_id,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -113,7 +104,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Export Kuzu backup for download
 
@@ -123,7 +113,6 @@ def sync(
       graph_id (str): Graph database identifier
       backup_id (str): Backup identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -138,7 +127,6 @@ def sync(
     backup_id=backup_id,
     client=client,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -148,7 +136,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Export Kuzu backup for download
 
@@ -158,7 +145,6 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       backup_id (str): Backup identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -172,7 +158,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     backup_id=backup_id,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -186,7 +171,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Export Kuzu backup for download
 
@@ -196,7 +180,6 @@ async def asyncio(
       graph_id (str): Graph database identifier
       backup_id (str): Backup identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -212,6 +195,5 @@ async def asyncio(
       backup_id=backup_id,
       client=client,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

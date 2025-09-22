@@ -17,20 +17,14 @@ def _get_kwargs(
   *,
   body: DeleteSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "delete",
     "url": f"/v1/{graph_id}/subgraphs/{subgraph_id}",
-    "cookies": cookies,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -94,7 +88,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
 
@@ -121,7 +114,6 @@ def sync_detailed(
       graph_id (str): Parent graph identifier
       subgraph_id (str): Subgraph identifier to delete
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -137,7 +129,6 @@ def sync_detailed(
     subgraph_id=subgraph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -154,7 +145,6 @@ def sync(
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
 
@@ -181,7 +171,6 @@ def sync(
       graph_id (str): Parent graph identifier
       subgraph_id (str): Subgraph identifier to delete
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -198,7 +187,6 @@ def sync(
     client=client,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -209,7 +197,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
 
@@ -236,7 +223,6 @@ async def asyncio_detailed(
       graph_id (str): Parent graph identifier
       subgraph_id (str): Subgraph identifier to delete
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -252,7 +238,6 @@ async def asyncio_detailed(
     subgraph_id=subgraph_id,
     body=body,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -267,7 +252,6 @@ async def asyncio(
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
 
@@ -294,7 +278,6 @@ async def asyncio(
       graph_id (str): Parent graph identifier
       subgraph_id (str): Subgraph identifier to delete
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -312,6 +295,5 @@ async def asyncio(
       client=client,
       body=body,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

@@ -6,10 +6,10 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.get_all_credit_summaries_response_getallcreditsummaries import (
-  GetAllCreditSummariesResponseGetallcreditsummaries,
-)
 from ...models.http_validation_error import HTTPValidationError
+from ...models.resend_verification_email_response_resendverificationemail import (
+  ResendVerificationEmailResponseResendverificationemail,
+)
 from ...types import UNSET, Response, Unset
 
 
@@ -22,8 +22,8 @@ def _get_kwargs(
     headers["authorization"] = authorization
 
   _kwargs: dict[str, Any] = {
-    "method": "get",
-    "url": "/v1/user/credits",
+    "method": "post",
+    "url": "/v1/auth/email/resend",
   }
 
   _kwargs["headers"] = headers
@@ -35,20 +35,28 @@ def _parse_response(
 ) -> Optional[
   Union[
     ErrorResponse,
-    GetAllCreditSummariesResponseGetallcreditsummaries,
     HTTPValidationError,
+    ResendVerificationEmailResponseResendverificationemail,
   ]
 ]:
   if response.status_code == 200:
-    response_200 = GetAllCreditSummariesResponseGetallcreditsummaries.from_dict(
+    response_200 = ResendVerificationEmailResponseResendverificationemail.from_dict(
       response.json()
     )
 
     return response_200
-  if response.status_code == 500:
-    response_500 = ErrorResponse.from_dict(response.json())
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
 
-    return response_500
+    return response_400
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+  if response.status_code == 503:
+    response_503 = ErrorResponse.from_dict(response.json())
+
+    return response_503
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -64,8 +72,8 @@ def _build_response(
 ) -> Response[
   Union[
     ErrorResponse,
-    GetAllCreditSummariesResponseGetallcreditsummaries,
     HTTPValidationError,
+    ResendVerificationEmailResponseResendverificationemail,
   ]
 ]:
   return Response(
@@ -78,24 +86,18 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: AuthenticatedClient,
+  client: Union[AuthenticatedClient, Client],
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse,
-    GetAllCreditSummariesResponseGetallcreditsummaries,
     HTTPValidationError,
+    ResendVerificationEmailResponseResendverificationemail,
   ]
 ]:
-  """Get All Credit Summaries
+  """Resend Email Verification
 
-   Get credit summaries for all graphs owned by the user.
-
-  This endpoint provides a consolidated view of credit usage across
-  all graphs where the user has access, helping to monitor overall
-  credit consumption and plan usage.
-
-  No credits are consumed for viewing summaries.
+   Resend verification email to the authenticated user. Rate limited to 3 per hour.
 
   Args:
       authorization (Union[None, Unset, str]):
@@ -105,7 +107,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, GetAllCreditSummariesResponseGetallcreditsummaries, HTTPValidationError]]
+      Response[Union[ErrorResponse, HTTPValidationError, ResendVerificationEmailResponseResendverificationemail]]
   """
 
   kwargs = _get_kwargs(
@@ -121,24 +123,18 @@ def sync_detailed(
 
 def sync(
   *,
-  client: AuthenticatedClient,
+  client: Union[AuthenticatedClient, Client],
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse,
-    GetAllCreditSummariesResponseGetallcreditsummaries,
     HTTPValidationError,
+    ResendVerificationEmailResponseResendverificationemail,
   ]
 ]:
-  """Get All Credit Summaries
+  """Resend Email Verification
 
-   Get credit summaries for all graphs owned by the user.
-
-  This endpoint provides a consolidated view of credit usage across
-  all graphs where the user has access, helping to monitor overall
-  credit consumption and plan usage.
-
-  No credits are consumed for viewing summaries.
+   Resend verification email to the authenticated user. Rate limited to 3 per hour.
 
   Args:
       authorization (Union[None, Unset, str]):
@@ -148,7 +144,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, GetAllCreditSummariesResponseGetallcreditsummaries, HTTPValidationError]
+      Union[ErrorResponse, HTTPValidationError, ResendVerificationEmailResponseResendverificationemail]
   """
 
   return sync_detailed(
@@ -159,24 +155,18 @@ def sync(
 
 async def asyncio_detailed(
   *,
-  client: AuthenticatedClient,
+  client: Union[AuthenticatedClient, Client],
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse,
-    GetAllCreditSummariesResponseGetallcreditsummaries,
     HTTPValidationError,
+    ResendVerificationEmailResponseResendverificationemail,
   ]
 ]:
-  """Get All Credit Summaries
+  """Resend Email Verification
 
-   Get credit summaries for all graphs owned by the user.
-
-  This endpoint provides a consolidated view of credit usage across
-  all graphs where the user has access, helping to monitor overall
-  credit consumption and plan usage.
-
-  No credits are consumed for viewing summaries.
+   Resend verification email to the authenticated user. Rate limited to 3 per hour.
 
   Args:
       authorization (Union[None, Unset, str]):
@@ -186,7 +176,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, GetAllCreditSummariesResponseGetallcreditsummaries, HTTPValidationError]]
+      Response[Union[ErrorResponse, HTTPValidationError, ResendVerificationEmailResponseResendverificationemail]]
   """
 
   kwargs = _get_kwargs(
@@ -200,24 +190,18 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: AuthenticatedClient,
+  client: Union[AuthenticatedClient, Client],
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse,
-    GetAllCreditSummariesResponseGetallcreditsummaries,
     HTTPValidationError,
+    ResendVerificationEmailResponseResendverificationemail,
   ]
 ]:
-  """Get All Credit Summaries
+  """Resend Email Verification
 
-   Get credit summaries for all graphs owned by the user.
-
-  This endpoint provides a consolidated view of credit usage across
-  all graphs where the user has access, helping to monitor overall
-  credit consumption and plan usage.
-
-  No credits are consumed for viewing summaries.
+   Resend verification email to the authenticated user. Rate limited to 3 per hour.
 
   Args:
       authorization (Union[None, Unset, str]):
@@ -227,7 +211,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, GetAllCreditSummariesResponseGetallcreditsummaries, HTTPValidationError]
+      Union[ErrorResponse, HTTPValidationError, ResendVerificationEmailResponseResendverificationemail]
   """
 
   return (

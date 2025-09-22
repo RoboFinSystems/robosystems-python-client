@@ -14,20 +14,14 @@ def _get_kwargs(
   repository: str,
   *,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": f"/v1/user/subscriptions/shared-repositories/credits/{repository}",
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -73,7 +67,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
   """Get Repository Credits
 
@@ -82,7 +75,6 @@ def sync_detailed(
   Args:
       repository (str):
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -95,7 +87,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     repository=repository,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -110,7 +101,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
   """Get Repository Credits
 
@@ -119,7 +109,6 @@ def sync(
   Args:
       repository (str):
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -133,7 +122,6 @@ def sync(
     repository=repository,
     client=client,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -142,7 +130,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
   """Get Repository Credits
 
@@ -151,7 +138,6 @@ async def asyncio_detailed(
   Args:
       repository (str):
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -164,7 +150,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     repository=repository,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -177,7 +162,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, RepositoryCreditsResponse]]:
   """Get Repository Credits
 
@@ -186,7 +170,6 @@ async def asyncio(
   Args:
       repository (str):
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -201,6 +184,5 @@ async def asyncio(
       repository=repository,
       client=client,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed

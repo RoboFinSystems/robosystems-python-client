@@ -14,20 +14,14 @@ def _get_kwargs(
   graph_id: str,
   *,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
-
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": f"/v1/{graph_id}/health",
-    "cookies": cookies,
   }
 
   _kwargs["headers"] = headers
@@ -76,7 +70,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
   """Database Health Check
 
@@ -101,7 +94,6 @@ def sync_detailed(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -114,7 +106,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = client.get_httpx_client().request(
@@ -129,7 +120,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
   """Database Health Check
 
@@ -154,7 +144,6 @@ def sync(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -168,7 +157,6 @@ def sync(
     graph_id=graph_id,
     client=client,
     authorization=authorization,
-    auth_token=auth_token,
   ).parsed
 
 
@@ -177,7 +165,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
   """Database Health Check
 
@@ -202,7 +189,6 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -215,7 +201,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     authorization=authorization,
-    auth_token=auth_token,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -228,7 +213,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   authorization: Union[None, Unset, str] = UNSET,
-  auth_token: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, DatabaseHealthResponse, HTTPValidationError]]:
   """Database Health Check
 
@@ -253,7 +237,6 @@ async def asyncio(
   Args:
       graph_id (str): Graph database identifier
       authorization (Union[None, Unset, str]):
-      auth_token (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -268,6 +251,5 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       authorization=authorization,
-      auth_token=auth_token,
     )
   ).parsed
