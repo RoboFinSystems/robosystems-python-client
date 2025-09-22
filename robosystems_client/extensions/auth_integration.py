@@ -36,6 +36,9 @@ class AuthenticatedExtensions(RoboSystemsExtensions):
     config.headers["X-API-Key"] = api_key
     config.headers["Authorization"] = f"Bearer {api_key}"
 
+    # Store the token for later use by child clients
+    self._token = api_key
+
     super().__init__(config)
 
     # Store authenticated client for SDK operations
@@ -57,8 +60,12 @@ class AuthenticatedExtensions(RoboSystemsExtensions):
 
     request = CypherQueryRequest(query=query, parameters=parameters or {})
 
+    # Pass the token parameter along with the client
     response = sync_detailed(
-      graph_id=graph_id, client=self._authenticated_client, body=request
+      graph_id=graph_id,
+      client=self._authenticated_client,
+      body=request,
+      token=self._authenticated_client.token,
     )
 
     if response.parsed:
@@ -95,6 +102,9 @@ class CookieAuthExtensions(RoboSystemsExtensions):
       config.base_url = base_url
     elif not config.base_url:
       config.base_url = "https://api.robosystems.ai"
+
+    # Extract token from cookies if present
+    self._token = cookies.get("auth-token")
 
     super().__init__(config)
 
@@ -137,6 +147,9 @@ class TokenExtensions(RoboSystemsExtensions):
     if not config.headers:
       config.headers = {}
     config.headers["Authorization"] = f"Bearer {token}"
+
+    # Store the token for later use by child clients
+    self._token = token
 
     super().__init__(config)
 

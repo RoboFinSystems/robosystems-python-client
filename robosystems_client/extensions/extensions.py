@@ -39,6 +39,22 @@ class RoboSystemsExtensions:
       "timeout": config.timeout,
     }
 
+    # Extract token from headers if it was set by auth classes
+    # The auth classes should set the token in a standard way
+    token = None
+    if config.headers:
+      # Check for Authorization Bearer token
+      auth_header = config.headers.get("Authorization", "")
+      if auth_header.startswith("Bearer "):
+        token = auth_header[7:]
+      # Check for X-API-Key
+      elif config.headers.get("X-API-Key"):
+        token = config.headers.get("X-API-Key")
+
+    # Pass token to child clients if available
+    if token:
+      self.config["token"] = token
+
     # Initialize clients
     self.copy = CopyClient(self.config)
     self.query = QueryClient(self.config)

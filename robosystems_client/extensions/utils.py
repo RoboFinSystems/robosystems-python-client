@@ -294,13 +294,29 @@ class ProgressTracker:
 
   def get_estimated_completion(self) -> Optional[datetime]:
     """Estimate completion time based on progress"""
-    if not self.progress_history or self.total_steps is None:
+    if not self.progress_history:
       return None
 
     latest = self.progress_history[-1]
-    if latest["percentage"] and latest["percentage"] > 0:
+
+    # If we have a percentage, use it for estimation
+    if (
+      latest.get("percentage")
+      and latest["percentage"] > 0
+      and latest["percentage"] < 100
+    ):
       elapsed = self.get_elapsed_time()
       estimated_total = elapsed.total_seconds() / (latest["percentage"] / 100)
+      return self.started_at + timedelta(seconds=estimated_total)
+
+    # If we have steps, use them for estimation
+    if (
+      self.total_steps
+      and self.current_step > 0
+      and self.current_step < self.total_steps
+    ):
+      elapsed = self.get_elapsed_time()
+      estimated_total = elapsed.total_seconds() * (self.total_steps / self.current_step)
       return self.started_at + timedelta(seconds=estimated_total)
 
     return None
@@ -493,6 +509,20 @@ def validate_cypher_query(query: str) -> Dict[str, Any]:
   # Check for balanced braces
   if query.count("{") != query.count("}"):
     issues.append("Unbalanced curly braces")
+
+  # Check for invalid Cypher patterns
+  import re
+
+  # In Cypher, nodes use parentheses (), not square brackets []
+  # MATCH [n] is invalid, should be MATCH (n)
+  if re.search(r"\b(match|create|merge)\s+\[", query_lower):
+    issues.append(
+      "Invalid syntax: Nodes must use parentheses (), not square brackets []"
+    )
+
+  # Check for relationship patterns without nodes
+  if re.search(r"^\s*\[.*?\]\s*return", query_lower):
+    issues.append("Invalid syntax: Square brackets are for relationships, not nodes")
 
   # Basic keyword checks
   if not any(

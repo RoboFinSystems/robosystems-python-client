@@ -4,7 +4,17 @@ Provides intelligent query execution with automatic strategy selection.
 """
 
 from dataclasses import dataclass
-from typing import Dict, Any, Optional, Callable, AsyncIterator, Iterator, Union
+from typing import (
+  Dict,
+  Any,
+  Optional,
+  Callable,
+  AsyncIterator,
+  Iterator,
+  Union,
+  Generator,
+  List,
+)
 from datetime import datetime
 
 from ..api.query.execute_cypher_query import sync_detailed as execute_cypher_query
@@ -70,6 +80,9 @@ class QueryClient:
   def __init__(self, config: Dict[str, Any]):
     self.config = config
     self.base_url = config["base_url"]
+    self.headers = config.get("headers", {})
+    # Get token from config if passed by parent
+    self.token = config.get("token")
     self.sse_client: Optional[SSEClient] = None
 
   def execute_query(
@@ -85,15 +98,17 @@ class QueryClient:
     )
 
     # Execute the query through the generated client
-    from ..client import AuthenticatedClient
+    from ..client import Client
 
-    # Get client instance (you'd configure this based on your setup)
-    client = AuthenticatedClient(base_url=self.base_url)
+    # Create client with headers
+    client = Client(base_url=self.base_url, headers=self.headers)
 
     try:
-      response = execute_cypher_query(
-        graph_id=graph_id, client=client, body=query_request
-      )
+      kwargs = {"graph_id": graph_id, "client": client, "body": query_request}
+      # Only add token if it's a valid string
+      if self.token and isinstance(self.token, str) and self.token.strip():
+        kwargs["token"] = self.token
+      response = execute_cypher_query(**kwargs)
 
       # Check response type and handle accordingly
       if hasattr(response, "parsed") and response.parsed:
@@ -145,7 +160,15 @@ class QueryClient:
     except Exception as e:
       if isinstance(e, QueuedQueryError):
         raise
-      raise Exception(f"Query execution failed: {str(e)}")
+
+      error_msg = str(e)
+      # Check for authentication errors
+      if (
+        "401" in error_msg or "403" in error_msg or "unauthorized" in error_msg.lower()
+      ):
+        raise Exception(f"Authentication failed during query execution: {error_msg}")
+      else:
+        raise Exception(f"Query execution failed: {error_msg}")
 
     # Unexpected response format
     raise Exception("Unexpected response format from query endpoint")
@@ -316,18 +339,92 @@ class QueryClient:
     cypher: str,
     parameters: Dict[str, Any] = None,
     chunk_size: int = 1000,
-  ) -> Iterator[Any]:
-    """Streaming query for large results"""
+    on_progress: Optional[Callable[[int, int], None]] = None,
+  ) -> Generator[Any, None, None]:
+    """Stream query results for large datasets with progress tracking
+
+    Args:
+        graph_id: Graph ID to query
+        cypher: Cypher query string
+        parameters: Query parameters
+        chunk_size: Number of records per chunk
+        on_progress: Callback for progress updates (current, total)
+
+    Yields:
+        Individual records from query results
+
+    Example:
+        >>> def progress(current, total):
+        ...     print(f"Processed {current}/{total} records")
+        >>> for record in query_client.stream_query(
+        ...     'graph_id',
+        ...     'MATCH (n) RETURN n',
+        ...     chunk_size=100,
+        ...     on_progress=progress
+        ... ):
+        ...     process_record(record)
+    """
     request = QueryRequest(query=cypher, parameters=parameters)
     result = self.execute_query(
       graph_id, request, QueryOptions(mode="stream", chunk_size=chunk_size)
     )
 
+    count = 0
     if isinstance(result, Iterator):
-      yield from result
+      for item in result:
+        count += 1
+        if on_progress and count % chunk_size == 0:
+          on_progress(count, None)  # Total unknown in streaming
+        yield item
     else:
       # If not streaming, yield all results at once
-      yield from result.data
+      total = len(result.data)
+      for item in result.data:
+        count += 1
+        if on_progress:
+          on_progress(count, total)
+        yield item
+
+  def query_batch(
+    self,
+    graph_id: str,
+    queries: List[str],
+    parameters_list: Optional[List[Dict[str, Any]]] = None,
+    parallel: bool = False,
+  ) -> List[Union[QueryResult, Dict[str, Any]]]:
+    """Execute multiple queries in batch
+
+    Args:
+        graph_id: Graph ID to query
+        queries: List of Cypher query strings
+        parameters_list: List of parameter dicts (one per query)
+        parallel: Execute queries in parallel (experimental)
+
+    Returns:
+        List of QueryResult objects or error dicts
+
+    Example:
+        >>> results = query_client.query_batch('graph_id', [
+        ...     'MATCH (n:Person) RETURN count(n)',
+        ...     'MATCH (c:Company) RETURN count(c)'
+        ... ])
+    """
+    if parameters_list is None:
+      parameters_list = [None] * len(queries)
+
+    if len(queries) != len(parameters_list):
+      raise ValueError("queries and parameters_list must have same length")
+
+    results = []
+    for query, params in zip(queries, parameters_list):
+      try:
+        result = self.query(graph_id, query, params)
+        results.append(result)
+      except Exception as e:
+        # Store error as result
+        results.append({"error": str(e), "query": query})
+
+    return results
 
   def close(self):
     """Cancel any active SSE connections"""
