@@ -18,6 +18,7 @@ def _get_kwargs(
   *,
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -34,6 +35,13 @@ def _get_kwargs(
   else:
     json_base_cost = base_cost
   params["base_cost"] = json_base_cost
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -103,6 +111,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
@@ -128,6 +137,7 @@ def sync_detailed(
       operation_type (str): Type of operation to check
       base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
           provided)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -142,6 +152,7 @@ def sync_detailed(
     graph_id=graph_id,
     operation_type=operation_type,
     base_cost=base_cost,
+    token=token,
     authorization=authorization,
   )
 
@@ -158,6 +169,7 @@ def sync(
   client: AuthenticatedClient,
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
@@ -183,6 +195,7 @@ def sync(
       operation_type (str): Type of operation to check
       base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
           provided)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -198,6 +211,7 @@ def sync(
     client=client,
     operation_type=operation_type,
     base_cost=base_cost,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -208,6 +222,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
@@ -233,6 +248,7 @@ async def asyncio_detailed(
       operation_type (str): Type of operation to check
       base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
           provided)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -247,6 +263,7 @@ async def asyncio_detailed(
     graph_id=graph_id,
     operation_type=operation_type,
     base_cost=base_cost,
+    token=token,
     authorization=authorization,
   )
 
@@ -261,6 +278,7 @@ async def asyncio(
   client: AuthenticatedClient,
   operation_type: str,
   base_cost: Union[None, Unset, float, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
@@ -286,6 +304,7 @@ async def asyncio(
       operation_type (str): Type of operation to check
       base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
           provided)
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -302,6 +321,7 @@ async def asyncio(
       client=client,
       operation_type=operation_type,
       base_cost=base_cost,
+      token=token,
       authorization=authorization,
     )
   ).parsed

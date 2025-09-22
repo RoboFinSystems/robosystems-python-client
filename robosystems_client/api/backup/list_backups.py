@@ -15,6 +15,7 @@ def _get_kwargs(
   *,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -26,6 +27,13 @@ def _get_kwargs(
   params["limit"] = limit
 
   params["offset"] = offset
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -73,6 +81,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
@@ -83,6 +92,7 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -97,6 +107,7 @@ def sync_detailed(
     graph_id=graph_id,
     limit=limit,
     offset=offset,
+    token=token,
     authorization=authorization,
   )
 
@@ -113,6 +124,7 @@ def sync(
   client: AuthenticatedClient,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
@@ -123,6 +135,7 @@ def sync(
       graph_id (str): Graph database identifier
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -138,6 +151,7 @@ def sync(
     client=client,
     limit=limit,
     offset=offset,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -148,6 +162,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
@@ -158,6 +173,7 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -172,6 +188,7 @@ async def asyncio_detailed(
     graph_id=graph_id,
     limit=limit,
     offset=offset,
+    token=token,
     authorization=authorization,
   )
 
@@ -186,6 +203,7 @@ async def asyncio(
   client: AuthenticatedClient,
   limit: Union[Unset, int] = 50,
   offset: Union[Unset, int] = 0,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
   """List Kuzu graph backups
@@ -196,6 +214,7 @@ async def asyncio(
       graph_id (str): Graph database identifier
       limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
       offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -212,6 +231,7 @@ async def asyncio(
       client=client,
       limit=limit,
       offset=offset,
+      token=token,
       authorization=authorization,
     )
   ).parsed

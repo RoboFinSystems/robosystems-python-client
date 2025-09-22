@@ -14,15 +14,28 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   api_key_id: str,
   *,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
+  params: dict[str, Any] = {}
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
     "method": "delete",
     "url": f"/v1/user/api-keys/{api_key_id}",
+    "params": params,
   }
 
   _kwargs["headers"] = headers
@@ -69,6 +82,7 @@ def sync_detailed(
   api_key_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
   """Revoke API Key
@@ -77,6 +91,7 @@ def sync_detailed(
 
   Args:
       api_key_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -89,6 +104,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     api_key_id=api_key_id,
+    token=token,
     authorization=authorization,
   )
 
@@ -103,6 +119,7 @@ def sync(
   api_key_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
   """Revoke API Key
@@ -111,6 +128,7 @@ def sync(
 
   Args:
       api_key_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -124,6 +142,7 @@ def sync(
   return sync_detailed(
     api_key_id=api_key_id,
     client=client,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -132,6 +151,7 @@ async def asyncio_detailed(
   api_key_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
   """Revoke API Key
@@ -140,6 +160,7 @@ async def asyncio_detailed(
 
   Args:
       api_key_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -152,6 +173,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     api_key_id=api_key_id,
+    token=token,
     authorization=authorization,
   )
 
@@ -164,6 +186,7 @@ async def asyncio(
   api_key_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
   """Revoke API Key
@@ -172,6 +195,7 @@ async def asyncio(
 
   Args:
       api_key_id (str):
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -186,6 +210,7 @@ async def asyncio(
     await asyncio_detailed(
       api_key_id=api_key_id,
       client=client,
+      token=token,
       authorization=authorization,
     )
   ).parsed

@@ -17,6 +17,7 @@ def _get_kwargs(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -33,6 +34,13 @@ def _get_kwargs(
   params["format"] = json_format_
 
   params["test_mode"] = test_mode
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -115,6 +123,7 @@ def sync_detailed(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
@@ -158,6 +167,7 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
@@ -174,6 +184,7 @@ def sync_detailed(
     body=body,
     format_=format_,
     test_mode=test_mode,
+    token=token,
     authorization=authorization,
   )
 
@@ -191,6 +202,7 @@ def sync(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
@@ -234,6 +246,7 @@ def sync(
       graph_id (str): Graph database identifier
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
@@ -251,6 +264,7 @@ def sync(
     body=body,
     format_=format_,
     test_mode=test_mode,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -262,6 +276,7 @@ async def asyncio_detailed(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
@@ -305,6 +320,7 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
@@ -321,6 +337,7 @@ async def asyncio_detailed(
     body=body,
     format_=format_,
     test_mode=test_mode,
+    token=token,
     authorization=authorization,
   )
 
@@ -336,6 +353,7 @@ async def asyncio(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
@@ -379,6 +397,7 @@ async def asyncio(
       graph_id (str): Graph database identifier
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
@@ -397,6 +416,7 @@ async def asyncio(
       body=body,
       format_=format_,
       test_mode=test_mode,
+      token=token,
       authorization=authorization,
     )
   ).parsed

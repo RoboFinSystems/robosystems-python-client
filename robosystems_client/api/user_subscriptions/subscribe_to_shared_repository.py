@@ -14,15 +14,28 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   *,
   body: SubscriptionRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
+  params: dict[str, Any] = {}
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": "/v1/user/subscriptions/shared-repositories/subscribe",
+    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -74,6 +87,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: SubscriptionRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, SubscriptionResponse]]:
   """Subscribe to Shared Repository
@@ -81,6 +95,7 @@ def sync_detailed(
    Create a new subscription to a shared repository add-on with specified tier
 
   Args:
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (SubscriptionRequest): Request to create a new subscription.
 
@@ -94,6 +109,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -108,6 +124,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: SubscriptionRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, SubscriptionResponse]]:
   """Subscribe to Shared Repository
@@ -115,6 +132,7 @@ def sync(
    Create a new subscription to a shared repository add-on with specified tier
 
   Args:
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (SubscriptionRequest): Request to create a new subscription.
 
@@ -129,6 +147,7 @@ def sync(
   return sync_detailed(
     client=client,
     body=body,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -137,6 +156,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: SubscriptionRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, SubscriptionResponse]]:
   """Subscribe to Shared Repository
@@ -144,6 +164,7 @@ async def asyncio_detailed(
    Create a new subscription to a shared repository add-on with specified tier
 
   Args:
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (SubscriptionRequest): Request to create a new subscription.
 
@@ -157,6 +178,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -169,6 +191,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: SubscriptionRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, SubscriptionResponse]]:
   """Subscribe to Shared Repository
@@ -176,6 +199,7 @@ async def asyncio(
    Create a new subscription to a shared repository add-on with specified tier
 
   Args:
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (SubscriptionRequest): Request to create a new subscription.
 
@@ -191,6 +215,7 @@ async def asyncio(
     await asyncio_detailed(
       client=client,
       body=body,
+      token=token,
       authorization=authorization,
     )
   ).parsed

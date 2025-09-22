@@ -16,15 +16,28 @@ def _get_kwargs(
   subgraph_id: str,
   *,
   body: DeleteSubgraphRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
+  params: dict[str, Any] = {}
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
     "method": "delete",
     "url": f"/v1/{graph_id}/subgraphs/{subgraph_id}",
+    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -87,6 +100,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
@@ -113,6 +127,7 @@ def sync_detailed(
   Args:
       graph_id (str): Parent graph identifier
       subgraph_id (str): Subgraph identifier to delete
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
@@ -128,6 +143,7 @@ def sync_detailed(
     graph_id=graph_id,
     subgraph_id=subgraph_id,
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -144,6 +160,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
@@ -170,6 +187,7 @@ def sync(
   Args:
       graph_id (str): Parent graph identifier
       subgraph_id (str): Subgraph identifier to delete
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
@@ -186,6 +204,7 @@ def sync(
     subgraph_id=subgraph_id,
     client=client,
     body=body,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -196,6 +215,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
@@ -222,6 +242,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Parent graph identifier
       subgraph_id (str): Subgraph identifier to delete
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
@@ -237,6 +258,7 @@ async def asyncio_detailed(
     graph_id=graph_id,
     subgraph_id=subgraph_id,
     body=body,
+    token=token,
     authorization=authorization,
   )
 
@@ -251,6 +273,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
@@ -277,6 +300,7 @@ async def asyncio(
   Args:
       graph_id (str): Parent graph identifier
       subgraph_id (str): Subgraph identifier to delete
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
@@ -294,6 +318,7 @@ async def asyncio(
       subgraph_id=subgraph_id,
       client=client,
       body=body,
+      token=token,
       authorization=authorization,
     )
   ).parsed

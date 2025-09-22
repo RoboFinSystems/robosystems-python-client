@@ -14,6 +14,7 @@ def _get_kwargs(
   graph_id: str,
   *,
   capability: Union[None, Unset, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -28,6 +29,13 @@ def _get_kwargs(
   else:
     json_capability = capability
   params["capability"] = json_capability
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -77,6 +85,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   capability: Union[None, Unset, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentListResponse, Any, HTTPValidationError]]:
   """List available agents
@@ -95,6 +104,7 @@ def sync_detailed(
       graph_id (str): Graph database identifier
       capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -108,6 +118,7 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     capability=capability,
+    token=token,
     authorization=authorization,
   )
 
@@ -123,6 +134,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   capability: Union[None, Unset, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentListResponse, Any, HTTPValidationError]]:
   """List available agents
@@ -141,6 +153,7 @@ def sync(
       graph_id (str): Graph database identifier
       capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -155,6 +168,7 @@ def sync(
     graph_id=graph_id,
     client=client,
     capability=capability,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -164,6 +178,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   capability: Union[None, Unset, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentListResponse, Any, HTTPValidationError]]:
   """List available agents
@@ -182,6 +197,7 @@ async def asyncio_detailed(
       graph_id (str): Graph database identifier
       capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -195,6 +211,7 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     capability=capability,
+    token=token,
     authorization=authorization,
   )
 
@@ -208,6 +225,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   capability: Union[None, Unset, str] = UNSET,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentListResponse, Any, HTTPValidationError]]:
   """List available agents
@@ -226,6 +244,7 @@ async def asyncio(
       graph_id (str): Graph database identifier
       capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -241,6 +260,7 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       capability=capability,
+      token=token,
       authorization=authorization,
     )
   ).parsed

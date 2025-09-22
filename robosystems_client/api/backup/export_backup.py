@@ -13,15 +13,28 @@ def _get_kwargs(
   graph_id: str,
   backup_id: str,
   *,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
     headers["authorization"] = authorization
 
+  params: dict[str, Any] = {}
+
+  json_token: Union[None, Unset, str]
+  if isinstance(token, Unset):
+    json_token = UNSET
+  else:
+    json_token = token
+  params["token"] = json_token
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/{graph_id}/backups/{backup_id}/export",
+    "params": params,
   }
 
   _kwargs["headers"] = headers
@@ -66,6 +79,7 @@ def sync_detailed(
   backup_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Export Kuzu backup for download
@@ -75,6 +89,7 @@ def sync_detailed(
   Args:
       graph_id (str): Graph database identifier
       backup_id (str): Backup identifier
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -88,6 +103,7 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     backup_id=backup_id,
+    token=token,
     authorization=authorization,
   )
 
@@ -103,6 +119,7 @@ def sync(
   backup_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Export Kuzu backup for download
@@ -112,6 +129,7 @@ def sync(
   Args:
       graph_id (str): Graph database identifier
       backup_id (str): Backup identifier
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -126,6 +144,7 @@ def sync(
     graph_id=graph_id,
     backup_id=backup_id,
     client=client,
+    token=token,
     authorization=authorization,
   ).parsed
 
@@ -135,6 +154,7 @@ async def asyncio_detailed(
   backup_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Export Kuzu backup for download
@@ -144,6 +164,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Graph database identifier
       backup_id (str): Backup identifier
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -157,6 +178,7 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     backup_id=backup_id,
+    token=token,
     authorization=authorization,
   )
 
@@ -170,6 +192,7 @@ async def asyncio(
   backup_id: str,
   *,
   client: AuthenticatedClient,
+  token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Export Kuzu backup for download
@@ -179,6 +202,7 @@ async def asyncio(
   Args:
       graph_id (str): Graph database identifier
       backup_id (str): Backup identifier
+      token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
   Raises:
@@ -194,6 +218,7 @@ async def asyncio(
       graph_id=graph_id,
       backup_id=backup_id,
       client=client,
+      token=token,
       authorization=authorization,
     )
   ).parsed
