@@ -39,7 +39,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/{graph_id}/connections/{connection_id}/sync",
+    "url": f"/v1/graphs/{graph_id}/connections/{connection_id}/sync",
     "params": params,
   }
 

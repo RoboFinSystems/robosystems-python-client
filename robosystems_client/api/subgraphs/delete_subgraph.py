@@ -36,7 +36,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "delete",
-    "url": f"/v1/{graph_id}/subgraphs/{subgraph_id}",
+    "url": f"/v1/graphs/{graph_id}/subgraphs/{subgraph_id}",
     "params": params,
   }
 

@@ -35,7 +35,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/{graph_id}/connections/link/token",
+    "url": f"/v1/graphs/{graph_id}/connections/link/token",
     "params": params,
   }
 

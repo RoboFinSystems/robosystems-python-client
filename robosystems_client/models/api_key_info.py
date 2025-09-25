@@ -21,6 +21,7 @@ class APIKeyInfo:
       created_at (str): Creation timestamp
       description (Union[None, Unset, str]): API key description
       last_used_at (Union[None, Unset, str]): Last used timestamp
+      expires_at (Union[None, Unset, str]): Expiration timestamp
   """
 
   id: str
@@ -30,6 +31,7 @@ class APIKeyInfo:
   created_at: str
   description: Union[None, Unset, str] = UNSET
   last_used_at: Union[None, Unset, str] = UNSET
+  expires_at: Union[None, Unset, str] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -55,6 +57,12 @@ class APIKeyInfo:
     else:
       last_used_at = self.last_used_at
 
+    expires_at: Union[None, Unset, str]
+    if isinstance(self.expires_at, Unset):
+      expires_at = UNSET
+    else:
+      expires_at = self.expires_at
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -70,6 +78,8 @@ class APIKeyInfo:
       field_dict["description"] = description
     if last_used_at is not UNSET:
       field_dict["last_used_at"] = last_used_at
+    if expires_at is not UNSET:
+      field_dict["expires_at"] = expires_at
 
     return field_dict
 
@@ -104,6 +114,15 @@ class APIKeyInfo:
 
     last_used_at = _parse_last_used_at(d.pop("last_used_at", UNSET))
 
+    def _parse_expires_at(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
+
+    expires_at = _parse_expires_at(d.pop("expires_at", UNSET))
+
     api_key_info = cls(
       id=id,
       name=name,
@@ -112,6 +131,7 @@ class APIKeyInfo:
       created_at=created_at,
       description=description,
       last_used_at=last_used_at,
+      expires_at=expires_at,
     )
 
     api_key_info.additional_properties = d

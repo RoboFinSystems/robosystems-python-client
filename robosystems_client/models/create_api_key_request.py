@@ -16,10 +16,12 @@ class CreateAPIKeyRequest:
   Attributes:
       name (str): Name for the API key
       description (Union[None, Unset, str]): Optional description
+      expires_at (Union[None, Unset, str]): Optional expiration date in ISO format (e.g. 2024-12-31T23:59:59Z)
   """
 
   name: str
   description: Union[None, Unset, str] = UNSET
+  expires_at: Union[None, Unset, str] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -31,6 +33,12 @@ class CreateAPIKeyRequest:
     else:
       description = self.description
 
+    expires_at: Union[None, Unset, str]
+    if isinstance(self.expires_at, Unset):
+      expires_at = UNSET
+    else:
+      expires_at = self.expires_at
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -40,6 +48,8 @@ class CreateAPIKeyRequest:
     )
     if description is not UNSET:
       field_dict["description"] = description
+    if expires_at is not UNSET:
+      field_dict["expires_at"] = expires_at
 
     return field_dict
 
@@ -57,9 +67,19 @@ class CreateAPIKeyRequest:
 
     description = _parse_description(d.pop("description", UNSET))
 
+    def _parse_expires_at(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
+
+    expires_at = _parse_expires_at(d.pop("expires_at", UNSET))
+
     create_api_key_request = cls(
       name=name,
       description=description,
+      expires_at=expires_at,
     )
 
     create_api_key_request.additional_properties = d
