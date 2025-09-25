@@ -218,7 +218,6 @@ from .selection_criteria import SelectionCriteria
 from .sso_complete_request import SSOCompleteRequest
 from .sso_exchange_request import SSOExchangeRequest
 from .sso_exchange_response import SSOExchangeResponse
-from .sso_login_request import SSOLoginRequest
 from .sso_token_response import SSOTokenResponse
 from .storage_limit_response import StorageLimitResponse
 from .subgraph_quota_response import SubgraphQuotaResponse
@@ -425,7 +424,6 @@ __all__ = (
   "SSOCompleteRequest",
   "SSOExchangeRequest",
   "SSOExchangeResponse",
-  "SSOLoginRequest",
   "SSOTokenResponse",
   "StorageLimitResponse",
   "SubgraphQuotaResponse",

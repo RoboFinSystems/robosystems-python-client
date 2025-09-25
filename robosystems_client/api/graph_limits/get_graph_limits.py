@@ -35,7 +35,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/{graph_id}/limits",
+    "url": f"/v1/graphs/{graph_id}/limits",
     "params": params,
   }
 

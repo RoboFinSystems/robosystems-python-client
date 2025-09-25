@@ -34,7 +34,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/user/graphs/{graph_id}/select",
+    "url": f"/v1/graphs/{graph_id}/select",
     "params": params,
   }
 
@@ -89,7 +89,7 @@ def sync_detailed(
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
-  """Select User Graph
+  """Select Graph
 
    Select a specific graph as the active graph for the user.
 
@@ -126,7 +126,7 @@ def sync(
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
-  """Select User Graph
+  """Select Graph
 
    Select a specific graph as the active graph for the user.
 
@@ -158,7 +158,7 @@ async def asyncio_detailed(
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
-  """Select User Graph
+  """Select Graph
 
    Select a specific graph as the active graph for the user.
 
@@ -193,7 +193,7 @@ async def asyncio(
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
-  """Select User Graph
+  """Select Graph
 
    Select a specific graph as the active graph for the user.
 
