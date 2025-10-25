@@ -50,7 +50,7 @@ typecheck:
 generate-sdk url="http://localhost:8000/openapi.json":
     @echo "🚀 Generating Client from {{url}}..."
     rm -rf generated
-    openapi-python-client generate --url {{url}} --output-path generated --config robosystems_client/sdk-config.yaml
+    uv run openapi-python-client generate --url {{url}} --output-path generated --config robosystems_client/sdk-config.yaml
     @echo "📦 Copying generated code to robosystems_client..."
     rm -rf robosystems_client/api robosystems_client/models robosystems_client/client.py robosystems_client/errors.py robosystems_client/types.py robosystems_client/py.typed
     cp -r generated/robo_systems_api_client/api robosystems_client/

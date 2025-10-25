@@ -49,22 +49,27 @@ def _parse_response(
     response_200 = GraphMetricsResponse.from_dict(response.json())
 
     return response_200
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
+
   if response.status_code == 404:
     response_404 = ErrorResponse.from_dict(response.json())
 
     return response_404
-  if response.status_code == 500:
-    response_500 = ErrorResponse.from_dict(response.json())
 
-    return response_500
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -107,7 +112,7 @@ def sync_detailed(
   - Performance optimization
 
   Note:
-  This operation is FREE - no credit consumption required.
+  This operation is included - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get metrics for
@@ -160,7 +165,7 @@ def sync(
   - Performance optimization
 
   Note:
-  This operation is FREE - no credit consumption required.
+  This operation is included - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get metrics for
@@ -208,7 +213,7 @@ async def asyncio_detailed(
   - Performance optimization
 
   Note:
-  This operation is FREE - no credit consumption required.
+  This operation is included - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get metrics for
@@ -259,7 +264,7 @@ async def asyncio(
   - Performance optimization
 
   Note:
-  This operation is FREE - no credit consumption required.
+  This operation is included - no credit consumption required.
 
   Args:
       graph_id (str): The graph ID to get metrics for

@@ -4,11 +4,14 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="CopyResponseErrorDetailsType0")
+T = TypeVar(
+  "T",
+  bound="GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsGraphIdTablesFilesFileIdGet",
+)
 
 
 @_attrs_define
-class CopyResponseErrorDetailsType0:
+class GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsGraphIdTablesFilesFileIdGet:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -22,10 +25,10 @@ class CopyResponseErrorDetailsType0:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    copy_response_error_details_type_0 = cls()
+    get_file_info_v1_graphs_graph_id_tables_files_file_id_get_response_get_file_info_v1_graphs_graph_id_tables_files_file_id_get = cls()
 
-    copy_response_error_details_type_0.additional_properties = d
-    return copy_response_error_details_type_0
+    get_file_info_v1_graphs_graph_id_tables_files_file_id_get_response_get_file_info_v1_graphs_graph_id_tables_files_file_id_get.additional_properties = d
+    return get_file_info_v1_graphs_graph_id_tables_files_file_id_get_response_get_file_info_v1_graphs_graph_id_tables_files_file_id_get
 
   @property
   def additional_keys(self) -> list[str]:

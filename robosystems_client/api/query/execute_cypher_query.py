@@ -69,31 +69,40 @@ def _parse_response(
   if response.status_code == 200:
     response_200 = response.json()
     return response_200
+
   if response.status_code == 202:
     response_202 = cast(Any, None)
     return response_202
+
   if response.status_code == 400:
     response_400 = cast(Any, None)
     return response_400
+
   if response.status_code == 403:
     response_403 = cast(Any, None)
     return response_403
+
   if response.status_code == 408:
     response_408 = cast(Any, None)
     return response_408
-  if response.status_code == 429:
-    response_429 = cast(Any, None)
-    return response_429
-  if response.status_code == 500:
-    response_500 = cast(Any, None)
-    return response_500
-  if response.status_code == 503:
-    response_503 = cast(Any, None)
-    return response_503
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = cast(Any, None)
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = cast(Any, None)
+    return response_500
+
+  if response.status_code == 503:
+    response_503 = cast(Any, None)
+    return response_503
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -122,9 +131,15 @@ def sync_detailed(
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query
+  """Execute Cypher Query (Read-Only)
 
-   Execute a Cypher query with intelligent response optimization.
+   Execute a read-only Cypher query with intelligent response optimization.
+
+  **IMPORTANT: This endpoint is READ-ONLY.** Write operations (CREATE, MERGE, SET, DELETE) are not
+  allowed.
+  To load data into your graph, use the staging pipeline:
+  1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
+  2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -169,7 +184,7 @@ def sync_detailed(
   - Clients should implement exponential backoff
 
   **Note:**
-  Query operations are FREE - no credit consumption required.
+  Query operations are included - no credit consumption required.
   Queue position is based on subscription tier for priority.
 
   Args:
@@ -217,9 +232,15 @@ def sync(
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query
+  """Execute Cypher Query (Read-Only)
 
-   Execute a Cypher query with intelligent response optimization.
+   Execute a read-only Cypher query with intelligent response optimization.
+
+  **IMPORTANT: This endpoint is READ-ONLY.** Write operations (CREATE, MERGE, SET, DELETE) are not
+  allowed.
+  To load data into your graph, use the staging pipeline:
+  1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
+  2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -264,7 +285,7 @@ def sync(
   - Clients should implement exponential backoff
 
   **Note:**
-  Query operations are FREE - no credit consumption required.
+  Query operations are included - no credit consumption required.
   Queue position is based on subscription tier for priority.
 
   Args:
@@ -307,9 +328,15 @@ async def asyncio_detailed(
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query
+  """Execute Cypher Query (Read-Only)
 
-   Execute a Cypher query with intelligent response optimization.
+   Execute a read-only Cypher query with intelligent response optimization.
+
+  **IMPORTANT: This endpoint is READ-ONLY.** Write operations (CREATE, MERGE, SET, DELETE) are not
+  allowed.
+  To load data into your graph, use the staging pipeline:
+  1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
+  2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -354,7 +381,7 @@ async def asyncio_detailed(
   - Clients should implement exponential backoff
 
   **Note:**
-  Query operations are FREE - no credit consumption required.
+  Query operations are included - no credit consumption required.
   Queue position is based on subscription tier for priority.
 
   Args:
@@ -400,9 +427,15 @@ async def asyncio(
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query
+  """Execute Cypher Query (Read-Only)
 
-   Execute a Cypher query with intelligent response optimization.
+   Execute a read-only Cypher query with intelligent response optimization.
+
+  **IMPORTANT: This endpoint is READ-ONLY.** Write operations (CREATE, MERGE, SET, DELETE) are not
+  allowed.
+  To load data into your graph, use the staging pipeline:
+  1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
+  2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -447,7 +480,7 @@ async def asyncio(
   - Clients should implement exponential backoff
 
   **Note:**
-  Query operations are FREE - no credit consumption required.
+  Query operations are included - no credit consumption required.
   Queue position is based on subscription tier for priority.
 
   Args:

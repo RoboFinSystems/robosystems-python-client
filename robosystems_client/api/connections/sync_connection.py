@@ -60,22 +60,27 @@ def _parse_response(
     response_200 = SyncConnectionResponseSyncconnection.from_dict(response.json())
 
     return response_200
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
+
   if response.status_code == 404:
     response_404 = ErrorResponse.from_dict(response.json())
 
     return response_404
-  if response.status_code == 500:
-    response_500 = ErrorResponse.from_dict(response.json())
 
-    return response_500
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -129,7 +134,7 @@ def sync_detailed(
   - Categorizes new transactions
 
   Note:
-  This operation is FREE - no credit consumption required.
+  This operation is included - no credit consumption required.
 
   Returns a task ID for monitoring sync progress.
 
@@ -197,7 +202,7 @@ def sync(
   - Categorizes new transactions
 
   Note:
-  This operation is FREE - no credit consumption required.
+  This operation is included - no credit consumption required.
 
   Returns a task ID for monitoring sync progress.
 
@@ -260,7 +265,7 @@ async def asyncio_detailed(
   - Categorizes new transactions
 
   Note:
-  This operation is FREE - no credit consumption required.
+  This operation is included - no credit consumption required.
 
   Returns a task ID for monitoring sync progress.
 
@@ -326,7 +331,7 @@ async def asyncio(
   - Categorizes new transactions
 
   Note:
-  This operation is FREE - no credit consumption required.
+  This operation is included - no credit consumption required.
 
   Returns a task ID for monitoring sync progress.
 

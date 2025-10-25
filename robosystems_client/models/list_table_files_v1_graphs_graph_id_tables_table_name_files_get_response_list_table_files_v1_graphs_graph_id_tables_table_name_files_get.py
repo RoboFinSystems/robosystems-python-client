@@ -4,11 +4,14 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="GetGraphSchemaInfoResponseGetgraphschemainfo")
+T = TypeVar(
+  "T",
+  bound="ListTableFilesV1GraphsGraphIdTablesTableNameFilesGetResponseListTableFilesV1GraphsGraphIdTablesTableNameFilesGet",
+)
 
 
 @_attrs_define
-class GetGraphSchemaInfoResponseGetgraphschemainfo:
+class ListTableFilesV1GraphsGraphIdTablesTableNameFilesGetResponseListTableFilesV1GraphsGraphIdTablesTableNameFilesGet:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -22,10 +25,10 @@ class GetGraphSchemaInfoResponseGetgraphschemainfo:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    get_graph_schema_info_response_getgraphschemainfo = cls()
+    list_table_files_v1_graphs_graph_id_tables_table_name_files_get_response_list_table_files_v1_graphs_graph_id_tables_table_name_files_get = cls()
 
-    get_graph_schema_info_response_getgraphschemainfo.additional_properties = d
-    return get_graph_schema_info_response_getgraphschemainfo
+    list_table_files_v1_graphs_graph_id_tables_table_name_files_get_response_list_table_files_v1_graphs_graph_id_tables_table_name_files_get.additional_properties = d
+    return list_table_files_v1_graphs_graph_id_tables_table_name_files_get_response_list_table_files_v1_graphs_graph_id_tables_table_name_files_get
 
   @property
   def additional_keys(self) -> list[str]:

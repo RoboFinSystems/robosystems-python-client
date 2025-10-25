@@ -13,6 +13,7 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
   graph_id: str,
+  backup_id: str,
   *,
   body: BackupRestoreRequest,
   token: Union[None, Unset, str] = UNSET,
@@ -35,7 +36,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/graphs/{graph_id}/backups/restore",
+    "url": f"/v1/graphs/{graph_id}/backups/{backup_id}/restore",
     "params": params,
   }
 
@@ -53,26 +54,32 @@ def _parse_response(
   if response.status_code == 202:
     response_202 = response.json()
     return response_202
+
   if response.status_code == 400:
     response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
+
   if response.status_code == 404:
     response_404 = ErrorResponse.from_dict(response.json())
 
     return response_404
-  if response.status_code == 500:
-    response_500 = ErrorResponse.from_dict(response.json())
 
-    return response_500
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -92,6 +99,7 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
+  backup_id: str,
   *,
   client: AuthenticatedClient,
   body: BackupRestoreRequest,
@@ -102,7 +110,7 @@ def sync_detailed(
 
    Restore a graph database from an encrypted backup.
 
-  Restores a complete Kuzu database from an encrypted backup:
+  Restores a complete graph database from an encrypted backup:
   - **Format**: Only full_dump backups can be restored
   - **Encryption**: Only encrypted backups can be restored (security requirement)
   - **System Backup**: Creates automatic backup of existing database before restore
@@ -145,6 +153,7 @@ def sync_detailed(
 
   Args:
       graph_id (str): Graph database identifier
+      backup_id (str): Backup identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (BackupRestoreRequest): Request model for restoring from a backup.
@@ -159,6 +168,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
+    backup_id=backup_id,
     body=body,
     token=token,
     authorization=authorization,
@@ -173,6 +183,7 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
+  backup_id: str,
   *,
   client: AuthenticatedClient,
   body: BackupRestoreRequest,
@@ -183,7 +194,7 @@ def sync(
 
    Restore a graph database from an encrypted backup.
 
-  Restores a complete Kuzu database from an encrypted backup:
+  Restores a complete graph database from an encrypted backup:
   - **Format**: Only full_dump backups can be restored
   - **Encryption**: Only encrypted backups can be restored (security requirement)
   - **System Backup**: Creates automatic backup of existing database before restore
@@ -226,6 +237,7 @@ def sync(
 
   Args:
       graph_id (str): Graph database identifier
+      backup_id (str): Backup identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (BackupRestoreRequest): Request model for restoring from a backup.
@@ -240,6 +252,7 @@ def sync(
 
   return sync_detailed(
     graph_id=graph_id,
+    backup_id=backup_id,
     client=client,
     body=body,
     token=token,
@@ -249,6 +262,7 @@ def sync(
 
 async def asyncio_detailed(
   graph_id: str,
+  backup_id: str,
   *,
   client: AuthenticatedClient,
   body: BackupRestoreRequest,
@@ -259,7 +273,7 @@ async def asyncio_detailed(
 
    Restore a graph database from an encrypted backup.
 
-  Restores a complete Kuzu database from an encrypted backup:
+  Restores a complete graph database from an encrypted backup:
   - **Format**: Only full_dump backups can be restored
   - **Encryption**: Only encrypted backups can be restored (security requirement)
   - **System Backup**: Creates automatic backup of existing database before restore
@@ -302,6 +316,7 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Graph database identifier
+      backup_id (str): Backup identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (BackupRestoreRequest): Request model for restoring from a backup.
@@ -316,6 +331,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
+    backup_id=backup_id,
     body=body,
     token=token,
     authorization=authorization,
@@ -328,6 +344,7 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
+  backup_id: str,
   *,
   client: AuthenticatedClient,
   body: BackupRestoreRequest,
@@ -338,7 +355,7 @@ async def asyncio(
 
    Restore a graph database from an encrypted backup.
 
-  Restores a complete Kuzu database from an encrypted backup:
+  Restores a complete graph database from an encrypted backup:
   - **Format**: Only full_dump backups can be restored
   - **Encryption**: Only encrypted backups can be restored (security requirement)
   - **System Backup**: Creates automatic backup of existing database before restore
@@ -381,6 +398,7 @@ async def asyncio(
 
   Args:
       graph_id (str): Graph database identifier
+      backup_id (str): Backup identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
       body (BackupRestoreRequest): Request model for restoring from a backup.
@@ -396,6 +414,7 @@ async def asyncio(
   return (
     await asyncio_detailed(
       graph_id=graph_id,
+      backup_id=backup_id,
       client=client,
       body=body,
       token=token,

@@ -51,10 +51,12 @@ def _parse_response(
   if response.status_code == 202:
     response_202 = response.json()
     return response_202
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -127,7 +129,7 @@ def sync_detailed(
       authorization (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
           {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
-          'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
+          'instance_tier': 'kuzu-standard', 'metadata': {'description': 'Main production graph',
           'graph_name': 'Production System', 'schema_extensions': ['roboledger']}, 'tags':
           ['production', 'finance']}.
 
@@ -207,7 +209,7 @@ def sync(
       authorization (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
           {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
-          'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
+          'instance_tier': 'kuzu-standard', 'metadata': {'description': 'Main production graph',
           'graph_name': 'Production System', 'schema_extensions': ['roboledger']}, 'tags':
           ['production', 'finance']}.
 
@@ -282,7 +284,7 @@ async def asyncio_detailed(
       authorization (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
           {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
-          'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
+          'instance_tier': 'kuzu-standard', 'metadata': {'description': 'Main production graph',
           'graph_name': 'Production System', 'schema_extensions': ['roboledger']}, 'tags':
           ['production', 'finance']}.
 
@@ -360,7 +362,7 @@ async def asyncio(
       authorization (Union[None, Unset, str]):
       body (CreateGraphRequest): Request model for creating a new graph. Example:
           {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'},
-          'instance_tier': 'standard', 'metadata': {'description': 'Main production graph',
+          'instance_tier': 'kuzu-standard', 'metadata': {'description': 'Main production graph',
           'graph_name': 'Production System', 'schema_extensions': ['roboledger']}, 'tags':
           ['production', 'finance']}.
 
