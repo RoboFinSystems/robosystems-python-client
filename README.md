@@ -16,8 +16,17 @@ Official Python Client for the RoboSystems Financial Knowledge Graph API. Access
 ## Installation
 
 ```bash
+# Basic installation
 pip install robosystems-client
+
+# With table ingestion support (for uploading Parquet files)
+pip install robosystems-client[tables]
+
+# All optional features
+pip install robosystems-client[all]
 ```
+
+See the [examples](./examples) directory for usage guides.
 
 ## API Reference
 

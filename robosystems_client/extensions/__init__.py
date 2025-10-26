@@ -20,13 +20,12 @@ from .operation_client import (
   OperationProgress,
   OperationResult,
 )
-from .copy_client import (
-  CopyClient,
-  AsyncCopyClient,
-  CopySourceType,
-  CopyOptions,
-  CopyResult,
-  CopyStatistics,
+from .table_ingest_client import (
+  TableIngestClient,
+  UploadOptions,
+  IngestOptions,
+  UploadResult,
+  TableInfo,
 )
 from .extensions import (
   RoboSystemsExtensions,
@@ -117,13 +116,12 @@ __all__ = [
   "OperationStatus",
   "OperationProgress",
   "OperationResult",
-  # Copy Client
-  "CopyClient",
-  "AsyncCopyClient",
-  "CopySourceType",
-  "CopyOptions",
-  "CopyResult",
-  "CopyStatistics",
+  # Table Ingest Client
+  "TableIngestClient",
+  "UploadOptions",
+  "IngestOptions",
+  "UploadResult",
+  "TableInfo",
   # Utilities
   "QueryBuilder",
   "ResultProcessor",
@@ -177,20 +175,6 @@ def execute_query(graph_id: str, query: str, parameters=None):
 def stream_query(graph_id: str, query: str, parameters=None, chunk_size=None):
   """Stream a query using the default extensions instance"""
   return extensions.query.stream_query(graph_id, query, parameters, chunk_size)
-
-
-def copy_from_s3(
-  graph_id: str,
-  table_name: str,
-  s3_path: str,
-  access_key_id: str,
-  secret_access_key: str,
-  **kwargs,
-):
-  """Copy data from S3 using the default extensions instance"""
-  return extensions.copy_from_s3(
-    graph_id, table_name, s3_path, access_key_id, secret_access_key, **kwargs
-  )
 
 
 # DataFrame convenience functions (if pandas is available)
