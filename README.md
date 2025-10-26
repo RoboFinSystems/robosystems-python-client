@@ -8,10 +8,11 @@ Official Python Client for the RoboSystems Financial Knowledge Graph API. Access
 ## Features
 
 - **Type-safe API client** with full type hints and Pydantic models
-- **Async/await support** for high-performance applications  
+- **Async/await support** for high-performance applications
+- **Table ingestion** with simplified Parquet file uploads
 - **Streaming support** for memory-efficient processing of large result sets
 - **Financial AI Agent** integration for natural language queries
-- **Comprehensive error handling** with custom exceptions
+- **Comprehensive error handling** with typed exceptions
 
 ## Installation
 
@@ -30,16 +31,16 @@ See the [examples](./examples) directory for usage guides.
 
 ## API Reference
 
-- API reference: [https://api.robosystems.ai](https://api.robosystems.ai)
-- API documentation: [https://api.robosystems.ai/docs](https://api.robosystems.ai/docs)
-- OpenAPI specification: [https://api.robosystems.ai/openapi.json](https://api.robosystems.ai/openapi.json)
+- [API reference](https://api.robosystems.ai)
+- [API documentation](https://api.robosystems.ai/docs)
+- [OpenAPI specification](https://api.robosystems.ai/openapi.json)
 
 ## Support
 
-- Issues: [Issues](https://github.com/RoboFinSystems/robosystems-python-client/issues)
-- Discussions: [Discussions](https://github.com/RoboFinSystems/robosystems-python-client/discussions)
-- Projects: [Projects](https://github.com/RoboFinSystems/robosystems-python-client/projects)
-- Wiki: [Wiki](https://github.com/RoboFinSystems/robosystems-python-client/wiki)
+- [Issues](https://github.com/RoboFinSystems/robosystems-python-client/issues)
+- [Discussions](https://github.com/RoboFinSystems/robosystems/discussions)
+- [Projects](https://github.com/RoboFinSystems/robosystems/projects)
+- [Wiki](https://github.com/RoboFinSystems/robosystems/wiki)
 
 ## License
 
