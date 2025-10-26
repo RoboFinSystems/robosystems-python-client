@@ -21,12 +21,13 @@ class CreateGraphRequest:
 
   Example:
       {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'}, 'instance_tier':
-          'standard', 'metadata': {'description': 'Main production graph', 'graph_name': 'Production System',
+          'kuzu-standard', 'metadata': {'description': 'Main production graph', 'graph_name': 'Production System',
           'schema_extensions': ['roboledger']}, 'tags': ['production', 'finance']}
 
   Attributes:
       metadata (GraphMetadata): Metadata for graph creation.
-      instance_tier (Union[Unset, str]): Instance tier: standard, enterprise, or premium Default: 'standard'.
+      instance_tier (Union[Unset, str]): Instance tier: kuzu-standard, kuzu-large, kuzu-xlarge, neo4j-community-large,
+          neo4j-enterprise-xlarge Default: 'kuzu-standard'.
       custom_schema (Union['CustomSchemaDefinition', None, Unset]): Custom schema definition to apply
       initial_entity (Union['InitialEntityData', None, Unset]): Optional initial entity to create in the graph. If
           provided, creates a entity-focused graph.
@@ -34,7 +35,7 @@ class CreateGraphRequest:
   """
 
   metadata: "GraphMetadata"
-  instance_tier: Union[Unset, str] = "standard"
+  instance_tier: Union[Unset, str] = "kuzu-standard"
   custom_schema: Union["CustomSchemaDefinition", None, Unset] = UNSET
   initial_entity: Union["InitialEntityData", None, Unset] = UNSET
   tags: Union[Unset, list[str]] = UNSET

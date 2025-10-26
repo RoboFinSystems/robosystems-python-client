@@ -83,7 +83,12 @@ class OperationClient:
   def monitor_operation(
     self, operation_id: str, options: MonitorOptions = None
   ) -> OperationResult:
-    """Monitor a single operation until completion"""
+    """Monitor a single operation until completion
+
+    The SSE stream will replay all events from the beginning (from_sequence=0),
+    so even if the operation completed before we connected, we'll still receive
+    all events including the completion event.
+    """
     if options is None:
       options = MonitorOptions()
 
@@ -91,8 +96,9 @@ class OperationClient:
     completed = False
     error = None
 
-    # Set up SSE connection
-    sse_config = SSEConfig(base_url=self.base_url)
+    # Set up SSE connection with event replay from the beginning
+    # This handles the race condition where the operation may have already completed
+    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
     sse_client = SSEClient(sse_config)
 
     def on_operation_started(data):
@@ -265,6 +271,8 @@ class AsyncOperationClient:
   def __init__(self, config: Dict[str, Any]):
     self.config = config
     self.base_url = config["base_url"]
+    self.headers = config.get("headers", {})
+    self.token = config.get("token")
     self.active_operations: Dict[str, AsyncSSEClient] = {}
 
   async def monitor_operation(
@@ -279,7 +287,7 @@ class AsyncOperationClient:
     error = None
 
     # Set up SSE connection
-    sse_config = SSEConfig(base_url=self.base_url)
+    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
     sse_client = AsyncSSEClient(sse_config)
 
     def on_operation_started(data):

@@ -98,45 +98,59 @@ class QueryClient:
     )
 
     # Execute the query through the generated client
-    from ..client import Client
+    from ..client import AuthenticatedClient
 
-    # Create client with headers
-    client = Client(base_url=self.base_url, headers=self.headers)
+    # Create authenticated client with X-API-Key
+    if not self.token:
+      raise Exception("No API key provided. Set X-API-Key in headers.")
+
+    client = AuthenticatedClient(
+      base_url=self.base_url,
+      token=self.token,
+      prefix="",
+      auth_header_name="X-API-Key",
+      headers=self.headers,
+    )
 
     try:
       kwargs = {"graph_id": graph_id, "client": client, "body": query_request}
-      # Only add token if it's a valid string
-      if self.token and isinstance(self.token, str) and self.token.strip():
-        kwargs["token"] = self.token
       response = execute_cypher_query(**kwargs)
 
       # Check response type and handle accordingly
       if hasattr(response, "parsed") and response.parsed:
         response_data = response.parsed
 
+        # Handle both dict and object responses
+        if isinstance(response_data, dict):
+          # Response is a plain dict
+          data = response_data
+        else:
+          # Response is an object with additional_properties
+          data = (
+            response_data.additional_properties
+            if hasattr(response_data, "additional_properties")
+            else response_data
+          )
+
         # Check if this is an immediate response
-        if hasattr(response_data, "data") and hasattr(response_data, "columns"):
+        if "data" in data and "columns" in data:
           return QueryResult(
-            data=response_data.data,
-            columns=response_data.columns,
-            row_count=getattr(response_data, "row_count", len(response_data.data)),
-            execution_time_ms=getattr(response_data, "execution_time_ms", 0),
+            data=data["data"],
+            columns=data["columns"],
+            row_count=data.get("row_count", len(data["data"])),
+            execution_time_ms=data.get("execution_time_ms", 0),
             graph_id=graph_id,
-            timestamp=getattr(response_data, "timestamp", datetime.now().isoformat()),
+            timestamp=data.get("timestamp", datetime.now().isoformat()),
           )
 
         # Check if this is a queued response
-        if (
-          hasattr(response_data, "status")
-          and response_data.status == "queued"
-          and hasattr(response_data, "operation_id")
-        ):
+        if data.get("status") == "queued" and "operation_id" in data:
           queued_response = QueuedQueryResponse(
-            status=response_data.status,
-            operation_id=response_data.operation_id,
-            queue_position=getattr(response_data, "queue_position", 0),
-            estimated_wait_seconds=getattr(response_data, "estimated_wait_seconds", 0),
-            message=getattr(response_data, "message", "Query queued"),
+            status=data["status"],
+            operation_id=data["operation_id"],
+            queue_position=data.get("queue_position", 0),
+            estimated_wait_seconds=data.get("estimated_wait_seconds", 0),
+            message=data.get("message", "Query queued"),
           )
 
           # Notify about queue status
@@ -182,7 +196,7 @@ class QueryClient:
     error = None
 
     # Set up SSE connection
-    sse_config = SSEConfig(base_url=self.base_url)
+    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
     self.sse_client = SSEClient(sse_config)
 
     # Set up event handlers

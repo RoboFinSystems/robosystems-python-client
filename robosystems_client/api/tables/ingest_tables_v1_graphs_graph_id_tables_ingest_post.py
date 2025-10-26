@@ -5,9 +5,9 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.get_graph_schema_info_response_getgraphschemainfo import (
-  GetGraphSchemaInfoResponseGetgraphschemainfo,
-)
+from ...models.bulk_ingest_request import BulkIngestRequest
+from ...models.bulk_ingest_response import BulkIngestResponse
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
@@ -15,6 +15,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
+  body: BulkIngestRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
@@ -34,10 +35,14 @@ def _get_kwargs(
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
-    "method": "get",
-    "url": f"/v1/graphs/{graph_id}/schema/info",
+    "method": "post",
+    "url": f"/v1/graphs/{graph_id}/tables/ingest",
     "params": params,
   }
+
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
 
   _kwargs["headers"] = headers
   return _kwargs
@@ -45,25 +50,36 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[
-  Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]
-]:
+) -> Optional[Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = GetGraphSchemaInfoResponseGetgraphschemainfo.from_dict(
-      response.json()
-    )
+    response_200 = BulkIngestResponse.from_dict(response.json())
 
     return response_200
+
+  if response.status_code == 401:
+    response_401 = cast(Any, None)
+    return response_401
+
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
-  if response.status_code == 500:
-    response_500 = cast(Any, None)
-    return response_500
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -72,9 +88,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[
-  Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]
-]:
+) -> Response[Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -87,40 +101,32 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: BulkIngestRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Response[
-  Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]
-]:
-  """Get Runtime Graph Schema Information
+) -> Response[Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]]:
+  """Ingest Tables to Graph
 
-   Get runtime schema information for the specified graph database.
-
-  This endpoint inspects the actual graph database structure and returns:
-  - **Node Labels**: All node types currently in the database
-  - **Relationship Types**: All relationship types currently in the database
-  - **Node Properties**: Properties for each node type (limited to first 10 for performance)
-
-  This is different from custom schema management - it shows what actually exists in the database,
-  useful for understanding the current graph structure before writing queries.
-
-  This operation is FREE - no credit consumption required.
+   Load all files from S3 into DuckDB staging tables and ingest into Kuzu graph database. Use
+  rebuild=true to regenerate the entire graph from scratch (safe operation - S3 is source of truth).
 
   Args:
-      graph_id (str): The graph database to get schema for
+      graph_id (str): Graph database identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
+      body (BulkIngestRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]]
+      Response[Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
+    body=body,
     token=token,
     authorization=authorization,
   )
@@ -136,41 +142,33 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: BulkIngestRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[
-  Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]
-]:
-  """Get Runtime Graph Schema Information
+) -> Optional[Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]]:
+  """Ingest Tables to Graph
 
-   Get runtime schema information for the specified graph database.
-
-  This endpoint inspects the actual graph database structure and returns:
-  - **Node Labels**: All node types currently in the database
-  - **Relationship Types**: All relationship types currently in the database
-  - **Node Properties**: Properties for each node type (limited to first 10 for performance)
-
-  This is different from custom schema management - it shows what actually exists in the database,
-  useful for understanding the current graph structure before writing queries.
-
-  This operation is FREE - no credit consumption required.
+   Load all files from S3 into DuckDB staging tables and ingest into Kuzu graph database. Use
+  rebuild=true to regenerate the entire graph from scratch (safe operation - S3 is source of truth).
 
   Args:
-      graph_id (str): The graph database to get schema for
+      graph_id (str): Graph database identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
+      body (BulkIngestRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]
+      Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]
   """
 
   return sync_detailed(
     graph_id=graph_id,
     client=client,
+    body=body,
     token=token,
     authorization=authorization,
   ).parsed
@@ -180,40 +178,32 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: BulkIngestRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Response[
-  Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]
-]:
-  """Get Runtime Graph Schema Information
+) -> Response[Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]]:
+  """Ingest Tables to Graph
 
-   Get runtime schema information for the specified graph database.
-
-  This endpoint inspects the actual graph database structure and returns:
-  - **Node Labels**: All node types currently in the database
-  - **Relationship Types**: All relationship types currently in the database
-  - **Node Properties**: Properties for each node type (limited to first 10 for performance)
-
-  This is different from custom schema management - it shows what actually exists in the database,
-  useful for understanding the current graph structure before writing queries.
-
-  This operation is FREE - no credit consumption required.
+   Load all files from S3 into DuckDB staging tables and ingest into Kuzu graph database. Use
+  rebuild=true to regenerate the entire graph from scratch (safe operation - S3 is source of truth).
 
   Args:
-      graph_id (str): The graph database to get schema for
+      graph_id (str): Graph database identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
+      body (BulkIngestRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]]
+      Response[Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
+    body=body,
     token=token,
     authorization=authorization,
   )
@@ -227,42 +217,34 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: BulkIngestRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[
-  Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]
-]:
-  """Get Runtime Graph Schema Information
+) -> Optional[Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]]:
+  """Ingest Tables to Graph
 
-   Get runtime schema information for the specified graph database.
-
-  This endpoint inspects the actual graph database structure and returns:
-  - **Node Labels**: All node types currently in the database
-  - **Relationship Types**: All relationship types currently in the database
-  - **Node Properties**: Properties for each node type (limited to first 10 for performance)
-
-  This is different from custom schema management - it shows what actually exists in the database,
-  useful for understanding the current graph structure before writing queries.
-
-  This operation is FREE - no credit consumption required.
+   Load all files from S3 into DuckDB staging tables and ingest into Kuzu graph database. Use
+  rebuild=true to regenerate the entire graph from scratch (safe operation - S3 is source of truth).
 
   Args:
-      graph_id (str): The graph database to get schema for
+      graph_id (str): Graph database identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
+      body (BulkIngestRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, GetGraphSchemaInfoResponseGetgraphschemainfo, HTTPValidationError]
+      Union[Any, BulkIngestResponse, ErrorResponse, HTTPValidationError]
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
       client=client,
+      body=body,
       token=token,
       authorization=authorization,
     )

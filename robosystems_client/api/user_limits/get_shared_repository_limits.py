@@ -54,10 +54,12 @@ def _parse_response(
     )
 
     return response_200
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -96,7 +98,7 @@ def sync_detailed(
       - Remaining quota
       - Reset times
 
-      Note: All queries are FREE - this only shows rate limit status.
+      Note: All queries are included - this only shows rate limit status.
 
   Args:
       repository (str): Repository name (e.g., 'sec')
@@ -143,7 +145,7 @@ def sync(
       - Remaining quota
       - Reset times
 
-      Note: All queries are FREE - this only shows rate limit status.
+      Note: All queries are included - this only shows rate limit status.
 
   Args:
       repository (str): Repository name (e.g., 'sec')
@@ -185,7 +187,7 @@ async def asyncio_detailed(
       - Remaining quota
       - Reset times
 
-      Note: All queries are FREE - this only shows rate limit status.
+      Note: All queries are included - this only shows rate limit status.
 
   Args:
       repository (str): Repository name (e.g., 'sec')
@@ -230,7 +232,7 @@ async def asyncio(
       - Remaining quota
       - Reset times
 
-      Note: All queries are FREE - this only shows rate limit status.
+      Note: All queries are included - this only shows rate limit status.
 
   Args:
       repository (str): Repository name (e.g., 'sec')

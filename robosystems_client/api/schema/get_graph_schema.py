@@ -5,13 +5,15 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.get_graph_schema_response_getgraphschema import (
+  GetGraphSchemaResponseGetgraphschema,
+)
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
-  backup_id: str,
   *,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
@@ -32,8 +34,8 @@ def _get_kwargs(
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": f"/v1/graphs/{graph_id}/backups/{backup_id}/export",
+    "method": "get",
+    "url": f"/v1/graphs/{graph_id}/schema",
     "params": params,
   }
 
@@ -43,20 +45,25 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError]]:
+) -> Optional[Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = response.json()
+    response_200 = GetGraphSchemaResponseGetgraphschema.from_dict(response.json())
+
     return response_200
+
   if response.status_code == 403:
     response_403 = cast(Any, None)
     return response_403
-  if response.status_code == 404:
-    response_404 = cast(Any, None)
-    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 500:
+    response_500 = cast(Any, None)
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -65,7 +72,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError]]:
+) -> Response[Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -76,19 +83,27 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  backup_id: str,
   *,
   client: AuthenticatedClient,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError]]:
-  """Export Kuzu backup for download
+) -> Response[Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]]:
+  """Get Runtime Graph Schema
 
-   Export a backup file for download (only available for non-encrypted, compressed .kuzu backups)
+   Get runtime schema information for the specified graph database.
+
+  This endpoint inspects the actual graph database structure and returns:
+  - **Node Labels**: All node types currently in the database
+  - **Relationship Types**: All relationship types currently in the database
+  - **Node Properties**: Properties for each node type (limited to first 10 for performance)
+
+  This shows what actually exists in the database right now - the runtime state.
+  For the declared schema definition, use GET /schema/export instead.
+
+  This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): Graph database identifier
-      backup_id (str): Backup identifier
+      graph_id (str): The graph database to get schema for
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
@@ -97,12 +112,11 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError]]
+      Response[Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    backup_id=backup_id,
     token=token,
     authorization=authorization,
   )
@@ -116,19 +130,27 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  backup_id: str,
   *,
   client: AuthenticatedClient,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError]]:
-  """Export Kuzu backup for download
+) -> Optional[Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]]:
+  """Get Runtime Graph Schema
 
-   Export a backup file for download (only available for non-encrypted, compressed .kuzu backups)
+   Get runtime schema information for the specified graph database.
+
+  This endpoint inspects the actual graph database structure and returns:
+  - **Node Labels**: All node types currently in the database
+  - **Relationship Types**: All relationship types currently in the database
+  - **Node Properties**: Properties for each node type (limited to first 10 for performance)
+
+  This shows what actually exists in the database right now - the runtime state.
+  For the declared schema definition, use GET /schema/export instead.
+
+  This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): Graph database identifier
-      backup_id (str): Backup identifier
+      graph_id (str): The graph database to get schema for
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
@@ -137,12 +159,11 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError]
+      Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    backup_id=backup_id,
     client=client,
     token=token,
     authorization=authorization,
@@ -151,19 +172,27 @@ def sync(
 
 async def asyncio_detailed(
   graph_id: str,
-  backup_id: str,
   *,
   client: AuthenticatedClient,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError]]:
-  """Export Kuzu backup for download
+) -> Response[Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]]:
+  """Get Runtime Graph Schema
 
-   Export a backup file for download (only available for non-encrypted, compressed .kuzu backups)
+   Get runtime schema information for the specified graph database.
+
+  This endpoint inspects the actual graph database structure and returns:
+  - **Node Labels**: All node types currently in the database
+  - **Relationship Types**: All relationship types currently in the database
+  - **Node Properties**: Properties for each node type (limited to first 10 for performance)
+
+  This shows what actually exists in the database right now - the runtime state.
+  For the declared schema definition, use GET /schema/export instead.
+
+  This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): Graph database identifier
-      backup_id (str): Backup identifier
+      graph_id (str): The graph database to get schema for
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
@@ -172,12 +201,11 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError]]
+      Response[Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    backup_id=backup_id,
     token=token,
     authorization=authorization,
   )
@@ -189,19 +217,27 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  backup_id: str,
   *,
   client: AuthenticatedClient,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError]]:
-  """Export Kuzu backup for download
+) -> Optional[Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]]:
+  """Get Runtime Graph Schema
 
-   Export a backup file for download (only available for non-encrypted, compressed .kuzu backups)
+   Get runtime schema information for the specified graph database.
+
+  This endpoint inspects the actual graph database structure and returns:
+  - **Node Labels**: All node types currently in the database
+  - **Relationship Types**: All relationship types currently in the database
+  - **Node Properties**: Properties for each node type (limited to first 10 for performance)
+
+  This shows what actually exists in the database right now - the runtime state.
+  For the declared schema definition, use GET /schema/export instead.
+
+  This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): Graph database identifier
-      backup_id (str): Backup identifier
+      graph_id (str): The graph database to get schema for
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
 
@@ -210,13 +246,12 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError]
+      Union[Any, GetGraphSchemaResponseGetgraphschema, HTTPValidationError]
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      backup_id=backup_id,
       client=client,
       token=token,
       authorization=authorization,

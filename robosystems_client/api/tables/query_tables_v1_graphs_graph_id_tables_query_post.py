@@ -1,20 +1,21 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.list_schema_extensions_response_listschemaextensions import (
-  ListSchemaExtensionsResponseListschemaextensions,
-)
+from ...models.table_query_request import TableQueryRequest
+from ...models.table_query_response import TableQueryResponse
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
+  body: TableQueryRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
@@ -34,10 +35,14 @@ def _get_kwargs(
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
-    "method": "get",
-    "url": f"/v1/graphs/{graph_id}/schema/extensions",
+    "method": "post",
+    "url": f"/v1/graphs/{graph_id}/tables/query",
     "params": params,
   }
+
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
 
   _kwargs["headers"] = headers
   return _kwargs
@@ -45,19 +50,36 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[
-  Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]
-]:
+) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
   if response.status_code == 200:
-    response_200 = ListSchemaExtensionsResponseListschemaextensions.from_dict(
-      response.json()
-    )
+    response_200 = TableQueryResponse.from_dict(response.json())
 
     return response_200
+
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = cast(Any, None)
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -66,9 +88,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[
-  Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]
-]:
+) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -81,30 +101,31 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: TableQueryRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Response[
-  Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]
-]:
-  """List Available Schema Extensions
+) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+  """Query Staging Tables with SQL
 
-   Get list of available schema extensions and compatibility groups
+   Execute SQL queries on DuckDB staging tables
 
   Args:
-      graph_id (str): The graph ID to list extensions for
+      graph_id (str): Graph database identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
+      body (TableQueryRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]]
+      Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
+    body=body,
     token=token,
     authorization=authorization,
   )
@@ -120,31 +141,32 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: TableQueryRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[
-  Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]
-]:
-  """List Available Schema Extensions
+) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+  """Query Staging Tables with SQL
 
-   Get list of available schema extensions and compatibility groups
+   Execute SQL queries on DuckDB staging tables
 
   Args:
-      graph_id (str): The graph ID to list extensions for
+      graph_id (str): Graph database identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
+      body (TableQueryRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]
+      Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]
   """
 
   return sync_detailed(
     graph_id=graph_id,
     client=client,
+    body=body,
     token=token,
     authorization=authorization,
   ).parsed
@@ -154,30 +176,31 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: TableQueryRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Response[
-  Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]
-]:
-  """List Available Schema Extensions
+) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+  """Query Staging Tables with SQL
 
-   Get list of available schema extensions and compatibility groups
+   Execute SQL queries on DuckDB staging tables
 
   Args:
-      graph_id (str): The graph ID to list extensions for
+      graph_id (str): Graph database identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
+      body (TableQueryRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]]
+      Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
+    body=body,
     token=token,
     authorization=authorization,
   )
@@ -191,32 +214,33 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: TableQueryRequest,
   token: Union[None, Unset, str] = UNSET,
   authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[
-  Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]
-]:
-  """List Available Schema Extensions
+) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+  """Query Staging Tables with SQL
 
-   Get list of available schema extensions and compatibility groups
+   Execute SQL queries on DuckDB staging tables
 
   Args:
-      graph_id (str): The graph ID to list extensions for
+      graph_id (str): Graph database identifier
       token (Union[None, Unset, str]): JWT token for SSE authentication
       authorization (Union[None, Unset, str]):
+      body (TableQueryRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, ListSchemaExtensionsResponseListschemaextensions]
+      Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
       client=client,
+      body=body,
       token=token,
       authorization=authorization,
     )

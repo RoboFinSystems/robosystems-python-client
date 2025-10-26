@@ -4,14 +4,14 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="URLCopyRequestHeadersType0")
+T = TypeVar("T", bound="GetGraphSchemaResponseGetgraphschema")
 
 
 @_attrs_define
-class URLCopyRequestHeadersType0:
+class GetGraphSchemaResponseGetgraphschema:
   """ """
 
-  additional_properties: dict[str, str] = _attrs_field(init=False, factory=dict)
+  additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     field_dict: dict[str, Any] = {}
@@ -22,19 +22,19 @@ class URLCopyRequestHeadersType0:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    url_copy_request_headers_type_0 = cls()
+    get_graph_schema_response_getgraphschema = cls()
 
-    url_copy_request_headers_type_0.additional_properties = d
-    return url_copy_request_headers_type_0
+    get_graph_schema_response_getgraphschema.additional_properties = d
+    return get_graph_schema_response_getgraphschema
 
   @property
   def additional_keys(self) -> list[str]:
     return list(self.additional_properties.keys())
 
-  def __getitem__(self, key: str) -> str:
+  def __getitem__(self, key: str) -> Any:
     return self.additional_properties[key]
 
-  def __setitem__(self, key: str, value: str) -> None:
+  def __setitem__(self, key: str, value: Any) -> None:
     self.additional_properties[key] = value
 
   def __delitem__(self, key: str) -> None:

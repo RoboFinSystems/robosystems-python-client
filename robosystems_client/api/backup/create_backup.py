@@ -53,26 +53,32 @@ def _parse_response(
   if response.status_code == 202:
     response_202 = response.json()
     return response_202
+
   if response.status_code == 400:
     response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
+
   if response.status_code == 404:
     response_404 = ErrorResponse.from_dict(response.json())
 
     return response_404
-  if response.status_code == 500:
-    response_500 = ErrorResponse.from_dict(response.json())
 
-    return response_500
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -102,7 +108,7 @@ def sync_detailed(
 
    Create a backup of the graph database.
 
-  Creates a complete backup of the Kuzu database (.kuzu file) with:
+  Creates a complete backup of the graph database (.kuzu file) with:
   - **Format**: Full database backup only (complete .kuzu file)
   - **Compression**: Always enabled for optimal storage
   - **Encryption**: Optional AES-256 encryption for security
@@ -183,7 +189,7 @@ def sync(
 
    Create a backup of the graph database.
 
-  Creates a complete backup of the Kuzu database (.kuzu file) with:
+  Creates a complete backup of the graph database (.kuzu file) with:
   - **Format**: Full database backup only (complete .kuzu file)
   - **Compression**: Always enabled for optimal storage
   - **Encryption**: Optional AES-256 encryption for security
@@ -259,7 +265,7 @@ async def asyncio_detailed(
 
    Create a backup of the graph database.
 
-  Creates a complete backup of the Kuzu database (.kuzu file) with:
+  Creates a complete backup of the graph database (.kuzu file) with:
   - **Format**: Full database backup only (complete .kuzu file)
   - **Compression**: Always enabled for optimal storage
   - **Encryption**: Optional AES-256 encryption for security
@@ -338,7 +344,7 @@ async def asyncio(
 
    Create a backup of the graph database.
 
-  Creates a complete backup of the Kuzu database (.kuzu file) with:
+  Creates a complete backup of the graph database (.kuzu file) with:
   - **Format**: Full database backup only (complete .kuzu file)
   - **Compression**: Always enabled for optimal storage
   - **Encryption**: Optional AES-256 encryption for security

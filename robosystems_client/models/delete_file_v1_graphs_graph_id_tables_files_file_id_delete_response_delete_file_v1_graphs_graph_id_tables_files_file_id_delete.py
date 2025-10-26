@@ -4,11 +4,14 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="ListSchemaExtensionsResponseListschemaextensions")
+T = TypeVar(
+  "T",
+  bound="DeleteFileV1GraphsGraphIdTablesFilesFileIdDeleteResponseDeleteFileV1GraphsGraphIdTablesFilesFileIdDelete",
+)
 
 
 @_attrs_define
-class ListSchemaExtensionsResponseListschemaextensions:
+class DeleteFileV1GraphsGraphIdTablesFilesFileIdDeleteResponseDeleteFileV1GraphsGraphIdTablesFilesFileIdDelete:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -22,10 +25,10 @@ class ListSchemaExtensionsResponseListschemaextensions:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    list_schema_extensions_response_listschemaextensions = cls()
+    delete_file_v1_graphs_graph_id_tables_files_file_id_delete_response_delete_file_v1_graphs_graph_id_tables_files_file_id_delete = cls()
 
-    list_schema_extensions_response_listschemaextensions.additional_properties = d
-    return list_schema_extensions_response_listschemaextensions
+    delete_file_v1_graphs_graph_id_tables_files_file_id_delete_response_delete_file_v1_graphs_graph_id_tables_files_file_id_delete.additional_properties = d
+    return delete_file_v1_graphs_graph_id_tables_files_file_id_delete_response_delete_file_v1_graphs_graph_id_tables_files_file_id_delete
 
   @property
   def additional_keys(self) -> list[str]:

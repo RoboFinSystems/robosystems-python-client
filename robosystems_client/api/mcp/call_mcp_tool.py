@@ -64,41 +64,51 @@ def _parse_response(
   if response.status_code == 200:
     response_200 = response.json()
     return response_200
+
   if response.status_code == 202:
     response_202 = cast(Any, None)
     return response_202
+
   if response.status_code == 400:
     response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
+
   if response.status_code == 402:
     response_402 = ErrorResponse.from_dict(response.json())
 
     return response_402
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
+
   if response.status_code == 408:
     response_408 = ErrorResponse.from_dict(response.json())
 
     return response_408
-  if response.status_code == 429:
-    response_429 = ErrorResponse.from_dict(response.json())
 
-    return response_429
-  if response.status_code == 500:
-    response_500 = ErrorResponse.from_dict(response.json())
-
-    return response_500
-  if response.status_code == 503:
-    response_503 = ErrorResponse.from_dict(response.json())
-
-    return response_503
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
+  if response.status_code == 503:
+    response_503 = ErrorResponse.from_dict(response.json())
+
+    return response_503
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -161,7 +171,7 @@ def sync_detailed(
   - Clients should implement exponential backoff on errors
 
   **Note:**
-  MCP tool calls are currently FREE and do not consume credits.
+  MCP tool calls are included and do not consume credits.
 
   Args:
       graph_id (str): Graph database identifier
@@ -240,7 +250,7 @@ def sync(
   - Clients should implement exponential backoff on errors
 
   **Note:**
-  MCP tool calls are currently FREE and do not consume credits.
+  MCP tool calls are included and do not consume credits.
 
   Args:
       graph_id (str): Graph database identifier
@@ -314,7 +324,7 @@ async def asyncio_detailed(
   - Clients should implement exponential backoff on errors
 
   **Note:**
-  MCP tool calls are currently FREE and do not consume credits.
+  MCP tool calls are included and do not consume credits.
 
   Args:
       graph_id (str): Graph database identifier
@@ -391,7 +401,7 @@ async def asyncio(
   - Clients should implement exponential backoff on errors
 
   **Note:**
-  MCP tool calls are currently FREE and do not consume credits.
+  MCP tool calls are included and do not consume credits.
 
   Args:
       graph_id (str): Graph database identifier

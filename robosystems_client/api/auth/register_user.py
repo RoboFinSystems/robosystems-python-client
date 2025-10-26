@@ -38,22 +38,27 @@ def _parse_response(
     response_201 = AuthResponse.from_dict(response.json())
 
     return response_201
-  if response.status_code == 409:
-    response_409 = ErrorResponse.from_dict(response.json())
 
-    return response_409
   if response.status_code == 400:
     response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
-  if response.status_code == 503:
-    response_503 = ErrorResponse.from_dict(response.json())
 
-    return response_503
+  if response.status_code == 409:
+    response_409 = ErrorResponse.from_dict(response.json())
+
+    return response_409
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 503:
+    response_503 = ErrorResponse.from_dict(response.json())
+
+    return response_503
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:

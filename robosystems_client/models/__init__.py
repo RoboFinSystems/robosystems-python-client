@@ -36,6 +36,8 @@ from .backup_stats_response import BackupStatsResponse
 from .backup_stats_response_backup_formats import BackupStatsResponseBackupFormats
 from .batch_agent_request import BatchAgentRequest
 from .batch_agent_response import BatchAgentResponse
+from .bulk_ingest_request import BulkIngestRequest
+from .bulk_ingest_response import BulkIngestResponse
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -50,9 +52,6 @@ from .connection_provider_info_provider import ConnectionProviderInfoProvider
 from .connection_response import ConnectionResponse
 from .connection_response_metadata import ConnectionResponseMetadata
 from .connection_response_provider import ConnectionResponseProvider
-from .copy_response import CopyResponse
-from .copy_response_error_details_type_0 import CopyResponseErrorDetailsType0
-from .copy_response_status import CopyResponseStatus
 from .create_api_key_request import CreateAPIKeyRequest
 from .create_api_key_response import CreateAPIKeyResponse
 from .create_connection_request import CreateConnectionRequest
@@ -74,10 +73,11 @@ from .custom_schema_definition_relationships_item import (
 )
 from .cypher_query_request import CypherQueryRequest
 from .cypher_query_request_parameters_type_0 import CypherQueryRequestParametersType0
-from .data_frame_copy_request import DataFrameCopyRequest
-from .data_frame_copy_request_format import DataFrameCopyRequestFormat
 from .database_health_response import DatabaseHealthResponse
 from .database_info_response import DatabaseInfoResponse
+from .delete_file_v1_graphs_graph_id_tables_files_file_id_delete_response_delete_file_v1_graphs_graph_id_tables_files_file_id_delete import (
+  DeleteFileV1GraphsGraphIdTablesFilesFileIdDeleteResponseDeleteFileV1GraphsGraphIdTablesFilesFileIdDelete,
+)
 from .delete_subgraph_request import DeleteSubgraphRequest
 from .delete_subgraph_response import DeleteSubgraphResponse
 from .detailed_transactions_response import DetailedTransactionsResponse
@@ -93,6 +93,9 @@ from .enhanced_credit_transaction_response_metadata import (
 from .error_response import ErrorResponse
 from .exchange_token_request import ExchangeTokenRequest
 from .exchange_token_request_metadata_type_0 import ExchangeTokenRequestMetadataType0
+from .file_update_request import FileUpdateRequest
+from .file_upload_request import FileUploadRequest
+from .file_upload_response import FileUploadResponse
 from .forgot_password_request import ForgotPasswordRequest
 from .forgot_password_response_forgotpassword import (
   ForgotPasswordResponseForgotpassword,
@@ -112,6 +115,9 @@ from .get_current_auth_user_response_getcurrentauthuser import (
 from .get_current_graph_bill_response_getcurrentgraphbill import (
   GetCurrentGraphBillResponseGetcurrentgraphbill,
 )
+from .get_file_info_v1_graphs_graph_id_tables_files_file_id_get_response_get_file_info_v1_graphs_graph_id_tables_files_file_id_get import (
+  GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsGraphIdTablesFilesFileIdGet,
+)
 from .get_graph_billing_history_response_getgraphbillinghistory import (
   GetGraphBillingHistoryResponseGetgraphbillinghistory,
 )
@@ -121,8 +127,8 @@ from .get_graph_limits_response_getgraphlimits import (
 from .get_graph_monthly_bill_response_getgraphmonthlybill import (
   GetGraphMonthlyBillResponseGetgraphmonthlybill,
 )
-from .get_graph_schema_info_response_getgraphschemainfo import (
-  GetGraphSchemaInfoResponseGetgraphschemainfo,
+from .get_graph_schema_response_getgraphschema import (
+  GetGraphSchemaResponseGetgraphschema,
 )
 from .get_graph_usage_details_response_getgraphusagedetails import (
   GetGraphUsageDetailsResponseGetgraphusagedetails,
@@ -157,10 +163,10 @@ from .link_token_request import LinkTokenRequest
 from .link_token_request_options_type_0 import LinkTokenRequestOptionsType0
 from .link_token_request_provider_type_0 import LinkTokenRequestProviderType0
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
-from .list_schema_extensions_response_listschemaextensions import (
-  ListSchemaExtensionsResponseListschemaextensions,
-)
 from .list_subgraphs_response import ListSubgraphsResponse
+from .list_table_files_v1_graphs_graph_id_tables_table_name_files_get_response_list_table_files_v1_graphs_graph_id_tables_table_name_files_get import (
+  ListTableFilesV1GraphsGraphIdTablesTableNameFilesGetResponseListTableFilesV1GraphsGraphIdTablesTableNameFilesGet,
+)
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .mcp_tool_call import MCPToolCall
@@ -196,9 +202,6 @@ from .resend_verification_email_response_resendverificationemail import (
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
-from .s3_copy_request import S3CopyRequest
-from .s3_copy_request_file_format import S3CopyRequestFileFormat
-from .s3_copy_request_s3_url_style_type_0 import S3CopyRequestS3UrlStyleType0
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
 from .schema_export_response_schema_definition_type_0 import (
@@ -238,14 +241,19 @@ from .sync_connection_request_sync_options_type_0 import (
 from .sync_connection_response_syncconnection import (
   SyncConnectionResponseSyncconnection,
 )
+from .table_info import TableInfo
+from .table_ingest_result import TableIngestResult
+from .table_list_response import TableListResponse
+from .table_query_request import TableQueryRequest
+from .table_query_response import TableQueryResponse
 from .tier_upgrade_request import TierUpgradeRequest
 from .transaction_summary_response import TransactionSummaryResponse
 from .update_api_key_request import UpdateAPIKeyRequest
+from .update_file_v1_graphs_graph_id_tables_files_file_id_patch_response_update_file_v1_graphs_graph_id_tables_files_file_id_patch import (
+  UpdateFileV1GraphsGraphIdTablesFilesFileIdPatchResponseUpdateFileV1GraphsGraphIdTablesFilesFileIdPatch,
+)
 from .update_password_request import UpdatePasswordRequest
 from .update_user_request import UpdateUserRequest
-from .url_copy_request import URLCopyRequest
-from .url_copy_request_file_format import URLCopyRequestFileFormat
-from .url_copy_request_headers_type_0 import URLCopyRequestHeadersType0
 from .user_analytics_response import UserAnalyticsResponse
 from .user_analytics_response_api_usage import UserAnalyticsResponseApiUsage
 from .user_analytics_response_graph_usage import UserAnalyticsResponseGraphUsage
@@ -300,6 +308,8 @@ __all__ = (
   "BackupStatsResponseBackupFormats",
   "BatchAgentRequest",
   "BatchAgentResponse",
+  "BulkIngestRequest",
+  "BulkIngestResponse",
   "CancellationResponse",
   "CancelOperationResponseCanceloperation",
   "CheckCreditBalanceResponseCheckcreditbalance",
@@ -310,9 +320,6 @@ __all__ = (
   "ConnectionResponse",
   "ConnectionResponseMetadata",
   "ConnectionResponseProvider",
-  "CopyResponse",
-  "CopyResponseErrorDetailsType0",
-  "CopyResponseStatus",
   "CreateAPIKeyRequest",
   "CreateAPIKeyResponse",
   "CreateConnectionRequest",
@@ -332,8 +339,7 @@ __all__ = (
   "CypherQueryRequestParametersType0",
   "DatabaseHealthResponse",
   "DatabaseInfoResponse",
-  "DataFrameCopyRequest",
-  "DataFrameCopyRequestFormat",
+  "DeleteFileV1GraphsGraphIdTablesFilesFileIdDeleteResponseDeleteFileV1GraphsGraphIdTablesFilesFileIdDelete",
   "DeleteSubgraphRequest",
   "DeleteSubgraphResponse",
   "DetailedTransactionsResponse",
@@ -345,6 +351,9 @@ __all__ = (
   "ErrorResponse",
   "ExchangeTokenRequest",
   "ExchangeTokenRequestMetadataType0",
+  "FileUpdateRequest",
+  "FileUploadRequest",
+  "FileUploadResponse",
   "ForgotPasswordRequest",
   "ForgotPasswordResponseForgotpassword",
   "GetAllCreditSummariesResponseGetallcreditsummaries",
@@ -352,10 +361,11 @@ __all__ = (
   "GetBackupDownloadUrlResponseGetbackupdownloadurl",
   "GetCurrentAuthUserResponseGetcurrentauthuser",
   "GetCurrentGraphBillResponseGetcurrentgraphbill",
+  "GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsGraphIdTablesFilesFileIdGet",
   "GetGraphBillingHistoryResponseGetgraphbillinghistory",
   "GetGraphLimitsResponseGetgraphlimits",
   "GetGraphMonthlyBillResponseGetgraphmonthlybill",
-  "GetGraphSchemaInfoResponseGetgraphschemainfo",
+  "GetGraphSchemaResponseGetgraphschema",
   "GetGraphUsageDetailsResponseGetgraphusagedetails",
   "GetOperationStatusResponseGetoperationstatus",
   "GetSharedRepositoryLimitsResponseGetsharedrepositorylimits",
@@ -379,8 +389,8 @@ __all__ = (
   "LinkTokenRequestOptionsType0",
   "LinkTokenRequestProviderType0",
   "ListConnectionsProviderType0",
-  "ListSchemaExtensionsResponseListschemaextensions",
   "ListSubgraphsResponse",
+  "ListTableFilesV1GraphsGraphIdTablesTableNameFilesGetResponseListTableFilesV1GraphsGraphIdTablesTableNameFilesGet",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "MCPToolCall",
@@ -408,9 +418,6 @@ __all__ = (
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
   "ResponseMode",
-  "S3CopyRequest",
-  "S3CopyRequestFileFormat",
-  "S3CopyRequestS3UrlStyleType0",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",
@@ -440,14 +447,17 @@ __all__ = (
   "SyncConnectionRequest",
   "SyncConnectionRequestSyncOptionsType0",
   "SyncConnectionResponseSyncconnection",
+  "TableInfo",
+  "TableIngestResult",
+  "TableListResponse",
+  "TableQueryRequest",
+  "TableQueryResponse",
   "TierUpgradeRequest",
   "TransactionSummaryResponse",
   "UpdateAPIKeyRequest",
+  "UpdateFileV1GraphsGraphIdTablesFilesFileIdPatchResponseUpdateFileV1GraphsGraphIdTablesFilesFileIdPatch",
   "UpdatePasswordRequest",
   "UpdateUserRequest",
-  "URLCopyRequest",
-  "URLCopyRequestFileFormat",
-  "URLCopyRequestHeadersType0",
   "UserAnalyticsResponse",
   "UserAnalyticsResponseApiUsage",
   "UserAnalyticsResponseGraphUsage",

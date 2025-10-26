@@ -124,9 +124,11 @@ class SSEClient:
 
     try:
       event_buffer = {"event": None, "data": [], "id": None, "retry": None}
+      print("[SSE DEBUG] Starting to process events...")
 
       for line in self._response.iter_lines():
         if self.closed:
+          print("[SSE DEBUG] Stream closed, breaking out of loop")
           break
 
         line = line.strip()
@@ -134,6 +136,7 @@ class SSEClient:
         # Empty line indicates end of event
         if not line:
           if event_buffer["data"] or event_buffer["event"]:
+            print(f"[SSE DEBUG] Dispatching event: {event_buffer.get('event')}")
             self._dispatch_event(event_buffer)
           event_buffer = {"event": None, "data": [], "id": None, "retry": None}
           continue
@@ -169,9 +172,13 @@ class SSEClient:
 
       # Handle final event if stream ends without empty line
       if event_buffer["data"] or event_buffer["event"]:
+        print("[SSE DEBUG] Dispatching final event after stream end")
         self._dispatch_event(event_buffer)
 
+      print("[SSE DEBUG] Event processing loop ended")
+
     except Exception as error:
+      print(f"[SSE DEBUG] Exception in event processing: {error}")
       if not self.closed:
         self.emit("error", error)
 
@@ -394,9 +401,13 @@ class AsyncSSEClient:
 
       # Handle final event if stream ends without empty line
       if event_buffer["data"] or event_buffer["event"]:
+        print("[SSE DEBUG] Dispatching final event after stream end")
         self._dispatch_event(event_buffer)
 
+      print("[SSE DEBUG] Event processing loop ended")
+
     except Exception as error:
+      print(f"[SSE DEBUG] Exception in event processing: {error}")
       if not self.closed:
         self.emit("error", error)
 

@@ -14,31 +14,23 @@ class BackupRestoreRequest:
   """Request model for restoring from a backup.
 
   Attributes:
-      backup_id (str): ID of backup to restore from
       create_system_backup (Union[Unset, bool]): Create a system backup of existing database before restore Default:
           True.
       verify_after_restore (Union[Unset, bool]): Verify database integrity after restore Default: True.
   """
 
-  backup_id: str
   create_system_backup: Union[Unset, bool] = True
   verify_after_restore: Union[Unset, bool] = True
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    backup_id = self.backup_id
-
     create_system_backup = self.create_system_backup
 
     verify_after_restore = self.verify_after_restore
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update(
-      {
-        "backup_id": backup_id,
-      }
-    )
+    field_dict.update({})
     if create_system_backup is not UNSET:
       field_dict["create_system_backup"] = create_system_backup
     if verify_after_restore is not UNSET:
@@ -49,14 +41,11 @@ class BackupRestoreRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    backup_id = d.pop("backup_id")
-
     create_system_backup = d.pop("create_system_backup", UNSET)
 
     verify_after_restore = d.pop("verify_after_restore", UNSET)
 
     backup_restore_request = cls(
-      backup_id=backup_id,
       create_system_backup=create_system_backup,
       verify_after_restore=verify_after_restore,
     )
