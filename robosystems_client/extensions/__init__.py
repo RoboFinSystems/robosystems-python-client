@@ -27,6 +27,12 @@ from .table_ingest_client import (
   UploadResult,
   TableInfo,
 )
+from .graph_client import (
+  GraphClient,
+  GraphMetadata,
+  InitialEntityData,
+  GraphInfo,
+)
 from .extensions import (
   RoboSystemsExtensions,
   RoboSystemsExtensionConfig,
@@ -122,6 +128,11 @@ __all__ = [
   "IngestOptions",
   "UploadResult",
   "TableInfo",
+  # Graph Client
+  "GraphClient",
+  "GraphMetadata",
+  "InitialEntityData",
+  "GraphInfo",
   # Utilities
   "QueryBuilder",
   "ResultProcessor",

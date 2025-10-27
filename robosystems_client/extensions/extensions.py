@@ -9,6 +9,7 @@ from typing import Dict, Any, Optional, Callable
 from .query_client import QueryClient
 from .operation_client import OperationClient
 from .table_ingest_client import TableIngestClient
+from .graph_client import GraphClient
 from .sse_client import SSEClient
 
 
@@ -59,6 +60,7 @@ class RoboSystemsExtensions:
     self.query = QueryClient(self.config)
     self.operations = OperationClient(self.config)
     self.tables = TableIngestClient(self.config)
+    self.graphs = GraphClient(self.config)
 
   def monitor_operation(
     self, operation_id: str, on_progress: Optional[Callable] = None
@@ -88,6 +90,7 @@ class RoboSystemsExtensions:
     self.query.close()
     self.operations.close_all()
     self.tables.close()
+    self.graphs.close()
 
   # Convenience methods that delegate to the appropriate clients
   def execute_query(self, graph_id: str, query: str, parameters: Dict[str, Any] = None):
