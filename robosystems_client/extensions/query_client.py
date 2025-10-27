@@ -113,8 +113,29 @@ class QueryClient:
     )
 
     try:
-      kwargs = {"graph_id": graph_id, "client": client, "body": query_request}
+      kwargs = {
+        "graph_id": graph_id,
+        "client": client,
+        "body": query_request,
+        "mode": options.mode if options.mode else None,
+        "chunk_size": options.chunk_size if options.chunk_size else 1000,
+        "test_mode": options.test_mode if options.test_mode else False,
+      }
       response = execute_cypher_query(**kwargs)
+
+      # Check if this is an NDJSON streaming response (parsed will be None for NDJSON)
+      if (
+        hasattr(response, "headers")
+        and (
+          "application/x-ndjson" in response.headers.get("content-type", "")
+          or response.headers.get("x-stream-format") == "ndjson"
+        )
+      ) or (
+        hasattr(response, "parsed")
+        and response.parsed is None
+        and response.status_code == 200
+      ):
+        return self._parse_ndjson_response(response, graph_id)
 
       # Check response type and handle accordingly
       if hasattr(response, "parsed") and response.parsed:
@@ -186,6 +207,58 @@ class QueryClient:
 
     # Unexpected response format
     raise Exception("Unexpected response format from query endpoint")
+
+  def _parse_ndjson_response(self, response, graph_id: str) -> QueryResult:
+    """Parse NDJSON streaming response and aggregate into QueryResult"""
+    import json
+
+    all_data = []
+    columns = None
+    total_rows = 0
+    execution_time_ms = 0
+
+    # Parse NDJSON line by line
+    content = (
+      response.content.decode("utf-8")
+      if isinstance(response.content, bytes)
+      else response.content
+    )
+
+    for line in content.strip().split("\n"):
+      if not line.strip():
+        continue
+
+      try:
+        chunk = json.loads(line)
+
+        # Extract columns from first chunk
+        if columns is None and "columns" in chunk:
+          columns = chunk["columns"]
+
+        # Aggregate data rows (NDJSON uses "rows", regular JSON uses "data")
+        if "rows" in chunk:
+          all_data.extend(chunk["rows"])
+          total_rows += len(chunk["rows"])
+        elif "data" in chunk:
+          all_data.extend(chunk["data"])
+          total_rows += len(chunk["data"])
+
+        # Track execution time (use max from all chunks)
+        if "execution_time_ms" in chunk:
+          execution_time_ms = max(execution_time_ms, chunk["execution_time_ms"])
+
+      except json.JSONDecodeError as e:
+        raise Exception(f"Failed to parse NDJSON line: {e}")
+
+    # Return aggregated result
+    return QueryResult(
+      data=all_data,
+      columns=columns or [],
+      row_count=total_rows,
+      execution_time_ms=execution_time_ms,
+      graph_id=graph_id,
+      timestamp=datetime.now().isoformat(),
+    )
 
   def _stream_query_results(
     self, operation_id: str, options: QueryOptions

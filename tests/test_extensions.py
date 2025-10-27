@@ -7,6 +7,7 @@ from robosystems_client.extensions import (
   TableIngestClient,
   QueryClient,
   OperationClient,
+  GraphClient,
 )
 
 
@@ -22,6 +23,7 @@ class TestRoboSystemsExtensions:
     assert isinstance(extensions.query, QueryClient)
     assert isinstance(extensions.operations, OperationClient)
     assert isinstance(extensions.tables, TableIngestClient)
+    assert isinstance(extensions.graphs, GraphClient)
 
     # Cleanup
     extensions.close()
@@ -112,6 +114,20 @@ class TestRoboSystemsExtensions:
 
     assert extensions.tables.base_url == "https://api.robosystems.ai"
     assert "X-API-Key" in extensions.tables.headers
+
+    extensions.close()
+
+  def test_graph_client_receives_config(self):
+    """Test that GraphClient receives proper config."""
+    config = RoboSystemsExtensionConfig(
+      base_url="https://api.robosystems.ai",
+      headers={"X-API-Key": "test-token"},
+    )
+
+    extensions = RoboSystemsExtensions(config)
+
+    assert extensions.graphs.base_url == "https://api.robosystems.ai"
+    assert "X-API-Key" in extensions.graphs.headers
 
     extensions.close()
 
