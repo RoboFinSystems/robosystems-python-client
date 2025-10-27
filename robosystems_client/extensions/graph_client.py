@@ -85,7 +85,7 @@ class GraphClient:
     from ..models.graph_metadata import GraphMetadata as APIGraphMetadata
 
     if not self.token:
-      raise Exception("No API key provided. Set X-API-Key in headers.")
+      raise ValueError("No API key provided. Set X-API-Key in headers.")
 
     client = AuthenticatedClient(
       base_url=self.base_url,
@@ -130,7 +130,7 @@ class GraphClient:
     response = create_graph(client=client, body=graph_create)
 
     if not response.parsed:
-      raise Exception(f"Failed to create graph: {response.status_code}")
+      raise RuntimeError(f"Failed to create graph: {response.status_code}")
 
     # Extract graph_id or operation_id
     if isinstance(response.parsed, dict):
@@ -148,7 +148,7 @@ class GraphClient:
 
     # Otherwise, poll operation until complete
     if not operation_id:
-      raise Exception("No graph_id or operation_id in response")
+      raise RuntimeError("No graph_id or operation_id in response")
 
     if on_progress:
       on_progress(f"Graph creation queued (operation: {operation_id})")
@@ -195,7 +195,7 @@ class GraphClient:
             on_progress(f"Graph created: {graph_id}")
           return graph_id
         else:
-          raise Exception("Operation completed but no graph_id in result")
+          raise RuntimeError("Operation completed but no graph_id in result")
 
       elif status == "failed":
         # Extract error message
@@ -208,9 +208,9 @@ class GraphClient:
           error = props.get("error") or props.get("message") or "Unknown error"
         else:
           error = getattr(status_data, "message", "Unknown error")
-        raise Exception(f"Graph creation failed: {error}")
+        raise RuntimeError(f"Graph creation failed: {error}")
 
-    raise Exception(f"Graph creation timed out after {timeout}s")
+    raise TimeoutError(f"Graph creation timed out after {timeout}s")
 
   def get_graph_info(self, graph_id: str) -> GraphInfo:
     """
@@ -221,12 +221,15 @@ class GraphClient:
 
     Returns:
         GraphInfo with graph details
+
+    Raises:
+        ValueError: If graph not found
     """
     from ..client import AuthenticatedClient
-    from ..api.graphs.get_graph import sync_detailed as get_graph
+    from ..api.graphs.get_graphs import sync_detailed as get_graphs
 
     if not self.token:
-      raise Exception("No API key provided. Set X-API-Key in headers.")
+      raise ValueError("No API key provided. Set X-API-Key in headers.")
 
     client = AuthenticatedClient(
       base_url=self.base_url,
@@ -236,58 +239,82 @@ class GraphClient:
       headers=self.headers,
     )
 
-    response = get_graph(graph_id=graph_id, client=client)
+    # Use get_graphs and filter for the specific graph
+    response = get_graphs(client=client)
 
     if not response.parsed:
-      raise Exception(f"Failed to get graph info: {response.status_code}")
+      raise RuntimeError(f"Failed to get graphs: {response.status_code}")
 
     data = response.parsed
+    graphs = None
+
+    # Extract graphs list from response
     if isinstance(data, dict):
+      graphs = data.get("graphs", [])
+    elif hasattr(data, "additional_properties"):
+      graphs = data.additional_properties.get("graphs", [])
+    elif hasattr(data, "graphs"):
+      graphs = data.graphs
+    else:
+      raise RuntimeError("Unexpected response format from get_graphs")
+
+    # Find the specific graph by ID
+    graph_data = None
+    for graph in graphs:
+      if isinstance(graph, dict):
+        if graph.get("graph_id") == graph_id or graph.get("id") == graph_id:
+          graph_data = graph
+          break
+      elif hasattr(graph, "graph_id"):
+        if graph.graph_id == graph_id or getattr(graph, "id", None) == graph_id:
+          graph_data = graph
+          break
+
+    if not graph_data:
+      raise ValueError(f"Graph not found: {graph_id}")
+
+    # Build GraphInfo from the found graph
+    if isinstance(graph_data, dict):
       return GraphInfo(
-        graph_id=data.get("graph_id", graph_id),
-        graph_name=data.get("graph_name", ""),
-        description=data.get("description"),
-        schema_extensions=data.get("schema_extensions"),
-        tags=data.get("tags"),
-        created_at=data.get("created_at"),
-        status=data.get("status"),
+        graph_id=graph_data.get("graph_id") or graph_data.get("id", graph_id),
+        graph_name=graph_data.get("graph_name") or graph_data.get("name", ""),
+        description=graph_data.get("description"),
+        schema_extensions=graph_data.get("schema_extensions"),
+        tags=graph_data.get("tags"),
+        created_at=graph_data.get("created_at"),
+        status=graph_data.get("status"),
       )
     else:
       return GraphInfo(
-        graph_id=getattr(data, "graph_id", graph_id),
-        graph_name=getattr(data, "graph_name", ""),
-        description=getattr(data, "description", None),
-        schema_extensions=getattr(data, "schema_extensions", None),
-        tags=getattr(data, "tags", None),
-        created_at=getattr(data, "created_at", None),
-        status=getattr(data, "status", None),
+        graph_id=getattr(graph_data, "graph_id", None)
+        or getattr(graph_data, "id", graph_id),
+        graph_name=getattr(graph_data, "graph_name", None)
+        or getattr(graph_data, "name", ""),
+        description=getattr(graph_data, "description", None),
+        schema_extensions=getattr(graph_data, "schema_extensions", None),
+        tags=getattr(graph_data, "tags", None),
+        created_at=getattr(graph_data, "created_at", None),
+        status=getattr(graph_data, "status", None),
       )
 
   def delete_graph(self, graph_id: str) -> None:
     """
     Delete a graph.
 
+    Note: This method is not yet available as the delete_graph endpoint
+    is not included in the generated SDK. This will be implemented when
+    the endpoint is added to the API specification.
+
     Args:
         graph_id: The graph ID to delete
+
+    Raises:
+        NotImplementedError: This feature is not yet available
     """
-    from ..client import AuthenticatedClient
-    from ..api.graphs.delete_graph import sync_detailed as delete_graph
-
-    if not self.token:
-      raise Exception("No API key provided. Set X-API-Key in headers.")
-
-    client = AuthenticatedClient(
-      base_url=self.base_url,
-      token=self.token,
-      prefix="",
-      auth_header_name="X-API-Key",
-      headers=self.headers,
+    raise NotImplementedError(
+      "Graph deletion is not yet available. "
+      "The delete_graph endpoint needs to be added to the API specification."
     )
-
-    response = delete_graph(graph_id=graph_id, client=client)
-
-    if response.status_code not in [200, 204]:
-      raise Exception(f"Failed to delete graph: {response.status_code}")
 
   def close(self):
     """Clean up resources (placeholder for consistency)"""
