@@ -38,12 +38,6 @@
       "problemMatcher": []
     },
     {
-      "label": "Test Coverage",
-      "type": "shell",
-      "command": "just test-cov",
-      "problemMatcher": []
-    },
-    {
       "label": "Lint",
       "type": "shell",
       "command": "just lint",

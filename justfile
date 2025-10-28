@@ -29,10 +29,6 @@ test-all:
     @just lint
     @just format
 
-# Run tests with coverage
-test-cov:
-    uv run pytest --cov=robosystems_client tests/
-
 # Run linting
 lint:
     uv run ruff check .
