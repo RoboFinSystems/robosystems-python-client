@@ -94,6 +94,7 @@ except ImportError:
   HAS_PANDAS = False
   DataFrameQueryClient = None
   # Set placeholders for optional functions
+  query_result_to_dataframe = None
   parse_datetime_columns = None
   _stream_to_dataframe = None
   dataframe_to_cypher_params = None
@@ -189,14 +190,20 @@ def stream_query(graph_id: str, query: str, parameters=None, chunk_size=None):
 
 
 # DataFrame convenience functions (if pandas is available)
-if HAS_PANDAS:
+if (
+  HAS_PANDAS
+  and query_result_to_dataframe is not None
+  and _stream_to_dataframe is not None
+):
 
   def query_to_dataframe(graph_id: str, query: str, parameters=None, **kwargs):
     """Execute query and return results as pandas DataFrame"""
+    assert query_result_to_dataframe is not None
     result = execute_query(graph_id, query, parameters)
     return query_result_to_dataframe(result, **kwargs)
 
   def stream_to_dataframe(graph_id: str, query: str, parameters=None, chunk_size=10000):
     """Stream query results and return as pandas DataFrame"""
+    assert _stream_to_dataframe is not None
     stream = stream_query(graph_id, query, parameters, chunk_size)
     return _stream_to_dataframe(stream, chunk_size)

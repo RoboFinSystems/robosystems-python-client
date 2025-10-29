@@ -8,35 +8,19 @@ from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.link_token_request import LinkTokenRequest
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
   *,
   body: LinkTokenRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/graphs/{graph_id}/connections/link/token",
-    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -96,8 +80,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: LinkTokenRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Create Link Token
 
@@ -117,9 +99,7 @@ def sync_detailed(
   No credits are consumed for creating link tokens.
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (LinkTokenRequest): Request to create a link token for embedded authentication.
 
   Raises:
@@ -133,8 +113,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -149,8 +127,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: LinkTokenRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Create Link Token
 
@@ -170,9 +146,7 @@ def sync(
   No credits are consumed for creating link tokens.
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (LinkTokenRequest): Request to create a link token for embedded authentication.
 
   Raises:
@@ -187,8 +161,6 @@ def sync(
     graph_id=graph_id,
     client=client,
     body=body,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -197,8 +169,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: LinkTokenRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Create Link Token
 
@@ -218,9 +188,7 @@ async def asyncio_detailed(
   No credits are consumed for creating link tokens.
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (LinkTokenRequest): Request to create a link token for embedded authentication.
 
   Raises:
@@ -234,8 +202,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -248,8 +214,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: LinkTokenRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Create Link Token
 
@@ -269,9 +233,7 @@ async def asyncio(
   No credits are consumed for creating link tokens.
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (LinkTokenRequest): Request to create a link token for embedded authentication.
 
   Raises:
@@ -287,7 +249,5 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       body=body,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

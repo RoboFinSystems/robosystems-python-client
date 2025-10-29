@@ -9,37 +9,17 @@ from ...models.get_shared_repository_limits_response_getsharedrepositorylimits i
   GetSharedRepositoryLimitsResponseGetsharedrepositorylimits,
 )
 from ...models.http_validation_error import HTTPValidationError
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   repository: str,
-  *,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": f"/v1/user/limits/shared-repositories/{repository}",
-    "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -83,8 +63,6 @@ def sync_detailed(
   repository: str,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
 ]:
@@ -102,8 +80,6 @@ def sync_detailed(
 
   Args:
       repository (str): Repository name (e.g., 'sec')
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -115,8 +91,6 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     repository=repository,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -130,8 +104,6 @@ def sync(
   repository: str,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
 ]:
@@ -149,8 +121,6 @@ def sync(
 
   Args:
       repository (str): Repository name (e.g., 'sec')
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -163,8 +133,6 @@ def sync(
   return sync_detailed(
     repository=repository,
     client=client,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -172,8 +140,6 @@ async def asyncio_detailed(
   repository: str,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
 ]:
@@ -191,8 +157,6 @@ async def asyncio_detailed(
 
   Args:
       repository (str): Repository name (e.g., 'sec')
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -204,8 +168,6 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     repository=repository,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -217,8 +179,6 @@ async def asyncio(
   repository: str,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[GetSharedRepositoryLimitsResponseGetsharedrepositorylimits, HTTPValidationError]
 ]:
@@ -236,8 +196,6 @@ async def asyncio(
 
   Args:
       repository (str): Repository name (e.g., 'sec')
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -251,7 +209,5 @@ async def asyncio(
     await asyncio_detailed(
       repository=repository,
       client=client,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

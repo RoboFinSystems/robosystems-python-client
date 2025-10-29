@@ -13,23 +13,10 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   *,
   active_only: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   params["active_only"] = active_only
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -39,7 +26,6 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -85,8 +71,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   active_only: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
   """Get User Subscriptions
 
@@ -94,8 +78,6 @@ def sync_detailed(
 
   Args:
       active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -107,8 +89,6 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     active_only=active_only,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -122,8 +102,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   active_only: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
   """Get User Subscriptions
 
@@ -131,8 +109,6 @@ def sync(
 
   Args:
       active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -145,8 +121,6 @@ def sync(
   return sync_detailed(
     client=client,
     active_only=active_only,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -154,8 +128,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   active_only: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
   """Get User Subscriptions
 
@@ -163,8 +135,6 @@ async def asyncio_detailed(
 
   Args:
       active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -176,8 +146,6 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     active_only=active_only,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -189,8 +157,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   active_only: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
   """Get User Subscriptions
 
@@ -198,8 +164,6 @@ async def asyncio(
 
   Args:
       active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -213,7 +177,5 @@ async def asyncio(
     await asyncio_detailed(
       client=client,
       active_only=active_only,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

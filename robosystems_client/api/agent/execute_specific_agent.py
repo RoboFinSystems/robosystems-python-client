@@ -9,7 +9,7 @@ from ...models.agent_request import AgentRequest
 from ...models.agent_response import AgentResponse
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
@@ -17,28 +17,12 @@ def _get_kwargs(
   agent_type: str,
   *,
   body: AgentRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/graphs/{graph_id}/agent/{agent_type}",
-    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -106,8 +90,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: AgentRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
@@ -123,8 +105,6 @@ def sync_detailed(
   Args:
       graph_id (str):
       agent_type (str):
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -139,8 +119,6 @@ def sync_detailed(
     graph_id=graph_id,
     agent_type=agent_type,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -156,8 +134,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: AgentRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
@@ -173,8 +149,6 @@ def sync(
   Args:
       graph_id (str):
       agent_type (str):
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -190,8 +164,6 @@ def sync(
     agent_type=agent_type,
     client=client,
     body=body,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -201,8 +173,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: AgentRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
@@ -218,8 +188,6 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       agent_type (str):
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -234,8 +202,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     agent_type=agent_type,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -249,8 +215,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: AgentRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
@@ -266,8 +230,6 @@ async def asyncio(
   Args:
       graph_id (str):
       agent_type (str):
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -284,7 +246,5 @@ async def asyncio(
       agent_type=agent_type,
       client=client,
       body=body,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

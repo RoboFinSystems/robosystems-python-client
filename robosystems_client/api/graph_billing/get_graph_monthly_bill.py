@@ -10,39 +10,19 @@ from ...models.get_graph_monthly_bill_response_getgraphmonthlybill import (
   GetGraphMonthlyBillResponseGetgraphmonthlybill,
 )
 from ...models.http_validation_error import HTTPValidationError
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
   year: int,
   month: int,
-  *,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": f"/v1/graphs/{graph_id}/billing/history/{year}/{month}",
-    "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -112,8 +92,6 @@ def sync_detailed(
   month: int,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse, GetGraphMonthlyBillResponseGetgraphmonthlybill, HTTPValidationError
@@ -135,11 +113,9 @@ def sync_detailed(
   ℹ️ No credits are consumed for viewing billing history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       year (int): Year (2024-2030)
       month (int): Month (1-12)
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -153,8 +129,6 @@ def sync_detailed(
     graph_id=graph_id,
     year=year,
     month=month,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -170,8 +144,6 @@ def sync(
   month: int,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse, GetGraphMonthlyBillResponseGetgraphmonthlybill, HTTPValidationError
@@ -193,11 +165,9 @@ def sync(
   ℹ️ No credits are consumed for viewing billing history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       year (int): Year (2024-2030)
       month (int): Month (1-12)
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -212,8 +182,6 @@ def sync(
     year=year,
     month=month,
     client=client,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -223,8 +191,6 @@ async def asyncio_detailed(
   month: int,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse, GetGraphMonthlyBillResponseGetgraphmonthlybill, HTTPValidationError
@@ -246,11 +212,9 @@ async def asyncio_detailed(
   ℹ️ No credits are consumed for viewing billing history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       year (int): Year (2024-2030)
       month (int): Month (1-12)
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -264,8 +228,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     year=year,
     month=month,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -279,8 +241,6 @@ async def asyncio(
   month: int,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse, GetGraphMonthlyBillResponseGetgraphmonthlybill, HTTPValidationError
@@ -302,11 +262,9 @@ async def asyncio(
   ℹ️ No credits are consumed for viewing billing history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       year (int): Year (2024-2030)
       month (int): Month (1-12)
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -322,7 +280,5 @@ async def asyncio(
       year=year,
       month=month,
       client=client,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

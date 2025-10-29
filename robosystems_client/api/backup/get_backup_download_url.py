@@ -17,23 +17,10 @@ def _get_kwargs(
   backup_id: str,
   *,
   expires_in: Union[Unset, int] = 3600,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   params["expires_in"] = expires_in
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -43,7 +30,6 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -101,8 +87,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
 ]:
@@ -111,11 +95,9 @@ def sync_detailed(
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       backup_id (str): Backup identifier
       expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -129,8 +111,6 @@ def sync_detailed(
     graph_id=graph_id,
     backup_id=backup_id,
     expires_in=expires_in,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -146,8 +126,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
 ]:
@@ -156,11 +134,9 @@ def sync(
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       backup_id (str): Backup identifier
       expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -175,8 +151,6 @@ def sync(
     backup_id=backup_id,
     client=client,
     expires_in=expires_in,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -186,8 +160,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
 ]:
@@ -196,11 +168,9 @@ async def asyncio_detailed(
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       backup_id (str): Backup identifier
       expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -214,8 +184,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     backup_id=backup_id,
     expires_in=expires_in,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -229,8 +197,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
 ]:
@@ -239,11 +205,9 @@ async def asyncio(
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       backup_id (str): Backup identifier
       expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -259,7 +223,5 @@ async def asyncio(
       backup_id=backup_id,
       client=client,
       expires_in=expires_in,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

@@ -9,35 +9,19 @@ from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.table_query_request import TableQueryRequest
 from ...models.table_query_response import TableQueryResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
   *,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/graphs/{graph_id}/tables/query",
-    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -110,8 +94,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
   """Query Staging Tables with SQL
 
@@ -176,9 +158,7 @@ def sync_detailed(
   Staging table queries are included - no credit consumption.
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (TableQueryRequest):
 
   Raises:
@@ -192,8 +172,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -208,8 +186,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
   """Query Staging Tables with SQL
 
@@ -274,9 +250,7 @@ def sync(
   Staging table queries are included - no credit consumption.
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (TableQueryRequest):
 
   Raises:
@@ -291,8 +265,6 @@ def sync(
     graph_id=graph_id,
     client=client,
     body=body,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -301,8 +273,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
   """Query Staging Tables with SQL
 
@@ -367,9 +337,7 @@ async def asyncio_detailed(
   Staging table queries are included - no credit consumption.
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (TableQueryRequest):
 
   Raises:
@@ -383,8 +351,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -397,8 +363,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
   """Query Staging Tables with SQL
 
@@ -463,9 +427,7 @@ async def asyncio(
   Staging table queries are included - no credit consumption.
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (TableQueryRequest):
 
   Raises:
@@ -481,7 +443,5 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       body=body,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

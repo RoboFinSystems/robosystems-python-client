@@ -17,13 +17,7 @@ def _get_kwargs(
   *,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   json_entity_id: Union[None, Unset, str]
@@ -42,13 +36,6 @@ def _get_kwargs(
     json_provider = provider
   params["provider"] = json_provider
 
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
@@ -57,7 +44,6 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -112,8 +98,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
   """List Connections
 
@@ -133,11 +117,9 @@ def sync_detailed(
   No credits are consumed for listing connections.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -151,8 +133,6 @@ def sync_detailed(
     graph_id=graph_id,
     entity_id=entity_id,
     provider=provider,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -168,8 +148,6 @@ def sync(
   client: AuthenticatedClient,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
   """List Connections
 
@@ -189,11 +167,9 @@ def sync(
   No credits are consumed for listing connections.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -208,8 +184,6 @@ def sync(
     client=client,
     entity_id=entity_id,
     provider=provider,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -219,8 +193,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
   """List Connections
 
@@ -240,11 +212,9 @@ async def asyncio_detailed(
   No credits are consumed for listing connections.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -258,8 +228,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     entity_id=entity_id,
     provider=provider,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -273,8 +241,6 @@ async def asyncio(
   client: AuthenticatedClient,
   entity_id: Union[None, Unset, str] = UNSET,
   provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
   """List Connections
 
@@ -294,11 +260,9 @@ async def asyncio(
   No credits are consumed for listing connections.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       entity_id (Union[None, Unset, str]): Filter by entity ID
       provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -314,7 +278,5 @@ async def asyncio(
       client=client,
       entity_id=entity_id,
       provider=provider,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

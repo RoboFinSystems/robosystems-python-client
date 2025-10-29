@@ -27,8 +27,6 @@ pip install robosystems-client[tables]
 pip install robosystems-client[all]
 ```
 
-See the [examples](./examples) directory for usage guides.
-
 ## API Reference
 
 - [API reference](https://api.robosystems.ai)

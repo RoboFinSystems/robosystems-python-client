@@ -18,13 +18,7 @@ def _get_kwargs(
   *,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   json_year: Union[None, Unset, int]
@@ -41,13 +35,6 @@ def _get_kwargs(
     json_month = month
   params["month"] = json_month
 
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
@@ -56,7 +43,6 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -126,8 +112,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse, GetGraphUsageDetailsResponseGetgraphusagedetails, HTTPValidationError
@@ -153,11 +137,9 @@ def sync_detailed(
   ℹ️ No credits are consumed for viewing usage details.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,8 +153,6 @@ def sync_detailed(
     graph_id=graph_id,
     year=year,
     month=month,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -188,8 +168,6 @@ def sync(
   client: AuthenticatedClient,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse, GetGraphUsageDetailsResponseGetgraphusagedetails, HTTPValidationError
@@ -215,11 +193,9 @@ def sync(
   ℹ️ No credits are consumed for viewing usage details.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -234,8 +210,6 @@ def sync(
     client=client,
     year=year,
     month=month,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -245,8 +219,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse, GetGraphUsageDetailsResponseGetgraphusagedetails, HTTPValidationError
@@ -272,11 +244,9 @@ async def asyncio_detailed(
   ℹ️ No credits are consumed for viewing usage details.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -290,8 +260,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     year=year,
     month=month,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -305,8 +273,6 @@ async def asyncio(
   client: AuthenticatedClient,
   year: Union[None, Unset, int] = UNSET,
   month: Union[None, Unset, int] = UNSET,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse, GetGraphUsageDetailsResponseGetgraphusagedetails, HTTPValidationError
@@ -332,11 +298,9 @@ async def asyncio(
   ℹ️ No credits are consumed for viewing usage details.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       year (Union[None, Unset, int]): Year (defaults to current)
       month (Union[None, Unset, int]): Month (defaults to current)
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -352,7 +316,5 @@ async def asyncio(
       client=client,
       year=year,
       month=month,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

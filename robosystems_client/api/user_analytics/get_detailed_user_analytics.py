@@ -14,25 +14,12 @@ def _get_kwargs(
   *,
   include_api_stats: Union[Unset, bool] = True,
   include_recent_activity: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   params["include_api_stats"] = include_api_stats
 
   params["include_recent_activity"] = include_recent_activity
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -42,7 +29,6 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -81,8 +67,6 @@ def sync_detailed(
   client: AuthenticatedClient,
   include_api_stats: Union[Unset, bool] = True,
   include_recent_activity: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, UserAnalyticsResponse]]:
   """Get Detailed User Analytics
 
@@ -91,8 +75,6 @@ def sync_detailed(
   Args:
       include_api_stats (Union[Unset, bool]): Include API usage statistics Default: True.
       include_recent_activity (Union[Unset, bool]): Include recent activity Default: True.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -105,8 +87,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     include_api_stats=include_api_stats,
     include_recent_activity=include_recent_activity,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -121,8 +101,6 @@ def sync(
   client: AuthenticatedClient,
   include_api_stats: Union[Unset, bool] = True,
   include_recent_activity: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, UserAnalyticsResponse]]:
   """Get Detailed User Analytics
 
@@ -131,8 +109,6 @@ def sync(
   Args:
       include_api_stats (Union[Unset, bool]): Include API usage statistics Default: True.
       include_recent_activity (Union[Unset, bool]): Include recent activity Default: True.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -146,8 +122,6 @@ def sync(
     client=client,
     include_api_stats=include_api_stats,
     include_recent_activity=include_recent_activity,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -156,8 +130,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   include_api_stats: Union[Unset, bool] = True,
   include_recent_activity: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, UserAnalyticsResponse]]:
   """Get Detailed User Analytics
 
@@ -166,8 +138,6 @@ async def asyncio_detailed(
   Args:
       include_api_stats (Union[Unset, bool]): Include API usage statistics Default: True.
       include_recent_activity (Union[Unset, bool]): Include recent activity Default: True.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -180,8 +150,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     include_api_stats=include_api_stats,
     include_recent_activity=include_recent_activity,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -194,8 +162,6 @@ async def asyncio(
   client: AuthenticatedClient,
   include_api_stats: Union[Unset, bool] = True,
   include_recent_activity: Union[Unset, bool] = True,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, UserAnalyticsResponse]]:
   """Get Detailed User Analytics
 
@@ -204,8 +170,6 @@ async def asyncio(
   Args:
       include_api_stats (Union[Unset, bool]): Include API usage statistics Default: True.
       include_recent_activity (Union[Unset, bool]): Include recent activity Default: True.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -220,7 +184,5 @@ async def asyncio(
       client=client,
       include_api_stats=include_api_stats,
       include_recent_activity=include_recent_activity,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

@@ -37,3 +37,7 @@ jobs:
       - name: Run Lint
         run: |
           uv run ruff check .
+
+      - name: Run type checking
+        run: |
+          uv run basedpyright
