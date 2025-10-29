@@ -67,11 +67,6 @@ def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[Any, HTTPValidationError]]:
   if response.status_code == 200:
-    # Check if this is NDJSON - if so, skip parsing (will be handled by client)
-    content_type = response.headers.get("content-type", "")
-    stream_format = response.headers.get("x-stream-format", "")
-    if "application/x-ndjson" in content_type or stream_format == "ndjson":
-      return None  # Skip parsing, client will handle NDJSON
     response_200 = response.json()
     return response_200
 

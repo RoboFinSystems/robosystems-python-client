@@ -72,3 +72,16 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["robosystems_client"]
 
+[tool.basedpyright]
+include = []
+exclude = ["**/*"]
+extraPaths = ["."]
+pythonVersion = "3.12"
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "standard"
+reportAttributeAccessIssue = "none"
+reportArgumentType = "none"
+reportGeneralTypeIssues = "none"
+reportOptionalMemberAccess = "none"
+reportReturnType = "none"

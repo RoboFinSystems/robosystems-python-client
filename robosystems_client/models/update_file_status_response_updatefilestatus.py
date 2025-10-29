@@ -4,14 +4,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar(
-  "T",
-  bound="GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsGraphIdTablesFilesFileIdGet",
-)
+T = TypeVar("T", bound="UpdateFileStatusResponseUpdatefilestatus")
 
 
 @_attrs_define
-class GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsGraphIdTablesFilesFileIdGet:
+class UpdateFileStatusResponseUpdatefilestatus:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -25,10 +22,10 @@ class GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsG
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    get_file_info_v1_graphs_graph_id_tables_files_file_id_get_response_get_file_info_v1_graphs_graph_id_tables_files_file_id_get = cls()
+    update_file_status_response_updatefilestatus = cls()
 
-    get_file_info_v1_graphs_graph_id_tables_files_file_id_get_response_get_file_info_v1_graphs_graph_id_tables_files_file_id_get.additional_properties = d
-    return get_file_info_v1_graphs_graph_id_tables_files_file_id_get_response_get_file_info_v1_graphs_graph_id_tables_files_file_id_get
+    update_file_status_response_updatefilestatus.additional_properties = d
+    return update_file_status_response_updatefilestatus
 
   @property
   def additional_keys(self) -> list[str]:

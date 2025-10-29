@@ -11,20 +11,20 @@ import json
 import logging
 import httpx
 
-from ..api.tables.get_upload_url_v1_graphs_graph_id_tables_table_name_files_post import (
+from ..api.tables.get_upload_url import (
   sync_detailed as get_upload_url,
 )
-from ..api.tables.update_file_v1_graphs_graph_id_tables_files_file_id_patch import (
-  sync_detailed as update_file,
+from ..api.tables.update_file_status import (
+  sync_detailed as update_file_status,
 )
-from ..api.tables.list_tables_v1_graphs_graph_id_tables_get import (
+from ..api.tables.list_tables import (
   sync_detailed as list_tables,
 )
-from ..api.tables.ingest_tables_v1_graphs_graph_id_tables_ingest_post import (
+from ..api.tables.ingest_tables import (
   sync_detailed as ingest_tables,
 )
 from ..models.file_upload_request import FileUploadRequest
-from ..models.file_update_request import FileUpdateRequest
+from ..models.file_status_update import FileStatusUpdate
 from ..models.bulk_ingest_request import BulkIngestRequest
 
 logger = logging.getLogger(__name__)
@@ -95,7 +95,7 @@ class TableIngestClient:
     This method handles the complete 3-step upload process:
     1. Get presigned upload URL
     2. Upload file to S3
-    3. Update file metadata
+    3. Mark file as 'uploaded' (backend validates, calculates size/row count)
 
     Args:
         graph_id: The graph ID
@@ -104,7 +104,7 @@ class TableIngestClient:
         options: Upload options
 
     Returns:
-        UploadResult with upload details
+        UploadResult with upload details (size/row count calculated by backend)
     """
     if options is None:
       options = UploadOptions()
@@ -216,12 +216,10 @@ class TableIngestClient:
           # BinaryIO or file-like object
           file_or_buffer.seek(0)
           file_content = file_or_buffer.read()
-        file_size = len(file_content)
       else:
         # Read from file path
         with open(file_path, "rb") as f:
           file_content = f.read()
-        file_size = len(file_content)
 
       s3_response = self._http_client.put(
         upload_url,
@@ -230,53 +228,46 @@ class TableIngestClient:
       )
       s3_response.raise_for_status()
 
-      # Step 3: Get row count and update file metadata
+      # Step 3: Mark file as uploaded (backend validates and calculates size/row count)
       if options.on_progress:
-        options.on_progress(f"Updating file metadata for {file_name}...")
+        options.on_progress(f"Marking {file_name} as uploaded...")
 
-      try:
-        import pyarrow.parquet as pq
-
-        if is_buffer:
-          # Read from buffer for row count
-          if hasattr(file_or_buffer, "seek"):
-            file_or_buffer.seek(0)
-          parquet_table = pq.read_table(file_or_buffer)
-        else:
-          # Read from file path
-          parquet_table = pq.read_table(file_path)
-
-        row_count = parquet_table.num_rows
-      except ImportError:
-        logger.warning(
-          "pyarrow not installed, row count will be estimated from file size"
-        )
-        # Rough estimate: ~100 bytes per row for typical data
-        row_count = file_size // 100
-
-      metadata_update = FileUpdateRequest(
-        file_size_bytes=file_size, row_count=row_count
-      )
+      status_update = FileStatusUpdate(status="uploaded")
 
       kwargs = {
         "graph_id": graph_id,
         "file_id": file_id,
         "client": client,
-        "body": metadata_update,
+        "body": status_update,
       }
 
-      update_response = update_file(**kwargs)
+      update_response = update_file_status(**kwargs)
 
       if not update_response.parsed:
+        logger.error(
+          f"No parsed response from update_file_status. Status code: {update_response.status_code}"
+        )
         return UploadResult(
           file_id=file_id,
-          file_size=file_size,
-          row_count=row_count,
+          file_size=0,
+          row_count=0,
           table_name=table_name,
           file_name=file_name,
           success=False,
-          error="Failed to update file metadata",
+          error="Failed to complete file upload",
         )
+
+      response_data = update_response.parsed
+
+      if isinstance(response_data, dict):
+        file_size = response_data.get("file_size_bytes", 0)
+        row_count = response_data.get("row_count", 0)
+      elif hasattr(response_data, "additional_properties"):
+        file_size = response_data.additional_properties.get("file_size_bytes", 0)
+        row_count = response_data.additional_properties.get("row_count", 0)
+      else:
+        file_size = getattr(response_data, "file_size_bytes", 0)
+        row_count = getattr(response_data, "row_count", 0)
 
       if options.on_progress:
         options.on_progress(
