@@ -77,70 +77,51 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
-  r""" Delete File from Staging
+  """Delete File from Staging
 
-     Delete a file from S3 storage and database tracking.
+   Delete a file from S3 storage and database tracking.
 
-    **Purpose:**
-    Remove unwanted, duplicate, or incorrect files from staging tables before ingestion.
-    The file is deleted from both S3 and database tracking, and table statistics
-    are automatically recalculated.
+  Remove unwanted, duplicate, or incorrect files from staging tables before ingestion.
+  The file is deleted from both S3 and database tracking, and table statistics
+  are automatically recalculated.
 
-    **Use Cases:**
-    - Remove duplicate uploads
-    - Delete files with incorrect data
-    - Clean up failed uploads
-    - Fix data quality issues before ingestion
-    - Manage storage usage
+  **Use Cases:**
+  - Remove duplicate uploads
+  - Delete files with incorrect data
+  - Clean up failed uploads
+  - Fix data quality issues before ingestion
+  - Manage storage usage
 
-    **What Happens:**
-    1. File deleted from S3 storage
-    2. Database tracking record removed
-    3. Table statistics recalculated (file count, size, row count)
-    4. DuckDB automatically excludes file from future queries
+  **What Happens:**
+  1. File deleted from S3 storage
+  2. Database tracking record removed
+  3. Table statistics recalculated (file count, size, row count)
+  4. DuckDB automatically excludes file from future queries
 
-    **Security:**
-    - Write access required (verified via auth)
-    - Shared repositories block file deletions
-    - Full audit trail of deletion operations
-    - Cannot delete after ingestion to graph
+  **Security:**
+  - Write access required (verified via auth)
+  - Shared repositories block file deletions
+  - Full audit trail of deletion operations
+  - Cannot delete after ingestion to graph
 
-    **Example Response:**
-    ```json
-    {
-      \"status\": \"deleted\",
-      \"file_id\": \"f123\",
-      \"file_name\": \"entities_batch1.parquet\",
-      \"message\": \"File deleted successfully. DuckDB will automatically exclude it from queries.\"
-    }
-    ```
+  **Important Notes:**
+  - Delete files before ingestion for best results
+  - Table statistics update automatically
+  - No need to refresh DuckDB - exclusion is automatic
+  - Consider re-uploading corrected version after deletion
+  - File deletion is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -X DELETE -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File ID
 
-    **Tips:**
-    - Delete files before ingestion for best results
-    - Table statistics update automatically
-    - No need to refresh DuckDB - exclusion is automatic
-    - Consider re-uploading corrected version after deletion
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    File deletion is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        file_id (str): File ID
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]
-     """
+  Returns:
+      Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -160,70 +141,51 @@ def sync(
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
-  r""" Delete File from Staging
+  """Delete File from Staging
 
-     Delete a file from S3 storage and database tracking.
+   Delete a file from S3 storage and database tracking.
 
-    **Purpose:**
-    Remove unwanted, duplicate, or incorrect files from staging tables before ingestion.
-    The file is deleted from both S3 and database tracking, and table statistics
-    are automatically recalculated.
+  Remove unwanted, duplicate, or incorrect files from staging tables before ingestion.
+  The file is deleted from both S3 and database tracking, and table statistics
+  are automatically recalculated.
 
-    **Use Cases:**
-    - Remove duplicate uploads
-    - Delete files with incorrect data
-    - Clean up failed uploads
-    - Fix data quality issues before ingestion
-    - Manage storage usage
+  **Use Cases:**
+  - Remove duplicate uploads
+  - Delete files with incorrect data
+  - Clean up failed uploads
+  - Fix data quality issues before ingestion
+  - Manage storage usage
 
-    **What Happens:**
-    1. File deleted from S3 storage
-    2. Database tracking record removed
-    3. Table statistics recalculated (file count, size, row count)
-    4. DuckDB automatically excludes file from future queries
+  **What Happens:**
+  1. File deleted from S3 storage
+  2. Database tracking record removed
+  3. Table statistics recalculated (file count, size, row count)
+  4. DuckDB automatically excludes file from future queries
 
-    **Security:**
-    - Write access required (verified via auth)
-    - Shared repositories block file deletions
-    - Full audit trail of deletion operations
-    - Cannot delete after ingestion to graph
+  **Security:**
+  - Write access required (verified via auth)
+  - Shared repositories block file deletions
+  - Full audit trail of deletion operations
+  - Cannot delete after ingestion to graph
 
-    **Example Response:**
-    ```json
-    {
-      \"status\": \"deleted\",
-      \"file_id\": \"f123\",
-      \"file_name\": \"entities_batch1.parquet\",
-      \"message\": \"File deleted successfully. DuckDB will automatically exclude it from queries.\"
-    }
-    ```
+  **Important Notes:**
+  - Delete files before ingestion for best results
+  - Table statistics update automatically
+  - No need to refresh DuckDB - exclusion is automatic
+  - Consider re-uploading corrected version after deletion
+  - File deletion is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -X DELETE -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File ID
 
-    **Tips:**
-    - Delete files before ingestion for best results
-    - Table statistics update automatically
-    - No need to refresh DuckDB - exclusion is automatic
-    - Consider re-uploading corrected version after deletion
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    File deletion is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        file_id (str): File ID
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]
-     """
+  Returns:
+      Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]
+  """
 
   return sync_detailed(
     graph_id=graph_id,
@@ -238,70 +200,51 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
-  r""" Delete File from Staging
+  """Delete File from Staging
 
-     Delete a file from S3 storage and database tracking.
+   Delete a file from S3 storage and database tracking.
 
-    **Purpose:**
-    Remove unwanted, duplicate, or incorrect files from staging tables before ingestion.
-    The file is deleted from both S3 and database tracking, and table statistics
-    are automatically recalculated.
+  Remove unwanted, duplicate, or incorrect files from staging tables before ingestion.
+  The file is deleted from both S3 and database tracking, and table statistics
+  are automatically recalculated.
 
-    **Use Cases:**
-    - Remove duplicate uploads
-    - Delete files with incorrect data
-    - Clean up failed uploads
-    - Fix data quality issues before ingestion
-    - Manage storage usage
+  **Use Cases:**
+  - Remove duplicate uploads
+  - Delete files with incorrect data
+  - Clean up failed uploads
+  - Fix data quality issues before ingestion
+  - Manage storage usage
 
-    **What Happens:**
-    1. File deleted from S3 storage
-    2. Database tracking record removed
-    3. Table statistics recalculated (file count, size, row count)
-    4. DuckDB automatically excludes file from future queries
+  **What Happens:**
+  1. File deleted from S3 storage
+  2. Database tracking record removed
+  3. Table statistics recalculated (file count, size, row count)
+  4. DuckDB automatically excludes file from future queries
 
-    **Security:**
-    - Write access required (verified via auth)
-    - Shared repositories block file deletions
-    - Full audit trail of deletion operations
-    - Cannot delete after ingestion to graph
+  **Security:**
+  - Write access required (verified via auth)
+  - Shared repositories block file deletions
+  - Full audit trail of deletion operations
+  - Cannot delete after ingestion to graph
 
-    **Example Response:**
-    ```json
-    {
-      \"status\": \"deleted\",
-      \"file_id\": \"f123\",
-      \"file_name\": \"entities_batch1.parquet\",
-      \"message\": \"File deleted successfully. DuckDB will automatically exclude it from queries.\"
-    }
-    ```
+  **Important Notes:**
+  - Delete files before ingestion for best results
+  - Table statistics update automatically
+  - No need to refresh DuckDB - exclusion is automatic
+  - Consider re-uploading corrected version after deletion
+  - File deletion is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -X DELETE -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File ID
 
-    **Tips:**
-    - Delete files before ingestion for best results
-    - Table statistics update automatically
-    - No need to refresh DuckDB - exclusion is automatic
-    - Consider re-uploading corrected version after deletion
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    File deletion is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        file_id (str): File ID
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]
-     """
+  Returns:
+      Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -319,70 +262,51 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
-  r""" Delete File from Staging
+  """Delete File from Staging
 
-     Delete a file from S3 storage and database tracking.
+   Delete a file from S3 storage and database tracking.
 
-    **Purpose:**
-    Remove unwanted, duplicate, or incorrect files from staging tables before ingestion.
-    The file is deleted from both S3 and database tracking, and table statistics
-    are automatically recalculated.
+  Remove unwanted, duplicate, or incorrect files from staging tables before ingestion.
+  The file is deleted from both S3 and database tracking, and table statistics
+  are automatically recalculated.
 
-    **Use Cases:**
-    - Remove duplicate uploads
-    - Delete files with incorrect data
-    - Clean up failed uploads
-    - Fix data quality issues before ingestion
-    - Manage storage usage
+  **Use Cases:**
+  - Remove duplicate uploads
+  - Delete files with incorrect data
+  - Clean up failed uploads
+  - Fix data quality issues before ingestion
+  - Manage storage usage
 
-    **What Happens:**
-    1. File deleted from S3 storage
-    2. Database tracking record removed
-    3. Table statistics recalculated (file count, size, row count)
-    4. DuckDB automatically excludes file from future queries
+  **What Happens:**
+  1. File deleted from S3 storage
+  2. Database tracking record removed
+  3. Table statistics recalculated (file count, size, row count)
+  4. DuckDB automatically excludes file from future queries
 
-    **Security:**
-    - Write access required (verified via auth)
-    - Shared repositories block file deletions
-    - Full audit trail of deletion operations
-    - Cannot delete after ingestion to graph
+  **Security:**
+  - Write access required (verified via auth)
+  - Shared repositories block file deletions
+  - Full audit trail of deletion operations
+  - Cannot delete after ingestion to graph
 
-    **Example Response:**
-    ```json
-    {
-      \"status\": \"deleted\",
-      \"file_id\": \"f123\",
-      \"file_name\": \"entities_batch1.parquet\",
-      \"message\": \"File deleted successfully. DuckDB will automatically exclude it from queries.\"
-    }
-    ```
+  **Important Notes:**
+  - Delete files before ingestion for best results
+  - Table statistics update automatically
+  - No need to refresh DuckDB - exclusion is automatic
+  - Consider re-uploading corrected version after deletion
+  - File deletion is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -X DELETE -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File ID
 
-    **Tips:**
-    - Delete files before ingestion for best results
-    - Table statistics update automatically
-    - No need to refresh DuckDB - exclusion is automatic
-    - Consider re-uploading corrected version after deletion
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    File deletion is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        file_id (str): File ID
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]
-     """
+  Returns:
+      Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]
+  """
 
   return (
     await asyncio_detailed(

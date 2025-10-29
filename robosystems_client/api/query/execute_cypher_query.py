@@ -16,7 +16,7 @@ def _get_kwargs(
   *,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -32,7 +32,12 @@ def _get_kwargs(
     json_mode = mode
   params["mode"] = json_mode
 
-  params["chunk_size"] = chunk_size
+  json_chunk_size: Union[None, Unset, int]
+  if isinstance(chunk_size, Unset):
+    json_chunk_size = UNSET
+  else:
+    json_chunk_size = chunk_size
+  params["chunk_size"] = json_chunk_size
 
   params["test_mode"] = test_mode
 
@@ -115,7 +120,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Execute Cypher Query (Read-Only)
@@ -177,7 +182,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[Unset, int]): Rows per chunk for streaming Default: 1000.
+      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
       test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
       body (CypherQueryRequest): Request model for Cypher query execution.
 
@@ -210,7 +215,7 @@ def sync(
   client: AuthenticatedClient,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Execute Cypher Query (Read-Only)
@@ -272,7 +277,7 @@ def sync(
   Args:
       graph_id (str):
       mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[Unset, int]): Rows per chunk for streaming Default: 1000.
+      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
       test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
       body (CypherQueryRequest): Request model for Cypher query execution.
 
@@ -300,7 +305,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> Response[Union[Any, HTTPValidationError]]:
   """Execute Cypher Query (Read-Only)
@@ -362,7 +367,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[Unset, int]): Rows per chunk for streaming Default: 1000.
+      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
       test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
       body (CypherQueryRequest): Request model for Cypher query execution.
 
@@ -393,7 +398,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> Optional[Union[Any, HTTPValidationError]]:
   """Execute Cypher Query (Read-Only)
@@ -455,7 +460,7 @@ async def asyncio(
   Args:
       graph_id (str):
       mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[Unset, int]): Rows per chunk for streaming Default: 1000.
+      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
       test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
       body (CypherQueryRequest): Request model for Cypher query execution.
 

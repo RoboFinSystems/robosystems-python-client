@@ -73,61 +73,35 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
-  r""" Get File Information
+  """Get File Information
 
-     Get detailed information about a specific file.
+   Get detailed information about a specific file.
 
-    **Purpose:**
-    Retrieve comprehensive metadata for a single file, including upload status,
-    size, row count, and timestamps. Useful for validating individual files
-    before ingestion.
+  Retrieve comprehensive metadata for a single file, including upload status,
+  size, row count, and timestamps. Useful for validating individual files
+  before ingestion.
 
-    **Use Cases:**
-    - Validate file upload completion
-    - Check file metadata before ingestion
-    - Debug upload issues
-    - Verify file format and size
-    - Track file lifecycle
+  **Use Cases:**
+  - Validate file upload completion
+  - Check file metadata before ingestion
+  - Debug upload issues
+  - Verify file format and size
+  - Track file lifecycle
 
-    **Example Response:**
-    ```json
-    {
-      \"file_id\": \"f123\",
-      \"graph_id\": \"kg123\",
-      \"table_id\": \"t456\",
-      \"table_name\": \"Entity\",
-      \"file_name\": \"entities_batch1.parquet\",
-      \"file_format\": \"parquet\",
-      \"size_bytes\": 1048576,
-      \"row_count\": 5000,
-      \"upload_status\": \"uploaded\",
-      \"upload_method\": \"presigned_url\",
-      \"created_at\": \"2025-10-28T10:00:00Z\",
-      \"uploaded_at\": \"2025-10-28T10:01:30Z\",
-      \"s3_key\": \"user-staging/user123/kg123/Entity/entities_batch1.parquet\"
-    }
-    ```
+  **Note:**
+  File info retrieval is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File ID
 
-    **Note:**
-    File info retrieval is included - no credit consumption.
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    Args:
-        graph_id (str):
-        file_id (str): File ID
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -147,61 +121,35 @@ def sync(
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
-  r""" Get File Information
+  """Get File Information
 
-     Get detailed information about a specific file.
+   Get detailed information about a specific file.
 
-    **Purpose:**
-    Retrieve comprehensive metadata for a single file, including upload status,
-    size, row count, and timestamps. Useful for validating individual files
-    before ingestion.
+  Retrieve comprehensive metadata for a single file, including upload status,
+  size, row count, and timestamps. Useful for validating individual files
+  before ingestion.
 
-    **Use Cases:**
-    - Validate file upload completion
-    - Check file metadata before ingestion
-    - Debug upload issues
-    - Verify file format and size
-    - Track file lifecycle
+  **Use Cases:**
+  - Validate file upload completion
+  - Check file metadata before ingestion
+  - Debug upload issues
+  - Verify file format and size
+  - Track file lifecycle
 
-    **Example Response:**
-    ```json
-    {
-      \"file_id\": \"f123\",
-      \"graph_id\": \"kg123\",
-      \"table_id\": \"t456\",
-      \"table_name\": \"Entity\",
-      \"file_name\": \"entities_batch1.parquet\",
-      \"file_format\": \"parquet\",
-      \"size_bytes\": 1048576,
-      \"row_count\": 5000,
-      \"upload_status\": \"uploaded\",
-      \"upload_method\": \"presigned_url\",
-      \"created_at\": \"2025-10-28T10:00:00Z\",
-      \"uploaded_at\": \"2025-10-28T10:01:30Z\",
-      \"s3_key\": \"user-staging/user123/kg123/Entity/entities_batch1.parquet\"
-    }
-    ```
+  **Note:**
+  File info retrieval is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File ID
 
-    **Note:**
-    File info retrieval is included - no credit consumption.
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    Args:
-        graph_id (str):
-        file_id (str): File ID
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]
-     """
+  Returns:
+      Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]
+  """
 
   return sync_detailed(
     graph_id=graph_id,
@@ -216,61 +164,35 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
-  r""" Get File Information
+  """Get File Information
 
-     Get detailed information about a specific file.
+   Get detailed information about a specific file.
 
-    **Purpose:**
-    Retrieve comprehensive metadata for a single file, including upload status,
-    size, row count, and timestamps. Useful for validating individual files
-    before ingestion.
+  Retrieve comprehensive metadata for a single file, including upload status,
+  size, row count, and timestamps. Useful for validating individual files
+  before ingestion.
 
-    **Use Cases:**
-    - Validate file upload completion
-    - Check file metadata before ingestion
-    - Debug upload issues
-    - Verify file format and size
-    - Track file lifecycle
+  **Use Cases:**
+  - Validate file upload completion
+  - Check file metadata before ingestion
+  - Debug upload issues
+  - Verify file format and size
+  - Track file lifecycle
 
-    **Example Response:**
-    ```json
-    {
-      \"file_id\": \"f123\",
-      \"graph_id\": \"kg123\",
-      \"table_id\": \"t456\",
-      \"table_name\": \"Entity\",
-      \"file_name\": \"entities_batch1.parquet\",
-      \"file_format\": \"parquet\",
-      \"size_bytes\": 1048576,
-      \"row_count\": 5000,
-      \"upload_status\": \"uploaded\",
-      \"upload_method\": \"presigned_url\",
-      \"created_at\": \"2025-10-28T10:00:00Z\",
-      \"uploaded_at\": \"2025-10-28T10:01:30Z\",
-      \"s3_key\": \"user-staging/user123/kg123/Entity/entities_batch1.parquet\"
-    }
-    ```
+  **Note:**
+  File info retrieval is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File ID
 
-    **Note:**
-    File info retrieval is included - no credit consumption.
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    Args:
-        graph_id (str):
-        file_id (str): File ID
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -288,61 +210,35 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
-  r""" Get File Information
+  """Get File Information
 
-     Get detailed information about a specific file.
+   Get detailed information about a specific file.
 
-    **Purpose:**
-    Retrieve comprehensive metadata for a single file, including upload status,
-    size, row count, and timestamps. Useful for validating individual files
-    before ingestion.
+  Retrieve comprehensive metadata for a single file, including upload status,
+  size, row count, and timestamps. Useful for validating individual files
+  before ingestion.
 
-    **Use Cases:**
-    - Validate file upload completion
-    - Check file metadata before ingestion
-    - Debug upload issues
-    - Verify file format and size
-    - Track file lifecycle
+  **Use Cases:**
+  - Validate file upload completion
+  - Check file metadata before ingestion
+  - Debug upload issues
+  - Verify file format and size
+  - Track file lifecycle
 
-    **Example Response:**
-    ```json
-    {
-      \"file_id\": \"f123\",
-      \"graph_id\": \"kg123\",
-      \"table_id\": \"t456\",
-      \"table_name\": \"Entity\",
-      \"file_name\": \"entities_batch1.parquet\",
-      \"file_format\": \"parquet\",
-      \"size_bytes\": 1048576,
-      \"row_count\": 5000,
-      \"upload_status\": \"uploaded\",
-      \"upload_method\": \"presigned_url\",
-      \"created_at\": \"2025-10-28T10:00:00Z\",
-      \"uploaded_at\": \"2025-10-28T10:01:30Z\",
-      \"s3_key\": \"user-staging/user123/kg123/Entity/entities_batch1.parquet\"
-    }
-    ```
+  **Note:**
+  File info retrieval is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File ID
 
-    **Note:**
-    File info retrieval is included - no credit consumption.
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    Args:
-        graph_id (str):
-        file_id (str): File ID
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]
-     """
+  Returns:
+      Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]
+  """
 
   return (
     await asyncio_detailed(

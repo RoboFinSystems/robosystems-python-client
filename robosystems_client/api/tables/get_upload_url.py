@@ -93,93 +93,54 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: FileUploadRequest,
 ) -> Response[Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]]:
-  r""" Get File Upload URL
+  r"""Get File Upload URL
 
-     Generate a presigned S3 URL for secure file upload.
+   Generate a presigned S3 URL for secure file upload.
 
-    **Purpose:**
-    Initiate file upload to a staging table by generating a secure, time-limited
-    presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
-    optimal performance.
+  Initiates file upload to a staging table by generating a secure, time-limited
+  presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
+  optimal performance.
 
-    **Upload Workflow:**
-    1. Call this endpoint to get presigned URL
-    2. PUT file directly to S3 URL (using curl, axios, etc.)
-    3. Call PATCH /tables/files/{file_id} with status='uploaded'
-    4. Backend validates file and calculates metrics
-    5. File ready for ingestion
+  **Upload Workflow:**
+  1. Call this endpoint to get presigned URL
+  2. PUT file directly to S3 URL
+  3. Call PATCH /tables/files/{file_id} with status='uploaded'
+  4. Backend validates file and calculates metrics
+  5. File ready for ingestion
 
-    **Supported Formats:**
-    - Parquet (`application/x-parquet` with `.parquet` extension)
-    - CSV (`text/csv` with `.csv` extension)
-    - JSON (`application/json` with `.json` extension)
+  **Supported Formats:**
+  - Parquet (`application/x-parquet` with `.parquet` extension)
+  - CSV (`text/csv` with `.csv` extension)
+  - JSON (`application/json` with `.json` extension)
 
-    **Validation:**
-    - File extension must match content type
-    - File name 1-255 characters
-    - No path traversal characters (.. / \)
-    - Auto-creates table if it doesn't exist
+  **Validation:**
+  - File extension must match content type
+  - File name 1-255 characters
+  - No path traversal characters (.. / \)
+  - Auto-creates table if it doesn't exist
 
-    **Auto-Table Creation:**
-    If the table doesn't exist, it's automatically created with:
-    - Type inferred from name (e.g., \"Transaction\" → relationship)
-    - Empty schema (populated on ingestion)
-    - Ready for file uploads
+  **Auto-Table Creation:**
+  Tables are automatically created on first file upload with type inferred from name
+  (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
 
-    **Example Response:**
-    ```json
-    {
-      \"upload_url\": \"https://bucket.s3.amazonaws.com/path?X-Amz-Algorithm=...\",
-      \"expires_in\": 3600,
-      \"file_id\": \"f123-456-789\",
-      \"s3_key\": \"user-staging/user123/kg456/Entity/f123.../data.parquet\"
-    }
-    ```
+  **Important Notes:**
+  - Presigned URLs expire (default: 1 hour)
+  - Use appropriate Content-Type header when uploading to S3
+  - File extension must match content type
+  - Upload URL generation is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    # Step 1: Get upload URL
-    curl -X POST \"https://api.robosystems.ai/v1/graphs/kg123/tables/Entity/files\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{
-        \"file_name\": \"entities.parquet\",
-        \"content_type\": \"application/x-parquet\"
-      }'
+  Args:
+      graph_id (str):
+      table_name (str): Table name
+      body (FileUploadRequest):
 
-    # Step 2: Upload file directly to S3
-    curl -X PUT \"$UPLOAD_URL\" \
-      -H \"Content-Type: application/x-parquet\" \
-      --data-binary \"@entities.parquet\"
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    # Step 3: Mark as uploaded
-    curl -X PATCH \"https://api.robosystems.ai/v1/graphs/kg123/tables/files/$FILE_ID\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{\"status\": \"uploaded\"}'
-    ```
-
-    **Tips:**
-    - Presigned URLs expire (default: 1 hour)
-    - Use appropriate Content-Type header when uploading to S3
-    - File extension must match content type
-    - Large files benefit from direct S3 upload
-
-    **Note:**
-    Upload URL generation is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        table_name (str): Table name
-        body (FileUploadRequest):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -201,93 +162,54 @@ def sync(
   client: AuthenticatedClient,
   body: FileUploadRequest,
 ) -> Optional[Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]]:
-  r""" Get File Upload URL
+  r"""Get File Upload URL
 
-     Generate a presigned S3 URL for secure file upload.
+   Generate a presigned S3 URL for secure file upload.
 
-    **Purpose:**
-    Initiate file upload to a staging table by generating a secure, time-limited
-    presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
-    optimal performance.
+  Initiates file upload to a staging table by generating a secure, time-limited
+  presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
+  optimal performance.
 
-    **Upload Workflow:**
-    1. Call this endpoint to get presigned URL
-    2. PUT file directly to S3 URL (using curl, axios, etc.)
-    3. Call PATCH /tables/files/{file_id} with status='uploaded'
-    4. Backend validates file and calculates metrics
-    5. File ready for ingestion
+  **Upload Workflow:**
+  1. Call this endpoint to get presigned URL
+  2. PUT file directly to S3 URL
+  3. Call PATCH /tables/files/{file_id} with status='uploaded'
+  4. Backend validates file and calculates metrics
+  5. File ready for ingestion
 
-    **Supported Formats:**
-    - Parquet (`application/x-parquet` with `.parquet` extension)
-    - CSV (`text/csv` with `.csv` extension)
-    - JSON (`application/json` with `.json` extension)
+  **Supported Formats:**
+  - Parquet (`application/x-parquet` with `.parquet` extension)
+  - CSV (`text/csv` with `.csv` extension)
+  - JSON (`application/json` with `.json` extension)
 
-    **Validation:**
-    - File extension must match content type
-    - File name 1-255 characters
-    - No path traversal characters (.. / \)
-    - Auto-creates table if it doesn't exist
+  **Validation:**
+  - File extension must match content type
+  - File name 1-255 characters
+  - No path traversal characters (.. / \)
+  - Auto-creates table if it doesn't exist
 
-    **Auto-Table Creation:**
-    If the table doesn't exist, it's automatically created with:
-    - Type inferred from name (e.g., \"Transaction\" → relationship)
-    - Empty schema (populated on ingestion)
-    - Ready for file uploads
+  **Auto-Table Creation:**
+  Tables are automatically created on first file upload with type inferred from name
+  (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
 
-    **Example Response:**
-    ```json
-    {
-      \"upload_url\": \"https://bucket.s3.amazonaws.com/path?X-Amz-Algorithm=...\",
-      \"expires_in\": 3600,
-      \"file_id\": \"f123-456-789\",
-      \"s3_key\": \"user-staging/user123/kg456/Entity/f123.../data.parquet\"
-    }
-    ```
+  **Important Notes:**
+  - Presigned URLs expire (default: 1 hour)
+  - Use appropriate Content-Type header when uploading to S3
+  - File extension must match content type
+  - Upload URL generation is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    # Step 1: Get upload URL
-    curl -X POST \"https://api.robosystems.ai/v1/graphs/kg123/tables/Entity/files\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{
-        \"file_name\": \"entities.parquet\",
-        \"content_type\": \"application/x-parquet\"
-      }'
+  Args:
+      graph_id (str):
+      table_name (str): Table name
+      body (FileUploadRequest):
 
-    # Step 2: Upload file directly to S3
-    curl -X PUT \"$UPLOAD_URL\" \
-      -H \"Content-Type: application/x-parquet\" \
-      --data-binary \"@entities.parquet\"
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    # Step 3: Mark as uploaded
-    curl -X PATCH \"https://api.robosystems.ai/v1/graphs/kg123/tables/files/$FILE_ID\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{\"status\": \"uploaded\"}'
-    ```
-
-    **Tips:**
-    - Presigned URLs expire (default: 1 hour)
-    - Use appropriate Content-Type header when uploading to S3
-    - File extension must match content type
-    - Large files benefit from direct S3 upload
-
-    **Note:**
-    Upload URL generation is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        table_name (str): Table name
-        body (FileUploadRequest):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]
-     """
+  Returns:
+      Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]
+  """
 
   return sync_detailed(
     graph_id=graph_id,
@@ -304,93 +226,54 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: FileUploadRequest,
 ) -> Response[Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]]:
-  r""" Get File Upload URL
+  r"""Get File Upload URL
 
-     Generate a presigned S3 URL for secure file upload.
+   Generate a presigned S3 URL for secure file upload.
 
-    **Purpose:**
-    Initiate file upload to a staging table by generating a secure, time-limited
-    presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
-    optimal performance.
+  Initiates file upload to a staging table by generating a secure, time-limited
+  presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
+  optimal performance.
 
-    **Upload Workflow:**
-    1. Call this endpoint to get presigned URL
-    2. PUT file directly to S3 URL (using curl, axios, etc.)
-    3. Call PATCH /tables/files/{file_id} with status='uploaded'
-    4. Backend validates file and calculates metrics
-    5. File ready for ingestion
+  **Upload Workflow:**
+  1. Call this endpoint to get presigned URL
+  2. PUT file directly to S3 URL
+  3. Call PATCH /tables/files/{file_id} with status='uploaded'
+  4. Backend validates file and calculates metrics
+  5. File ready for ingestion
 
-    **Supported Formats:**
-    - Parquet (`application/x-parquet` with `.parquet` extension)
-    - CSV (`text/csv` with `.csv` extension)
-    - JSON (`application/json` with `.json` extension)
+  **Supported Formats:**
+  - Parquet (`application/x-parquet` with `.parquet` extension)
+  - CSV (`text/csv` with `.csv` extension)
+  - JSON (`application/json` with `.json` extension)
 
-    **Validation:**
-    - File extension must match content type
-    - File name 1-255 characters
-    - No path traversal characters (.. / \)
-    - Auto-creates table if it doesn't exist
+  **Validation:**
+  - File extension must match content type
+  - File name 1-255 characters
+  - No path traversal characters (.. / \)
+  - Auto-creates table if it doesn't exist
 
-    **Auto-Table Creation:**
-    If the table doesn't exist, it's automatically created with:
-    - Type inferred from name (e.g., \"Transaction\" → relationship)
-    - Empty schema (populated on ingestion)
-    - Ready for file uploads
+  **Auto-Table Creation:**
+  Tables are automatically created on first file upload with type inferred from name
+  (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
 
-    **Example Response:**
-    ```json
-    {
-      \"upload_url\": \"https://bucket.s3.amazonaws.com/path?X-Amz-Algorithm=...\",
-      \"expires_in\": 3600,
-      \"file_id\": \"f123-456-789\",
-      \"s3_key\": \"user-staging/user123/kg456/Entity/f123.../data.parquet\"
-    }
-    ```
+  **Important Notes:**
+  - Presigned URLs expire (default: 1 hour)
+  - Use appropriate Content-Type header when uploading to S3
+  - File extension must match content type
+  - Upload URL generation is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    # Step 1: Get upload URL
-    curl -X POST \"https://api.robosystems.ai/v1/graphs/kg123/tables/Entity/files\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{
-        \"file_name\": \"entities.parquet\",
-        \"content_type\": \"application/x-parquet\"
-      }'
+  Args:
+      graph_id (str):
+      table_name (str): Table name
+      body (FileUploadRequest):
 
-    # Step 2: Upload file directly to S3
-    curl -X PUT \"$UPLOAD_URL\" \
-      -H \"Content-Type: application/x-parquet\" \
-      --data-binary \"@entities.parquet\"
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    # Step 3: Mark as uploaded
-    curl -X PATCH \"https://api.robosystems.ai/v1/graphs/kg123/tables/files/$FILE_ID\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{\"status\": \"uploaded\"}'
-    ```
-
-    **Tips:**
-    - Presigned URLs expire (default: 1 hour)
-    - Use appropriate Content-Type header when uploading to S3
-    - File extension must match content type
-    - Large files benefit from direct S3 upload
-
-    **Note:**
-    Upload URL generation is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        table_name (str): Table name
-        body (FileUploadRequest):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -410,93 +293,54 @@ async def asyncio(
   client: AuthenticatedClient,
   body: FileUploadRequest,
 ) -> Optional[Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]]:
-  r""" Get File Upload URL
+  r"""Get File Upload URL
 
-     Generate a presigned S3 URL for secure file upload.
+   Generate a presigned S3 URL for secure file upload.
 
-    **Purpose:**
-    Initiate file upload to a staging table by generating a secure, time-limited
-    presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
-    optimal performance.
+  Initiates file upload to a staging table by generating a secure, time-limited
+  presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
+  optimal performance.
 
-    **Upload Workflow:**
-    1. Call this endpoint to get presigned URL
-    2. PUT file directly to S3 URL (using curl, axios, etc.)
-    3. Call PATCH /tables/files/{file_id} with status='uploaded'
-    4. Backend validates file and calculates metrics
-    5. File ready for ingestion
+  **Upload Workflow:**
+  1. Call this endpoint to get presigned URL
+  2. PUT file directly to S3 URL
+  3. Call PATCH /tables/files/{file_id} with status='uploaded'
+  4. Backend validates file and calculates metrics
+  5. File ready for ingestion
 
-    **Supported Formats:**
-    - Parquet (`application/x-parquet` with `.parquet` extension)
-    - CSV (`text/csv` with `.csv` extension)
-    - JSON (`application/json` with `.json` extension)
+  **Supported Formats:**
+  - Parquet (`application/x-parquet` with `.parquet` extension)
+  - CSV (`text/csv` with `.csv` extension)
+  - JSON (`application/json` with `.json` extension)
 
-    **Validation:**
-    - File extension must match content type
-    - File name 1-255 characters
-    - No path traversal characters (.. / \)
-    - Auto-creates table if it doesn't exist
+  **Validation:**
+  - File extension must match content type
+  - File name 1-255 characters
+  - No path traversal characters (.. / \)
+  - Auto-creates table if it doesn't exist
 
-    **Auto-Table Creation:**
-    If the table doesn't exist, it's automatically created with:
-    - Type inferred from name (e.g., \"Transaction\" → relationship)
-    - Empty schema (populated on ingestion)
-    - Ready for file uploads
+  **Auto-Table Creation:**
+  Tables are automatically created on first file upload with type inferred from name
+  (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
 
-    **Example Response:**
-    ```json
-    {
-      \"upload_url\": \"https://bucket.s3.amazonaws.com/path?X-Amz-Algorithm=...\",
-      \"expires_in\": 3600,
-      \"file_id\": \"f123-456-789\",
-      \"s3_key\": \"user-staging/user123/kg456/Entity/f123.../data.parquet\"
-    }
-    ```
+  **Important Notes:**
+  - Presigned URLs expire (default: 1 hour)
+  - Use appropriate Content-Type header when uploading to S3
+  - File extension must match content type
+  - Upload URL generation is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    # Step 1: Get upload URL
-    curl -X POST \"https://api.robosystems.ai/v1/graphs/kg123/tables/Entity/files\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{
-        \"file_name\": \"entities.parquet\",
-        \"content_type\": \"application/x-parquet\"
-      }'
+  Args:
+      graph_id (str):
+      table_name (str): Table name
+      body (FileUploadRequest):
 
-    # Step 2: Upload file directly to S3
-    curl -X PUT \"$UPLOAD_URL\" \
-      -H \"Content-Type: application/x-parquet\" \
-      --data-binary \"@entities.parquet\"
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    # Step 3: Mark as uploaded
-    curl -X PATCH \"https://api.robosystems.ai/v1/graphs/kg123/tables/files/$FILE_ID\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{\"status\": \"uploaded\"}'
-    ```
-
-    **Tips:**
-    - Presigned URLs expire (default: 1 hour)
-    - Use appropriate Content-Type header when uploading to S3
-    - File extension must match content type
-    - Large files benefit from direct S3 upload
-
-    **Note:**
-    Upload URL generation is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        table_name (str): Table name
-        body (FileUploadRequest):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]
-     """
+  Returns:
+      Union[Any, ErrorResponse, FileUploadResponse, HTTPValidationError]
+  """
 
   return (
     await asyncio_detailed(

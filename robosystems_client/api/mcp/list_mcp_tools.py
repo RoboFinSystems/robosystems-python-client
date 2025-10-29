@@ -81,9 +81,8 @@ def sync_detailed(
   - User permissions and subscription tier
   - Backend capabilities (Kuzu, Neo4j, etc.)
 
-  Credit consumption:
-  - Listing tools is included to encourage exploration
-  - Tool execution costs vary by operation complexity
+  **Note:**
+  MCP tool listing is included - no credit consumption required.
 
   Args:
       graph_id (str):
@@ -126,9 +125,8 @@ def sync(
   - User permissions and subscription tier
   - Backend capabilities (Kuzu, Neo4j, etc.)
 
-  Credit consumption:
-  - Listing tools is included to encourage exploration
-  - Tool execution costs vary by operation complexity
+  **Note:**
+  MCP tool listing is included - no credit consumption required.
 
   Args:
       graph_id (str):
@@ -166,9 +164,8 @@ async def asyncio_detailed(
   - User permissions and subscription tier
   - Backend capabilities (Kuzu, Neo4j, etc.)
 
-  Credit consumption:
-  - Listing tools is included to encourage exploration
-  - Tool execution costs vary by operation complexity
+  **Note:**
+  MCP tool listing is included - no credit consumption required.
 
   Args:
       graph_id (str):
@@ -209,9 +206,8 @@ async def asyncio(
   - User permissions and subscription tier
   - Backend capabilities (Kuzu, Neo4j, etc.)
 
-  Credit consumption:
-  - Listing tools is included to encourage exploration
-  - Tool execution costs vary by operation complexity
+  **Note:**
+  MCP tool listing is included - no credit consumption required.
 
   Args:
       graph_id (str):

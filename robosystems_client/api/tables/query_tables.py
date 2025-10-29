@@ -99,7 +99,6 @@ def sync_detailed(
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
-  **Purpose:**
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
 
@@ -122,27 +121,13 @@ def sync_detailed(
   - Aggregations, window functions, CTEs
   - Multiple table joins across staging area
 
-  **Example Queries:**
-  ```sql
-  -- Count rows in staging table
-  SELECT COUNT(*) FROM Entity;
-
-  -- Check for nulls
-  SELECT * FROM Entity WHERE name IS NULL LIMIT 10;
-
-  -- Find duplicates
-  SELECT identifier, COUNT(*) as cnt
-  FROM Entity
-  GROUP BY identifier
-  HAVING COUNT(*) > 1;
-
-  -- Join across tables
-  SELECT e.name, COUNT(t.id) as transaction_count
-  FROM Entity e
-  LEFT JOIN Transaction t ON e.identifier = t.entity_id
-  GROUP BY e.name
-  ORDER BY transaction_count DESC;
-  ```
+  **Common Operations:**
+  - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
+  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
+  COUNT(*) > 1`
+  - Join tables: `SELECT e.name, COUNT(t.id) FROM Entity e LEFT JOIN Transaction t ON e.identifier =
+  t.entity_id GROUP BY e.name`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -155,7 +140,7 @@ def sync_detailed(
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
 
   **Note:**
-  Staging table queries are included - no credit consumption.
+  Staging table queries are included - no credit consumption
 
   Args:
       graph_id (str):
@@ -191,7 +176,6 @@ def sync(
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
-  **Purpose:**
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
 
@@ -214,27 +198,13 @@ def sync(
   - Aggregations, window functions, CTEs
   - Multiple table joins across staging area
 
-  **Example Queries:**
-  ```sql
-  -- Count rows in staging table
-  SELECT COUNT(*) FROM Entity;
-
-  -- Check for nulls
-  SELECT * FROM Entity WHERE name IS NULL LIMIT 10;
-
-  -- Find duplicates
-  SELECT identifier, COUNT(*) as cnt
-  FROM Entity
-  GROUP BY identifier
-  HAVING COUNT(*) > 1;
-
-  -- Join across tables
-  SELECT e.name, COUNT(t.id) as transaction_count
-  FROM Entity e
-  LEFT JOIN Transaction t ON e.identifier = t.entity_id
-  GROUP BY e.name
-  ORDER BY transaction_count DESC;
-  ```
+  **Common Operations:**
+  - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
+  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
+  COUNT(*) > 1`
+  - Join tables: `SELECT e.name, COUNT(t.id) FROM Entity e LEFT JOIN Transaction t ON e.identifier =
+  t.entity_id GROUP BY e.name`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -247,7 +217,7 @@ def sync(
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
 
   **Note:**
-  Staging table queries are included - no credit consumption.
+  Staging table queries are included - no credit consumption
 
   Args:
       graph_id (str):
@@ -278,7 +248,6 @@ async def asyncio_detailed(
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
-  **Purpose:**
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
 
@@ -301,27 +270,13 @@ async def asyncio_detailed(
   - Aggregations, window functions, CTEs
   - Multiple table joins across staging area
 
-  **Example Queries:**
-  ```sql
-  -- Count rows in staging table
-  SELECT COUNT(*) FROM Entity;
-
-  -- Check for nulls
-  SELECT * FROM Entity WHERE name IS NULL LIMIT 10;
-
-  -- Find duplicates
-  SELECT identifier, COUNT(*) as cnt
-  FROM Entity
-  GROUP BY identifier
-  HAVING COUNT(*) > 1;
-
-  -- Join across tables
-  SELECT e.name, COUNT(t.id) as transaction_count
-  FROM Entity e
-  LEFT JOIN Transaction t ON e.identifier = t.entity_id
-  GROUP BY e.name
-  ORDER BY transaction_count DESC;
-  ```
+  **Common Operations:**
+  - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
+  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
+  COUNT(*) > 1`
+  - Join tables: `SELECT e.name, COUNT(t.id) FROM Entity e LEFT JOIN Transaction t ON e.identifier =
+  t.entity_id GROUP BY e.name`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -334,7 +289,7 @@ async def asyncio_detailed(
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
 
   **Note:**
-  Staging table queries are included - no credit consumption.
+  Staging table queries are included - no credit consumption
 
   Args:
       graph_id (str):
@@ -368,7 +323,6 @@ async def asyncio(
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
-  **Purpose:**
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
 
@@ -391,27 +345,13 @@ async def asyncio(
   - Aggregations, window functions, CTEs
   - Multiple table joins across staging area
 
-  **Example Queries:**
-  ```sql
-  -- Count rows in staging table
-  SELECT COUNT(*) FROM Entity;
-
-  -- Check for nulls
-  SELECT * FROM Entity WHERE name IS NULL LIMIT 10;
-
-  -- Find duplicates
-  SELECT identifier, COUNT(*) as cnt
-  FROM Entity
-  GROUP BY identifier
-  HAVING COUNT(*) > 1;
-
-  -- Join across tables
-  SELECT e.name, COUNT(t.id) as transaction_count
-  FROM Entity e
-  LEFT JOIN Transaction t ON e.identifier = t.entity_id
-  GROUP BY e.name
-  ORDER BY transaction_count DESC;
-  ```
+  **Common Operations:**
+  - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
+  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
+  COUNT(*) > 1`
+  - Join tables: `SELECT e.name, COUNT(t.id) FROM Entity e LEFT JOIN Transaction t ON e.identifier =
+  t.entity_id GROUP BY e.name`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -424,7 +364,7 @@ async def asyncio(
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
 
   **Note:**
-  Staging table queries are included - no credit consumption.
+  Staging table queries are included - no credit consumption
 
   Args:
       graph_id (str):

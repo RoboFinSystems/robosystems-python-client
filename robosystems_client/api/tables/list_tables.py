@@ -75,85 +75,53 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]]:
-  r""" List Staging Tables
+  """List Staging Tables
 
-     List all DuckDB staging tables with comprehensive metrics and status.
+   List all DuckDB staging tables with comprehensive metrics and status.
 
-    **Purpose:**
-    Get a complete inventory of all staging tables for a graph, including
-    file counts, storage sizes, and row estimates. Essential for monitoring
-    the data pipeline and determining which tables are ready for ingestion.
+  Get a complete inventory of all staging tables for a graph, including
+  file counts, storage sizes, and row estimates. Essential for monitoring
+  the data pipeline and determining which tables are ready for ingestion.
 
-    **What You Get:**
-    - Table name and type (node/relationship)
-    - File count per table
-    - Total storage size in bytes
-    - Estimated row count
-    - S3 location pattern
-    - Ready-for-ingestion status
+  **Returned Metrics:**
+  - Table name and type (node/relationship)
+  - File count per table
+  - Total storage size in bytes
+  - Estimated row count
+  - S3 location pattern
+  - Ready-for-ingestion status
 
-    **Use Cases:**
-    - Monitor data upload progress
-    - Check which tables have files ready
-    - Track storage consumption
-    - Validate pipeline before ingestion
-    - Capacity planning
+  **Use Cases:**
+  - Monitor data upload progress
+  - Check which tables have files ready
+  - Track storage consumption
+  - Validate pipeline before ingestion
+  - Capacity planning
 
-    **Workflow:**
-    1. List tables to see current state
-    2. Upload files to empty tables
-    3. Re-list to verify uploads
-    4. Check file counts and sizes
-    5. Ingest when ready
+  **Workflow:**
+  1. List tables to see current state
+  2. Upload files to empty tables
+  3. Re-list to verify uploads
+  4. Check file counts and sizes
+  5. Ingest when ready
 
-    **Example Response:**
-    ```json
-    {
-      \"tables\": [
-        {
-          \"table_name\": \"Entity\",
-          \"row_count\": 5000,
-          \"file_count\": 3,
-          \"total_size_bytes\": 2457600,
-          \"s3_location\": \"s3://bucket/user-staging/user123/graph456/Entity/**/*.parquet\"
-        },
-        {
-          \"table_name\": \"Transaction\",
-          \"row_count\": 15000,
-          \"file_count\": 5,
-          \"total_size_bytes\": 8192000,
-          \"s3_location\": \"s3://bucket/user-staging/user123/graph456/Transaction/**/*.parquet\"
-        }
-      ],
-      \"total_count\": 2
-    }
-    ```
+  **Important Notes:**
+  - Tables with `file_count > 0` have data ready
+  - Check `total_size_bytes` for storage monitoring
+  - Use `s3_location` to verify upload paths
+  - Empty tables (file_count=0) are skipped during ingestion
+  - Table queries are included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables
-    ```
+  Args:
+      graph_id (str):
 
-    **Tips:**
-    - Tables with `file_count > 0` have data ready
-    - Check `total_size_bytes` for storage monitoring
-    - Use `s3_location` to verify upload paths
-    - Empty tables (file_count=0) are skipped during ingestion
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    Table queries are included - no credit consumption.
-
-    Args:
-        graph_id (str):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -171,85 +139,53 @@ def sync(
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]]:
-  r""" List Staging Tables
+  """List Staging Tables
 
-     List all DuckDB staging tables with comprehensive metrics and status.
+   List all DuckDB staging tables with comprehensive metrics and status.
 
-    **Purpose:**
-    Get a complete inventory of all staging tables for a graph, including
-    file counts, storage sizes, and row estimates. Essential for monitoring
-    the data pipeline and determining which tables are ready for ingestion.
+  Get a complete inventory of all staging tables for a graph, including
+  file counts, storage sizes, and row estimates. Essential for monitoring
+  the data pipeline and determining which tables are ready for ingestion.
 
-    **What You Get:**
-    - Table name and type (node/relationship)
-    - File count per table
-    - Total storage size in bytes
-    - Estimated row count
-    - S3 location pattern
-    - Ready-for-ingestion status
+  **Returned Metrics:**
+  - Table name and type (node/relationship)
+  - File count per table
+  - Total storage size in bytes
+  - Estimated row count
+  - S3 location pattern
+  - Ready-for-ingestion status
 
-    **Use Cases:**
-    - Monitor data upload progress
-    - Check which tables have files ready
-    - Track storage consumption
-    - Validate pipeline before ingestion
-    - Capacity planning
+  **Use Cases:**
+  - Monitor data upload progress
+  - Check which tables have files ready
+  - Track storage consumption
+  - Validate pipeline before ingestion
+  - Capacity planning
 
-    **Workflow:**
-    1. List tables to see current state
-    2. Upload files to empty tables
-    3. Re-list to verify uploads
-    4. Check file counts and sizes
-    5. Ingest when ready
+  **Workflow:**
+  1. List tables to see current state
+  2. Upload files to empty tables
+  3. Re-list to verify uploads
+  4. Check file counts and sizes
+  5. Ingest when ready
 
-    **Example Response:**
-    ```json
-    {
-      \"tables\": [
-        {
-          \"table_name\": \"Entity\",
-          \"row_count\": 5000,
-          \"file_count\": 3,
-          \"total_size_bytes\": 2457600,
-          \"s3_location\": \"s3://bucket/user-staging/user123/graph456/Entity/**/*.parquet\"
-        },
-        {
-          \"table_name\": \"Transaction\",
-          \"row_count\": 15000,
-          \"file_count\": 5,
-          \"total_size_bytes\": 8192000,
-          \"s3_location\": \"s3://bucket/user-staging/user123/graph456/Transaction/**/*.parquet\"
-        }
-      ],
-      \"total_count\": 2
-    }
-    ```
+  **Important Notes:**
+  - Tables with `file_count > 0` have data ready
+  - Check `total_size_bytes` for storage monitoring
+  - Use `s3_location` to verify upload paths
+  - Empty tables (file_count=0) are skipped during ingestion
+  - Table queries are included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables
-    ```
+  Args:
+      graph_id (str):
 
-    **Tips:**
-    - Tables with `file_count > 0` have data ready
-    - Check `total_size_bytes` for storage monitoring
-    - Use `s3_location` to verify upload paths
-    - Empty tables (file_count=0) are skipped during ingestion
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    Table queries are included - no credit consumption.
-
-    Args:
-        graph_id (str):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]
-     """
+  Returns:
+      Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]
+  """
 
   return sync_detailed(
     graph_id=graph_id,
@@ -262,85 +198,53 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]]:
-  r""" List Staging Tables
+  """List Staging Tables
 
-     List all DuckDB staging tables with comprehensive metrics and status.
+   List all DuckDB staging tables with comprehensive metrics and status.
 
-    **Purpose:**
-    Get a complete inventory of all staging tables for a graph, including
-    file counts, storage sizes, and row estimates. Essential for monitoring
-    the data pipeline and determining which tables are ready for ingestion.
+  Get a complete inventory of all staging tables for a graph, including
+  file counts, storage sizes, and row estimates. Essential for monitoring
+  the data pipeline and determining which tables are ready for ingestion.
 
-    **What You Get:**
-    - Table name and type (node/relationship)
-    - File count per table
-    - Total storage size in bytes
-    - Estimated row count
-    - S3 location pattern
-    - Ready-for-ingestion status
+  **Returned Metrics:**
+  - Table name and type (node/relationship)
+  - File count per table
+  - Total storage size in bytes
+  - Estimated row count
+  - S3 location pattern
+  - Ready-for-ingestion status
 
-    **Use Cases:**
-    - Monitor data upload progress
-    - Check which tables have files ready
-    - Track storage consumption
-    - Validate pipeline before ingestion
-    - Capacity planning
+  **Use Cases:**
+  - Monitor data upload progress
+  - Check which tables have files ready
+  - Track storage consumption
+  - Validate pipeline before ingestion
+  - Capacity planning
 
-    **Workflow:**
-    1. List tables to see current state
-    2. Upload files to empty tables
-    3. Re-list to verify uploads
-    4. Check file counts and sizes
-    5. Ingest when ready
+  **Workflow:**
+  1. List tables to see current state
+  2. Upload files to empty tables
+  3. Re-list to verify uploads
+  4. Check file counts and sizes
+  5. Ingest when ready
 
-    **Example Response:**
-    ```json
-    {
-      \"tables\": [
-        {
-          \"table_name\": \"Entity\",
-          \"row_count\": 5000,
-          \"file_count\": 3,
-          \"total_size_bytes\": 2457600,
-          \"s3_location\": \"s3://bucket/user-staging/user123/graph456/Entity/**/*.parquet\"
-        },
-        {
-          \"table_name\": \"Transaction\",
-          \"row_count\": 15000,
-          \"file_count\": 5,
-          \"total_size_bytes\": 8192000,
-          \"s3_location\": \"s3://bucket/user-staging/user123/graph456/Transaction/**/*.parquet\"
-        }
-      ],
-      \"total_count\": 2
-    }
-    ```
+  **Important Notes:**
+  - Tables with `file_count > 0` have data ready
+  - Check `total_size_bytes` for storage monitoring
+  - Use `s3_location` to verify upload paths
+  - Empty tables (file_count=0) are skipped during ingestion
+  - Table queries are included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables
-    ```
+  Args:
+      graph_id (str):
 
-    **Tips:**
-    - Tables with `file_count > 0` have data ready
-    - Check `total_size_bytes` for storage monitoring
-    - Use `s3_location` to verify upload paths
-    - Empty tables (file_count=0) are skipped during ingestion
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    Table queries are included - no credit consumption.
-
-    Args:
-        graph_id (str):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -356,85 +260,53 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]]:
-  r""" List Staging Tables
+  """List Staging Tables
 
-     List all DuckDB staging tables with comprehensive metrics and status.
+   List all DuckDB staging tables with comprehensive metrics and status.
 
-    **Purpose:**
-    Get a complete inventory of all staging tables for a graph, including
-    file counts, storage sizes, and row estimates. Essential for monitoring
-    the data pipeline and determining which tables are ready for ingestion.
+  Get a complete inventory of all staging tables for a graph, including
+  file counts, storage sizes, and row estimates. Essential for monitoring
+  the data pipeline and determining which tables are ready for ingestion.
 
-    **What You Get:**
-    - Table name and type (node/relationship)
-    - File count per table
-    - Total storage size in bytes
-    - Estimated row count
-    - S3 location pattern
-    - Ready-for-ingestion status
+  **Returned Metrics:**
+  - Table name and type (node/relationship)
+  - File count per table
+  - Total storage size in bytes
+  - Estimated row count
+  - S3 location pattern
+  - Ready-for-ingestion status
 
-    **Use Cases:**
-    - Monitor data upload progress
-    - Check which tables have files ready
-    - Track storage consumption
-    - Validate pipeline before ingestion
-    - Capacity planning
+  **Use Cases:**
+  - Monitor data upload progress
+  - Check which tables have files ready
+  - Track storage consumption
+  - Validate pipeline before ingestion
+  - Capacity planning
 
-    **Workflow:**
-    1. List tables to see current state
-    2. Upload files to empty tables
-    3. Re-list to verify uploads
-    4. Check file counts and sizes
-    5. Ingest when ready
+  **Workflow:**
+  1. List tables to see current state
+  2. Upload files to empty tables
+  3. Re-list to verify uploads
+  4. Check file counts and sizes
+  5. Ingest when ready
 
-    **Example Response:**
-    ```json
-    {
-      \"tables\": [
-        {
-          \"table_name\": \"Entity\",
-          \"row_count\": 5000,
-          \"file_count\": 3,
-          \"total_size_bytes\": 2457600,
-          \"s3_location\": \"s3://bucket/user-staging/user123/graph456/Entity/**/*.parquet\"
-        },
-        {
-          \"table_name\": \"Transaction\",
-          \"row_count\": 15000,
-          \"file_count\": 5,
-          \"total_size_bytes\": 8192000,
-          \"s3_location\": \"s3://bucket/user-staging/user123/graph456/Transaction/**/*.parquet\"
-        }
-      ],
-      \"total_count\": 2
-    }
-    ```
+  **Important Notes:**
+  - Tables with `file_count > 0` have data ready
+  - Check `total_size_bytes` for storage monitoring
+  - Use `s3_location` to verify upload paths
+  - Empty tables (file_count=0) are skipped during ingestion
+  - Table queries are included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables
-    ```
+  Args:
+      graph_id (str):
 
-    **Tips:**
-    - Tables with `file_count > 0` have data ready
-    - Check `total_size_bytes` for storage monitoring
-    - Use `s3_location` to verify upload paths
-    - Empty tables (file_count=0) are skipped during ingestion
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    Table queries are included - no credit consumption.
-
-    Args:
-        graph_id (str):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]
-     """
+  Returns:
+      Union[Any, ErrorResponse, HTTPValidationError, TableListResponse]
+  """
 
   return (
     await asyncio_detailed(

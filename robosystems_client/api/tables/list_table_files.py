@@ -77,88 +77,54 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
-  r""" List Files in Staging Table
+  """List Files in Staging Table
 
-     List all files uploaded to a staging table with comprehensive metadata.
+   List all files uploaded to a staging table with comprehensive metadata.
 
-    **Purpose:**
-    Get a complete inventory of all files in a staging table, including upload status,
-    file sizes, row counts, and S3 locations. Essential for monitoring upload progress
-    and validating data before ingestion.
+  Get a complete inventory of all files in a staging table, including upload status,
+  file sizes, row counts, and S3 locations. Essential for monitoring upload progress
+  and validating data before ingestion.
 
-    **Use Cases:**
-    - Monitor file upload progress
-    - Verify files are ready for ingestion
-    - Check file formats and sizes
-    - Track storage usage per table
-    - Identify failed or incomplete uploads
-    - Pre-ingestion validation
+  **Use Cases:**
+  - Monitor file upload progress
+  - Verify files are ready for ingestion
+  - Check file formats and sizes
+  - Track storage usage per table
+  - Identify failed or incomplete uploads
+  - Pre-ingestion validation
 
-    **What You Get:**
-    - File ID and name
-    - File format (parquet, csv, etc.)
-    - Size in bytes
-    - Row count (if available)
-    - Upload status and method
-    - Creation and upload timestamps
-    - S3 key for reference
+  **Returned Metadata:**
+  - File ID, name, and format (parquet, csv, json)
+  - Size in bytes and row count (if available)
+  - Upload status and method
+  - Creation and upload timestamps
+  - S3 key for reference
 
-    **Upload Status Values:**
-    - `created`: File record created, not yet uploaded
-    - `uploading`: Upload in progress
-    - `uploaded`: Successfully uploaded, ready for ingestion
-    - `failed`: Upload failed
+  **Upload Status Values:**
+  - `pending`: Upload URL generated, awaiting upload
+  - `uploaded`: Successfully uploaded, ready for ingestion
+  - `disabled`: Excluded from ingestion
+  - `archived`: Soft deleted
+  - `failed`: Upload failed
 
-    **Example Response:**
-    ```json
-    {
-      \"graph_id\": \"kg123\",
-      \"table_name\": \"Entity\",
-      \"files\": [
-        {
-          \"file_id\": \"f123\",
-          \"file_name\": \"entities_batch1.parquet\",
-          \"file_format\": \"parquet\",
-          \"size_bytes\": 1048576,
-          \"row_count\": 5000,
-          \"upload_status\": \"uploaded\",
-          \"upload_method\": \"presigned_url\",
-          \"created_at\": \"2025-10-28T10:00:00Z\",
-          \"uploaded_at\": \"2025-10-28T10:01:30Z\",
-          \"s3_key\": \"user-staging/user123/kg123/Entity/entities_batch1.parquet\"
-        }
-      ],
-      \"total_files\": 1,
-      \"total_size_bytes\": 1048576
-    }
-    ```
+  **Important Notes:**
+  - Only `uploaded` files are ingested
+  - Check `row_count` to estimate data volume
+  - Use `total_size_bytes` for storage monitoring
+  - Files with `failed` status should be deleted and re-uploaded
+  - File listing is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/Entity/files
-    ```
+  Args:
+      graph_id (str):
+      table_name (str): Table name
 
-    **Tips:**
-    - Only `uploaded` files are ingested
-    - Check `row_count` to estimate data volume
-    - Use `total_size_bytes` for storage monitoring
-    - Files with `failed` status should be deleted and re-uploaded
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    File listing is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        table_name (str): Table name
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -178,88 +144,54 @@ def sync(
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
-  r""" List Files in Staging Table
+  """List Files in Staging Table
 
-     List all files uploaded to a staging table with comprehensive metadata.
+   List all files uploaded to a staging table with comprehensive metadata.
 
-    **Purpose:**
-    Get a complete inventory of all files in a staging table, including upload status,
-    file sizes, row counts, and S3 locations. Essential for monitoring upload progress
-    and validating data before ingestion.
+  Get a complete inventory of all files in a staging table, including upload status,
+  file sizes, row counts, and S3 locations. Essential for monitoring upload progress
+  and validating data before ingestion.
 
-    **Use Cases:**
-    - Monitor file upload progress
-    - Verify files are ready for ingestion
-    - Check file formats and sizes
-    - Track storage usage per table
-    - Identify failed or incomplete uploads
-    - Pre-ingestion validation
+  **Use Cases:**
+  - Monitor file upload progress
+  - Verify files are ready for ingestion
+  - Check file formats and sizes
+  - Track storage usage per table
+  - Identify failed or incomplete uploads
+  - Pre-ingestion validation
 
-    **What You Get:**
-    - File ID and name
-    - File format (parquet, csv, etc.)
-    - Size in bytes
-    - Row count (if available)
-    - Upload status and method
-    - Creation and upload timestamps
-    - S3 key for reference
+  **Returned Metadata:**
+  - File ID, name, and format (parquet, csv, json)
+  - Size in bytes and row count (if available)
+  - Upload status and method
+  - Creation and upload timestamps
+  - S3 key for reference
 
-    **Upload Status Values:**
-    - `created`: File record created, not yet uploaded
-    - `uploading`: Upload in progress
-    - `uploaded`: Successfully uploaded, ready for ingestion
-    - `failed`: Upload failed
+  **Upload Status Values:**
+  - `pending`: Upload URL generated, awaiting upload
+  - `uploaded`: Successfully uploaded, ready for ingestion
+  - `disabled`: Excluded from ingestion
+  - `archived`: Soft deleted
+  - `failed`: Upload failed
 
-    **Example Response:**
-    ```json
-    {
-      \"graph_id\": \"kg123\",
-      \"table_name\": \"Entity\",
-      \"files\": [
-        {
-          \"file_id\": \"f123\",
-          \"file_name\": \"entities_batch1.parquet\",
-          \"file_format\": \"parquet\",
-          \"size_bytes\": 1048576,
-          \"row_count\": 5000,
-          \"upload_status\": \"uploaded\",
-          \"upload_method\": \"presigned_url\",
-          \"created_at\": \"2025-10-28T10:00:00Z\",
-          \"uploaded_at\": \"2025-10-28T10:01:30Z\",
-          \"s3_key\": \"user-staging/user123/kg123/Entity/entities_batch1.parquet\"
-        }
-      ],
-      \"total_files\": 1,
-      \"total_size_bytes\": 1048576
-    }
-    ```
+  **Important Notes:**
+  - Only `uploaded` files are ingested
+  - Check `row_count` to estimate data volume
+  - Use `total_size_bytes` for storage monitoring
+  - Files with `failed` status should be deleted and re-uploaded
+  - File listing is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/Entity/files
-    ```
+  Args:
+      graph_id (str):
+      table_name (str): Table name
 
-    **Tips:**
-    - Only `uploaded` files are ingested
-    - Check `row_count` to estimate data volume
-    - Use `total_size_bytes` for storage monitoring
-    - Files with `failed` status should be deleted and re-uploaded
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    File listing is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        table_name (str): Table name
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]
-     """
+  Returns:
+      Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]
+  """
 
   return sync_detailed(
     graph_id=graph_id,
@@ -274,88 +206,54 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
-  r""" List Files in Staging Table
+  """List Files in Staging Table
 
-     List all files uploaded to a staging table with comprehensive metadata.
+   List all files uploaded to a staging table with comprehensive metadata.
 
-    **Purpose:**
-    Get a complete inventory of all files in a staging table, including upload status,
-    file sizes, row counts, and S3 locations. Essential for monitoring upload progress
-    and validating data before ingestion.
+  Get a complete inventory of all files in a staging table, including upload status,
+  file sizes, row counts, and S3 locations. Essential for monitoring upload progress
+  and validating data before ingestion.
 
-    **Use Cases:**
-    - Monitor file upload progress
-    - Verify files are ready for ingestion
-    - Check file formats and sizes
-    - Track storage usage per table
-    - Identify failed or incomplete uploads
-    - Pre-ingestion validation
+  **Use Cases:**
+  - Monitor file upload progress
+  - Verify files are ready for ingestion
+  - Check file formats and sizes
+  - Track storage usage per table
+  - Identify failed or incomplete uploads
+  - Pre-ingestion validation
 
-    **What You Get:**
-    - File ID and name
-    - File format (parquet, csv, etc.)
-    - Size in bytes
-    - Row count (if available)
-    - Upload status and method
-    - Creation and upload timestamps
-    - S3 key for reference
+  **Returned Metadata:**
+  - File ID, name, and format (parquet, csv, json)
+  - Size in bytes and row count (if available)
+  - Upload status and method
+  - Creation and upload timestamps
+  - S3 key for reference
 
-    **Upload Status Values:**
-    - `created`: File record created, not yet uploaded
-    - `uploading`: Upload in progress
-    - `uploaded`: Successfully uploaded, ready for ingestion
-    - `failed`: Upload failed
+  **Upload Status Values:**
+  - `pending`: Upload URL generated, awaiting upload
+  - `uploaded`: Successfully uploaded, ready for ingestion
+  - `disabled`: Excluded from ingestion
+  - `archived`: Soft deleted
+  - `failed`: Upload failed
 
-    **Example Response:**
-    ```json
-    {
-      \"graph_id\": \"kg123\",
-      \"table_name\": \"Entity\",
-      \"files\": [
-        {
-          \"file_id\": \"f123\",
-          \"file_name\": \"entities_batch1.parquet\",
-          \"file_format\": \"parquet\",
-          \"size_bytes\": 1048576,
-          \"row_count\": 5000,
-          \"upload_status\": \"uploaded\",
-          \"upload_method\": \"presigned_url\",
-          \"created_at\": \"2025-10-28T10:00:00Z\",
-          \"uploaded_at\": \"2025-10-28T10:01:30Z\",
-          \"s3_key\": \"user-staging/user123/kg123/Entity/entities_batch1.parquet\"
-        }
-      ],
-      \"total_files\": 1,
-      \"total_size_bytes\": 1048576
-    }
-    ```
+  **Important Notes:**
+  - Only `uploaded` files are ingested
+  - Check `row_count` to estimate data volume
+  - Use `total_size_bytes` for storage monitoring
+  - Files with `failed` status should be deleted and re-uploaded
+  - File listing is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/Entity/files
-    ```
+  Args:
+      graph_id (str):
+      table_name (str): Table name
 
-    **Tips:**
-    - Only `uploaded` files are ingested
-    - Check `row_count` to estimate data volume
-    - Use `total_size_bytes` for storage monitoring
-    - Files with `failed` status should be deleted and re-uploaded
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    File listing is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        table_name (str): Table name
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
@@ -373,88 +271,54 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
-  r""" List Files in Staging Table
+  """List Files in Staging Table
 
-     List all files uploaded to a staging table with comprehensive metadata.
+   List all files uploaded to a staging table with comprehensive metadata.
 
-    **Purpose:**
-    Get a complete inventory of all files in a staging table, including upload status,
-    file sizes, row counts, and S3 locations. Essential for monitoring upload progress
-    and validating data before ingestion.
+  Get a complete inventory of all files in a staging table, including upload status,
+  file sizes, row counts, and S3 locations. Essential for monitoring upload progress
+  and validating data before ingestion.
 
-    **Use Cases:**
-    - Monitor file upload progress
-    - Verify files are ready for ingestion
-    - Check file formats and sizes
-    - Track storage usage per table
-    - Identify failed or incomplete uploads
-    - Pre-ingestion validation
+  **Use Cases:**
+  - Monitor file upload progress
+  - Verify files are ready for ingestion
+  - Check file formats and sizes
+  - Track storage usage per table
+  - Identify failed or incomplete uploads
+  - Pre-ingestion validation
 
-    **What You Get:**
-    - File ID and name
-    - File format (parquet, csv, etc.)
-    - Size in bytes
-    - Row count (if available)
-    - Upload status and method
-    - Creation and upload timestamps
-    - S3 key for reference
+  **Returned Metadata:**
+  - File ID, name, and format (parquet, csv, json)
+  - Size in bytes and row count (if available)
+  - Upload status and method
+  - Creation and upload timestamps
+  - S3 key for reference
 
-    **Upload Status Values:**
-    - `created`: File record created, not yet uploaded
-    - `uploading`: Upload in progress
-    - `uploaded`: Successfully uploaded, ready for ingestion
-    - `failed`: Upload failed
+  **Upload Status Values:**
+  - `pending`: Upload URL generated, awaiting upload
+  - `uploaded`: Successfully uploaded, ready for ingestion
+  - `disabled`: Excluded from ingestion
+  - `archived`: Soft deleted
+  - `failed`: Upload failed
 
-    **Example Response:**
-    ```json
-    {
-      \"graph_id\": \"kg123\",
-      \"table_name\": \"Entity\",
-      \"files\": [
-        {
-          \"file_id\": \"f123\",
-          \"file_name\": \"entities_batch1.parquet\",
-          \"file_format\": \"parquet\",
-          \"size_bytes\": 1048576,
-          \"row_count\": 5000,
-          \"upload_status\": \"uploaded\",
-          \"upload_method\": \"presigned_url\",
-          \"created_at\": \"2025-10-28T10:00:00Z\",
-          \"uploaded_at\": \"2025-10-28T10:01:30Z\",
-          \"s3_key\": \"user-staging/user123/kg123/Entity/entities_batch1.parquet\"
-        }
-      ],
-      \"total_files\": 1,
-      \"total_size_bytes\": 1048576
-    }
-    ```
+  **Important Notes:**
+  - Only `uploaded` files are ingested
+  - Check `row_count` to estimate data volume
+  - Use `total_size_bytes` for storage monitoring
+  - Files with `failed` status should be deleted and re-uploaded
+  - File listing is included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    curl -H \"Authorization: Bearer YOUR_TOKEN\" \
-      https://api.robosystems.ai/v1/graphs/kg123/tables/Entity/files
-    ```
+  Args:
+      graph_id (str):
+      table_name (str): Table name
 
-    **Tips:**
-    - Only `uploaded` files are ingested
-    - Check `row_count` to estimate data volume
-    - Use `total_size_bytes` for storage monitoring
-    - Files with `failed` status should be deleted and re-uploaded
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    File listing is included - no credit consumption.
-
-    Args:
-        graph_id (str):
-        table_name (str): Table name
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]
-     """
+  Returns:
+      Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]
+  """
 
   return (
     await asyncio_detailed(

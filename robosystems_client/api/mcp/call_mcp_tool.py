@@ -157,8 +157,11 @@ def sync_detailed(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Note:**
-  MCP tool calls are included and do not consume credits.
+  **Credit Model:**
+  MCP tool execution is included - no credit consumption required. Database
+  operations (queries, schema inspection, analytics) are completely free.
+  Only AI operations that invoke Claude or other LLM APIs consume credits,
+  which happens at the AI agent layer, not the MCP tool layer.
 
   Args:
       graph_id (str):
@@ -230,8 +233,11 @@ def sync(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Note:**
-  MCP tool calls are included and do not consume credits.
+  **Credit Model:**
+  MCP tool execution is included - no credit consumption required. Database
+  operations (queries, schema inspection, analytics) are completely free.
+  Only AI operations that invoke Claude or other LLM APIs consume credits,
+  which happens at the AI agent layer, not the MCP tool layer.
 
   Args:
       graph_id (str):
@@ -298,8 +304,11 @@ async def asyncio_detailed(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Note:**
-  MCP tool calls are included and do not consume credits.
+  **Credit Model:**
+  MCP tool execution is included - no credit consumption required. Database
+  operations (queries, schema inspection, analytics) are completely free.
+  Only AI operations that invoke Claude or other LLM APIs consume credits,
+  which happens at the AI agent layer, not the MCP tool layer.
 
   Args:
       graph_id (str):
@@ -369,8 +378,11 @@ async def asyncio(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Note:**
-  MCP tool calls are included and do not consume credits.
+  **Credit Model:**
+  MCP tool execution is included - no credit consumption required. Database
+  operations (queries, schema inspection, analytics) are completely free.
+  Only AI operations that invoke Claude or other LLM APIs consume credits,
+  which happens at the AI agent layer, not the MCP tool layer.
 
   Args:
       graph_id (str):
