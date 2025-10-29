@@ -58,6 +58,7 @@ class GraphClient:
     self,
     metadata: GraphMetadata,
     initial_entity: Optional[InitialEntityData] = None,
+    create_entity: bool = True,
     timeout: int = 60,
     poll_interval: int = 2,
     on_progress: Optional[Callable[[str], None]] = None,
@@ -68,6 +69,9 @@ class GraphClient:
     Args:
         metadata: Graph metadata
         initial_entity: Optional initial entity data
+        create_entity: Whether to create the entity node and upload initial data.
+            Only applies when initial_entity is provided. Set to False to create
+            graph without populating entity data (useful for file-based ingestion).
         timeout: Maximum time to wait in seconds
         poll_interval: Time between status checks in seconds
         on_progress: Callback for progress updates
@@ -121,6 +125,7 @@ class GraphClient:
     graph_create = CreateGraphRequest(
       metadata=api_metadata,
       initial_entity=initial_entity_dict,
+      create_entity=create_entity,
     )
 
     if on_progress:

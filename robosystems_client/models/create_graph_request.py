@@ -31,6 +31,9 @@ class CreateGraphRequest:
       custom_schema (Union['CustomSchemaDefinition', None, Unset]): Custom schema definition to apply
       initial_entity (Union['InitialEntityData', None, Unset]): Optional initial entity to create in the graph. If
           provided, creates a entity-focused graph.
+      create_entity (Union[Unset, bool]): Whether to create the entity node and upload initial data. Only applies when
+          initial_entity is provided. Set to False to create graph without populating entity data (useful for file-based
+          ingestion workflows). Default: True.
       tags (Union[Unset, list[str]]): Optional tags for organization
   """
 
@@ -38,6 +41,7 @@ class CreateGraphRequest:
   instance_tier: Union[Unset, str] = "kuzu-standard"
   custom_schema: Union["CustomSchemaDefinition", None, Unset] = UNSET
   initial_entity: Union["InitialEntityData", None, Unset] = UNSET
+  create_entity: Union[Unset, bool] = True
   tags: Union[Unset, list[str]] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -65,6 +69,8 @@ class CreateGraphRequest:
     else:
       initial_entity = self.initial_entity
 
+    create_entity = self.create_entity
+
     tags: Union[Unset, list[str]] = UNSET
     if not isinstance(self.tags, Unset):
       tags = self.tags
@@ -82,6 +88,8 @@ class CreateGraphRequest:
       field_dict["custom_schema"] = custom_schema
     if initial_entity is not UNSET:
       field_dict["initial_entity"] = initial_entity
+    if create_entity is not UNSET:
+      field_dict["create_entity"] = create_entity
     if tags is not UNSET:
       field_dict["tags"] = tags
 
@@ -134,6 +142,8 @@ class CreateGraphRequest:
 
     initial_entity = _parse_initial_entity(d.pop("initial_entity", UNSET))
 
+    create_entity = d.pop("create_entity", UNSET)
+
     tags = cast(list[str], d.pop("tags", UNSET))
 
     create_graph_request = cls(
@@ -141,6 +151,7 @@ class CreateGraphRequest:
       instance_tier=instance_tier,
       custom_schema=custom_schema,
       initial_entity=initial_entity,
+      create_entity=create_entity,
       tags=tags,
     )
 

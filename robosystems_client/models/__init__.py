@@ -75,9 +75,7 @@ from .cypher_query_request import CypherQueryRequest
 from .cypher_query_request_parameters_type_0 import CypherQueryRequestParametersType0
 from .database_health_response import DatabaseHealthResponse
 from .database_info_response import DatabaseInfoResponse
-from .delete_file_v1_graphs_graph_id_tables_files_file_id_delete_response_delete_file_v1_graphs_graph_id_tables_files_file_id_delete import (
-  DeleteFileV1GraphsGraphIdTablesFilesFileIdDeleteResponseDeleteFileV1GraphsGraphIdTablesFilesFileIdDelete,
-)
+from .delete_file_response import DeleteFileResponse
 from .delete_subgraph_request import DeleteSubgraphRequest
 from .delete_subgraph_response import DeleteSubgraphResponse
 from .detailed_transactions_response import DetailedTransactionsResponse
@@ -93,7 +91,8 @@ from .enhanced_credit_transaction_response_metadata import (
 from .error_response import ErrorResponse
 from .exchange_token_request import ExchangeTokenRequest
 from .exchange_token_request_metadata_type_0 import ExchangeTokenRequestMetadataType0
-from .file_update_request import FileUpdateRequest
+from .file_info import FileInfo
+from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
 from .file_upload_response import FileUploadResponse
 from .forgot_password_request import ForgotPasswordRequest
@@ -115,9 +114,7 @@ from .get_current_auth_user_response_getcurrentauthuser import (
 from .get_current_graph_bill_response_getcurrentgraphbill import (
   GetCurrentGraphBillResponseGetcurrentgraphbill,
 )
-from .get_file_info_v1_graphs_graph_id_tables_files_file_id_get_response_get_file_info_v1_graphs_graph_id_tables_files_file_id_get import (
-  GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsGraphIdTablesFilesFileIdGet,
-)
+from .get_file_info_response import GetFileInfoResponse
 from .get_graph_billing_history_response_getgraphbillinghistory import (
   GetGraphBillingHistoryResponseGetgraphbillinghistory,
 )
@@ -164,9 +161,7 @@ from .link_token_request_options_type_0 import LinkTokenRequestOptionsType0
 from .link_token_request_provider_type_0 import LinkTokenRequestProviderType0
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
 from .list_subgraphs_response import ListSubgraphsResponse
-from .list_table_files_v1_graphs_graph_id_tables_table_name_files_get_response_list_table_files_v1_graphs_graph_id_tables_table_name_files_get import (
-  ListTableFilesV1GraphsGraphIdTablesTableNameFilesGetResponseListTableFilesV1GraphsGraphIdTablesTableNameFilesGet,
-)
+from .list_table_files_response import ListTableFilesResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .mcp_tool_call import MCPToolCall
@@ -249,8 +244,8 @@ from .table_query_response import TableQueryResponse
 from .tier_upgrade_request import TierUpgradeRequest
 from .transaction_summary_response import TransactionSummaryResponse
 from .update_api_key_request import UpdateAPIKeyRequest
-from .update_file_v1_graphs_graph_id_tables_files_file_id_patch_response_update_file_v1_graphs_graph_id_tables_files_file_id_patch import (
-  UpdateFileV1GraphsGraphIdTablesFilesFileIdPatchResponseUpdateFileV1GraphsGraphIdTablesFilesFileIdPatch,
+from .update_file_status_response_updatefilestatus import (
+  UpdateFileStatusResponseUpdatefilestatus,
 )
 from .update_password_request import UpdatePasswordRequest
 from .update_user_request import UpdateUserRequest
@@ -339,7 +334,7 @@ __all__ = (
   "CypherQueryRequestParametersType0",
   "DatabaseHealthResponse",
   "DatabaseInfoResponse",
-  "DeleteFileV1GraphsGraphIdTablesFilesFileIdDeleteResponseDeleteFileV1GraphsGraphIdTablesFilesFileIdDelete",
+  "DeleteFileResponse",
   "DeleteSubgraphRequest",
   "DeleteSubgraphResponse",
   "DetailedTransactionsResponse",
@@ -351,7 +346,8 @@ __all__ = (
   "ErrorResponse",
   "ExchangeTokenRequest",
   "ExchangeTokenRequestMetadataType0",
-  "FileUpdateRequest",
+  "FileInfo",
+  "FileStatusUpdate",
   "FileUploadRequest",
   "FileUploadResponse",
   "ForgotPasswordRequest",
@@ -361,7 +357,7 @@ __all__ = (
   "GetBackupDownloadUrlResponseGetbackupdownloadurl",
   "GetCurrentAuthUserResponseGetcurrentauthuser",
   "GetCurrentGraphBillResponseGetcurrentgraphbill",
-  "GetFileInfoV1GraphsGraphIdTablesFilesFileIdGetResponseGetFileInfoV1GraphsGraphIdTablesFilesFileIdGet",
+  "GetFileInfoResponse",
   "GetGraphBillingHistoryResponseGetgraphbillinghistory",
   "GetGraphLimitsResponseGetgraphlimits",
   "GetGraphMonthlyBillResponseGetgraphmonthlybill",
@@ -390,7 +386,7 @@ __all__ = (
   "LinkTokenRequestProviderType0",
   "ListConnectionsProviderType0",
   "ListSubgraphsResponse",
-  "ListTableFilesV1GraphsGraphIdTablesTableNameFilesGetResponseListTableFilesV1GraphsGraphIdTablesTableNameFilesGet",
+  "ListTableFilesResponse",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "MCPToolCall",
@@ -455,7 +451,7 @@ __all__ = (
   "TierUpgradeRequest",
   "TransactionSummaryResponse",
   "UpdateAPIKeyRequest",
-  "UpdateFileV1GraphsGraphIdTablesFilesFileIdPatchResponseUpdateFileV1GraphsGraphIdTablesFilesFileIdPatch",
+  "UpdateFileStatusResponseUpdatefilestatus",
   "UpdatePasswordRequest",
   "UpdateUserRequest",
   "UserAnalyticsResponse",

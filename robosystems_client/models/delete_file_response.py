@@ -4,31 +4,67 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar(
-  "T",
-  bound="ListTableFilesV1GraphsGraphIdTablesTableNameFilesGetResponseListTableFilesV1GraphsGraphIdTablesTableNameFilesGet",
-)
+T = TypeVar("T", bound="DeleteFileResponse")
 
 
 @_attrs_define
-class ListTableFilesV1GraphsGraphIdTablesTableNameFilesGetResponseListTableFilesV1GraphsGraphIdTablesTableNameFilesGet:
-  """ """
+class DeleteFileResponse:
+  """
+  Attributes:
+      status (str): Deletion status
+      file_id (str): Deleted file ID
+      file_name (str): Deleted file name
+      message (str): Operation message
+  """
 
+  status: str
+  file_id: str
+  file_name: str
+  message: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    status = self.status
+
+    file_id = self.file_id
+
+    file_name = self.file_name
+
+    message = self.message
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "status": status,
+        "file_id": file_id,
+        "file_name": file_name,
+        "message": message,
+      }
+    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    list_table_files_v1_graphs_graph_id_tables_table_name_files_get_response_list_table_files_v1_graphs_graph_id_tables_table_name_files_get = cls()
+    status = d.pop("status")
 
-    list_table_files_v1_graphs_graph_id_tables_table_name_files_get_response_list_table_files_v1_graphs_graph_id_tables_table_name_files_get.additional_properties = d
-    return list_table_files_v1_graphs_graph_id_tables_table_name_files_get_response_list_table_files_v1_graphs_graph_id_tables_table_name_files_get
+    file_id = d.pop("file_id")
+
+    file_name = d.pop("file_name")
+
+    message = d.pop("message")
+
+    delete_file_response = cls(
+      status=status,
+      file_id=file_id,
+      file_name=file_name,
+      message=message,
+    )
+
+    delete_file_response.additional_properties = d
+    return delete_file_response
 
   @property
   def additional_keys(self) -> list[str]:
