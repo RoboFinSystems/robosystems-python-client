@@ -24,10 +24,12 @@ class SchemaExportResponse:
 
   Attributes:
       graph_id (str): Graph ID
-      schema_definition (Union['SchemaExportResponseSchemaDefinitionType0', str]): Exported schema definition
+      schema_definition (Union['SchemaExportResponseSchemaDefinitionType0', str]): Exported schema definition (format
+          depends on 'format' parameter)
       format_ (str): Export format used
       exported_at (str): Export timestamp
-      data_stats (Union['SchemaExportResponseDataStatsType0', None, Unset]): Data statistics if requested
+      data_stats (Union['SchemaExportResponseDataStatsType0', None, Unset]): Data statistics if requested (only when
+          include_data_stats=true)
   """
 
   graph_id: str

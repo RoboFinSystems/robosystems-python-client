@@ -19,8 +19,10 @@ class CypherQueryRequest:
   """Request model for Cypher query execution.
 
   Attributes:
-      query (str): The Cypher query to execute
-      parameters (Union['CypherQueryRequestParametersType0', None, Unset]): Optional parameters for the Cypher query
+      query (str): The Cypher query to execute. Use parameters ($param_name) for all dynamic values to prevent
+          injection attacks.
+      parameters (Union['CypherQueryRequestParametersType0', None, Unset]): Query parameters for safe value
+          substitution. ALWAYS use parameters instead of string interpolation.
       timeout (Union[None, Unset, int]): Query timeout in seconds (1-300) Default: 60.
   """
 

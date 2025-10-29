@@ -4,12 +4,12 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="GetGraphSchemaResponseGetgraphschema")
+T = TypeVar("T", bound="SchemaInfoResponseSchema")
 
 
 @_attrs_define
-class GetGraphSchemaResponseGetgraphschema:
-  """ """
+class SchemaInfoResponseSchema:
+  """Runtime schema information showing actual database structure"""
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -22,10 +22,10 @@ class GetGraphSchemaResponseGetgraphschema:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    get_graph_schema_response_getgraphschema = cls()
+    schema_info_response_schema = cls()
 
-    get_graph_schema_response_getgraphschema.additional_properties = d
-    return get_graph_schema_response_getgraphschema
+    schema_info_response_schema.additional_properties = d
+    return schema_info_response_schema
 
   @property
   def additional_keys(self) -> list[str]:

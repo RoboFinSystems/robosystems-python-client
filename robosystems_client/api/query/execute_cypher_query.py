@@ -123,7 +123,7 @@ def sync_detailed(
   chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> Response[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query (Read-Only)
+  r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
 
@@ -132,6 +132,16 @@ def sync_detailed(
   To load data into your graph, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
+  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
+  \"Company\"}`
+  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
+  string
+
+  Query parameters provide automatic escaping and type safety. All examples in this API use
+  parameterized queries.
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -218,7 +228,7 @@ def sync(
   chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> Optional[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query (Read-Only)
+  r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
 
@@ -227,6 +237,16 @@ def sync(
   To load data into your graph, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
+  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
+  \"Company\"}`
+  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
+  string
+
+  Query parameters provide automatic escaping and type safety. All examples in this API use
+  parameterized queries.
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -308,7 +328,7 @@ async def asyncio_detailed(
   chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> Response[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query (Read-Only)
+  r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
 
@@ -317,6 +337,16 @@ async def asyncio_detailed(
   To load data into your graph, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
+  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
+  \"Company\"}`
+  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
+  string
+
+  Query parameters provide automatic escaping and type safety. All examples in this API use
+  parameterized queries.
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -401,7 +431,7 @@ async def asyncio(
   chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
 ) -> Optional[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query (Read-Only)
+  r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
 
@@ -410,6 +440,16 @@ async def asyncio(
   To load data into your graph, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
+  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
+  \"Company\"}`
+  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
+  string
+
+  Query parameters provide automatic escaping and type safety. All examples in this API use
+  parameterized queries.
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)

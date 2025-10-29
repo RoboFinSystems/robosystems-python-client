@@ -95,12 +95,21 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: TableQueryRequest,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
-  """Query Staging Tables with SQL
+  r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
+  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
+  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
+  into SQL string
+
+  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
+  array.
 
   **Use Cases:**
   - Validate data quality before graph ingestion
@@ -123,11 +132,13 @@ def sync_detailed(
 
   **Common Operations:**
   - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
+  [\"Company\", 100]`
   - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
   - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
   COUNT(*) > 1`
-  - Join tables: `SELECT e.name, COUNT(t.id) FROM Entity e LEFT JOIN Transaction t ON e.identifier =
-  t.entity_id GROUP BY e.name`
+  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
+  [1000, \"2024-01-01\"]`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -172,12 +183,21 @@ def sync(
   client: AuthenticatedClient,
   body: TableQueryRequest,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
-  """Query Staging Tables with SQL
+  r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
+  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
+  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
+  into SQL string
+
+  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
+  array.
 
   **Use Cases:**
   - Validate data quality before graph ingestion
@@ -200,11 +220,13 @@ def sync(
 
   **Common Operations:**
   - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
+  [\"Company\", 100]`
   - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
   - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
   COUNT(*) > 1`
-  - Join tables: `SELECT e.name, COUNT(t.id) FROM Entity e LEFT JOIN Transaction t ON e.identifier =
-  t.entity_id GROUP BY e.name`
+  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
+  [1000, \"2024-01-01\"]`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -244,12 +266,21 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: TableQueryRequest,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
-  """Query Staging Tables with SQL
+  r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
+  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
+  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
+  into SQL string
+
+  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
+  array.
 
   **Use Cases:**
   - Validate data quality before graph ingestion
@@ -272,11 +303,13 @@ async def asyncio_detailed(
 
   **Common Operations:**
   - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
+  [\"Company\", 100]`
   - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
   - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
   COUNT(*) > 1`
-  - Join tables: `SELECT e.name, COUNT(t.id) FROM Entity e LEFT JOIN Transaction t ON e.identifier =
-  t.entity_id GROUP BY e.name`
+  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
+  [1000, \"2024-01-01\"]`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -319,12 +352,21 @@ async def asyncio(
   client: AuthenticatedClient,
   body: TableQueryRequest,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
-  """Query Staging Tables with SQL
+  r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
+  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
+  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
+  into SQL string
+
+  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
+  array.
 
   **Use Cases:**
   - Validate data quality before graph ingestion
@@ -347,11 +389,13 @@ async def asyncio(
 
   **Common Operations:**
   - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
+  [\"Company\", 100]`
   - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
   - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
   COUNT(*) > 1`
-  - Join tables: `SELECT e.name, COUNT(t.id) FROM Entity e LEFT JOIN Transaction t ON e.identifier =
-  t.entity_id GROUP BY e.name`
+  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
+  [1000, \"2024-01-01\"]`
 
   **Limits:**
   - Query timeout: 30 seconds
