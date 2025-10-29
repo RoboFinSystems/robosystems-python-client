@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 import httpx
 
@@ -15,25 +15,12 @@ def _get_kwargs(
   *,
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   params["format"] = format_
 
   params["include_data_stats"] = include_data_stats
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -43,22 +30,33 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, SchemaExportResponse]]:
+) -> Optional[Union[Any, HTTPValidationError, SchemaExportResponse]]:
   if response.status_code == 200:
     response_200 = SchemaExportResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 403:
+    response_403 = cast(Any, None)
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = cast(Any, None)
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 500:
+    response_500 = cast(Any, None)
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -68,7 +66,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, SchemaExportResponse]]:
+) -> Response[Union[Any, HTTPValidationError, SchemaExportResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -83,35 +81,75 @@ def sync_detailed(
   client: AuthenticatedClient,
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[HTTPValidationError, SchemaExportResponse]]:
-  """Export Graph Schema
+) -> Response[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  """Export Declared Graph Schema
 
-   Export the schema of an existing graph in JSON, YAML, or Cypher format
+   Export the declared schema definition of an existing graph.
+
+  ## What This Returns
+
+  This endpoint returns the **original schema definition** that was used to create the graph:
+  - The schema as it was **declared** during graph creation
+  - Complete node and relationship definitions
+  - Property types and constraints
+  - Schema metadata (name, version, type)
+
+  ## Runtime vs Declared Schema
+
+  **Use this endpoint** (`/schema/export`) when you need:
+  - The original schema definition used to create the graph
+  - Schema in a specific format (JSON, YAML, Cypher DDL)
+  - Schema for documentation or version control
+  - Schema to replicate in another graph
+
+  **Use `/schema` instead** when you need:
+  - What data is ACTUALLY in the database right now
+  - What properties exist on real nodes (discovered from data)
+  - Current runtime database structure for querying
+
+  ## Export Formats
+
+  ### JSON Format (`format=json`)
+  Returns structured JSON with nodes, relationships, and properties.
+  Best for programmatic access and API integration.
+
+  ### YAML Format (`format=yaml`)
+  Returns human-readable YAML with comments.
+  Best for documentation and configuration management.
+
+  ### Cypher DDL Format (`format=cypher`)
+  Returns Cypher CREATE statements for recreating the schema.
+  Best for database migration and replication.
+
+  ## Data Statistics
+
+  Set `include_data_stats=true` to include:
+  - Node counts by label
+  - Relationship counts by type
+  - Total nodes and relationships
+
+  This combines declared schema with runtime statistics.
+
+  This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): The graph ID to export schema from
+      graph_id (str):
       format_ (Union[Unset, str]): Export format: json, yaml, or cypher Default: 'json'.
       include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
-          Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+          (node counts, relationship counts) Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, SchemaExportResponse]]
+      Response[Union[Any, HTTPValidationError, SchemaExportResponse]]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     format_=format_,
     include_data_stats=include_data_stats,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -127,27 +165,69 @@ def sync(
   client: AuthenticatedClient,
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[HTTPValidationError, SchemaExportResponse]]:
-  """Export Graph Schema
+) -> Optional[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  """Export Declared Graph Schema
 
-   Export the schema of an existing graph in JSON, YAML, or Cypher format
+   Export the declared schema definition of an existing graph.
+
+  ## What This Returns
+
+  This endpoint returns the **original schema definition** that was used to create the graph:
+  - The schema as it was **declared** during graph creation
+  - Complete node and relationship definitions
+  - Property types and constraints
+  - Schema metadata (name, version, type)
+
+  ## Runtime vs Declared Schema
+
+  **Use this endpoint** (`/schema/export`) when you need:
+  - The original schema definition used to create the graph
+  - Schema in a specific format (JSON, YAML, Cypher DDL)
+  - Schema for documentation or version control
+  - Schema to replicate in another graph
+
+  **Use `/schema` instead** when you need:
+  - What data is ACTUALLY in the database right now
+  - What properties exist on real nodes (discovered from data)
+  - Current runtime database structure for querying
+
+  ## Export Formats
+
+  ### JSON Format (`format=json`)
+  Returns structured JSON with nodes, relationships, and properties.
+  Best for programmatic access and API integration.
+
+  ### YAML Format (`format=yaml`)
+  Returns human-readable YAML with comments.
+  Best for documentation and configuration management.
+
+  ### Cypher DDL Format (`format=cypher`)
+  Returns Cypher CREATE statements for recreating the schema.
+  Best for database migration and replication.
+
+  ## Data Statistics
+
+  Set `include_data_stats=true` to include:
+  - Node counts by label
+  - Relationship counts by type
+  - Total nodes and relationships
+
+  This combines declared schema with runtime statistics.
+
+  This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): The graph ID to export schema from
+      graph_id (str):
       format_ (Union[Unset, str]): Export format: json, yaml, or cypher Default: 'json'.
       include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
-          Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+          (node counts, relationship counts) Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, SchemaExportResponse]
+      Union[Any, HTTPValidationError, SchemaExportResponse]
   """
 
   return sync_detailed(
@@ -155,8 +235,6 @@ def sync(
     client=client,
     format_=format_,
     include_data_stats=include_data_stats,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -166,35 +244,75 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[HTTPValidationError, SchemaExportResponse]]:
-  """Export Graph Schema
+) -> Response[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  """Export Declared Graph Schema
 
-   Export the schema of an existing graph in JSON, YAML, or Cypher format
+   Export the declared schema definition of an existing graph.
+
+  ## What This Returns
+
+  This endpoint returns the **original schema definition** that was used to create the graph:
+  - The schema as it was **declared** during graph creation
+  - Complete node and relationship definitions
+  - Property types and constraints
+  - Schema metadata (name, version, type)
+
+  ## Runtime vs Declared Schema
+
+  **Use this endpoint** (`/schema/export`) when you need:
+  - The original schema definition used to create the graph
+  - Schema in a specific format (JSON, YAML, Cypher DDL)
+  - Schema for documentation or version control
+  - Schema to replicate in another graph
+
+  **Use `/schema` instead** when you need:
+  - What data is ACTUALLY in the database right now
+  - What properties exist on real nodes (discovered from data)
+  - Current runtime database structure for querying
+
+  ## Export Formats
+
+  ### JSON Format (`format=json`)
+  Returns structured JSON with nodes, relationships, and properties.
+  Best for programmatic access and API integration.
+
+  ### YAML Format (`format=yaml`)
+  Returns human-readable YAML with comments.
+  Best for documentation and configuration management.
+
+  ### Cypher DDL Format (`format=cypher`)
+  Returns Cypher CREATE statements for recreating the schema.
+  Best for database migration and replication.
+
+  ## Data Statistics
+
+  Set `include_data_stats=true` to include:
+  - Node counts by label
+  - Relationship counts by type
+  - Total nodes and relationships
+
+  This combines declared schema with runtime statistics.
+
+  This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): The graph ID to export schema from
+      graph_id (str):
       format_ (Union[Unset, str]): Export format: json, yaml, or cypher Default: 'json'.
       include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
-          Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+          (node counts, relationship counts) Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, SchemaExportResponse]]
+      Response[Union[Any, HTTPValidationError, SchemaExportResponse]]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     format_=format_,
     include_data_stats=include_data_stats,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -208,27 +326,69 @@ async def asyncio(
   client: AuthenticatedClient,
   format_: Union[Unset, str] = "json",
   include_data_stats: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[HTTPValidationError, SchemaExportResponse]]:
-  """Export Graph Schema
+) -> Optional[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  """Export Declared Graph Schema
 
-   Export the schema of an existing graph in JSON, YAML, or Cypher format
+   Export the declared schema definition of an existing graph.
+
+  ## What This Returns
+
+  This endpoint returns the **original schema definition** that was used to create the graph:
+  - The schema as it was **declared** during graph creation
+  - Complete node and relationship definitions
+  - Property types and constraints
+  - Schema metadata (name, version, type)
+
+  ## Runtime vs Declared Schema
+
+  **Use this endpoint** (`/schema/export`) when you need:
+  - The original schema definition used to create the graph
+  - Schema in a specific format (JSON, YAML, Cypher DDL)
+  - Schema for documentation or version control
+  - Schema to replicate in another graph
+
+  **Use `/schema` instead** when you need:
+  - What data is ACTUALLY in the database right now
+  - What properties exist on real nodes (discovered from data)
+  - Current runtime database structure for querying
+
+  ## Export Formats
+
+  ### JSON Format (`format=json`)
+  Returns structured JSON with nodes, relationships, and properties.
+  Best for programmatic access and API integration.
+
+  ### YAML Format (`format=yaml`)
+  Returns human-readable YAML with comments.
+  Best for documentation and configuration management.
+
+  ### Cypher DDL Format (`format=cypher`)
+  Returns Cypher CREATE statements for recreating the schema.
+  Best for database migration and replication.
+
+  ## Data Statistics
+
+  Set `include_data_stats=true` to include:
+  - Node counts by label
+  - Relationship counts by type
+  - Total nodes and relationships
+
+  This combines declared schema with runtime statistics.
+
+  This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): The graph ID to export schema from
+      graph_id (str):
       format_ (Union[Unset, str]): Export format: json, yaml, or cypher Default: 'json'.
       include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
-          Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+          (node counts, relationship counts) Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, SchemaExportResponse]
+      Union[Any, HTTPValidationError, SchemaExportResponse]
   """
 
   return (
@@ -237,7 +397,5 @@ async def asyncio(
       client=client,
       format_=format_,
       include_data_stats=include_data_stats,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

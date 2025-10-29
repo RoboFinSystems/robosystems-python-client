@@ -8,34 +8,18 @@ from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
 from ...models.update_user_request import UpdateUserRequest
 from ...models.user_response import UserResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   *,
   body: UpdateUserRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "put",
     "url": "/v1/user",
-    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -80,16 +64,12 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: UpdateUserRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, UserResponse]]:
   """Update User Profile
 
    Update the current user's profile information.
 
   Args:
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (UpdateUserRequest): Request model for updating user profile.
 
   Raises:
@@ -102,8 +82,6 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -117,16 +95,12 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: UpdateUserRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, UserResponse]]:
   """Update User Profile
 
    Update the current user's profile information.
 
   Args:
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (UpdateUserRequest): Request model for updating user profile.
 
   Raises:
@@ -140,8 +114,6 @@ def sync(
   return sync_detailed(
     client=client,
     body=body,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -149,16 +121,12 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: UpdateUserRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, UserResponse]]:
   """Update User Profile
 
    Update the current user's profile information.
 
   Args:
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (UpdateUserRequest): Request model for updating user profile.
 
   Raises:
@@ -171,8 +139,6 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -184,16 +150,12 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: UpdateUserRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, UserResponse]]:
   """Update User Profile
 
    Update the current user's profile information.
 
   Args:
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (UpdateUserRequest): Request model for updating user profile.
 
   Raises:
@@ -208,7 +170,5 @@ async def asyncio(
     await asyncio_detailed(
       client=client,
       body=body,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

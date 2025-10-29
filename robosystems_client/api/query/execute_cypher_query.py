@@ -16,14 +16,10 @@ def _get_kwargs(
   *,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
 
   params: dict[str, Any] = {}
 
@@ -36,16 +32,14 @@ def _get_kwargs(
     json_mode = mode
   params["mode"] = json_mode
 
-  params["chunk_size"] = chunk_size
+  json_chunk_size: Union[None, Unset, int]
+  if isinstance(chunk_size, Unset):
+    json_chunk_size = UNSET
+  else:
+    json_chunk_size = chunk_size
+  params["chunk_size"] = json_chunk_size
 
   params["test_mode"] = test_mode
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -67,6 +61,12 @@ def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[Any, HTTPValidationError]]:
   if response.status_code == 200:
+    content_type = response.headers.get("content-type", "")
+    if (
+      "application/x-ndjson" in content_type
+      or response.headers.get("x-stream-format") == "ndjson"
+    ):
+      return None
     response_200 = response.json()
     return response_200
 
@@ -126,12 +126,10 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query (Read-Only)
+  r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
 
@@ -140,6 +138,16 @@ def sync_detailed(
   To load data into your graph, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
+  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
+  \"Company\"}`
+  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
+  string
+
+  Query parameters provide automatic escaping and type safety. All examples in this API use
+  parameterized queries.
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -188,12 +196,10 @@ def sync_detailed(
   Queue position is based on subscription tier for priority.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[Unset, int]): Rows per chunk for streaming Default: 1000.
+      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
       test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (CypherQueryRequest): Request model for Cypher query execution.
 
   Raises:
@@ -210,8 +216,6 @@ def sync_detailed(
     mode=mode,
     chunk_size=chunk_size,
     test_mode=test_mode,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -227,12 +231,10 @@ def sync(
   client: AuthenticatedClient,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query (Read-Only)
+  r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
 
@@ -241,6 +243,16 @@ def sync(
   To load data into your graph, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
+  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
+  \"Company\"}`
+  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
+  string
+
+  Query parameters provide automatic escaping and type safety. All examples in this API use
+  parameterized queries.
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -289,12 +301,10 @@ def sync(
   Queue position is based on subscription tier for priority.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[Unset, int]): Rows per chunk for streaming Default: 1000.
+      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
       test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (CypherQueryRequest): Request model for Cypher query execution.
 
   Raises:
@@ -312,8 +322,6 @@ def sync(
     mode=mode,
     chunk_size=chunk_size,
     test_mode=test_mode,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -323,12 +331,10 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query (Read-Only)
+  r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
 
@@ -337,6 +343,16 @@ async def asyncio_detailed(
   To load data into your graph, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
+  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
+  \"Company\"}`
+  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
+  string
+
+  Query parameters provide automatic escaping and type safety. All examples in this API use
+  parameterized queries.
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -385,12 +401,10 @@ async def asyncio_detailed(
   Queue position is based on subscription tier for priority.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[Unset, int]): Rows per chunk for streaming Default: 1000.
+      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
       test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (CypherQueryRequest): Request model for Cypher query execution.
 
   Raises:
@@ -407,8 +421,6 @@ async def asyncio_detailed(
     mode=mode,
     chunk_size=chunk_size,
     test_mode=test_mode,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -422,12 +434,10 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CypherQueryRequest,
   mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[Unset, int] = 1000,
+  chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError]]:
-  """Execute Cypher Query (Read-Only)
+  r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
 
@@ -436,6 +446,16 @@ async def asyncio(
   To load data into your graph, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
+  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
+  \"Company\"}`
+  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
+  string
+
+  Query parameters provide automatic escaping and type safety. All examples in this API use
+  parameterized queries.
 
   This endpoint automatically selects the best execution strategy based on:
   - Query characteristics (size, complexity)
@@ -484,12 +504,10 @@ async def asyncio(
   Queue position is based on subscription tier for priority.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[Unset, int]): Rows per chunk for streaming Default: 1000.
+      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
       test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (CypherQueryRequest): Request model for Cypher query execution.
 
   Raises:
@@ -508,7 +526,5 @@ async def asyncio(
       mode=mode,
       chunk_size=chunk_size,
       test_mode=test_mode,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

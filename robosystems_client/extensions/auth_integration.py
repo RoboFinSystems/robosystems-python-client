@@ -60,12 +60,11 @@ class AuthenticatedExtensions(RoboSystemsExtensions):
 
     request = CypherQueryRequest(query=query, parameters=parameters or {})
 
-    # Pass the token parameter along with the client
+    # Execute the query
     response = sync_detailed(
       graph_id=graph_id,
       client=self._authenticated_client,
       body=request,
-      token=self._authenticated_client.token,
     )
 
     if response.parsed:

@@ -15,23 +15,10 @@ def _get_kwargs(
   graph_id: str,
   *,
   include_details: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   params["include_details"] = include_details
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -41,7 +28,6 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -90,8 +76,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   include_details: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Usage Statistics
 
@@ -120,11 +104,9 @@ def sync_detailed(
   This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): The graph ID to get usage stats for
+      graph_id (str):
       include_details (Union[Unset, bool]): Include detailed metrics (may be slower) Default:
           False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -137,8 +119,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     include_details=include_details,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -153,8 +133,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   include_details: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Usage Statistics
 
@@ -183,11 +161,9 @@ def sync(
   This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): The graph ID to get usage stats for
+      graph_id (str):
       include_details (Union[Unset, bool]): Include detailed metrics (may be slower) Default:
           False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -201,8 +177,6 @@ def sync(
     graph_id=graph_id,
     client=client,
     include_details=include_details,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -211,8 +185,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   include_details: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Usage Statistics
 
@@ -241,11 +213,9 @@ async def asyncio_detailed(
   This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): The graph ID to get usage stats for
+      graph_id (str):
       include_details (Union[Unset, bool]): Include detailed metrics (may be slower) Default:
           False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -258,8 +228,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     include_details=include_details,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -272,8 +240,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   include_details: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Usage Statistics
 
@@ -302,11 +268,9 @@ async def asyncio(
   This operation is included - no credit consumption required.
 
   Args:
-      graph_id (str): The graph ID to get usage stats for
+      graph_id (str):
       include_details (Union[Unset, bool]): Include detailed metrics (may be slower) Default:
           False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -321,7 +285,5 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       include_details=include_details,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

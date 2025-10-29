@@ -11,7 +11,7 @@ from ...models.http_validation_error import HTTPValidationError
 from ...models.update_file_status_response_updatefilestatus import (
   UpdateFileStatusResponseUpdatefilestatus,
 )
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
@@ -19,28 +19,12 @@ def _get_kwargs(
   file_id: str,
   *,
   body: FileStatusUpdate,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "patch",
     "url": f"/v1/graphs/{graph_id}/tables/files/{file_id}",
-    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -123,99 +107,67 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: FileStatusUpdate,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus
   ]
 ]:
-  r""" Update File Upload Status
+  """Update File Upload Status
 
-     Update file status after upload completes.
+   Update file status after upload completes.
 
-    **Purpose:**
-    Mark files as uploaded after successful S3 upload. The backend validates
-    the file, calculates size and row count, enforces storage limits, and
-    registers the DuckDB table for queries.
+  Marks files as uploaded after successful S3 upload. The backend validates
+  the file, calculates size and row count, enforces storage limits, and
+  registers the DuckDB table for queries.
 
-    **Status Values:**
-    - `uploaded`: File successfully uploaded to S3 (triggers validation)
-    - `disabled`: Exclude file from ingestion
-    - `archived`: Soft delete file
+  **Status Values:**
+  - `uploaded`: File successfully uploaded to S3 (triggers validation)
+  - `disabled`: Exclude file from ingestion
+  - `archived`: Soft delete file
 
-    **What Happens on 'uploaded' Status:**
-    1. Verify file exists in S3
-    2. Calculate actual file size
-    3. Enforce tier storage limits
-    4. Calculate or estimate row count
-    5. Update table statistics
-    6. Register DuckDB external table
-    7. File ready for ingestion
+  **What Happens on 'uploaded' Status:**
+  1. Verify file exists in S3
+  2. Calculate actual file size
+  3. Enforce tier storage limits
+  4. Calculate or estimate row count
+  5. Update table statistics
+  6. Register DuckDB external table
+  7. File ready for ingestion
 
-    **Row Count Calculation:**
-    - **Parquet**: Exact count from file metadata
-    - **CSV**: Count rows (minus header)
-    - **JSON**: Count array elements
-    - **Fallback**: Estimate from file size if reading fails
+  **Row Count Calculation:**
+  - **Parquet**: Exact count from file metadata
+  - **CSV**: Count rows (minus header)
+  - **JSON**: Count array elements
+  - **Fallback**: Estimate from file size if reading fails
 
-    **Storage Limits:**
-    Enforced per subscription tier:
-    - Prevents uploads exceeding tier limit
-    - Returns HTTP 413 if limit exceeded
-    - Check current usage before large uploads
+  **Storage Limits:**
+  Enforced per subscription tier. Returns HTTP 413 if limit exceeded.
+  Check current usage before large uploads.
 
-    **Example Response:**
-    ```json
-    {
-      \"status\": \"success\",
-      \"file_id\": \"f123\",
-      \"upload_status\": \"uploaded\",
-      \"file_size_bytes\": 1048576,
-      \"row_count\": 5000,
-      \"message\": \"File validated and ready for ingestion\"
-    }
-    ```
+  **Important Notes:**
+  - Always call this after S3 upload completes
+  - Check response for actual row count
+  - Storage limit errors (413) mean tier upgrade needed
+  - DuckDB registration failures are non-fatal (retried later)
+  - Status updates are included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    # After uploading file to S3 presigned URL
-    curl -X PATCH \"https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{\"status\": \"uploaded\"}'
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File identifier
+      body (FileStatusUpdate):
 
-    **Tips:**
-    - Always call this after S3 upload completes
-    - Check response for actual row count
-    - Storage limit errors (413) mean tier upgrade needed
-    - DuckDB registration failures are non-fatal (retried later)
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    Status updates are included - no credit consumption.
-
-    Args:
-        graph_id (str): Graph database identifier
-        file_id (str): File identifier
-        token (Union[None, Unset, str]): JWT token for SSE authentication
-        authorization (Union[None, Unset, str]):
-        body (FileStatusUpdate):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     file_id=file_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -231,100 +183,68 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: FileStatusUpdate,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus
   ]
 ]:
-  r""" Update File Upload Status
+  """Update File Upload Status
 
-     Update file status after upload completes.
+   Update file status after upload completes.
 
-    **Purpose:**
-    Mark files as uploaded after successful S3 upload. The backend validates
-    the file, calculates size and row count, enforces storage limits, and
-    registers the DuckDB table for queries.
+  Marks files as uploaded after successful S3 upload. The backend validates
+  the file, calculates size and row count, enforces storage limits, and
+  registers the DuckDB table for queries.
 
-    **Status Values:**
-    - `uploaded`: File successfully uploaded to S3 (triggers validation)
-    - `disabled`: Exclude file from ingestion
-    - `archived`: Soft delete file
+  **Status Values:**
+  - `uploaded`: File successfully uploaded to S3 (triggers validation)
+  - `disabled`: Exclude file from ingestion
+  - `archived`: Soft delete file
 
-    **What Happens on 'uploaded' Status:**
-    1. Verify file exists in S3
-    2. Calculate actual file size
-    3. Enforce tier storage limits
-    4. Calculate or estimate row count
-    5. Update table statistics
-    6. Register DuckDB external table
-    7. File ready for ingestion
+  **What Happens on 'uploaded' Status:**
+  1. Verify file exists in S3
+  2. Calculate actual file size
+  3. Enforce tier storage limits
+  4. Calculate or estimate row count
+  5. Update table statistics
+  6. Register DuckDB external table
+  7. File ready for ingestion
 
-    **Row Count Calculation:**
-    - **Parquet**: Exact count from file metadata
-    - **CSV**: Count rows (minus header)
-    - **JSON**: Count array elements
-    - **Fallback**: Estimate from file size if reading fails
+  **Row Count Calculation:**
+  - **Parquet**: Exact count from file metadata
+  - **CSV**: Count rows (minus header)
+  - **JSON**: Count array elements
+  - **Fallback**: Estimate from file size if reading fails
 
-    **Storage Limits:**
-    Enforced per subscription tier:
-    - Prevents uploads exceeding tier limit
-    - Returns HTTP 413 if limit exceeded
-    - Check current usage before large uploads
+  **Storage Limits:**
+  Enforced per subscription tier. Returns HTTP 413 if limit exceeded.
+  Check current usage before large uploads.
 
-    **Example Response:**
-    ```json
-    {
-      \"status\": \"success\",
-      \"file_id\": \"f123\",
-      \"upload_status\": \"uploaded\",
-      \"file_size_bytes\": 1048576,
-      \"row_count\": 5000,
-      \"message\": \"File validated and ready for ingestion\"
-    }
-    ```
+  **Important Notes:**
+  - Always call this after S3 upload completes
+  - Check response for actual row count
+  - Storage limit errors (413) mean tier upgrade needed
+  - DuckDB registration failures are non-fatal (retried later)
+  - Status updates are included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    # After uploading file to S3 presigned URL
-    curl -X PATCH \"https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{\"status\": \"uploaded\"}'
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File identifier
+      body (FileStatusUpdate):
 
-    **Tips:**
-    - Always call this after S3 upload completes
-    - Check response for actual row count
-    - Storage limit errors (413) mean tier upgrade needed
-    - DuckDB registration failures are non-fatal (retried later)
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    Status updates are included - no credit consumption.
-
-    Args:
-        graph_id (str): Graph database identifier
-        file_id (str): File identifier
-        token (Union[None, Unset, str]): JWT token for SSE authentication
-        authorization (Union[None, Unset, str]):
-        body (FileStatusUpdate):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus]
-     """
+  Returns:
+      Union[Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus]
+  """
 
   return sync_detailed(
     graph_id=graph_id,
     file_id=file_id,
     client=client,
     body=body,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -334,99 +254,67 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: FileStatusUpdate,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus
   ]
 ]:
-  r""" Update File Upload Status
+  """Update File Upload Status
 
-     Update file status after upload completes.
+   Update file status after upload completes.
 
-    **Purpose:**
-    Mark files as uploaded after successful S3 upload. The backend validates
-    the file, calculates size and row count, enforces storage limits, and
-    registers the DuckDB table for queries.
+  Marks files as uploaded after successful S3 upload. The backend validates
+  the file, calculates size and row count, enforces storage limits, and
+  registers the DuckDB table for queries.
 
-    **Status Values:**
-    - `uploaded`: File successfully uploaded to S3 (triggers validation)
-    - `disabled`: Exclude file from ingestion
-    - `archived`: Soft delete file
+  **Status Values:**
+  - `uploaded`: File successfully uploaded to S3 (triggers validation)
+  - `disabled`: Exclude file from ingestion
+  - `archived`: Soft delete file
 
-    **What Happens on 'uploaded' Status:**
-    1. Verify file exists in S3
-    2. Calculate actual file size
-    3. Enforce tier storage limits
-    4. Calculate or estimate row count
-    5. Update table statistics
-    6. Register DuckDB external table
-    7. File ready for ingestion
+  **What Happens on 'uploaded' Status:**
+  1. Verify file exists in S3
+  2. Calculate actual file size
+  3. Enforce tier storage limits
+  4. Calculate or estimate row count
+  5. Update table statistics
+  6. Register DuckDB external table
+  7. File ready for ingestion
 
-    **Row Count Calculation:**
-    - **Parquet**: Exact count from file metadata
-    - **CSV**: Count rows (minus header)
-    - **JSON**: Count array elements
-    - **Fallback**: Estimate from file size if reading fails
+  **Row Count Calculation:**
+  - **Parquet**: Exact count from file metadata
+  - **CSV**: Count rows (minus header)
+  - **JSON**: Count array elements
+  - **Fallback**: Estimate from file size if reading fails
 
-    **Storage Limits:**
-    Enforced per subscription tier:
-    - Prevents uploads exceeding tier limit
-    - Returns HTTP 413 if limit exceeded
-    - Check current usage before large uploads
+  **Storage Limits:**
+  Enforced per subscription tier. Returns HTTP 413 if limit exceeded.
+  Check current usage before large uploads.
 
-    **Example Response:**
-    ```json
-    {
-      \"status\": \"success\",
-      \"file_id\": \"f123\",
-      \"upload_status\": \"uploaded\",
-      \"file_size_bytes\": 1048576,
-      \"row_count\": 5000,
-      \"message\": \"File validated and ready for ingestion\"
-    }
-    ```
+  **Important Notes:**
+  - Always call this after S3 upload completes
+  - Check response for actual row count
+  - Storage limit errors (413) mean tier upgrade needed
+  - DuckDB registration failures are non-fatal (retried later)
+  - Status updates are included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    # After uploading file to S3 presigned URL
-    curl -X PATCH \"https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{\"status\": \"uploaded\"}'
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File identifier
+      body (FileStatusUpdate):
 
-    **Tips:**
-    - Always call this after S3 upload completes
-    - Check response for actual row count
-    - Storage limit errors (413) mean tier upgrade needed
-    - DuckDB registration failures are non-fatal (retried later)
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    Status updates are included - no credit consumption.
-
-    Args:
-        graph_id (str): Graph database identifier
-        file_id (str): File identifier
-        token (Union[None, Unset, str]): JWT token for SSE authentication
-        authorization (Union[None, Unset, str]):
-        body (FileStatusUpdate):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus]]
-     """
+  Returns:
+      Response[Union[Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus]]
+  """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     file_id=file_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -440,92 +328,62 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: FileStatusUpdate,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus
   ]
 ]:
-  r""" Update File Upload Status
+  """Update File Upload Status
 
-     Update file status after upload completes.
+   Update file status after upload completes.
 
-    **Purpose:**
-    Mark files as uploaded after successful S3 upload. The backend validates
-    the file, calculates size and row count, enforces storage limits, and
-    registers the DuckDB table for queries.
+  Marks files as uploaded after successful S3 upload. The backend validates
+  the file, calculates size and row count, enforces storage limits, and
+  registers the DuckDB table for queries.
 
-    **Status Values:**
-    - `uploaded`: File successfully uploaded to S3 (triggers validation)
-    - `disabled`: Exclude file from ingestion
-    - `archived`: Soft delete file
+  **Status Values:**
+  - `uploaded`: File successfully uploaded to S3 (triggers validation)
+  - `disabled`: Exclude file from ingestion
+  - `archived`: Soft delete file
 
-    **What Happens on 'uploaded' Status:**
-    1. Verify file exists in S3
-    2. Calculate actual file size
-    3. Enforce tier storage limits
-    4. Calculate or estimate row count
-    5. Update table statistics
-    6. Register DuckDB external table
-    7. File ready for ingestion
+  **What Happens on 'uploaded' Status:**
+  1. Verify file exists in S3
+  2. Calculate actual file size
+  3. Enforce tier storage limits
+  4. Calculate or estimate row count
+  5. Update table statistics
+  6. Register DuckDB external table
+  7. File ready for ingestion
 
-    **Row Count Calculation:**
-    - **Parquet**: Exact count from file metadata
-    - **CSV**: Count rows (minus header)
-    - **JSON**: Count array elements
-    - **Fallback**: Estimate from file size if reading fails
+  **Row Count Calculation:**
+  - **Parquet**: Exact count from file metadata
+  - **CSV**: Count rows (minus header)
+  - **JSON**: Count array elements
+  - **Fallback**: Estimate from file size if reading fails
 
-    **Storage Limits:**
-    Enforced per subscription tier:
-    - Prevents uploads exceeding tier limit
-    - Returns HTTP 413 if limit exceeded
-    - Check current usage before large uploads
+  **Storage Limits:**
+  Enforced per subscription tier. Returns HTTP 413 if limit exceeded.
+  Check current usage before large uploads.
 
-    **Example Response:**
-    ```json
-    {
-      \"status\": \"success\",
-      \"file_id\": \"f123\",
-      \"upload_status\": \"uploaded\",
-      \"file_size_bytes\": 1048576,
-      \"row_count\": 5000,
-      \"message\": \"File validated and ready for ingestion\"
-    }
-    ```
+  **Important Notes:**
+  - Always call this after S3 upload completes
+  - Check response for actual row count
+  - Storage limit errors (413) mean tier upgrade needed
+  - DuckDB registration failures are non-fatal (retried later)
+  - Status updates are included - no credit consumption
 
-    **Example Usage:**
-    ```bash
-    # After uploading file to S3 presigned URL
-    curl -X PATCH \"https://api.robosystems.ai/v1/graphs/kg123/tables/files/f123\" \
-      -H \"Authorization: Bearer YOUR_TOKEN\" \
-      -H \"Content-Type: application/json\" \
-      -d '{\"status\": \"uploaded\"}'
-    ```
+  Args:
+      graph_id (str):
+      file_id (str): File identifier
+      body (FileStatusUpdate):
 
-    **Tips:**
-    - Always call this after S3 upload completes
-    - Check response for actual row count
-    - Storage limit errors (413) mean tier upgrade needed
-    - DuckDB registration failures are non-fatal (retried later)
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
 
-    **Note:**
-    Status updates are included - no credit consumption.
-
-    Args:
-        graph_id (str): Graph database identifier
-        file_id (str): File identifier
-        token (Union[None, Unset, str]): JWT token for SSE authentication
-        authorization (Union[None, Unset, str]):
-        body (FileStatusUpdate):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus]
-     """
+  Returns:
+      Union[Any, ErrorResponse, HTTPValidationError, UpdateFileStatusResponseUpdatefilestatus]
+  """
 
   return (
     await asyncio_detailed(
@@ -533,7 +391,5 @@ async def asyncio(
       file_id=file_id,
       client=client,
       body=body,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

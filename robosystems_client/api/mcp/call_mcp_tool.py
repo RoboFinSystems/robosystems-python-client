@@ -17,12 +17,8 @@ def _get_kwargs(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
 
   params: dict[str, Any] = {}
 
@@ -34,13 +30,6 @@ def _get_kwargs(
   params["format"] = json_format_
 
   params["test_mode"] = test_mode
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -133,8 +122,6 @@ def sync_detailed(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
 
@@ -170,15 +157,16 @@ def sync_detailed(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Note:**
-  MCP tool calls are included and do not consume credits.
+  **Credit Model:**
+  MCP tool execution is included - no credit consumption required. Database
+  operations (queries, schema inspection, analytics) are completely free.
+  Only AI operations that invoke Claude or other LLM APIs consume credits,
+  which happens at the AI agent layer, not the MCP tool layer.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
   Raises:
@@ -194,8 +182,6 @@ def sync_detailed(
     body=body,
     format_=format_,
     test_mode=test_mode,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -212,8 +198,6 @@ def sync(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
 
@@ -249,15 +233,16 @@ def sync(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Note:**
-  MCP tool calls are included and do not consume credits.
+  **Credit Model:**
+  MCP tool execution is included - no credit consumption required. Database
+  operations (queries, schema inspection, analytics) are completely free.
+  Only AI operations that invoke Claude or other LLM APIs consume credits,
+  which happens at the AI agent layer, not the MCP tool layer.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
   Raises:
@@ -274,8 +259,6 @@ def sync(
     body=body,
     format_=format_,
     test_mode=test_mode,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -286,8 +269,6 @@ async def asyncio_detailed(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
 
@@ -323,15 +304,16 @@ async def asyncio_detailed(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Note:**
-  MCP tool calls are included and do not consume credits.
+  **Credit Model:**
+  MCP tool execution is included - no credit consumption required. Database
+  operations (queries, schema inspection, analytics) are completely free.
+  Only AI operations that invoke Claude or other LLM APIs consume credits,
+  which happens at the AI agent layer, not the MCP tool layer.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
   Raises:
@@ -347,8 +329,6 @@ async def asyncio_detailed(
     body=body,
     format_=format_,
     test_mode=test_mode,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -363,8 +343,6 @@ async def asyncio(
   body: MCPToolCall,
   format_: Union[None, Unset, str] = UNSET,
   test_mode: Union[Unset, bool] = False,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError]]:
   """Execute MCP Tool
 
@@ -400,15 +378,16 @@ async def asyncio(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
-  **Note:**
-  MCP tool calls are included and do not consume credits.
+  **Credit Model:**
+  MCP tool execution is included - no credit consumption required. Database
+  operations (queries, schema inspection, analytics) are completely free.
+  Only AI operations that invoke Claude or other LLM APIs consume credits,
+  which happens at the AI agent layer, not the MCP tool layer.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       format_ (Union[None, Unset, str]): Response format override (json, sse, ndjson)
       test_mode (Union[Unset, bool]): Enable test mode for debugging Default: False.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (MCPToolCall): Request model for MCP tool execution.
 
   Raises:
@@ -426,7 +405,5 @@ async def asyncio(
       body=body,
       format_=format_,
       test_mode=test_mode,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

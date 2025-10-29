@@ -144,7 +144,7 @@ class ResultProcessor:
             writer.writerow(headers)
 
           for row in data:
-            if isinstance(row, dict):
+            if isinstance(row, dict) and headers:
               writer.writerow([row.get(h, "") for h in headers])
             elif isinstance(row, (list, tuple)):
               writer.writerow(row)
@@ -159,7 +159,7 @@ class ResultProcessor:
           writer.writerow(headers)
 
         for row in data:
-          if isinstance(row, dict):
+          if isinstance(row, dict) and headers:
             writer.writerow([row.get(h, "") for h in headers])
           elif isinstance(row, (list, tuple)):
             writer.writerow(row)

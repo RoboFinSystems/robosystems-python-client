@@ -8,35 +8,19 @@ from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
 from ...models.o_auth_init_request import OAuthInitRequest
 from ...models.o_auth_init_response import OAuthInitResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
   *,
   body: OAuthInitRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/graphs/{graph_id}/connections/oauth/init",
-    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -82,8 +66,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, OAuthInitResponse]]:
   """Init Oauth
 
@@ -93,9 +75,7 @@ def sync_detailed(
   Currently supports: QuickBooks
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (OAuthInitRequest): Request to initiate OAuth flow.
 
   Raises:
@@ -109,8 +89,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -125,8 +103,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, OAuthInitResponse]]:
   """Init Oauth
 
@@ -136,9 +112,7 @@ def sync(
   Currently supports: QuickBooks
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (OAuthInitRequest): Request to initiate OAuth flow.
 
   Raises:
@@ -153,8 +127,6 @@ def sync(
     graph_id=graph_id,
     client=client,
     body=body,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -163,8 +135,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[HTTPValidationError, OAuthInitResponse]]:
   """Init Oauth
 
@@ -174,9 +144,7 @@ async def asyncio_detailed(
   Currently supports: QuickBooks
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (OAuthInitRequest): Request to initiate OAuth flow.
 
   Raises:
@@ -190,8 +158,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -204,8 +170,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[HTTPValidationError, OAuthInitResponse]]:
   """Init Oauth
 
@@ -215,9 +179,7 @@ async def asyncio(
   Currently supports: QuickBooks
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (OAuthInitRequest): Request to initiate OAuth flow.
 
   Raises:
@@ -233,7 +195,5 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       body=body,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

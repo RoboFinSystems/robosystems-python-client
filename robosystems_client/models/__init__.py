@@ -124,9 +124,6 @@ from .get_graph_limits_response_getgraphlimits import (
 from .get_graph_monthly_bill_response_getgraphmonthlybill import (
   GetGraphMonthlyBillResponseGetgraphmonthlybill,
 )
-from .get_graph_schema_response_getgraphschema import (
-  GetGraphSchemaResponseGetgraphschema,
-)
 from .get_graph_usage_details_response_getgraphusagedetails import (
   GetGraphUsageDetailsResponseGetgraphusagedetails,
 )
@@ -202,6 +199,8 @@ from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataSt
 from .schema_export_response_schema_definition_type_0 import (
   SchemaExportResponseSchemaDefinitionType0,
 )
+from .schema_info_response import SchemaInfoResponse
+from .schema_info_response_schema import SchemaInfoResponseSchema
 from .schema_validation_request import SchemaValidationRequest
 from .schema_validation_request_schema_definition_type_0 import (
   SchemaValidationRequestSchemaDefinitionType0,
@@ -361,7 +360,6 @@ __all__ = (
   "GetGraphBillingHistoryResponseGetgraphbillinghistory",
   "GetGraphLimitsResponseGetgraphlimits",
   "GetGraphMonthlyBillResponseGetgraphmonthlybill",
-  "GetGraphSchemaResponseGetgraphschema",
   "GetGraphUsageDetailsResponseGetgraphusagedetails",
   "GetOperationStatusResponseGetoperationstatus",
   "GetSharedRepositoryLimitsResponseGetsharedrepositorylimits",
@@ -417,6 +415,8 @@ __all__ = (
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",
+  "SchemaInfoResponse",
+  "SchemaInfoResponseSchema",
   "SchemaValidationRequest",
   "SchemaValidationRequestSchemaDefinitionType0",
   "SchemaValidationResponse",

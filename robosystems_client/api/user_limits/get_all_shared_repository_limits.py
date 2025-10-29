@@ -8,48 +8,21 @@ from ...client import AuthenticatedClient, Client
 from ...models.get_all_shared_repository_limits_response_getallsharedrepositorylimits import (
   GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits,
 )
-from ...models.http_validation_error import HTTPValidationError
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
-def _get_kwargs(
-  *,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
+def _get_kwargs() -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": "/v1/user/limits/shared-repositories/summary",
-    "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[
-  Union[
-    GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits,
-    HTTPValidationError,
-  ]
-]:
+) -> Optional[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits]:
   if response.status_code == 200:
     response_200 = (
       GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits.from_dict(
@@ -59,11 +32,6 @@ def _parse_response(
 
     return response_200
 
-  if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
-
-    return response_422
-
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -72,12 +40,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[
-  Union[
-    GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits,
-    HTTPValidationError,
-  ]
-]:
+) -> Response[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -89,34 +52,20 @@ def _build_response(
 def sync_detailed(
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[
-  Union[
-    GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits,
-    HTTPValidationError,
-  ]
-]:
+) -> Response[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits]:
   """Get all shared repository limits
 
    Get rate limit status for all shared repositories the user has access to.
-
-  Args:
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits, HTTPValidationError]]
+      Response[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits]
   """
 
-  kwargs = _get_kwargs(
-    token=token,
-    authorization=authorization,
-  )
+  kwargs = _get_kwargs()
 
   response = client.get_httpx_client().request(
     **kwargs,
@@ -128,68 +77,41 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[
-  Union[
-    GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits,
-    HTTPValidationError,
-  ]
-]:
+) -> Optional[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits]:
   """Get all shared repository limits
 
    Get rate limit status for all shared repositories the user has access to.
-
-  Args:
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits, HTTPValidationError]
+      GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits
   """
 
   return sync_detailed(
     client=client,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
 async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[
-  Union[
-    GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits,
-    HTTPValidationError,
-  ]
-]:
+) -> Response[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits]:
   """Get all shared repository limits
 
    Get rate limit status for all shared repositories the user has access to.
-
-  Args:
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits, HTTPValidationError]]
+      Response[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits]
   """
 
-  kwargs = _get_kwargs(
-    token=token,
-    authorization=authorization,
-  )
+  kwargs = _get_kwargs()
 
   response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -199,34 +121,21 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[
-  Union[
-    GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits,
-    HTTPValidationError,
-  ]
-]:
+) -> Optional[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits]:
   """Get all shared repository limits
 
    Get rate limit status for all shared repositories the user has access to.
-
-  Args:
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits, HTTPValidationError]
+      GetAllSharedRepositoryLimitsResponseGetallsharedrepositorylimits
   """
 
   return (
     await asyncio_detailed(
       client=client,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

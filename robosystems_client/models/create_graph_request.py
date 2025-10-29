@@ -20,9 +20,10 @@ class CreateGraphRequest:
   """Request model for creating a new graph.
 
   Example:
-      {'initial_entity': {'cik': '0001234567', 'name': 'Acme Corp', 'uri': 'https://acme.com'}, 'instance_tier':
-          'kuzu-standard', 'metadata': {'description': 'Main production graph', 'graph_name': 'Production System',
-          'schema_extensions': ['roboledger']}, 'tags': ['production', 'finance']}
+      {'initial_entity': {'cik': '0001234567', 'name': 'Acme Consulting LLC', 'uri': 'https://acmeconsulting.com'},
+          'instance_tier': 'kuzu-standard', 'metadata': {'description': 'Professional consulting services with full
+          accounting integration', 'graph_name': 'Acme Consulting LLC', 'schema_extensions': ['roboledger']}, 'tags':
+          ['consulting', 'professional-services']}
 
   Attributes:
       metadata (GraphMetadata): Metadata for graph creation.

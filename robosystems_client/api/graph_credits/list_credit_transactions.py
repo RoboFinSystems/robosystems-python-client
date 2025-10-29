@@ -20,13 +20,7 @@ def _get_kwargs(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   json_transaction_type: Union[None, Unset, str]
@@ -61,13 +55,6 @@ def _get_kwargs(
 
   params["offset"] = offset
 
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
@@ -76,7 +63,6 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -135,8 +121,6 @@ def sync_detailed(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
   """List Credit Transactions
 
@@ -157,7 +141,7 @@ def sync_detailed(
   No credits are consumed for viewing transaction history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
       operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
@@ -166,8 +150,6 @@ def sync_detailed(
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
       limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
       offset (Union[Unset, int]): Number of transactions to skip Default: 0.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -185,8 +167,6 @@ def sync_detailed(
     end_date=end_date,
     limit=limit,
     offset=offset,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -206,8 +186,6 @@ def sync(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
   """List Credit Transactions
 
@@ -228,7 +206,7 @@ def sync(
   No credits are consumed for viewing transaction history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
       operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
@@ -237,8 +215,6 @@ def sync(
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
       limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
       offset (Union[Unset, int]): Number of transactions to skip Default: 0.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -257,8 +233,6 @@ def sync(
     end_date=end_date,
     limit=limit,
     offset=offset,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -272,8 +246,6 @@ async def asyncio_detailed(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
   """List Credit Transactions
 
@@ -294,7 +266,7 @@ async def asyncio_detailed(
   No credits are consumed for viewing transaction history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
       operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
@@ -303,8 +275,6 @@ async def asyncio_detailed(
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
       limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
       offset (Union[Unset, int]): Number of transactions to skip Default: 0.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -322,8 +292,6 @@ async def asyncio_detailed(
     end_date=end_date,
     limit=limit,
     offset=offset,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -341,8 +309,6 @@ async def asyncio(
   end_date: Union[None, Unset, str] = UNSET,
   limit: Union[Unset, int] = 100,
   offset: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
   """List Credit Transactions
 
@@ -363,7 +329,7 @@ async def asyncio(
   No credits are consumed for viewing transaction history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
       operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
@@ -372,8 +338,6 @@ async def asyncio(
       end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
       limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
       offset (Union[Unset, int]): Number of transactions to skip Default: 0.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -393,7 +357,5 @@ async def asyncio(
       end_date=end_date,
       limit=limit,
       offset=offset,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

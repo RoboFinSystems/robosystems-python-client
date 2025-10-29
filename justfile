@@ -28,6 +28,7 @@ test-all:
     @just test
     @just lint
     @just format
+    @just typecheck
 
 # Run linting
 lint:
@@ -40,7 +41,7 @@ format:
 
 # Run type checking
 typecheck:
-    uv run pyright
+    uv run basedpyright
 
 # Generate SDK from localhost API
 generate-sdk url="http://localhost:8000/openapi.json":

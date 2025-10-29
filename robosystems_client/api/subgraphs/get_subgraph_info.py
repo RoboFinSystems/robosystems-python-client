@@ -7,38 +7,18 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
 from ...models.subgraph_response import SubgraphResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
   subgraph_id: str,
-  *,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": f"/v1/graphs/{graph_id}/subgraphs/{subgraph_id}/info",
-    "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -97,8 +77,6 @@ def sync_detailed(
   subgraph_id: str,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, SubgraphResponse]]:
   """Get Subgraph Details
 
@@ -123,10 +101,8 @@ def sync_detailed(
   - Schema information
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str):
       subgraph_id (str): Subgraph identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -139,8 +115,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     subgraph_id=subgraph_id,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -155,8 +129,6 @@ def sync(
   subgraph_id: str,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, SubgraphResponse]]:
   """Get Subgraph Details
 
@@ -181,10 +153,8 @@ def sync(
   - Schema information
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str):
       subgraph_id (str): Subgraph identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -198,8 +168,6 @@ def sync(
     graph_id=graph_id,
     subgraph_id=subgraph_id,
     client=client,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -208,8 +176,6 @@ async def asyncio_detailed(
   subgraph_id: str,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, HTTPValidationError, SubgraphResponse]]:
   """Get Subgraph Details
 
@@ -234,10 +200,8 @@ async def asyncio_detailed(
   - Schema information
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str):
       subgraph_id (str): Subgraph identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -250,8 +214,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     subgraph_id=subgraph_id,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -264,8 +226,6 @@ async def asyncio(
   subgraph_id: str,
   *,
   client: AuthenticatedClient,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, HTTPValidationError, SubgraphResponse]]:
   """Get Subgraph Details
 
@@ -290,10 +250,8 @@ async def asyncio(
   - Schema information
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str):
       subgraph_id (str): Subgraph identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -308,7 +266,5 @@ async def asyncio(
       graph_id=graph_id,
       subgraph_id=subgraph_id,
       client=client,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

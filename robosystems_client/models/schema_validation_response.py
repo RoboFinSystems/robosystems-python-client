@@ -25,12 +25,13 @@ class SchemaValidationResponse:
   Attributes:
       valid (bool): Whether the schema is valid
       message (str): Validation message
-      errors (Union[None, Unset, list[str]]): List of validation errors
-      warnings (Union[None, Unset, list[str]]): List of warnings
-      stats (Union['SchemaValidationResponseStatsType0', None, Unset]): Schema statistics (nodes, relationships,
-          properties)
-      compatibility (Union['SchemaValidationResponseCompatibilityType0', None, Unset]): Compatibility check results if
-          requested
+      errors (Union[None, Unset, list[str]]): List of validation errors (only present when valid=false)
+      warnings (Union[None, Unset, list[str]]): List of validation warnings (schema is still valid but has potential
+          issues)
+      stats (Union['SchemaValidationResponseStatsType0', None, Unset]): Schema statistics (only present when
+          valid=true)
+      compatibility (Union['SchemaValidationResponseCompatibilityType0', None, Unset]): Compatibility check results
+          (only when check_compatibility specified)
   """
 
   valid: bool

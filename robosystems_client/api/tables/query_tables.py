@@ -9,35 +9,19 @@ from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.table_query_request import TableQueryRequest
 from ...models.table_query_response import TableQueryResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
   *,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/graphs/{graph_id}/tables/query",
-    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -110,16 +94,22 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
-  """Query Staging Tables with SQL
+  r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
-  **Purpose:**
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
+  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
+  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
+  into SQL string
+
+  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
+  array.
 
   **Use Cases:**
   - Validate data quality before graph ingestion
@@ -140,27 +130,15 @@ def sync_detailed(
   - Aggregations, window functions, CTEs
   - Multiple table joins across staging area
 
-  **Example Queries:**
-  ```sql
-  -- Count rows in staging table
-  SELECT COUNT(*) FROM Entity;
-
-  -- Check for nulls
-  SELECT * FROM Entity WHERE name IS NULL LIMIT 10;
-
-  -- Find duplicates
-  SELECT identifier, COUNT(*) as cnt
-  FROM Entity
-  GROUP BY identifier
-  HAVING COUNT(*) > 1;
-
-  -- Join across tables
-  SELECT e.name, COUNT(t.id) as transaction_count
-  FROM Entity e
-  LEFT JOIN Transaction t ON e.identifier = t.entity_id
-  GROUP BY e.name
-  ORDER BY transaction_count DESC;
-  ```
+  **Common Operations:**
+  - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
+  [\"Company\", 100]`
+  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
+  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
+  COUNT(*) > 1`
+  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
+  [1000, \"2024-01-01\"]`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -173,12 +151,10 @@ def sync_detailed(
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
 
   **Note:**
-  Staging table queries are included - no credit consumption.
+  Staging table queries are included - no credit consumption
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (TableQueryRequest):
 
   Raises:
@@ -192,8 +168,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -208,16 +182,22 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
-  """Query Staging Tables with SQL
+  r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
-  **Purpose:**
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
+  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
+  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
+  into SQL string
+
+  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
+  array.
 
   **Use Cases:**
   - Validate data quality before graph ingestion
@@ -238,27 +218,15 @@ def sync(
   - Aggregations, window functions, CTEs
   - Multiple table joins across staging area
 
-  **Example Queries:**
-  ```sql
-  -- Count rows in staging table
-  SELECT COUNT(*) FROM Entity;
-
-  -- Check for nulls
-  SELECT * FROM Entity WHERE name IS NULL LIMIT 10;
-
-  -- Find duplicates
-  SELECT identifier, COUNT(*) as cnt
-  FROM Entity
-  GROUP BY identifier
-  HAVING COUNT(*) > 1;
-
-  -- Join across tables
-  SELECT e.name, COUNT(t.id) as transaction_count
-  FROM Entity e
-  LEFT JOIN Transaction t ON e.identifier = t.entity_id
-  GROUP BY e.name
-  ORDER BY transaction_count DESC;
-  ```
+  **Common Operations:**
+  - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
+  [\"Company\", 100]`
+  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
+  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
+  COUNT(*) > 1`
+  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
+  [1000, \"2024-01-01\"]`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -271,12 +239,10 @@ def sync(
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
 
   **Note:**
-  Staging table queries are included - no credit consumption.
+  Staging table queries are included - no credit consumption
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (TableQueryRequest):
 
   Raises:
@@ -291,8 +257,6 @@ def sync(
     graph_id=graph_id,
     client=client,
     body=body,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -301,16 +265,22 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
-  """Query Staging Tables with SQL
+  r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
-  **Purpose:**
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
+  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
+  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
+  into SQL string
+
+  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
+  array.
 
   **Use Cases:**
   - Validate data quality before graph ingestion
@@ -331,27 +301,15 @@ async def asyncio_detailed(
   - Aggregations, window functions, CTEs
   - Multiple table joins across staging area
 
-  **Example Queries:**
-  ```sql
-  -- Count rows in staging table
-  SELECT COUNT(*) FROM Entity;
-
-  -- Check for nulls
-  SELECT * FROM Entity WHERE name IS NULL LIMIT 10;
-
-  -- Find duplicates
-  SELECT identifier, COUNT(*) as cnt
-  FROM Entity
-  GROUP BY identifier
-  HAVING COUNT(*) > 1;
-
-  -- Join across tables
-  SELECT e.name, COUNT(t.id) as transaction_count
-  FROM Entity e
-  LEFT JOIN Transaction t ON e.identifier = t.entity_id
-  GROUP BY e.name
-  ORDER BY transaction_count DESC;
-  ```
+  **Common Operations:**
+  - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
+  [\"Company\", 100]`
+  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
+  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
+  COUNT(*) > 1`
+  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
+  [1000, \"2024-01-01\"]`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -364,12 +322,10 @@ async def asyncio_detailed(
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
 
   **Note:**
-  Staging table queries are included - no credit consumption.
+  Staging table queries are included - no credit consumption
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (TableQueryRequest):
 
   Raises:
@@ -383,8 +339,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -397,16 +351,22 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
-  """Query Staging Tables with SQL
+  r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
 
-  **Purpose:**
   Query raw staging data directly with SQL before ingestion into the graph database.
   Useful for data quality checks, validation, and exploratory analysis.
+
+  **Security Best Practice - Use Parameterized Queries:**
+  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
+  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
+  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
+  into SQL string
+
+  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
+  array.
 
   **Use Cases:**
   - Validate data quality before graph ingestion
@@ -427,27 +387,15 @@ async def asyncio(
   - Aggregations, window functions, CTEs
   - Multiple table joins across staging area
 
-  **Example Queries:**
-  ```sql
-  -- Count rows in staging table
-  SELECT COUNT(*) FROM Entity;
-
-  -- Check for nulls
-  SELECT * FROM Entity WHERE name IS NULL LIMIT 10;
-
-  -- Find duplicates
-  SELECT identifier, COUNT(*) as cnt
-  FROM Entity
-  GROUP BY identifier
-  HAVING COUNT(*) > 1;
-
-  -- Join across tables
-  SELECT e.name, COUNT(t.id) as transaction_count
-  FROM Entity e
-  LEFT JOIN Transaction t ON e.identifier = t.entity_id
-  GROUP BY e.name
-  ORDER BY transaction_count DESC;
-  ```
+  **Common Operations:**
+  - Count rows: `SELECT COUNT(*) FROM Entity`
+  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
+  [\"Company\", 100]`
+  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
+  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
+  COUNT(*) > 1`
+  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
+  [1000, \"2024-01-01\"]`
 
   **Limits:**
   - Query timeout: 30 seconds
@@ -460,12 +408,10 @@ async def asyncio(
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
 
   **Note:**
-  Staging table queries are included - no credit consumption.
+  Staging table queries are included - no credit consumption
 
   Args:
-      graph_id (str): Graph database identifier
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      graph_id (str):
       body (TableQueryRequest):
 
   Raises:
@@ -481,7 +427,5 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       body=body,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

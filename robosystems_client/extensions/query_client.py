@@ -476,7 +476,7 @@ class QueryClient:
     self,
     graph_id: str,
     queries: List[str],
-    parameters_list: Optional[List[Dict[str, Any]]] = None,
+    parameters_list: Optional[List[Optional[Dict[str, Any]]]] = None,
     parallel: bool = False,
   ) -> List[Union[QueryResult, Dict[str, Any]]]:
     """Execute multiple queries in batch
@@ -497,7 +497,8 @@ class QueryClient:
         ... ])
     """
     if parameters_list is None:
-      parameters_list = [None] * len(queries)
+      # Create a list of None values for each query
+      parameters_list = [None for _ in queries]
 
     if len(queries) != len(parameters_list):
       raise ValueError("queries and parameters_list must have same length")

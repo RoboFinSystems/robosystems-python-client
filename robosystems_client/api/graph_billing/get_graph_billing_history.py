@@ -17,23 +17,10 @@ def _get_kwargs(
   graph_id: str,
   *,
   months: Union[Unset, int] = 6,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
   params: dict[str, Any] = {}
 
   params["months"] = months
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -43,7 +30,6 @@ def _get_kwargs(
     "params": params,
   }
 
-  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -111,8 +97,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   months: Union[Unset, int] = 6,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse,
@@ -139,10 +123,8 @@ def sync_detailed(
   ℹ️ No credits are consumed for viewing billing history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       months (Union[Unset, int]): Number of months to retrieve (1-24) Default: 6.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -155,8 +137,6 @@ def sync_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     months=months,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -171,8 +151,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   months: Union[Unset, int] = 6,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse,
@@ -199,10 +177,8 @@ def sync(
   ℹ️ No credits are consumed for viewing billing history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       months (Union[Unset, int]): Number of months to retrieve (1-24) Default: 6.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -216,8 +192,6 @@ def sync(
     graph_id=graph_id,
     client=client,
     months=months,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -226,8 +200,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   months: Union[Unset, int] = 6,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[
   Union[
     ErrorResponse,
@@ -254,10 +226,8 @@ async def asyncio_detailed(
   ℹ️ No credits are consumed for viewing billing history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       months (Union[Unset, int]): Number of months to retrieve (1-24) Default: 6.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -270,8 +240,6 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     graph_id=graph_id,
     months=months,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -284,8 +252,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   months: Union[Unset, int] = 6,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[
   Union[
     ErrorResponse,
@@ -312,10 +278,8 @@ async def asyncio(
   ℹ️ No credits are consumed for viewing billing history.
 
   Args:
-      graph_id (str): Graph database identifier
+      graph_id (str):
       months (Union[Unset, int]): Number of months to retrieve (1-24) Default: 6.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -330,7 +294,5 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       months=months,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

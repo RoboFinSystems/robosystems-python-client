@@ -8,7 +8,7 @@ from ...client import AuthenticatedClient, Client
 from ...models.delete_subgraph_request import DeleteSubgraphRequest
 from ...models.delete_subgraph_response import DeleteSubgraphResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
@@ -16,28 +16,12 @@ def _get_kwargs(
   subgraph_id: str,
   *,
   body: DeleteSubgraphRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
-  if not isinstance(authorization, Unset):
-    headers["authorization"] = authorization
-
-  params: dict[str, Any] = {}
-
-  json_token: Union[None, Unset, str]
-  if isinstance(token, Unset):
-    json_token = UNSET
-  else:
-    json_token = token
-  params["token"] = json_token
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "delete",
     "url": f"/v1/graphs/{graph_id}/subgraphs/{subgraph_id}",
-    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -108,8 +92,6 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
 
@@ -133,10 +115,8 @@ def sync_detailed(
   `s3://robosystems-backups/{instance_id}/{database_name}_{timestamp}.backup`
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str):
       subgraph_id (str): Subgraph identifier to delete
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -151,8 +131,6 @@ def sync_detailed(
     graph_id=graph_id,
     subgraph_id=subgraph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = client.get_httpx_client().request(
@@ -168,8 +146,6 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
 
@@ -193,10 +169,8 @@ def sync(
   `s3://robosystems-backups/{instance_id}/{database_name}_{timestamp}.backup`
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str):
       subgraph_id (str): Subgraph identifier to delete
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -212,8 +186,6 @@ def sync(
     subgraph_id=subgraph_id,
     client=client,
     body=body,
-    token=token,
-    authorization=authorization,
   ).parsed
 
 
@@ -223,8 +195,6 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Response[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
 
@@ -248,10 +218,8 @@ async def asyncio_detailed(
   `s3://robosystems-backups/{instance_id}/{database_name}_{timestamp}.backup`
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str):
       subgraph_id (str): Subgraph identifier to delete
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -266,8 +234,6 @@ async def asyncio_detailed(
     graph_id=graph_id,
     subgraph_id=subgraph_id,
     body=body,
-    token=token,
-    authorization=authorization,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -281,8 +247,6 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
 ) -> Optional[Union[Any, DeleteSubgraphResponse, HTTPValidationError]]:
   """Delete Subgraph
 
@@ -306,10 +270,8 @@ async def asyncio(
   `s3://robosystems-backups/{instance_id}/{database_name}_{timestamp}.backup`
 
   Args:
-      graph_id (str): Parent graph identifier
+      graph_id (str):
       subgraph_id (str): Subgraph identifier to delete
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -326,7 +288,5 @@ async def asyncio(
       subgraph_id=subgraph_id,
       client=client,
       body=body,
-      token=token,
-      authorization=authorization,
     )
   ).parsed

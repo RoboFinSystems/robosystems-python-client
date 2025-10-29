@@ -114,6 +114,9 @@ class TableIngestClient:
       file_or_buffer, "read"
     )
 
+    # Initialize file_path for type checking
+    file_path: Optional[Path] = None
+
     if is_buffer:
       # Handle buffer upload
       file_name = options.file_name or "data.parquet"
@@ -218,6 +221,8 @@ class TableIngestClient:
           file_content = file_or_buffer.read()
       else:
         # Read from file path
+        if file_path is None:
+          raise ValueError("file_path should not be None when not using buffer")
         with open(file_path, "rb") as f:
           file_content = f.read()
 
