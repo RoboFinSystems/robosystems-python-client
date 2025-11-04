@@ -21,11 +21,15 @@ class AuthResponse:
       user (AuthResponseUser): User information
       message (str): Success message
       token (Union[None, Unset, str]): JWT authentication token (optional for cookie-based auth)
+      expires_in (Union[None, Unset, int]): Token expiry time in seconds from now
+      refresh_threshold (Union[None, Unset, int]): Recommended refresh threshold in seconds before expiry
   """
 
   user: "AuthResponseUser"
   message: str
   token: Union[None, Unset, str] = UNSET
+  expires_in: Union[None, Unset, int] = UNSET
+  refresh_threshold: Union[None, Unset, int] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -39,6 +43,18 @@ class AuthResponse:
     else:
       token = self.token
 
+    expires_in: Union[None, Unset, int]
+    if isinstance(self.expires_in, Unset):
+      expires_in = UNSET
+    else:
+      expires_in = self.expires_in
+
+    refresh_threshold: Union[None, Unset, int]
+    if isinstance(self.refresh_threshold, Unset):
+      refresh_threshold = UNSET
+    else:
+      refresh_threshold = self.refresh_threshold
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -49,6 +65,10 @@ class AuthResponse:
     )
     if token is not UNSET:
       field_dict["token"] = token
+    if expires_in is not UNSET:
+      field_dict["expires_in"] = expires_in
+    if refresh_threshold is not UNSET:
+      field_dict["refresh_threshold"] = refresh_threshold
 
     return field_dict
 
@@ -70,10 +90,30 @@ class AuthResponse:
 
     token = _parse_token(d.pop("token", UNSET))
 
+    def _parse_expires_in(data: object) -> Union[None, Unset, int]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, int], data)
+
+    expires_in = _parse_expires_in(d.pop("expires_in", UNSET))
+
+    def _parse_refresh_threshold(data: object) -> Union[None, Unset, int]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, int], data)
+
+    refresh_threshold = _parse_refresh_threshold(d.pop("refresh_threshold", UNSET))
+
     auth_response = cls(
       user=user,
       message=message,
       token=token,
+      expires_in=expires_in,
+      refresh_threshold=refresh_threshold,
     )
 
     auth_response.additional_properties = d
