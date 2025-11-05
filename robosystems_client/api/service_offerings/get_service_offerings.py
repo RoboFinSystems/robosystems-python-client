@@ -6,6 +6,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
+from ...models.service_offerings_response import ServiceOfferingsResponse
 from ...types import Response
 
 
@@ -20,9 +21,10 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, ErrorResponse]]:
+) -> Optional[Union[ErrorResponse, ServiceOfferingsResponse]]:
   if response.status_code == 200:
-    response_200 = response.json()
+    response_200 = ServiceOfferingsResponse.from_dict(response.json())
+
     return response_200
 
   if response.status_code == 500:
@@ -38,7 +40,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, ErrorResponse]]:
+) -> Response[Union[ErrorResponse, ServiceOfferingsResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -50,7 +52,7 @@ def _build_response(
 def sync_detailed(
   *,
   client: Union[AuthenticatedClient, Client],
-) -> Response[Union[Any, ErrorResponse]]:
+) -> Response[Union[ErrorResponse, ServiceOfferingsResponse]]:
   """Get Service Offerings
 
    Get comprehensive information about all subscription offerings.
@@ -75,7 +77,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ErrorResponse]]
+      Response[Union[ErrorResponse, ServiceOfferingsResponse]]
   """
 
   kwargs = _get_kwargs()
@@ -90,7 +92,7 @@ def sync_detailed(
 def sync(
   *,
   client: Union[AuthenticatedClient, Client],
-) -> Optional[Union[Any, ErrorResponse]]:
+) -> Optional[Union[ErrorResponse, ServiceOfferingsResponse]]:
   """Get Service Offerings
 
    Get comprehensive information about all subscription offerings.
@@ -115,7 +117,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ErrorResponse]
+      Union[ErrorResponse, ServiceOfferingsResponse]
   """
 
   return sync_detailed(
@@ -126,7 +128,7 @@ def sync(
 async def asyncio_detailed(
   *,
   client: Union[AuthenticatedClient, Client],
-) -> Response[Union[Any, ErrorResponse]]:
+) -> Response[Union[ErrorResponse, ServiceOfferingsResponse]]:
   """Get Service Offerings
 
    Get comprehensive information about all subscription offerings.
@@ -151,7 +153,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ErrorResponse]]
+      Response[Union[ErrorResponse, ServiceOfferingsResponse]]
   """
 
   kwargs = _get_kwargs()
@@ -164,7 +166,7 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: Union[AuthenticatedClient, Client],
-) -> Optional[Union[Any, ErrorResponse]]:
+) -> Optional[Union[ErrorResponse, ServiceOfferingsResponse]]:
   """Get Service Offerings
 
    Get comprehensive information about all subscription offerings.
@@ -189,7 +191,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ErrorResponse]
+      Union[ErrorResponse, ServiceOfferingsResponse]
   """
 
   return (
