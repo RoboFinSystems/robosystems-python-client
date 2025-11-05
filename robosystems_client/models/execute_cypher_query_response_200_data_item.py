@@ -4,11 +4,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="GetBackupDownloadUrlResponseGetbackupdownloadurl")
+T = TypeVar("T", bound="ExecuteCypherQueryResponse200DataItem")
 
 
 @_attrs_define
-class GetBackupDownloadUrlResponseGetbackupdownloadurl:
+class ExecuteCypherQueryResponse200DataItem:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -22,10 +22,10 @@ class GetBackupDownloadUrlResponseGetbackupdownloadurl:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    get_backup_download_url_response_getbackupdownloadurl = cls()
+    execute_cypher_query_response_200_data_item = cls()
 
-    get_backup_download_url_response_getbackupdownloadurl.additional_properties = d
-    return get_backup_download_url_response_getbackupdownloadurl
+    execute_cypher_query_response_200_data_item.additional_properties = d
+    return execute_cypher_query_response_200_data_item
 
   @property
   def additional_keys(self) -> list[str]:

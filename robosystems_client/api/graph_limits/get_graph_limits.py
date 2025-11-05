@@ -5,9 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.get_graph_limits_response_getgraphlimits import (
-  GetGraphLimitsResponseGetgraphlimits,
-)
+from ...models.graph_limits_response import GraphLimitsResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
 
@@ -25,9 +23,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+) -> Optional[Union[Any, GraphLimitsResponse, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = GetGraphLimitsResponseGetgraphlimits.from_dict(response.json())
+    response_200 = GraphLimitsResponse.from_dict(response.json())
 
     return response_200
 
@@ -56,7 +54,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+) -> Response[Union[Any, GraphLimitsResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -69,7 +67,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+) -> Response[Union[Any, GraphLimitsResponse, HTTPValidationError]]:
   """Get Graph Operational Limits
 
    Get comprehensive operational limits for the graph database.
@@ -94,7 +92,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]
+      Response[Union[Any, GraphLimitsResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -112,7 +110,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+) -> Optional[Union[Any, GraphLimitsResponse, HTTPValidationError]]:
   """Get Graph Operational Limits
 
    Get comprehensive operational limits for the graph database.
@@ -137,7 +135,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]
+      Union[Any, GraphLimitsResponse, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -150,7 +148,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+) -> Response[Union[Any, GraphLimitsResponse, HTTPValidationError]]:
   """Get Graph Operational Limits
 
    Get comprehensive operational limits for the graph database.
@@ -175,7 +173,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]
+      Response[Union[Any, GraphLimitsResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -191,7 +189,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]]:
+) -> Optional[Union[Any, GraphLimitsResponse, HTTPValidationError]]:
   """Get Graph Operational Limits
 
    Get comprehensive operational limits for the graph database.
@@ -216,7 +214,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, GetGraphLimitsResponseGetgraphlimits, HTTPValidationError]
+      Union[Any, GraphLimitsResponse, HTTPValidationError]
   """
 
   return (

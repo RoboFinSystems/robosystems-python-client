@@ -16,8 +16,8 @@ class BatchAgentResponse:
   """Response for batch processing.
 
   Attributes:
-      results (list['AgentResponse']): List of agent responses
-      total_execution_time (float): Total execution time
+      results (list['AgentResponse']): List of agent responses (includes successes and failures)
+      total_execution_time (float): Total execution time in seconds
       parallel_processed (bool): Whether queries were processed in parallel
   """
 

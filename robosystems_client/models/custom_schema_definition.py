@@ -21,16 +21,20 @@ T = TypeVar("T", bound="CustomSchemaDefinition")
 
 @_attrs_define
 class CustomSchemaDefinition:
-  """Custom schema definition for custom graphs.
+  """Custom schema definition for generic graphs.
 
-  Attributes:
-      name (str): Schema name
-      version (Union[Unset, str]): Schema version Default: '1.0.0'.
-      description (Union[None, Unset, str]): Schema description
-      extends (Union[None, Unset, str]): Base schema to extend (e.g., 'base')
-      nodes (Union[Unset, list['CustomSchemaDefinitionNodesItem']]): List of node definitions with properties
-      relationships (Union[Unset, list['CustomSchemaDefinitionRelationshipsItem']]): List of relationship definitions
-      metadata (Union[Unset, CustomSchemaDefinitionMetadata]): Additional schema metadata
+  This model allows you to define custom node types, relationship types, and properties
+  for graphs that don't fit the standard entity-based schema. Perfect for domain-specific
+  applications like inventory systems, org charts, project management, etc.
+
+      Attributes:
+          name (str): Schema name
+          version (Union[Unset, str]): Schema version Default: '1.0.0'.
+          description (Union[None, Unset, str]): Schema description
+          extends (Union[None, Unset, str]): Base schema to extend (e.g., 'base' for common utilities)
+          nodes (Union[Unset, list['CustomSchemaDefinitionNodesItem']]): List of node definitions with properties
+          relationships (Union[Unset, list['CustomSchemaDefinitionRelationshipsItem']]): List of relationship definitions
+          metadata (Union[Unset, CustomSchemaDefinitionMetadata]): Additional schema metadata
   """
 
   name: str

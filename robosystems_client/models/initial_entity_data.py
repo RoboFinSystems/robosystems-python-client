@@ -11,18 +11,21 @@ T = TypeVar("T", bound="InitialEntityData")
 
 @_attrs_define
 class InitialEntityData:
-  """Initial entity data for graph creation.
+  """Initial entity data for entity-focused graph creation.
 
-  Attributes:
-      name (str): Entity name
-      uri (str): Entity website or URI
-      cik (Union[None, Unset, str]): CIK number for SEC filings
-      sic (Union[None, Unset, str]): SIC code
-      sic_description (Union[None, Unset, str]): SIC description
-      category (Union[None, Unset, str]): Business category
-      state_of_incorporation (Union[None, Unset, str]): State of incorporation
-      fiscal_year_end (Union[None, Unset, str]): Fiscal year end (MMDD)
-      ein (Union[None, Unset, str]): Employer Identification Number
+  When creating an entity graph with an initial entity node, this model defines
+  the entity's identifying information and metadata.
+
+      Attributes:
+          name (str): Entity name
+          uri (str): Entity website or URI
+          cik (Union[None, Unset, str]): CIK number for SEC filings
+          sic (Union[None, Unset, str]): SIC code
+          sic_description (Union[None, Unset, str]): SIC description
+          category (Union[None, Unset, str]): Business category
+          state_of_incorporation (Union[None, Unset, str]): State of incorporation
+          fiscal_year_end (Union[None, Unset, str]): Fiscal year end (MMDD)
+          ein (Union[None, Unset, str]): Employer Identification Number
   """
 
   name: str

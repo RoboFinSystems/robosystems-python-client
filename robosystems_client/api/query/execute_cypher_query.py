@@ -6,6 +6,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.cypher_query_request import CypherQueryRequest
+from ...models.execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
 from ...models.http_validation_error import HTTPValidationError
 from ...models.response_mode import ResponseMode
 from ...types import UNSET, Response, Unset
@@ -59,7 +60,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError]]:
+) -> Optional[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
   if response.status_code == 200:
     content_type = response.headers.get("content-type", "")
     if (
@@ -67,7 +68,8 @@ def _parse_response(
       or response.headers.get("x-stream-format") == "ndjson"
     ):
       return None
-    response_200 = response.json()
+    response_200 = ExecuteCypherQueryResponse200.from_dict(response.json())
+
     return response_200
 
   if response.status_code == 202:
@@ -111,7 +113,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError]]:
+) -> Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -128,7 +130,7 @@ def sync_detailed(
   mode: Union[None, ResponseMode, Unset] = UNSET,
   chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-) -> Response[Union[Any, HTTPValidationError]]:
+) -> Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
   r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
@@ -207,7 +209,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError]]
+      Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -233,7 +235,7 @@ def sync(
   mode: Union[None, ResponseMode, Unset] = UNSET,
   chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-) -> Optional[Union[Any, HTTPValidationError]]:
+) -> Optional[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
   r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
@@ -312,7 +314,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError]
+      Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -333,7 +335,7 @@ async def asyncio_detailed(
   mode: Union[None, ResponseMode, Unset] = UNSET,
   chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-) -> Response[Union[Any, HTTPValidationError]]:
+) -> Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
   r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
@@ -412,7 +414,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError]]
+      Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -436,7 +438,7 @@ async def asyncio(
   mode: Union[None, ResponseMode, Unset] = UNSET,
   chunk_size: Union[None, Unset, int] = UNSET,
   test_mode: Union[Unset, bool] = False,
-) -> Optional[Union[Any, HTTPValidationError]]:
+) -> Optional[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
   r"""Execute Cypher Query (Read-Only)
 
    Execute a read-only Cypher query with intelligent response optimization.
@@ -515,7 +517,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError]
+      Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]
   """
 
   return (

@@ -45,22 +45,7 @@ typecheck:
 
 # Generate SDK from localhost API
 generate-sdk url="http://localhost:8000/openapi.json":
-    @echo "🚀 Generating Client from {{url}}..."
-    rm -rf generated
-    uv run openapi-python-client generate --url {{url}} --output-path generated --config robosystems_client/sdk-config.yaml
-    @echo "📦 Copying generated code to robosystems_client..."
-    rm -rf robosystems_client/api robosystems_client/models robosystems_client/client.py robosystems_client/errors.py robosystems_client/types.py robosystems_client/py.typed
-    cp -r generated/robo_systems_api_client/api robosystems_client/
-    cp -r generated/robo_systems_api_client/models robosystems_client/
-    cp generated/robo_systems_api_client/client.py robosystems_client/
-    cp generated/robo_systems_api_client/errors.py robosystems_client/
-    cp generated/robo_systems_api_client/types.py robosystems_client/
-    cp generated/robo_systems_api_client/py.typed robosystems_client/
-    rm -rf generated
-    @just format
-    uv run ruff check . --fix
-    @just lint
-    @echo "✅ Client generation complete!"
+    bin/generate-sdk {{url}}
 
 # Build python package locally (for testing)
 build-package:
