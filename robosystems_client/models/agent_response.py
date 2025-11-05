@@ -30,7 +30,7 @@ class AgentResponse:
       mode_used (AgentMode): Agent execution modes.
       metadata (Union['AgentResponseMetadataType0', None, Unset]): Response metadata including routing info
       tokens_used (Union['AgentResponseTokensUsedType0', None, Unset]): Token usage statistics
-      confidence_score (Union[None, Unset, float]): Confidence score of the response
+      confidence_score (Union[None, Unset, float]): Confidence score of the response (0.0-1.0 scale)
       operation_id (Union[None, Unset, str]): Operation ID for SSE monitoring
       is_partial (Union[Unset, bool]): Whether this is a partial response Default: False.
       error_details (Union['AgentResponseErrorDetailsType0', None, Unset]): Error details if any

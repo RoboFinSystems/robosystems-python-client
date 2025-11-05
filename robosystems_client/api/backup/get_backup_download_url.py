@@ -5,9 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.get_backup_download_url_response_getbackupdownloadurl import (
-  GetBackupDownloadUrlResponseGetbackupdownloadurl,
-)
+from ...models.backup_download_url_response import BackupDownloadUrlResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
@@ -35,13 +33,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[
-  Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
-]:
+) -> Optional[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = GetBackupDownloadUrlResponseGetbackupdownloadurl.from_dict(
-      response.json()
-    )
+    response_200 = BackupDownloadUrlResponse.from_dict(response.json())
 
     return response_200
 
@@ -70,9 +64,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[
-  Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
-]:
+) -> Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -87,9 +79,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
-) -> Response[
-  Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
-]:
+) -> Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
@@ -104,7 +94,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]]
+      Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -126,9 +116,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
-) -> Optional[
-  Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
-]:
+) -> Optional[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
@@ -143,7 +131,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
+      Union[Any, BackupDownloadUrlResponse, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -160,9 +148,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
-) -> Response[
-  Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
-]:
+) -> Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
@@ -177,7 +163,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]]
+      Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -197,9 +183,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   expires_in: Union[Unset, int] = 3600,
-) -> Optional[
-  Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
-]:
+) -> Optional[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
@@ -214,7 +198,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, GetBackupDownloadUrlResponseGetbackupdownloadurl, HTTPValidationError]
+      Union[Any, BackupDownloadUrlResponse, HTTPValidationError]
   """
 
   return (

@@ -102,6 +102,23 @@ def sync_detailed(
   - **Download Support**: Unencrypted backups can be downloaded
   - **Restore Support**: Future support for encrypted backup restoration
 
+  **Operation State Machine:**
+  ```
+  pending → processing → completed
+                      ↘ failed
+  ```
+  - **pending**: Backup queued, waiting to start
+  - **processing**: Actively backing up database
+  - **completed**: Backup successfully created and stored
+  - **failed**: Backup failed (check error message)
+
+  **Expected Durations:**
+  Operation times vary by database size:
+  - **Small** (<1GB): 30 seconds - 2 minutes
+  - **Medium** (1-10GB): 2-10 minutes
+  - **Large** (10-100GB): 10-30 minutes
+  - **Very Large** (>100GB): 30+ minutes
+
   **Progress Monitoring:**
   Use the returned operation_id to connect to the SSE stream:
   ```javascript
@@ -109,6 +126,7 @@ def sync_detailed(
   eventSource.addEventListener('operation_progress', (event) => {
     const data = JSON.parse(event.data);
     console.log('Backup progress:', data.progress_percent + '%');
+    console.log('Status:', data.status); // pending, processing, completed, failed
   });
   ```
 
@@ -177,6 +195,23 @@ def sync(
   - **Download Support**: Unencrypted backups can be downloaded
   - **Restore Support**: Future support for encrypted backup restoration
 
+  **Operation State Machine:**
+  ```
+  pending → processing → completed
+                      ↘ failed
+  ```
+  - **pending**: Backup queued, waiting to start
+  - **processing**: Actively backing up database
+  - **completed**: Backup successfully created and stored
+  - **failed**: Backup failed (check error message)
+
+  **Expected Durations:**
+  Operation times vary by database size:
+  - **Small** (<1GB): 30 seconds - 2 minutes
+  - **Medium** (1-10GB): 2-10 minutes
+  - **Large** (10-100GB): 10-30 minutes
+  - **Very Large** (>100GB): 30+ minutes
+
   **Progress Monitoring:**
   Use the returned operation_id to connect to the SSE stream:
   ```javascript
@@ -184,6 +219,7 @@ def sync(
   eventSource.addEventListener('operation_progress', (event) => {
     const data = JSON.parse(event.data);
     console.log('Backup progress:', data.progress_percent + '%');
+    console.log('Status:', data.status); // pending, processing, completed, failed
   });
   ```
 
@@ -247,6 +283,23 @@ async def asyncio_detailed(
   - **Download Support**: Unencrypted backups can be downloaded
   - **Restore Support**: Future support for encrypted backup restoration
 
+  **Operation State Machine:**
+  ```
+  pending → processing → completed
+                      ↘ failed
+  ```
+  - **pending**: Backup queued, waiting to start
+  - **processing**: Actively backing up database
+  - **completed**: Backup successfully created and stored
+  - **failed**: Backup failed (check error message)
+
+  **Expected Durations:**
+  Operation times vary by database size:
+  - **Small** (<1GB): 30 seconds - 2 minutes
+  - **Medium** (1-10GB): 2-10 minutes
+  - **Large** (10-100GB): 10-30 minutes
+  - **Very Large** (>100GB): 30+ minutes
+
   **Progress Monitoring:**
   Use the returned operation_id to connect to the SSE stream:
   ```javascript
@@ -254,6 +307,7 @@ async def asyncio_detailed(
   eventSource.addEventListener('operation_progress', (event) => {
     const data = JSON.parse(event.data);
     console.log('Backup progress:', data.progress_percent + '%');
+    console.log('Status:', data.status); // pending, processing, completed, failed
   });
   ```
 
@@ -320,6 +374,23 @@ async def asyncio(
   - **Download Support**: Unencrypted backups can be downloaded
   - **Restore Support**: Future support for encrypted backup restoration
 
+  **Operation State Machine:**
+  ```
+  pending → processing → completed
+                      ↘ failed
+  ```
+  - **pending**: Backup queued, waiting to start
+  - **processing**: Actively backing up database
+  - **completed**: Backup successfully created and stored
+  - **failed**: Backup failed (check error message)
+
+  **Expected Durations:**
+  Operation times vary by database size:
+  - **Small** (<1GB): 30 seconds - 2 minutes
+  - **Medium** (1-10GB): 2-10 minutes
+  - **Large** (10-100GB): 10-30 minutes
+  - **Very Large** (>100GB): 30+ minutes
+
   **Progress Monitoring:**
   Use the returned operation_id to connect to the SSE stream:
   ```javascript
@@ -327,6 +398,7 @@ async def asyncio(
   eventSource.addEventListener('operation_progress', (event) => {
     const data = JSON.parse(event.data);
     console.log('Backup progress:', data.progress_percent + '%');
+    console.log('Status:', data.status); // pending, processing, completed, failed
   });
   ```
 

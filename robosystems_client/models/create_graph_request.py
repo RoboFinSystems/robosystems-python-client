@@ -19,23 +19,22 @@ T = TypeVar("T", bound="CreateGraphRequest")
 class CreateGraphRequest:
   """Request model for creating a new graph.
 
-  Example:
-      {'initial_entity': {'cik': '0001234567', 'name': 'Acme Consulting LLC', 'uri': 'https://acmeconsulting.com'},
-          'instance_tier': 'kuzu-standard', 'metadata': {'description': 'Professional consulting services with full
-          accounting integration', 'graph_name': 'Acme Consulting LLC', 'schema_extensions': ['roboledger']}, 'tags':
-          ['consulting', 'professional-services']}
+  Use this to create either:
+  - **Entity graphs**: Standard graphs with entity schema and optional extensions
+  - **Custom graphs**: Generic graphs with fully custom schema definitions
 
-  Attributes:
-      metadata (GraphMetadata): Metadata for graph creation.
-      instance_tier (Union[Unset, str]): Instance tier: kuzu-standard, kuzu-large, kuzu-xlarge, neo4j-community-large,
-          neo4j-enterprise-xlarge Default: 'kuzu-standard'.
-      custom_schema (Union['CustomSchemaDefinition', None, Unset]): Custom schema definition to apply
-      initial_entity (Union['InitialEntityData', None, Unset]): Optional initial entity to create in the graph. If
-          provided, creates a entity-focused graph.
-      create_entity (Union[Unset, bool]): Whether to create the entity node and upload initial data. Only applies when
-          initial_entity is provided. Set to False to create graph without populating entity data (useful for file-based
-          ingestion workflows). Default: True.
-      tags (Union[Unset, list[str]]): Optional tags for organization
+      Attributes:
+          metadata (GraphMetadata): Metadata for graph creation.
+          instance_tier (Union[Unset, str]): Instance tier: kuzu-standard, kuzu-large, kuzu-xlarge, neo4j-community-large,
+              neo4j-enterprise-xlarge Default: 'kuzu-standard'.
+          custom_schema (Union['CustomSchemaDefinition', None, Unset]): Custom schema definition to apply. If provided,
+              creates a generic custom graph. If omitted, creates an entity graph using schema_extensions.
+          initial_entity (Union['InitialEntityData', None, Unset]): Optional initial entity to create in the graph. If
+              provided with entity graph, populates the first entity node.
+          create_entity (Union[Unset, bool]): Whether to create the entity node and upload initial data. Only applies when
+              initial_entity is provided. Set to False to create graph without populating entity data (useful for file-based
+              ingestion workflows). Default: True.
+          tags (Union[Unset, list[str]]): Optional tags for organization
   """
 
   metadata: "GraphMetadata"

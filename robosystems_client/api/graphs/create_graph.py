@@ -70,9 +70,35 @@ def sync_detailed(
   This endpoint starts an asynchronous graph creation operation and returns
   connection details for monitoring progress via Server-Sent Events (SSE).
 
-  **Operation Types:**
-  - **Generic Graph**: Creates empty graph with schema extensions
-  - **Entity Graph**: Creates graph with initial entity data
+  **Graph Creation Options:**
+
+  1. **Entity Graph with Initial Entity** (`initial_entity` provided, `create_entity=True`):
+     - Creates graph structure with entity schema extensions
+     - Populates an initial entity node with provided data
+     - Useful when you want a pre-configured entity to start with
+     - Example: Creating a company graph with the company already populated
+
+  2. **Entity Graph without Initial Entity** (`initial_entity=None`, `create_entity=False`):
+     - Creates graph structure with entity schema extensions
+     - Graph starts empty, ready for data import
+     - Useful for bulk data imports or custom workflows
+     - Example: Creating a graph structure before importing from CSV/API
+
+  3. **Generic Graph** (no `initial_entity` provided):
+     - Creates empty graph with custom schema extensions
+     - General-purpose knowledge graph
+     - Example: Analytics graphs, custom data models
+
+  **Required Fields:**
+  - `metadata.graph_name`: Unique name for the graph
+  - `instance_tier`: Resource tier (kuzu-standard, kuzu-large, kuzu-xlarge)
+
+  **Optional Fields:**
+  - `metadata.description`: Human-readable description of the graph's purpose
+  - `metadata.schema_extensions`: List of schema extensions (roboledger, roboinvestor, etc.)
+  - `tags`: Organizational tags (max 10)
+  - `initial_entity`: Entity data (required for entity graphs with initial data)
+  - `create_entity`: Whether to populate initial entity (default: true when initial_entity provided)
 
   **Monitoring Progress:**
   Use the returned `operation_id` to connect to the SSE stream:
@@ -107,12 +133,11 @@ def sync_detailed(
   - `_links.status`: Point-in-time status check endpoint
 
   Args:
-      body (CreateGraphRequest): Request model for creating a new graph. Example:
-          {'initial_entity': {'cik': '0001234567', 'name': 'Acme Consulting LLC', 'uri':
-          'https://acmeconsulting.com'}, 'instance_tier': 'kuzu-standard', 'metadata':
-          {'description': 'Professional consulting services with full accounting integration',
-          'graph_name': 'Acme Consulting LLC', 'schema_extensions': ['roboledger']}, 'tags':
-          ['consulting', 'professional-services']}.
+      body (CreateGraphRequest): Request model for creating a new graph.
+
+          Use this to create either:
+          - **Entity graphs**: Standard graphs with entity schema and optional extensions
+          - **Custom graphs**: Generic graphs with fully custom schema definitions
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -145,9 +170,35 @@ def sync(
   This endpoint starts an asynchronous graph creation operation and returns
   connection details for monitoring progress via Server-Sent Events (SSE).
 
-  **Operation Types:**
-  - **Generic Graph**: Creates empty graph with schema extensions
-  - **Entity Graph**: Creates graph with initial entity data
+  **Graph Creation Options:**
+
+  1. **Entity Graph with Initial Entity** (`initial_entity` provided, `create_entity=True`):
+     - Creates graph structure with entity schema extensions
+     - Populates an initial entity node with provided data
+     - Useful when you want a pre-configured entity to start with
+     - Example: Creating a company graph with the company already populated
+
+  2. **Entity Graph without Initial Entity** (`initial_entity=None`, `create_entity=False`):
+     - Creates graph structure with entity schema extensions
+     - Graph starts empty, ready for data import
+     - Useful for bulk data imports or custom workflows
+     - Example: Creating a graph structure before importing from CSV/API
+
+  3. **Generic Graph** (no `initial_entity` provided):
+     - Creates empty graph with custom schema extensions
+     - General-purpose knowledge graph
+     - Example: Analytics graphs, custom data models
+
+  **Required Fields:**
+  - `metadata.graph_name`: Unique name for the graph
+  - `instance_tier`: Resource tier (kuzu-standard, kuzu-large, kuzu-xlarge)
+
+  **Optional Fields:**
+  - `metadata.description`: Human-readable description of the graph's purpose
+  - `metadata.schema_extensions`: List of schema extensions (roboledger, roboinvestor, etc.)
+  - `tags`: Organizational tags (max 10)
+  - `initial_entity`: Entity data (required for entity graphs with initial data)
+  - `create_entity`: Whether to populate initial entity (default: true when initial_entity provided)
 
   **Monitoring Progress:**
   Use the returned `operation_id` to connect to the SSE stream:
@@ -182,12 +233,11 @@ def sync(
   - `_links.status`: Point-in-time status check endpoint
 
   Args:
-      body (CreateGraphRequest): Request model for creating a new graph. Example:
-          {'initial_entity': {'cik': '0001234567', 'name': 'Acme Consulting LLC', 'uri':
-          'https://acmeconsulting.com'}, 'instance_tier': 'kuzu-standard', 'metadata':
-          {'description': 'Professional consulting services with full accounting integration',
-          'graph_name': 'Acme Consulting LLC', 'schema_extensions': ['roboledger']}, 'tags':
-          ['consulting', 'professional-services']}.
+      body (CreateGraphRequest): Request model for creating a new graph.
+
+          Use this to create either:
+          - **Entity graphs**: Standard graphs with entity schema and optional extensions
+          - **Custom graphs**: Generic graphs with fully custom schema definitions
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -215,9 +265,35 @@ async def asyncio_detailed(
   This endpoint starts an asynchronous graph creation operation and returns
   connection details for monitoring progress via Server-Sent Events (SSE).
 
-  **Operation Types:**
-  - **Generic Graph**: Creates empty graph with schema extensions
-  - **Entity Graph**: Creates graph with initial entity data
+  **Graph Creation Options:**
+
+  1. **Entity Graph with Initial Entity** (`initial_entity` provided, `create_entity=True`):
+     - Creates graph structure with entity schema extensions
+     - Populates an initial entity node with provided data
+     - Useful when you want a pre-configured entity to start with
+     - Example: Creating a company graph with the company already populated
+
+  2. **Entity Graph without Initial Entity** (`initial_entity=None`, `create_entity=False`):
+     - Creates graph structure with entity schema extensions
+     - Graph starts empty, ready for data import
+     - Useful for bulk data imports or custom workflows
+     - Example: Creating a graph structure before importing from CSV/API
+
+  3. **Generic Graph** (no `initial_entity` provided):
+     - Creates empty graph with custom schema extensions
+     - General-purpose knowledge graph
+     - Example: Analytics graphs, custom data models
+
+  **Required Fields:**
+  - `metadata.graph_name`: Unique name for the graph
+  - `instance_tier`: Resource tier (kuzu-standard, kuzu-large, kuzu-xlarge)
+
+  **Optional Fields:**
+  - `metadata.description`: Human-readable description of the graph's purpose
+  - `metadata.schema_extensions`: List of schema extensions (roboledger, roboinvestor, etc.)
+  - `tags`: Organizational tags (max 10)
+  - `initial_entity`: Entity data (required for entity graphs with initial data)
+  - `create_entity`: Whether to populate initial entity (default: true when initial_entity provided)
 
   **Monitoring Progress:**
   Use the returned `operation_id` to connect to the SSE stream:
@@ -252,12 +328,11 @@ async def asyncio_detailed(
   - `_links.status`: Point-in-time status check endpoint
 
   Args:
-      body (CreateGraphRequest): Request model for creating a new graph. Example:
-          {'initial_entity': {'cik': '0001234567', 'name': 'Acme Consulting LLC', 'uri':
-          'https://acmeconsulting.com'}, 'instance_tier': 'kuzu-standard', 'metadata':
-          {'description': 'Professional consulting services with full accounting integration',
-          'graph_name': 'Acme Consulting LLC', 'schema_extensions': ['roboledger']}, 'tags':
-          ['consulting', 'professional-services']}.
+      body (CreateGraphRequest): Request model for creating a new graph.
+
+          Use this to create either:
+          - **Entity graphs**: Standard graphs with entity schema and optional extensions
+          - **Custom graphs**: Generic graphs with fully custom schema definitions
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -288,9 +363,35 @@ async def asyncio(
   This endpoint starts an asynchronous graph creation operation and returns
   connection details for monitoring progress via Server-Sent Events (SSE).
 
-  **Operation Types:**
-  - **Generic Graph**: Creates empty graph with schema extensions
-  - **Entity Graph**: Creates graph with initial entity data
+  **Graph Creation Options:**
+
+  1. **Entity Graph with Initial Entity** (`initial_entity` provided, `create_entity=True`):
+     - Creates graph structure with entity schema extensions
+     - Populates an initial entity node with provided data
+     - Useful when you want a pre-configured entity to start with
+     - Example: Creating a company graph with the company already populated
+
+  2. **Entity Graph without Initial Entity** (`initial_entity=None`, `create_entity=False`):
+     - Creates graph structure with entity schema extensions
+     - Graph starts empty, ready for data import
+     - Useful for bulk data imports or custom workflows
+     - Example: Creating a graph structure before importing from CSV/API
+
+  3. **Generic Graph** (no `initial_entity` provided):
+     - Creates empty graph with custom schema extensions
+     - General-purpose knowledge graph
+     - Example: Analytics graphs, custom data models
+
+  **Required Fields:**
+  - `metadata.graph_name`: Unique name for the graph
+  - `instance_tier`: Resource tier (kuzu-standard, kuzu-large, kuzu-xlarge)
+
+  **Optional Fields:**
+  - `metadata.description`: Human-readable description of the graph's purpose
+  - `metadata.schema_extensions`: List of schema extensions (roboledger, roboinvestor, etc.)
+  - `tags`: Organizational tags (max 10)
+  - `initial_entity`: Entity data (required for entity graphs with initial data)
+  - `create_entity`: Whether to populate initial entity (default: true when initial_entity provided)
 
   **Monitoring Progress:**
   Use the returned `operation_id` to connect to the SSE stream:
@@ -325,12 +426,11 @@ async def asyncio(
   - `_links.status`: Point-in-time status check endpoint
 
   Args:
-      body (CreateGraphRequest): Request model for creating a new graph. Example:
-          {'initial_entity': {'cik': '0001234567', 'name': 'Acme Consulting LLC', 'uri':
-          'https://acmeconsulting.com'}, 'instance_tier': 'kuzu-standard', 'metadata':
-          {'description': 'Professional consulting services with full accounting integration',
-          'graph_name': 'Acme Consulting LLC', 'schema_extensions': ['roboledger']}, 'tags':
-          ['consulting', 'professional-services']}.
+      body (CreateGraphRequest): Request model for creating a new graph.
+
+          Use this to create either:
+          - **Entity graphs**: Standard graphs with entity schema and optional extensions
+          - **Custom graphs**: Generic graphs with fully custom schema definitions
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

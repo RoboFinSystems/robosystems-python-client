@@ -18,7 +18,7 @@ class BatchAgentRequest:
   """Request for batch processing multiple queries.
 
   Attributes:
-      queries (list['AgentRequest']): List of queries to process
+      queries (list['AgentRequest']): List of queries to process (max 10)
       parallel (Union[Unset, bool]): Process queries in parallel Default: False.
   """
 
