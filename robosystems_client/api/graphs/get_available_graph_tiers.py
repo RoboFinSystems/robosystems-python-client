@@ -5,6 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.available_graph_tiers_response import AvailableGraphTiersResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
@@ -30,9 +31,10 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError]]:
+) -> Optional[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = response.json()
+    response_200 = AvailableGraphTiersResponse.from_dict(response.json())
+
     return response_200
 
   if response.status_code == 422:
@@ -52,7 +54,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError]]:
+) -> Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -65,7 +67,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   include_disabled: Union[Unset, bool] = False,
-) -> Response[Union[Any, HTTPValidationError]]:
+) -> Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
   """Get Available Graph Tiers
 
    List all available graph database tier configurations.
@@ -104,7 +106,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError]]
+      Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -122,7 +124,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   include_disabled: Union[Unset, bool] = False,
-) -> Optional[Union[Any, HTTPValidationError]]:
+) -> Optional[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
   """Get Available Graph Tiers
 
    List all available graph database tier configurations.
@@ -161,7 +163,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError]
+      Union[Any, AvailableGraphTiersResponse, HTTPValidationError]
   """
 
   return sync_detailed(
@@ -174,7 +176,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   include_disabled: Union[Unset, bool] = False,
-) -> Response[Union[Any, HTTPValidationError]]:
+) -> Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
   """Get Available Graph Tiers
 
    List all available graph database tier configurations.
@@ -213,7 +215,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError]]
+      Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
@@ -229,7 +231,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   include_disabled: Union[Unset, bool] = False,
-) -> Optional[Union[Any, HTTPValidationError]]:
+) -> Optional[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
   """Get Available Graph Tiers
 
    List all available graph database tier configurations.
@@ -268,7 +270,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError]
+      Union[Any, AvailableGraphTiersResponse, HTTPValidationError]
   """
 
   return (
