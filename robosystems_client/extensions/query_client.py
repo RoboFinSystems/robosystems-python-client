@@ -141,39 +141,100 @@ class QueryClient:
       if hasattr(response, "parsed") and response.parsed:
         response_data = response.parsed
 
-        # Handle both dict and object responses
+        # Handle both dict and attrs object responses
         if isinstance(response_data, dict):
           # Response is a plain dict
           data = response_data
+          has_data = "data" in data and "columns" in data
         else:
-          # Response is an object with additional_properties
-          data = (
-            response_data.additional_properties
-            if hasattr(response_data, "additional_properties")
-            else response_data
-          )
+          # Response is an attrs object - check for attributes directly
+          data = response_data
+          has_data = hasattr(data, "data") and hasattr(data, "columns")
 
         # Check if this is an immediate response
-        if "data" in data and "columns" in data:
+        if has_data:
+          # Extract data from either dict or attrs object
+          if isinstance(data, dict):
+            result_data = data["data"]
+            result_columns = data["columns"]
+            result_row_count = data.get("row_count", len(data["data"]))
+            result_execution_time = data.get("execution_time_ms", 0)
+            result_timestamp = data.get("timestamp", datetime.now().isoformat())
+          else:
+            # attrs object - access attributes directly
+            from ..types import UNSET
+
+            raw_data = data.data if data.data is not UNSET else []
+            # Convert data items to dicts if they're objects
+            result_data = []
+            for item in raw_data:
+              if hasattr(item, "to_dict"):
+                result_data.append(item.to_dict())
+              elif hasattr(item, "additional_properties"):
+                result_data.append(item.additional_properties)
+              else:
+                result_data.append(item)
+            result_columns = data.columns if data.columns is not UNSET else []
+            result_row_count = (
+              data.row_count if data.row_count is not UNSET else len(result_data)
+            )
+            result_execution_time = (
+              data.execution_time_ms if data.execution_time_ms is not UNSET else 0
+            )
+            result_timestamp = (
+              data.timestamp
+              if data.timestamp is not UNSET
+              else datetime.now().isoformat()
+            )
+
           return QueryResult(
-            data=data["data"],
-            columns=data["columns"],
-            row_count=data.get("row_count", len(data["data"])),
-            execution_time_ms=data.get("execution_time_ms", 0),
+            data=result_data,
+            columns=result_columns,
+            row_count=result_row_count,
+            execution_time_ms=result_execution_time,
             graph_id=graph_id,
-            timestamp=data.get("timestamp", datetime.now().isoformat()),
+            timestamp=result_timestamp,
           )
 
         # Check if this is a queued response
-        if data.get("status") == "queued" and "operation_id" in data:
-          queued_response = QueuedQueryResponse(
-            status=data["status"],
-            operation_id=data["operation_id"],
-            queue_position=data.get("queue_position", 0),
-            estimated_wait_seconds=data.get("estimated_wait_seconds", 0),
-            message=data.get("message", "Query queued"),
-          )
+        is_queued = False
+        queued_response = None
 
+        if isinstance(data, dict):
+          is_queued = data.get("status") == "queued" and "operation_id" in data
+          if is_queued:
+            queued_response = QueuedQueryResponse(
+              status=data["status"],
+              operation_id=data["operation_id"],
+              queue_position=data.get("queue_position", 0),
+              estimated_wait_seconds=data.get("estimated_wait_seconds", 0),
+              message=data.get("message", "Query queued"),
+            )
+        else:
+          is_queued = (
+            hasattr(data, "status")
+            and hasattr(data, "operation_id")
+            and getattr(data, "status", None) == "queued"
+          )
+          if is_queued:
+            from ..types import UNSET
+
+            queued_response = QueuedQueryResponse(
+              status=data.status,
+              operation_id=data.operation_id,
+              queue_position=data.queue_position
+              if hasattr(data, "queue_position") and data.queue_position is not UNSET
+              else 0,
+              estimated_wait_seconds=data.estimated_wait_seconds
+              if hasattr(data, "estimated_wait_seconds")
+              and data.estimated_wait_seconds is not UNSET
+              else 0,
+              message=data.message
+              if hasattr(data, "message") and data.message is not UNSET
+              else "Query queued",
+            )
+
+        if is_queued and queued_response:
           # Notify about queue status
           if options.on_queue_update:
             options.on_queue_update(
