@@ -13,13 +13,13 @@ class GraphTierInstance:
 
   Attributes:
       type_ (str): Instance type identifier
-      memory_mb (int): Memory in megabytes
-      databases_per_instance (int): Databases per instance
+      memory_mb (int): Memory allocated to your graph in megabytes
+      is_multitenant (bool): Whether this tier shares infrastructure with other graphs
   """
 
   type_: str
   memory_mb: int
-  databases_per_instance: int
+  is_multitenant: bool
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -27,7 +27,7 @@ class GraphTierInstance:
 
     memory_mb = self.memory_mb
 
-    databases_per_instance = self.databases_per_instance
+    is_multitenant = self.is_multitenant
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -35,7 +35,7 @@ class GraphTierInstance:
       {
         "type": type_,
         "memory_mb": memory_mb,
-        "databases_per_instance": databases_per_instance,
+        "is_multitenant": is_multitenant,
       }
     )
 
@@ -48,12 +48,12 @@ class GraphTierInstance:
 
     memory_mb = d.pop("memory_mb")
 
-    databases_per_instance = d.pop("databases_per_instance")
+    is_multitenant = d.pop("is_multitenant")
 
     graph_tier_instance = cls(
       type_=type_,
       memory_mb=memory_mb,
-      databases_per_instance=databases_per_instance,
+      is_multitenant=is_multitenant,
     )
 
     graph_tier_instance.additional_properties = d
