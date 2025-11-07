@@ -1,137 +1,103 @@
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..types import UNSET, Unset
+if TYPE_CHECKING:
+  from ..models.credit_summary_operation_breakdown import (
+    CreditSummaryOperationBreakdown,
+  )
+
 
 T = TypeVar("T", bound="CreditSummary")
 
 
 @_attrs_define
 class CreditSummary:
-  """Credit balance summary.
+  """Credit consumption summary.
 
   Attributes:
-      current_balance (float): Current credit balance
-      monthly_allocation (float): Monthly credit allocation
-      consumed_this_month (float): Credits consumed this month
-      usage_percentage (float): Usage percentage of monthly allocation
-      rollover_credits (float): Credits rolled over from previous month
-      allows_rollover (bool): Whether rollover is allowed
-      is_active (bool): Whether credit pool is active
-      last_allocation_date (Union[None, Unset, str]): Last allocation date (ISO format)
-      next_allocation_date (Union[None, Unset, str]): Next allocation date (ISO format)
+      graph_tier (str): Subscription tier
+      total_credits_consumed (float): Total credits consumed
+      total_base_cost (float): Total base cost before multipliers
+      operation_breakdown (CreditSummaryOperationBreakdown): Credit usage by operation type
+      cached_operations (int): Number of cached operations
+      billable_operations (int): Number of billable operations
+      transaction_count (int): Total transaction count
   """
 
-  current_balance: float
-  monthly_allocation: float
-  consumed_this_month: float
-  usage_percentage: float
-  rollover_credits: float
-  allows_rollover: bool
-  is_active: bool
-  last_allocation_date: Union[None, Unset, str] = UNSET
-  next_allocation_date: Union[None, Unset, str] = UNSET
+  graph_tier: str
+  total_credits_consumed: float
+  total_base_cost: float
+  operation_breakdown: "CreditSummaryOperationBreakdown"
+  cached_operations: int
+  billable_operations: int
+  transaction_count: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    current_balance = self.current_balance
+    graph_tier = self.graph_tier
 
-    monthly_allocation = self.monthly_allocation
+    total_credits_consumed = self.total_credits_consumed
 
-    consumed_this_month = self.consumed_this_month
+    total_base_cost = self.total_base_cost
 
-    usage_percentage = self.usage_percentage
+    operation_breakdown = self.operation_breakdown.to_dict()
 
-    rollover_credits = self.rollover_credits
+    cached_operations = self.cached_operations
 
-    allows_rollover = self.allows_rollover
+    billable_operations = self.billable_operations
 
-    is_active = self.is_active
-
-    last_allocation_date: Union[None, Unset, str]
-    if isinstance(self.last_allocation_date, Unset):
-      last_allocation_date = UNSET
-    else:
-      last_allocation_date = self.last_allocation_date
-
-    next_allocation_date: Union[None, Unset, str]
-    if isinstance(self.next_allocation_date, Unset):
-      next_allocation_date = UNSET
-    else:
-      next_allocation_date = self.next_allocation_date
+    transaction_count = self.transaction_count
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "current_balance": current_balance,
-        "monthly_allocation": monthly_allocation,
-        "consumed_this_month": consumed_this_month,
-        "usage_percentage": usage_percentage,
-        "rollover_credits": rollover_credits,
-        "allows_rollover": allows_rollover,
-        "is_active": is_active,
+        "graph_tier": graph_tier,
+        "total_credits_consumed": total_credits_consumed,
+        "total_base_cost": total_base_cost,
+        "operation_breakdown": operation_breakdown,
+        "cached_operations": cached_operations,
+        "billable_operations": billable_operations,
+        "transaction_count": transaction_count,
       }
     )
-    if last_allocation_date is not UNSET:
-      field_dict["last_allocation_date"] = last_allocation_date
-    if next_allocation_date is not UNSET:
-      field_dict["next_allocation_date"] = next_allocation_date
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.credit_summary_operation_breakdown import (
+      CreditSummaryOperationBreakdown,
+    )
+
     d = dict(src_dict)
-    current_balance = d.pop("current_balance")
+    graph_tier = d.pop("graph_tier")
 
-    monthly_allocation = d.pop("monthly_allocation")
+    total_credits_consumed = d.pop("total_credits_consumed")
 
-    consumed_this_month = d.pop("consumed_this_month")
+    total_base_cost = d.pop("total_base_cost")
 
-    usage_percentage = d.pop("usage_percentage")
-
-    rollover_credits = d.pop("rollover_credits")
-
-    allows_rollover = d.pop("allows_rollover")
-
-    is_active = d.pop("is_active")
-
-    def _parse_last_allocation_date(data: object) -> Union[None, Unset, str]:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(Union[None, Unset, str], data)
-
-    last_allocation_date = _parse_last_allocation_date(
-      d.pop("last_allocation_date", UNSET)
+    operation_breakdown = CreditSummaryOperationBreakdown.from_dict(
+      d.pop("operation_breakdown")
     )
 
-    def _parse_next_allocation_date(data: object) -> Union[None, Unset, str]:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(Union[None, Unset, str], data)
+    cached_operations = d.pop("cached_operations")
 
-    next_allocation_date = _parse_next_allocation_date(
-      d.pop("next_allocation_date", UNSET)
-    )
+    billable_operations = d.pop("billable_operations")
+
+    transaction_count = d.pop("transaction_count")
 
     credit_summary = cls(
-      current_balance=current_balance,
-      monthly_allocation=monthly_allocation,
-      consumed_this_month=consumed_this_month,
-      usage_percentage=usage_percentage,
-      rollover_credits=rollover_credits,
-      allows_rollover=allows_rollover,
-      is_active=is_active,
-      last_allocation_date=last_allocation_date,
-      next_allocation_date=next_allocation_date,
+      graph_tier=graph_tier,
+      total_credits_consumed=total_credits_consumed,
+      total_base_cost=total_base_cost,
+      operation_breakdown=operation_breakdown,
+      cached_operations=cached_operations,
+      billable_operations=billable_operations,
+      transaction_count=transaction_count,
     )
 
     credit_summary.additional_properties = d
