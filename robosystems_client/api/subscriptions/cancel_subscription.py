@@ -5,25 +5,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.cancellation_response import CancellationResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.user_subscriptions_response import UserSubscriptionsResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
-  *,
-  active_only: Union[Unset, bool] = True,
+  graph_id: str,
 ) -> dict[str, Any]:
-  params: dict[str, Any] = {}
-
-  params["active_only"] = active_only
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
   _kwargs: dict[str, Any] = {
-    "method": "get",
-    "url": "/v1/user/subscriptions/shared-repositories",
-    "params": params,
+    "method": "delete",
+    "url": f"/v1/graphs/{graph_id}/subscriptions",
   }
 
   return _kwargs
@@ -31,24 +23,24 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
+) -> Optional[Union[Any, CancellationResponse, HTTPValidationError]]:
   if response.status_code == 200:
-    response_200 = UserSubscriptionsResponse.from_dict(response.json())
+    response_200 = CancellationResponse.from_dict(response.json())
 
     return response_200
 
-  if response.status_code == 401:
-    response_401 = cast(Any, None)
-    return response_401
+  if response.status_code == 400:
+    response_400 = cast(Any, None)
+    return response_400
+
+  if response.status_code == 404:
+    response_404 = cast(Any, None)
+    return response_404
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
-
-  if response.status_code == 500:
-    response_500 = cast(Any, None)
-    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -58,7 +50,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
+) -> Response[Union[Any, CancellationResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -68,27 +60,32 @@ def _build_response(
 
 
 def sync_detailed(
+  graph_id: str,
   *,
   client: AuthenticatedClient,
-  active_only: Union[Unset, bool] = True,
-) -> Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
-  """Get User Subscriptions
+) -> Response[Union[Any, CancellationResponse, HTTPValidationError]]:
+  """Cancel Subscription
 
-   Retrieve user's current shared repository subscriptions with detailed information
+   Cancel a subscription.
+
+  For shared repositories: Cancels the user's personal subscription
+  For user graphs: Not allowed - delete the graph instead
+
+  The subscription will be marked as canceled and will end at the current period end date.
 
   Args:
-      active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
+      graph_id (str): Graph ID or repository name
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]
+      Response[Union[Any, CancellationResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
-    active_only=active_only,
+    graph_id=graph_id,
   )
 
   response = client.get_httpx_client().request(
@@ -99,53 +96,63 @@ def sync_detailed(
 
 
 def sync(
+  graph_id: str,
   *,
   client: AuthenticatedClient,
-  active_only: Union[Unset, bool] = True,
-) -> Optional[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
-  """Get User Subscriptions
+) -> Optional[Union[Any, CancellationResponse, HTTPValidationError]]:
+  """Cancel Subscription
 
-   Retrieve user's current shared repository subscriptions with detailed information
+   Cancel a subscription.
+
+  For shared repositories: Cancels the user's personal subscription
+  For user graphs: Not allowed - delete the graph instead
+
+  The subscription will be marked as canceled and will end at the current period end date.
 
   Args:
-      active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
+      graph_id (str): Graph ID or repository name
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, UserSubscriptionsResponse]
+      Union[Any, CancellationResponse, HTTPValidationError]
   """
 
   return sync_detailed(
+    graph_id=graph_id,
     client=client,
-    active_only=active_only,
   ).parsed
 
 
 async def asyncio_detailed(
+  graph_id: str,
   *,
   client: AuthenticatedClient,
-  active_only: Union[Unset, bool] = True,
-) -> Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
-  """Get User Subscriptions
+) -> Response[Union[Any, CancellationResponse, HTTPValidationError]]:
+  """Cancel Subscription
 
-   Retrieve user's current shared repository subscriptions with detailed information
+   Cancel a subscription.
+
+  For shared repositories: Cancels the user's personal subscription
+  For user graphs: Not allowed - delete the graph instead
+
+  The subscription will be marked as canceled and will end at the current period end date.
 
   Args:
-      active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
+      graph_id (str): Graph ID or repository name
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]
+      Response[Union[Any, CancellationResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
-    active_only=active_only,
+    graph_id=graph_id,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -154,28 +161,33 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+  graph_id: str,
   *,
   client: AuthenticatedClient,
-  active_only: Union[Unset, bool] = True,
-) -> Optional[Union[Any, HTTPValidationError, UserSubscriptionsResponse]]:
-  """Get User Subscriptions
+) -> Optional[Union[Any, CancellationResponse, HTTPValidationError]]:
+  """Cancel Subscription
 
-   Retrieve user's current shared repository subscriptions with detailed information
+   Cancel a subscription.
+
+  For shared repositories: Cancels the user's personal subscription
+  For user graphs: Not allowed - delete the graph instead
+
+  The subscription will be marked as canceled and will end at the current period end date.
 
   Args:
-      active_only (Union[Unset, bool]): Only return active subscriptions Default: True.
+      graph_id (str): Graph ID or repository name
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, UserSubscriptionsResponse]
+      Union[Any, CancellationResponse, HTTPValidationError]
   """
 
   return (
     await asyncio_detailed(
+      graph_id=graph_id,
       client=client,
-      active_only=active_only,
     )
   ).parsed

@@ -4,12 +4,12 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="CreditsSummaryResponseCreditsByAddonType0Item")
+T = TypeVar("T", bound="CreditSummaryOperationBreakdown")
 
 
 @_attrs_define
-class CreditsSummaryResponseCreditsByAddonType0Item:
-  """ """
+class CreditSummaryOperationBreakdown:
+  """Credit usage by operation type"""
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -22,10 +22,10 @@ class CreditsSummaryResponseCreditsByAddonType0Item:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    credits_summary_response_credits_by_addon_type_0_item = cls()
+    credit_summary_operation_breakdown = cls()
 
-    credits_summary_response_credits_by_addon_type_0_item.additional_properties = d
-    return credits_summary_response_credits_by_addon_type_0_item
+    credit_summary_operation_breakdown.additional_properties = d
+    return credit_summary_operation_breakdown
 
   @property
   def additional_keys(self) -> list[str]:

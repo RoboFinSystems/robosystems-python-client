@@ -5,21 +5,22 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.graph_subscription_response import GraphSubscriptionResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.subscription_request import SubscriptionRequest
-from ...models.subscription_response import SubscriptionResponse
+from ...models.upgrade_subscription_request import UpgradeSubscriptionRequest
 from ...types import Response
 
 
 def _get_kwargs(
+  graph_id: str,
   *,
-  body: SubscriptionRequest,
+  body: UpgradeSubscriptionRequest,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
 
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": "/v1/user/subscriptions/shared-repositories/subscribe",
+    "method": "put",
+    "url": f"/v1/graphs/{graph_id}/subscriptions/upgrade",
   }
 
   _kwargs["json"] = body.to_dict()
@@ -32,28 +33,20 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError, SubscriptionResponse]]:
-  if response.status_code == 201:
-    response_201 = SubscriptionResponse.from_dict(response.json())
+) -> Optional[Union[Any, GraphSubscriptionResponse, HTTPValidationError]]:
+  if response.status_code == 200:
+    response_200 = GraphSubscriptionResponse.from_dict(response.json())
 
-    return response_201
+    return response_200
 
-  if response.status_code == 400:
-    response_400 = cast(Any, None)
-    return response_400
-
-  if response.status_code == 401:
-    response_401 = cast(Any, None)
-    return response_401
+  if response.status_code == 404:
+    response_404 = cast(Any, None)
+    return response_404
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
-
-  if response.status_code == 500:
-    response_500 = cast(Any, None)
-    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -63,7 +56,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError, SubscriptionResponse]]:
+) -> Response[Union[Any, GraphSubscriptionResponse, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -73,26 +66,32 @@ def _build_response(
 
 
 def sync_detailed(
+  graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: SubscriptionRequest,
-) -> Response[Union[Any, HTTPValidationError, SubscriptionResponse]]:
-  """Subscribe to Shared Repository
+  body: UpgradeSubscriptionRequest,
+) -> Response[Union[Any, GraphSubscriptionResponse, HTTPValidationError]]:
+  """Upgrade Subscription
 
-   Create a new subscription to a shared repository add-on with specified tier
+   Upgrade a subscription to a different plan.
+
+  Works for both user graphs and shared repositories.
+  The subscription will be immediately updated to the new plan and pricing.
 
   Args:
-      body (SubscriptionRequest): Request to create a new subscription.
+      graph_id (str): Graph ID or repository name
+      body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, SubscriptionResponse]]
+      Response[Union[Any, GraphSubscriptionResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
+    graph_id=graph_id,
     body=body,
   )
 
@@ -104,52 +103,64 @@ def sync_detailed(
 
 
 def sync(
+  graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: SubscriptionRequest,
-) -> Optional[Union[Any, HTTPValidationError, SubscriptionResponse]]:
-  """Subscribe to Shared Repository
+  body: UpgradeSubscriptionRequest,
+) -> Optional[Union[Any, GraphSubscriptionResponse, HTTPValidationError]]:
+  """Upgrade Subscription
 
-   Create a new subscription to a shared repository add-on with specified tier
+   Upgrade a subscription to a different plan.
+
+  Works for both user graphs and shared repositories.
+  The subscription will be immediately updated to the new plan and pricing.
 
   Args:
-      body (SubscriptionRequest): Request to create a new subscription.
+      graph_id (str): Graph ID or repository name
+      body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, SubscriptionResponse]
+      Union[Any, GraphSubscriptionResponse, HTTPValidationError]
   """
 
   return sync_detailed(
+    graph_id=graph_id,
     client=client,
     body=body,
   ).parsed
 
 
 async def asyncio_detailed(
+  graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: SubscriptionRequest,
-) -> Response[Union[Any, HTTPValidationError, SubscriptionResponse]]:
-  """Subscribe to Shared Repository
+  body: UpgradeSubscriptionRequest,
+) -> Response[Union[Any, GraphSubscriptionResponse, HTTPValidationError]]:
+  """Upgrade Subscription
 
-   Create a new subscription to a shared repository add-on with specified tier
+   Upgrade a subscription to a different plan.
+
+  Works for both user graphs and shared repositories.
+  The subscription will be immediately updated to the new plan and pricing.
 
   Args:
-      body (SubscriptionRequest): Request to create a new subscription.
+      graph_id (str): Graph ID or repository name
+      body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, SubscriptionResponse]]
+      Response[Union[Any, GraphSubscriptionResponse, HTTPValidationError]]
   """
 
   kwargs = _get_kwargs(
+    graph_id=graph_id,
     body=body,
   )
 
@@ -159,27 +170,33 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+  graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: SubscriptionRequest,
-) -> Optional[Union[Any, HTTPValidationError, SubscriptionResponse]]:
-  """Subscribe to Shared Repository
+  body: UpgradeSubscriptionRequest,
+) -> Optional[Union[Any, GraphSubscriptionResponse, HTTPValidationError]]:
+  """Upgrade Subscription
 
-   Create a new subscription to a shared repository add-on with specified tier
+   Upgrade a subscription to a different plan.
+
+  Works for both user graphs and shared repositories.
+  The subscription will be immediately updated to the new plan and pricing.
 
   Args:
-      body (SubscriptionRequest): Request to create a new subscription.
+      graph_id (str): Graph ID or repository name
+      body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, SubscriptionResponse]
+      Union[Any, GraphSubscriptionResponse, HTTPValidationError]
   """
 
   return (
     await asyncio_detailed(
+      graph_id=graph_id,
       client=client,
       body=body,
     )

@@ -5,14 +5,14 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.user_usage_summary_response import UserUsageSummaryResponse
+from ...models.user_usage_response import UserUsageResponse
 from ...types import Response
 
 
 def _get_kwargs() -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": "/v1/user/analytics/overview",
+    "url": "/v1/user/limits",
   }
 
   return _kwargs
@@ -20,9 +20,9 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[UserUsageSummaryResponse]:
+) -> Optional[UserUsageResponse]:
   if response.status_code == 200:
-    response_200 = UserUsageSummaryResponse.from_dict(response.json())
+    response_200 = UserUsageResponse.from_dict(response.json())
 
     return response_200
 
@@ -34,7 +34,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[UserUsageSummaryResponse]:
+) -> Response[UserUsageResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -46,17 +46,18 @@ def _build_response(
 def sync_detailed(
   *,
   client: AuthenticatedClient,
-) -> Response[UserUsageSummaryResponse]:
-  """Get User Usage Overview
+) -> Response[UserUsageResponse]:
+  """Get user limits and usage
 
-   Get a high-level overview of usage statistics for the current user.
+   Retrieve current limits and usage statistics for the authenticated user (simple safety valve for
+  graph creation)
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[UserUsageSummaryResponse]
+      Response[UserUsageResponse]
   """
 
   kwargs = _get_kwargs()
@@ -71,17 +72,18 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient,
-) -> Optional[UserUsageSummaryResponse]:
-  """Get User Usage Overview
+) -> Optional[UserUsageResponse]:
+  """Get user limits and usage
 
-   Get a high-level overview of usage statistics for the current user.
+   Retrieve current limits and usage statistics for the authenticated user (simple safety valve for
+  graph creation)
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      UserUsageSummaryResponse
+      UserUsageResponse
   """
 
   return sync_detailed(
@@ -92,17 +94,18 @@ def sync(
 async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
-) -> Response[UserUsageSummaryResponse]:
-  """Get User Usage Overview
+) -> Response[UserUsageResponse]:
+  """Get user limits and usage
 
-   Get a high-level overview of usage statistics for the current user.
+   Retrieve current limits and usage statistics for the authenticated user (simple safety valve for
+  graph creation)
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[UserUsageSummaryResponse]
+      Response[UserUsageResponse]
   """
 
   kwargs = _get_kwargs()
@@ -115,17 +118,18 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient,
-) -> Optional[UserUsageSummaryResponse]:
-  """Get User Usage Overview
+) -> Optional[UserUsageResponse]:
+  """Get user limits and usage
 
-   Get a high-level overview of usage statistics for the current user.
+   Retrieve current limits and usage statistics for the authenticated user (simple safety valve for
+  graph creation)
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      UserUsageSummaryResponse
+      UserUsageResponse
   """
 
   return (
