@@ -38,6 +38,7 @@ from .backup_stats_response import BackupStatsResponse
 from .backup_stats_response_backup_formats import BackupStatsResponseBackupFormats
 from .batch_agent_request import BatchAgentRequest
 from .batch_agent_response import BatchAgentResponse
+from .billing_customer import BillingCustomer
 from .bulk_ingest_request import BulkIngestRequest
 from .bulk_ingest_response import BulkIngestResponse
 from .cancel_operation_response_canceloperation import (
@@ -47,6 +48,8 @@ from .cancellation_response import CancellationResponse
 from .check_credit_balance_response_checkcreditbalance import (
   CheckCreditBalanceResponseCheckcreditbalance,
 )
+from .checkout_response import CheckoutResponse
+from .checkout_status_response import CheckoutStatusResponse
 from .connection_options_response import ConnectionOptionsResponse
 from .connection_provider_info import ConnectionProviderInfo
 from .connection_provider_info_auth_type import ConnectionProviderInfoAuthType
@@ -57,6 +60,8 @@ from .connection_response_provider import ConnectionResponseProvider
 from .copy_operation_limits import CopyOperationLimits
 from .create_api_key_request import CreateAPIKeyRequest
 from .create_api_key_response import CreateAPIKeyResponse
+from .create_checkout_request import CreateCheckoutRequest
+from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
@@ -139,6 +144,9 @@ from .health_status import HealthStatus
 from .health_status_details_type_0 import HealthStatusDetailsType0
 from .http_validation_error import HTTPValidationError
 from .initial_entity_data import InitialEntityData
+from .invoice import Invoice
+from .invoice_line_item import InvoiceLineItem
+from .invoices_response import InvoicesResponse
 from .link_token_request import LinkTokenRequest
 from .link_token_request_options_type_0 import LinkTokenRequestOptionsType0
 from .link_token_request_provider_type_0 import LinkTokenRequestProviderType0
@@ -169,6 +177,7 @@ from .password_check_response import PasswordCheckResponse
 from .password_check_response_character_types import PasswordCheckResponseCharacterTypes
 from .password_policy_response import PasswordPolicyResponse
 from .password_policy_response_policy import PasswordPolicyResponsePolicy
+from .payment_method import PaymentMethod
 from .performance_insights import PerformanceInsights
 from .performance_insights_operation_stats import PerformanceInsightsOperationStats
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
@@ -242,11 +251,14 @@ from .table_query_request import TableQueryRequest
 from .table_query_response import TableQueryResponse
 from .token_pricing import TokenPricing
 from .transaction_summary_response import TransactionSummaryResponse
+from .upcoming_invoice import UpcomingInvoice
 from .update_api_key_request import UpdateAPIKeyRequest
 from .update_file_status_response_updatefilestatus import (
   UpdateFileStatusResponseUpdatefilestatus,
 )
 from .update_password_request import UpdatePasswordRequest
+from .update_payment_method_request import UpdatePaymentMethodRequest
+from .update_payment_method_response import UpdatePaymentMethodResponse
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
@@ -291,11 +303,14 @@ __all__ = (
   "BackupStatsResponseBackupFormats",
   "BatchAgentRequest",
   "BatchAgentResponse",
+  "BillingCustomer",
   "BulkIngestRequest",
   "BulkIngestResponse",
   "CancellationResponse",
   "CancelOperationResponseCanceloperation",
   "CheckCreditBalanceResponseCheckcreditbalance",
+  "CheckoutResponse",
+  "CheckoutStatusResponse",
   "ConnectionOptionsResponse",
   "ConnectionProviderInfo",
   "ConnectionProviderInfoAuthType",
@@ -306,6 +321,8 @@ __all__ = (
   "CopyOperationLimits",
   "CreateAPIKeyRequest",
   "CreateAPIKeyResponse",
+  "CreateCheckoutRequest",
+  "CreateCheckoutRequestResourceConfig",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateGraphRequest",
@@ -370,6 +387,9 @@ __all__ = (
   "HealthStatusDetailsType0",
   "HTTPValidationError",
   "InitialEntityData",
+  "Invoice",
+  "InvoiceLineItem",
+  "InvoicesResponse",
   "LinkTokenRequest",
   "LinkTokenRequestOptionsType0",
   "LinkTokenRequestProviderType0",
@@ -396,6 +416,7 @@ __all__ = (
   "PasswordCheckResponseCharacterTypes",
   "PasswordPolicyResponse",
   "PasswordPolicyResponsePolicy",
+  "PaymentMethod",
   "PerformanceInsights",
   "PerformanceInsightsOperationStats",
   "PerformanceInsightsSlowQueriesItem",
@@ -453,9 +474,12 @@ __all__ = (
   "TableQueryResponse",
   "TokenPricing",
   "TransactionSummaryResponse",
+  "UpcomingInvoice",
   "UpdateAPIKeyRequest",
   "UpdateFileStatusResponseUpdatefilestatus",
   "UpdatePasswordRequest",
+  "UpdatePaymentMethodRequest",
+  "UpdatePaymentMethodResponse",
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",
