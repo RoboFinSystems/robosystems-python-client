@@ -16,14 +16,20 @@ T = TypeVar("T", bound="GraphSubscriptions")
 class GraphSubscriptions:
   """Graph subscription offerings.
 
-  Attributes:
-      description (str): Description of graph subscriptions
-      tiers (list['GraphSubscriptionTier']): Available tiers
-      storage (StorageInfo): Storage pricing information.
-      notes (list[str]): Important notes
+  Graph subscriptions are per-graph, not per-organization. Each graph
+  created by an organization has its own subscription with its own
+  infrastructure tier, pricing, and credit allocation.
+
+      Attributes:
+          description (str): Description of graph subscriptions
+          pricing_model (str): Pricing model type (per_graph or per_organization)
+          tiers (list['GraphSubscriptionTier']): Available infrastructure tiers
+          storage (StorageInfo): Storage pricing information.
+          notes (list[str]): Important notes
   """
 
   description: str
+  pricing_model: str
   tiers: list["GraphSubscriptionTier"]
   storage: "StorageInfo"
   notes: list[str]
@@ -31,6 +37,8 @@ class GraphSubscriptions:
 
   def to_dict(self) -> dict[str, Any]:
     description = self.description
+
+    pricing_model = self.pricing_model
 
     tiers = []
     for tiers_item_data in self.tiers:
@@ -46,6 +54,7 @@ class GraphSubscriptions:
     field_dict.update(
       {
         "description": description,
+        "pricing_model": pricing_model,
         "tiers": tiers,
         "storage": storage,
         "notes": notes,
@@ -62,6 +71,8 @@ class GraphSubscriptions:
     d = dict(src_dict)
     description = d.pop("description")
 
+    pricing_model = d.pop("pricing_model")
+
     tiers = []
     _tiers = d.pop("tiers")
     for tiers_item_data in _tiers:
@@ -75,6 +86,7 @@ class GraphSubscriptions:
 
     graph_subscriptions = cls(
       description=description,
+      pricing_model=pricing_model,
       tiers=tiers,
       storage=storage,
       notes=notes,

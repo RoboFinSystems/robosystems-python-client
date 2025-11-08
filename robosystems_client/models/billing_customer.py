@@ -15,18 +15,18 @@ T = TypeVar("T", bound="BillingCustomer")
 
 @_attrs_define
 class BillingCustomer:
-  """Billing customer information.
+  """Billing customer information for an organization.
 
   Attributes:
-      user_id (str): User ID
-      has_payment_method (bool): Whether customer has a payment method on file
+      org_id (str): Organization ID
+      has_payment_method (bool): Whether organization has a payment method on file
       invoice_billing_enabled (bool): Whether invoice billing is enabled (enterprise customers)
       payment_methods (list['PaymentMethod']): List of payment methods on file
       created_at (str): Customer creation timestamp (ISO format)
       stripe_customer_id (Union[None, Unset, str]): Stripe customer ID if applicable
   """
 
-  user_id: str
+  org_id: str
   has_payment_method: bool
   invoice_billing_enabled: bool
   payment_methods: list["PaymentMethod"]
@@ -35,7 +35,7 @@ class BillingCustomer:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    user_id = self.user_id
+    org_id = self.org_id
 
     has_payment_method = self.has_payment_method
 
@@ -58,7 +58,7 @@ class BillingCustomer:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "user_id": user_id,
+        "org_id": org_id,
         "has_payment_method": has_payment_method,
         "invoice_billing_enabled": invoice_billing_enabled,
         "payment_methods": payment_methods,
@@ -75,7 +75,7 @@ class BillingCustomer:
     from ..models.payment_method import PaymentMethod
 
     d = dict(src_dict)
-    user_id = d.pop("user_id")
+    org_id = d.pop("org_id")
 
     has_payment_method = d.pop("has_payment_method")
 
@@ -100,7 +100,7 @@ class BillingCustomer:
     stripe_customer_id = _parse_stripe_customer_id(d.pop("stripe_customer_id", UNSET))
 
     billing_customer = cls(
-      user_id=user_id,
+      org_id=org_id,
       has_payment_method=has_payment_method,
       invoice_billing_enabled=invoice_billing_enabled,
       payment_methods=payment_methods,

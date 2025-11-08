@@ -11,11 +11,11 @@ from ...types import Response
 
 
 def _get_kwargs(
-  subscription_id: str,
+  org_id: str,
 ) -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": f"/v1/billing/subscriptions/{subscription_id}/cancel",
+    "method": "get",
+    "url": f"/v1/billing/subscriptions/{org_id}",
   }
 
   return _kwargs
@@ -23,9 +23,14 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[GraphSubscriptionResponse, HTTPValidationError]]:
+) -> Optional[Union[HTTPValidationError, list["GraphSubscriptionResponse"]]]:
   if response.status_code == 200:
-    response_200 = GraphSubscriptionResponse.from_dict(response.json())
+    response_200 = []
+    _response_200 = response.json()
+    for response_200_item_data in _response_200:
+      response_200_item = GraphSubscriptionResponse.from_dict(response_200_item_data)
+
+      response_200.append(response_200_item)
 
     return response_200
 
@@ -42,7 +47,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[GraphSubscriptionResponse, HTTPValidationError]]:
+) -> Response[Union[HTTPValidationError, list["GraphSubscriptionResponse"]]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -52,29 +57,33 @@ def _build_response(
 
 
 def sync_detailed(
-  subscription_id: str,
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[GraphSubscriptionResponse, HTTPValidationError]]:
-  """Cancel Subscription
+) -> Response[Union[HTTPValidationError, list["GraphSubscriptionResponse"]]]:
+  """List Organization Subscriptions
 
-   Cancel a subscription.
+   List all active and past subscriptions for an organization.
 
-  The subscription will remain active until the end of the current billing period.
+  Includes both graph and repository subscriptions with their status, pricing, and billing
+  information.
+
+  **Requirements:**
+  - User must be a member of the organization
 
   Args:
-      subscription_id (str):
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[GraphSubscriptionResponse, HTTPValidationError]]
+      Response[Union[HTTPValidationError, list['GraphSubscriptionResponse']]]
   """
 
   kwargs = _get_kwargs(
-    subscription_id=subscription_id,
+    org_id=org_id,
   )
 
   response = client.get_httpx_client().request(
@@ -85,57 +94,65 @@ def sync_detailed(
 
 
 def sync(
-  subscription_id: str,
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[GraphSubscriptionResponse, HTTPValidationError]]:
-  """Cancel Subscription
+) -> Optional[Union[HTTPValidationError, list["GraphSubscriptionResponse"]]]:
+  """List Organization Subscriptions
 
-   Cancel a subscription.
+   List all active and past subscriptions for an organization.
 
-  The subscription will remain active until the end of the current billing period.
+  Includes both graph and repository subscriptions with their status, pricing, and billing
+  information.
+
+  **Requirements:**
+  - User must be a member of the organization
 
   Args:
-      subscription_id (str):
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[GraphSubscriptionResponse, HTTPValidationError]
+      Union[HTTPValidationError, list['GraphSubscriptionResponse']]
   """
 
   return sync_detailed(
-    subscription_id=subscription_id,
+    org_id=org_id,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
-  subscription_id: str,
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[GraphSubscriptionResponse, HTTPValidationError]]:
-  """Cancel Subscription
+) -> Response[Union[HTTPValidationError, list["GraphSubscriptionResponse"]]]:
+  """List Organization Subscriptions
 
-   Cancel a subscription.
+   List all active and past subscriptions for an organization.
 
-  The subscription will remain active until the end of the current billing period.
+  Includes both graph and repository subscriptions with their status, pricing, and billing
+  information.
+
+  **Requirements:**
+  - User must be a member of the organization
 
   Args:
-      subscription_id (str):
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[GraphSubscriptionResponse, HTTPValidationError]]
+      Response[Union[HTTPValidationError, list['GraphSubscriptionResponse']]]
   """
 
   kwargs = _get_kwargs(
-    subscription_id=subscription_id,
+    org_id=org_id,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -144,30 +161,34 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-  subscription_id: str,
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[GraphSubscriptionResponse, HTTPValidationError]]:
-  """Cancel Subscription
+) -> Optional[Union[HTTPValidationError, list["GraphSubscriptionResponse"]]]:
+  """List Organization Subscriptions
 
-   Cancel a subscription.
+   List all active and past subscriptions for an organization.
 
-  The subscription will remain active until the end of the current billing period.
+  Includes both graph and repository subscriptions with their status, pricing, and billing
+  information.
+
+  **Requirements:**
+  - User must be a member of the organization
 
   Args:
-      subscription_id (str):
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[GraphSubscriptionResponse, HTTPValidationError]
+      Union[HTTPValidationError, list['GraphSubscriptionResponse']]
   """
 
   return (
     await asyncio_detailed(
-      subscription_id=subscription_id,
+      org_id=org_id,
       client=client,
     )
   ).parsed

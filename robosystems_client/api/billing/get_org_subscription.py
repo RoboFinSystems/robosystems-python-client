@@ -11,11 +11,12 @@ from ...types import Response
 
 
 def _get_kwargs(
+  org_id: str,
   subscription_id: str,
 ) -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/billing/subscriptions/{subscription_id}",
+    "url": f"/v1/billing/subscriptions/{org_id}/subscription/{subscription_id}",
   }
 
   return _kwargs
@@ -52,15 +53,20 @@ def _build_response(
 
 
 def sync_detailed(
+  org_id: str,
   subscription_id: str,
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[GraphSubscriptionResponse, HTTPValidationError]]:
-  """Get Subscription Details
+  """Get Organization Subscription Details
 
    Get detailed information about a specific subscription.
 
+  **Requirements:**
+  - User must be a member of the organization
+
   Args:
+      org_id (str):
       subscription_id (str):
 
   Raises:
@@ -72,6 +78,7 @@ def sync_detailed(
   """
 
   kwargs = _get_kwargs(
+    org_id=org_id,
     subscription_id=subscription_id,
   )
 
@@ -83,15 +90,20 @@ def sync_detailed(
 
 
 def sync(
+  org_id: str,
   subscription_id: str,
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[GraphSubscriptionResponse, HTTPValidationError]]:
-  """Get Subscription Details
+  """Get Organization Subscription Details
 
    Get detailed information about a specific subscription.
 
+  **Requirements:**
+  - User must be a member of the organization
+
   Args:
+      org_id (str):
       subscription_id (str):
 
   Raises:
@@ -103,21 +115,27 @@ def sync(
   """
 
   return sync_detailed(
+    org_id=org_id,
     subscription_id=subscription_id,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
+  org_id: str,
   subscription_id: str,
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[GraphSubscriptionResponse, HTTPValidationError]]:
-  """Get Subscription Details
+  """Get Organization Subscription Details
 
    Get detailed information about a specific subscription.
 
+  **Requirements:**
+  - User must be a member of the organization
+
   Args:
+      org_id (str):
       subscription_id (str):
 
   Raises:
@@ -129,6 +147,7 @@ async def asyncio_detailed(
   """
 
   kwargs = _get_kwargs(
+    org_id=org_id,
     subscription_id=subscription_id,
   )
 
@@ -138,15 +157,20 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+  org_id: str,
   subscription_id: str,
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[GraphSubscriptionResponse, HTTPValidationError]]:
-  """Get Subscription Details
+  """Get Organization Subscription Details
 
    Get detailed information about a specific subscription.
 
+  **Requirements:**
+  - User must be a member of the organization
+
   Args:
+      org_id (str):
       subscription_id (str):
 
   Raises:
@@ -159,6 +183,7 @@ async def asyncio(
 
   return (
     await asyncio_detailed(
+      org_id=org_id,
       subscription_id=subscription_id,
       client=client,
     )

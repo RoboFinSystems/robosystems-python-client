@@ -19,12 +19,21 @@ class ServiceOfferingsResponse:
   """Complete service offerings response.
 
   Attributes:
+      billing_enabled (bool): Whether billing and payments are enabled
       graph_subscriptions (GraphSubscriptions): Graph subscription offerings.
+
+          Graph subscriptions are per-graph, not per-organization. Each graph
+          created by an organization has its own subscription with its own
+          infrastructure tier, pricing, and credit allocation.
       repository_subscriptions (RepositorySubscriptions): Repository subscription offerings.
+
+          Repository subscriptions are per-organization, not per-graph. All members
+          of an organization share access to subscribed repositories.
       operation_costs (OperationCosts): Operation cost information.
       summary (ServiceOfferingSummary): Summary of service offerings.
   """
 
+  billing_enabled: bool
   graph_subscriptions: "GraphSubscriptions"
   repository_subscriptions: "RepositorySubscriptions"
   operation_costs: "OperationCosts"
@@ -32,6 +41,8 @@ class ServiceOfferingsResponse:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    billing_enabled = self.billing_enabled
+
     graph_subscriptions = self.graph_subscriptions.to_dict()
 
     repository_subscriptions = self.repository_subscriptions.to_dict()
@@ -44,6 +55,7 @@ class ServiceOfferingsResponse:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
+        "billing_enabled": billing_enabled,
         "graph_subscriptions": graph_subscriptions,
         "repository_subscriptions": repository_subscriptions,
         "operation_costs": operation_costs,
@@ -61,6 +73,8 @@ class ServiceOfferingsResponse:
     from ..models.service_offering_summary import ServiceOfferingSummary
 
     d = dict(src_dict)
+    billing_enabled = d.pop("billing_enabled")
+
     graph_subscriptions = GraphSubscriptions.from_dict(d.pop("graph_subscriptions"))
 
     repository_subscriptions = RepositorySubscriptions.from_dict(
@@ -72,6 +86,7 @@ class ServiceOfferingsResponse:
     summary = ServiceOfferingSummary.from_dict(d.pop("summary"))
 
     service_offerings_response = cls(
+      billing_enabled=billing_enabled,
       graph_subscriptions=graph_subscriptions,
       repository_subscriptions=repository_subscriptions,
       operation_costs=operation_costs,
