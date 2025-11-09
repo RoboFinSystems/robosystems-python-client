@@ -95,7 +95,7 @@ def sync_detailed(
 ) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Graph Usage Analytics
 
-   Get comprehensive usage analytics tracked by the GraphUsageTracking model.
+   Get comprehensive usage analytics tracked by the GraphUsage model.
 
   Provides temporal usage patterns including:
   - **Storage Analytics**: GB-hours for billing, breakdown by type (files, tables, graphs, subgraphs)
@@ -171,7 +171,7 @@ def sync(
 ) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Graph Usage Analytics
 
-   Get comprehensive usage analytics tracked by the GraphUsageTracking model.
+   Get comprehensive usage analytics tracked by the GraphUsage model.
 
   Provides temporal usage patterns including:
   - **Storage Analytics**: GB-hours for billing, breakdown by type (files, tables, graphs, subgraphs)
@@ -242,7 +242,7 @@ async def asyncio_detailed(
 ) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Graph Usage Analytics
 
-   Get comprehensive usage analytics tracked by the GraphUsageTracking model.
+   Get comprehensive usage analytics tracked by the GraphUsage model.
 
   Provides temporal usage patterns including:
   - **Storage Analytics**: GB-hours for billing, breakdown by type (files, tables, graphs, subgraphs)
@@ -316,7 +316,7 @@ async def asyncio(
 ) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
   """Get Graph Usage Analytics
 
-   Get comprehensive usage analytics tracked by the GraphUsageTracking model.
+   Get comprehensive usage analytics tracked by the GraphUsage model.
 
   Provides temporal usage patterns including:
   - **Storage Analytics**: GB-hours for billing, breakdown by type (files, tables, graphs, subgraphs)

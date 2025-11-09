@@ -6,35 +6,35 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
-from ...models.update_payment_method_request import UpdatePaymentMethodRequest
-from ...models.update_payment_method_response import UpdatePaymentMethodResponse
-from ...types import Response
+from ...models.org_usage_response import OrgUsageResponse
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
+  org_id: str,
   *,
-  body: UpdatePaymentMethodRequest,
+  days: Union[Unset, int] = 30,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
+  params: dict[str, Any] = {}
+
+  params["days"] = days
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": "/v1/billing/customer/payment-method",
+    "method": "get",
+    "url": f"/v1/orgs/{org_id}/usage",
+    "params": params,
   }
 
-  _kwargs["json"] = body.to_dict()
-
-  headers["Content-Type"] = "application/json"
-
-  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
+) -> Optional[Union[HTTPValidationError, OrgUsageResponse]]:
   if response.status_code == 200:
-    response_200 = UpdatePaymentMethodResponse.from_dict(response.json())
+    response_200 = OrgUsageResponse.from_dict(response.json())
 
     return response_200
 
@@ -51,7 +51,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
+) -> Response[Union[HTTPValidationError, OrgUsageResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -61,29 +61,30 @@ def _build_response(
 
 
 def sync_detailed(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePaymentMethodRequest,
-) -> Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
-  """Update Default Payment Method
+  days: Union[Unset, int] = 30,
+) -> Response[Union[HTTPValidationError, OrgUsageResponse]]:
+  """Get Organization Usage
 
-   Update the default payment method for the customer.
-
-  This changes which payment method will be used for future subscription charges.
+   Get detailed usage statistics for an organization aggregated across all graphs.
 
   Args:
-      body (UpdatePaymentMethodRequest): Request to update default payment method.
+      org_id (str):
+      days (Union[Unset, int]):  Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]
+      Response[Union[HTTPValidationError, OrgUsageResponse]]
   """
 
   kwargs = _get_kwargs(
-    body=body,
+    org_id=org_id,
+    days=days,
   )
 
   response = client.get_httpx_client().request(
@@ -94,57 +95,59 @@ def sync_detailed(
 
 
 def sync(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePaymentMethodRequest,
-) -> Optional[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
-  """Update Default Payment Method
+  days: Union[Unset, int] = 30,
+) -> Optional[Union[HTTPValidationError, OrgUsageResponse]]:
+  """Get Organization Usage
 
-   Update the default payment method for the customer.
-
-  This changes which payment method will be used for future subscription charges.
+   Get detailed usage statistics for an organization aggregated across all graphs.
 
   Args:
-      body (UpdatePaymentMethodRequest): Request to update default payment method.
+      org_id (str):
+      days (Union[Unset, int]):  Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, UpdatePaymentMethodResponse]
+      Union[HTTPValidationError, OrgUsageResponse]
   """
 
   return sync_detailed(
+    org_id=org_id,
     client=client,
-    body=body,
+    days=days,
   ).parsed
 
 
 async def asyncio_detailed(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePaymentMethodRequest,
-) -> Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
-  """Update Default Payment Method
+  days: Union[Unset, int] = 30,
+) -> Response[Union[HTTPValidationError, OrgUsageResponse]]:
+  """Get Organization Usage
 
-   Update the default payment method for the customer.
-
-  This changes which payment method will be used for future subscription charges.
+   Get detailed usage statistics for an organization aggregated across all graphs.
 
   Args:
-      body (UpdatePaymentMethodRequest): Request to update default payment method.
+      org_id (str):
+      days (Union[Unset, int]):  Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]
+      Response[Union[HTTPValidationError, OrgUsageResponse]]
   """
 
   kwargs = _get_kwargs(
-    body=body,
+    org_id=org_id,
+    days=days,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -153,30 +156,31 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePaymentMethodRequest,
-) -> Optional[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
-  """Update Default Payment Method
+  days: Union[Unset, int] = 30,
+) -> Optional[Union[HTTPValidationError, OrgUsageResponse]]:
+  """Get Organization Usage
 
-   Update the default payment method for the customer.
-
-  This changes which payment method will be used for future subscription charges.
+   Get detailed usage statistics for an organization aggregated across all graphs.
 
   Args:
-      body (UpdatePaymentMethodRequest): Request to update default payment method.
+      org_id (str):
+      days (Union[Unset, int]):  Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, UpdatePaymentMethodResponse]
+      Union[HTTPValidationError, OrgUsageResponse]
   """
 
   return (
     await asyncio_detailed(
+      org_id=org_id,
       client=client,
-      body=body,
+      days=days,
     )
   ).parsed

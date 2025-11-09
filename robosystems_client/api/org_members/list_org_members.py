@@ -1,18 +1,21 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, Optional, Union
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.upcoming_invoice import UpcomingInvoice
+from ...models.http_validation_error import HTTPValidationError
+from ...models.org_member_list_response import OrgMemberListResponse
 from ...types import Response
 
 
-def _get_kwargs() -> dict[str, Any]:
+def _get_kwargs(
+  org_id: str,
+) -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": "/v1/billing/invoices/upcoming",
+    "url": f"/v1/orgs/{org_id}/members",
   }
 
   return _kwargs
@@ -20,25 +23,16 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union["UpcomingInvoice", None]]:
+) -> Optional[Union[HTTPValidationError, OrgMemberListResponse]]:
   if response.status_code == 200:
-
-    def _parse_response_200(data: object) -> Union["UpcomingInvoice", None]:
-      if data is None:
-        return data
-      try:
-        if not isinstance(data, dict):
-          raise TypeError()
-        response_200_type_0 = UpcomingInvoice.from_dict(data)
-
-        return response_200_type_0
-      except:  # noqa: E722
-        pass
-      return cast(Union["UpcomingInvoice", None], data)
-
-    response_200 = _parse_response_200(response.json())
+    response_200 = OrgMemberListResponse.from_dict(response.json())
 
     return response_200
+
+  if response.status_code == 422:
+    response_422 = HTTPValidationError.from_dict(response.json())
+
+    return response_422
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -48,7 +42,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union["UpcomingInvoice", None]]:
+) -> Response[Union[HTTPValidationError, OrgMemberListResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -58,24 +52,28 @@ def _build_response(
 
 
 def sync_detailed(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union["UpcomingInvoice", None]]:
-  """Get Upcoming Invoice
+) -> Response[Union[HTTPValidationError, OrgMemberListResponse]]:
+  """List Organization Members
 
-   Get preview of the next invoice.
+   Get all members of an organization with their roles.
 
-  Returns estimated charges for the next billing period.
+  Args:
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union['UpcomingInvoice', None]]
+      Response[Union[HTTPValidationError, OrgMemberListResponse]]
   """
 
-  kwargs = _get_kwargs()
+  kwargs = _get_kwargs(
+    org_id=org_id,
+  )
 
   response = client.get_httpx_client().request(
     **kwargs,
@@ -85,47 +83,54 @@ def sync_detailed(
 
 
 def sync(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union["UpcomingInvoice", None]]:
-  """Get Upcoming Invoice
+) -> Optional[Union[HTTPValidationError, OrgMemberListResponse]]:
+  """List Organization Members
 
-   Get preview of the next invoice.
+   Get all members of an organization with their roles.
 
-  Returns estimated charges for the next billing period.
+  Args:
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union['UpcomingInvoice', None]
+      Union[HTTPValidationError, OrgMemberListResponse]
   """
 
   return sync_detailed(
+    org_id=org_id,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union["UpcomingInvoice", None]]:
-  """Get Upcoming Invoice
+) -> Response[Union[HTTPValidationError, OrgMemberListResponse]]:
+  """List Organization Members
 
-   Get preview of the next invoice.
+   Get all members of an organization with their roles.
 
-  Returns estimated charges for the next billing period.
+  Args:
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union['UpcomingInvoice', None]]
+      Response[Union[HTTPValidationError, OrgMemberListResponse]]
   """
 
-  kwargs = _get_kwargs()
+  kwargs = _get_kwargs(
+    org_id=org_id,
+  )
 
   response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -133,25 +138,28 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union["UpcomingInvoice", None]]:
-  """Get Upcoming Invoice
+) -> Optional[Union[HTTPValidationError, OrgMemberListResponse]]:
+  """List Organization Members
 
-   Get preview of the next invoice.
+   Get all members of an organization with their roles.
 
-  Returns estimated charges for the next billing period.
+  Args:
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union['UpcomingInvoice', None]
+      Union[HTTPValidationError, OrgMemberListResponse]
   """
 
   return (
     await asyncio_detailed(
+      org_id=org_id,
       client=client,
     )
   ).parsed

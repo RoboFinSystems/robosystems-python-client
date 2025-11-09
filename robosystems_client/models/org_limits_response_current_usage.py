@@ -4,12 +4,12 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="UserUsageResponseGraphs")
+T = TypeVar("T", bound="OrgLimitsResponseCurrentUsage")
 
 
 @_attrs_define
-class UserUsageResponseGraphs:
-  """Graph usage statistics (current/limit/remaining)"""
+class OrgLimitsResponseCurrentUsage:
+  """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -22,10 +22,10 @@ class UserUsageResponseGraphs:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    user_usage_response_graphs = cls()
+    org_limits_response_current_usage = cls()
 
-    user_usage_response_graphs.additional_properties = d
-    return user_usage_response_graphs
+    org_limits_response_current_usage.additional_properties = d
+    return org_limits_response_current_usage
 
   @property
   def additional_keys(self) -> list[str]:

@@ -11,42 +11,45 @@ T = TypeVar("T", bound="GraphSubscriptionTier")
 
 @_attrs_define
 class GraphSubscriptionTier:
-  """Information about a graph subscription tier.
+  """Information about a graph infrastructure tier.
 
-  Attributes:
-      name (str): Tier name
-      display_name (str): Display name for UI
-      description (str): Tier description
-      monthly_price (float): Monthly price in USD
-      monthly_credits (int): Monthly AI credits
-      storage_included_gb (int): Storage included in GB
-      storage_overage_per_gb (float): Overage cost per GB per month
-      allowed_graph_tiers (list[str]): Allowed graph tier identifiers
-      features (list[str]): List of features
-      backup_retention_days (int): Backup retention in days
-      priority_support (bool): Whether priority support is included
-      api_rate_multiplier (float): API rate multiplier
-      backend (str): Database backend (kuzu or neo4j)
-      max_queries_per_hour (Union[None, Unset, int]): Maximum queries per hour
-      max_subgraphs (Union[None, Unset, int]): Maximum subgraphs
-      instance_type (Union[None, Unset, str]): Instance type
+  Each tier represents a per-graph subscription option with specific
+  infrastructure, performance, and pricing characteristics.
+
+      Attributes:
+          name (str): Infrastructure tier identifier (e.g., kuzu-standard)
+          display_name (str): Display name for UI
+          description (str): Tier description
+          monthly_price_per_graph (float): Monthly price in USD per graph
+          monthly_credits_per_graph (int): Monthly AI credits per graph
+          storage_included_gb (int): Storage included in GB
+          storage_overage_per_gb (float): Overage cost per GB per month
+          infrastructure (str): Infrastructure description
+          features (list[str]): List of features
+          backup_retention_days (int): Backup retention in days
+          priority_support (bool): Whether priority support is included
+          api_rate_multiplier (float): API rate multiplier
+          backend (str): Database backend (kuzu or neo4j)
+          max_queries_per_hour (Union[None, Unset, int]): Maximum queries per hour
+          max_subgraphs (Union[Unset, int]): Maximum subgraphs supported Default: 0.
+          instance_type (Union[None, Unset, str]): Instance type
   """
 
   name: str
   display_name: str
   description: str
-  monthly_price: float
-  monthly_credits: int
+  monthly_price_per_graph: float
+  monthly_credits_per_graph: int
   storage_included_gb: int
   storage_overage_per_gb: float
-  allowed_graph_tiers: list[str]
+  infrastructure: str
   features: list[str]
   backup_retention_days: int
   priority_support: bool
   api_rate_multiplier: float
   backend: str
   max_queries_per_hour: Union[None, Unset, int] = UNSET
-  max_subgraphs: Union[None, Unset, int] = UNSET
+  max_subgraphs: Union[Unset, int] = 0
   instance_type: Union[None, Unset, str] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -57,15 +60,15 @@ class GraphSubscriptionTier:
 
     description = self.description
 
-    monthly_price = self.monthly_price
+    monthly_price_per_graph = self.monthly_price_per_graph
 
-    monthly_credits = self.monthly_credits
+    monthly_credits_per_graph = self.monthly_credits_per_graph
 
     storage_included_gb = self.storage_included_gb
 
     storage_overage_per_gb = self.storage_overage_per_gb
 
-    allowed_graph_tiers = self.allowed_graph_tiers
+    infrastructure = self.infrastructure
 
     features = self.features
 
@@ -83,11 +86,7 @@ class GraphSubscriptionTier:
     else:
       max_queries_per_hour = self.max_queries_per_hour
 
-    max_subgraphs: Union[None, Unset, int]
-    if isinstance(self.max_subgraphs, Unset):
-      max_subgraphs = UNSET
-    else:
-      max_subgraphs = self.max_subgraphs
+    max_subgraphs = self.max_subgraphs
 
     instance_type: Union[None, Unset, str]
     if isinstance(self.instance_type, Unset):
@@ -102,11 +101,11 @@ class GraphSubscriptionTier:
         "name": name,
         "display_name": display_name,
         "description": description,
-        "monthly_price": monthly_price,
-        "monthly_credits": monthly_credits,
+        "monthly_price_per_graph": monthly_price_per_graph,
+        "monthly_credits_per_graph": monthly_credits_per_graph,
         "storage_included_gb": storage_included_gb,
         "storage_overage_per_gb": storage_overage_per_gb,
-        "allowed_graph_tiers": allowed_graph_tiers,
+        "infrastructure": infrastructure,
         "features": features,
         "backup_retention_days": backup_retention_days,
         "priority_support": priority_support,
@@ -132,15 +131,15 @@ class GraphSubscriptionTier:
 
     description = d.pop("description")
 
-    monthly_price = d.pop("monthly_price")
+    monthly_price_per_graph = d.pop("monthly_price_per_graph")
 
-    monthly_credits = d.pop("monthly_credits")
+    monthly_credits_per_graph = d.pop("monthly_credits_per_graph")
 
     storage_included_gb = d.pop("storage_included_gb")
 
     storage_overage_per_gb = d.pop("storage_overage_per_gb")
 
-    allowed_graph_tiers = cast(list[str], d.pop("allowed_graph_tiers"))
+    infrastructure = d.pop("infrastructure")
 
     features = cast(list[str], d.pop("features"))
 
@@ -163,14 +162,7 @@ class GraphSubscriptionTier:
       d.pop("max_queries_per_hour", UNSET)
     )
 
-    def _parse_max_subgraphs(data: object) -> Union[None, Unset, int]:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(Union[None, Unset, int], data)
-
-    max_subgraphs = _parse_max_subgraphs(d.pop("max_subgraphs", UNSET))
+    max_subgraphs = d.pop("max_subgraphs", UNSET)
 
     def _parse_instance_type(data: object) -> Union[None, Unset, str]:
       if data is None:
@@ -185,11 +177,11 @@ class GraphSubscriptionTier:
       name=name,
       display_name=display_name,
       description=description,
-      monthly_price=monthly_price,
-      monthly_credits=monthly_credits,
+      monthly_price_per_graph=monthly_price_per_graph,
+      monthly_credits_per_graph=monthly_credits_per_graph,
       storage_included_gb=storage_included_gb,
       storage_overage_per_gb=storage_overage_per_gb,
-      allowed_graph_tiers=allowed_graph_tiers,
+      infrastructure=infrastructure,
       features=features,
       backup_retention_days=backup_retention_days,
       priority_support=priority_support,

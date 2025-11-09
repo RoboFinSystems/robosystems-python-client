@@ -1,18 +1,21 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.billing_customer import BillingCustomer
+from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
 
 
-def _get_kwargs() -> dict[str, Any]:
+def _get_kwargs(
+  org_id: str,
+  user_id: str,
+) -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
-    "method": "get",
-    "url": "/v1/billing/customer",
+    "method": "delete",
+    "url": f"/v1/orgs/{org_id}/members/{user_id}",
   }
 
   return _kwargs
@@ -20,11 +23,15 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[BillingCustomer]:
-  if response.status_code == 200:
-    response_200 = BillingCustomer.from_dict(response.json())
+) -> Optional[Union[Any, HTTPValidationError]]:
+  if response.status_code == 204:
+    response_204 = cast(Any, None)
+    return response_204
 
-    return response_200
+  if response.status_code == 422:
+    response_422 = HTTPValidationError.from_dict(response.json())
+
+    return response_422
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -34,7 +41,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[BillingCustomer]:
+) -> Response[Union[Any, HTTPValidationError]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -44,24 +51,31 @@ def _build_response(
 
 
 def sync_detailed(
+  org_id: str,
+  user_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[BillingCustomer]:
-  """Get Customer Info
+) -> Response[Union[Any, HTTPValidationError]]:
+  """Remove Member
 
-   Get billing customer information including payment methods on file.
+   Remove a member from the organization. Requires admin or owner role.
 
-  Returns customer details, payment methods, and whether invoice billing is enabled.
+  Args:
+      org_id (str):
+      user_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[BillingCustomer]
+      Response[Union[Any, HTTPValidationError]]
   """
 
-  kwargs = _get_kwargs()
+  kwargs = _get_kwargs(
+    org_id=org_id,
+    user_id=user_id,
+  )
 
   response = client.get_httpx_client().request(
     **kwargs,
@@ -71,47 +85,60 @@ def sync_detailed(
 
 
 def sync(
+  org_id: str,
+  user_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[BillingCustomer]:
-  """Get Customer Info
+) -> Optional[Union[Any, HTTPValidationError]]:
+  """Remove Member
 
-   Get billing customer information including payment methods on file.
+   Remove a member from the organization. Requires admin or owner role.
 
-  Returns customer details, payment methods, and whether invoice billing is enabled.
+  Args:
+      org_id (str):
+      user_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      BillingCustomer
+      Union[Any, HTTPValidationError]
   """
 
   return sync_detailed(
+    org_id=org_id,
+    user_id=user_id,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
+  org_id: str,
+  user_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[BillingCustomer]:
-  """Get Customer Info
+) -> Response[Union[Any, HTTPValidationError]]:
+  """Remove Member
 
-   Get billing customer information including payment methods on file.
+   Remove a member from the organization. Requires admin or owner role.
 
-  Returns customer details, payment methods, and whether invoice billing is enabled.
+  Args:
+      org_id (str):
+      user_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[BillingCustomer]
+      Response[Union[Any, HTTPValidationError]]
   """
 
-  kwargs = _get_kwargs()
+  kwargs = _get_kwargs(
+    org_id=org_id,
+    user_id=user_id,
+  )
 
   response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -119,25 +146,31 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+  org_id: str,
+  user_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[BillingCustomer]:
-  """Get Customer Info
+) -> Optional[Union[Any, HTTPValidationError]]:
+  """Remove Member
 
-   Get billing customer information including payment methods on file.
+   Remove a member from the organization. Requires admin or owner role.
 
-  Returns customer details, payment methods, and whether invoice billing is enabled.
+  Args:
+      org_id (str):
+      user_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      BillingCustomer
+      Union[Any, HTTPValidationError]
   """
 
   return (
     await asyncio_detailed(
+      org_id=org_id,
+      user_id=user_id,
       client=client,
     )
   ).parsed

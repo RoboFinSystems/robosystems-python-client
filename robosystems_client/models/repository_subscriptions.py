@@ -15,19 +15,26 @@ T = TypeVar("T", bound="RepositorySubscriptions")
 class RepositorySubscriptions:
   """Repository subscription offerings.
 
-  Attributes:
-      description (str): Description of repository subscriptions
-      repositories (list['RepositoryInfo']): Available repositories
-      notes (list[str]): Important notes
+  Repository subscriptions are per-organization, not per-graph. All members
+  of an organization share access to subscribed repositories.
+
+      Attributes:
+          description (str): Description of repository subscriptions
+          pricing_model (str): Pricing model type (per_graph or per_organization)
+          repositories (list['RepositoryInfo']): Available repositories
+          notes (list[str]): Important notes
   """
 
   description: str
+  pricing_model: str
   repositories: list["RepositoryInfo"]
   notes: list[str]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     description = self.description
+
+    pricing_model = self.pricing_model
 
     repositories = []
     for repositories_item_data in self.repositories:
@@ -41,6 +48,7 @@ class RepositorySubscriptions:
     field_dict.update(
       {
         "description": description,
+        "pricing_model": pricing_model,
         "repositories": repositories,
         "notes": notes,
       }
@@ -55,6 +63,8 @@ class RepositorySubscriptions:
     d = dict(src_dict)
     description = d.pop("description")
 
+    pricing_model = d.pop("pricing_model")
+
     repositories = []
     _repositories = d.pop("repositories")
     for repositories_item_data in _repositories:
@@ -66,6 +76,7 @@ class RepositorySubscriptions:
 
     repository_subscriptions = cls(
       description=description,
+      pricing_model=pricing_model,
       repositories=repositories,
       notes=notes,
     )

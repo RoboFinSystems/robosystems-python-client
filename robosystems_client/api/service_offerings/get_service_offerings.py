@@ -61,9 +61,15 @@ def sync_detailed(
   and shared repository subscriptions. This is the primary endpoint for frontend
   applications to display subscription options.
 
+  **Pricing Model:**
+  - Graph subscriptions are **per-graph** with infrastructure-based pricing
+  - Each graph you create has its own monthly subscription
+  - Organizations can have multiple graphs with different infrastructure tiers
+  - Credits are allocated per-graph, not shared across organization
+
   Includes:
-  - Graph subscription tiers (standard, enterprise, premium)
-  - Shared repository subscriptions (SEC, industry, economic data)
+  - Graph infrastructure tiers (kuzu-standard, kuzu-large, kuzu-xlarge) - per-graph pricing
+  - Shared repository subscriptions (SEC, industry, economic data) - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
   - Enabled/disabled status for repositories
@@ -101,9 +107,15 @@ def sync(
   and shared repository subscriptions. This is the primary endpoint for frontend
   applications to display subscription options.
 
+  **Pricing Model:**
+  - Graph subscriptions are **per-graph** with infrastructure-based pricing
+  - Each graph you create has its own monthly subscription
+  - Organizations can have multiple graphs with different infrastructure tiers
+  - Credits are allocated per-graph, not shared across organization
+
   Includes:
-  - Graph subscription tiers (standard, enterprise, premium)
-  - Shared repository subscriptions (SEC, industry, economic data)
+  - Graph infrastructure tiers (kuzu-standard, kuzu-large, kuzu-xlarge) - per-graph pricing
+  - Shared repository subscriptions (SEC, industry, economic data) - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
   - Enabled/disabled status for repositories
@@ -137,9 +149,15 @@ async def asyncio_detailed(
   and shared repository subscriptions. This is the primary endpoint for frontend
   applications to display subscription options.
 
+  **Pricing Model:**
+  - Graph subscriptions are **per-graph** with infrastructure-based pricing
+  - Each graph you create has its own monthly subscription
+  - Organizations can have multiple graphs with different infrastructure tiers
+  - Credits are allocated per-graph, not shared across organization
+
   Includes:
-  - Graph subscription tiers (standard, enterprise, premium)
-  - Shared repository subscriptions (SEC, industry, economic data)
+  - Graph infrastructure tiers (kuzu-standard, kuzu-large, kuzu-xlarge) - per-graph pricing
+  - Shared repository subscriptions (SEC, industry, economic data) - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
   - Enabled/disabled status for repositories
@@ -175,9 +193,15 @@ async def asyncio(
   and shared repository subscriptions. This is the primary endpoint for frontend
   applications to display subscription options.
 
+  **Pricing Model:**
+  - Graph subscriptions are **per-graph** with infrastructure-based pricing
+  - Each graph you create has its own monthly subscription
+  - Organizations can have multiple graphs with different infrastructure tiers
+  - Credits are allocated per-graph, not shared across organization
+
   Includes:
-  - Graph subscription tiers (standard, enterprise, premium)
-  - Shared repository subscriptions (SEC, industry, economic data)
+  - Graph infrastructure tiers (kuzu-standard, kuzu-large, kuzu-xlarge) - per-graph pricing
+  - Shared repository subscriptions (SEC, industry, economic data) - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
   - Enabled/disabled status for repositories

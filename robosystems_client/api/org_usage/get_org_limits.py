@@ -5,14 +5,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.user_usage_response import UserUsageResponse
+from ...models.http_validation_error import HTTPValidationError
+from ...models.org_limits_response import OrgLimitsResponse
 from ...types import Response
 
 
-def _get_kwargs() -> dict[str, Any]:
+def _get_kwargs(
+  org_id: str,
+) -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": "/v1/user/limits",
+    "url": f"/v1/orgs/{org_id}/limits",
   }
 
   return _kwargs
@@ -20,11 +23,16 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[UserUsageResponse]:
+) -> Optional[Union[HTTPValidationError, OrgLimitsResponse]]:
   if response.status_code == 200:
-    response_200 = UserUsageResponse.from_dict(response.json())
+    response_200 = OrgLimitsResponse.from_dict(response.json())
 
     return response_200
+
+  if response.status_code == 422:
+    response_422 = HTTPValidationError.from_dict(response.json())
+
+    return response_422
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -34,7 +42,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[UserUsageResponse]:
+) -> Response[Union[HTTPValidationError, OrgLimitsResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -44,23 +52,28 @@ def _build_response(
 
 
 def sync_detailed(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[UserUsageResponse]:
-  """Get user limits and usage
+) -> Response[Union[HTTPValidationError, OrgLimitsResponse]]:
+  """Get Organization Limits
 
-   Retrieve current limits and usage statistics for the authenticated user (simple safety valve for
-  graph creation)
+   Get the current limits and quotas for an organization.
+
+  Args:
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[UserUsageResponse]
+      Response[Union[HTTPValidationError, OrgLimitsResponse]]
   """
 
-  kwargs = _get_kwargs()
+  kwargs = _get_kwargs(
+    org_id=org_id,
+  )
 
   response = client.get_httpx_client().request(
     **kwargs,
@@ -70,45 +83,54 @@ def sync_detailed(
 
 
 def sync(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[UserUsageResponse]:
-  """Get user limits and usage
+) -> Optional[Union[HTTPValidationError, OrgLimitsResponse]]:
+  """Get Organization Limits
 
-   Retrieve current limits and usage statistics for the authenticated user (simple safety valve for
-  graph creation)
+   Get the current limits and quotas for an organization.
+
+  Args:
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      UserUsageResponse
+      Union[HTTPValidationError, OrgLimitsResponse]
   """
 
   return sync_detailed(
+    org_id=org_id,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[UserUsageResponse]:
-  """Get user limits and usage
+) -> Response[Union[HTTPValidationError, OrgLimitsResponse]]:
+  """Get Organization Limits
 
-   Retrieve current limits and usage statistics for the authenticated user (simple safety valve for
-  graph creation)
+   Get the current limits and quotas for an organization.
+
+  Args:
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[UserUsageResponse]
+      Response[Union[HTTPValidationError, OrgLimitsResponse]]
   """
 
-  kwargs = _get_kwargs()
+  kwargs = _get_kwargs(
+    org_id=org_id,
+  )
 
   response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -116,24 +138,28 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+  org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[UserUsageResponse]:
-  """Get user limits and usage
+) -> Optional[Union[HTTPValidationError, OrgLimitsResponse]]:
+  """Get Organization Limits
 
-   Retrieve current limits and usage statistics for the authenticated user (simple safety valve for
-  graph creation)
+   Get the current limits and quotas for an organization.
+
+  Args:
+      org_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      UserUsageResponse
+      Union[HTTPValidationError, OrgLimitsResponse]
   """
 
   return (
     await asyncio_detailed(
+      org_id=org_id,
       client=client,
     )
   ).parsed

@@ -69,19 +69,21 @@ def sync_detailed(
 
    Create a Stripe checkout session for collecting payment method.
 
-  This endpoint is used when a user needs to add a payment method before
+  This endpoint is used when an organization owner needs to add a payment method before
   provisioning resources. It creates a pending subscription and redirects
-  the user to Stripe Checkout to collect payment details.
+  to Stripe Checkout to collect payment details.
 
   **Flow:**
-  1. User tries to create a graph but has no payment method
+  1. Owner tries to create a graph but org has no payment method
   2. Frontend calls this endpoint with graph configuration
-  3. Backend creates a subscription in PENDING_PAYMENT status
+  3. Backend creates a subscription in PENDING_PAYMENT status for the user's org
   4. Returns Stripe Checkout URL
   5. User completes payment on Stripe
   6. Webhook activates subscription and provisions resource
 
-  **Enterprise customers** (with invoice_billing_enabled) should not call this endpoint.
+  **Requirements:**
+  - User must be an OWNER of their organization
+  - Enterprise customers (with invoice_billing_enabled) should not call this endpoint.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -114,19 +116,21 @@ def sync(
 
    Create a Stripe checkout session for collecting payment method.
 
-  This endpoint is used when a user needs to add a payment method before
+  This endpoint is used when an organization owner needs to add a payment method before
   provisioning resources. It creates a pending subscription and redirects
-  the user to Stripe Checkout to collect payment details.
+  to Stripe Checkout to collect payment details.
 
   **Flow:**
-  1. User tries to create a graph but has no payment method
+  1. Owner tries to create a graph but org has no payment method
   2. Frontend calls this endpoint with graph configuration
-  3. Backend creates a subscription in PENDING_PAYMENT status
+  3. Backend creates a subscription in PENDING_PAYMENT status for the user's org
   4. Returns Stripe Checkout URL
   5. User completes payment on Stripe
   6. Webhook activates subscription and provisions resource
 
-  **Enterprise customers** (with invoice_billing_enabled) should not call this endpoint.
+  **Requirements:**
+  - User must be an OWNER of their organization
+  - Enterprise customers (with invoice_billing_enabled) should not call this endpoint.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -154,19 +158,21 @@ async def asyncio_detailed(
 
    Create a Stripe checkout session for collecting payment method.
 
-  This endpoint is used when a user needs to add a payment method before
+  This endpoint is used when an organization owner needs to add a payment method before
   provisioning resources. It creates a pending subscription and redirects
-  the user to Stripe Checkout to collect payment details.
+  to Stripe Checkout to collect payment details.
 
   **Flow:**
-  1. User tries to create a graph but has no payment method
+  1. Owner tries to create a graph but org has no payment method
   2. Frontend calls this endpoint with graph configuration
-  3. Backend creates a subscription in PENDING_PAYMENT status
+  3. Backend creates a subscription in PENDING_PAYMENT status for the user's org
   4. Returns Stripe Checkout URL
   5. User completes payment on Stripe
   6. Webhook activates subscription and provisions resource
 
-  **Enterprise customers** (with invoice_billing_enabled) should not call this endpoint.
+  **Requirements:**
+  - User must be an OWNER of their organization
+  - Enterprise customers (with invoice_billing_enabled) should not call this endpoint.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -197,19 +203,21 @@ async def asyncio(
 
    Create a Stripe checkout session for collecting payment method.
 
-  This endpoint is used when a user needs to add a payment method before
+  This endpoint is used when an organization owner needs to add a payment method before
   provisioning resources. It creates a pending subscription and redirects
-  the user to Stripe Checkout to collect payment details.
+  to Stripe Checkout to collect payment details.
 
   **Flow:**
-  1. User tries to create a graph but has no payment method
+  1. Owner tries to create a graph but org has no payment method
   2. Frontend calls this endpoint with graph configuration
-  3. Backend creates a subscription in PENDING_PAYMENT status
+  3. Backend creates a subscription in PENDING_PAYMENT status for the user's org
   4. Returns Stripe Checkout URL
   5. User completes payment on Stripe
   6. Webhook activates subscription and provisions resource
 
-  **Enterprise customers** (with invoice_billing_enabled) should not call this endpoint.
+  **Requirements:**
+  - User must be an OWNER of their organization
+  - Enterprise customers (with invoice_billing_enabled) should not call this endpoint.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
