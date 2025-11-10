@@ -9,7 +9,8 @@ from ...models.agent_request import AgentRequest
 from ...models.agent_response import AgentResponse
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...types import Response
+from ...models.response_mode import ResponseMode
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
@@ -17,12 +18,27 @@ def _get_kwargs(
   agent_type: str,
   *,
   body: AgentRequest,
+  mode: Union[None, ResponseMode, Unset] = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
+
+  params: dict[str, Any] = {}
+
+  json_mode: Union[None, Unset, str]
+  if isinstance(mode, Unset):
+    json_mode = UNSET
+  elif isinstance(mode, ResponseMode):
+    json_mode = mode.value
+  else:
+    json_mode = mode
+  params["mode"] = json_mode
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": f"/v1/graphs/{graph_id}/agent/{agent_type}",
+    "params": params,
   }
 
   _kwargs["json"] = body.to_dict()
@@ -40,6 +56,10 @@ def _parse_response(
     response_200 = AgentResponse.from_dict(response.json())
 
     return response_200
+
+  if response.status_code == 202:
+    response_202 = cast(Any, None)
+    return response_202
 
   if response.status_code == 400:
     response_400 = cast(Any, None)
@@ -90,21 +110,32 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: AgentRequest,
+  mode: Union[None, ResponseMode, Unset] = UNSET,
 ) -> Response[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
-   Execute a specific agent type directly.
+   Execute a specific agent type directly with intelligent execution strategy.
 
   Available agents:
   - **financial**: Financial analysis, SEC filings, accounting data
   - **research**: Deep research and comprehensive analysis
   - **rag**: Fast retrieval without AI (no credits required)
 
+  **Execution Strategies (automatic):**
+  - Fast operations (<5s): Immediate synchronous response
+  - Medium operations (5-30s): SSE streaming with progress updates
+  - Long operations (>30s): Async Celery worker with operation tracking
+
+  **Response Mode Override:**
+  Use query parameter `?mode=sync|async` to override automatic strategy selection.
+
   Use this endpoint when you know which agent you want to use.
 
   Args:
       graph_id (str):
       agent_type (str):
+      mode (Union[None, ResponseMode, Unset]): Override execution mode: sync, async, stream, or
+          auto
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -119,6 +150,7 @@ def sync_detailed(
     graph_id=graph_id,
     agent_type=agent_type,
     body=body,
+    mode=mode,
   )
 
   response = client.get_httpx_client().request(
@@ -134,21 +166,32 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: AgentRequest,
+  mode: Union[None, ResponseMode, Unset] = UNSET,
 ) -> Optional[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
-   Execute a specific agent type directly.
+   Execute a specific agent type directly with intelligent execution strategy.
 
   Available agents:
   - **financial**: Financial analysis, SEC filings, accounting data
   - **research**: Deep research and comprehensive analysis
   - **rag**: Fast retrieval without AI (no credits required)
 
+  **Execution Strategies (automatic):**
+  - Fast operations (<5s): Immediate synchronous response
+  - Medium operations (5-30s): SSE streaming with progress updates
+  - Long operations (>30s): Async Celery worker with operation tracking
+
+  **Response Mode Override:**
+  Use query parameter `?mode=sync|async` to override automatic strategy selection.
+
   Use this endpoint when you know which agent you want to use.
 
   Args:
       graph_id (str):
       agent_type (str):
+      mode (Union[None, ResponseMode, Unset]): Override execution mode: sync, async, stream, or
+          auto
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -164,6 +207,7 @@ def sync(
     agent_type=agent_type,
     client=client,
     body=body,
+    mode=mode,
   ).parsed
 
 
@@ -173,21 +217,32 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: AgentRequest,
+  mode: Union[None, ResponseMode, Unset] = UNSET,
 ) -> Response[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
-   Execute a specific agent type directly.
+   Execute a specific agent type directly with intelligent execution strategy.
 
   Available agents:
   - **financial**: Financial analysis, SEC filings, accounting data
   - **research**: Deep research and comprehensive analysis
   - **rag**: Fast retrieval without AI (no credits required)
 
+  **Execution Strategies (automatic):**
+  - Fast operations (<5s): Immediate synchronous response
+  - Medium operations (5-30s): SSE streaming with progress updates
+  - Long operations (>30s): Async Celery worker with operation tracking
+
+  **Response Mode Override:**
+  Use query parameter `?mode=sync|async` to override automatic strategy selection.
+
   Use this endpoint when you know which agent you want to use.
 
   Args:
       graph_id (str):
       agent_type (str):
+      mode (Union[None, ResponseMode, Unset]): Override execution mode: sync, async, stream, or
+          auto
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -202,6 +257,7 @@ async def asyncio_detailed(
     graph_id=graph_id,
     agent_type=agent_type,
     body=body,
+    mode=mode,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -215,21 +271,32 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: AgentRequest,
+  mode: Union[None, ResponseMode, Unset] = UNSET,
 ) -> Optional[Union[AgentResponse, Any, ErrorResponse, HTTPValidationError]]:
   """Execute specific agent
 
-   Execute a specific agent type directly.
+   Execute a specific agent type directly with intelligent execution strategy.
 
   Available agents:
   - **financial**: Financial analysis, SEC filings, accounting data
   - **research**: Deep research and comprehensive analysis
   - **rag**: Fast retrieval without AI (no credits required)
 
+  **Execution Strategies (automatic):**
+  - Fast operations (<5s): Immediate synchronous response
+  - Medium operations (5-30s): SSE streaming with progress updates
+  - Long operations (>30s): Async Celery worker with operation tracking
+
+  **Response Mode Override:**
+  Use query parameter `?mode=sync|async` to override automatic strategy selection.
+
   Use this endpoint when you know which agent you want to use.
 
   Args:
       graph_id (str):
       agent_type (str):
+      mode (Union[None, ResponseMode, Unset]): Override execution mode: sync, async, stream, or
+          auto
       body (AgentRequest): Request model for agent interactions.
 
   Raises:
@@ -246,5 +313,6 @@ async def asyncio(
       agent_type=agent_type,
       client=client,
       body=body,
+      mode=mode,
     )
   ).parsed

@@ -9,7 +9,10 @@ T = TypeVar("T", bound="CreateCheckoutRequestResourceConfig")
 
 @_attrs_define
 class CreateCheckoutRequestResourceConfig:
-  """Configuration for the resource to be provisioned"""
+  """Configuration for the resource to be provisioned. For repositories: {'repository_name': 'graph_id'} where graph_id
+  is the repository slug (e.g., 'sec')
+
+  """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

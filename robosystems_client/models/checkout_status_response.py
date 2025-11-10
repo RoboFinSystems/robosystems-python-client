@@ -16,7 +16,8 @@ class CheckoutStatusResponse:
   Attributes:
       status (str): Checkout status: 'pending_payment', 'provisioning', 'completed', 'failed'
       subscription_id (str): Internal subscription ID
-      resource_id (Union[None, Unset, str]): Resource ID (graph_id or repository name) once provisioned
+      resource_id (Union[None, Unset, str]): Resource ID (graph_id for both graphs and repositories) once provisioned.
+          For repositories, this is the repository slug (e.g., 'sec')
       operation_id (Union[None, Unset, str]): SSE operation ID for monitoring provisioning progress
       error (Union[None, Unset, str]): Error message if checkout failed
   """

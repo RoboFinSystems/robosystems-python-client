@@ -14,6 +14,14 @@ from .query_client import (
   QueryOptions,
   QueuedQueryError,
 )
+from .agent_client import (
+  AgentClient,
+  AgentResult,
+  QueuedAgentResponse,
+  AgentQueryRequest,
+  AgentOptions,
+  QueuedAgentError,
+)
 from .operation_client import (
   OperationClient,
   OperationStatus,
@@ -118,6 +126,13 @@ __all__ = [
   "QueryRequest",
   "QueryOptions",
   "QueuedQueryError",
+  # Agent Client
+  "AgentClient",
+  "AgentResult",
+  "QueuedAgentResponse",
+  "AgentQueryRequest",
+  "AgentOptions",
+  "QueuedAgentError",
   # Operation Client
   "OperationClient",
   "OperationStatus",
@@ -187,6 +202,16 @@ def execute_query(graph_id: str, query: str, parameters=None):
 def stream_query(graph_id: str, query: str, parameters=None, chunk_size=None):
   """Stream a query using the default extensions instance"""
   return extensions.query.stream_query(graph_id, query, parameters, chunk_size)
+
+
+def agent_query(graph_id: str, message: str, context=None):
+  """Execute an agent query using the default extensions instance"""
+  return extensions.agent.query(graph_id, message, context)
+
+
+def analyze_financials(graph_id: str, message: str, on_progress=None):
+  """Execute financial agent using the default extensions instance"""
+  return extensions.agent.analyze_financials(graph_id, message, on_progress)
 
 
 # DataFrame convenience functions (if pandas is available)

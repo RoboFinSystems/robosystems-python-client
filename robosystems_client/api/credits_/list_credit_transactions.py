@@ -141,7 +141,7 @@ def sync_detailed(
   No credits are consumed for viewing transaction history.
 
   Args:
-      graph_id (str):
+      graph_id (str): Graph database identifier
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
       operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
@@ -206,7 +206,7 @@ def sync(
   No credits are consumed for viewing transaction history.
 
   Args:
-      graph_id (str):
+      graph_id (str): Graph database identifier
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
       operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
@@ -266,7 +266,7 @@ async def asyncio_detailed(
   No credits are consumed for viewing transaction history.
 
   Args:
-      graph_id (str):
+      graph_id (str): Graph database identifier
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
       operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
@@ -329,7 +329,7 @@ async def asyncio(
   No credits are consumed for viewing transaction history.
 
   Args:
-      graph_id (str):
+      graph_id (str): Graph database identifier
       transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
           consumption, bonus, refund)
       operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
