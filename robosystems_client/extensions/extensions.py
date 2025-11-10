@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Dict, Any, Optional, Callable
 
 from .query_client import QueryClient
+from .agent_client import AgentClient
 from .operation_client import OperationClient
 from .table_ingest_client import TableIngestClient
 from .graph_client import GraphClient
@@ -58,6 +59,7 @@ class RoboSystemsExtensions:
 
     # Initialize clients
     self.query = QueryClient(self.config)
+    self.agent = AgentClient(self.config)
     self.operations = OperationClient(self.config)
     self.tables = TableIngestClient(self.config)
     self.graphs = GraphClient(self.config)
@@ -88,6 +90,7 @@ class RoboSystemsExtensions:
   def close(self):
     """Clean up all active connections"""
     self.query.close()
+    self.agent.close()
     self.operations.close_all()
     self.tables.close()
     self.graphs.close()

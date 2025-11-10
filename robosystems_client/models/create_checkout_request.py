@@ -20,7 +20,8 @@ class CreateCheckoutRequest:
   Attributes:
       plan_name (str): Billing plan name (e.g., 'kuzu-standard')
       resource_type (str): Resource type ('graph' or 'repository')
-      resource_config (CreateCheckoutRequestResourceConfig): Configuration for the resource to be provisioned
+      resource_config (CreateCheckoutRequestResourceConfig): Configuration for the resource to be provisioned. For
+          repositories: {'repository_name': 'graph_id'} where graph_id is the repository slug (e.g., 'sec')
   """
 
   plan_name: str
