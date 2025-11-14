@@ -6,36 +6,26 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
-from ...models.update_payment_method_request import UpdatePaymentMethodRequest
-from ...models.update_payment_method_response import UpdatePaymentMethodResponse
+from ...models.portal_session_response import PortalSessionResponse
 from ...types import Response
 
 
 def _get_kwargs(
   org_id: str,
-  *,
-  body: UpdatePaymentMethodRequest,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/billing/customer/{org_id}/payment-method",
+    "url": f"/v1/billing/customer/{org_id}/portal",
   }
 
-  _kwargs["json"] = body.to_dict()
-
-  headers["Content-Type"] = "application/json"
-
-  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
+) -> Optional[Union[HTTPValidationError, PortalSessionResponse]]:
   if response.status_code == 200:
-    response_200 = UpdatePaymentMethodResponse.from_dict(response.json())
+    response_200 = PortalSessionResponse.from_dict(response.json())
 
     return response_200
 
@@ -52,7 +42,7 @@ def _parse_response(
 
 def _build_response(
   *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
+) -> Response[Union[HTTPValidationError, PortalSessionResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -65,32 +55,37 @@ def sync_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePaymentMethodRequest,
-) -> Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
-  """Update Organization Default Payment Method
+) -> Response[Union[HTTPValidationError, PortalSessionResponse]]:
+  """Create Customer Portal Session
 
-   Update the default payment method for the organization.
+   Create a Stripe Customer Portal session for managing payment methods.
 
-  This changes which payment method will be used for future subscription charges.
+  The portal allows users to:
+  - Add new payment methods
+  - Remove existing payment methods
+  - Update default payment method
+  - View billing history
+
+  The user will be redirected to Stripe's hosted portal page and returned to the billing page when
+  done.
 
   **Requirements:**
   - User must be an OWNER of the organization
+  - Organization must have a Stripe customer ID (i.e., has gone through checkout at least once)
 
   Args:
       org_id (str):
-      body (UpdatePaymentMethodRequest): Request to update default payment method.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]
+      Response[Union[HTTPValidationError, PortalSessionResponse]]
   """
 
   kwargs = _get_kwargs(
     org_id=org_id,
-    body=body,
   )
 
   response = client.get_httpx_client().request(
@@ -104,33 +99,38 @@ def sync(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePaymentMethodRequest,
-) -> Optional[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
-  """Update Organization Default Payment Method
+) -> Optional[Union[HTTPValidationError, PortalSessionResponse]]:
+  """Create Customer Portal Session
 
-   Update the default payment method for the organization.
+   Create a Stripe Customer Portal session for managing payment methods.
 
-  This changes which payment method will be used for future subscription charges.
+  The portal allows users to:
+  - Add new payment methods
+  - Remove existing payment methods
+  - Update default payment method
+  - View billing history
+
+  The user will be redirected to Stripe's hosted portal page and returned to the billing page when
+  done.
 
   **Requirements:**
   - User must be an OWNER of the organization
+  - Organization must have a Stripe customer ID (i.e., has gone through checkout at least once)
 
   Args:
       org_id (str):
-      body (UpdatePaymentMethodRequest): Request to update default payment method.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, UpdatePaymentMethodResponse]
+      Union[HTTPValidationError, PortalSessionResponse]
   """
 
   return sync_detailed(
     org_id=org_id,
     client=client,
-    body=body,
   ).parsed
 
 
@@ -138,32 +138,37 @@ async def asyncio_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePaymentMethodRequest,
-) -> Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
-  """Update Organization Default Payment Method
+) -> Response[Union[HTTPValidationError, PortalSessionResponse]]:
+  """Create Customer Portal Session
 
-   Update the default payment method for the organization.
+   Create a Stripe Customer Portal session for managing payment methods.
 
-  This changes which payment method will be used for future subscription charges.
+  The portal allows users to:
+  - Add new payment methods
+  - Remove existing payment methods
+  - Update default payment method
+  - View billing history
+
+  The user will be redirected to Stripe's hosted portal page and returned to the billing page when
+  done.
 
   **Requirements:**
   - User must be an OWNER of the organization
+  - Organization must have a Stripe customer ID (i.e., has gone through checkout at least once)
 
   Args:
       org_id (str):
-      body (UpdatePaymentMethodRequest): Request to update default payment method.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, UpdatePaymentMethodResponse]]
+      Response[Union[HTTPValidationError, PortalSessionResponse]]
   """
 
   kwargs = _get_kwargs(
     org_id=org_id,
-    body=body,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -175,33 +180,38 @@ async def asyncio(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePaymentMethodRequest,
-) -> Optional[Union[HTTPValidationError, UpdatePaymentMethodResponse]]:
-  """Update Organization Default Payment Method
+) -> Optional[Union[HTTPValidationError, PortalSessionResponse]]:
+  """Create Customer Portal Session
 
-   Update the default payment method for the organization.
+   Create a Stripe Customer Portal session for managing payment methods.
 
-  This changes which payment method will be used for future subscription charges.
+  The portal allows users to:
+  - Add new payment methods
+  - Remove existing payment methods
+  - Update default payment method
+  - View billing history
+
+  The user will be redirected to Stripe's hosted portal page and returned to the billing page when
+  done.
 
   **Requirements:**
   - User must be an OWNER of the organization
+  - Organization must have a Stripe customer ID (i.e., has gone through checkout at least once)
 
   Args:
       org_id (str):
-      body (UpdatePaymentMethodRequest): Request to update default payment method.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, UpdatePaymentMethodResponse]
+      Union[HTTPValidationError, PortalSessionResponse]
   """
 
   return (
     await asyncio_detailed(
       org_id=org_id,
       client=client,
-      body=body,
     )
   ).parsed

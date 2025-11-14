@@ -4,28 +4,28 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="UpdatePaymentMethodRequest")
+T = TypeVar("T", bound="PortalSessionResponse")
 
 
 @_attrs_define
-class UpdatePaymentMethodRequest:
-  """Request to update default payment method.
+class PortalSessionResponse:
+  """Response for customer portal session creation.
 
   Attributes:
-      payment_method_id (str): Payment method ID to set as default
+      portal_url (str): Stripe Customer Portal URL where user can manage payment methods
   """
 
-  payment_method_id: str
+  portal_url: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    payment_method_id = self.payment_method_id
+    portal_url = self.portal_url
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "payment_method_id": payment_method_id,
+        "portal_url": portal_url,
       }
     )
 
@@ -34,14 +34,14 @@ class UpdatePaymentMethodRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    payment_method_id = d.pop("payment_method_id")
+    portal_url = d.pop("portal_url")
 
-    update_payment_method_request = cls(
-      payment_method_id=payment_method_id,
+    portal_session_response = cls(
+      portal_url=portal_url,
     )
 
-    update_payment_method_request.additional_properties = d
-    return update_payment_method_request
+    portal_session_response.additional_properties = d
+    return portal_session_response
 
   @property
   def additional_keys(self) -> list[str]:

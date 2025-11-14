@@ -24,8 +24,7 @@ class CreateSubgraphRequest:
       name (str): Alphanumeric name for the subgraph (e.g., dev, staging, prod1)
       display_name (str): Human-readable display name for the subgraph
       description (Union[None, Unset, str]): Optional description of the subgraph's purpose
-      schema_extensions (Union[None, Unset, list[str]]): Schema extensions to include (inherits from parent by
-          default)
+      schema_extensions (Union[Unset, list[str]]): Schema extensions to include (inherits from parent by default)
       subgraph_type (Union[Unset, SubgraphType]): Types of subgraphs.
       metadata (Union['CreateSubgraphRequestMetadataType0', None, Unset]): Additional metadata for the subgraph
   """
@@ -33,7 +32,7 @@ class CreateSubgraphRequest:
   name: str
   display_name: str
   description: Union[None, Unset, str] = UNSET
-  schema_extensions: Union[None, Unset, list[str]] = UNSET
+  schema_extensions: Union[Unset, list[str]] = UNSET
   subgraph_type: Union[Unset, SubgraphType] = UNSET
   metadata: Union["CreateSubgraphRequestMetadataType0", None, Unset] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -53,13 +52,8 @@ class CreateSubgraphRequest:
     else:
       description = self.description
 
-    schema_extensions: Union[None, Unset, list[str]]
-    if isinstance(self.schema_extensions, Unset):
-      schema_extensions = UNSET
-    elif isinstance(self.schema_extensions, list):
-      schema_extensions = self.schema_extensions
-
-    else:
+    schema_extensions: Union[Unset, list[str]] = UNSET
+    if not isinstance(self.schema_extensions, Unset):
       schema_extensions = self.schema_extensions
 
     subgraph_type: Union[Unset, str] = UNSET
@@ -113,22 +107,7 @@ class CreateSubgraphRequest:
 
     description = _parse_description(d.pop("description", UNSET))
 
-    def _parse_schema_extensions(data: object) -> Union[None, Unset, list[str]]:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, list):
-          raise TypeError()
-        schema_extensions_type_0 = cast(list[str], data)
-
-        return schema_extensions_type_0
-      except:  # noqa: E722
-        pass
-      return cast(Union[None, Unset, list[str]], data)
-
-    schema_extensions = _parse_schema_extensions(d.pop("schema_extensions", UNSET))
+    schema_extensions = cast(list[str], d.pop("schema_extensions", UNSET))
 
     _subgraph_type = d.pop("subgraph_type", UNSET)
     subgraph_type: Union[Unset, SubgraphType]

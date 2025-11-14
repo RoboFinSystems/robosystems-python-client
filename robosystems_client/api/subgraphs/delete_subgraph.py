@@ -111,8 +111,8 @@ def sync_detailed(
   All data in the subgraph will be lost.
 
   **Backup Location:**
-  If backup requested, stored in S3 at:
-  `s3://robosystems-backups/{instance_id}/{database_name}_{timestamp}.backup`
+  If backup requested, stored in S3 Kuzu database bucket at:
+  `s3://{kuzu_s3_bucket}/{instance_id}/{database_name}_{timestamp}.backup`
 
   Args:
       graph_id (str):
@@ -165,8 +165,8 @@ def sync(
   All data in the subgraph will be lost.
 
   **Backup Location:**
-  If backup requested, stored in S3 at:
-  `s3://robosystems-backups/{instance_id}/{database_name}_{timestamp}.backup`
+  If backup requested, stored in S3 Kuzu database bucket at:
+  `s3://{kuzu_s3_bucket}/{instance_id}/{database_name}_{timestamp}.backup`
 
   Args:
       graph_id (str):
@@ -214,8 +214,8 @@ async def asyncio_detailed(
   All data in the subgraph will be lost.
 
   **Backup Location:**
-  If backup requested, stored in S3 at:
-  `s3://robosystems-backups/{instance_id}/{database_name}_{timestamp}.backup`
+  If backup requested, stored in S3 Kuzu database bucket at:
+  `s3://{kuzu_s3_bucket}/{instance_id}/{database_name}_{timestamp}.backup`
 
   Args:
       graph_id (str):
@@ -266,8 +266,8 @@ async def asyncio(
   All data in the subgraph will be lost.
 
   **Backup Location:**
-  If backup requested, stored in S3 at:
-  `s3://robosystems-backups/{instance_id}/{database_name}_{timestamp}.backup`
+  If backup requested, stored in S3 Kuzu database bucket at:
+  `s3://{kuzu_s3_bucket}/{instance_id}/{database_name}_{timestamp}.backup`
 
   Args:
       graph_id (str):
