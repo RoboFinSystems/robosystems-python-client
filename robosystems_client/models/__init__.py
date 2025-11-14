@@ -45,7 +45,6 @@ from .bulk_ingest_response import BulkIngestResponse
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
-from .cancellation_response import CancellationResponse
 from .check_credit_balance_response_checkcreditbalance import (
   CheckCreditBalanceResponseCheckcreditbalance,
 )
@@ -208,6 +207,7 @@ from .plaid_connection_config_accounts_type_0_item import (
 from .plaid_connection_config_institution_type_0 import (
   PlaidConnectionConfigInstitutionType0,
 )
+from .portal_session_response import PortalSessionResponse
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
@@ -279,8 +279,6 @@ from .update_file_status_response_updatefilestatus import (
 from .update_member_role_request import UpdateMemberRoleRequest
 from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
-from .update_payment_method_request import UpdatePaymentMethodRequest
-from .update_payment_method_response import UpdatePaymentMethodResponse
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
@@ -326,7 +324,6 @@ __all__ = (
   "BillingCustomer",
   "BulkIngestRequest",
   "BulkIngestResponse",
-  "CancellationResponse",
   "CancelOperationResponseCanceloperation",
   "CheckCreditBalanceResponseCheckcreditbalance",
   "CheckoutResponse",
@@ -462,6 +459,7 @@ __all__ = (
   "PlaidConnectionConfig",
   "PlaidConnectionConfigAccountsType0Item",
   "PlaidConnectionConfigInstitutionType0",
+  "PortalSessionResponse",
   "QueryLimits",
   "QuickBooksConnectionConfig",
   "RateLimits",
@@ -519,8 +517,6 @@ __all__ = (
   "UpdateMemberRoleRequest",
   "UpdateOrgRequest",
   "UpdatePasswordRequest",
-  "UpdatePaymentMethodRequest",
-  "UpdatePaymentMethodResponse",
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",

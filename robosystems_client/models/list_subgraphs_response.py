@@ -21,6 +21,8 @@ class ListSubgraphsResponse:
       parent_graph_id (str): Parent graph identifier
       parent_graph_name (str): Parent graph name
       parent_graph_tier (str): Parent graph tier
+      subgraphs_enabled (bool): Whether subgraphs are enabled for this tier (requires Kuzu Large/XLarge or Neo4j
+          Enterprise XLarge)
       subgraph_count (int): Total number of subgraphs
       subgraphs (list['SubgraphSummary']): List of subgraphs
       max_subgraphs (Union[None, Unset, int]): Maximum allowed subgraphs for this tier (None = unlimited)
@@ -30,6 +32,7 @@ class ListSubgraphsResponse:
   parent_graph_id: str
   parent_graph_name: str
   parent_graph_tier: str
+  subgraphs_enabled: bool
   subgraph_count: int
   subgraphs: list["SubgraphSummary"]
   max_subgraphs: Union[None, Unset, int] = UNSET
@@ -42,6 +45,8 @@ class ListSubgraphsResponse:
     parent_graph_name = self.parent_graph_name
 
     parent_graph_tier = self.parent_graph_tier
+
+    subgraphs_enabled = self.subgraphs_enabled
 
     subgraph_count = self.subgraph_count
 
@@ -69,6 +74,7 @@ class ListSubgraphsResponse:
         "parent_graph_id": parent_graph_id,
         "parent_graph_name": parent_graph_name,
         "parent_graph_tier": parent_graph_tier,
+        "subgraphs_enabled": subgraphs_enabled,
         "subgraph_count": subgraph_count,
         "subgraphs": subgraphs,
       }
@@ -90,6 +96,8 @@ class ListSubgraphsResponse:
     parent_graph_name = d.pop("parent_graph_name")
 
     parent_graph_tier = d.pop("parent_graph_tier")
+
+    subgraphs_enabled = d.pop("subgraphs_enabled")
 
     subgraph_count = d.pop("subgraph_count")
 
@@ -122,6 +130,7 @@ class ListSubgraphsResponse:
       parent_graph_id=parent_graph_id,
       parent_graph_name=parent_graph_name,
       parent_graph_tier=parent_graph_tier,
+      subgraphs_enabled=subgraphs_enabled,
       subgraph_count=subgraph_count,
       subgraphs=subgraphs,
       max_subgraphs=max_subgraphs,

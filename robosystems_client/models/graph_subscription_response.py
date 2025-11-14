@@ -26,6 +26,8 @@ class GraphSubscriptionResponse:
       current_period_end (Union[None, Unset, str]): Current billing period end
       started_at (Union[None, Unset, str]): Subscription start date
       canceled_at (Union[None, Unset, str]): Cancellation date
+      ends_at (Union[None, Unset, str]): Subscription end date (when access will be revoked, especially relevant for
+          cancelled subscriptions)
   """
 
   id: str
@@ -40,6 +42,7 @@ class GraphSubscriptionResponse:
   current_period_end: Union[None, Unset, str] = UNSET
   started_at: Union[None, Unset, str] = UNSET
   canceled_at: Union[None, Unset, str] = UNSET
+  ends_at: Union[None, Unset, str] = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -83,6 +86,12 @@ class GraphSubscriptionResponse:
     else:
       canceled_at = self.canceled_at
 
+    ends_at: Union[None, Unset, str]
+    if isinstance(self.ends_at, Unset):
+      ends_at = UNSET
+    else:
+      ends_at = self.ends_at
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -105,6 +114,8 @@ class GraphSubscriptionResponse:
       field_dict["started_at"] = started_at
     if canceled_at is not UNSET:
       field_dict["canceled_at"] = canceled_at
+    if ends_at is not UNSET:
+      field_dict["ends_at"] = ends_at
 
     return field_dict
 
@@ -165,6 +176,15 @@ class GraphSubscriptionResponse:
 
     canceled_at = _parse_canceled_at(d.pop("canceled_at", UNSET))
 
+    def _parse_ends_at(data: object) -> Union[None, Unset, str]:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(Union[None, Unset, str], data)
+
+    ends_at = _parse_ends_at(d.pop("ends_at", UNSET))
+
     graph_subscription_response = cls(
       id=id,
       resource_type=resource_type,
@@ -178,6 +198,7 @@ class GraphSubscriptionResponse:
       current_period_end=current_period_end,
       started_at=started_at,
       canceled_at=canceled_at,
+      ends_at=ends_at,
     )
 
     graph_subscription_response.additional_properties = d
