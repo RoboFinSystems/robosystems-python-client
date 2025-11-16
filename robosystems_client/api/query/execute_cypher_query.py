@@ -193,6 +193,12 @@ def sync_detailed(
   - `503 Service Unavailable`: Circuit breaker open or SSE disabled
   - Clients should implement exponential backoff
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Subgraphs share the same instance as their parent graph and have independent data.
+
   **Note:**
   Query operations are included - no credit consumption required.
   Queue position is based on subscription tier for priority.
@@ -298,6 +304,12 @@ def sync(
   - `503 Service Unavailable`: Circuit breaker open or SSE disabled
   - Clients should implement exponential backoff
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Subgraphs share the same instance as their parent graph and have independent data.
+
   **Note:**
   Query operations are included - no credit consumption required.
   Queue position is based on subscription tier for priority.
@@ -397,6 +409,12 @@ async def asyncio_detailed(
   - `429 Too Many Requests`: Rate limit or connection limit exceeded
   - `503 Service Unavailable`: Circuit breaker open or SSE disabled
   - Clients should implement exponential backoff
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Subgraphs share the same instance as their parent graph and have independent data.
 
   **Note:**
   Query operations are included - no credit consumption required.
@@ -500,6 +518,12 @@ async def asyncio(
   - `429 Too Many Requests`: Rate limit or connection limit exceeded
   - `503 Service Unavailable`: Circuit breaker open or SSE disabled
   - Clients should implement exponential backoff
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Subgraphs share the same instance as their parent graph and have independent data.
 
   **Note:**
   Query operations are included - no credit consumption required.

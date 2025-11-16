@@ -81,6 +81,13 @@ def sync_detailed(
   - User permissions and subscription tier
   - Backend capabilities (Kuzu, Neo4j, etc.)
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  The returned tool list is identical for parent graphs and subgraphs, as all
+  MCP tools work uniformly across graph boundaries.
+
   **Note:**
   MCP tool listing is included - no credit consumption required.
 
@@ -125,6 +132,13 @@ def sync(
   - User permissions and subscription tier
   - Backend capabilities (Kuzu, Neo4j, etc.)
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  The returned tool list is identical for parent graphs and subgraphs, as all
+  MCP tools work uniformly across graph boundaries.
+
   **Note:**
   MCP tool listing is included - no credit consumption required.
 
@@ -163,6 +177,13 @@ async def asyncio_detailed(
   - Graph type (shared repository vs user graph)
   - User permissions and subscription tier
   - Backend capabilities (Kuzu, Neo4j, etc.)
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  The returned tool list is identical for parent graphs and subgraphs, as all
+  MCP tools work uniformly across graph boundaries.
 
   **Note:**
   MCP tool listing is included - no credit consumption required.
@@ -205,6 +226,13 @@ async def asyncio(
   - Graph type (shared repository vs user graph)
   - User permissions and subscription tier
   - Backend capabilities (Kuzu, Neo4j, etc.)
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  The returned tool list is identical for parent graphs and subgraphs, as all
+  MCP tools work uniformly across graph boundaries.
 
   **Note:**
   MCP tool listing is included - no credit consumption required.

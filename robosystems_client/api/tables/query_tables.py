@@ -146,6 +146,12 @@ def sync_detailed(
   - Read-only: No INSERT, UPDATE, DELETE
   - User's tables only: Cannot query other users' data
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has its own independent staging tables.
+
   **Shared Repositories:**
   Shared repositories (SEC, etc.) do not allow direct SQL queries.
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
@@ -234,6 +240,12 @@ def sync(
   - Read-only: No INSERT, UPDATE, DELETE
   - User's tables only: Cannot query other users' data
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has its own independent staging tables.
+
   **Shared Repositories:**
   Shared repositories (SEC, etc.) do not allow direct SQL queries.
   Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
@@ -316,6 +328,12 @@ async def asyncio_detailed(
   - Result limit: 10,000 rows (use LIMIT clause)
   - Read-only: No INSERT, UPDATE, DELETE
   - User's tables only: Cannot query other users' data
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has its own independent staging tables.
 
   **Shared Repositories:**
   Shared repositories (SEC, etc.) do not allow direct SQL queries.
@@ -402,6 +420,12 @@ async def asyncio(
   - Result limit: 10,000 rows (use LIMIT clause)
   - Read-only: No INSERT, UPDATE, DELETE
   - User's tables only: Cannot query other users' data
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has its own independent staging tables.
 
   **Shared Repositories:**
   Shared repositories (SEC, etc.) do not allow direct SQL queries.

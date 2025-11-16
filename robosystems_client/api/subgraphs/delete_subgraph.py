@@ -13,7 +13,7 @@ from ...types import Response
 
 def _get_kwargs(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   body: DeleteSubgraphRequest,
 ) -> dict[str, Any]:
@@ -21,7 +21,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "delete",
-    "url": f"/v1/graphs/{graph_id}/subgraphs/{subgraph_id}",
+    "url": f"/v1/graphs/{graph_id}/subgraphs/{subgraph_name}",
   }
 
   _kwargs["json"] = body.to_dict()
@@ -88,7 +88,7 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
@@ -100,6 +100,7 @@ def sync_detailed(
   **Requirements:**
   - Must be a valid subgraph (not parent graph)
   - User must have admin access to parent graph
+  - Subgraph name must be alphanumeric (1-20 characters)
   - Optional backup before deletion
 
   **Deletion Options:**
@@ -114,9 +115,14 @@ def sync_detailed(
   If backup requested, stored in S3 Kuzu database bucket at:
   `s3://{kuzu_s3_bucket}/{instance_id}/{database_name}_{timestamp}.backup`
 
+  **Notes:**
+  - Use the subgraph name (e.g., 'dev', 'staging') not the full subgraph ID
+  - Deletion does not affect parent graph's credit pool or permissions
+  - Backup creation consumes credits from parent graph's allocation
+
   Args:
       graph_id (str):
-      subgraph_id (str): Subgraph identifier to delete
+      subgraph_name (str): Subgraph name to delete (e.g., 'dev', 'staging')
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -129,7 +135,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    subgraph_id=subgraph_id,
+    subgraph_name=subgraph_name,
     body=body,
   )
 
@@ -142,7 +148,7 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
@@ -154,6 +160,7 @@ def sync(
   **Requirements:**
   - Must be a valid subgraph (not parent graph)
   - User must have admin access to parent graph
+  - Subgraph name must be alphanumeric (1-20 characters)
   - Optional backup before deletion
 
   **Deletion Options:**
@@ -168,9 +175,14 @@ def sync(
   If backup requested, stored in S3 Kuzu database bucket at:
   `s3://{kuzu_s3_bucket}/{instance_id}/{database_name}_{timestamp}.backup`
 
+  **Notes:**
+  - Use the subgraph name (e.g., 'dev', 'staging') not the full subgraph ID
+  - Deletion does not affect parent graph's credit pool or permissions
+  - Backup creation consumes credits from parent graph's allocation
+
   Args:
       graph_id (str):
-      subgraph_id (str): Subgraph identifier to delete
+      subgraph_name (str): Subgraph name to delete (e.g., 'dev', 'staging')
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -183,7 +195,7 @@ def sync(
 
   return sync_detailed(
     graph_id=graph_id,
-    subgraph_id=subgraph_id,
+    subgraph_name=subgraph_name,
     client=client,
     body=body,
   ).parsed
@@ -191,7 +203,7 @@ def sync(
 
 async def asyncio_detailed(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
@@ -203,6 +215,7 @@ async def asyncio_detailed(
   **Requirements:**
   - Must be a valid subgraph (not parent graph)
   - User must have admin access to parent graph
+  - Subgraph name must be alphanumeric (1-20 characters)
   - Optional backup before deletion
 
   **Deletion Options:**
@@ -217,9 +230,14 @@ async def asyncio_detailed(
   If backup requested, stored in S3 Kuzu database bucket at:
   `s3://{kuzu_s3_bucket}/{instance_id}/{database_name}_{timestamp}.backup`
 
+  **Notes:**
+  - Use the subgraph name (e.g., 'dev', 'staging') not the full subgraph ID
+  - Deletion does not affect parent graph's credit pool or permissions
+  - Backup creation consumes credits from parent graph's allocation
+
   Args:
       graph_id (str):
-      subgraph_id (str): Subgraph identifier to delete
+      subgraph_name (str): Subgraph name to delete (e.g., 'dev', 'staging')
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -232,7 +250,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    subgraph_id=subgraph_id,
+    subgraph_name=subgraph_name,
     body=body,
   )
 
@@ -243,7 +261,7 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   client: AuthenticatedClient,
   body: DeleteSubgraphRequest,
@@ -255,6 +273,7 @@ async def asyncio(
   **Requirements:**
   - Must be a valid subgraph (not parent graph)
   - User must have admin access to parent graph
+  - Subgraph name must be alphanumeric (1-20 characters)
   - Optional backup before deletion
 
   **Deletion Options:**
@@ -269,9 +288,14 @@ async def asyncio(
   If backup requested, stored in S3 Kuzu database bucket at:
   `s3://{kuzu_s3_bucket}/{instance_id}/{database_name}_{timestamp}.backup`
 
+  **Notes:**
+  - Use the subgraph name (e.g., 'dev', 'staging') not the full subgraph ID
+  - Deletion does not affect parent graph's credit pool or permissions
+  - Backup creation consumes credits from parent graph's allocation
+
   Args:
       graph_id (str):
-      subgraph_id (str): Subgraph identifier to delete
+      subgraph_name (str): Subgraph name to delete (e.g., 'dev', 'staging')
       body (DeleteSubgraphRequest): Request model for deleting a subgraph.
 
   Raises:
@@ -285,7 +309,7 @@ async def asyncio(
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      subgraph_id=subgraph_id,
+      subgraph_name=subgraph_name,
       client=client,
       body=body,
     )

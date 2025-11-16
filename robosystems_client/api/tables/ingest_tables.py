@@ -110,7 +110,7 @@ def sync_detailed(
   2. Files are validated and marked as 'uploaded'
   3. Trigger ingestion: `POST /tables/ingest`
   4. DuckDB staging tables created from S3 patterns
-  5. Data copied row-by-row from DuckDB to Kuzu
+  5. Data copied from DuckDB to Kuzu
   6. Per-table results and metrics returned
 
   **Rebuild Feature:**
@@ -140,6 +140,13 @@ def sync_detailed(
   Only one ingestion can run per graph at a time. If another ingestion is in progress,
   you'll receive a 409 Conflict error. The distributed lock automatically expires after
   the configured TTL (default: 1 hour) to prevent deadlocks from failed ingestions.
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has independent staging tables and graph data. Ingestion operates
+  on the specified graph/subgraph only and does not affect other subgraphs.
 
   **Important Notes:**
   - Only files with 'uploaded' status are processed
@@ -198,7 +205,7 @@ def sync(
   2. Files are validated and marked as 'uploaded'
   3. Trigger ingestion: `POST /tables/ingest`
   4. DuckDB staging tables created from S3 patterns
-  5. Data copied row-by-row from DuckDB to Kuzu
+  5. Data copied from DuckDB to Kuzu
   6. Per-table results and metrics returned
 
   **Rebuild Feature:**
@@ -228,6 +235,13 @@ def sync(
   Only one ingestion can run per graph at a time. If another ingestion is in progress,
   you'll receive a 409 Conflict error. The distributed lock automatically expires after
   the configured TTL (default: 1 hour) to prevent deadlocks from failed ingestions.
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has independent staging tables and graph data. Ingestion operates
+  on the specified graph/subgraph only and does not affect other subgraphs.
 
   **Important Notes:**
   - Only files with 'uploaded' status are processed
@@ -281,7 +295,7 @@ async def asyncio_detailed(
   2. Files are validated and marked as 'uploaded'
   3. Trigger ingestion: `POST /tables/ingest`
   4. DuckDB staging tables created from S3 patterns
-  5. Data copied row-by-row from DuckDB to Kuzu
+  5. Data copied from DuckDB to Kuzu
   6. Per-table results and metrics returned
 
   **Rebuild Feature:**
@@ -311,6 +325,13 @@ async def asyncio_detailed(
   Only one ingestion can run per graph at a time. If another ingestion is in progress,
   you'll receive a 409 Conflict error. The distributed lock automatically expires after
   the configured TTL (default: 1 hour) to prevent deadlocks from failed ingestions.
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has independent staging tables and graph data. Ingestion operates
+  on the specified graph/subgraph only and does not affect other subgraphs.
 
   **Important Notes:**
   - Only files with 'uploaded' status are processed
@@ -367,7 +388,7 @@ async def asyncio(
   2. Files are validated and marked as 'uploaded'
   3. Trigger ingestion: `POST /tables/ingest`
   4. DuckDB staging tables created from S3 patterns
-  5. Data copied row-by-row from DuckDB to Kuzu
+  5. Data copied from DuckDB to Kuzu
   6. Per-table results and metrics returned
 
   **Rebuild Feature:**
@@ -397,6 +418,13 @@ async def asyncio(
   Only one ingestion can run per graph at a time. If another ingestion is in progress,
   you'll receive a 409 Conflict error. The distributed lock automatically expires after
   the configured TTL (default: 1 hour) to prevent deadlocks from failed ingestions.
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has independent staging tables and graph data. Ingestion operates
+  on the specified graph/subgraph only and does not affect other subgraphs.
 
   **Important Notes:**
   - Only files with 'uploaded' status are processed

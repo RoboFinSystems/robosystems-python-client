@@ -123,6 +123,13 @@ def sync_detailed(
   Tables are automatically created on first file upload with type inferred from name
   (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has completely isolated S3 staging areas and tables. Files uploaded
+  to one subgraph do not appear in other subgraphs.
+
   **Important Notes:**
   - Presigned URLs expire (default: 1 hour)
   - Use appropriate Content-Type header when uploading to S3
@@ -192,6 +199,13 @@ def sync(
   Tables are automatically created on first file upload with type inferred from name
   (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has completely isolated S3 staging areas and tables. Files uploaded
+  to one subgraph do not appear in other subgraphs.
+
   **Important Notes:**
   - Presigned URLs expire (default: 1 hour)
   - Use appropriate Content-Type header when uploading to S3
@@ -255,6 +269,13 @@ async def asyncio_detailed(
   **Auto-Table Creation:**
   Tables are automatically created on first file upload with type inferred from name
   (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has completely isolated S3 staging areas and tables. Files uploaded
+  to one subgraph do not appear in other subgraphs.
 
   **Important Notes:**
   - Presigned URLs expire (default: 1 hour)
@@ -322,6 +343,13 @@ async def asyncio(
   **Auto-Table Creation:**
   Tables are automatically created on first file upload with type inferred from name
   (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has completely isolated S3 staging areas and tables. Files uploaded
+  to one subgraph do not appear in other subgraphs.
 
   **Important Notes:**
   - Presigned URLs expire (default: 1 hour)

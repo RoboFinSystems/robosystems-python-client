@@ -81,6 +81,12 @@ def sync_detailed(
 
   **Returns:**
   - Created subgraph details including its unique ID
+  - Subgraph ID format: `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
+
+  **Usage:**
+  - Subgraphs share parent's credit pool
+  - Subgraph ID can be used in all standard `/v1/graphs/{graph_id}/*` endpoints
+  - Permissions inherited from parent graph
 
   Args:
       graph_id (str):
@@ -126,6 +132,12 @@ def sync(
 
   **Returns:**
   - Created subgraph details including its unique ID
+  - Subgraph ID format: `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
+
+  **Usage:**
+  - Subgraphs share parent's credit pool
+  - Subgraph ID can be used in all standard `/v1/graphs/{graph_id}/*` endpoints
+  - Permissions inherited from parent graph
 
   Args:
       graph_id (str):
@@ -166,6 +178,12 @@ async def asyncio_detailed(
 
   **Returns:**
   - Created subgraph details including its unique ID
+  - Subgraph ID format: `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
+
+  **Usage:**
+  - Subgraphs share parent's credit pool
+  - Subgraph ID can be used in all standard `/v1/graphs/{graph_id}/*` endpoints
+  - Permissions inherited from parent graph
 
   Args:
       graph_id (str):
@@ -209,6 +227,12 @@ async def asyncio(
 
   **Returns:**
   - Created subgraph details including its unique ID
+  - Subgraph ID format: `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
+
+  **Usage:**
+  - Subgraphs share parent's credit pool
+  - Subgraph ID can be used in all standard `/v1/graphs/{graph_id}/*` endpoints
+  - Permissions inherited from parent graph
 
   Args:
       graph_id (str):

@@ -87,6 +87,13 @@ def sync_detailed(
   - **Backup Status**: Backup availability and recency
   - **Timestamps**: Creation and modification dates
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Returned metrics are specific to the requested graph/subgraph. Subgraphs have
+  independent size, node/relationship counts, and backup status.
+
   This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
@@ -135,6 +142,13 @@ def sync(
   - **Backup Status**: Backup availability and recency
   - **Timestamps**: Creation and modification dates
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Returned metrics are specific to the requested graph/subgraph. Subgraphs have
+  independent size, node/relationship counts, and backup status.
+
   This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
@@ -177,6 +191,13 @@ async def asyncio_detailed(
   - **Schema**: Available labels and relationship types
   - **Backup Status**: Backup availability and recency
   - **Timestamps**: Creation and modification dates
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Returned metrics are specific to the requested graph/subgraph. Subgraphs have
+  independent size, node/relationship counts, and backup status.
 
   This endpoint provides essential database information for capacity planning and monitoring.
 
@@ -223,6 +244,13 @@ async def asyncio(
   - **Schema**: Available labels and relationship types
   - **Backup Status**: Backup availability and recency
   - **Timestamps**: Creation and modification dates
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Returned metrics are specific to the requested graph/subgraph. Subgraphs have
+  independent size, node/relationship counts, and backup status.
 
   This endpoint provides essential database information for capacity planning and monitoring.
 
