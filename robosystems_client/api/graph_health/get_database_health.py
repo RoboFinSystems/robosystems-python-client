@@ -86,6 +86,13 @@ def sync_detailed(
   - **Resource Usage**: Memory and storage consumption
   - **Alerts**: Active warnings or issues
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Health metrics are specific to the requested graph/subgraph. Subgraphs share the
+  same physical instance as their parent but have independent health indicators.
+
   This endpoint provides essential monitoring data for operational visibility.
 
   Args:
@@ -133,6 +140,13 @@ def sync(
   - **Resource Usage**: Memory and storage consumption
   - **Alerts**: Active warnings or issues
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Health metrics are specific to the requested graph/subgraph. Subgraphs share the
+  same physical instance as their parent but have independent health indicators.
+
   This endpoint provides essential monitoring data for operational visibility.
 
   Args:
@@ -174,6 +188,13 @@ async def asyncio_detailed(
   - **Error Rates**: Recent failure percentages
   - **Resource Usage**: Memory and storage consumption
   - **Alerts**: Active warnings or issues
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Health metrics are specific to the requested graph/subgraph. Subgraphs share the
+  same physical instance as their parent but have independent health indicators.
 
   This endpoint provides essential monitoring data for operational visibility.
 
@@ -219,6 +240,13 @@ async def asyncio(
   - **Error Rates**: Recent failure percentages
   - **Resource Usage**: Memory and storage consumption
   - **Alerts**: Active warnings or issues
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Health metrics are specific to the requested graph/subgraph. Subgraphs share the
+  same physical instance as their parent but have independent health indicators.
 
   This endpoint provides essential monitoring data for operational visibility.
 

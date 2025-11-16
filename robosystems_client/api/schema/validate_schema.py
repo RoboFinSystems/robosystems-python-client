@@ -105,6 +105,13 @@ def sync_detailed(
   - Performance problems
   - Naming conflicts
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Schema validation is performed against the specified graph/subgraph's current
+  schema and data structure.
+
   This operation is included - no credit consumption required.
 
   Args:
@@ -160,6 +167,13 @@ def sync(
   - Performance problems
   - Naming conflicts
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Schema validation is performed against the specified graph/subgraph's current
+  schema and data structure.
+
   This operation is included - no credit consumption required.
 
   Args:
@@ -209,6 +223,13 @@ async def asyncio_detailed(
   - Data integrity issues
   - Performance problems
   - Naming conflicts
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Schema validation is performed against the specified graph/subgraph's current
+  schema and data structure.
 
   This operation is included - no credit consumption required.
 
@@ -262,6 +283,13 @@ async def asyncio(
   - Data integrity issues
   - Performance problems
   - Naming conflicts
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Schema validation is performed against the specified graph/subgraph's current
+  schema and data structure.
 
   This operation is included - no credit consumption required.
 

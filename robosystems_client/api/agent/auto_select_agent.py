@@ -158,6 +158,13 @@ def sync_detailed(
   - Leverage conversation history for contextual understanding
   - Enable RAG for knowledge base enrichment
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Agents operate on the specified graph/subgraph's data independently. RAG enrichment
+  and knowledge base search are scoped to the specific graph/subgraph.
+
   See request/response examples in the \"Examples\" dropdown below.
 
   Args:
@@ -246,6 +253,13 @@ def sync(
   - Leverage conversation history for contextual understanding
   - Enable RAG for knowledge base enrichment
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Agents operate on the specified graph/subgraph's data independently. RAG enrichment
+  and knowledge base search are scoped to the specific graph/subgraph.
+
   See request/response examples in the \"Examples\" dropdown below.
 
   Args:
@@ -328,6 +342,13 @@ async def asyncio_detailed(
   - Get intelligent routing for complex multi-domain queries
   - Leverage conversation history for contextual understanding
   - Enable RAG for knowledge base enrichment
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Agents operate on the specified graph/subgraph's data independently. RAG enrichment
+  and knowledge base search are scoped to the specific graph/subgraph.
 
   See request/response examples in the \"Examples\" dropdown below.
 
@@ -414,6 +435,13 @@ async def asyncio(
   - Get intelligent routing for complex multi-domain queries
   - Leverage conversation history for contextual understanding
   - Enable RAG for knowledge base enrichment
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Agents operate on the specified graph/subgraph's data independently. RAG enrichment
+  and knowledge base search are scoped to the specific graph/subgraph.
 
   See request/response examples in the \"Examples\" dropdown below.
 

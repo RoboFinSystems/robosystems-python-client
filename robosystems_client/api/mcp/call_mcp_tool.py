@@ -157,6 +157,13 @@ def sync_detailed(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  MCP tools operate on the specified graph/subgraph independently. Each subgraph
+  has its own schema, data, and can be queried separately via MCP.
+
   **Credit Model:**
   MCP tool execution is included - no credit consumption required. Database
   operations (queries, schema inspection, analytics) are completely free.
@@ -233,6 +240,13 @@ def sync(
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
 
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  MCP tools operate on the specified graph/subgraph independently. Each subgraph
+  has its own schema, data, and can be queried separately via MCP.
+
   **Credit Model:**
   MCP tool execution is included - no credit consumption required. Database
   operations (queries, schema inspection, analytics) are completely free.
@@ -303,6 +317,13 @@ async def asyncio_detailed(
   - `503 Service Unavailable`: SSE system temporarily disabled
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  MCP tools operate on the specified graph/subgraph independently. Each subgraph
+  has its own schema, data, and can be queried separately via MCP.
 
   **Credit Model:**
   MCP tool execution is included - no credit consumption required. Database
@@ -377,6 +398,13 @@ async def asyncio(
   - `503 Service Unavailable`: SSE system temporarily disabled
   - `408 Request Timeout`: Tool execution exceeded timeout
   - Clients should implement exponential backoff on errors
+
+  **Subgraph Support:**
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  MCP tools operate on the specified graph/subgraph independently. Each subgraph
+  has its own schema, data, and can be queried separately via MCP.
 
   **Credit Model:**
   MCP tool execution is included - no credit consumption required. Database

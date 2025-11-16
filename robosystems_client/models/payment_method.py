@@ -18,9 +18,9 @@ class PaymentMethod:
       type_ (str): Payment method type (card, bank_account, etc.)
       is_default (bool): Whether this is the default payment method
       brand (Union[None, Unset, str]): Card brand (visa, mastercard, etc.)
-      last4 (Union[None, Unset, str]): Last 4 digits
-      exp_month (Union[None, Unset, int]): Expiration month
-      exp_year (Union[None, Unset, int]): Expiration year
+      last4 (Union[None, Unset, str]): Last 4 digits of the card or account number
+      exp_month (Union[None, Unset, int]): Expiration month of the card
+      exp_year (Union[None, Unset, int]): Expiration year of the card
   """
 
   id: str

@@ -12,11 +12,11 @@ from ...types import Response
 
 def _get_kwargs(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
 ) -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/graphs/{graph_id}/subgraphs/{subgraph_id}/info",
+    "url": f"/v1/graphs/{graph_id}/subgraphs/{subgraph_name}/info",
   }
 
   return _kwargs
@@ -74,7 +74,7 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, HTTPValidationError, SubgraphResponse]]:
@@ -84,6 +84,7 @@ def sync_detailed(
 
   **Requirements:**
   - User must have read access to parent graph
+  - Subgraph name must be alphanumeric (1-20 characters)
 
   **Response includes:**
   - Full subgraph metadata
@@ -100,9 +101,13 @@ def sync_detailed(
   - Database size on disk
   - Schema information
 
+  **Note:**
+  Use the subgraph name (e.g., 'dev', 'staging') not the full subgraph ID.
+  The full ID is returned in the response (e.g., 'kg0123456789abcdef_dev').
+
   Args:
       graph_id (str):
-      subgraph_id (str): Subgraph identifier
+      subgraph_name (str): Subgraph name (e.g., 'dev', 'staging')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -114,7 +119,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    subgraph_id=subgraph_id,
+    subgraph_name=subgraph_name,
   )
 
   response = client.get_httpx_client().request(
@@ -126,7 +131,7 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, HTTPValidationError, SubgraphResponse]]:
@@ -136,6 +141,7 @@ def sync(
 
   **Requirements:**
   - User must have read access to parent graph
+  - Subgraph name must be alphanumeric (1-20 characters)
 
   **Response includes:**
   - Full subgraph metadata
@@ -152,9 +158,13 @@ def sync(
   - Database size on disk
   - Schema information
 
+  **Note:**
+  Use the subgraph name (e.g., 'dev', 'staging') not the full subgraph ID.
+  The full ID is returned in the response (e.g., 'kg0123456789abcdef_dev').
+
   Args:
       graph_id (str):
-      subgraph_id (str): Subgraph identifier
+      subgraph_name (str): Subgraph name (e.g., 'dev', 'staging')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -166,14 +176,14 @@ def sync(
 
   return sync_detailed(
     graph_id=graph_id,
-    subgraph_id=subgraph_id,
+    subgraph_name=subgraph_name,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   client: AuthenticatedClient,
 ) -> Response[Union[Any, HTTPValidationError, SubgraphResponse]]:
@@ -183,6 +193,7 @@ async def asyncio_detailed(
 
   **Requirements:**
   - User must have read access to parent graph
+  - Subgraph name must be alphanumeric (1-20 characters)
 
   **Response includes:**
   - Full subgraph metadata
@@ -199,9 +210,13 @@ async def asyncio_detailed(
   - Database size on disk
   - Schema information
 
+  **Note:**
+  Use the subgraph name (e.g., 'dev', 'staging') not the full subgraph ID.
+  The full ID is returned in the response (e.g., 'kg0123456789abcdef_dev').
+
   Args:
       graph_id (str):
-      subgraph_id (str): Subgraph identifier
+      subgraph_name (str): Subgraph name (e.g., 'dev', 'staging')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -213,7 +228,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    subgraph_id=subgraph_id,
+    subgraph_name=subgraph_name,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -223,7 +238,7 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  subgraph_id: str,
+  subgraph_name: str,
   *,
   client: AuthenticatedClient,
 ) -> Optional[Union[Any, HTTPValidationError, SubgraphResponse]]:
@@ -233,6 +248,7 @@ async def asyncio(
 
   **Requirements:**
   - User must have read access to parent graph
+  - Subgraph name must be alphanumeric (1-20 characters)
 
   **Response includes:**
   - Full subgraph metadata
@@ -249,9 +265,13 @@ async def asyncio(
   - Database size on disk
   - Schema information
 
+  **Note:**
+  Use the subgraph name (e.g., 'dev', 'staging') not the full subgraph ID.
+  The full ID is returned in the response (e.g., 'kg0123456789abcdef_dev').
+
   Args:
       graph_id (str):
-      subgraph_id (str): Subgraph identifier
+      subgraph_name (str): Subgraph name (e.g., 'dev', 'staging')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -264,7 +284,7 @@ async def asyncio(
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      subgraph_id=subgraph_id,
+      subgraph_name=subgraph_name,
       client=client,
     )
   ).parsed

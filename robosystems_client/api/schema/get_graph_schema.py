@@ -105,6 +105,14 @@ def sync_detailed(
   Property discovery is limited to 10 properties per node type for performance.
   For complete schema definitions, use `/schema/export`.
 
+  ## Subgraph Support
+
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has independent schema and data. The returned schema reflects
+  only the specified graph/subgraph's actual structure.
+
   This operation is included - no credit consumption required.
 
   Args:
@@ -171,6 +179,14 @@ def sync(
   Property discovery is limited to 10 properties per node type for performance.
   For complete schema definitions, use `/schema/export`.
 
+  ## Subgraph Support
+
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has independent schema and data. The returned schema reflects
+  only the specified graph/subgraph's actual structure.
+
   This operation is included - no credit consumption required.
 
   Args:
@@ -231,6 +247,14 @@ async def asyncio_detailed(
 
   Property discovery is limited to 10 properties per node type for performance.
   For complete schema definitions, use `/schema/export`.
+
+  ## Subgraph Support
+
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has independent schema and data. The returned schema reflects
+  only the specified graph/subgraph's actual structure.
 
   This operation is included - no credit consumption required.
 
@@ -295,6 +319,14 @@ async def asyncio(
 
   Property discovery is limited to 10 properties per node type for performance.
   For complete schema definitions, use `/schema/export`.
+
+  ## Subgraph Support
+
+  This endpoint accepts both parent graph IDs and subgraph IDs.
+  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
+  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
+  Each subgraph has independent schema and data. The returned schema reflects
+  only the specified graph/subgraph's actual structure.
 
   This operation is included - no credit consumption required.
 
