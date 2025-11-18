@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -24,8 +24,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
   if response.status_code == 200:
     response_200 = ListTableFilesResponse.from_dict(response.json())
 
@@ -61,8 +61,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -76,7 +76,7 @@ def sync_detailed(
   table_name: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
   """List Files in Staging Table
 
    List all files uploaded to a staging table with comprehensive metadata.
@@ -123,7 +123,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]
+      Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]
   """
 
   kwargs = _get_kwargs(
@@ -143,7 +143,7 @@ def sync(
   table_name: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
+) -> Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
   """List Files in Staging Table
 
    List all files uploaded to a staging table with comprehensive metadata.
@@ -190,7 +190,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]
+      Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse
   """
 
   return sync_detailed(
@@ -205,7 +205,7 @@ async def asyncio_detailed(
   table_name: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
   """List Files in Staging Table
 
    List all files uploaded to a staging table with comprehensive metadata.
@@ -252,7 +252,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]
+      Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]
   """
 
   kwargs = _get_kwargs(
@@ -270,7 +270,7 @@ async def asyncio(
   table_name: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]]:
+) -> Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
   """List Files in Staging Table
 
    List all files uploaded to a staging table with comprehensive metadata.
@@ -317,7 +317,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ErrorResponse, HTTPValidationError, ListTableFilesResponse]
+      Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse
   """
 
   return (

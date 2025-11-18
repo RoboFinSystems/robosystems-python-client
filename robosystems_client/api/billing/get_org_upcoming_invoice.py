@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -22,11 +22,11 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, Union["UpcomingInvoice", None]]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> HTTPValidationError | None | UpcomingInvoice | None:
   if response.status_code == 200:
 
-    def _parse_response_200(data: object) -> Union["UpcomingInvoice", None]:
+    def _parse_response_200(data: object) -> None | UpcomingInvoice:
       if data is None:
         return data
       try:
@@ -35,9 +35,9 @@ def _parse_response(
         response_200_type_0 = UpcomingInvoice.from_dict(data)
 
         return response_200_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["UpcomingInvoice", None], data)
+      return cast(None | UpcomingInvoice, data)
 
     response_200 = _parse_response_200(response.json())
 
@@ -55,8 +55,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, Union["UpcomingInvoice", None]]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[HTTPValidationError | None | UpcomingInvoice]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -69,7 +69,7 @@ def sync_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[HTTPValidationError, Union["UpcomingInvoice", None]]]:
+) -> Response[HTTPValidationError | None | UpcomingInvoice]:
   """Get Organization Upcoming Invoice
 
    Get preview of the next invoice for an organization.
@@ -88,7 +88,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, Union['UpcomingInvoice', None]]]
+      Response[HTTPValidationError | None | UpcomingInvoice]
   """
 
   kwargs = _get_kwargs(
@@ -106,7 +106,7 @@ def sync(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[HTTPValidationError, Union["UpcomingInvoice", None]]]:
+) -> HTTPValidationError | None | UpcomingInvoice | None:
   """Get Organization Upcoming Invoice
 
    Get preview of the next invoice for an organization.
@@ -125,7 +125,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, Union['UpcomingInvoice', None]]
+      HTTPValidationError | None | UpcomingInvoice
   """
 
   return sync_detailed(
@@ -138,7 +138,7 @@ async def asyncio_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[HTTPValidationError, Union["UpcomingInvoice", None]]]:
+) -> Response[HTTPValidationError | None | UpcomingInvoice]:
   """Get Organization Upcoming Invoice
 
    Get preview of the next invoice for an organization.
@@ -157,7 +157,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, Union['UpcomingInvoice', None]]]
+      Response[HTTPValidationError | None | UpcomingInvoice]
   """
 
   kwargs = _get_kwargs(
@@ -173,7 +173,7 @@ async def asyncio(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[HTTPValidationError, Union["UpcomingInvoice", None]]]:
+) -> HTTPValidationError | None | UpcomingInvoice | None:
   """Get Organization Upcoming Invoice
 
    Get preview of the next invoice for an organization.
@@ -192,7 +192,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, Union['UpcomingInvoice', None]]
+      HTTPValidationError | None | UpcomingInvoice
   """
 
   return (

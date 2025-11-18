@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
@@ -23,15 +25,15 @@ class GraphSubscriptions:
       Attributes:
           description (str): Description of graph subscriptions
           pricing_model (str): Pricing model type (per_graph or per_organization)
-          tiers (list['GraphSubscriptionTier']): Available infrastructure tiers
+          tiers (list[GraphSubscriptionTier]): Available infrastructure tiers
           storage (StorageInfo): Storage pricing information.
           notes (list[str]): Important notes
   """
 
   description: str
   pricing_model: str
-  tiers: list["GraphSubscriptionTier"]
-  storage: "StorageInfo"
+  tiers: list[GraphSubscriptionTier]
+  storage: StorageInfo
   notes: list[str]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

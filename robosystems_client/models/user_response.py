@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -24,33 +26,33 @@ class UserResponse:
 
   Attributes:
       id (str): Unique identifier for the user
-      name (Union[None, Unset, str]): User's display name
-      email (Union[None, Unset, str]): User's email address
-      accounts (Union[Unset, list['AccountInfo']]): User's authentication accounts
+      name (None | str | Unset): User's display name
+      email (None | str | Unset): User's email address
+      accounts (list[AccountInfo] | Unset): User's authentication accounts
   """
 
   id: str
-  name: Union[None, Unset, str] = UNSET
-  email: Union[None, Unset, str] = UNSET
-  accounts: Union[Unset, list["AccountInfo"]] = UNSET
+  name: None | str | Unset = UNSET
+  email: None | str | Unset = UNSET
+  accounts: list[AccountInfo] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     id = self.id
 
-    name: Union[None, Unset, str]
+    name: None | str | Unset
     if isinstance(self.name, Unset):
       name = UNSET
     else:
       name = self.name
 
-    email: Union[None, Unset, str]
+    email: None | str | Unset
     if isinstance(self.email, Unset):
       email = UNSET
     else:
       email = self.email
 
-    accounts: Union[Unset, list[dict[str, Any]]] = UNSET
+    accounts: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.accounts, Unset):
       accounts = []
       for accounts_item_data in self.accounts:
@@ -80,30 +82,32 @@ class UserResponse:
     d = dict(src_dict)
     id = d.pop("id")
 
-    def _parse_name(data: object) -> Union[None, Unset, str]:
+    def _parse_name(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     name = _parse_name(d.pop("name", UNSET))
 
-    def _parse_email(data: object) -> Union[None, Unset, str]:
+    def _parse_email(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     email = _parse_email(d.pop("email", UNSET))
 
-    accounts = []
     _accounts = d.pop("accounts", UNSET)
-    for accounts_item_data in _accounts or []:
-      accounts_item = AccountInfo.from_dict(accounts_item_data)
+    accounts: list[AccountInfo] | Unset = UNSET
+    if _accounts is not UNSET:
+      accounts = []
+      for accounts_item_data in _accounts:
+        accounts_item = AccountInfo.from_dict(accounts_item_data)
 
-      accounts.append(accounts_item)
+        accounts.append(accounts_item)
 
     user_response = cls(
       id=id,

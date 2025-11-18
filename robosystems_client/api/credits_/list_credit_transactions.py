@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -14,37 +14,37 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  transaction_type: Union[None, Unset, str] = UNSET,
-  operation_type: Union[None, Unset, str] = UNSET,
-  start_date: Union[None, Unset, str] = UNSET,
-  end_date: Union[None, Unset, str] = UNSET,
-  limit: Union[Unset, int] = 100,
-  offset: Union[Unset, int] = 0,
+  transaction_type: None | str | Unset = UNSET,
+  operation_type: None | str | Unset = UNSET,
+  start_date: None | str | Unset = UNSET,
+  end_date: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
-  json_transaction_type: Union[None, Unset, str]
+  json_transaction_type: None | str | Unset
   if isinstance(transaction_type, Unset):
     json_transaction_type = UNSET
   else:
     json_transaction_type = transaction_type
   params["transaction_type"] = json_transaction_type
 
-  json_operation_type: Union[None, Unset, str]
+  json_operation_type: None | str | Unset
   if isinstance(operation_type, Unset):
     json_operation_type = UNSET
   else:
     json_operation_type = operation_type
   params["operation_type"] = json_operation_type
 
-  json_start_date: Union[None, Unset, str]
+  json_start_date: None | str | Unset
   if isinstance(start_date, Unset):
     json_start_date = UNSET
   else:
     json_start_date = start_date
   params["start_date"] = json_start_date
 
-  json_end_date: Union[None, Unset, str]
+  json_end_date: None | str | Unset
   if isinstance(end_date, Unset):
     json_end_date = UNSET
   else:
@@ -67,8 +67,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> DetailedTransactionsResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = DetailedTransactionsResponse.from_dict(response.json())
 
@@ -101,8 +101,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[DetailedTransactionsResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -115,13 +115,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  transaction_type: Union[None, Unset, str] = UNSET,
-  operation_type: Union[None, Unset, str] = UNSET,
-  start_date: Union[None, Unset, str] = UNSET,
-  end_date: Union[None, Unset, str] = UNSET,
-  limit: Union[Unset, int] = 100,
-  offset: Union[Unset, int] = 0,
-) -> Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
+  transaction_type: None | str | Unset = UNSET,
+  operation_type: None | str | Unset = UNSET,
+  start_date: None | str | Unset = UNSET,
+  end_date: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
+) -> Response[DetailedTransactionsResponse | ErrorResponse | HTTPValidationError]:
   """List Credit Transactions
 
    Retrieve detailed credit transaction history for the specified graph.
@@ -142,21 +142,21 @@ def sync_detailed(
 
   Args:
       graph_id (str): Graph database identifier
-      transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
+      transaction_type (None | str | Unset): Filter by transaction type (allocation,
           consumption, bonus, refund)
-      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
+      operation_type (None | str | Unset): Filter by operation type (e.g., entity_lookup,
           cypher_query)
-      start_date (Union[None, Unset, str]): Start date for filtering (ISO format: YYYY-MM-DD)
-      end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
-      limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
-      offset (Union[Unset, int]): Number of transactions to skip Default: 0.
+      start_date (None | str | Unset): Start date for filtering (ISO format: YYYY-MM-DD)
+      end_date (None | str | Unset): End date for filtering (ISO format: YYYY-MM-DD)
+      limit (int | Unset): Maximum number of transactions to return Default: 100.
+      offset (int | Unset): Number of transactions to skip Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]
+      Response[DetailedTransactionsResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -180,13 +180,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  transaction_type: Union[None, Unset, str] = UNSET,
-  operation_type: Union[None, Unset, str] = UNSET,
-  start_date: Union[None, Unset, str] = UNSET,
-  end_date: Union[None, Unset, str] = UNSET,
-  limit: Union[Unset, int] = 100,
-  offset: Union[Unset, int] = 0,
-) -> Optional[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
+  transaction_type: None | str | Unset = UNSET,
+  operation_type: None | str | Unset = UNSET,
+  start_date: None | str | Unset = UNSET,
+  end_date: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
+) -> DetailedTransactionsResponse | ErrorResponse | HTTPValidationError | None:
   """List Credit Transactions
 
    Retrieve detailed credit transaction history for the specified graph.
@@ -207,21 +207,21 @@ def sync(
 
   Args:
       graph_id (str): Graph database identifier
-      transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
+      transaction_type (None | str | Unset): Filter by transaction type (allocation,
           consumption, bonus, refund)
-      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
+      operation_type (None | str | Unset): Filter by operation type (e.g., entity_lookup,
           cypher_query)
-      start_date (Union[None, Unset, str]): Start date for filtering (ISO format: YYYY-MM-DD)
-      end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
-      limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
-      offset (Union[Unset, int]): Number of transactions to skip Default: 0.
+      start_date (None | str | Unset): Start date for filtering (ISO format: YYYY-MM-DD)
+      end_date (None | str | Unset): End date for filtering (ISO format: YYYY-MM-DD)
+      limit (int | Unset): Maximum number of transactions to return Default: 100.
+      offset (int | Unset): Number of transactions to skip Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]
+      DetailedTransactionsResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -240,13 +240,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  transaction_type: Union[None, Unset, str] = UNSET,
-  operation_type: Union[None, Unset, str] = UNSET,
-  start_date: Union[None, Unset, str] = UNSET,
-  end_date: Union[None, Unset, str] = UNSET,
-  limit: Union[Unset, int] = 100,
-  offset: Union[Unset, int] = 0,
-) -> Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
+  transaction_type: None | str | Unset = UNSET,
+  operation_type: None | str | Unset = UNSET,
+  start_date: None | str | Unset = UNSET,
+  end_date: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
+) -> Response[DetailedTransactionsResponse | ErrorResponse | HTTPValidationError]:
   """List Credit Transactions
 
    Retrieve detailed credit transaction history for the specified graph.
@@ -267,21 +267,21 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Graph database identifier
-      transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
+      transaction_type (None | str | Unset): Filter by transaction type (allocation,
           consumption, bonus, refund)
-      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
+      operation_type (None | str | Unset): Filter by operation type (e.g., entity_lookup,
           cypher_query)
-      start_date (Union[None, Unset, str]): Start date for filtering (ISO format: YYYY-MM-DD)
-      end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
-      limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
-      offset (Union[Unset, int]): Number of transactions to skip Default: 0.
+      start_date (None | str | Unset): Start date for filtering (ISO format: YYYY-MM-DD)
+      end_date (None | str | Unset): End date for filtering (ISO format: YYYY-MM-DD)
+      limit (int | Unset): Maximum number of transactions to return Default: 100.
+      offset (int | Unset): Number of transactions to skip Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]
+      Response[DetailedTransactionsResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -303,13 +303,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  transaction_type: Union[None, Unset, str] = UNSET,
-  operation_type: Union[None, Unset, str] = UNSET,
-  start_date: Union[None, Unset, str] = UNSET,
-  end_date: Union[None, Unset, str] = UNSET,
-  limit: Union[Unset, int] = 100,
-  offset: Union[Unset, int] = 0,
-) -> Optional[Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]]:
+  transaction_type: None | str | Unset = UNSET,
+  operation_type: None | str | Unset = UNSET,
+  start_date: None | str | Unset = UNSET,
+  end_date: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
+) -> DetailedTransactionsResponse | ErrorResponse | HTTPValidationError | None:
   """List Credit Transactions
 
    Retrieve detailed credit transaction history for the specified graph.
@@ -330,21 +330,21 @@ async def asyncio(
 
   Args:
       graph_id (str): Graph database identifier
-      transaction_type (Union[None, Unset, str]): Filter by transaction type (allocation,
+      transaction_type (None | str | Unset): Filter by transaction type (allocation,
           consumption, bonus, refund)
-      operation_type (Union[None, Unset, str]): Filter by operation type (e.g., entity_lookup,
+      operation_type (None | str | Unset): Filter by operation type (e.g., entity_lookup,
           cypher_query)
-      start_date (Union[None, Unset, str]): Start date for filtering (ISO format: YYYY-MM-DD)
-      end_date (Union[None, Unset, str]): End date for filtering (ISO format: YYYY-MM-DD)
-      limit (Union[Unset, int]): Maximum number of transactions to return Default: 100.
-      offset (Union[Unset, int]): Number of transactions to skip Default: 0.
+      start_date (None | str | Unset): Start date for filtering (ISO format: YYYY-MM-DD)
+      end_date (None | str | Unset): End date for filtering (ISO format: YYYY-MM-DD)
+      limit (int | Unset): Maximum number of transactions to return Default: 100.
+      offset (int | Unset): Number of transactions to skip Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[DetailedTransactionsResponse, ErrorResponse, HTTPValidationError]
+      DetailedTransactionsResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

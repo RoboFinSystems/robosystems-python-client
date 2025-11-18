@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -27,9 +29,9 @@ class OrgDetailResponse:
       name (str):
       org_type (OrgType):
       user_role (OrgRole):
-      members (list['OrgDetailResponseMembersItem']):
-      graphs (list['OrgDetailResponseGraphsItem']):
-      limits (Union['OrgDetailResponseLimitsType0', None]):
+      members (list[OrgDetailResponseMembersItem]):
+      graphs (list[OrgDetailResponseGraphsItem]):
+      limits (None | OrgDetailResponseLimitsType0):
       created_at (datetime.datetime):
       updated_at (datetime.datetime):
   """
@@ -38,9 +40,9 @@ class OrgDetailResponse:
   name: str
   org_type: OrgType
   user_role: OrgRole
-  members: list["OrgDetailResponseMembersItem"]
-  graphs: list["OrgDetailResponseGraphsItem"]
-  limits: Union["OrgDetailResponseLimitsType0", None]
+  members: list[OrgDetailResponseMembersItem]
+  graphs: list[OrgDetailResponseGraphsItem]
+  limits: None | OrgDetailResponseLimitsType0
   created_at: datetime.datetime
   updated_at: datetime.datetime
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -66,7 +68,7 @@ class OrgDetailResponse:
       graphs_item = graphs_item_data.to_dict()
       graphs.append(graphs_item)
 
-    limits: Union[None, dict[str, Any]]
+    limits: dict[str, Any] | None
     if isinstance(self.limits, OrgDetailResponseLimitsType0):
       limits = self.limits.to_dict()
     else:
@@ -123,7 +125,7 @@ class OrgDetailResponse:
 
       graphs.append(graphs_item)
 
-    def _parse_limits(data: object) -> Union["OrgDetailResponseLimitsType0", None]:
+    def _parse_limits(data: object) -> None | OrgDetailResponseLimitsType0:
       if data is None:
         return data
       try:
@@ -132,9 +134,9 @@ class OrgDetailResponse:
         limits_type_0 = OrgDetailResponseLimitsType0.from_dict(data)
 
         return limits_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["OrgDetailResponseLimitsType0", None], data)
+      return cast(None | OrgDetailResponseLimitsType0, data)
 
     limits = _parse_limits(d.pop("limits"))
 

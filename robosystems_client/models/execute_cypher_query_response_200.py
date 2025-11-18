@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -19,35 +21,35 @@ T = TypeVar("T", bound="ExecuteCypherQueryResponse200")
 class ExecuteCypherQueryResponse200:
   """
   Attributes:
-      success (Union[Unset, bool]):
-      data (Union[Unset, list['ExecuteCypherQueryResponse200DataItem']]):
-      columns (Union[Unset, list[str]]):
-      row_count (Union[Unset, int]):
-      execution_time_ms (Union[Unset, float]):
-      graph_id (Union[Unset, str]):
-      timestamp (Union[Unset, str]):
+      success (bool | Unset):
+      data (list[ExecuteCypherQueryResponse200DataItem] | Unset):
+      columns (list[str] | Unset):
+      row_count (int | Unset):
+      execution_time_ms (float | Unset):
+      graph_id (str | Unset):
+      timestamp (str | Unset):
   """
 
-  success: Union[Unset, bool] = UNSET
-  data: Union[Unset, list["ExecuteCypherQueryResponse200DataItem"]] = UNSET
-  columns: Union[Unset, list[str]] = UNSET
-  row_count: Union[Unset, int] = UNSET
-  execution_time_ms: Union[Unset, float] = UNSET
-  graph_id: Union[Unset, str] = UNSET
-  timestamp: Union[Unset, str] = UNSET
+  success: bool | Unset = UNSET
+  data: list[ExecuteCypherQueryResponse200DataItem] | Unset = UNSET
+  columns: list[str] | Unset = UNSET
+  row_count: int | Unset = UNSET
+  execution_time_ms: float | Unset = UNSET
+  graph_id: str | Unset = UNSET
+  timestamp: str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     success = self.success
 
-    data: Union[Unset, list[dict[str, Any]]] = UNSET
+    data: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.data, Unset):
       data = []
       for data_item_data in self.data:
         data_item = data_item_data.to_dict()
         data.append(data_item)
 
-    columns: Union[Unset, list[str]] = UNSET
+    columns: list[str] | Unset = UNSET
     if not isinstance(self.columns, Unset):
       columns = self.columns
 
@@ -88,12 +90,14 @@ class ExecuteCypherQueryResponse200:
     d = dict(src_dict)
     success = d.pop("success", UNSET)
 
-    data = []
     _data = d.pop("data", UNSET)
-    for data_item_data in _data or []:
-      data_item = ExecuteCypherQueryResponse200DataItem.from_dict(data_item_data)
+    data: list[ExecuteCypherQueryResponse200DataItem] | Unset = UNSET
+    if _data is not UNSET:
+      data = []
+      for data_item_data in _data:
+        data_item = ExecuteCypherQueryResponse200DataItem.from_dict(data_item_data)
 
-      data.append(data_item)
+        data.append(data_item)
 
     columns = cast(list[str], d.pop("columns", UNSET))
 

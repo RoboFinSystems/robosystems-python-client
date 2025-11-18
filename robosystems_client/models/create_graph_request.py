@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -25,24 +27,24 @@ class CreateGraphRequest:
 
       Attributes:
           metadata (GraphMetadata): Metadata for graph creation.
-          instance_tier (Union[Unset, str]): Instance tier: kuzu-standard, kuzu-large, kuzu-xlarge, neo4j-community-large,
+          instance_tier (str | Unset): Instance tier: kuzu-standard, kuzu-large, kuzu-xlarge, neo4j-community-large,
               neo4j-enterprise-xlarge Default: 'kuzu-standard'.
-          custom_schema (Union['CustomSchemaDefinition', None, Unset]): Custom schema definition to apply. If provided,
-              creates a generic custom graph. If omitted, creates an entity graph using schema_extensions.
-          initial_entity (Union['InitialEntityData', None, Unset]): Optional initial entity to create in the graph. If
-              provided with entity graph, populates the first entity node.
-          create_entity (Union[Unset, bool]): Whether to create the entity node and upload initial data. Only applies when
+          custom_schema (CustomSchemaDefinition | None | Unset): Custom schema definition to apply. If provided, creates a
+              generic custom graph. If omitted, creates an entity graph using schema_extensions.
+          initial_entity (InitialEntityData | None | Unset): Optional initial entity to create in the graph. If provided
+              with entity graph, populates the first entity node.
+          create_entity (bool | Unset): Whether to create the entity node and upload initial data. Only applies when
               initial_entity is provided. Set to False to create graph without populating entity data (useful for file-based
               ingestion workflows). Default: True.
-          tags (Union[Unset, list[str]]): Optional tags for organization
+          tags (list[str] | Unset): Optional tags for organization
   """
 
-  metadata: "GraphMetadata"
-  instance_tier: Union[Unset, str] = "kuzu-standard"
-  custom_schema: Union["CustomSchemaDefinition", None, Unset] = UNSET
-  initial_entity: Union["InitialEntityData", None, Unset] = UNSET
-  create_entity: Union[Unset, bool] = True
-  tags: Union[Unset, list[str]] = UNSET
+  metadata: GraphMetadata
+  instance_tier: str | Unset = "kuzu-standard"
+  custom_schema: CustomSchemaDefinition | None | Unset = UNSET
+  initial_entity: InitialEntityData | None | Unset = UNSET
+  create_entity: bool | Unset = True
+  tags: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -53,7 +55,7 @@ class CreateGraphRequest:
 
     instance_tier = self.instance_tier
 
-    custom_schema: Union[None, Unset, dict[str, Any]]
+    custom_schema: dict[str, Any] | None | Unset
     if isinstance(self.custom_schema, Unset):
       custom_schema = UNSET
     elif isinstance(self.custom_schema, CustomSchemaDefinition):
@@ -61,7 +63,7 @@ class CreateGraphRequest:
     else:
       custom_schema = self.custom_schema
 
-    initial_entity: Union[None, Unset, dict[str, Any]]
+    initial_entity: dict[str, Any] | None | Unset
     if isinstance(self.initial_entity, Unset):
       initial_entity = UNSET
     elif isinstance(self.initial_entity, InitialEntityData):
@@ -71,7 +73,7 @@ class CreateGraphRequest:
 
     create_entity = self.create_entity
 
-    tags: Union[Unset, list[str]] = UNSET
+    tags: list[str] | Unset = UNSET
     if not isinstance(self.tags, Unset):
       tags = self.tags
 
@@ -106,9 +108,7 @@ class CreateGraphRequest:
 
     instance_tier = d.pop("instance_tier", UNSET)
 
-    def _parse_custom_schema(
-      data: object,
-    ) -> Union["CustomSchemaDefinition", None, Unset]:
+    def _parse_custom_schema(data: object) -> CustomSchemaDefinition | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -119,13 +119,13 @@ class CreateGraphRequest:
         custom_schema_type_0 = CustomSchemaDefinition.from_dict(data)
 
         return custom_schema_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["CustomSchemaDefinition", None, Unset], data)
+      return cast(CustomSchemaDefinition | None | Unset, data)
 
     custom_schema = _parse_custom_schema(d.pop("custom_schema", UNSET))
 
-    def _parse_initial_entity(data: object) -> Union["InitialEntityData", None, Unset]:
+    def _parse_initial_entity(data: object) -> InitialEntityData | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -136,9 +136,9 @@ class CreateGraphRequest:
         initial_entity_type_0 = InitialEntityData.from_dict(data)
 
         return initial_entity_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["InitialEntityData", None, Unset], data)
+      return cast(InitialEntityData | None | Unset, data)
 
     initial_entity = _parse_initial_entity(d.pop("initial_entity", UNSET))
 

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -24,8 +24,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ConnectionResponse, ErrorResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = ConnectionResponse.from_dict(response.json())
 
@@ -58,8 +58,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ConnectionResponse, ErrorResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -73,7 +73,7 @@ def sync_detailed(
   connection_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[ConnectionResponse, ErrorResponse, HTTPValidationError]]:
+) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Get Connection
 
    Get detailed information about a specific connection.
@@ -96,7 +96,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ConnectionResponse, ErrorResponse, HTTPValidationError]]
+      Response[ConnectionResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -116,7 +116,7 @@ def sync(
   connection_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[ConnectionResponse, ErrorResponse, HTTPValidationError]]:
+) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Get Connection
 
    Get detailed information about a specific connection.
@@ -139,7 +139,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ConnectionResponse, ErrorResponse, HTTPValidationError]
+      ConnectionResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -154,7 +154,7 @@ async def asyncio_detailed(
   connection_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[ConnectionResponse, ErrorResponse, HTTPValidationError]]:
+) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Get Connection
 
    Get detailed information about a specific connection.
@@ -177,7 +177,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ConnectionResponse, ErrorResponse, HTTPValidationError]]
+      Response[ConnectionResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -195,7 +195,7 @@ async def asyncio(
   connection_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[ConnectionResponse, ErrorResponse, HTTPValidationError]]:
+) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Get Connection
 
    Get detailed information about a specific connection.
@@ -218,7 +218,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ConnectionResponse, ErrorResponse, HTTPValidationError]
+      ConnectionResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

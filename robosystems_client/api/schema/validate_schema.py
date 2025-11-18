@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -32,8 +32,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorResponse, SchemaValidationResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorResponse | SchemaValidationResponse | None:
   if response.status_code == 200:
     response_200 = SchemaValidationResponse.from_dict(response.json())
 
@@ -66,8 +66,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorResponse, SchemaValidationResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorResponse | SchemaValidationResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -81,7 +81,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
-) -> Response[Union[ErrorResponse, SchemaValidationResponse]]:
+) -> Response[ErrorResponse | SchemaValidationResponse]:
   """Validate Schema
 
    Validate a custom schema definition before deployment.
@@ -123,7 +123,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, SchemaValidationResponse]]
+      Response[ErrorResponse | SchemaValidationResponse]
   """
 
   kwargs = _get_kwargs(
@@ -143,7 +143,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
-) -> Optional[Union[ErrorResponse, SchemaValidationResponse]]:
+) -> ErrorResponse | SchemaValidationResponse | None:
   """Validate Schema
 
    Validate a custom schema definition before deployment.
@@ -185,7 +185,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, SchemaValidationResponse]
+      ErrorResponse | SchemaValidationResponse
   """
 
   return sync_detailed(
@@ -200,7 +200,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
-) -> Response[Union[ErrorResponse, SchemaValidationResponse]]:
+) -> Response[ErrorResponse | SchemaValidationResponse]:
   """Validate Schema
 
    Validate a custom schema definition before deployment.
@@ -242,7 +242,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, SchemaValidationResponse]]
+      Response[ErrorResponse | SchemaValidationResponse]
   """
 
   kwargs = _get_kwargs(
@@ -260,7 +260,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
-) -> Optional[Union[ErrorResponse, SchemaValidationResponse]]:
+) -> ErrorResponse | SchemaValidationResponse | None:
   """Validate Schema
 
    Validate a custom schema definition before deployment.
@@ -302,7 +302,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, SchemaValidationResponse]
+      ErrorResponse | SchemaValidationResponse
   """
 
   return (

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -24,8 +24,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = GetFileInfoResponse.from_dict(response.json())
 
@@ -57,8 +57,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -72,7 +72,7 @@ def sync_detailed(
   file_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
+) -> Response[Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError]:
   """Get File Information
 
    Get detailed information about a specific file.
@@ -100,7 +100,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]
+      Response[Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -120,7 +120,7 @@ def sync(
   file_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
+) -> Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError | None:
   """Get File Information
 
    Get detailed information about a specific file.
@@ -148,7 +148,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]
+      Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -163,7 +163,7 @@ async def asyncio_detailed(
   file_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
+) -> Response[Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError]:
   """Get File Information
 
    Get detailed information about a specific file.
@@ -191,7 +191,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]
+      Response[Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -209,7 +209,7 @@ async def asyncio(
   file_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]]:
+) -> Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError | None:
   """Get File Information
 
    Get detailed information about a specific file.
@@ -237,7 +237,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ErrorResponse, GetFileInfoResponse, HTTPValidationError]
+      Any | ErrorResponse | GetFileInfoResponse | HTTPValidationError
   """
 
   return (

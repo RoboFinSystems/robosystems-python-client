@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -32,8 +32,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, OAuthInitResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> HTTPValidationError | OAuthInitResponse | None:
   if response.status_code == 200:
     response_200 = OAuthInitResponse.from_dict(response.json())
 
@@ -51,8 +51,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, OAuthInitResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[HTTPValidationError | OAuthInitResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -66,7 +66,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-) -> Response[Union[HTTPValidationError, OAuthInitResponse]]:
+) -> Response[HTTPValidationError | OAuthInitResponse]:
   """Init Oauth
 
    Initialize OAuth flow for a connection.
@@ -83,7 +83,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, OAuthInitResponse]]
+      Response[HTTPValidationError | OAuthInitResponse]
   """
 
   kwargs = _get_kwargs(
@@ -103,7 +103,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-) -> Optional[Union[HTTPValidationError, OAuthInitResponse]]:
+) -> HTTPValidationError | OAuthInitResponse | None:
   """Init Oauth
 
    Initialize OAuth flow for a connection.
@@ -120,7 +120,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, OAuthInitResponse]
+      HTTPValidationError | OAuthInitResponse
   """
 
   return sync_detailed(
@@ -135,7 +135,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-) -> Response[Union[HTTPValidationError, OAuthInitResponse]]:
+) -> Response[HTTPValidationError | OAuthInitResponse]:
   """Init Oauth
 
    Initialize OAuth flow for a connection.
@@ -152,7 +152,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, OAuthInitResponse]]
+      Response[HTTPValidationError | OAuthInitResponse]
   """
 
   kwargs = _get_kwargs(
@@ -170,7 +170,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-) -> Optional[Union[HTTPValidationError, OAuthInitResponse]]:
+) -> HTTPValidationError | OAuthInitResponse | None:
   """Init Oauth
 
    Initialize OAuth flow for a connection.
@@ -187,7 +187,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, OAuthInitResponse]
+      HTTPValidationError | OAuthInitResponse
   """
 
   return (

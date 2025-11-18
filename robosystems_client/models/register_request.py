@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -17,13 +19,13 @@ class RegisterRequest:
       name (str): User's display name
       email (str): User's email address
       password (str): User's password (must meet security requirements)
-      captcha_token (Union[None, Unset, str]): CAPTCHA verification token (required in production)
+      captcha_token (None | str | Unset): CAPTCHA verification token (required in production)
   """
 
   name: str
   email: str
   password: str
-  captcha_token: Union[None, Unset, str] = UNSET
+  captcha_token: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -33,7 +35,7 @@ class RegisterRequest:
 
     password = self.password
 
-    captcha_token: Union[None, Unset, str]
+    captcha_token: None | str | Unset
     if isinstance(self.captcha_token, Unset):
       captcha_token = UNSET
     else:
@@ -62,12 +64,12 @@ class RegisterRequest:
 
     password = d.pop("password")
 
-    def _parse_captcha_token(data: object) -> Union[None, Unset, str]:
+    def _parse_captcha_token(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     captcha_token = _parse_captcha_token(d.pop("captcha_token", UNSET))
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -16,16 +18,16 @@ class OAuthCallbackRequest:
   Attributes:
       code (str): Authorization code from OAuth provider
       state (str): OAuth state for verification
-      realm_id (Union[None, Unset, str]): QuickBooks-specific realm ID
-      error (Union[None, Unset, str]): OAuth error if authorization failed
-      error_description (Union[None, Unset, str]): OAuth error details
+      realm_id (None | str | Unset): QuickBooks-specific realm ID
+      error (None | str | Unset): OAuth error if authorization failed
+      error_description (None | str | Unset): OAuth error details
   """
 
   code: str
   state: str
-  realm_id: Union[None, Unset, str] = UNSET
-  error: Union[None, Unset, str] = UNSET
-  error_description: Union[None, Unset, str] = UNSET
+  realm_id: None | str | Unset = UNSET
+  error: None | str | Unset = UNSET
+  error_description: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -33,19 +35,19 @@ class OAuthCallbackRequest:
 
     state = self.state
 
-    realm_id: Union[None, Unset, str]
+    realm_id: None | str | Unset
     if isinstance(self.realm_id, Unset):
       realm_id = UNSET
     else:
       realm_id = self.realm_id
 
-    error: Union[None, Unset, str]
+    error: None | str | Unset
     if isinstance(self.error, Unset):
       error = UNSET
     else:
       error = self.error
 
-    error_description: Union[None, Unset, str]
+    error_description: None | str | Unset
     if isinstance(self.error_description, Unset):
       error_description = UNSET
     else:
@@ -75,30 +77,30 @@ class OAuthCallbackRequest:
 
     state = d.pop("state")
 
-    def _parse_realm_id(data: object) -> Union[None, Unset, str]:
+    def _parse_realm_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     realm_id = _parse_realm_id(d.pop("realm_id", UNSET))
 
-    def _parse_error(data: object) -> Union[None, Unset, str]:
+    def _parse_error(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     error = _parse_error(d.pop("error", UNSET))
 
-    def _parse_error_description(data: object) -> Union[None, Unset, str]:
+    def _parse_error_description(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     error_description = _parse_error_description(d.pop("error_description", UNSET))
 

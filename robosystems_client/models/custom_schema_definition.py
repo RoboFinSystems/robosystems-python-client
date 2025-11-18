@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -29,21 +31,21 @@ class CustomSchemaDefinition:
 
       Attributes:
           name (str): Schema name
-          version (Union[Unset, str]): Schema version Default: '1.0.0'.
-          description (Union[None, Unset, str]): Schema description
-          extends (Union[None, Unset, str]): Base schema to extend (e.g., 'base' for common utilities)
-          nodes (Union[Unset, list['CustomSchemaDefinitionNodesItem']]): List of node definitions with properties
-          relationships (Union[Unset, list['CustomSchemaDefinitionRelationshipsItem']]): List of relationship definitions
-          metadata (Union[Unset, CustomSchemaDefinitionMetadata]): Additional schema metadata
+          version (str | Unset): Schema version Default: '1.0.0'.
+          description (None | str | Unset): Schema description
+          extends (None | str | Unset): Base schema to extend (e.g., 'base' for common utilities)
+          nodes (list[CustomSchemaDefinitionNodesItem] | Unset): List of node definitions with properties
+          relationships (list[CustomSchemaDefinitionRelationshipsItem] | Unset): List of relationship definitions
+          metadata (CustomSchemaDefinitionMetadata | Unset): Additional schema metadata
   """
 
   name: str
-  version: Union[Unset, str] = "1.0.0"
-  description: Union[None, Unset, str] = UNSET
-  extends: Union[None, Unset, str] = UNSET
-  nodes: Union[Unset, list["CustomSchemaDefinitionNodesItem"]] = UNSET
-  relationships: Union[Unset, list["CustomSchemaDefinitionRelationshipsItem"]] = UNSET
-  metadata: Union[Unset, "CustomSchemaDefinitionMetadata"] = UNSET
+  version: str | Unset = "1.0.0"
+  description: None | str | Unset = UNSET
+  extends: None | str | Unset = UNSET
+  nodes: list[CustomSchemaDefinitionNodesItem] | Unset = UNSET
+  relationships: list[CustomSchemaDefinitionRelationshipsItem] | Unset = UNSET
+  metadata: CustomSchemaDefinitionMetadata | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -51,33 +53,33 @@ class CustomSchemaDefinition:
 
     version = self.version
 
-    description: Union[None, Unset, str]
+    description: None | str | Unset
     if isinstance(self.description, Unset):
       description = UNSET
     else:
       description = self.description
 
-    extends: Union[None, Unset, str]
+    extends: None | str | Unset
     if isinstance(self.extends, Unset):
       extends = UNSET
     else:
       extends = self.extends
 
-    nodes: Union[Unset, list[dict[str, Any]]] = UNSET
+    nodes: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.nodes, Unset):
       nodes = []
       for nodes_item_data in self.nodes:
         nodes_item = nodes_item_data.to_dict()
         nodes.append(nodes_item)
 
-    relationships: Union[Unset, list[dict[str, Any]]] = UNSET
+    relationships: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.relationships, Unset):
       relationships = []
       for relationships_item_data in self.relationships:
         relationships_item = relationships_item_data.to_dict()
         relationships.append(relationships_item)
 
-    metadata: Union[Unset, dict[str, Any]] = UNSET
+    metadata: dict[str, Any] | Unset = UNSET
     if not isinstance(self.metadata, Unset):
       metadata = self.metadata.to_dict()
 
@@ -120,42 +122,46 @@ class CustomSchemaDefinition:
 
     version = d.pop("version", UNSET)
 
-    def _parse_description(data: object) -> Union[None, Unset, str]:
+    def _parse_description(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
 
-    def _parse_extends(data: object) -> Union[None, Unset, str]:
+    def _parse_extends(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     extends = _parse_extends(d.pop("extends", UNSET))
 
-    nodes = []
     _nodes = d.pop("nodes", UNSET)
-    for nodes_item_data in _nodes or []:
-      nodes_item = CustomSchemaDefinitionNodesItem.from_dict(nodes_item_data)
+    nodes: list[CustomSchemaDefinitionNodesItem] | Unset = UNSET
+    if _nodes is not UNSET:
+      nodes = []
+      for nodes_item_data in _nodes:
+        nodes_item = CustomSchemaDefinitionNodesItem.from_dict(nodes_item_data)
 
-      nodes.append(nodes_item)
+        nodes.append(nodes_item)
 
-    relationships = []
     _relationships = d.pop("relationships", UNSET)
-    for relationships_item_data in _relationships or []:
-      relationships_item = CustomSchemaDefinitionRelationshipsItem.from_dict(
-        relationships_item_data
-      )
+    relationships: list[CustomSchemaDefinitionRelationshipsItem] | Unset = UNSET
+    if _relationships is not UNSET:
+      relationships = []
+      for relationships_item_data in _relationships:
+        relationships_item = CustomSchemaDefinitionRelationshipsItem.from_dict(
+          relationships_item_data
+        )
 
-      relationships.append(relationships_item)
+        relationships.append(relationships_item)
 
     _metadata = d.pop("metadata", UNSET)
-    metadata: Union[Unset, CustomSchemaDefinitionMetadata]
+    metadata: CustomSchemaDefinitionMetadata | Unset
     if isinstance(_metadata, Unset):
       metadata = UNSET
     else:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
@@ -25,8 +27,8 @@ class OperationCosts:
   """
 
   description: str
-  ai_operations: "OperationCostsAiOperations"
-  token_pricing: "OperationCostsTokenPricing"
+  ai_operations: OperationCostsAiOperations
+  token_pricing: OperationCostsTokenPricing
   included_operations: list[str]
   notes: list[str]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)

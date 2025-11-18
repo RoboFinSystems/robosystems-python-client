@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -23,7 +25,7 @@ class BulkIngestResponse:
       skipped_tables (int): Number of skipped tables (no files)
       total_rows_ingested (int): Total rows ingested across all tables
       total_execution_time_ms (float): Total execution time in milliseconds
-      results (list['TableIngestResult']): Per-table ingestion results
+      results (list[TableIngestResult]): Per-table ingestion results
   """
 
   status: str
@@ -34,7 +36,7 @@ class BulkIngestResponse:
   skipped_tables: int
   total_rows_ingested: int
   total_execution_time_ms: float
-  results: list["TableIngestResult"]
+  results: list[TableIngestResult]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

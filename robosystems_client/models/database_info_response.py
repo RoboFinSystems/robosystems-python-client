@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -26,8 +28,8 @@ class DatabaseInfoResponse:
       last_modified (str): Last modification timestamp
       read_only (bool): Whether database is read-only
       backup_count (int): Number of available backups
-      schema_version (Union[None, Unset, str]): Schema version
-      last_backup_date (Union[None, Unset, str]): Date of last backup
+      schema_version (None | str | Unset): Schema version
+      last_backup_date (None | str | Unset): Date of last backup
   """
 
   graph_id: str
@@ -42,8 +44,8 @@ class DatabaseInfoResponse:
   last_modified: str
   read_only: bool
   backup_count: int
-  schema_version: Union[None, Unset, str] = UNSET
-  last_backup_date: Union[None, Unset, str] = UNSET
+  schema_version: None | str | Unset = UNSET
+  last_backup_date: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -71,13 +73,13 @@ class DatabaseInfoResponse:
 
     backup_count = self.backup_count
 
-    schema_version: Union[None, Unset, str]
+    schema_version: None | str | Unset
     if isinstance(self.schema_version, Unset):
       schema_version = UNSET
     else:
       schema_version = self.schema_version
 
-    last_backup_date: Union[None, Unset, str]
+    last_backup_date: None | str | Unset
     if isinstance(self.last_backup_date, Unset):
       last_backup_date = UNSET
     else:
@@ -135,21 +137,21 @@ class DatabaseInfoResponse:
 
     backup_count = d.pop("backup_count")
 
-    def _parse_schema_version(data: object) -> Union[None, Unset, str]:
+    def _parse_schema_version(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     schema_version = _parse_schema_version(d.pop("schema_version", UNSET))
 
-    def _parse_last_backup_date(data: object) -> Union[None, Unset, str]:
+    def _parse_last_backup_date(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     last_backup_date = _parse_last_backup_date(d.pop("last_backup_date", UNSET))
 

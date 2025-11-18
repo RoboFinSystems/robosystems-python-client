@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -15,7 +17,7 @@ T = TypeVar("T", bound="DetailedTransactionsResponseSummary")
 class DetailedTransactionsResponseSummary:
   """ """
 
-  additional_properties: dict[str, "TransactionSummaryResponse"] = _attrs_field(
+  additional_properties: dict[str, TransactionSummaryResponse] = _attrs_field(
     init=False, factory=dict
   )
 
@@ -46,10 +48,10 @@ class DetailedTransactionsResponseSummary:
   def additional_keys(self) -> list[str]:
     return list(self.additional_properties.keys())
 
-  def __getitem__(self, key: str) -> "TransactionSummaryResponse":
+  def __getitem__(self, key: str) -> TransactionSummaryResponse:
     return self.additional_properties[key]
 
-  def __setitem__(self, key: str, value: "TransactionSummaryResponse") -> None:
+  def __setitem__(self, key: str, value: TransactionSummaryResponse) -> None:
     self.additional_properties[key] = value
 
   def __delitem__(self, key: str) -> None:

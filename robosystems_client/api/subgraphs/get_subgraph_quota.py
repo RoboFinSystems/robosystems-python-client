@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -22,8 +22,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError, SubgraphQuotaResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | HTTPValidationError | SubgraphQuotaResponse | None:
   if response.status_code == 200:
     response_200 = SubgraphQuotaResponse.from_dict(response.json())
 
@@ -57,8 +57,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError, SubgraphQuotaResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | HTTPValidationError | SubgraphQuotaResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -71,7 +71,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, HTTPValidationError, SubgraphQuotaResponse]]:
+) -> Response[Any | HTTPValidationError | SubgraphQuotaResponse]:
   """Get Subgraph Quota
 
    Get subgraph quota and usage information for a parent graph.
@@ -100,7 +100,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, SubgraphQuotaResponse]]
+      Response[Any | HTTPValidationError | SubgraphQuotaResponse]
   """
 
   kwargs = _get_kwargs(
@@ -118,7 +118,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, HTTPValidationError, SubgraphQuotaResponse]]:
+) -> Any | HTTPValidationError | SubgraphQuotaResponse | None:
   """Get Subgraph Quota
 
    Get subgraph quota and usage information for a parent graph.
@@ -147,7 +147,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, SubgraphQuotaResponse]
+      Any | HTTPValidationError | SubgraphQuotaResponse
   """
 
   return sync_detailed(
@@ -160,7 +160,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, HTTPValidationError, SubgraphQuotaResponse]]:
+) -> Response[Any | HTTPValidationError | SubgraphQuotaResponse]:
   """Get Subgraph Quota
 
    Get subgraph quota and usage information for a parent graph.
@@ -189,7 +189,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, SubgraphQuotaResponse]]
+      Response[Any | HTTPValidationError | SubgraphQuotaResponse]
   """
 
   kwargs = _get_kwargs(
@@ -205,7 +205,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, HTTPValidationError, SubgraphQuotaResponse]]:
+) -> Any | HTTPValidationError | SubgraphQuotaResponse | None:
   """Get Subgraph Quota
 
    Get subgraph quota and usage information for a parent graph.
@@ -234,7 +234,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, SubgraphQuotaResponse]
+      Any | HTTPValidationError | SubgraphQuotaResponse
   """
 
   return (

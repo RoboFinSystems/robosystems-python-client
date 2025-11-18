@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -28,27 +30,27 @@ class AgentResponse:
       content (str): The agent's response content
       agent_used (str): The agent type that handled the request
       mode_used (AgentMode): Agent execution modes.
-      metadata (Union['AgentResponseMetadataType0', None, Unset]): Response metadata including routing info
-      tokens_used (Union['AgentResponseTokensUsedType0', None, Unset]): Token usage statistics
-      confidence_score (Union[None, Unset, float]): Confidence score of the response (0.0-1.0 scale)
-      operation_id (Union[None, Unset, str]): Operation ID for SSE monitoring
-      is_partial (Union[Unset, bool]): Whether this is a partial response Default: False.
-      error_details (Union['AgentResponseErrorDetailsType0', None, Unset]): Error details if any
-      execution_time (Union[None, Unset, float]): Execution time in seconds
-      timestamp (Union[Unset, datetime.datetime]): Response timestamp
+      metadata (AgentResponseMetadataType0 | None | Unset): Response metadata including routing info
+      tokens_used (AgentResponseTokensUsedType0 | None | Unset): Token usage statistics
+      confidence_score (float | None | Unset): Confidence score of the response (0.0-1.0 scale)
+      operation_id (None | str | Unset): Operation ID for SSE monitoring
+      is_partial (bool | Unset): Whether this is a partial response Default: False.
+      error_details (AgentResponseErrorDetailsType0 | None | Unset): Error details if any
+      execution_time (float | None | Unset): Execution time in seconds
+      timestamp (datetime.datetime | Unset): Response timestamp
   """
 
   content: str
   agent_used: str
   mode_used: AgentMode
-  metadata: Union["AgentResponseMetadataType0", None, Unset] = UNSET
-  tokens_used: Union["AgentResponseTokensUsedType0", None, Unset] = UNSET
-  confidence_score: Union[None, Unset, float] = UNSET
-  operation_id: Union[None, Unset, str] = UNSET
-  is_partial: Union[Unset, bool] = False
-  error_details: Union["AgentResponseErrorDetailsType0", None, Unset] = UNSET
-  execution_time: Union[None, Unset, float] = UNSET
-  timestamp: Union[Unset, datetime.datetime] = UNSET
+  metadata: AgentResponseMetadataType0 | None | Unset = UNSET
+  tokens_used: AgentResponseTokensUsedType0 | None | Unset = UNSET
+  confidence_score: float | None | Unset = UNSET
+  operation_id: None | str | Unset = UNSET
+  is_partial: bool | Unset = False
+  error_details: AgentResponseErrorDetailsType0 | None | Unset = UNSET
+  execution_time: float | None | Unset = UNSET
+  timestamp: datetime.datetime | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -64,7 +66,7 @@ class AgentResponse:
 
     mode_used = self.mode_used.value
 
-    metadata: Union[None, Unset, dict[str, Any]]
+    metadata: dict[str, Any] | None | Unset
     if isinstance(self.metadata, Unset):
       metadata = UNSET
     elif isinstance(self.metadata, AgentResponseMetadataType0):
@@ -72,7 +74,7 @@ class AgentResponse:
     else:
       metadata = self.metadata
 
-    tokens_used: Union[None, Unset, dict[str, Any]]
+    tokens_used: dict[str, Any] | None | Unset
     if isinstance(self.tokens_used, Unset):
       tokens_used = UNSET
     elif isinstance(self.tokens_used, AgentResponseTokensUsedType0):
@@ -80,13 +82,13 @@ class AgentResponse:
     else:
       tokens_used = self.tokens_used
 
-    confidence_score: Union[None, Unset, float]
+    confidence_score: float | None | Unset
     if isinstance(self.confidence_score, Unset):
       confidence_score = UNSET
     else:
       confidence_score = self.confidence_score
 
-    operation_id: Union[None, Unset, str]
+    operation_id: None | str | Unset
     if isinstance(self.operation_id, Unset):
       operation_id = UNSET
     else:
@@ -94,7 +96,7 @@ class AgentResponse:
 
     is_partial = self.is_partial
 
-    error_details: Union[None, Unset, dict[str, Any]]
+    error_details: dict[str, Any] | None | Unset
     if isinstance(self.error_details, Unset):
       error_details = UNSET
     elif isinstance(self.error_details, AgentResponseErrorDetailsType0):
@@ -102,13 +104,13 @@ class AgentResponse:
     else:
       error_details = self.error_details
 
-    execution_time: Union[None, Unset, float]
+    execution_time: float | None | Unset
     if isinstance(self.execution_time, Unset):
       execution_time = UNSET
     else:
       execution_time = self.execution_time
 
-    timestamp: Union[Unset, str] = UNSET
+    timestamp: str | Unset = UNSET
     if not isinstance(self.timestamp, Unset):
       timestamp = self.timestamp.isoformat()
 
@@ -155,9 +157,7 @@ class AgentResponse:
 
     mode_used = AgentMode(d.pop("mode_used"))
 
-    def _parse_metadata(
-      data: object,
-    ) -> Union["AgentResponseMetadataType0", None, Unset]:
+    def _parse_metadata(data: object) -> AgentResponseMetadataType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -168,15 +168,13 @@ class AgentResponse:
         metadata_type_0 = AgentResponseMetadataType0.from_dict(data)
 
         return metadata_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["AgentResponseMetadataType0", None, Unset], data)
+      return cast(AgentResponseMetadataType0 | None | Unset, data)
 
     metadata = _parse_metadata(d.pop("metadata", UNSET))
 
-    def _parse_tokens_used(
-      data: object,
-    ) -> Union["AgentResponseTokensUsedType0", None, Unset]:
+    def _parse_tokens_used(data: object) -> AgentResponseTokensUsedType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -187,27 +185,27 @@ class AgentResponse:
         tokens_used_type_0 = AgentResponseTokensUsedType0.from_dict(data)
 
         return tokens_used_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["AgentResponseTokensUsedType0", None, Unset], data)
+      return cast(AgentResponseTokensUsedType0 | None | Unset, data)
 
     tokens_used = _parse_tokens_used(d.pop("tokens_used", UNSET))
 
-    def _parse_confidence_score(data: object) -> Union[None, Unset, float]:
+    def _parse_confidence_score(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     confidence_score = _parse_confidence_score(d.pop("confidence_score", UNSET))
 
-    def _parse_operation_id(data: object) -> Union[None, Unset, str]:
+    def _parse_operation_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     operation_id = _parse_operation_id(d.pop("operation_id", UNSET))
 
@@ -215,7 +213,7 @@ class AgentResponse:
 
     def _parse_error_details(
       data: object,
-    ) -> Union["AgentResponseErrorDetailsType0", None, Unset]:
+    ) -> AgentResponseErrorDetailsType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -226,23 +224,23 @@ class AgentResponse:
         error_details_type_0 = AgentResponseErrorDetailsType0.from_dict(data)
 
         return error_details_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["AgentResponseErrorDetailsType0", None, Unset], data)
+      return cast(AgentResponseErrorDetailsType0 | None | Unset, data)
 
     error_details = _parse_error_details(d.pop("error_details", UNSET))
 
-    def _parse_execution_time(data: object) -> Union[None, Unset, float]:
+    def _parse_execution_time(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     execution_time = _parse_execution_time(d.pop("execution_time", UNSET))
 
     _timestamp = d.pop("timestamp", UNSET)
-    timestamp: Union[Unset, datetime.datetime]
+    timestamp: datetime.datetime | Unset
     if isinstance(_timestamp, Unset):
       timestamp = UNSET
     else:

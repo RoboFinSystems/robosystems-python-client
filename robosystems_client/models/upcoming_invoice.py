@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,16 +24,16 @@ class UpcomingInvoice:
       currency (str): Currency code
       period_start (str): Billing period start
       period_end (str): Billing period end
-      line_items (list['InvoiceLineItem']): Estimated line items
-      subscription_id (Union[None, Unset, str]): Associated subscription ID
+      line_items (list[InvoiceLineItem]): Estimated line items
+      subscription_id (None | str | Unset): Associated subscription ID
   """
 
   amount_due: int
   currency: str
   period_start: str
   period_end: str
-  line_items: list["InvoiceLineItem"]
-  subscription_id: Union[None, Unset, str] = UNSET
+  line_items: list[InvoiceLineItem]
+  subscription_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -48,7 +50,7 @@ class UpcomingInvoice:
       line_items_item = line_items_item_data.to_dict()
       line_items.append(line_items_item)
 
-    subscription_id: Union[None, Unset, str]
+    subscription_id: None | str | Unset
     if isinstance(self.subscription_id, Unset):
       subscription_id = UNSET
     else:
@@ -90,12 +92,12 @@ class UpcomingInvoice:
 
       line_items.append(line_items_item)
 
-    def _parse_subscription_id(data: object) -> Union[None, Unset, str]:
+    def _parse_subscription_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     subscription_id = _parse_subscription_id(d.pop("subscription_id", UNSET))
 

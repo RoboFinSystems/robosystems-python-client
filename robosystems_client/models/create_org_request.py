@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -16,17 +18,17 @@ class CreateOrgRequest:
 
   Attributes:
       name (str):
-      org_type (Union[Unset, OrgType]):
+      org_type (OrgType | Unset):
   """
 
   name: str
-  org_type: Union[Unset, OrgType] = UNSET
+  org_type: OrgType | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     name = self.name
 
-    org_type: Union[Unset, str] = UNSET
+    org_type: str | Unset = UNSET
     if not isinstance(self.org_type, Unset):
       org_type = self.org_type.value
 
@@ -48,7 +50,7 @@ class CreateOrgRequest:
     name = d.pop("name")
 
     _org_type = d.pop("org_type", UNSET)
-    org_type: Union[Unset, OrgType]
+    org_type: OrgType | Unset
     if isinstance(_org_type, Unset):
       org_type = UNSET
     else:

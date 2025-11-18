@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -15,16 +17,16 @@ class TableIngestResult:
   Attributes:
       table_name (str): Table name
       status (str): Ingestion status (success/failed/skipped)
-      rows_ingested (Union[Unset, int]): Number of rows ingested Default: 0.
-      execution_time_ms (Union[Unset, float]): Ingestion time in milliseconds Default: 0.0.
-      error (Union[None, Unset, str]): Error message if failed
+      rows_ingested (int | Unset): Number of rows ingested Default: 0.
+      execution_time_ms (float | Unset): Ingestion time in milliseconds Default: 0.0.
+      error (None | str | Unset): Error message if failed
   """
 
   table_name: str
   status: str
-  rows_ingested: Union[Unset, int] = 0
-  execution_time_ms: Union[Unset, float] = 0.0
-  error: Union[None, Unset, str] = UNSET
+  rows_ingested: int | Unset = 0
+  execution_time_ms: float | Unset = 0.0
+  error: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -36,7 +38,7 @@ class TableIngestResult:
 
     execution_time_ms = self.execution_time_ms
 
-    error: Union[None, Unset, str]
+    error: None | str | Unset
     if isinstance(self.error, Unset):
       error = UNSET
     else:
@@ -70,12 +72,12 @@ class TableIngestResult:
 
     execution_time_ms = d.pop("execution_time_ms", UNSET)
 
-    def _parse_error(data: object) -> Union[None, Unset, str]:
+    def _parse_error(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     error = _parse_error(d.pop("error", UNSET))
 

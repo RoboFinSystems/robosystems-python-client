@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,12 +24,12 @@ class ExchangeTokenRequest:
   Attributes:
       connection_id (str): Connection ID to update
       public_token (str): Temporary token from embedded auth
-      metadata (Union['ExchangeTokenRequestMetadataType0', None, Unset]): Provider-specific metadata
+      metadata (ExchangeTokenRequestMetadataType0 | None | Unset): Provider-specific metadata
   """
 
   connection_id: str
   public_token: str
-  metadata: Union["ExchangeTokenRequestMetadataType0", None, Unset] = UNSET
+  metadata: ExchangeTokenRequestMetadataType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -39,7 +41,7 @@ class ExchangeTokenRequest:
 
     public_token = self.public_token
 
-    metadata: Union[None, Unset, dict[str, Any]]
+    metadata: dict[str, Any] | None | Unset
     if isinstance(self.metadata, Unset):
       metadata = UNSET
     elif isinstance(self.metadata, ExchangeTokenRequestMetadataType0):
@@ -73,7 +75,7 @@ class ExchangeTokenRequest:
 
     def _parse_metadata(
       data: object,
-    ) -> Union["ExchangeTokenRequestMetadataType0", None, Unset]:
+    ) -> ExchangeTokenRequestMetadataType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -84,9 +86,9 @@ class ExchangeTokenRequest:
         metadata_type_0 = ExchangeTokenRequestMetadataType0.from_dict(data)
 
         return metadata_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["ExchangeTokenRequestMetadataType0", None, Unset], data)
+      return cast(ExchangeTokenRequestMetadataType0 | None | Unset, data)
 
     metadata = _parse_metadata(d.pop("metadata", UNSET))
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -16,12 +18,12 @@ class StorageLimits:
   Attributes:
       max_storage_gb (float): Maximum storage limit in GB
       approaching_limit (bool): Whether approaching storage limit (>80%)
-      current_usage_gb (Union[None, Unset, float]): Current storage usage in GB
+      current_usage_gb (float | None | Unset): Current storage usage in GB
   """
 
   max_storage_gb: float
   approaching_limit: bool
-  current_usage_gb: Union[None, Unset, float] = UNSET
+  current_usage_gb: float | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -29,7 +31,7 @@ class StorageLimits:
 
     approaching_limit = self.approaching_limit
 
-    current_usage_gb: Union[None, Unset, float]
+    current_usage_gb: float | None | Unset
     if isinstance(self.current_usage_gb, Unset):
       current_usage_gb = UNSET
     else:
@@ -55,12 +57,12 @@ class StorageLimits:
 
     approaching_limit = d.pop("approaching_limit")
 
-    def _parse_current_usage_gb(data: object) -> Union[None, Unset, float]:
+    def _parse_current_usage_gb(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     current_usage_gb = _parse_current_usage_gb(d.pop("current_usage_gb", UNSET))
 

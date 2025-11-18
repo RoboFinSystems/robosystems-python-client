@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -32,12 +32,12 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, SubgraphResponse]]:
-  if response.status_code == 201:
-    response_201 = SubgraphResponse.from_dict(response.json())
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> HTTPValidationError | SubgraphResponse | None:
+  if response.status_code == 200:
+    response_200 = SubgraphResponse.from_dict(response.json())
 
-    return response_201
+    return response_200
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
@@ -51,8 +51,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, SubgraphResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[HTTPValidationError | SubgraphResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -66,10 +66,10 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
-) -> Response[Union[HTTPValidationError, SubgraphResponse]]:
+) -> Response[HTTPValidationError | SubgraphResponse]:
   """Create Subgraph
 
-   Create a new subgraph within a parent graph.
+   Create a new subgraph within a parent graph, with optional data forking.
 
   **Requirements:**
   - Valid authentication
@@ -79,9 +79,18 @@ def sync_detailed(
   - Must be within subgraph quota limits
   - Subgraph name must be unique within the parent graph
 
+  **Fork Mode:**
+  When `fork_parent=true`, the operation:
+  - Returns immediately with an operation_id for SSE monitoring
+  - Copies data from parent graph to the new subgraph
+  - Supports selective forking via metadata.fork_options
+  - Tracks progress in real-time via SSE
+
   **Returns:**
-  - Created subgraph details including its unique ID
-  - Subgraph ID format: `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
+  - Without fork: Immediate SubgraphResponse with created subgraph details
+  - With fork: Operation response with SSE monitoring endpoint
+
+  **Subgraph ID format:** `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
 
   **Usage:**
   - Subgraphs share parent's credit pool
@@ -97,7 +106,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, SubgraphResponse]]
+      Response[HTTPValidationError | SubgraphResponse]
   """
 
   kwargs = _get_kwargs(
@@ -117,10 +126,10 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
-) -> Optional[Union[HTTPValidationError, SubgraphResponse]]:
+) -> HTTPValidationError | SubgraphResponse | None:
   """Create Subgraph
 
-   Create a new subgraph within a parent graph.
+   Create a new subgraph within a parent graph, with optional data forking.
 
   **Requirements:**
   - Valid authentication
@@ -130,9 +139,18 @@ def sync(
   - Must be within subgraph quota limits
   - Subgraph name must be unique within the parent graph
 
+  **Fork Mode:**
+  When `fork_parent=true`, the operation:
+  - Returns immediately with an operation_id for SSE monitoring
+  - Copies data from parent graph to the new subgraph
+  - Supports selective forking via metadata.fork_options
+  - Tracks progress in real-time via SSE
+
   **Returns:**
-  - Created subgraph details including its unique ID
-  - Subgraph ID format: `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
+  - Without fork: Immediate SubgraphResponse with created subgraph details
+  - With fork: Operation response with SSE monitoring endpoint
+
+  **Subgraph ID format:** `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
 
   **Usage:**
   - Subgraphs share parent's credit pool
@@ -148,7 +166,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, SubgraphResponse]
+      HTTPValidationError | SubgraphResponse
   """
 
   return sync_detailed(
@@ -163,10 +181,10 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
-) -> Response[Union[HTTPValidationError, SubgraphResponse]]:
+) -> Response[HTTPValidationError | SubgraphResponse]:
   """Create Subgraph
 
-   Create a new subgraph within a parent graph.
+   Create a new subgraph within a parent graph, with optional data forking.
 
   **Requirements:**
   - Valid authentication
@@ -176,9 +194,18 @@ async def asyncio_detailed(
   - Must be within subgraph quota limits
   - Subgraph name must be unique within the parent graph
 
+  **Fork Mode:**
+  When `fork_parent=true`, the operation:
+  - Returns immediately with an operation_id for SSE monitoring
+  - Copies data from parent graph to the new subgraph
+  - Supports selective forking via metadata.fork_options
+  - Tracks progress in real-time via SSE
+
   **Returns:**
-  - Created subgraph details including its unique ID
-  - Subgraph ID format: `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
+  - Without fork: Immediate SubgraphResponse with created subgraph details
+  - With fork: Operation response with SSE monitoring endpoint
+
+  **Subgraph ID format:** `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
 
   **Usage:**
   - Subgraphs share parent's credit pool
@@ -194,7 +221,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, SubgraphResponse]]
+      Response[HTTPValidationError | SubgraphResponse]
   """
 
   kwargs = _get_kwargs(
@@ -212,10 +239,10 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
-) -> Optional[Union[HTTPValidationError, SubgraphResponse]]:
+) -> HTTPValidationError | SubgraphResponse | None:
   """Create Subgraph
 
-   Create a new subgraph within a parent graph.
+   Create a new subgraph within a parent graph, with optional data forking.
 
   **Requirements:**
   - Valid authentication
@@ -225,9 +252,18 @@ async def asyncio(
   - Must be within subgraph quota limits
   - Subgraph name must be unique within the parent graph
 
+  **Fork Mode:**
+  When `fork_parent=true`, the operation:
+  - Returns immediately with an operation_id for SSE monitoring
+  - Copies data from parent graph to the new subgraph
+  - Supports selective forking via metadata.fork_options
+  - Tracks progress in real-time via SSE
+
   **Returns:**
-  - Created subgraph details including its unique ID
-  - Subgraph ID format: `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
+  - Without fork: Immediate SubgraphResponse with created subgraph details
+  - With fork: Operation response with SSE monitoring endpoint
+
+  **Subgraph ID format:** `{parent_id}_{subgraph_name}` (e.g., kg1234567890abcdef_dev)
 
   **Usage:**
   - Subgraphs share parent's credit pool
@@ -243,7 +279,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, SubgraphResponse]
+      HTTPValidationError | SubgraphResponse
   """
 
   return (

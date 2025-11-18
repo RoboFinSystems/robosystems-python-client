@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -15,28 +17,28 @@ class SelectionCriteria:
   """Criteria for agent selection.
 
   Attributes:
-      min_confidence (Union[Unset, float]): Minimum confidence score Default: 0.3.
-      required_capabilities (Union[Unset, list[str]]): Required agent capabilities
-      preferred_mode (Union[AgentMode, None, Unset]): Preferred execution mode
-      max_response_time (Union[Unset, float]): Maximum response time in seconds Default: 60.0.
-      excluded_agents (Union[Unset, list[str]]): Agents to exclude from selection
+      min_confidence (float | Unset): Minimum confidence score Default: 0.3.
+      required_capabilities (list[str] | Unset): Required agent capabilities
+      preferred_mode (AgentMode | None | Unset): Preferred execution mode
+      max_response_time (float | Unset): Maximum response time in seconds Default: 60.0.
+      excluded_agents (list[str] | Unset): Agents to exclude from selection
   """
 
-  min_confidence: Union[Unset, float] = 0.3
-  required_capabilities: Union[Unset, list[str]] = UNSET
-  preferred_mode: Union[AgentMode, None, Unset] = UNSET
-  max_response_time: Union[Unset, float] = 60.0
-  excluded_agents: Union[Unset, list[str]] = UNSET
+  min_confidence: float | Unset = 0.3
+  required_capabilities: list[str] | Unset = UNSET
+  preferred_mode: AgentMode | None | Unset = UNSET
+  max_response_time: float | Unset = 60.0
+  excluded_agents: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     min_confidence = self.min_confidence
 
-    required_capabilities: Union[Unset, list[str]] = UNSET
+    required_capabilities: list[str] | Unset = UNSET
     if not isinstance(self.required_capabilities, Unset):
       required_capabilities = self.required_capabilities
 
-    preferred_mode: Union[None, Unset, str]
+    preferred_mode: None | str | Unset
     if isinstance(self.preferred_mode, Unset):
       preferred_mode = UNSET
     elif isinstance(self.preferred_mode, AgentMode):
@@ -46,7 +48,7 @@ class SelectionCriteria:
 
     max_response_time = self.max_response_time
 
-    excluded_agents: Union[Unset, list[str]] = UNSET
+    excluded_agents: list[str] | Unset = UNSET
     if not isinstance(self.excluded_agents, Unset):
       excluded_agents = self.excluded_agents
 
@@ -73,7 +75,7 @@ class SelectionCriteria:
 
     required_capabilities = cast(list[str], d.pop("required_capabilities", UNSET))
 
-    def _parse_preferred_mode(data: object) -> Union[AgentMode, None, Unset]:
+    def _parse_preferred_mode(data: object) -> AgentMode | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -84,9 +86,9 @@ class SelectionCriteria:
         preferred_mode_type_0 = AgentMode(data)
 
         return preferred_mode_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[AgentMode, None, Unset], data)
+      return cast(AgentMode | None | Unset, data)
 
     preferred_mode = _parse_preferred_mode(d.pop("preferred_mode", UNSET))
 

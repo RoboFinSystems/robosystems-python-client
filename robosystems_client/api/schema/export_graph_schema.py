@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -13,8 +13,8 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  format_: Union[Unset, str] = "json",
-  include_data_stats: Union[Unset, bool] = False,
+  format_: str | Unset = "json",
+  include_data_stats: bool | Unset = False,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
@@ -34,8 +34,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | HTTPValidationError | SchemaExportResponse | None:
   if response.status_code == 200:
     response_200 = SchemaExportResponse.from_dict(response.json())
 
@@ -65,8 +65,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | HTTPValidationError | SchemaExportResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -79,9 +79,9 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  format_: Union[Unset, str] = "json",
-  include_data_stats: Union[Unset, bool] = False,
-) -> Response[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  format_: str | Unset = "json",
+  include_data_stats: bool | Unset = False,
+) -> Response[Any | HTTPValidationError | SchemaExportResponse]:
   """Export Declared Graph Schema
 
    Export the declared schema definition of an existing graph.
@@ -134,16 +134,16 @@ def sync_detailed(
 
   Args:
       graph_id (str):
-      format_ (Union[Unset, str]): Export format: json, yaml, or cypher Default: 'json'.
-      include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
-          (node counts, relationship counts) Default: False.
+      format_ (str | Unset): Export format: json, yaml, or cypher Default: 'json'.
+      include_data_stats (bool | Unset): Include statistics about actual data in the graph (node
+          counts, relationship counts) Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, SchemaExportResponse]]
+      Response[Any | HTTPValidationError | SchemaExportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -163,9 +163,9 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  format_: Union[Unset, str] = "json",
-  include_data_stats: Union[Unset, bool] = False,
-) -> Optional[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  format_: str | Unset = "json",
+  include_data_stats: bool | Unset = False,
+) -> Any | HTTPValidationError | SchemaExportResponse | None:
   """Export Declared Graph Schema
 
    Export the declared schema definition of an existing graph.
@@ -218,16 +218,16 @@ def sync(
 
   Args:
       graph_id (str):
-      format_ (Union[Unset, str]): Export format: json, yaml, or cypher Default: 'json'.
-      include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
-          (node counts, relationship counts) Default: False.
+      format_ (str | Unset): Export format: json, yaml, or cypher Default: 'json'.
+      include_data_stats (bool | Unset): Include statistics about actual data in the graph (node
+          counts, relationship counts) Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, SchemaExportResponse]
+      Any | HTTPValidationError | SchemaExportResponse
   """
 
   return sync_detailed(
@@ -242,9 +242,9 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  format_: Union[Unset, str] = "json",
-  include_data_stats: Union[Unset, bool] = False,
-) -> Response[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  format_: str | Unset = "json",
+  include_data_stats: bool | Unset = False,
+) -> Response[Any | HTTPValidationError | SchemaExportResponse]:
   """Export Declared Graph Schema
 
    Export the declared schema definition of an existing graph.
@@ -297,16 +297,16 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str):
-      format_ (Union[Unset, str]): Export format: json, yaml, or cypher Default: 'json'.
-      include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
-          (node counts, relationship counts) Default: False.
+      format_ (str | Unset): Export format: json, yaml, or cypher Default: 'json'.
+      include_data_stats (bool | Unset): Include statistics about actual data in the graph (node
+          counts, relationship counts) Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError, SchemaExportResponse]]
+      Response[Any | HTTPValidationError | SchemaExportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -324,9 +324,9 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  format_: Union[Unset, str] = "json",
-  include_data_stats: Union[Unset, bool] = False,
-) -> Optional[Union[Any, HTTPValidationError, SchemaExportResponse]]:
+  format_: str | Unset = "json",
+  include_data_stats: bool | Unset = False,
+) -> Any | HTTPValidationError | SchemaExportResponse | None:
   """Export Declared Graph Schema
 
    Export the declared schema definition of an existing graph.
@@ -379,16 +379,16 @@ async def asyncio(
 
   Args:
       graph_id (str):
-      format_ (Union[Unset, str]): Export format: json, yaml, or cypher Default: 'json'.
-      include_data_stats (Union[Unset, bool]): Include statistics about actual data in the graph
-          (node counts, relationship counts) Default: False.
+      format_ (str | Unset): Export format: json, yaml, or cypher Default: 'json'.
+      include_data_stats (bool | Unset): Include statistics about actual data in the graph (node
+          counts, relationship counts) Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError, SchemaExportResponse]
+      Any | HTTPValidationError | SchemaExportResponse
   """
 
   return (

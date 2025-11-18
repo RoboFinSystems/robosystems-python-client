@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -16,15 +16,15 @@ def _get_kwargs(
   graph_id: str,
   *,
   body: CypherQueryRequest,
-  mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[None, Unset, int] = UNSET,
-  test_mode: Union[Unset, bool] = False,
+  mode: None | ResponseMode | Unset = UNSET,
+  chunk_size: int | None | Unset = UNSET,
+  test_mode: bool | Unset = False,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
 
   params: dict[str, Any] = {}
 
-  json_mode: Union[None, Unset, str]
+  json_mode: None | str | Unset
   if isinstance(mode, Unset):
     json_mode = UNSET
   elif isinstance(mode, ResponseMode):
@@ -33,7 +33,7 @@ def _get_kwargs(
     json_mode = mode
   params["mode"] = json_mode
 
-  json_chunk_size: Union[None, Unset, int]
+  json_chunk_size: int | None | Unset
   if isinstance(chunk_size, Unset):
     json_chunk_size = UNSET
   else:
@@ -59,8 +59,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | ExecuteCypherQueryResponse200 | HTTPValidationError | None:
   if response.status_code == 200:
     content_type = response.headers.get("content-type", "")
     if (
@@ -112,8 +112,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -127,17 +127,20 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: CypherQueryRequest,
-  mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[None, Unset, int] = UNSET,
-  test_mode: Union[Unset, bool] = False,
-) -> Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
-  r"""Execute Cypher Query (Read-Only)
+  mode: None | ResponseMode | Unset = UNSET,
+  chunk_size: int | None | Unset = UNSET,
+  test_mode: bool | Unset = False,
+) -> Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]:
+  r"""Execute Cypher Query
 
-   Execute a read-only Cypher query with intelligent response optimization.
+   Execute a Cypher query with intelligent response optimization.
 
-  **IMPORTANT: This endpoint is READ-ONLY.** Write operations (CREATE, MERGE, SET, DELETE) are not
-  allowed.
-  To load data into your graph, use the staging pipeline:
+  **IMPORTANT: Write operations depend on graph type:**
+  - **Main Graphs**: READ-ONLY. Write operations (CREATE, MERGE, SET, DELETE) are not allowed.
+  - **Subgraphs**: WRITE-ENABLED. Full Cypher write operations are supported for development and
+  report creation.
+
+  To load data into main graphs, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
 
@@ -205,9 +208,9 @@ def sync_detailed(
 
   Args:
       graph_id (str):
-      mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
-      test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
+      mode (None | ResponseMode | Unset): Response mode override
+      chunk_size (int | None | Unset): Rows per chunk for streaming
+      test_mode (bool | Unset): Enable test mode for better debugging Default: False.
       body (CypherQueryRequest): Request model for Cypher query execution.
 
   Raises:
@@ -215,7 +218,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]
+      Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -238,17 +241,20 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: CypherQueryRequest,
-  mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[None, Unset, int] = UNSET,
-  test_mode: Union[Unset, bool] = False,
-) -> Optional[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
-  r"""Execute Cypher Query (Read-Only)
+  mode: None | ResponseMode | Unset = UNSET,
+  chunk_size: int | None | Unset = UNSET,
+  test_mode: bool | Unset = False,
+) -> Any | ExecuteCypherQueryResponse200 | HTTPValidationError | None:
+  r"""Execute Cypher Query
 
-   Execute a read-only Cypher query with intelligent response optimization.
+   Execute a Cypher query with intelligent response optimization.
 
-  **IMPORTANT: This endpoint is READ-ONLY.** Write operations (CREATE, MERGE, SET, DELETE) are not
-  allowed.
-  To load data into your graph, use the staging pipeline:
+  **IMPORTANT: Write operations depend on graph type:**
+  - **Main Graphs**: READ-ONLY. Write operations (CREATE, MERGE, SET, DELETE) are not allowed.
+  - **Subgraphs**: WRITE-ENABLED. Full Cypher write operations are supported for development and
+  report creation.
+
+  To load data into main graphs, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
 
@@ -316,9 +322,9 @@ def sync(
 
   Args:
       graph_id (str):
-      mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
-      test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
+      mode (None | ResponseMode | Unset): Response mode override
+      chunk_size (int | None | Unset): Rows per chunk for streaming
+      test_mode (bool | Unset): Enable test mode for better debugging Default: False.
       body (CypherQueryRequest): Request model for Cypher query execution.
 
   Raises:
@@ -326,7 +332,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]
+      Any | ExecuteCypherQueryResponse200 | HTTPValidationError
   """
 
   return sync_detailed(
@@ -344,17 +350,20 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: CypherQueryRequest,
-  mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[None, Unset, int] = UNSET,
-  test_mode: Union[Unset, bool] = False,
-) -> Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
-  r"""Execute Cypher Query (Read-Only)
+  mode: None | ResponseMode | Unset = UNSET,
+  chunk_size: int | None | Unset = UNSET,
+  test_mode: bool | Unset = False,
+) -> Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]:
+  r"""Execute Cypher Query
 
-   Execute a read-only Cypher query with intelligent response optimization.
+   Execute a Cypher query with intelligent response optimization.
 
-  **IMPORTANT: This endpoint is READ-ONLY.** Write operations (CREATE, MERGE, SET, DELETE) are not
-  allowed.
-  To load data into your graph, use the staging pipeline:
+  **IMPORTANT: Write operations depend on graph type:**
+  - **Main Graphs**: READ-ONLY. Write operations (CREATE, MERGE, SET, DELETE) are not allowed.
+  - **Subgraphs**: WRITE-ENABLED. Full Cypher write operations are supported for development and
+  report creation.
+
+  To load data into main graphs, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
 
@@ -422,9 +431,9 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str):
-      mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
-      test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
+      mode (None | ResponseMode | Unset): Response mode override
+      chunk_size (int | None | Unset): Rows per chunk for streaming
+      test_mode (bool | Unset): Enable test mode for better debugging Default: False.
       body (CypherQueryRequest): Request model for Cypher query execution.
 
   Raises:
@@ -432,7 +441,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]
+      Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -453,17 +462,20 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: CypherQueryRequest,
-  mode: Union[None, ResponseMode, Unset] = UNSET,
-  chunk_size: Union[None, Unset, int] = UNSET,
-  test_mode: Union[Unset, bool] = False,
-) -> Optional[Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]]:
-  r"""Execute Cypher Query (Read-Only)
+  mode: None | ResponseMode | Unset = UNSET,
+  chunk_size: int | None | Unset = UNSET,
+  test_mode: bool | Unset = False,
+) -> Any | ExecuteCypherQueryResponse200 | HTTPValidationError | None:
+  r"""Execute Cypher Query
 
-   Execute a read-only Cypher query with intelligent response optimization.
+   Execute a Cypher query with intelligent response optimization.
 
-  **IMPORTANT: This endpoint is READ-ONLY.** Write operations (CREATE, MERGE, SET, DELETE) are not
-  allowed.
-  To load data into your graph, use the staging pipeline:
+  **IMPORTANT: Write operations depend on graph type:**
+  - **Main Graphs**: READ-ONLY. Write operations (CREATE, MERGE, SET, DELETE) are not allowed.
+  - **Subgraphs**: WRITE-ENABLED. Full Cypher write operations are supported for development and
+  report creation.
+
+  To load data into main graphs, use the staging pipeline:
   1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
   2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
 
@@ -531,9 +543,9 @@ async def asyncio(
 
   Args:
       graph_id (str):
-      mode (Union[None, ResponseMode, Unset]): Response mode override
-      chunk_size (Union[None, Unset, int]): Rows per chunk for streaming
-      test_mode (Union[Unset, bool]): Enable test mode for better debugging Default: False.
+      mode (None | ResponseMode | Unset): Response mode override
+      chunk_size (int | None | Unset): Rows per chunk for streaming
+      test_mode (bool | Unset): Enable test mode for better debugging Default: False.
       body (CypherQueryRequest): Request model for Cypher query execution.
 
   Raises:
@@ -541,7 +553,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ExecuteCypherQueryResponse200, HTTPValidationError]
+      Any | ExecuteCypherQueryResponse200 | HTTPValidationError
   """
 
   return (

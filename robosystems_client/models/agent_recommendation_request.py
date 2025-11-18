@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -21,11 +23,11 @@ class AgentRecommendationRequest:
 
   Attributes:
       query (str): Query to analyze
-      context (Union['AgentRecommendationRequestContextType0', None, Unset]): Additional context
+      context (AgentRecommendationRequestContextType0 | None | Unset): Additional context
   """
 
   query: str
-  context: Union["AgentRecommendationRequestContextType0", None, Unset] = UNSET
+  context: AgentRecommendationRequestContextType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -35,7 +37,7 @@ class AgentRecommendationRequest:
 
     query = self.query
 
-    context: Union[None, Unset, dict[str, Any]]
+    context: dict[str, Any] | None | Unset
     if isinstance(self.context, Unset):
       context = UNSET
     elif isinstance(self.context, AgentRecommendationRequestContextType0):
@@ -66,7 +68,7 @@ class AgentRecommendationRequest:
 
     def _parse_context(
       data: object,
-    ) -> Union["AgentRecommendationRequestContextType0", None, Unset]:
+    ) -> AgentRecommendationRequestContextType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -77,9 +79,9 @@ class AgentRecommendationRequest:
         context_type_0 = AgentRecommendationRequestContextType0.from_dict(data)
 
         return context_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["AgentRecommendationRequestContextType0", None, Unset], data)
+      return cast(AgentRecommendationRequestContextType0 | None | Unset, data)
 
     context = _parse_context(d.pop("context", UNSET))
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,12 +18,12 @@ class BatchAgentResponse:
   """Response for batch processing.
 
   Attributes:
-      results (list['AgentResponse']): List of agent responses (includes successes and failures)
+      results (list[AgentResponse]): List of agent responses (includes successes and failures)
       total_execution_time (float): Total execution time in seconds
       parallel_processed (bool): Whether queries were processed in parallel
   """
 
-  results: list["AgentResponse"]
+  results: list[AgentResponse]
   total_execution_time: float
   parallel_processed: bool
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)

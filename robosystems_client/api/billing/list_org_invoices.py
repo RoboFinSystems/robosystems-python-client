@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -13,7 +13,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   org_id: str,
   *,
-  limit: Union[Unset, int] = 10,
+  limit: int | Unset = 10,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
@@ -31,8 +31,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, InvoicesResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> HTTPValidationError | InvoicesResponse | None:
   if response.status_code == 200:
     response_200 = InvoicesResponse.from_dict(response.json())
 
@@ -50,8 +50,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, InvoicesResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[HTTPValidationError | InvoicesResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -64,8 +64,8 @@ def sync_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  limit: Union[Unset, int] = 10,
-) -> Response[Union[HTTPValidationError, InvoicesResponse]]:
+  limit: int | Unset = 10,
+) -> Response[HTTPValidationError | InvoicesResponse]:
   """List Organization Invoices
 
    List payment history and invoices for an organization.
@@ -78,14 +78,14 @@ def sync_detailed(
 
   Args:
       org_id (str):
-      limit (Union[Unset, int]): Number of invoices to return Default: 10.
+      limit (int | Unset): Number of invoices to return Default: 10.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, InvoicesResponse]]
+      Response[HTTPValidationError | InvoicesResponse]
   """
 
   kwargs = _get_kwargs(
@@ -104,8 +104,8 @@ def sync(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  limit: Union[Unset, int] = 10,
-) -> Optional[Union[HTTPValidationError, InvoicesResponse]]:
+  limit: int | Unset = 10,
+) -> HTTPValidationError | InvoicesResponse | None:
   """List Organization Invoices
 
    List payment history and invoices for an organization.
@@ -118,14 +118,14 @@ def sync(
 
   Args:
       org_id (str):
-      limit (Union[Unset, int]): Number of invoices to return Default: 10.
+      limit (int | Unset): Number of invoices to return Default: 10.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, InvoicesResponse]
+      HTTPValidationError | InvoicesResponse
   """
 
   return sync_detailed(
@@ -139,8 +139,8 @@ async def asyncio_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  limit: Union[Unset, int] = 10,
-) -> Response[Union[HTTPValidationError, InvoicesResponse]]:
+  limit: int | Unset = 10,
+) -> Response[HTTPValidationError | InvoicesResponse]:
   """List Organization Invoices
 
    List payment history and invoices for an organization.
@@ -153,14 +153,14 @@ async def asyncio_detailed(
 
   Args:
       org_id (str):
-      limit (Union[Unset, int]): Number of invoices to return Default: 10.
+      limit (int | Unset): Number of invoices to return Default: 10.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, InvoicesResponse]]
+      Response[HTTPValidationError | InvoicesResponse]
   """
 
   kwargs = _get_kwargs(
@@ -177,8 +177,8 @@ async def asyncio(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  limit: Union[Unset, int] = 10,
-) -> Optional[Union[HTTPValidationError, InvoicesResponse]]:
+  limit: int | Unset = 10,
+) -> HTTPValidationError | InvoicesResponse | None:
   """List Organization Invoices
 
    List payment history and invoices for an organization.
@@ -191,14 +191,14 @@ async def asyncio(
 
   Args:
       org_id (str):
-      limit (Union[Unset, int]): Number of invoices to return Default: 10.
+      limit (int | Unset): Number of invoices to return Default: 10.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, InvoicesResponse]
+      HTTPValidationError | InvoicesResponse
   """
 
   return (

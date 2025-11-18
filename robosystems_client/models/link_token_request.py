@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -21,16 +23,16 @@ class LinkTokenRequest:
   Attributes:
       entity_id (str): Entity identifier
       user_id (str): User identifier
-      provider (Union[LinkTokenRequestProviderType0, None, Unset]): Provider type (defaults based on connection)
-      products (Union[None, Unset, list[str]]): Data products to request (provider-specific)
-      options (Union['LinkTokenRequestOptionsType0', None, Unset]): Provider-specific options
+      provider (LinkTokenRequestProviderType0 | None | Unset): Provider type (defaults based on connection)
+      products (list[str] | None | Unset): Data products to request (provider-specific)
+      options (LinkTokenRequestOptionsType0 | None | Unset): Provider-specific options
   """
 
   entity_id: str
   user_id: str
-  provider: Union[LinkTokenRequestProviderType0, None, Unset] = UNSET
-  products: Union[None, Unset, list[str]] = UNSET
-  options: Union["LinkTokenRequestOptionsType0", None, Unset] = UNSET
+  provider: LinkTokenRequestProviderType0 | None | Unset = UNSET
+  products: list[str] | None | Unset = UNSET
+  options: LinkTokenRequestOptionsType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -40,7 +42,7 @@ class LinkTokenRequest:
 
     user_id = self.user_id
 
-    provider: Union[None, Unset, str]
+    provider: None | str | Unset
     if isinstance(self.provider, Unset):
       provider = UNSET
     elif isinstance(self.provider, LinkTokenRequestProviderType0):
@@ -48,7 +50,7 @@ class LinkTokenRequest:
     else:
       provider = self.provider
 
-    products: Union[None, Unset, list[str]]
+    products: list[str] | None | Unset
     if isinstance(self.products, Unset):
       products = UNSET
     elif isinstance(self.products, list):
@@ -57,7 +59,7 @@ class LinkTokenRequest:
     else:
       products = self.products
 
-    options: Union[None, Unset, dict[str, Any]]
+    options: dict[str, Any] | None | Unset
     if isinstance(self.options, Unset):
       options = UNSET
     elif isinstance(self.options, LinkTokenRequestOptionsType0):
@@ -91,9 +93,7 @@ class LinkTokenRequest:
 
     user_id = d.pop("user_id")
 
-    def _parse_provider(
-      data: object,
-    ) -> Union[LinkTokenRequestProviderType0, None, Unset]:
+    def _parse_provider(data: object) -> LinkTokenRequestProviderType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -104,13 +104,13 @@ class LinkTokenRequest:
         provider_type_0 = LinkTokenRequestProviderType0(data)
 
         return provider_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[LinkTokenRequestProviderType0, None, Unset], data)
+      return cast(LinkTokenRequestProviderType0 | None | Unset, data)
 
     provider = _parse_provider(d.pop("provider", UNSET))
 
-    def _parse_products(data: object) -> Union[None, Unset, list[str]]:
+    def _parse_products(data: object) -> list[str] | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -121,15 +121,13 @@ class LinkTokenRequest:
         products_type_0 = cast(list[str], data)
 
         return products_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, list[str]], data)
+      return cast(list[str] | None | Unset, data)
 
     products = _parse_products(d.pop("products", UNSET))
 
-    def _parse_options(
-      data: object,
-    ) -> Union["LinkTokenRequestOptionsType0", None, Unset]:
+    def _parse_options(data: object) -> LinkTokenRequestOptionsType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -140,9 +138,9 @@ class LinkTokenRequest:
         options_type_0 = LinkTokenRequestOptionsType0.from_dict(data)
 
         return options_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["LinkTokenRequestOptionsType0", None, Unset], data)
+      return cast(LinkTokenRequestOptionsType0 | None | Unset, data)
 
     options = _parse_options(d.pop("options", UNSET))
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -18,16 +20,16 @@ class TransactionSummaryResponse:
       total_amount (float):
       transaction_count (int):
       average_amount (float):
-      first_transaction (Union[None, Unset, str]):
-      last_transaction (Union[None, Unset, str]):
+      first_transaction (None | str | Unset):
+      last_transaction (None | str | Unset):
   """
 
   operation_type: str
   total_amount: float
   transaction_count: int
   average_amount: float
-  first_transaction: Union[None, Unset, str] = UNSET
-  last_transaction: Union[None, Unset, str] = UNSET
+  first_transaction: None | str | Unset = UNSET
+  last_transaction: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -39,13 +41,13 @@ class TransactionSummaryResponse:
 
     average_amount = self.average_amount
 
-    first_transaction: Union[None, Unset, str]
+    first_transaction: None | str | Unset
     if isinstance(self.first_transaction, Unset):
       first_transaction = UNSET
     else:
       first_transaction = self.first_transaction
 
-    last_transaction: Union[None, Unset, str]
+    last_transaction: None | str | Unset
     if isinstance(self.last_transaction, Unset):
       last_transaction = UNSET
     else:
@@ -79,21 +81,21 @@ class TransactionSummaryResponse:
 
     average_amount = d.pop("average_amount")
 
-    def _parse_first_transaction(data: object) -> Union[None, Unset, str]:
+    def _parse_first_transaction(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     first_transaction = _parse_first_transaction(d.pop("first_transaction", UNSET))
 
-    def _parse_last_transaction(data: object) -> Union[None, Unset, str]:
+    def _parse_last_transaction(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     last_transaction = _parse_last_transaction(d.pop("last_transaction", UNSET))
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -19,17 +21,17 @@ class MCPToolCall:
 
   Attributes:
       name (str): Name of the MCP tool to execute
-      arguments (Union[Unset, MCPToolCallArguments]): Arguments to pass to the tool
+      arguments (MCPToolCallArguments | Unset): Arguments to pass to the tool
   """
 
   name: str
-  arguments: Union[Unset, "MCPToolCallArguments"] = UNSET
+  arguments: MCPToolCallArguments | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     name = self.name
 
-    arguments: Union[Unset, dict[str, Any]] = UNSET
+    arguments: dict[str, Any] | Unset = UNSET
     if not isinstance(self.arguments, Unset):
       arguments = self.arguments.to_dict()
 
@@ -53,7 +55,7 @@ class MCPToolCall:
     name = d.pop("name")
 
     _arguments = d.pop("arguments", UNSET)
-    arguments: Union[Unset, MCPToolCallArguments]
+    arguments: MCPToolCallArguments | Unset
     if isinstance(_arguments, Unset):
       arguments = UNSET
     else:

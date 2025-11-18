@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -33,8 +33,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, OrgMemberResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> HTTPValidationError | OrgMemberResponse | None:
   if response.status_code == 200:
     response_200 = OrgMemberResponse.from_dict(response.json())
 
@@ -52,8 +52,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, OrgMemberResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[HTTPValidationError | OrgMemberResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -68,7 +68,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: UpdateMemberRoleRequest,
-) -> Response[Union[HTTPValidationError, OrgMemberResponse]]:
+) -> Response[HTTPValidationError | OrgMemberResponse]:
   """Update Member Role
 
    Update a member's role in the organization. Requires admin or owner role.
@@ -83,7 +83,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, OrgMemberResponse]]
+      Response[HTTPValidationError | OrgMemberResponse]
   """
 
   kwargs = _get_kwargs(
@@ -105,7 +105,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: UpdateMemberRoleRequest,
-) -> Optional[Union[HTTPValidationError, OrgMemberResponse]]:
+) -> HTTPValidationError | OrgMemberResponse | None:
   """Update Member Role
 
    Update a member's role in the organization. Requires admin or owner role.
@@ -120,7 +120,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, OrgMemberResponse]
+      HTTPValidationError | OrgMemberResponse
   """
 
   return sync_detailed(
@@ -137,7 +137,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: UpdateMemberRoleRequest,
-) -> Response[Union[HTTPValidationError, OrgMemberResponse]]:
+) -> Response[HTTPValidationError | OrgMemberResponse]:
   """Update Member Role
 
    Update a member's role in the organization. Requires admin or owner role.
@@ -152,7 +152,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, OrgMemberResponse]]
+      Response[HTTPValidationError | OrgMemberResponse]
   """
 
   kwargs = _get_kwargs(
@@ -172,7 +172,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: UpdateMemberRoleRequest,
-) -> Optional[Union[HTTPValidationError, OrgMemberResponse]]:
+) -> HTTPValidationError | OrgMemberResponse | None:
   """Update Member Role
 
    Update a member's role in the organization. Requires admin or owner role.
@@ -187,7 +187,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, OrgMemberResponse]
+      HTTPValidationError | OrgMemberResponse
   """
 
   return (

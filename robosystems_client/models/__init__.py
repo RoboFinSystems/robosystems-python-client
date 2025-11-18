@@ -69,6 +69,7 @@ from .create_org_request import CreateOrgRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
 from .create_subgraph_request import CreateSubgraphRequest
 from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
+from .create_view_request import CreateViewRequest
 from .credit_limits import CreditLimits
 from .credit_summary import CreditSummary
 from .credit_summary_operation_breakdown import CreditSummaryOperationBreakdown
@@ -103,6 +104,7 @@ from .execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
 from .execute_cypher_query_response_200_data_item import (
   ExecuteCypherQueryResponse200DataItem,
 )
+from .fact_detail import FactDetail
 from .file_info import FileInfo
 from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
@@ -220,6 +222,8 @@ from .resend_verification_email_response_resendverificationemail import (
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
+from .save_view_request import SaveViewRequest
+from .save_view_response import SaveViewResponse
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
 from .schema_export_response_schema_definition_type_0 import (
@@ -250,6 +254,7 @@ from .storage_info_overage_pricing import StorageInfoOveragePricing
 from .storage_limit_response import StorageLimitResponse
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
+from .structure_detail import StructureDetail
 from .subgraph_quota_response import SubgraphQuotaResponse
 from .subgraph_response import SubgraphResponse
 from .subgraph_response_metadata_type_0 import SubgraphResponseMetadataType0
@@ -284,6 +289,12 @@ from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
 from .validation_error import ValidationError
+from .view_axis_config import ViewAxisConfig
+from .view_axis_config_element_labels_type_0 import ViewAxisConfigElementLabelsType0
+from .view_axis_config_member_labels_type_0 import ViewAxisConfigMemberLabelsType0
+from .view_config import ViewConfig
+from .view_source import ViewSource
+from .view_source_type import ViewSourceType
 
 __all__ = (
   "AccountInfo",
@@ -347,6 +358,7 @@ __all__ = (
   "CreateRepositorySubscriptionRequest",
   "CreateSubgraphRequest",
   "CreateSubgraphRequestMetadataType0",
+  "CreateViewRequest",
   "CreditLimits",
   "CreditSummary",
   "CreditSummaryOperationBreakdown",
@@ -373,6 +385,7 @@ __all__ = (
   "ExchangeTokenRequestMetadataType0",
   "ExecuteCypherQueryResponse200",
   "ExecuteCypherQueryResponse200DataItem",
+  "FactDetail",
   "FileInfo",
   "FileStatusUpdate",
   "FileUploadRequest",
@@ -470,6 +483,8 @@ __all__ = (
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
   "ResponseMode",
+  "SaveViewRequest",
+  "SaveViewResponse",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",
@@ -494,6 +509,7 @@ __all__ = (
   "StorageLimitResponse",
   "StorageLimits",
   "StorageSummary",
+  "StructureDetail",
   "SubgraphQuotaResponse",
   "SubgraphResponse",
   "SubgraphResponseMetadataType0",
@@ -522,4 +538,10 @@ __all__ = (
   "UserGraphsResponse",
   "UserResponse",
   "ValidationError",
+  "ViewAxisConfig",
+  "ViewAxisConfigElementLabelsType0",
+  "ViewAxisConfigMemberLabelsType0",
+  "ViewConfig",
+  "ViewSource",
+  "ViewSourceType",
 )

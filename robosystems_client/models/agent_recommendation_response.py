@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,11 +18,11 @@ class AgentRecommendationResponse:
   """Response for agent recommendations.
 
   Attributes:
-      recommendations (list['AgentRecommendation']): List of agent recommendations sorted by confidence
+      recommendations (list[AgentRecommendation]): List of agent recommendations sorted by confidence
       query (str): The analyzed query
   """
 
-  recommendations: list["AgentRecommendation"]
+  recommendations: list[AgentRecommendation]
   query: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -24,18 +26,18 @@ class DetailedTransactionsResponse:
   """Detailed response for transaction queries.
 
   Attributes:
-      transactions (list['EnhancedCreditTransactionResponse']):
+      transactions (list[EnhancedCreditTransactionResponse]):
       summary (DetailedTransactionsResponseSummary):
       total_count (int):
       filtered_count (int):
       date_range (DetailedTransactionsResponseDateRange):
   """
 
-  transactions: list["EnhancedCreditTransactionResponse"]
-  summary: "DetailedTransactionsResponseSummary"
+  transactions: list[EnhancedCreditTransactionResponse]
+  summary: DetailedTransactionsResponseSummary
   total_count: int
   filtered_count: int
-  date_range: "DetailedTransactionsResponseDateRange"
+  date_range: DetailedTransactionsResponseDateRange
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

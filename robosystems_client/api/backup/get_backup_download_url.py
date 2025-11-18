@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -14,7 +14,7 @@ def _get_kwargs(
   graph_id: str,
   backup_id: str,
   *,
-  expires_in: Union[Unset, int] = 3600,
+  expires_in: int | Unset = 3600,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
@@ -32,8 +32,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | BackupDownloadUrlResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = BackupDownloadUrlResponse.from_dict(response.json())
 
@@ -63,8 +63,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | BackupDownloadUrlResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -78,8 +78,8 @@ def sync_detailed(
   backup_id: str,
   *,
   client: AuthenticatedClient,
-  expires_in: Union[Unset, int] = 3600,
-) -> Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
+  expires_in: int | Unset = 3600,
+) -> Response[Any | BackupDownloadUrlResponse | HTTPValidationError]:
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
@@ -87,14 +87,14 @@ def sync_detailed(
   Args:
       graph_id (str):
       backup_id (str): Backup identifier
-      expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
+      expires_in (int | Unset): URL expiration time in seconds Default: 3600.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]
+      Response[Any | BackupDownloadUrlResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -115,8 +115,8 @@ def sync(
   backup_id: str,
   *,
   client: AuthenticatedClient,
-  expires_in: Union[Unset, int] = 3600,
-) -> Optional[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
+  expires_in: int | Unset = 3600,
+) -> Any | BackupDownloadUrlResponse | HTTPValidationError | None:
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
@@ -124,14 +124,14 @@ def sync(
   Args:
       graph_id (str):
       backup_id (str): Backup identifier
-      expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
+      expires_in (int | Unset): URL expiration time in seconds Default: 3600.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, BackupDownloadUrlResponse, HTTPValidationError]
+      Any | BackupDownloadUrlResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -147,8 +147,8 @@ async def asyncio_detailed(
   backup_id: str,
   *,
   client: AuthenticatedClient,
-  expires_in: Union[Unset, int] = 3600,
-) -> Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
+  expires_in: int | Unset = 3600,
+) -> Response[Any | BackupDownloadUrlResponse | HTTPValidationError]:
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
@@ -156,14 +156,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       backup_id (str): Backup identifier
-      expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
+      expires_in (int | Unset): URL expiration time in seconds Default: 3600.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]
+      Response[Any | BackupDownloadUrlResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -182,8 +182,8 @@ async def asyncio(
   backup_id: str,
   *,
   client: AuthenticatedClient,
-  expires_in: Union[Unset, int] = 3600,
-) -> Optional[Union[Any, BackupDownloadUrlResponse, HTTPValidationError]]:
+  expires_in: int | Unset = 3600,
+) -> Any | BackupDownloadUrlResponse | HTTPValidationError | None:
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
@@ -191,14 +191,14 @@ async def asyncio(
   Args:
       graph_id (str):
       backup_id (str): Backup identifier
-      expires_in (Union[Unset, int]): URL expiration time in seconds Default: 3600.
+      expires_in (int | Unset): URL expiration time in seconds Default: 3600.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, BackupDownloadUrlResponse, HTTPValidationError]
+      Any | BackupDownloadUrlResponse | HTTPValidationError
   """
 
   return (

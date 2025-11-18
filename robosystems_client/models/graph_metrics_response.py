@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -35,20 +37,20 @@ class GraphMetricsResponse:
       relationship_counts (GraphMetricsResponseRelationshipCounts): Relationship counts by type
       estimated_size (GraphMetricsResponseEstimatedSize): Database size estimates
       health_status (GraphMetricsResponseHealthStatus): Database health information
-      graph_name (Union[None, Unset, str]): Display name for the graph
-      user_role (Union[None, Unset, str]): User's role in this graph
+      graph_name (None | str | Unset): Display name for the graph
+      user_role (None | str | Unset): User's role in this graph
   """
 
   graph_id: str
   timestamp: str
   total_nodes: int
   total_relationships: int
-  node_counts: "GraphMetricsResponseNodeCounts"
-  relationship_counts: "GraphMetricsResponseRelationshipCounts"
-  estimated_size: "GraphMetricsResponseEstimatedSize"
-  health_status: "GraphMetricsResponseHealthStatus"
-  graph_name: Union[None, Unset, str] = UNSET
-  user_role: Union[None, Unset, str] = UNSET
+  node_counts: GraphMetricsResponseNodeCounts
+  relationship_counts: GraphMetricsResponseRelationshipCounts
+  estimated_size: GraphMetricsResponseEstimatedSize
+  health_status: GraphMetricsResponseHealthStatus
+  graph_name: None | str | Unset = UNSET
+  user_role: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -68,13 +70,13 @@ class GraphMetricsResponse:
 
     health_status = self.health_status.to_dict()
 
-    graph_name: Union[None, Unset, str]
+    graph_name: None | str | Unset
     if isinstance(self.graph_name, Unset):
       graph_name = UNSET
     else:
       graph_name = self.graph_name
 
-    user_role: Union[None, Unset, str]
+    user_role: None | str | Unset
     if isinstance(self.user_role, Unset):
       user_role = UNSET
     else:
@@ -137,21 +139,21 @@ class GraphMetricsResponse:
 
     health_status = GraphMetricsResponseHealthStatus.from_dict(d.pop("health_status"))
 
-    def _parse_graph_name(data: object) -> Union[None, Unset, str]:
+    def _parse_graph_name(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     graph_name = _parse_graph_name(d.pop("graph_name", UNSET))
 
-    def _parse_user_role(data: object) -> Union[None, Unset, str]:
+    def _parse_user_role(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     user_role = _parse_user_role(d.pop("user_role", UNSET))
 

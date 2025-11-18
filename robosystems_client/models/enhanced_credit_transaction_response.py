@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -26,22 +28,22 @@ class EnhancedCreditTransactionResponse:
       description (str):
       metadata (EnhancedCreditTransactionResponseMetadata):
       created_at (str):
-      operation_id (Union[None, Unset, str]):
-      idempotency_key (Union[None, Unset, str]):
-      request_id (Union[None, Unset, str]):
-      user_id (Union[None, Unset, str]):
+      operation_id (None | str | Unset):
+      idempotency_key (None | str | Unset):
+      request_id (None | str | Unset):
+      user_id (None | str | Unset):
   """
 
   id: str
   type_: str
   amount: float
   description: str
-  metadata: "EnhancedCreditTransactionResponseMetadata"
+  metadata: EnhancedCreditTransactionResponseMetadata
   created_at: str
-  operation_id: Union[None, Unset, str] = UNSET
-  idempotency_key: Union[None, Unset, str] = UNSET
-  request_id: Union[None, Unset, str] = UNSET
-  user_id: Union[None, Unset, str] = UNSET
+  operation_id: None | str | Unset = UNSET
+  idempotency_key: None | str | Unset = UNSET
+  request_id: None | str | Unset = UNSET
+  user_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -57,25 +59,25 @@ class EnhancedCreditTransactionResponse:
 
     created_at = self.created_at
 
-    operation_id: Union[None, Unset, str]
+    operation_id: None | str | Unset
     if isinstance(self.operation_id, Unset):
       operation_id = UNSET
     else:
       operation_id = self.operation_id
 
-    idempotency_key: Union[None, Unset, str]
+    idempotency_key: None | str | Unset
     if isinstance(self.idempotency_key, Unset):
       idempotency_key = UNSET
     else:
       idempotency_key = self.idempotency_key
 
-    request_id: Union[None, Unset, str]
+    request_id: None | str | Unset
     if isinstance(self.request_id, Unset):
       request_id = UNSET
     else:
       request_id = self.request_id
 
-    user_id: Union[None, Unset, str]
+    user_id: None | str | Unset
     if isinstance(self.user_id, Unset):
       user_id = UNSET
     else:
@@ -123,39 +125,39 @@ class EnhancedCreditTransactionResponse:
 
     created_at = d.pop("created_at")
 
-    def _parse_operation_id(data: object) -> Union[None, Unset, str]:
+    def _parse_operation_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     operation_id = _parse_operation_id(d.pop("operation_id", UNSET))
 
-    def _parse_idempotency_key(data: object) -> Union[None, Unset, str]:
+    def _parse_idempotency_key(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     idempotency_key = _parse_idempotency_key(d.pop("idempotency_key", UNSET))
 
-    def _parse_request_id(data: object) -> Union[None, Unset, str]:
+    def _parse_request_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     request_id = _parse_request_id(d.pop("request_id", UNSET))
 
-    def _parse_user_id(data: object) -> Union[None, Unset, str]:
+    def _parse_user_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     user_id = _parse_user_id(d.pop("user_id", UNSET))
 

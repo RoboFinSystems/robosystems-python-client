@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -23,11 +25,11 @@ class ConnectionProviderInfo:
       required_config (list[str]): Required configuration fields
       features (list[str]): Supported features
       data_types (list[str]): Types of data available
-      auth_flow (Union[None, Unset, str]): Description of authentication flow
-      optional_config (Union[Unset, list[str]]): Optional configuration fields
-      sync_frequency (Union[None, Unset, str]): Typical sync frequency
-      setup_instructions (Union[None, Unset, str]): Setup instructions
-      documentation_url (Union[None, Unset, str]): Link to documentation
+      auth_flow (None | str | Unset): Description of authentication flow
+      optional_config (list[str] | Unset): Optional configuration fields
+      sync_frequency (None | str | Unset): Typical sync frequency
+      setup_instructions (None | str | Unset): Setup instructions
+      documentation_url (None | str | Unset): Link to documentation
   """
 
   provider: ConnectionProviderInfoProvider
@@ -37,11 +39,11 @@ class ConnectionProviderInfo:
   required_config: list[str]
   features: list[str]
   data_types: list[str]
-  auth_flow: Union[None, Unset, str] = UNSET
-  optional_config: Union[Unset, list[str]] = UNSET
-  sync_frequency: Union[None, Unset, str] = UNSET
-  setup_instructions: Union[None, Unset, str] = UNSET
-  documentation_url: Union[None, Unset, str] = UNSET
+  auth_flow: None | str | Unset = UNSET
+  optional_config: list[str] | Unset = UNSET
+  sync_frequency: None | str | Unset = UNSET
+  setup_instructions: None | str | Unset = UNSET
+  documentation_url: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -59,29 +61,29 @@ class ConnectionProviderInfo:
 
     data_types = self.data_types
 
-    auth_flow: Union[None, Unset, str]
+    auth_flow: None | str | Unset
     if isinstance(self.auth_flow, Unset):
       auth_flow = UNSET
     else:
       auth_flow = self.auth_flow
 
-    optional_config: Union[Unset, list[str]] = UNSET
+    optional_config: list[str] | Unset = UNSET
     if not isinstance(self.optional_config, Unset):
       optional_config = self.optional_config
 
-    sync_frequency: Union[None, Unset, str]
+    sync_frequency: None | str | Unset
     if isinstance(self.sync_frequency, Unset):
       sync_frequency = UNSET
     else:
       sync_frequency = self.sync_frequency
 
-    setup_instructions: Union[None, Unset, str]
+    setup_instructions: None | str | Unset
     if isinstance(self.setup_instructions, Unset):
       setup_instructions = UNSET
     else:
       setup_instructions = self.setup_instructions
 
-    documentation_url: Union[None, Unset, str]
+    documentation_url: None | str | Unset
     if isinstance(self.documentation_url, Unset):
       documentation_url = UNSET
     else:
@@ -130,41 +132,41 @@ class ConnectionProviderInfo:
 
     data_types = cast(list[str], d.pop("data_types"))
 
-    def _parse_auth_flow(data: object) -> Union[None, Unset, str]:
+    def _parse_auth_flow(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     auth_flow = _parse_auth_flow(d.pop("auth_flow", UNSET))
 
     optional_config = cast(list[str], d.pop("optional_config", UNSET))
 
-    def _parse_sync_frequency(data: object) -> Union[None, Unset, str]:
+    def _parse_sync_frequency(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     sync_frequency = _parse_sync_frequency(d.pop("sync_frequency", UNSET))
 
-    def _parse_setup_instructions(data: object) -> Union[None, Unset, str]:
+    def _parse_setup_instructions(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     setup_instructions = _parse_setup_instructions(d.pop("setup_instructions", UNSET))
 
-    def _parse_documentation_url(data: object) -> Union[None, Unset, str]:
+    def _parse_documentation_url(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     documentation_url = _parse_documentation_url(d.pop("documentation_url", UNSET))
 

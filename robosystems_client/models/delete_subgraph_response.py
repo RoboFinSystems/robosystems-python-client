@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -19,15 +21,15 @@ class DeleteSubgraphResponse:
       graph_id (str): Deleted subgraph identifier
       status (str): Deletion status
       deleted_at (datetime.datetime): When deletion occurred
-      backup_location (Union[None, Unset, str]): Location of backup if created
-      message (Union[None, Unset, str]): Additional information about the deletion
+      backup_location (None | str | Unset): Location of backup if created
+      message (None | str | Unset): Additional information about the deletion
   """
 
   graph_id: str
   status: str
   deleted_at: datetime.datetime
-  backup_location: Union[None, Unset, str] = UNSET
-  message: Union[None, Unset, str] = UNSET
+  backup_location: None | str | Unset = UNSET
+  message: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -37,13 +39,13 @@ class DeleteSubgraphResponse:
 
     deleted_at = self.deleted_at.isoformat()
 
-    backup_location: Union[None, Unset, str]
+    backup_location: None | str | Unset
     if isinstance(self.backup_location, Unset):
       backup_location = UNSET
     else:
       backup_location = self.backup_location
 
-    message: Union[None, Unset, str]
+    message: None | str | Unset
     if isinstance(self.message, Unset):
       message = UNSET
     else:
@@ -74,21 +76,21 @@ class DeleteSubgraphResponse:
 
     deleted_at = isoparse(d.pop("deleted_at"))
 
-    def _parse_backup_location(data: object) -> Union[None, Unset, str]:
+    def _parse_backup_location(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     backup_location = _parse_backup_location(d.pop("backup_location", UNSET))
 
-    def _parse_message(data: object) -> Union[None, Unset, str]:
+    def _parse_message(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     message = _parse_message(d.pop("message", UNSET))
 

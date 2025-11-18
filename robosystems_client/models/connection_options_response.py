@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,11 +18,11 @@ class ConnectionOptionsResponse:
   """Response with all available connection options.
 
   Attributes:
-      providers (list['ConnectionProviderInfo']): Available connection providers
+      providers (list[ConnectionProviderInfo]): Available connection providers
       total_providers (int): Total number of providers
   """
 
-  providers: list["ConnectionProviderInfo"]
+  providers: list[ConnectionProviderInfo]
   total_providers: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

@@ -46,6 +46,27 @@ from .extensions import (
   RoboSystemsExtensionConfig,
   AsyncRoboSystemsExtensions,
 )
+from .element_mapping_client import (
+  ElementMappingClient,
+  MappingStructure,
+  ElementAssociation,
+  AggregationMethod,
+)
+from .subgraph_workspace_client import (
+  SubgraphWorkspaceClient,
+  SubgraphWorkspace,
+  StorageType,
+  ExportResult,
+  PublishResult,
+)
+from .view_builder_client import (
+  ViewBuilderClient,
+  ViewSourceType,
+  ViewSource,
+  ViewAxis,
+  ViewConfig,
+  ViewResponse,
+)
 from .utils import (
   QueryBuilder,
   ResultProcessor,
@@ -114,6 +135,24 @@ __all__ = [
   "RoboSystemsExtensions",
   "RoboSystemsExtensionConfig",
   "AsyncRoboSystemsExtensions",
+  # Element Mapping Client
+  "ElementMappingClient",
+  "MappingStructure",
+  "ElementAssociation",
+  "AggregationMethod",
+  # Subgraph Workspace Client
+  "SubgraphWorkspaceClient",
+  "SubgraphWorkspace",
+  "StorageType",
+  "ExportResult",
+  "PublishResult",
+  # View Builder Client
+  "ViewBuilderClient",
+  "ViewSourceType",
+  "ViewSource",
+  "ViewAxis",
+  "ViewConfig",
+  "ViewResponse",
   # SSE Client
   "SSEClient",
   "EventType",

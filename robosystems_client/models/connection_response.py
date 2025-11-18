@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -25,8 +27,8 @@ class ConnectionResponse:
       status (str): Connection status
       created_at (str): Creation timestamp
       metadata (ConnectionResponseMetadata): Provider-specific metadata
-      updated_at (Union[None, Unset, str]): Last update timestamp
-      last_sync (Union[None, Unset, str]): Last sync timestamp
+      updated_at (None | str | Unset): Last update timestamp
+      last_sync (None | str | Unset): Last sync timestamp
   """
 
   connection_id: str
@@ -34,9 +36,9 @@ class ConnectionResponse:
   entity_id: str
   status: str
   created_at: str
-  metadata: "ConnectionResponseMetadata"
-  updated_at: Union[None, Unset, str] = UNSET
-  last_sync: Union[None, Unset, str] = UNSET
+  metadata: ConnectionResponseMetadata
+  updated_at: None | str | Unset = UNSET
+  last_sync: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -52,13 +54,13 @@ class ConnectionResponse:
 
     metadata = self.metadata.to_dict()
 
-    updated_at: Union[None, Unset, str]
+    updated_at: None | str | Unset
     if isinstance(self.updated_at, Unset):
       updated_at = UNSET
     else:
       updated_at = self.updated_at
 
-    last_sync: Union[None, Unset, str]
+    last_sync: None | str | Unset
     if isinstance(self.last_sync, Unset):
       last_sync = UNSET
     else:
@@ -100,21 +102,21 @@ class ConnectionResponse:
 
     metadata = ConnectionResponseMetadata.from_dict(d.pop("metadata"))
 
-    def _parse_updated_at(data: object) -> Union[None, Unset, str]:
+    def _parse_updated_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     updated_at = _parse_updated_at(d.pop("updated_at", UNSET))
 
-    def _parse_last_sync(data: object) -> Union[None, Unset, str]:
+    def _parse_last_sync(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     last_sync = _parse_last_sync(d.pop("last_sync", UNSET))
 

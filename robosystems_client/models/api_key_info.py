@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -19,9 +21,9 @@ class APIKeyInfo:
       prefix (str): API key prefix for identification
       is_active (bool): Whether the key is active
       created_at (str): Creation timestamp
-      description (Union[None, Unset, str]): API key description
-      last_used_at (Union[None, Unset, str]): Last used timestamp
-      expires_at (Union[None, Unset, str]): Expiration timestamp
+      description (None | str | Unset): API key description
+      last_used_at (None | str | Unset): Last used timestamp
+      expires_at (None | str | Unset): Expiration timestamp
   """
 
   id: str
@@ -29,9 +31,9 @@ class APIKeyInfo:
   prefix: str
   is_active: bool
   created_at: str
-  description: Union[None, Unset, str] = UNSET
-  last_used_at: Union[None, Unset, str] = UNSET
-  expires_at: Union[None, Unset, str] = UNSET
+  description: None | str | Unset = UNSET
+  last_used_at: None | str | Unset = UNSET
+  expires_at: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -45,19 +47,19 @@ class APIKeyInfo:
 
     created_at = self.created_at
 
-    description: Union[None, Unset, str]
+    description: None | str | Unset
     if isinstance(self.description, Unset):
       description = UNSET
     else:
       description = self.description
 
-    last_used_at: Union[None, Unset, str]
+    last_used_at: None | str | Unset
     if isinstance(self.last_used_at, Unset):
       last_used_at = UNSET
     else:
       last_used_at = self.last_used_at
 
-    expires_at: Union[None, Unset, str]
+    expires_at: None | str | Unset
     if isinstance(self.expires_at, Unset):
       expires_at = UNSET
     else:
@@ -96,30 +98,30 @@ class APIKeyInfo:
 
     created_at = d.pop("created_at")
 
-    def _parse_description(data: object) -> Union[None, Unset, str]:
+    def _parse_description(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
 
-    def _parse_last_used_at(data: object) -> Union[None, Unset, str]:
+    def _parse_last_used_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     last_used_at = _parse_last_used_at(d.pop("last_used_at", UNSET))
 
-    def _parse_expires_at(data: object) -> Union[None, Unset, str]:
+    def _parse_expires_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     expires_at = _parse_expires_at(d.pop("expires_at", UNSET))
 

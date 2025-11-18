@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
@@ -14,17 +16,17 @@ class TableQueryRequest:
   Attributes:
       sql (str): SQL query to execute on staging tables. Use ? placeholders or $param_name for dynamic values to
           prevent SQL injection.
-      parameters (Union[None, Unset, list[Any]]): Query parameters for safe value substitution. ALWAYS use parameters
+      parameters (list[Any] | None | Unset): Query parameters for safe value substitution. ALWAYS use parameters
           instead of string concatenation.
   """
 
   sql: str
-  parameters: Union[None, Unset, list[Any]] = UNSET
+  parameters: list[Any] | None | Unset = UNSET
 
   def to_dict(self) -> dict[str, Any]:
     sql = self.sql
 
-    parameters: Union[None, Unset, list[Any]]
+    parameters: list[Any] | None | Unset
     if isinstance(self.parameters, Unset):
       parameters = UNSET
     elif isinstance(self.parameters, list):
@@ -50,7 +52,7 @@ class TableQueryRequest:
     d = dict(src_dict)
     sql = d.pop("sql")
 
-    def _parse_parameters(data: object) -> Union[None, Unset, list[Any]]:
+    def _parse_parameters(data: object) -> list[Any] | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -61,9 +63,9 @@ class TableQueryRequest:
         parameters_type_0 = cast(list[Any], data)
 
         return parameters_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, list[Any]], data)
+      return cast(list[Any] | None | Unset, data)
 
     parameters = _parse_parameters(d.pop("parameters", UNSET))
 

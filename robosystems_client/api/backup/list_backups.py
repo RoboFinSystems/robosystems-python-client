@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -13,8 +13,8 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  limit: Union[Unset, int] = 50,
-  offset: Union[Unset, int] = 0,
+  limit: int | Unset = 50,
+  offset: int | Unset = 0,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
@@ -34,8 +34,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> BackupListResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = BackupListResponse.from_dict(response.json())
 
@@ -53,8 +53,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[BackupListResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[BackupListResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -67,24 +67,24 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  limit: Union[Unset, int] = 50,
-  offset: Union[Unset, int] = 0,
-) -> Response[Union[BackupListResponse, HTTPValidationError]]:
+  limit: int | Unset = 50,
+  offset: int | Unset = 0,
+) -> Response[BackupListResponse | HTTPValidationError]:
   """List graph database backups
 
    List all backups for the specified graph database
 
   Args:
       graph_id (str):
-      limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
-      offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      limit (int | Unset): Maximum number of backups to return Default: 50.
+      offset (int | Unset): Number of backups to skip Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[BackupListResponse, HTTPValidationError]]
+      Response[BackupListResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -104,24 +104,24 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  limit: Union[Unset, int] = 50,
-  offset: Union[Unset, int] = 0,
-) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
+  limit: int | Unset = 50,
+  offset: int | Unset = 0,
+) -> BackupListResponse | HTTPValidationError | None:
   """List graph database backups
 
    List all backups for the specified graph database
 
   Args:
       graph_id (str):
-      limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
-      offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      limit (int | Unset): Maximum number of backups to return Default: 50.
+      offset (int | Unset): Number of backups to skip Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[BackupListResponse, HTTPValidationError]
+      BackupListResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -136,24 +136,24 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  limit: Union[Unset, int] = 50,
-  offset: Union[Unset, int] = 0,
-) -> Response[Union[BackupListResponse, HTTPValidationError]]:
+  limit: int | Unset = 50,
+  offset: int | Unset = 0,
+) -> Response[BackupListResponse | HTTPValidationError]:
   """List graph database backups
 
    List all backups for the specified graph database
 
   Args:
       graph_id (str):
-      limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
-      offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      limit (int | Unset): Maximum number of backups to return Default: 50.
+      offset (int | Unset): Number of backups to skip Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[BackupListResponse, HTTPValidationError]]
+      Response[BackupListResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -171,24 +171,24 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  limit: Union[Unset, int] = 50,
-  offset: Union[Unset, int] = 0,
-) -> Optional[Union[BackupListResponse, HTTPValidationError]]:
+  limit: int | Unset = 50,
+  offset: int | Unset = 0,
+) -> BackupListResponse | HTTPValidationError | None:
   """List graph database backups
 
    List all backups for the specified graph database
 
   Args:
       graph_id (str):
-      limit (Union[Unset, int]): Maximum number of backups to return Default: 50.
-      offset (Union[Unset, int]): Number of backups to skip Default: 0.
+      limit (int | Unset): Maximum number of backups to return Default: 50.
+      offset (int | Unset): Number of backups to skip Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[BackupListResponse, HTTPValidationError]
+      BackupListResponse | HTTPValidationError
   """
 
   return (

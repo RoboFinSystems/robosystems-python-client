@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -24,8 +24,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = DeleteFileResponse.from_dict(response.json())
 
@@ -61,8 +61,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -76,7 +76,7 @@ def sync_detailed(
   file_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
+) -> Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]:
   """Delete File from Staging
 
    Delete a file from S3 storage and database tracking.
@@ -120,7 +120,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]
+      Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -140,7 +140,7 @@ def sync(
   file_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
+) -> Any | DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
   """Delete File from Staging
 
    Delete a file from S3 storage and database tracking.
@@ -184,7 +184,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]
+      Any | DeleteFileResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -199,7 +199,7 @@ async def asyncio_detailed(
   file_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
+) -> Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]:
   """Delete File from Staging
 
    Delete a file from S3 storage and database tracking.
@@ -243,7 +243,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]
+      Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -261,7 +261,7 @@ async def asyncio(
   file_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]]:
+) -> Any | DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
   """Delete File from Staging
 
    Delete a file from S3 storage and database tracking.
@@ -305,7 +305,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, DeleteFileResponse, ErrorResponse, HTTPValidationError]
+      Any | DeleteFileResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

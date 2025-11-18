@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -25,23 +27,20 @@ class SchemaValidationResponse:
   Attributes:
       valid (bool): Whether the schema is valid
       message (str): Validation message
-      errors (Union[None, Unset, list[str]]): List of validation errors (only present when valid=false)
-      warnings (Union[None, Unset, list[str]]): List of validation warnings (schema is still valid but has potential
+      errors (list[str] | None | Unset): List of validation errors (only present when valid=false)
+      warnings (list[str] | None | Unset): List of validation warnings (schema is still valid but has potential
           issues)
-      stats (Union['SchemaValidationResponseStatsType0', None, Unset]): Schema statistics (only present when
-          valid=true)
-      compatibility (Union['SchemaValidationResponseCompatibilityType0', None, Unset]): Compatibility check results
-          (only when check_compatibility specified)
+      stats (None | SchemaValidationResponseStatsType0 | Unset): Schema statistics (only present when valid=true)
+      compatibility (None | SchemaValidationResponseCompatibilityType0 | Unset): Compatibility check results (only
+          when check_compatibility specified)
   """
 
   valid: bool
   message: str
-  errors: Union[None, Unset, list[str]] = UNSET
-  warnings: Union[None, Unset, list[str]] = UNSET
-  stats: Union["SchemaValidationResponseStatsType0", None, Unset] = UNSET
-  compatibility: Union["SchemaValidationResponseCompatibilityType0", None, Unset] = (
-    UNSET
-  )
+  errors: list[str] | None | Unset = UNSET
+  warnings: list[str] | None | Unset = UNSET
+  stats: None | SchemaValidationResponseStatsType0 | Unset = UNSET
+  compatibility: None | SchemaValidationResponseCompatibilityType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -56,7 +55,7 @@ class SchemaValidationResponse:
 
     message = self.message
 
-    errors: Union[None, Unset, list[str]]
+    errors: list[str] | None | Unset
     if isinstance(self.errors, Unset):
       errors = UNSET
     elif isinstance(self.errors, list):
@@ -65,7 +64,7 @@ class SchemaValidationResponse:
     else:
       errors = self.errors
 
-    warnings: Union[None, Unset, list[str]]
+    warnings: list[str] | None | Unset
     if isinstance(self.warnings, Unset):
       warnings = UNSET
     elif isinstance(self.warnings, list):
@@ -74,7 +73,7 @@ class SchemaValidationResponse:
     else:
       warnings = self.warnings
 
-    stats: Union[None, Unset, dict[str, Any]]
+    stats: dict[str, Any] | None | Unset
     if isinstance(self.stats, Unset):
       stats = UNSET
     elif isinstance(self.stats, SchemaValidationResponseStatsType0):
@@ -82,7 +81,7 @@ class SchemaValidationResponse:
     else:
       stats = self.stats
 
-    compatibility: Union[None, Unset, dict[str, Any]]
+    compatibility: dict[str, Any] | None | Unset
     if isinstance(self.compatibility, Unset):
       compatibility = UNSET
     elif isinstance(self.compatibility, SchemaValidationResponseCompatibilityType0):
@@ -123,7 +122,7 @@ class SchemaValidationResponse:
 
     message = d.pop("message")
 
-    def _parse_errors(data: object) -> Union[None, Unset, list[str]]:
+    def _parse_errors(data: object) -> list[str] | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -134,13 +133,13 @@ class SchemaValidationResponse:
         errors_type_0 = cast(list[str], data)
 
         return errors_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, list[str]], data)
+      return cast(list[str] | None | Unset, data)
 
     errors = _parse_errors(d.pop("errors", UNSET))
 
-    def _parse_warnings(data: object) -> Union[None, Unset, list[str]]:
+    def _parse_warnings(data: object) -> list[str] | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -151,15 +150,13 @@ class SchemaValidationResponse:
         warnings_type_0 = cast(list[str], data)
 
         return warnings_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, list[str]], data)
+      return cast(list[str] | None | Unset, data)
 
     warnings = _parse_warnings(d.pop("warnings", UNSET))
 
-    def _parse_stats(
-      data: object,
-    ) -> Union["SchemaValidationResponseStatsType0", None, Unset]:
+    def _parse_stats(data: object) -> None | SchemaValidationResponseStatsType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -170,15 +167,15 @@ class SchemaValidationResponse:
         stats_type_0 = SchemaValidationResponseStatsType0.from_dict(data)
 
         return stats_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SchemaValidationResponseStatsType0", None, Unset], data)
+      return cast(None | SchemaValidationResponseStatsType0 | Unset, data)
 
     stats = _parse_stats(d.pop("stats", UNSET))
 
     def _parse_compatibility(
       data: object,
-    ) -> Union["SchemaValidationResponseCompatibilityType0", None, Unset]:
+    ) -> None | SchemaValidationResponseCompatibilityType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -191,11 +188,9 @@ class SchemaValidationResponse:
         )
 
         return compatibility_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(
-        Union["SchemaValidationResponseCompatibilityType0", None, Unset], data
-      )
+      return cast(None | SchemaValidationResponseCompatibilityType0 | Unset, data)
 
     compatibility = _parse_compatibility(d.pop("compatibility", UNSET))
 

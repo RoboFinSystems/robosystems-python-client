@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -15,25 +17,25 @@ class CreateAPIKeyRequest:
 
   Attributes:
       name (str): Name for the API key
-      description (Union[None, Unset, str]): Optional description
-      expires_at (Union[None, Unset, str]): Optional expiration date in ISO format (e.g. 2024-12-31T23:59:59Z)
+      description (None | str | Unset): Optional description
+      expires_at (None | str | Unset): Optional expiration date in ISO format (e.g. 2024-12-31T23:59:59Z)
   """
 
   name: str
-  description: Union[None, Unset, str] = UNSET
-  expires_at: Union[None, Unset, str] = UNSET
+  description: None | str | Unset = UNSET
+  expires_at: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     name = self.name
 
-    description: Union[None, Unset, str]
+    description: None | str | Unset
     if isinstance(self.description, Unset):
       description = UNSET
     else:
       description = self.description
 
-    expires_at: Union[None, Unset, str]
+    expires_at: None | str | Unset
     if isinstance(self.expires_at, Unset):
       expires_at = UNSET
     else:
@@ -58,21 +60,21 @@ class CreateAPIKeyRequest:
     d = dict(src_dict)
     name = d.pop("name")
 
-    def _parse_description(data: object) -> Union[None, Unset, str]:
+    def _parse_description(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
 
-    def _parse_expires_at(data: object) -> Union[None, Unset, str]:
+    def _parse_expires_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     expires_at = _parse_expires_at(d.pop("expires_at", UNSET))
 

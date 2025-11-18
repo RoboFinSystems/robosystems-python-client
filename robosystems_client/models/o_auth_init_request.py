@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -21,13 +23,13 @@ class OAuthInitRequest:
 
   Attributes:
       connection_id (str): Connection ID to link OAuth to
-      redirect_uri (Union[None, Unset, str]): Override default redirect URI
-      additional_params (Union['OAuthInitRequestAdditionalParamsType0', None, Unset]): Provider-specific parameters
+      redirect_uri (None | str | Unset): Override default redirect URI
+      additional_params (None | OAuthInitRequestAdditionalParamsType0 | Unset): Provider-specific parameters
   """
 
   connection_id: str
-  redirect_uri: Union[None, Unset, str] = UNSET
-  additional_params: Union["OAuthInitRequestAdditionalParamsType0", None, Unset] = UNSET
+  redirect_uri: None | str | Unset = UNSET
+  additional_params: None | OAuthInitRequestAdditionalParamsType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -37,13 +39,13 @@ class OAuthInitRequest:
 
     connection_id = self.connection_id
 
-    redirect_uri: Union[None, Unset, str]
+    redirect_uri: None | str | Unset
     if isinstance(self.redirect_uri, Unset):
       redirect_uri = UNSET
     else:
       redirect_uri = self.redirect_uri
 
-    additional_params: Union[None, Unset, dict[str, Any]]
+    additional_params: dict[str, Any] | None | Unset
     if isinstance(self.additional_params, Unset):
       additional_params = UNSET
     elif isinstance(self.additional_params, OAuthInitRequestAdditionalParamsType0):
@@ -74,18 +76,18 @@ class OAuthInitRequest:
     d = dict(src_dict)
     connection_id = d.pop("connection_id")
 
-    def _parse_redirect_uri(data: object) -> Union[None, Unset, str]:
+    def _parse_redirect_uri(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     redirect_uri = _parse_redirect_uri(d.pop("redirect_uri", UNSET))
 
     def _parse_additional_params(
       data: object,
-    ) -> Union["OAuthInitRequestAdditionalParamsType0", None, Unset]:
+    ) -> None | OAuthInitRequestAdditionalParamsType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -96,9 +98,9 @@ class OAuthInitRequest:
         additional_params_type_0 = OAuthInitRequestAdditionalParamsType0.from_dict(data)
 
         return additional_params_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["OAuthInitRequestAdditionalParamsType0", None, Unset], data)
+      return cast(None | OAuthInitRequestAdditionalParamsType0 | Unset, data)
 
     additional_params = _parse_additional_params(d.pop("additional_params", UNSET))
 

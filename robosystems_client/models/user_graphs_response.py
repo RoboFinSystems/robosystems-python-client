@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -18,12 +20,12 @@ class UserGraphsResponse:
   """User graphs response model.
 
   Attributes:
-      graphs (list['GraphInfo']): List of accessible graphs
-      selected_graph_id (Union[None, Unset, str]): Currently selected graph ID
+      graphs (list[GraphInfo]): List of accessible graphs
+      selected_graph_id (None | str | Unset): Currently selected graph ID
   """
 
-  graphs: list["GraphInfo"]
-  selected_graph_id: Union[None, Unset, str] = UNSET
+  graphs: list[GraphInfo]
+  selected_graph_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -32,7 +34,7 @@ class UserGraphsResponse:
       graphs_item = graphs_item_data.to_dict()
       graphs.append(graphs_item)
 
-    selected_graph_id: Union[None, Unset, str]
+    selected_graph_id: None | str | Unset
     if isinstance(self.selected_graph_id, Unset):
       selected_graph_id = UNSET
     else:
@@ -62,12 +64,12 @@ class UserGraphsResponse:
 
       graphs.append(graphs_item)
 
-    def _parse_selected_graph_id(data: object) -> Union[None, Unset, str]:
+    def _parse_selected_graph_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     selected_graph_id = _parse_selected_graph_id(d.pop("selectedGraphId", UNSET))
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -20,12 +22,12 @@ class SyncConnectionRequest:
   """Request to sync a connection.
 
   Attributes:
-      full_sync (Union[Unset, bool]): Perform full sync vs incremental Default: False.
-      sync_options (Union['SyncConnectionRequestSyncOptionsType0', None, Unset]): Provider-specific sync options
+      full_sync (bool | Unset): Perform full sync vs incremental Default: False.
+      sync_options (None | SyncConnectionRequestSyncOptionsType0 | Unset): Provider-specific sync options
   """
 
-  full_sync: Union[Unset, bool] = False
-  sync_options: Union["SyncConnectionRequestSyncOptionsType0", None, Unset] = UNSET
+  full_sync: bool | Unset = False
+  sync_options: None | SyncConnectionRequestSyncOptionsType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -35,7 +37,7 @@ class SyncConnectionRequest:
 
     full_sync = self.full_sync
 
-    sync_options: Union[None, Unset, dict[str, Any]]
+    sync_options: dict[str, Any] | None | Unset
     if isinstance(self.sync_options, Unset):
       sync_options = UNSET
     elif isinstance(self.sync_options, SyncConnectionRequestSyncOptionsType0):
@@ -64,7 +66,7 @@ class SyncConnectionRequest:
 
     def _parse_sync_options(
       data: object,
-    ) -> Union["SyncConnectionRequestSyncOptionsType0", None, Unset]:
+    ) -> None | SyncConnectionRequestSyncOptionsType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -75,9 +77,9 @@ class SyncConnectionRequest:
         sync_options_type_0 = SyncConnectionRequestSyncOptionsType0.from_dict(data)
 
         return sync_options_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SyncConnectionRequestSyncOptionsType0", None, Unset], data)
+      return cast(None | SyncConnectionRequestSyncOptionsType0 | Unset, data)
 
     sync_options = _parse_sync_options(d.pop("sync_options", UNSET))
 

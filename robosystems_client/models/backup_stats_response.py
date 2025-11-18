@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -27,7 +29,7 @@ class BackupStatsResponse:
       total_compressed_size_bytes (int):
       storage_saved_bytes (int):
       average_compression_ratio (float):
-      latest_backup_date (Union[None, str]):
+      latest_backup_date (None | str):
       backup_formats (BackupStatsResponseBackupFormats):
   """
 
@@ -40,8 +42,8 @@ class BackupStatsResponse:
   total_compressed_size_bytes: int
   storage_saved_bytes: int
   average_compression_ratio: float
-  latest_backup_date: Union[None, str]
-  backup_formats: "BackupStatsResponseBackupFormats"
+  latest_backup_date: None | str
+  backup_formats: BackupStatsResponseBackupFormats
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -63,7 +65,7 @@ class BackupStatsResponse:
 
     average_compression_ratio = self.average_compression_ratio
 
-    latest_backup_date: Union[None, str]
+    latest_backup_date: None | str
     latest_backup_date = self.latest_backup_date
 
     backup_formats = self.backup_formats.to_dict()
@@ -113,10 +115,10 @@ class BackupStatsResponse:
 
     average_compression_ratio = d.pop("average_compression_ratio")
 
-    def _parse_latest_backup_date(data: object) -> Union[None, str]:
+    def _parse_latest_backup_date(data: object) -> None | str:
       if data is None:
         return data
-      return cast(Union[None, str], data)
+      return cast(None | str, data)
 
     latest_backup_date = _parse_latest_backup_date(d.pop("latest_backup_date"))
 

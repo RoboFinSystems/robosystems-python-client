@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,12 +18,12 @@ class OrgMemberListResponse:
   """List of organization members response.
 
   Attributes:
-      members (list['OrgMemberResponse']):
+      members (list[OrgMemberResponse]):
       total (int):
       org_id (str):
   """
 
-  members: list["OrgMemberResponse"]
+  members: list[OrgMemberResponse]
   total: int
   org_id: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)

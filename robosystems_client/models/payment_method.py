@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -17,19 +19,19 @@ class PaymentMethod:
       id (str): Payment method ID
       type_ (str): Payment method type (card, bank_account, etc.)
       is_default (bool): Whether this is the default payment method
-      brand (Union[None, Unset, str]): Card brand (visa, mastercard, etc.)
-      last4 (Union[None, Unset, str]): Last 4 digits of the card or account number
-      exp_month (Union[None, Unset, int]): Expiration month of the card
-      exp_year (Union[None, Unset, int]): Expiration year of the card
+      brand (None | str | Unset): Card brand (visa, mastercard, etc.)
+      last4 (None | str | Unset): Last 4 digits of the card or account number
+      exp_month (int | None | Unset): Expiration month of the card
+      exp_year (int | None | Unset): Expiration year of the card
   """
 
   id: str
   type_: str
   is_default: bool
-  brand: Union[None, Unset, str] = UNSET
-  last4: Union[None, Unset, str] = UNSET
-  exp_month: Union[None, Unset, int] = UNSET
-  exp_year: Union[None, Unset, int] = UNSET
+  brand: None | str | Unset = UNSET
+  last4: None | str | Unset = UNSET
+  exp_month: int | None | Unset = UNSET
+  exp_year: int | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -39,25 +41,25 @@ class PaymentMethod:
 
     is_default = self.is_default
 
-    brand: Union[None, Unset, str]
+    brand: None | str | Unset
     if isinstance(self.brand, Unset):
       brand = UNSET
     else:
       brand = self.brand
 
-    last4: Union[None, Unset, str]
+    last4: None | str | Unset
     if isinstance(self.last4, Unset):
       last4 = UNSET
     else:
       last4 = self.last4
 
-    exp_month: Union[None, Unset, int]
+    exp_month: int | None | Unset
     if isinstance(self.exp_month, Unset):
       exp_month = UNSET
     else:
       exp_month = self.exp_month
 
-    exp_year: Union[None, Unset, int]
+    exp_year: int | None | Unset
     if isinstance(self.exp_year, Unset):
       exp_year = UNSET
     else:
@@ -92,39 +94,39 @@ class PaymentMethod:
 
     is_default = d.pop("is_default")
 
-    def _parse_brand(data: object) -> Union[None, Unset, str]:
+    def _parse_brand(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     brand = _parse_brand(d.pop("brand", UNSET))
 
-    def _parse_last4(data: object) -> Union[None, Unset, str]:
+    def _parse_last4(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     last4 = _parse_last4(d.pop("last4", UNSET))
 
-    def _parse_exp_month(data: object) -> Union[None, Unset, int]:
+    def _parse_exp_month(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     exp_month = _parse_exp_month(d.pop("exp_month", UNSET))
 
-    def _parse_exp_year(data: object) -> Union[None, Unset, int]:
+    def _parse_exp_year(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     exp_year = _parse_exp_year(d.pop("exp_year", UNSET))
 

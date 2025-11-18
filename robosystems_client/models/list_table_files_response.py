@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -17,14 +19,14 @@ class ListTableFilesResponse:
   Attributes:
       graph_id (str): Graph database identifier
       table_name (str): Table name
-      files (list['FileInfo']): List of files in the table
+      files (list[FileInfo]): List of files in the table
       total_files (int): Total number of files
       total_size_bytes (int): Total size of all files in bytes
   """
 
   graph_id: str
   table_name: str
-  files: list["FileInfo"]
+  files: list[FileInfo]
   total_files: int
   total_size_bytes: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)

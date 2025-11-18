@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -15,16 +17,16 @@ class TableInfo:
   Attributes:
       table_name (str): Table name
       row_count (int): Approximate row count
-      file_count (Union[Unset, int]): Number of files Default: 0.
-      total_size_bytes (Union[Unset, int]): Total size in bytes Default: 0.
-      s3_location (Union[None, Unset, str]): S3 location for external tables
+      file_count (int | Unset): Number of files Default: 0.
+      total_size_bytes (int | Unset): Total size in bytes Default: 0.
+      s3_location (None | str | Unset): S3 location for external tables
   """
 
   table_name: str
   row_count: int
-  file_count: Union[Unset, int] = 0
-  total_size_bytes: Union[Unset, int] = 0
-  s3_location: Union[None, Unset, str] = UNSET
+  file_count: int | Unset = 0
+  total_size_bytes: int | Unset = 0
+  s3_location: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -36,7 +38,7 @@ class TableInfo:
 
     total_size_bytes = self.total_size_bytes
 
-    s3_location: Union[None, Unset, str]
+    s3_location: None | str | Unset
     if isinstance(self.s3_location, Unset):
       s3_location = UNSET
     else:
@@ -70,12 +72,12 @@ class TableInfo:
 
     total_size_bytes = d.pop("total_size_bytes", UNSET)
 
-    def _parse_s3_location(data: object) -> Union[None, Unset, str]:
+    def _parse_s3_location(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     s3_location = _parse_s3_location(d.pop("s3_location", UNSET))
 

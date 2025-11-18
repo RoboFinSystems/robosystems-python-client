@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
@@ -13,11 +15,11 @@ class FileUploadRequest:
   """
   Attributes:
       file_name (str): File name to upload
-      content_type (Union[Unset, str]): File MIME type Default: 'application/x-parquet'.
+      content_type (str | Unset): File MIME type Default: 'application/x-parquet'.
   """
 
   file_name: str
-  content_type: Union[Unset, str] = "application/x-parquet"
+  content_type: str | Unset = "application/x-parquet"
 
   def to_dict(self) -> dict[str, Any]:
     file_name = self.file_name

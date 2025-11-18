@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -27,8 +29,8 @@ class BackupResponse:
       compression_enabled (bool):
       allow_export (bool):
       created_at (str):
-      completed_at (Union[None, str]):
-      expires_at (Union[None, str]):
+      completed_at (None | str):
+      expires_at (None | str):
   """
 
   backup_id: str
@@ -46,8 +48,8 @@ class BackupResponse:
   compression_enabled: bool
   allow_export: bool
   created_at: str
-  completed_at: Union[None, str]
-  expires_at: Union[None, str]
+  completed_at: None | str
+  expires_at: None | str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -81,10 +83,10 @@ class BackupResponse:
 
     created_at = self.created_at
 
-    completed_at: Union[None, str]
+    completed_at: None | str
     completed_at = self.completed_at
 
-    expires_at: Union[None, str]
+    expires_at: None | str
     expires_at = self.expires_at
 
     field_dict: dict[str, Any] = {}
@@ -146,17 +148,17 @@ class BackupResponse:
 
     created_at = d.pop("created_at")
 
-    def _parse_completed_at(data: object) -> Union[None, str]:
+    def _parse_completed_at(data: object) -> None | str:
       if data is None:
         return data
-      return cast(Union[None, str], data)
+      return cast(None | str, data)
 
     completed_at = _parse_completed_at(d.pop("completed_at"))
 
-    def _parse_expires_at(data: object) -> Union[None, str]:
+    def _parse_expires_at(data: object) -> None | str:
       if data is None:
         return data
-      return cast(Union[None, str], data)
+      return cast(None | str, data)
 
     expires_at = _parse_expires_at(d.pop("expires_at"))
 

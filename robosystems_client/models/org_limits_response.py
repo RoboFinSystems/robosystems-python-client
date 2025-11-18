@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
@@ -25,7 +27,7 @@ class OrgLimitsResponse:
 
   org_id: str
   max_graphs: int
-  current_usage: "OrgLimitsResponseCurrentUsage"
+  current_usage: OrgLimitsResponseCurrentUsage
   warnings: list[str]
   can_create_graph: bool
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)

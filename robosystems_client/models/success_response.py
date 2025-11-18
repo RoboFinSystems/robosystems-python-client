@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,13 +24,13 @@ class SuccessResponse:
 
   Attributes:
       message (str): Human-readable success message
-      success (Union[Unset, bool]): Indicates the operation completed successfully Default: True.
-      data (Union['SuccessResponseDataType0', None, Unset]): Optional additional data related to the operation
+      success (bool | Unset): Indicates the operation completed successfully Default: True.
+      data (None | SuccessResponseDataType0 | Unset): Optional additional data related to the operation
   """
 
   message: str
-  success: Union[Unset, bool] = True
-  data: Union["SuccessResponseDataType0", None, Unset] = UNSET
+  success: bool | Unset = True
+  data: None | SuccessResponseDataType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -38,7 +40,7 @@ class SuccessResponse:
 
     success = self.success
 
-    data: Union[None, Unset, dict[str, Any]]
+    data: dict[str, Any] | None | Unset
     if isinstance(self.data, Unset):
       data = UNSET
     elif isinstance(self.data, SuccessResponseDataType0):
@@ -69,7 +71,7 @@ class SuccessResponse:
 
     success = d.pop("success", UNSET)
 
-    def _parse_data(data: object) -> Union["SuccessResponseDataType0", None, Unset]:
+    def _parse_data(data: object) -> None | SuccessResponseDataType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -80,9 +82,9 @@ class SuccessResponse:
         data_type_0 = SuccessResponseDataType0.from_dict(data)
 
         return data_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SuccessResponseDataType0", None, Unset], data)
+      return cast(None | SuccessResponseDataType0 | Unset, data)
 
     data = _parse_data(d.pop("data", UNSET))
 

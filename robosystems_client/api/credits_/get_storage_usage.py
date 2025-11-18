@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  days: Union[Unset, int] = 30,
+  days: int | Unset = 30,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
@@ -34,10 +34,10 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[
-  Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]
-]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> (
+  ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError | None
+):
   if response.status_code == 200:
     response_200 = GetStorageUsageResponseGetstorageusage.from_dict(response.json())
 
@@ -65,9 +65,9 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+  *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> Response[
-  Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]
+  ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError
 ]:
   return Response(
     status_code=HTTPStatus(response.status_code),
@@ -81,9 +81,9 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  days: Union[Unset, int] = 30,
+  days: int | Unset = 30,
 ) -> Response[
-  Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]
+  ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError
 ]:
   """Get Storage Usage
 
@@ -100,14 +100,14 @@ def sync_detailed(
 
   Args:
       graph_id (str): Graph database identifier
-      days (Union[Unset, int]): Number of days of history to return Default: 30.
+      days (int | Unset): Number of days of history to return Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]]
+      Response[ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -126,10 +126,10 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  days: Union[Unset, int] = 30,
-) -> Optional[
-  Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]
-]:
+  days: int | Unset = 30,
+) -> (
+  ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError | None
+):
   """Get Storage Usage
 
    Get storage usage history for a graph.
@@ -145,14 +145,14 @@ def sync(
 
   Args:
       graph_id (str): Graph database identifier
-      days (Union[Unset, int]): Number of days of history to return Default: 30.
+      days (int | Unset): Number of days of history to return Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]
+      ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError
   """
 
   return sync_detailed(
@@ -166,9 +166,9 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  days: Union[Unset, int] = 30,
+  days: int | Unset = 30,
 ) -> Response[
-  Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]
+  ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError
 ]:
   """Get Storage Usage
 
@@ -185,14 +185,14 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Graph database identifier
-      days (Union[Unset, int]): Number of days of history to return Default: 30.
+      days (int | Unset): Number of days of history to return Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]]
+      Response[ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -209,10 +209,10 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  days: Union[Unset, int] = 30,
-) -> Optional[
-  Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]
-]:
+  days: int | Unset = 30,
+) -> (
+  ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError | None
+):
   """Get Storage Usage
 
    Get storage usage history for a graph.
@@ -228,14 +228,14 @@ async def asyncio(
 
   Args:
       graph_id (str): Graph database identifier
-      days (Union[Unset, int]): Number of days of history to return Default: 30.
+      days (int | Unset): Number of days of history to return Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, GetStorageUsageResponseGetstorageusage, HTTPValidationError]
+      ErrorResponse | GetStorageUsageResponseGetstorageusage | HTTPValidationError
   """
 
   return (

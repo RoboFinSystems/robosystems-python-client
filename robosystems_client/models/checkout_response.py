@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -14,34 +16,34 @@ class CheckoutResponse:
   """Response from checkout session creation.
 
   Attributes:
-      checkout_url (Union[None, Unset, str]): URL to redirect user to for payment
-      session_id (Union[None, Unset, str]): Checkout session ID for status polling
-      subscription_id (Union[None, Unset, str]): Internal subscription ID
-      requires_checkout (Union[Unset, bool]): Whether checkout is required Default: True.
-      billing_disabled (Union[Unset, bool]): Whether billing is disabled on this instance Default: False.
+      checkout_url (None | str | Unset): URL to redirect user to for payment
+      session_id (None | str | Unset): Checkout session ID for status polling
+      subscription_id (None | str | Unset): Internal subscription ID
+      requires_checkout (bool | Unset): Whether checkout is required Default: True.
+      billing_disabled (bool | Unset): Whether billing is disabled on this instance Default: False.
   """
 
-  checkout_url: Union[None, Unset, str] = UNSET
-  session_id: Union[None, Unset, str] = UNSET
-  subscription_id: Union[None, Unset, str] = UNSET
-  requires_checkout: Union[Unset, bool] = True
-  billing_disabled: Union[Unset, bool] = False
+  checkout_url: None | str | Unset = UNSET
+  session_id: None | str | Unset = UNSET
+  subscription_id: None | str | Unset = UNSET
+  requires_checkout: bool | Unset = True
+  billing_disabled: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    checkout_url: Union[None, Unset, str]
+    checkout_url: None | str | Unset
     if isinstance(self.checkout_url, Unset):
       checkout_url = UNSET
     else:
       checkout_url = self.checkout_url
 
-    session_id: Union[None, Unset, str]
+    session_id: None | str | Unset
     if isinstance(self.session_id, Unset):
       session_id = UNSET
     else:
       session_id = self.session_id
 
-    subscription_id: Union[None, Unset, str]
+    subscription_id: None | str | Unset
     if isinstance(self.subscription_id, Unset):
       subscription_id = UNSET
     else:
@@ -71,30 +73,30 @@ class CheckoutResponse:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
 
-    def _parse_checkout_url(data: object) -> Union[None, Unset, str]:
+    def _parse_checkout_url(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     checkout_url = _parse_checkout_url(d.pop("checkout_url", UNSET))
 
-    def _parse_session_id(data: object) -> Union[None, Unset, str]:
+    def _parse_session_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     session_id = _parse_session_id(d.pop("session_id", UNSET))
 
-    def _parse_subscription_id(data: object) -> Union[None, Unset, str]:
+    def _parse_subscription_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     subscription_id = _parse_subscription_id(d.pop("subscription_id", UNSET))
 

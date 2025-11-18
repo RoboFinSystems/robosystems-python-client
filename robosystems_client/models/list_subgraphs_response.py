@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -24,9 +26,9 @@ class ListSubgraphsResponse:
       subgraphs_enabled (bool): Whether subgraphs are enabled for this tier (requires Kuzu Large/XLarge or Neo4j
           Enterprise XLarge)
       subgraph_count (int): Total number of subgraphs
-      subgraphs (list['SubgraphSummary']): List of subgraphs
-      max_subgraphs (Union[None, Unset, int]): Maximum allowed subgraphs for this tier (None = unlimited)
-      total_size_mb (Union[None, Unset, float]): Combined size of all subgraphs in megabytes
+      subgraphs (list[SubgraphSummary]): List of subgraphs
+      max_subgraphs (int | None | Unset): Maximum allowed subgraphs for this tier (None = unlimited)
+      total_size_mb (float | None | Unset): Combined size of all subgraphs in megabytes
   """
 
   parent_graph_id: str
@@ -34,9 +36,9 @@ class ListSubgraphsResponse:
   parent_graph_tier: str
   subgraphs_enabled: bool
   subgraph_count: int
-  subgraphs: list["SubgraphSummary"]
-  max_subgraphs: Union[None, Unset, int] = UNSET
-  total_size_mb: Union[None, Unset, float] = UNSET
+  subgraphs: list[SubgraphSummary]
+  max_subgraphs: int | None | Unset = UNSET
+  total_size_mb: float | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -55,13 +57,13 @@ class ListSubgraphsResponse:
       subgraphs_item = subgraphs_item_data.to_dict()
       subgraphs.append(subgraphs_item)
 
-    max_subgraphs: Union[None, Unset, int]
+    max_subgraphs: int | None | Unset
     if isinstance(self.max_subgraphs, Unset):
       max_subgraphs = UNSET
     else:
       max_subgraphs = self.max_subgraphs
 
-    total_size_mb: Union[None, Unset, float]
+    total_size_mb: float | None | Unset
     if isinstance(self.total_size_mb, Unset):
       total_size_mb = UNSET
     else:
@@ -108,21 +110,21 @@ class ListSubgraphsResponse:
 
       subgraphs.append(subgraphs_item)
 
-    def _parse_max_subgraphs(data: object) -> Union[None, Unset, int]:
+    def _parse_max_subgraphs(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     max_subgraphs = _parse_max_subgraphs(d.pop("max_subgraphs", UNSET))
 
-    def _parse_total_size_mb(data: object) -> Union[None, Unset, float]:
+    def _parse_total_size_mb(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     total_size_mb = _parse_total_size_mb(d.pop("total_size_mb", UNSET))
 

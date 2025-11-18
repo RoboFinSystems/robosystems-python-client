@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -16,12 +18,12 @@ class SSOExchangeRequest:
   Attributes:
       token (str): Temporary SSO token
       target_app (str): Target application identifier
-      return_url (Union[None, Unset, str]): Optional return URL after authentication
+      return_url (None | str | Unset): Optional return URL after authentication
   """
 
   token: str
   target_app: str
-  return_url: Union[None, Unset, str] = UNSET
+  return_url: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -29,7 +31,7 @@ class SSOExchangeRequest:
 
     target_app = self.target_app
 
-    return_url: Union[None, Unset, str]
+    return_url: None | str | Unset
     if isinstance(self.return_url, Unset):
       return_url = UNSET
     else:
@@ -55,12 +57,12 @@ class SSOExchangeRequest:
 
     target_app = d.pop("target_app")
 
-    def _parse_return_url(data: object) -> Union[None, Unset, str]:
+    def _parse_return_url(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     return_url = _parse_return_url(d.pop("return_url", UNSET))
 

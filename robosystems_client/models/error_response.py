@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -24,33 +26,33 @@ class ErrorResponse:
 
       Attributes:
           detail (str): Human-readable error message explaining what went wrong
-          code (Union[None, Unset, str]): Machine-readable error code for programmatic handling
-          request_id (Union[None, Unset, str]): Unique request ID for tracking and debugging
-          timestamp (Union[None, Unset, datetime.datetime]): Timestamp when the error occurred
+          code (None | str | Unset): Machine-readable error code for programmatic handling
+          request_id (None | str | Unset): Unique request ID for tracking and debugging
+          timestamp (datetime.datetime | None | Unset): Timestamp when the error occurred
   """
 
   detail: str
-  code: Union[None, Unset, str] = UNSET
-  request_id: Union[None, Unset, str] = UNSET
-  timestamp: Union[None, Unset, datetime.datetime] = UNSET
+  code: None | str | Unset = UNSET
+  request_id: None | str | Unset = UNSET
+  timestamp: datetime.datetime | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     detail = self.detail
 
-    code: Union[None, Unset, str]
+    code: None | str | Unset
     if isinstance(self.code, Unset):
       code = UNSET
     else:
       code = self.code
 
-    request_id: Union[None, Unset, str]
+    request_id: None | str | Unset
     if isinstance(self.request_id, Unset):
       request_id = UNSET
     else:
       request_id = self.request_id
 
-    timestamp: Union[None, Unset, str]
+    timestamp: None | str | Unset
     if isinstance(self.timestamp, Unset):
       timestamp = UNSET
     elif isinstance(self.timestamp, datetime.datetime):
@@ -79,25 +81,25 @@ class ErrorResponse:
     d = dict(src_dict)
     detail = d.pop("detail")
 
-    def _parse_code(data: object) -> Union[None, Unset, str]:
+    def _parse_code(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     code = _parse_code(d.pop("code", UNSET))
 
-    def _parse_request_id(data: object) -> Union[None, Unset, str]:
+    def _parse_request_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     request_id = _parse_request_id(d.pop("request_id", UNSET))
 
-    def _parse_timestamp(data: object) -> Union[None, Unset, datetime.datetime]:
+    def _parse_timestamp(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -108,9 +110,9 @@ class ErrorResponse:
         timestamp_type_0 = isoparse(data)
 
         return timestamp_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, datetime.datetime], data)
+      return cast(datetime.datetime | None | Unset, data)
 
     timestamp = _parse_timestamp(d.pop("timestamp", UNSET))
 

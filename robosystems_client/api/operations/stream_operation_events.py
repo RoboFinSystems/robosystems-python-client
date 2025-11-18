@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -12,9 +12,9 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   operation_id: str,
   *,
-  from_sequence: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
+  from_sequence: int | Unset = 0,
+  token: None | str | Unset = UNSET,
+  authorization: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(authorization, Unset):
@@ -24,7 +24,7 @@ def _get_kwargs(
 
   params["from_sequence"] = from_sequence
 
-  json_token: Union[None, Unset, str]
+  json_token: None | str | Unset
   if isinstance(token, Unset):
     json_token = UNSET
   else:
@@ -44,8 +44,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = response.json()
     return response_200
@@ -74,8 +74,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -88,10 +88,10 @@ def sync_detailed(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-  from_sequence: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError]]:
+  from_sequence: int | Unset = 0,
+  token: None | str | Unset = UNSET,
+  authorization: None | str | Unset = UNSET,
+) -> Response[Any | HTTPValidationError]:
   """Stream Operation Events
 
    Stream real-time events for an operation using Server-Sent Events (SSE).
@@ -144,17 +144,17 @@ def sync_detailed(
 
   Args:
       operation_id (str): Operation identifier from initial submission
-      from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
+      from_sequence (int | Unset): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      token (None | str | Unset): JWT token for SSE authentication
+      authorization (None | str | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError]]
+      Response[Any | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -175,10 +175,10 @@ def sync(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-  from_sequence: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError]]:
+  from_sequence: int | Unset = 0,
+  token: None | str | Unset = UNSET,
+  authorization: None | str | Unset = UNSET,
+) -> Any | HTTPValidationError | None:
   """Stream Operation Events
 
    Stream real-time events for an operation using Server-Sent Events (SSE).
@@ -231,17 +231,17 @@ def sync(
 
   Args:
       operation_id (str): Operation identifier from initial submission
-      from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
+      from_sequence (int | Unset): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      token (None | str | Unset): JWT token for SSE authentication
+      authorization (None | str | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError]
+      Any | HTTPValidationError
   """
 
   return sync_detailed(
@@ -257,10 +257,10 @@ async def asyncio_detailed(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-  from_sequence: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Response[Union[Any, HTTPValidationError]]:
+  from_sequence: int | Unset = 0,
+  token: None | str | Unset = UNSET,
+  authorization: None | str | Unset = UNSET,
+) -> Response[Any | HTTPValidationError]:
   """Stream Operation Events
 
    Stream real-time events for an operation using Server-Sent Events (SSE).
@@ -313,17 +313,17 @@ async def asyncio_detailed(
 
   Args:
       operation_id (str): Operation identifier from initial submission
-      from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
+      from_sequence (int | Unset): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      token (None | str | Unset): JWT token for SSE authentication
+      authorization (None | str | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, HTTPValidationError]]
+      Response[Any | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -342,10 +342,10 @@ async def asyncio(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-  from_sequence: Union[Unset, int] = 0,
-  token: Union[None, Unset, str] = UNSET,
-  authorization: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[Any, HTTPValidationError]]:
+  from_sequence: int | Unset = 0,
+  token: None | str | Unset = UNSET,
+  authorization: None | str | Unset = UNSET,
+) -> Any | HTTPValidationError | None:
   """Stream Operation Events
 
    Stream real-time events for an operation using Server-Sent Events (SSE).
@@ -398,17 +398,17 @@ async def asyncio(
 
   Args:
       operation_id (str): Operation identifier from initial submission
-      from_sequence (Union[Unset, int]): Start streaming from this sequence number (0 = from
+      from_sequence (int | Unset): Start streaming from this sequence number (0 = from
           beginning) Default: 0.
-      token (Union[None, Unset, str]): JWT token for SSE authentication
-      authorization (Union[None, Unset, str]):
+      token (None | str | Unset): JWT token for SSE authentication
+      authorization (None | str | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, HTTPValidationError]
+      Any | HTTPValidationError
   """
 
   return (

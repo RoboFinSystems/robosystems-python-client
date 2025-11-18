@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -14,14 +16,14 @@ class DeleteSubgraphRequest:
   """Request model for deleting a subgraph.
 
   Attributes:
-      force (Union[Unset, bool]): Force deletion even if subgraph contains data Default: False.
-      backup_first (Union[Unset, bool]): Create a backup before deletion Default: True.
-      backup_location (Union[None, Unset, str]): S3 location for backup (uses default if not specified)
+      force (bool | Unset): Force deletion even if subgraph contains data Default: False.
+      backup_first (bool | Unset): Create a backup before deletion Default: True.
+      backup_location (None | str | Unset): S3 location for backup (uses default if not specified)
   """
 
-  force: Union[Unset, bool] = False
-  backup_first: Union[Unset, bool] = True
-  backup_location: Union[None, Unset, str] = UNSET
+  force: bool | Unset = False
+  backup_first: bool | Unset = True
+  backup_location: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -29,7 +31,7 @@ class DeleteSubgraphRequest:
 
     backup_first = self.backup_first
 
-    backup_location: Union[None, Unset, str]
+    backup_location: None | str | Unset
     if isinstance(self.backup_location, Unset):
       backup_location = UNSET
     else:
@@ -54,12 +56,12 @@ class DeleteSubgraphRequest:
 
     backup_first = d.pop("backup_first", UNSET)
 
-    def _parse_backup_location(data: object) -> Union[None, Unset, str]:
+    def _parse_backup_location(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     backup_location = _parse_backup_location(d.pop("backup_location", UNSET))
 

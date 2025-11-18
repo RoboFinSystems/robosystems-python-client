@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -24,13 +26,13 @@ class Invoice:
       amount_paid (int): Amount paid in cents
       currency (str): Currency code (usd)
       created (str): Invoice creation date (ISO format)
-      line_items (list['InvoiceLineItem']): Invoice line items
-      number (Union[None, Unset, str]): Invoice number
-      due_date (Union[None, Unset, str]): Invoice due date (ISO format)
-      paid_at (Union[None, Unset, str]): Payment date (ISO format)
-      invoice_pdf (Union[None, Unset, str]): PDF download URL
-      hosted_invoice_url (Union[None, Unset, str]): Hosted invoice URL
-      subscription_id (Union[None, Unset, str]): Associated subscription ID
+      line_items (list[InvoiceLineItem]): Invoice line items
+      number (None | str | Unset): Invoice number
+      due_date (None | str | Unset): Invoice due date (ISO format)
+      paid_at (None | str | Unset): Payment date (ISO format)
+      invoice_pdf (None | str | Unset): PDF download URL
+      hosted_invoice_url (None | str | Unset): Hosted invoice URL
+      subscription_id (None | str | Unset): Associated subscription ID
   """
 
   id: str
@@ -39,13 +41,13 @@ class Invoice:
   amount_paid: int
   currency: str
   created: str
-  line_items: list["InvoiceLineItem"]
-  number: Union[None, Unset, str] = UNSET
-  due_date: Union[None, Unset, str] = UNSET
-  paid_at: Union[None, Unset, str] = UNSET
-  invoice_pdf: Union[None, Unset, str] = UNSET
-  hosted_invoice_url: Union[None, Unset, str] = UNSET
-  subscription_id: Union[None, Unset, str] = UNSET
+  line_items: list[InvoiceLineItem]
+  number: None | str | Unset = UNSET
+  due_date: None | str | Unset = UNSET
+  paid_at: None | str | Unset = UNSET
+  invoice_pdf: None | str | Unset = UNSET
+  hosted_invoice_url: None | str | Unset = UNSET
+  subscription_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -66,37 +68,37 @@ class Invoice:
       line_items_item = line_items_item_data.to_dict()
       line_items.append(line_items_item)
 
-    number: Union[None, Unset, str]
+    number: None | str | Unset
     if isinstance(self.number, Unset):
       number = UNSET
     else:
       number = self.number
 
-    due_date: Union[None, Unset, str]
+    due_date: None | str | Unset
     if isinstance(self.due_date, Unset):
       due_date = UNSET
     else:
       due_date = self.due_date
 
-    paid_at: Union[None, Unset, str]
+    paid_at: None | str | Unset
     if isinstance(self.paid_at, Unset):
       paid_at = UNSET
     else:
       paid_at = self.paid_at
 
-    invoice_pdf: Union[None, Unset, str]
+    invoice_pdf: None | str | Unset
     if isinstance(self.invoice_pdf, Unset):
       invoice_pdf = UNSET
     else:
       invoice_pdf = self.invoice_pdf
 
-    hosted_invoice_url: Union[None, Unset, str]
+    hosted_invoice_url: None | str | Unset
     if isinstance(self.hosted_invoice_url, Unset):
       hosted_invoice_url = UNSET
     else:
       hosted_invoice_url = self.hosted_invoice_url
 
-    subscription_id: Union[None, Unset, str]
+    subscription_id: None | str | Unset
     if isinstance(self.subscription_id, Unset):
       subscription_id = UNSET
     else:
@@ -154,57 +156,57 @@ class Invoice:
 
       line_items.append(line_items_item)
 
-    def _parse_number(data: object) -> Union[None, Unset, str]:
+    def _parse_number(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     number = _parse_number(d.pop("number", UNSET))
 
-    def _parse_due_date(data: object) -> Union[None, Unset, str]:
+    def _parse_due_date(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     due_date = _parse_due_date(d.pop("due_date", UNSET))
 
-    def _parse_paid_at(data: object) -> Union[None, Unset, str]:
+    def _parse_paid_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     paid_at = _parse_paid_at(d.pop("paid_at", UNSET))
 
-    def _parse_invoice_pdf(data: object) -> Union[None, Unset, str]:
+    def _parse_invoice_pdf(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     invoice_pdf = _parse_invoice_pdf(d.pop("invoice_pdf", UNSET))
 
-    def _parse_hosted_invoice_url(data: object) -> Union[None, Unset, str]:
+    def _parse_hosted_invoice_url(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     hosted_invoice_url = _parse_hosted_invoice_url(d.pop("hosted_invoice_url", UNSET))
 
-    def _parse_subscription_id(data: object) -> Union[None, Unset, str]:
+    def _parse_subscription_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     subscription_id = _parse_subscription_id(d.pop("subscription_id", UNSET))
 

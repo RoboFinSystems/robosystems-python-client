@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -23,8 +23,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ConnectionOptionsResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = ConnectionOptionsResponse.from_dict(response.json())
 
@@ -52,8 +52,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ConnectionOptionsResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -66,7 +66,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]]:
+) -> Response[ConnectionOptionsResponse | ErrorResponse | HTTPValidationError]:
   """List Connection Options
 
    Get metadata about all available data connection providers.
@@ -98,7 +98,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]]
+      Response[ConnectionOptionsResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -116,7 +116,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]]:
+) -> ConnectionOptionsResponse | ErrorResponse | HTTPValidationError | None:
   """List Connection Options
 
    Get metadata about all available data connection providers.
@@ -148,7 +148,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]
+      ConnectionOptionsResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -161,7 +161,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]]:
+) -> Response[ConnectionOptionsResponse | ErrorResponse | HTTPValidationError]:
   """List Connection Options
 
    Get metadata about all available data connection providers.
@@ -193,7 +193,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]]
+      Response[ConnectionOptionsResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -209,7 +209,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]]:
+) -> ConnectionOptionsResponse | ErrorResponse | HTTPValidationError | None:
   """List Connection Options
 
    Get metadata about all available data connection providers.
@@ -241,7 +241,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ConnectionOptionsResponse, ErrorResponse, HTTPValidationError]
+      ConnectionOptionsResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

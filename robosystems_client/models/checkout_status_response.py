@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -16,17 +18,17 @@ class CheckoutStatusResponse:
   Attributes:
       status (str): Checkout status: 'pending_payment', 'provisioning', 'completed', 'failed'
       subscription_id (str): Internal subscription ID
-      resource_id (Union[None, Unset, str]): Resource ID (graph_id for both graphs and repositories) once provisioned.
-          For repositories, this is the repository slug (e.g., 'sec')
-      operation_id (Union[None, Unset, str]): SSE operation ID for monitoring provisioning progress
-      error (Union[None, Unset, str]): Error message if checkout failed
+      resource_id (None | str | Unset): Resource ID (graph_id for both graphs and repositories) once provisioned. For
+          repositories, this is the repository slug (e.g., 'sec')
+      operation_id (None | str | Unset): SSE operation ID for monitoring provisioning progress
+      error (None | str | Unset): Error message if checkout failed
   """
 
   status: str
   subscription_id: str
-  resource_id: Union[None, Unset, str] = UNSET
-  operation_id: Union[None, Unset, str] = UNSET
-  error: Union[None, Unset, str] = UNSET
+  resource_id: None | str | Unset = UNSET
+  operation_id: None | str | Unset = UNSET
+  error: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -34,19 +36,19 @@ class CheckoutStatusResponse:
 
     subscription_id = self.subscription_id
 
-    resource_id: Union[None, Unset, str]
+    resource_id: None | str | Unset
     if isinstance(self.resource_id, Unset):
       resource_id = UNSET
     else:
       resource_id = self.resource_id
 
-    operation_id: Union[None, Unset, str]
+    operation_id: None | str | Unset
     if isinstance(self.operation_id, Unset):
       operation_id = UNSET
     else:
       operation_id = self.operation_id
 
-    error: Union[None, Unset, str]
+    error: None | str | Unset
     if isinstance(self.error, Unset):
       error = UNSET
     else:
@@ -76,30 +78,30 @@ class CheckoutStatusResponse:
 
     subscription_id = d.pop("subscription_id")
 
-    def _parse_resource_id(data: object) -> Union[None, Unset, str]:
+    def _parse_resource_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     resource_id = _parse_resource_id(d.pop("resource_id", UNSET))
 
-    def _parse_operation_id(data: object) -> Union[None, Unset, str]:
+    def _parse_operation_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     operation_id = _parse_operation_id(d.pop("operation_id", UNSET))
 
-    def _parse_error(data: object) -> Union[None, Unset, str]:
+    def _parse_error(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     error = _parse_error(d.pop("error", UNSET))
 

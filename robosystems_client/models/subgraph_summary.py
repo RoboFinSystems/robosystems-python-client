@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -23,8 +25,8 @@ class SubgraphSummary:
       subgraph_type (SubgraphType): Types of subgraphs.
       status (str): Current status
       created_at (datetime.datetime): Creation timestamp
-      size_mb (Union[None, Unset, float]): Size in megabytes
-      last_accessed (Union[None, Unset, datetime.datetime]): Last access timestamp
+      size_mb (float | None | Unset): Size in megabytes
+      last_accessed (datetime.datetime | None | Unset): Last access timestamp
   """
 
   graph_id: str
@@ -33,8 +35,8 @@ class SubgraphSummary:
   subgraph_type: SubgraphType
   status: str
   created_at: datetime.datetime
-  size_mb: Union[None, Unset, float] = UNSET
-  last_accessed: Union[None, Unset, datetime.datetime] = UNSET
+  size_mb: float | None | Unset = UNSET
+  last_accessed: datetime.datetime | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -50,13 +52,13 @@ class SubgraphSummary:
 
     created_at = self.created_at.isoformat()
 
-    size_mb: Union[None, Unset, float]
+    size_mb: float | None | Unset
     if isinstance(self.size_mb, Unset):
       size_mb = UNSET
     else:
       size_mb = self.size_mb
 
-    last_accessed: Union[None, Unset, str]
+    last_accessed: None | str | Unset
     if isinstance(self.last_accessed, Unset):
       last_accessed = UNSET
     elif isinstance(self.last_accessed, datetime.datetime):
@@ -98,16 +100,16 @@ class SubgraphSummary:
 
     created_at = isoparse(d.pop("created_at"))
 
-    def _parse_size_mb(data: object) -> Union[None, Unset, float]:
+    def _parse_size_mb(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     size_mb = _parse_size_mb(d.pop("size_mb", UNSET))
 
-    def _parse_last_accessed(data: object) -> Union[None, Unset, datetime.datetime]:
+    def _parse_last_accessed(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -118,9 +120,9 @@ class SubgraphSummary:
         last_accessed_type_0 = isoparse(data)
 
         return last_accessed_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, datetime.datetime], data)
+      return cast(datetime.datetime | None | Unset, data)
 
     last_accessed = _parse_last_accessed(d.pop("last_accessed", UNSET))
 

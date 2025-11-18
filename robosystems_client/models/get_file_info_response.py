@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,10 +24,10 @@ class GetFileInfoResponse:
       upload_status (str): Current upload status
       upload_method (str): Upload method used
       s3_key (str): S3 object key
-      table_name (Union[None, Unset, str]): Table name
-      row_count (Union[None, Unset, int]): Estimated row count
-      created_at (Union[None, Unset, str]): File creation timestamp
-      uploaded_at (Union[None, Unset, str]): File upload completion timestamp
+      table_name (None | str | Unset): Table name
+      row_count (int | None | Unset): Estimated row count
+      created_at (None | str | Unset): File creation timestamp
+      uploaded_at (None | str | Unset): File upload completion timestamp
   """
 
   file_id: str
@@ -37,10 +39,10 @@ class GetFileInfoResponse:
   upload_status: str
   upload_method: str
   s3_key: str
-  table_name: Union[None, Unset, str] = UNSET
-  row_count: Union[None, Unset, int] = UNSET
-  created_at: Union[None, Unset, str] = UNSET
-  uploaded_at: Union[None, Unset, str] = UNSET
+  table_name: None | str | Unset = UNSET
+  row_count: int | None | Unset = UNSET
+  created_at: None | str | Unset = UNSET
+  uploaded_at: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -62,25 +64,25 @@ class GetFileInfoResponse:
 
     s3_key = self.s3_key
 
-    table_name: Union[None, Unset, str]
+    table_name: None | str | Unset
     if isinstance(self.table_name, Unset):
       table_name = UNSET
     else:
       table_name = self.table_name
 
-    row_count: Union[None, Unset, int]
+    row_count: int | None | Unset
     if isinstance(self.row_count, Unset):
       row_count = UNSET
     else:
       row_count = self.row_count
 
-    created_at: Union[None, Unset, str]
+    created_at: None | str | Unset
     if isinstance(self.created_at, Unset):
       created_at = UNSET
     else:
       created_at = self.created_at
 
-    uploaded_at: Union[None, Unset, str]
+    uploaded_at: None | str | Unset
     if isinstance(self.uploaded_at, Unset):
       uploaded_at = UNSET
     else:
@@ -133,39 +135,39 @@ class GetFileInfoResponse:
 
     s3_key = d.pop("s3_key")
 
-    def _parse_table_name(data: object) -> Union[None, Unset, str]:
+    def _parse_table_name(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     table_name = _parse_table_name(d.pop("table_name", UNSET))
 
-    def _parse_row_count(data: object) -> Union[None, Unset, int]:
+    def _parse_row_count(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     row_count = _parse_row_count(d.pop("row_count", UNSET))
 
-    def _parse_created_at(data: object) -> Union[None, Unset, str]:
+    def _parse_created_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     created_at = _parse_created_at(d.pop("created_at", UNSET))
 
-    def _parse_uploaded_at(data: object) -> Union[None, Unset, str]:
+    def _parse_uploaded_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     uploaded_at = _parse_uploaded_at(d.pop("uploaded_at", UNSET))
 

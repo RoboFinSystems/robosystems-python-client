@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -21,17 +23,17 @@ class BillingCustomer:
       org_id (str): Organization ID
       has_payment_method (bool): Whether organization has a payment method on file
       invoice_billing_enabled (bool): Whether invoice billing is enabled (enterprise customers)
-      payment_methods (list['PaymentMethod']): List of payment methods on file
+      payment_methods (list[PaymentMethod]): List of payment methods on file
       created_at (str): Customer creation timestamp (ISO format)
-      stripe_customer_id (Union[None, Unset, str]): Stripe customer ID if applicable
+      stripe_customer_id (None | str | Unset): Stripe customer ID if applicable
   """
 
   org_id: str
   has_payment_method: bool
   invoice_billing_enabled: bool
-  payment_methods: list["PaymentMethod"]
+  payment_methods: list[PaymentMethod]
   created_at: str
-  stripe_customer_id: Union[None, Unset, str] = UNSET
+  stripe_customer_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -48,7 +50,7 @@ class BillingCustomer:
 
     created_at = self.created_at
 
-    stripe_customer_id: Union[None, Unset, str]
+    stripe_customer_id: None | str | Unset
     if isinstance(self.stripe_customer_id, Unset):
       stripe_customer_id = UNSET
     else:
@@ -90,12 +92,12 @@ class BillingCustomer:
 
     created_at = d.pop("created_at")
 
-    def _parse_stripe_customer_id(data: object) -> Union[None, Unset, str]:
+    def _parse_stripe_customer_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     stripe_customer_id = _parse_stripe_customer_id(d.pop("stripe_customer_id", UNSET))
 

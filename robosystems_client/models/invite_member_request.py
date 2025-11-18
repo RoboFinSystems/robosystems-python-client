@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -16,17 +18,17 @@ class InviteMemberRequest:
 
   Attributes:
       email (str):
-      role (Union[None, OrgRole, Unset]):  Default: OrgRole.MEMBER.
+      role (None | OrgRole | Unset):  Default: OrgRole.MEMBER.
   """
 
   email: str
-  role: Union[None, OrgRole, Unset] = OrgRole.MEMBER
+  role: None | OrgRole | Unset = OrgRole.MEMBER
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     email = self.email
 
-    role: Union[None, Unset, str]
+    role: None | str | Unset
     if isinstance(self.role, Unset):
       role = UNSET
     elif isinstance(self.role, OrgRole):
@@ -51,7 +53,7 @@ class InviteMemberRequest:
     d = dict(src_dict)
     email = d.pop("email")
 
-    def _parse_role(data: object) -> Union[None, OrgRole, Unset]:
+    def _parse_role(data: object) -> None | OrgRole | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -62,9 +64,9 @@ class InviteMemberRequest:
         role_type_0 = OrgRole(data)
 
         return role_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, OrgRole, Unset], data)
+      return cast(None | OrgRole | Unset, data)
 
     role = _parse_role(d.pop("role", UNSET))
 

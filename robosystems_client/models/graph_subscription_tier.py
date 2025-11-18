@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -30,9 +32,9 @@ class GraphSubscriptionTier:
           priority_support (bool): Whether priority support is included
           api_rate_multiplier (float): API rate multiplier
           backend (str): Database backend (kuzu or neo4j)
-          max_queries_per_hour (Union[None, Unset, int]): Maximum queries per hour
-          max_subgraphs (Union[Unset, int]): Maximum subgraphs supported Default: 0.
-          instance_type (Union[None, Unset, str]): Instance type
+          max_queries_per_hour (int | None | Unset): Maximum queries per hour
+          max_subgraphs (int | Unset): Maximum subgraphs supported Default: 0.
+          instance_type (None | str | Unset): Instance type
   """
 
   name: str
@@ -48,9 +50,9 @@ class GraphSubscriptionTier:
   priority_support: bool
   api_rate_multiplier: float
   backend: str
-  max_queries_per_hour: Union[None, Unset, int] = UNSET
-  max_subgraphs: Union[Unset, int] = 0
-  instance_type: Union[None, Unset, str] = UNSET
+  max_queries_per_hour: int | None | Unset = UNSET
+  max_subgraphs: int | Unset = 0
+  instance_type: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -80,7 +82,7 @@ class GraphSubscriptionTier:
 
     backend = self.backend
 
-    max_queries_per_hour: Union[None, Unset, int]
+    max_queries_per_hour: int | None | Unset
     if isinstance(self.max_queries_per_hour, Unset):
       max_queries_per_hour = UNSET
     else:
@@ -88,7 +90,7 @@ class GraphSubscriptionTier:
 
     max_subgraphs = self.max_subgraphs
 
-    instance_type: Union[None, Unset, str]
+    instance_type: None | str | Unset
     if isinstance(self.instance_type, Unset):
       instance_type = UNSET
     else:
@@ -151,12 +153,12 @@ class GraphSubscriptionTier:
 
     backend = d.pop("backend")
 
-    def _parse_max_queries_per_hour(data: object) -> Union[None, Unset, int]:
+    def _parse_max_queries_per_hour(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     max_queries_per_hour = _parse_max_queries_per_hour(
       d.pop("max_queries_per_hour", UNSET)
@@ -164,12 +166,12 @@ class GraphSubscriptionTier:
 
     max_subgraphs = d.pop("max_subgraphs", UNSET)
 
-    def _parse_instance_type(data: object) -> Union[None, Unset, str]:
+    def _parse_instance_type(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     instance_type = _parse_instance_type(d.pop("instance_type", UNSET))
 

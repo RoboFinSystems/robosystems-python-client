@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 
@@ -12,13 +14,13 @@ T = TypeVar("T", bound="BulkIngestRequest")
 class BulkIngestRequest:
   """
   Attributes:
-      ignore_errors (Union[Unset, bool]): Continue ingestion on row errors Default: True.
-      rebuild (Union[Unset, bool]): Rebuild graph database from scratch before ingestion. Safe operation - staged data
-          is the source of truth, graph can always be regenerated. Default: False.
+      ignore_errors (bool | Unset): Continue ingestion on row errors Default: True.
+      rebuild (bool | Unset): Rebuild graph database from scratch before ingestion. Safe operation - staged data is
+          the source of truth, graph can always be regenerated. Default: False.
   """
 
-  ignore_errors: Union[Unset, bool] = True
-  rebuild: Union[Unset, bool] = False
+  ignore_errors: bool | Unset = True
+  rebuild: bool | Unset = False
 
   def to_dict(self) -> dict[str, Any]:
     ignore_errors = self.ignore_errors
