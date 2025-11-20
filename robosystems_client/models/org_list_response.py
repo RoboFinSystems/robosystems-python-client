@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,11 +18,11 @@ class OrgListResponse:
   """List of organizations response.
 
   Attributes:
-      orgs (list['OrgResponse']):
+      orgs (list[OrgResponse]):
       total (int):
   """
 
-  orgs: list["OrgResponse"]
+  orgs: list[OrgResponse]
   total: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

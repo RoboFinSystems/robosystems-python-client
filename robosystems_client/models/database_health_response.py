@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -21,10 +23,10 @@ class DatabaseHealthResponse:
       query_count_24h (int): Number of queries executed in last 24 hours
       avg_query_time_ms (float): Average query execution time in milliseconds
       error_rate_24h (float): Error rate in last 24 hours (percentage)
-      last_query_time (Union[None, Unset, str]): Timestamp of last query execution
-      memory_usage_mb (Union[None, Unset, float]): Memory usage in MB
-      storage_usage_mb (Union[None, Unset, float]): Storage usage in MB
-      alerts (Union[Unset, list[str]]): Active alerts or warnings
+      last_query_time (None | str | Unset): Timestamp of last query execution
+      memory_usage_mb (float | None | Unset): Memory usage in MB
+      storage_usage_mb (float | None | Unset): Storage usage in MB
+      alerts (list[str] | Unset): Active alerts or warnings
   """
 
   graph_id: str
@@ -34,10 +36,10 @@ class DatabaseHealthResponse:
   query_count_24h: int
   avg_query_time_ms: float
   error_rate_24h: float
-  last_query_time: Union[None, Unset, str] = UNSET
-  memory_usage_mb: Union[None, Unset, float] = UNSET
-  storage_usage_mb: Union[None, Unset, float] = UNSET
-  alerts: Union[Unset, list[str]] = UNSET
+  last_query_time: None | str | Unset = UNSET
+  memory_usage_mb: float | None | Unset = UNSET
+  storage_usage_mb: float | None | Unset = UNSET
+  alerts: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -55,25 +57,25 @@ class DatabaseHealthResponse:
 
     error_rate_24h = self.error_rate_24h
 
-    last_query_time: Union[None, Unset, str]
+    last_query_time: None | str | Unset
     if isinstance(self.last_query_time, Unset):
       last_query_time = UNSET
     else:
       last_query_time = self.last_query_time
 
-    memory_usage_mb: Union[None, Unset, float]
+    memory_usage_mb: float | None | Unset
     if isinstance(self.memory_usage_mb, Unset):
       memory_usage_mb = UNSET
     else:
       memory_usage_mb = self.memory_usage_mb
 
-    storage_usage_mb: Union[None, Unset, float]
+    storage_usage_mb: float | None | Unset
     if isinstance(self.storage_usage_mb, Unset):
       storage_usage_mb = UNSET
     else:
       storage_usage_mb = self.storage_usage_mb
 
-    alerts: Union[Unset, list[str]] = UNSET
+    alerts: list[str] | Unset = UNSET
     if not isinstance(self.alerts, Unset):
       alerts = self.alerts
 
@@ -118,30 +120,30 @@ class DatabaseHealthResponse:
 
     error_rate_24h = d.pop("error_rate_24h")
 
-    def _parse_last_query_time(data: object) -> Union[None, Unset, str]:
+    def _parse_last_query_time(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     last_query_time = _parse_last_query_time(d.pop("last_query_time", UNSET))
 
-    def _parse_memory_usage_mb(data: object) -> Union[None, Unset, float]:
+    def _parse_memory_usage_mb(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     memory_usage_mb = _parse_memory_usage_mb(d.pop("memory_usage_mb", UNSET))
 
-    def _parse_storage_usage_mb(data: object) -> Union[None, Unset, float]:
+    def _parse_storage_usage_mb(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     storage_usage_mb = _parse_storage_usage_mb(d.pop("storage_usage_mb", UNSET))
 

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -13,7 +13,7 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
   *,
-  auth_token: Union[None, Unset, str] = UNSET,
+  auth_token: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   cookies = {}
   if auth_token is not UNSET:
@@ -29,8 +29,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorResponse | HTTPValidationError | SSOTokenResponse | None:
   if response.status_code == 200:
     response_200 = SSOTokenResponse.from_dict(response.json())
 
@@ -53,8 +53,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -65,22 +65,22 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: Union[AuthenticatedClient, Client],
-  auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
+  client: AuthenticatedClient | Client,
+  auth_token: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]:
   """Generate SSO Token
 
    Generate a temporary SSO token for cross-app authentication.
 
   Args:
-      auth_token (Union[None, Unset, str]):
+      auth_token (None | str | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]
+      Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]
   """
 
   kwargs = _get_kwargs(
@@ -96,22 +96,22 @@ def sync_detailed(
 
 def sync(
   *,
-  client: Union[AuthenticatedClient, Client],
-  auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
+  client: AuthenticatedClient | Client,
+  auth_token: None | str | Unset = UNSET,
+) -> ErrorResponse | HTTPValidationError | SSOTokenResponse | None:
   """Generate SSO Token
 
    Generate a temporary SSO token for cross-app authentication.
 
   Args:
-      auth_token (Union[None, Unset, str]):
+      auth_token (None | str | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]
+      ErrorResponse | HTTPValidationError | SSOTokenResponse
   """
 
   return sync_detailed(
@@ -122,22 +122,22 @@ def sync(
 
 async def asyncio_detailed(
   *,
-  client: Union[AuthenticatedClient, Client],
-  auth_token: Union[None, Unset, str] = UNSET,
-) -> Response[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
+  client: AuthenticatedClient | Client,
+  auth_token: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]:
   """Generate SSO Token
 
    Generate a temporary SSO token for cross-app authentication.
 
   Args:
-      auth_token (Union[None, Unset, str]):
+      auth_token (None | str | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]
+      Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]
   """
 
   kwargs = _get_kwargs(
@@ -151,22 +151,22 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: Union[AuthenticatedClient, Client],
-  auth_token: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]]:
+  client: AuthenticatedClient | Client,
+  auth_token: None | str | Unset = UNSET,
+) -> ErrorResponse | HTTPValidationError | SSOTokenResponse | None:
   """Generate SSO Token
 
    Generate a temporary SSO token for cross-app authentication.
 
   Args:
-      auth_token (Union[None, Unset, str]):
+      auth_token (None | str | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, SSOTokenResponse]
+      ErrorResponse | HTTPValidationError | SSOTokenResponse
   """
 
   return (

@@ -40,8 +40,6 @@ from .backup_stats_response_backup_formats import BackupStatsResponseBackupForma
 from .batch_agent_request import BatchAgentRequest
 from .batch_agent_response import BatchAgentResponse
 from .billing_customer import BillingCustomer
-from .bulk_ingest_request import BulkIngestRequest
-from .bulk_ingest_response import BulkIngestResponse
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -69,6 +67,7 @@ from .create_org_request import CreateOrgRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
 from .create_subgraph_request import CreateSubgraphRequest
 from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
+from .create_view_request import CreateViewRequest
 from .credit_limits import CreditLimits
 from .credit_summary import CreditSummary
 from .credit_summary_operation_breakdown import CreditSummaryOperationBreakdown
@@ -96,6 +95,7 @@ from .enhanced_credit_transaction_response import EnhancedCreditTransactionRespo
 from .enhanced_credit_transaction_response_metadata import (
   EnhancedCreditTransactionResponseMetadata,
 )
+from .enhanced_file_status_layers import EnhancedFileStatusLayers
 from .error_response import ErrorResponse
 from .exchange_token_request import ExchangeTokenRequest
 from .exchange_token_request_metadata_type_0 import ExchangeTokenRequestMetadataType0
@@ -103,7 +103,9 @@ from .execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
 from .execute_cypher_query_response_200_data_item import (
   ExecuteCypherQueryResponse200DataItem,
 )
+from .fact_detail import FactDetail
 from .file_info import FileInfo
+from .file_layer_status import FileLayerStatus
 from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
 from .file_upload_response import FileUploadResponse
@@ -158,6 +160,9 @@ from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
+from .materialize_request import MaterializeRequest
+from .materialize_response import MaterializeResponse
+from .materialize_status_response import MaterializeStatusResponse
 from .mcp_tool_call import MCPToolCall
 from .mcp_tool_call_arguments import MCPToolCallArguments
 from .mcp_tools_response import MCPToolsResponse
@@ -220,6 +225,8 @@ from .resend_verification_email_response_resendverificationemail import (
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
+from .save_view_request import SaveViewRequest
+from .save_view_response import SaveViewResponse
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
 from .schema_export_response_schema_definition_type_0 import (
@@ -250,6 +257,7 @@ from .storage_info_overage_pricing import StorageInfoOveragePricing
 from .storage_limit_response import StorageLimitResponse
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
+from .structure_detail import StructureDetail
 from .subgraph_quota_response import SubgraphQuotaResponse
 from .subgraph_response import SubgraphResponse
 from .subgraph_response_metadata_type_0 import SubgraphResponseMetadataType0
@@ -265,7 +273,6 @@ from .sync_connection_response_syncconnection import (
   SyncConnectionResponseSyncconnection,
 )
 from .table_info import TableInfo
-from .table_ingest_result import TableIngestResult
 from .table_list_response import TableListResponse
 from .table_query_request import TableQueryRequest
 from .table_query_response import TableQueryResponse
@@ -273,9 +280,7 @@ from .token_pricing import TokenPricing
 from .transaction_summary_response import TransactionSummaryResponse
 from .upcoming_invoice import UpcomingInvoice
 from .update_api_key_request import UpdateAPIKeyRequest
-from .update_file_status_response_updatefilestatus import (
-  UpdateFileStatusResponseUpdatefilestatus,
-)
+from .update_file_response_updatefile import UpdateFileResponseUpdatefile
 from .update_member_role_request import UpdateMemberRoleRequest
 from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
@@ -284,6 +289,12 @@ from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
 from .validation_error import ValidationError
+from .view_axis_config import ViewAxisConfig
+from .view_axis_config_element_labels_type_0 import ViewAxisConfigElementLabelsType0
+from .view_axis_config_member_labels_type_0 import ViewAxisConfigMemberLabelsType0
+from .view_config import ViewConfig
+from .view_source import ViewSource
+from .view_source_type import ViewSourceType
 
 __all__ = (
   "AccountInfo",
@@ -322,8 +333,6 @@ __all__ = (
   "BatchAgentRequest",
   "BatchAgentResponse",
   "BillingCustomer",
-  "BulkIngestRequest",
-  "BulkIngestResponse",
   "CancelOperationResponseCanceloperation",
   "CheckCreditBalanceResponseCheckcreditbalance",
   "CheckoutResponse",
@@ -347,6 +356,7 @@ __all__ = (
   "CreateRepositorySubscriptionRequest",
   "CreateSubgraphRequest",
   "CreateSubgraphRequestMetadataType0",
+  "CreateViewRequest",
   "CreditLimits",
   "CreditSummary",
   "CreditSummaryOperationBreakdown",
@@ -368,12 +378,15 @@ __all__ = (
   "EmailVerificationRequest",
   "EnhancedCreditTransactionResponse",
   "EnhancedCreditTransactionResponseMetadata",
+  "EnhancedFileStatusLayers",
   "ErrorResponse",
   "ExchangeTokenRequest",
   "ExchangeTokenRequestMetadataType0",
   "ExecuteCypherQueryResponse200",
   "ExecuteCypherQueryResponse200DataItem",
+  "FactDetail",
   "FileInfo",
+  "FileLayerStatus",
   "FileStatusUpdate",
   "FileUploadRequest",
   "FileUploadResponse",
@@ -418,6 +431,9 @@ __all__ = (
   "ListTableFilesResponse",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
+  "MaterializeRequest",
+  "MaterializeResponse",
+  "MaterializeStatusResponse",
   "MCPToolCall",
   "MCPToolCallArguments",
   "MCPToolsResponse",
@@ -470,6 +486,8 @@ __all__ = (
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
   "ResponseMode",
+  "SaveViewRequest",
+  "SaveViewResponse",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",
@@ -494,6 +512,7 @@ __all__ = (
   "StorageLimitResponse",
   "StorageLimits",
   "StorageSummary",
+  "StructureDetail",
   "SubgraphQuotaResponse",
   "SubgraphResponse",
   "SubgraphResponseMetadataType0",
@@ -505,7 +524,6 @@ __all__ = (
   "SyncConnectionRequestSyncOptionsType0",
   "SyncConnectionResponseSyncconnection",
   "TableInfo",
-  "TableIngestResult",
   "TableListResponse",
   "TableQueryRequest",
   "TableQueryResponse",
@@ -513,7 +531,7 @@ __all__ = (
   "TransactionSummaryResponse",
   "UpcomingInvoice",
   "UpdateAPIKeyRequest",
-  "UpdateFileStatusResponseUpdatefilestatus",
+  "UpdateFileResponseUpdatefile",
   "UpdateMemberRoleRequest",
   "UpdateOrgRequest",
   "UpdatePasswordRequest",
@@ -522,4 +540,10 @@ __all__ = (
   "UserGraphsResponse",
   "UserResponse",
   "ValidationError",
+  "ViewAxisConfig",
+  "ViewAxisConfigElementLabelsType0",
+  "ViewAxisConfigMemberLabelsType0",
+  "ViewConfig",
+  "ViewSource",
+  "ViewSourceType",
 )

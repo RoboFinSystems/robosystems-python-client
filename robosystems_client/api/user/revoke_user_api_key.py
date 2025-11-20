@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -23,8 +23,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   if response.status_code == 200:
     response_200 = SuccessResponse.from_dict(response.json())
 
@@ -52,8 +52,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -66,7 +66,7 @@ def sync_detailed(
   api_key_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
+) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Revoke API Key
 
    Revoke (deactivate) an API key.
@@ -79,7 +79,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]
+      Response[ErrorResponse | HTTPValidationError | SuccessResponse]
   """
 
   kwargs = _get_kwargs(
@@ -97,7 +97,7 @@ def sync(
   api_key_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
+) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Revoke API Key
 
    Revoke (deactivate) an API key.
@@ -110,7 +110,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, SuccessResponse]
+      ErrorResponse | HTTPValidationError | SuccessResponse
   """
 
   return sync_detailed(
@@ -123,7 +123,7 @@ async def asyncio_detailed(
   api_key_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
+) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Revoke API Key
 
    Revoke (deactivate) an API key.
@@ -136,7 +136,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]
+      Response[ErrorResponse | HTTPValidationError | SuccessResponse]
   """
 
   kwargs = _get_kwargs(
@@ -152,7 +152,7 @@ async def asyncio(
   api_key_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SuccessResponse]]:
+) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Revoke API Key
 
    Revoke (deactivate) an API key.
@@ -165,7 +165,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, SuccessResponse]
+      ErrorResponse | HTTPValidationError | SuccessResponse
   """
 
   return (

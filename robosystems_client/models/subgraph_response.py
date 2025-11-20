@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -30,12 +32,12 @@ class SubgraphResponse:
       status (str): Current status of the subgraph
       created_at (datetime.datetime): When the subgraph was created
       updated_at (datetime.datetime): When the subgraph was last updated
-      description (Union[None, Unset, str]): Description of the subgraph's purpose
-      size_mb (Union[None, Unset, float]): Size of the subgraph database in megabytes
-      node_count (Union[None, Unset, int]): Number of nodes in the subgraph
-      edge_count (Union[None, Unset, int]): Number of edges in the subgraph
-      last_accessed (Union[None, Unset, datetime.datetime]): When the subgraph was last accessed
-      metadata (Union['SubgraphResponseMetadataType0', None, Unset]): Additional metadata for the subgraph
+      description (None | str | Unset): Description of the subgraph's purpose
+      size_mb (float | None | Unset): Size of the subgraph database in megabytes
+      node_count (int | None | Unset): Number of nodes in the subgraph
+      edge_count (int | None | Unset): Number of edges in the subgraph
+      last_accessed (datetime.datetime | None | Unset): When the subgraph was last accessed
+      metadata (None | SubgraphResponseMetadataType0 | Unset): Additional metadata for the subgraph
   """
 
   graph_id: str
@@ -47,12 +49,12 @@ class SubgraphResponse:
   status: str
   created_at: datetime.datetime
   updated_at: datetime.datetime
-  description: Union[None, Unset, str] = UNSET
-  size_mb: Union[None, Unset, float] = UNSET
-  node_count: Union[None, Unset, int] = UNSET
-  edge_count: Union[None, Unset, int] = UNSET
-  last_accessed: Union[None, Unset, datetime.datetime] = UNSET
-  metadata: Union["SubgraphResponseMetadataType0", None, Unset] = UNSET
+  description: None | str | Unset = UNSET
+  size_mb: float | None | Unset = UNSET
+  node_count: int | None | Unset = UNSET
+  edge_count: int | None | Unset = UNSET
+  last_accessed: datetime.datetime | None | Unset = UNSET
+  metadata: None | SubgraphResponseMetadataType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -76,31 +78,31 @@ class SubgraphResponse:
 
     updated_at = self.updated_at.isoformat()
 
-    description: Union[None, Unset, str]
+    description: None | str | Unset
     if isinstance(self.description, Unset):
       description = UNSET
     else:
       description = self.description
 
-    size_mb: Union[None, Unset, float]
+    size_mb: float | None | Unset
     if isinstance(self.size_mb, Unset):
       size_mb = UNSET
     else:
       size_mb = self.size_mb
 
-    node_count: Union[None, Unset, int]
+    node_count: int | None | Unset
     if isinstance(self.node_count, Unset):
       node_count = UNSET
     else:
       node_count = self.node_count
 
-    edge_count: Union[None, Unset, int]
+    edge_count: int | None | Unset
     if isinstance(self.edge_count, Unset):
       edge_count = UNSET
     else:
       edge_count = self.edge_count
 
-    last_accessed: Union[None, Unset, str]
+    last_accessed: None | str | Unset
     if isinstance(self.last_accessed, Unset):
       last_accessed = UNSET
     elif isinstance(self.last_accessed, datetime.datetime):
@@ -108,7 +110,7 @@ class SubgraphResponse:
     else:
       last_accessed = self.last_accessed
 
-    metadata: Union[None, Unset, dict[str, Any]]
+    metadata: dict[str, Any] | None | Unset
     if isinstance(self.metadata, Unset):
       metadata = UNSET
     elif isinstance(self.metadata, SubgraphResponseMetadataType0):
@@ -169,43 +171,43 @@ class SubgraphResponse:
 
     updated_at = isoparse(d.pop("updated_at"))
 
-    def _parse_description(data: object) -> Union[None, Unset, str]:
+    def _parse_description(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
 
-    def _parse_size_mb(data: object) -> Union[None, Unset, float]:
+    def _parse_size_mb(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     size_mb = _parse_size_mb(d.pop("size_mb", UNSET))
 
-    def _parse_node_count(data: object) -> Union[None, Unset, int]:
+    def _parse_node_count(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     node_count = _parse_node_count(d.pop("node_count", UNSET))
 
-    def _parse_edge_count(data: object) -> Union[None, Unset, int]:
+    def _parse_edge_count(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     edge_count = _parse_edge_count(d.pop("edge_count", UNSET))
 
-    def _parse_last_accessed(data: object) -> Union[None, Unset, datetime.datetime]:
+    def _parse_last_accessed(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -216,15 +218,13 @@ class SubgraphResponse:
         last_accessed_type_0 = isoparse(data)
 
         return last_accessed_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, datetime.datetime], data)
+      return cast(datetime.datetime | None | Unset, data)
 
     last_accessed = _parse_last_accessed(d.pop("last_accessed", UNSET))
 
-    def _parse_metadata(
-      data: object,
-    ) -> Union["SubgraphResponseMetadataType0", None, Unset]:
+    def _parse_metadata(data: object) -> None | SubgraphResponseMetadataType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -235,9 +235,9 @@ class SubgraphResponse:
         metadata_type_0 = SubgraphResponseMetadataType0.from_dict(data)
 
         return metadata_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SubgraphResponseMetadataType0", None, Unset], data)
+      return cast(None | SubgraphResponseMetadataType0 | Unset, data)
 
     metadata = _parse_metadata(d.pop("metadata", UNSET))
 

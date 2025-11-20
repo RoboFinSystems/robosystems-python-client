@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -17,15 +19,15 @@ class InvoiceLineItem:
       description (str): Line item description
       amount (int): Amount in cents
       quantity (int): Quantity
-      period_start (Union[None, Unset, str]): Billing period start
-      period_end (Union[None, Unset, str]): Billing period end
+      period_start (None | str | Unset): Billing period start
+      period_end (None | str | Unset): Billing period end
   """
 
   description: str
   amount: int
   quantity: int
-  period_start: Union[None, Unset, str] = UNSET
-  period_end: Union[None, Unset, str] = UNSET
+  period_start: None | str | Unset = UNSET
+  period_end: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -35,13 +37,13 @@ class InvoiceLineItem:
 
     quantity = self.quantity
 
-    period_start: Union[None, Unset, str]
+    period_start: None | str | Unset
     if isinstance(self.period_start, Unset):
       period_start = UNSET
     else:
       period_start = self.period_start
 
-    period_end: Union[None, Unset, str]
+    period_end: None | str | Unset
     if isinstance(self.period_end, Unset):
       period_end = UNSET
     else:
@@ -72,21 +74,21 @@ class InvoiceLineItem:
 
     quantity = d.pop("quantity")
 
-    def _parse_period_start(data: object) -> Union[None, Unset, str]:
+    def _parse_period_start(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     period_start = _parse_period_start(d.pop("period_start", UNSET))
 
-    def _parse_period_end(data: object) -> Union[None, Unset, str]:
+    def _parse_period_end(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     period_end = _parse_period_end(d.pop("period_end", UNSET))
 

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -22,8 +22,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, PortalSessionResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> HTTPValidationError | PortalSessionResponse | None:
   if response.status_code == 200:
     response_200 = PortalSessionResponse.from_dict(response.json())
 
@@ -41,8 +41,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, PortalSessionResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[HTTPValidationError | PortalSessionResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -55,7 +55,7 @@ def sync_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[HTTPValidationError, PortalSessionResponse]]:
+) -> Response[HTTPValidationError | PortalSessionResponse]:
   """Create Customer Portal Session
 
    Create a Stripe Customer Portal session for managing payment methods.
@@ -81,7 +81,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, PortalSessionResponse]]
+      Response[HTTPValidationError | PortalSessionResponse]
   """
 
   kwargs = _get_kwargs(
@@ -99,7 +99,7 @@ def sync(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[HTTPValidationError, PortalSessionResponse]]:
+) -> HTTPValidationError | PortalSessionResponse | None:
   """Create Customer Portal Session
 
    Create a Stripe Customer Portal session for managing payment methods.
@@ -125,7 +125,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, PortalSessionResponse]
+      HTTPValidationError | PortalSessionResponse
   """
 
   return sync_detailed(
@@ -138,7 +138,7 @@ async def asyncio_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[HTTPValidationError, PortalSessionResponse]]:
+) -> Response[HTTPValidationError | PortalSessionResponse]:
   """Create Customer Portal Session
 
    Create a Stripe Customer Portal session for managing payment methods.
@@ -164,7 +164,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, PortalSessionResponse]]
+      Response[HTTPValidationError | PortalSessionResponse]
   """
 
   kwargs = _get_kwargs(
@@ -180,7 +180,7 @@ async def asyncio(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[HTTPValidationError, PortalSessionResponse]]:
+) -> HTTPValidationError | PortalSessionResponse | None:
   """Create Customer Portal Session
 
    Create a Stripe Customer Portal session for managing payment methods.
@@ -206,7 +206,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, PortalSessionResponse]
+      HTTPValidationError | PortalSessionResponse
   """
 
   return (

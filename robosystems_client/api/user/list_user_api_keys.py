@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -19,8 +19,8 @@ def _get_kwargs() -> dict[str, Any]:
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[APIKeysResponse]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> APIKeysResponse | None:
   if response.status_code == 200:
     response_200 = APIKeysResponse.from_dict(response.json())
 
@@ -33,7 +33,7 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+  *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> Response[APIKeysResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
@@ -71,7 +71,7 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient,
-) -> Optional[APIKeysResponse]:
+) -> APIKeysResponse | None:
   """List API Keys
 
    Get all API keys for the current user.
@@ -115,7 +115,7 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient,
-) -> Optional[APIKeysResponse]:
+) -> APIKeysResponse | None:
   """List API Keys
 
    Get all API keys for the current user.

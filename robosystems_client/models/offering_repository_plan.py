@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -26,7 +28,7 @@ class OfferingRepositoryPlan:
       monthly_credits (int): Monthly credit allocation
       access_level (str): Access level
       features (list[str]): List of features
-      rate_limits (Union['OfferingRepositoryPlanRateLimitsType0', None, Unset]): Rate limits for this plan
+      rate_limits (None | OfferingRepositoryPlanRateLimitsType0 | Unset): Rate limits for this plan
   """
 
   plan: str
@@ -35,7 +37,7 @@ class OfferingRepositoryPlan:
   monthly_credits: int
   access_level: str
   features: list[str]
-  rate_limits: Union["OfferingRepositoryPlanRateLimitsType0", None, Unset] = UNSET
+  rate_limits: None | OfferingRepositoryPlanRateLimitsType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -55,7 +57,7 @@ class OfferingRepositoryPlan:
 
     features = self.features
 
-    rate_limits: Union[None, Unset, dict[str, Any]]
+    rate_limits: dict[str, Any] | None | Unset
     if isinstance(self.rate_limits, Unset):
       rate_limits = UNSET
     elif isinstance(self.rate_limits, OfferingRepositoryPlanRateLimitsType0):
@@ -101,7 +103,7 @@ class OfferingRepositoryPlan:
 
     def _parse_rate_limits(
       data: object,
-    ) -> Union["OfferingRepositoryPlanRateLimitsType0", None, Unset]:
+    ) -> None | OfferingRepositoryPlanRateLimitsType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -112,9 +114,9 @@ class OfferingRepositoryPlan:
         rate_limits_type_0 = OfferingRepositoryPlanRateLimitsType0.from_dict(data)
 
         return rate_limits_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["OfferingRepositoryPlanRateLimitsType0", None, Unset], data)
+      return cast(None | OfferingRepositoryPlanRateLimitsType0 | Unset, data)
 
     rate_limits = _parse_rate_limits(d.pop("rate_limits", UNSET))
 

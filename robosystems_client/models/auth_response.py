@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -21,19 +23,19 @@ class AuthResponse:
   Attributes:
       user (AuthResponseUser): User information
       message (str): Success message
-      org (Union['AuthResponseOrgType0', None, Unset]): Organization information (personal org created automatically
-          on registration)
-      token (Union[None, Unset, str]): JWT authentication token (optional for cookie-based auth)
-      expires_in (Union[None, Unset, int]): Token expiry time in seconds from now
-      refresh_threshold (Union[None, Unset, int]): Recommended refresh threshold in seconds before expiry
+      org (AuthResponseOrgType0 | None | Unset): Organization information (personal org created automatically on
+          registration)
+      token (None | str | Unset): JWT authentication token (optional for cookie-based auth)
+      expires_in (int | None | Unset): Token expiry time in seconds from now
+      refresh_threshold (int | None | Unset): Recommended refresh threshold in seconds before expiry
   """
 
-  user: "AuthResponseUser"
+  user: AuthResponseUser
   message: str
-  org: Union["AuthResponseOrgType0", None, Unset] = UNSET
-  token: Union[None, Unset, str] = UNSET
-  expires_in: Union[None, Unset, int] = UNSET
-  refresh_threshold: Union[None, Unset, int] = UNSET
+  org: AuthResponseOrgType0 | None | Unset = UNSET
+  token: None | str | Unset = UNSET
+  expires_in: int | None | Unset = UNSET
+  refresh_threshold: int | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -43,7 +45,7 @@ class AuthResponse:
 
     message = self.message
 
-    org: Union[None, Unset, dict[str, Any]]
+    org: dict[str, Any] | None | Unset
     if isinstance(self.org, Unset):
       org = UNSET
     elif isinstance(self.org, AuthResponseOrgType0):
@@ -51,19 +53,19 @@ class AuthResponse:
     else:
       org = self.org
 
-    token: Union[None, Unset, str]
+    token: None | str | Unset
     if isinstance(self.token, Unset):
       token = UNSET
     else:
       token = self.token
 
-    expires_in: Union[None, Unset, int]
+    expires_in: int | None | Unset
     if isinstance(self.expires_in, Unset):
       expires_in = UNSET
     else:
       expires_in = self.expires_in
 
-    refresh_threshold: Union[None, Unset, int]
+    refresh_threshold: int | None | Unset
     if isinstance(self.refresh_threshold, Unset):
       refresh_threshold = UNSET
     else:
@@ -98,7 +100,7 @@ class AuthResponse:
 
     message = d.pop("message")
 
-    def _parse_org(data: object) -> Union["AuthResponseOrgType0", None, Unset]:
+    def _parse_org(data: object) -> AuthResponseOrgType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -109,36 +111,36 @@ class AuthResponse:
         org_type_0 = AuthResponseOrgType0.from_dict(data)
 
         return org_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["AuthResponseOrgType0", None, Unset], data)
+      return cast(AuthResponseOrgType0 | None | Unset, data)
 
     org = _parse_org(d.pop("org", UNSET))
 
-    def _parse_token(data: object) -> Union[None, Unset, str]:
+    def _parse_token(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     token = _parse_token(d.pop("token", UNSET))
 
-    def _parse_expires_in(data: object) -> Union[None, Unset, int]:
+    def _parse_expires_in(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     expires_in = _parse_expires_in(d.pop("expires_in", UNSET))
 
-    def _parse_refresh_threshold(data: object) -> Union[None, Unset, int]:
+    def _parse_refresh_threshold(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     refresh_threshold = _parse_refresh_threshold(d.pop("refresh_threshold", UNSET))
 

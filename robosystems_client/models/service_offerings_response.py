@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -34,10 +36,10 @@ class ServiceOfferingsResponse:
   """
 
   billing_enabled: bool
-  graph_subscriptions: "GraphSubscriptions"
-  repository_subscriptions: "RepositorySubscriptions"
-  operation_costs: "OperationCosts"
-  summary: "ServiceOfferingSummary"
+  graph_subscriptions: GraphSubscriptions
+  repository_subscriptions: RepositorySubscriptions
+  operation_costs: OperationCosts
+  summary: ServiceOfferingSummary
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

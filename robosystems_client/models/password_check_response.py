@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
@@ -31,7 +33,7 @@ class PasswordCheckResponse:
   score: int
   errors: list[str]
   suggestions: list[str]
-  character_types: "PasswordCheckResponseCharacterTypes"
+  character_types: PasswordCheckResponseCharacterTypes
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

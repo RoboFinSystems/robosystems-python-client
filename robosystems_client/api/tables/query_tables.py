@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -33,8 +33,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | ErrorResponse | HTTPValidationError | TableQueryResponse | None:
   if response.status_code == 200:
     response_200 = TableQueryResponse.from_dict(response.json())
 
@@ -79,8 +79,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -94,7 +94,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]:
   r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
@@ -168,7 +168,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]
+      Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]
   """
 
   kwargs = _get_kwargs(
@@ -188,7 +188,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+) -> Any | ErrorResponse | HTTPValidationError | TableQueryResponse | None:
   r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
@@ -262,7 +262,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]
+      Any | ErrorResponse | HTTPValidationError | TableQueryResponse
   """
 
   return sync_detailed(
@@ -277,7 +277,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-) -> Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]:
   r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
@@ -351,7 +351,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]
+      Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]
   """
 
   kwargs = _get_kwargs(
@@ -369,7 +369,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: TableQueryRequest,
-) -> Optional[Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]]:
+) -> Any | ErrorResponse | HTTPValidationError | TableQueryResponse | None:
   r"""Query Staging Tables with SQL
 
    Execute SQL queries on DuckDB staging tables for data inspection and validation.
@@ -443,7 +443,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, ErrorResponse, HTTPValidationError, TableQueryResponse]
+      Any | ErrorResponse | HTTPValidationError | TableQueryResponse
   """
 
   return (

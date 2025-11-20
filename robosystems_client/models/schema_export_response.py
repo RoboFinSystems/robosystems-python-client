@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -24,19 +26,19 @@ class SchemaExportResponse:
 
   Attributes:
       graph_id (str): Graph ID
-      schema_definition (Union['SchemaExportResponseSchemaDefinitionType0', str]): Exported schema definition (format
-          depends on 'format' parameter)
+      schema_definition (SchemaExportResponseSchemaDefinitionType0 | str): Exported schema definition (format depends
+          on 'format' parameter)
       format_ (str): Export format used
       exported_at (str): Export timestamp
-      data_stats (Union['SchemaExportResponseDataStatsType0', None, Unset]): Data statistics if requested (only when
+      data_stats (None | SchemaExportResponseDataStatsType0 | Unset): Data statistics if requested (only when
           include_data_stats=true)
   """
 
   graph_id: str
-  schema_definition: Union["SchemaExportResponseSchemaDefinitionType0", str]
+  schema_definition: SchemaExportResponseSchemaDefinitionType0 | str
   format_: str
   exported_at: str
-  data_stats: Union["SchemaExportResponseDataStatsType0", None, Unset] = UNSET
+  data_stats: None | SchemaExportResponseDataStatsType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -49,7 +51,7 @@ class SchemaExportResponse:
 
     graph_id = self.graph_id
 
-    schema_definition: Union[dict[str, Any], str]
+    schema_definition: dict[str, Any] | str
     if isinstance(self.schema_definition, SchemaExportResponseSchemaDefinitionType0):
       schema_definition = self.schema_definition.to_dict()
     else:
@@ -59,7 +61,7 @@ class SchemaExportResponse:
 
     exported_at = self.exported_at
 
-    data_stats: Union[None, Unset, dict[str, Any]]
+    data_stats: dict[str, Any] | None | Unset
     if isinstance(self.data_stats, Unset):
       data_stats = UNSET
     elif isinstance(self.data_stats, SchemaExportResponseDataStatsType0):
@@ -96,7 +98,7 @@ class SchemaExportResponse:
 
     def _parse_schema_definition(
       data: object,
-    ) -> Union["SchemaExportResponseSchemaDefinitionType0", str]:
+    ) -> SchemaExportResponseSchemaDefinitionType0 | str:
       try:
         if not isinstance(data, dict):
           raise TypeError()
@@ -105,9 +107,9 @@ class SchemaExportResponse:
         )
 
         return schema_definition_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SchemaExportResponseSchemaDefinitionType0", str], data)
+      return cast(SchemaExportResponseSchemaDefinitionType0 | str, data)
 
     schema_definition = _parse_schema_definition(d.pop("schema_definition"))
 
@@ -117,7 +119,7 @@ class SchemaExportResponse:
 
     def _parse_data_stats(
       data: object,
-    ) -> Union["SchemaExportResponseDataStatsType0", None, Unset]:
+    ) -> None | SchemaExportResponseDataStatsType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -128,9 +130,9 @@ class SchemaExportResponse:
         data_stats_type_0 = SchemaExportResponseDataStatsType0.from_dict(data)
 
         return data_stats_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SchemaExportResponseDataStatsType0", None, Unset], data)
+      return cast(None | SchemaExportResponseDataStatsType0 | Unset, data)
 
     data_stats = _parse_data_stats(d.pop("data_stats", UNSET))
 

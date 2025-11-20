@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -30,8 +30,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, ResetPasswordValidateResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> HTTPValidationError | ResetPasswordValidateResponse | None:
   if response.status_code == 200:
     response_200 = ResetPasswordValidateResponse.from_dict(response.json())
 
@@ -49,8 +49,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, ResetPasswordValidateResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[HTTPValidationError | ResetPasswordValidateResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -61,9 +61,9 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: Union[AuthenticatedClient, Client],
+  client: AuthenticatedClient | Client,
   token: str,
-) -> Response[Union[HTTPValidationError, ResetPasswordValidateResponse]]:
+) -> Response[HTTPValidationError | ResetPasswordValidateResponse]:
   """Validate Reset Token
 
    Check if a password reset token is valid without consuming it.
@@ -76,7 +76,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, ResetPasswordValidateResponse]]
+      Response[HTTPValidationError | ResetPasswordValidateResponse]
   """
 
   kwargs = _get_kwargs(
@@ -92,9 +92,9 @@ def sync_detailed(
 
 def sync(
   *,
-  client: Union[AuthenticatedClient, Client],
+  client: AuthenticatedClient | Client,
   token: str,
-) -> Optional[Union[HTTPValidationError, ResetPasswordValidateResponse]]:
+) -> HTTPValidationError | ResetPasswordValidateResponse | None:
   """Validate Reset Token
 
    Check if a password reset token is valid without consuming it.
@@ -107,7 +107,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, ResetPasswordValidateResponse]
+      HTTPValidationError | ResetPasswordValidateResponse
   """
 
   return sync_detailed(
@@ -118,9 +118,9 @@ def sync(
 
 async def asyncio_detailed(
   *,
-  client: Union[AuthenticatedClient, Client],
+  client: AuthenticatedClient | Client,
   token: str,
-) -> Response[Union[HTTPValidationError, ResetPasswordValidateResponse]]:
+) -> Response[HTTPValidationError | ResetPasswordValidateResponse]:
   """Validate Reset Token
 
    Check if a password reset token is valid without consuming it.
@@ -133,7 +133,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, ResetPasswordValidateResponse]]
+      Response[HTTPValidationError | ResetPasswordValidateResponse]
   """
 
   kwargs = _get_kwargs(
@@ -147,9 +147,9 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: Union[AuthenticatedClient, Client],
+  client: AuthenticatedClient | Client,
   token: str,
-) -> Optional[Union[HTTPValidationError, ResetPasswordValidateResponse]]:
+) -> HTTPValidationError | ResetPasswordValidateResponse | None:
   """Validate Reset Token
 
    Check if a password reset token is valid without consuming it.
@@ -162,7 +162,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, ResetPasswordValidateResponse]
+      HTTPValidationError | ResetPasswordValidateResponse
   """
 
   return (

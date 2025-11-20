@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -21,7 +23,7 @@ class CreditSummaryResponse:
       consumed_this_month (float):
       transaction_count (int):
       usage_percentage (float):
-      last_allocation_date (Union[None, Unset, str]):
+      last_allocation_date (None | str | Unset):
   """
 
   graph_id: str
@@ -31,7 +33,7 @@ class CreditSummaryResponse:
   consumed_this_month: float
   transaction_count: int
   usage_percentage: float
-  last_allocation_date: Union[None, Unset, str] = UNSET
+  last_allocation_date: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -49,7 +51,7 @@ class CreditSummaryResponse:
 
     usage_percentage = self.usage_percentage
 
-    last_allocation_date: Union[None, Unset, str]
+    last_allocation_date: None | str | Unset
     if isinstance(self.last_allocation_date, Unset):
       last_allocation_date = UNSET
     else:
@@ -90,12 +92,12 @@ class CreditSummaryResponse:
 
     usage_percentage = d.pop("usage_percentage")
 
-    def _parse_last_allocation_date(data: object) -> Union[None, Unset, str]:
+    def _parse_last_allocation_date(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     last_allocation_date = _parse_last_allocation_date(
       d.pop("last_allocation_date", UNSET)

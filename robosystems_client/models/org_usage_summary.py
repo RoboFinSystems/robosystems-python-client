@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -20,9 +22,9 @@ class OrgUsageSummary:
       daily_avg_api_calls (float):
       projected_monthly_credits (float):
       projected_monthly_api_calls (int):
-      credits_limit (Union[None, int]):
-      api_calls_limit (Union[None, int]):
-      storage_limit_gb (Union[None, int]):
+      credits_limit (int | None):
+      api_calls_limit (int | None):
+      storage_limit_gb (int | None):
   """
 
   total_credits_used: float
@@ -33,9 +35,9 @@ class OrgUsageSummary:
   daily_avg_api_calls: float
   projected_monthly_credits: float
   projected_monthly_api_calls: int
-  credits_limit: Union[None, int]
-  api_calls_limit: Union[None, int]
-  storage_limit_gb: Union[None, int]
+  credits_limit: int | None
+  api_calls_limit: int | None
+  storage_limit_gb: int | None
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -55,13 +57,13 @@ class OrgUsageSummary:
 
     projected_monthly_api_calls = self.projected_monthly_api_calls
 
-    credits_limit: Union[None, int]
+    credits_limit: int | None
     credits_limit = self.credits_limit
 
-    api_calls_limit: Union[None, int]
+    api_calls_limit: int | None
     api_calls_limit = self.api_calls_limit
 
-    storage_limit_gb: Union[None, int]
+    storage_limit_gb: int | None
     storage_limit_gb = self.storage_limit_gb
 
     field_dict: dict[str, Any] = {}
@@ -103,24 +105,24 @@ class OrgUsageSummary:
 
     projected_monthly_api_calls = d.pop("projected_monthly_api_calls")
 
-    def _parse_credits_limit(data: object) -> Union[None, int]:
+    def _parse_credits_limit(data: object) -> int | None:
       if data is None:
         return data
-      return cast(Union[None, int], data)
+      return cast(int | None, data)
 
     credits_limit = _parse_credits_limit(d.pop("credits_limit"))
 
-    def _parse_api_calls_limit(data: object) -> Union[None, int]:
+    def _parse_api_calls_limit(data: object) -> int | None:
       if data is None:
         return data
-      return cast(Union[None, int], data)
+      return cast(int | None, data)
 
     api_calls_limit = _parse_api_calls_limit(d.pop("api_calls_limit"))
 
-    def _parse_storage_limit_gb(data: object) -> Union[None, int]:
+    def _parse_storage_limit_gb(data: object) -> int | None:
       if data is None:
         return data
-      return cast(Union[None, int], data)
+      return cast(int | None, data)
 
     storage_limit_gb = _parse_storage_limit_gb(d.pop("storage_limit_gb"))
 

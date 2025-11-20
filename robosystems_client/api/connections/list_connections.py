@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -15,19 +15,19 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  entity_id: Union[None, Unset, str] = UNSET,
-  provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
+  entity_id: None | str | Unset = UNSET,
+  provider: ListConnectionsProviderType0 | None | Unset = UNSET,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
-  json_entity_id: Union[None, Unset, str]
+  json_entity_id: None | str | Unset
   if isinstance(entity_id, Unset):
     json_entity_id = UNSET
   else:
     json_entity_id = entity_id
   params["entity_id"] = json_entity_id
 
-  json_provider: Union[None, Unset, str]
+  json_provider: None | str | Unset
   if isinstance(provider, Unset):
     json_provider = UNSET
   elif isinstance(provider, ListConnectionsProviderType0):
@@ -48,8 +48,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorResponse | HTTPValidationError | list[ConnectionResponse] | None:
   if response.status_code == 200:
     response_200 = []
     _response_200 = response.json()
@@ -82,8 +82,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorResponse | HTTPValidationError | list[ConnectionResponse]]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -96,9 +96,9 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  entity_id: Union[None, Unset, str] = UNSET,
-  provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-) -> Response[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
+  entity_id: None | str | Unset = UNSET,
+  provider: ListConnectionsProviderType0 | None | Unset = UNSET,
+) -> Response[ErrorResponse | HTTPValidationError | list[ConnectionResponse]]:
   """List Connections
 
    List all data connections in the graph.
@@ -118,15 +118,15 @@ def sync_detailed(
 
   Args:
       graph_id (str):
-      entity_id (Union[None, Unset, str]): Filter by entity ID
-      provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
+      entity_id (None | str | Unset): Filter by entity ID
+      provider (ListConnectionsProviderType0 | None | Unset): Filter by provider type
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, list['ConnectionResponse']]]
+      Response[ErrorResponse | HTTPValidationError | list[ConnectionResponse]]
   """
 
   kwargs = _get_kwargs(
@@ -146,9 +146,9 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  entity_id: Union[None, Unset, str] = UNSET,
-  provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
+  entity_id: None | str | Unset = UNSET,
+  provider: ListConnectionsProviderType0 | None | Unset = UNSET,
+) -> ErrorResponse | HTTPValidationError | list[ConnectionResponse] | None:
   """List Connections
 
    List all data connections in the graph.
@@ -168,15 +168,15 @@ def sync(
 
   Args:
       graph_id (str):
-      entity_id (Union[None, Unset, str]): Filter by entity ID
-      provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
+      entity_id (None | str | Unset): Filter by entity ID
+      provider (ListConnectionsProviderType0 | None | Unset): Filter by provider type
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, list['ConnectionResponse']]
+      ErrorResponse | HTTPValidationError | list[ConnectionResponse]
   """
 
   return sync_detailed(
@@ -191,9 +191,9 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  entity_id: Union[None, Unset, str] = UNSET,
-  provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-) -> Response[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
+  entity_id: None | str | Unset = UNSET,
+  provider: ListConnectionsProviderType0 | None | Unset = UNSET,
+) -> Response[ErrorResponse | HTTPValidationError | list[ConnectionResponse]]:
   """List Connections
 
    List all data connections in the graph.
@@ -213,15 +213,15 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str):
-      entity_id (Union[None, Unset, str]): Filter by entity ID
-      provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
+      entity_id (None | str | Unset): Filter by entity ID
+      provider (ListConnectionsProviderType0 | None | Unset): Filter by provider type
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, list['ConnectionResponse']]]
+      Response[ErrorResponse | HTTPValidationError | list[ConnectionResponse]]
   """
 
   kwargs = _get_kwargs(
@@ -239,9 +239,9 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  entity_id: Union[None, Unset, str] = UNSET,
-  provider: Union[ListConnectionsProviderType0, None, Unset] = UNSET,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, list["ConnectionResponse"]]]:
+  entity_id: None | str | Unset = UNSET,
+  provider: ListConnectionsProviderType0 | None | Unset = UNSET,
+) -> ErrorResponse | HTTPValidationError | list[ConnectionResponse] | None:
   """List Connections
 
    List all data connections in the graph.
@@ -261,15 +261,15 @@ async def asyncio(
 
   Args:
       graph_id (str):
-      entity_id (Union[None, Unset, str]): Filter by entity ID
-      provider (Union[ListConnectionsProviderType0, None, Unset]): Filter by provider type
+      entity_id (None | str | Unset): Filter by entity ID
+      provider (ListConnectionsProviderType0 | None | Unset): Filter by provider type
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, list['ConnectionResponse']]
+      ErrorResponse | HTTPValidationError | list[ConnectionResponse]
   """
 
   return (

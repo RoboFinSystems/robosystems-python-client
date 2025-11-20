@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -25,14 +27,14 @@ class GraphTierInfo:
       description (str): Tier description
       backend (str): Database backend (kuzu or neo4j)
       enabled (bool): Whether tier is available
-      max_subgraphs (Union[None, int]): Maximum subgraphs allowed
+      max_subgraphs (int | None): Maximum subgraphs allowed
       storage_limit_gb (int): Storage limit in GB
       monthly_credits (int): Monthly AI credits
       api_rate_multiplier (float): API rate limit multiplier
       features (list[str]): List of tier features
       instance (GraphTierInstance): Instance specifications for a tier.
       limits (GraphTierLimits): Resource limits for a tier.
-      monthly_price (Union[None, Unset, float]): Monthly price in USD
+      monthly_price (float | None | Unset): Monthly price in USD
   """
 
   tier: str
@@ -41,14 +43,14 @@ class GraphTierInfo:
   description: str
   backend: str
   enabled: bool
-  max_subgraphs: Union[None, int]
+  max_subgraphs: int | None
   storage_limit_gb: int
   monthly_credits: int
   api_rate_multiplier: float
   features: list[str]
-  instance: "GraphTierInstance"
-  limits: "GraphTierLimits"
-  monthly_price: Union[None, Unset, float] = UNSET
+  instance: GraphTierInstance
+  limits: GraphTierLimits
+  monthly_price: float | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -64,7 +66,7 @@ class GraphTierInfo:
 
     enabled = self.enabled
 
-    max_subgraphs: Union[None, int]
+    max_subgraphs: int | None
     max_subgraphs = self.max_subgraphs
 
     storage_limit_gb = self.storage_limit_gb
@@ -79,7 +81,7 @@ class GraphTierInfo:
 
     limits = self.limits.to_dict()
 
-    monthly_price: Union[None, Unset, float]
+    monthly_price: float | None | Unset
     if isinstance(self.monthly_price, Unset):
       monthly_price = UNSET
     else:
@@ -127,10 +129,10 @@ class GraphTierInfo:
 
     enabled = d.pop("enabled")
 
-    def _parse_max_subgraphs(data: object) -> Union[None, int]:
+    def _parse_max_subgraphs(data: object) -> int | None:
       if data is None:
         return data
-      return cast(Union[None, int], data)
+      return cast(int | None, data)
 
     max_subgraphs = _parse_max_subgraphs(d.pop("max_subgraphs"))
 
@@ -146,12 +148,12 @@ class GraphTierInfo:
 
     limits = GraphTierLimits.from_dict(d.pop("limits"))
 
-    def _parse_monthly_price(data: object) -> Union[None, Unset, float]:
+    def _parse_monthly_price(data: object) -> float | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, float], data)
+      return cast(float | None | Unset, data)
 
     monthly_price = _parse_monthly_price(d.pop("monthly_price", UNSET))
 

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,12 +24,12 @@ class HealthStatus:
   Attributes:
       status (str): Current health status
       timestamp (datetime.datetime): Time of health check
-      details (Union['HealthStatusDetailsType0', None, Unset]): Additional health check details
+      details (HealthStatusDetailsType0 | None | Unset): Additional health check details
   """
 
   status: str
   timestamp: datetime.datetime
-  details: Union["HealthStatusDetailsType0", None, Unset] = UNSET
+  details: HealthStatusDetailsType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -37,7 +39,7 @@ class HealthStatus:
 
     timestamp = self.timestamp.isoformat()
 
-    details: Union[None, Unset, dict[str, Any]]
+    details: dict[str, Any] | None | Unset
     if isinstance(self.details, Unset):
       details = UNSET
     elif isinstance(self.details, HealthStatusDetailsType0):
@@ -67,7 +69,7 @@ class HealthStatus:
 
     timestamp = isoparse(d.pop("timestamp"))
 
-    def _parse_details(data: object) -> Union["HealthStatusDetailsType0", None, Unset]:
+    def _parse_details(data: object) -> HealthStatusDetailsType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -78,9 +80,9 @@ class HealthStatus:
         details_type_0 = HealthStatusDetailsType0.from_dict(data)
 
         return details_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["HealthStatusDetailsType0", None, Unset], data)
+      return cast(HealthStatusDetailsType0 | None | Unset, data)
 
     details = _parse_details(d.pop("details", UNSET))
 

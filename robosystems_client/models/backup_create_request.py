@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -14,21 +16,21 @@ class BackupCreateRequest:
   """Request model for creating a backup.
 
   Attributes:
-      backup_format (Union[Unset, str]): Backup format - only 'full_dump' is supported (complete .kuzu database file)
+      backup_format (str | Unset): Backup format - only 'full_dump' is supported (complete .kuzu database file)
           Default: 'full_dump'.
-      backup_type (Union[Unset, str]): Backup type - only 'full' is supported Default: 'full'.
-      retention_days (Union[Unset, int]): Retention period in days Default: 90.
-      compression (Union[Unset, bool]): Enable compression (always enabled for optimal storage) Default: True.
-      encryption (Union[Unset, bool]): Enable encryption (encrypted backups cannot be downloaded) Default: False.
-      schedule (Union[None, Unset, str]): Optional cron schedule for automated backups
+      backup_type (str | Unset): Backup type - only 'full' is supported Default: 'full'.
+      retention_days (int | Unset): Retention period in days Default: 90.
+      compression (bool | Unset): Enable compression (always enabled for optimal storage) Default: True.
+      encryption (bool | Unset): Enable encryption (encrypted backups cannot be downloaded) Default: False.
+      schedule (None | str | Unset): Optional cron schedule for automated backups
   """
 
-  backup_format: Union[Unset, str] = "full_dump"
-  backup_type: Union[Unset, str] = "full"
-  retention_days: Union[Unset, int] = 90
-  compression: Union[Unset, bool] = True
-  encryption: Union[Unset, bool] = False
-  schedule: Union[None, Unset, str] = UNSET
+  backup_format: str | Unset = "full_dump"
+  backup_type: str | Unset = "full"
+  retention_days: int | Unset = 90
+  compression: bool | Unset = True
+  encryption: bool | Unset = False
+  schedule: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -42,7 +44,7 @@ class BackupCreateRequest:
 
     encryption = self.encryption
 
-    schedule: Union[None, Unset, str]
+    schedule: None | str | Unset
     if isinstance(self.schedule, Unset):
       schedule = UNSET
     else:
@@ -79,12 +81,12 @@ class BackupCreateRequest:
 
     encryption = d.pop("encryption", UNSET)
 
-    def _parse_schedule(data: object) -> Union[None, Unset, str]:
+    def _parse_schedule(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     schedule = _parse_schedule(d.pop("schedule", UNSET))
 

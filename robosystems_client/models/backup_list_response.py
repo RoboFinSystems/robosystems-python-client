@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,12 +18,12 @@ class BackupListResponse:
   """Response model for backup list.
 
   Attributes:
-      backups (list['BackupResponse']):
+      backups (list[BackupResponse]):
       total_count (int):
       graph_id (str):
   """
 
-  backups: list["BackupResponse"]
+  backups: list[BackupResponse]
   total_count: int
   graph_id: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)

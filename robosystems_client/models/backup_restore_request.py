@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -14,13 +16,12 @@ class BackupRestoreRequest:
   """Request model for restoring from a backup.
 
   Attributes:
-      create_system_backup (Union[Unset, bool]): Create a system backup of existing database before restore Default:
-          True.
-      verify_after_restore (Union[Unset, bool]): Verify database integrity after restore Default: True.
+      create_system_backup (bool | Unset): Create a system backup of existing database before restore Default: True.
+      verify_after_restore (bool | Unset): Verify database integrity after restore Default: True.
   """
 
-  create_system_backup: Union[Unset, bool] = True
-  verify_after_restore: Union[Unset, bool] = True
+  create_system_backup: bool | Unset = True
+  verify_after_restore: bool | Unset = True
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

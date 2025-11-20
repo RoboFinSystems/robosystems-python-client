@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -13,11 +13,11 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  capability: Union[None, Unset, str] = UNSET,
+  capability: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
-  json_capability: Union[None, Unset, str]
+  json_capability: None | str | Unset
   if isinstance(capability, Unset):
     json_capability = UNSET
   else:
@@ -36,8 +36,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[AgentListResponse, Any, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> AgentListResponse | Any | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = AgentListResponse.from_dict(response.json())
 
@@ -59,8 +59,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[AgentListResponse, Any, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[AgentListResponse | Any | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -73,8 +73,8 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  capability: Union[None, Unset, str] = UNSET,
-) -> Response[Union[AgentListResponse, Any, HTTPValidationError]]:
+  capability: None | str | Unset = UNSET,
+) -> Response[AgentListResponse | Any | HTTPValidationError]:
   """List available agents
 
    Get a comprehensive list of all available agents with their metadata.
@@ -89,7 +89,7 @@ def sync_detailed(
 
   Args:
       graph_id (str):
-      capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
+      capability (None | str | Unset): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
 
   Raises:
@@ -97,7 +97,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[AgentListResponse, Any, HTTPValidationError]]
+      Response[AgentListResponse | Any | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -116,8 +116,8 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  capability: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[AgentListResponse, Any, HTTPValidationError]]:
+  capability: None | str | Unset = UNSET,
+) -> AgentListResponse | Any | HTTPValidationError | None:
   """List available agents
 
    Get a comprehensive list of all available agents with their metadata.
@@ -132,7 +132,7 @@ def sync(
 
   Args:
       graph_id (str):
-      capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
+      capability (None | str | Unset): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
 
   Raises:
@@ -140,7 +140,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[AgentListResponse, Any, HTTPValidationError]
+      AgentListResponse | Any | HTTPValidationError
   """
 
   return sync_detailed(
@@ -154,8 +154,8 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  capability: Union[None, Unset, str] = UNSET,
-) -> Response[Union[AgentListResponse, Any, HTTPValidationError]]:
+  capability: None | str | Unset = UNSET,
+) -> Response[AgentListResponse | Any | HTTPValidationError]:
   """List available agents
 
    Get a comprehensive list of all available agents with their metadata.
@@ -170,7 +170,7 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str):
-      capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
+      capability (None | str | Unset): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
 
   Raises:
@@ -178,7 +178,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[AgentListResponse, Any, HTTPValidationError]]
+      Response[AgentListResponse | Any | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -195,8 +195,8 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  capability: Union[None, Unset, str] = UNSET,
-) -> Optional[Union[AgentListResponse, Any, HTTPValidationError]]:
+  capability: None | str | Unset = UNSET,
+) -> AgentListResponse | Any | HTTPValidationError | None:
   """List available agents
 
    Get a comprehensive list of all available agents with their metadata.
@@ -211,7 +211,7 @@ async def asyncio(
 
   Args:
       graph_id (str):
-      capability (Union[None, Unset, str]): Filter by capability (e.g., 'financial_analysis',
+      capability (None | str | Unset): Filter by capability (e.g., 'financial_analysis',
           'rag_search')
 
   Raises:
@@ -219,7 +219,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[AgentListResponse, Any, HTTPValidationError]
+      AgentListResponse | Any | HTTPValidationError
   """
 
   return (

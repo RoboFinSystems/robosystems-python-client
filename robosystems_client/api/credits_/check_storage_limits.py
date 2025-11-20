@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -23,8 +23,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorResponse | HTTPValidationError | StorageLimitResponse | None:
   if response.status_code == 200:
     response_200 = StorageLimitResponse.from_dict(response.json())
 
@@ -57,8 +57,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorResponse | HTTPValidationError | StorageLimitResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -71,7 +71,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]]:
+) -> Response[ErrorResponse | HTTPValidationError | StorageLimitResponse]:
   """Check Storage Limits
 
    Check storage limits and usage for a graph.
@@ -93,7 +93,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]]
+      Response[ErrorResponse | HTTPValidationError | StorageLimitResponse]
   """
 
   kwargs = _get_kwargs(
@@ -111,7 +111,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]]:
+) -> ErrorResponse | HTTPValidationError | StorageLimitResponse | None:
   """Check Storage Limits
 
    Check storage limits and usage for a graph.
@@ -133,7 +133,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]
+      ErrorResponse | HTTPValidationError | StorageLimitResponse
   """
 
   return sync_detailed(
@@ -146,7 +146,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]]:
+) -> Response[ErrorResponse | HTTPValidationError | StorageLimitResponse]:
   """Check Storage Limits
 
    Check storage limits and usage for a graph.
@@ -168,7 +168,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]]
+      Response[ErrorResponse | HTTPValidationError | StorageLimitResponse]
   """
 
   kwargs = _get_kwargs(
@@ -184,7 +184,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]]:
+) -> ErrorResponse | HTTPValidationError | StorageLimitResponse | None:
   """Check Storage Limits
 
    Check storage limits and usage for a graph.
@@ -206,7 +206,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, StorageLimitResponse]
+      ErrorResponse | HTTPValidationError | StorageLimitResponse
   """
 
   return (

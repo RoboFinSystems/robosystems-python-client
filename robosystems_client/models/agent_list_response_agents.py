@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -17,7 +19,7 @@ T = TypeVar("T", bound="AgentListResponseAgents")
 class AgentListResponseAgents:
   """Dictionary of available agents with metadata"""
 
-  additional_properties: dict[str, "AgentListResponseAgentsAdditionalProperty"] = (
+  additional_properties: dict[str, AgentListResponseAgentsAdditionalProperty] = (
     _attrs_field(init=False, factory=dict)
   )
 
@@ -52,11 +54,11 @@ class AgentListResponseAgents:
   def additional_keys(self) -> list[str]:
     return list(self.additional_properties.keys())
 
-  def __getitem__(self, key: str) -> "AgentListResponseAgentsAdditionalProperty":
+  def __getitem__(self, key: str) -> AgentListResponseAgentsAdditionalProperty:
     return self.additional_properties[key]
 
   def __setitem__(
-    self, key: str, value: "AgentListResponseAgentsAdditionalProperty"
+    self, key: str, value: AgentListResponseAgentsAdditionalProperty
   ) -> None:
     self.additional_properties[key] = value
 

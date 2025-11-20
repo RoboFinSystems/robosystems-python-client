@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -30,7 +32,7 @@ class CreditSummary:
   graph_tier: str
   total_credits_consumed: float
   total_base_cost: float
-  operation_breakdown: "CreditSummaryOperationBreakdown"
+  operation_breakdown: CreditSummaryOperationBreakdown
   cached_operations: int
   billable_operations: int
   transaction_count: int

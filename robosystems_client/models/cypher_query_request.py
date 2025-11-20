@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
@@ -21,14 +23,14 @@ class CypherQueryRequest:
   Attributes:
       query (str): The Cypher query to execute. Use parameters ($param_name) for all dynamic values to prevent
           injection attacks.
-      parameters (Union['CypherQueryRequestParametersType0', None, Unset]): Query parameters for safe value
-          substitution. ALWAYS use parameters instead of string interpolation.
-      timeout (Union[None, Unset, int]): Query timeout in seconds (1-300) Default: 60.
+      parameters (CypherQueryRequestParametersType0 | None | Unset): Query parameters for safe value substitution.
+          ALWAYS use parameters instead of string interpolation.
+      timeout (int | None | Unset): Query timeout in seconds (1-300) Default: 60.
   """
 
   query: str
-  parameters: Union["CypherQueryRequestParametersType0", None, Unset] = UNSET
-  timeout: Union[None, Unset, int] = 60
+  parameters: CypherQueryRequestParametersType0 | None | Unset = UNSET
+  timeout: int | None | Unset = 60
 
   def to_dict(self) -> dict[str, Any]:
     from ..models.cypher_query_request_parameters_type_0 import (
@@ -37,7 +39,7 @@ class CypherQueryRequest:
 
     query = self.query
 
-    parameters: Union[None, Unset, dict[str, Any]]
+    parameters: dict[str, Any] | None | Unset
     if isinstance(self.parameters, Unset):
       parameters = UNSET
     elif isinstance(self.parameters, CypherQueryRequestParametersType0):
@@ -45,7 +47,7 @@ class CypherQueryRequest:
     else:
       parameters = self.parameters
 
-    timeout: Union[None, Unset, int]
+    timeout: int | None | Unset
     if isinstance(self.timeout, Unset):
       timeout = UNSET
     else:
@@ -76,7 +78,7 @@ class CypherQueryRequest:
 
     def _parse_parameters(
       data: object,
-    ) -> Union["CypherQueryRequestParametersType0", None, Unset]:
+    ) -> CypherQueryRequestParametersType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -87,18 +89,18 @@ class CypherQueryRequest:
         parameters_type_0 = CypherQueryRequestParametersType0.from_dict(data)
 
         return parameters_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["CypherQueryRequestParametersType0", None, Unset], data)
+      return cast(CypherQueryRequestParametersType0 | None | Unset, data)
 
     parameters = _parse_parameters(d.pop("parameters", UNSET))
 
-    def _parse_timeout(data: object) -> Union[None, Unset, int]:
+    def _parse_timeout(data: object) -> int | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, int], data)
+      return cast(int | None | Unset, data)
 
     timeout = _parse_timeout(d.pop("timeout", UNSET))
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -20,7 +22,7 @@ class CreateAPIKeyResponse:
       key (str): The actual API key (only shown once)
   """
 
-  api_key: "APIKeyInfo"
+  api_key: APIKeyInfo
   key: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -23,16 +25,16 @@ class CreateConnectionRequest:
   Attributes:
       provider (CreateConnectionRequestProvider): Connection provider type
       entity_id (str): Entity identifier
-      sec_config (Union['SECConnectionConfig', None, Unset]):
-      quickbooks_config (Union['QuickBooksConnectionConfig', None, Unset]):
-      plaid_config (Union['PlaidConnectionConfig', None, Unset]):
+      sec_config (None | SECConnectionConfig | Unset):
+      quickbooks_config (None | QuickBooksConnectionConfig | Unset):
+      plaid_config (None | PlaidConnectionConfig | Unset):
   """
 
   provider: CreateConnectionRequestProvider
   entity_id: str
-  sec_config: Union["SECConnectionConfig", None, Unset] = UNSET
-  quickbooks_config: Union["QuickBooksConnectionConfig", None, Unset] = UNSET
-  plaid_config: Union["PlaidConnectionConfig", None, Unset] = UNSET
+  sec_config: None | SECConnectionConfig | Unset = UNSET
+  quickbooks_config: None | QuickBooksConnectionConfig | Unset = UNSET
+  plaid_config: None | PlaidConnectionConfig | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -44,7 +46,7 @@ class CreateConnectionRequest:
 
     entity_id = self.entity_id
 
-    sec_config: Union[None, Unset, dict[str, Any]]
+    sec_config: dict[str, Any] | None | Unset
     if isinstance(self.sec_config, Unset):
       sec_config = UNSET
     elif isinstance(self.sec_config, SECConnectionConfig):
@@ -52,7 +54,7 @@ class CreateConnectionRequest:
     else:
       sec_config = self.sec_config
 
-    quickbooks_config: Union[None, Unset, dict[str, Any]]
+    quickbooks_config: dict[str, Any] | None | Unset
     if isinstance(self.quickbooks_config, Unset):
       quickbooks_config = UNSET
     elif isinstance(self.quickbooks_config, QuickBooksConnectionConfig):
@@ -60,7 +62,7 @@ class CreateConnectionRequest:
     else:
       quickbooks_config = self.quickbooks_config
 
-    plaid_config: Union[None, Unset, dict[str, Any]]
+    plaid_config: dict[str, Any] | None | Unset
     if isinstance(self.plaid_config, Unset):
       plaid_config = UNSET
     elif isinstance(self.plaid_config, PlaidConnectionConfig):
@@ -96,7 +98,7 @@ class CreateConnectionRequest:
 
     entity_id = d.pop("entity_id")
 
-    def _parse_sec_config(data: object) -> Union["SECConnectionConfig", None, Unset]:
+    def _parse_sec_config(data: object) -> None | SECConnectionConfig | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -107,15 +109,15 @@ class CreateConnectionRequest:
         sec_config_type_0 = SECConnectionConfig.from_dict(data)
 
         return sec_config_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SECConnectionConfig", None, Unset], data)
+      return cast(None | SECConnectionConfig | Unset, data)
 
     sec_config = _parse_sec_config(d.pop("sec_config", UNSET))
 
     def _parse_quickbooks_config(
       data: object,
-    ) -> Union["QuickBooksConnectionConfig", None, Unset]:
+    ) -> None | QuickBooksConnectionConfig | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -126,15 +128,13 @@ class CreateConnectionRequest:
         quickbooks_config_type_0 = QuickBooksConnectionConfig.from_dict(data)
 
         return quickbooks_config_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["QuickBooksConnectionConfig", None, Unset], data)
+      return cast(None | QuickBooksConnectionConfig | Unset, data)
 
     quickbooks_config = _parse_quickbooks_config(d.pop("quickbooks_config", UNSET))
 
-    def _parse_plaid_config(
-      data: object,
-    ) -> Union["PlaidConnectionConfig", None, Unset]:
+    def _parse_plaid_config(data: object) -> None | PlaidConnectionConfig | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -145,9 +145,9 @@ class CreateConnectionRequest:
         plaid_config_type_0 = PlaidConnectionConfig.from_dict(data)
 
         return plaid_config_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["PlaidConnectionConfig", None, Unset], data)
+      return cast(None | PlaidConnectionConfig | Unset, data)
 
     plaid_config = _parse_plaid_config(d.pop("plaid_config", UNSET))
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -23,18 +25,20 @@ class CreateSubgraphRequest:
   Attributes:
       name (str): Alphanumeric name for the subgraph (e.g., dev, staging, prod1)
       display_name (str): Human-readable display name for the subgraph
-      description (Union[None, Unset, str]): Optional description of the subgraph's purpose
-      schema_extensions (Union[Unset, list[str]]): Schema extensions to include (inherits from parent by default)
-      subgraph_type (Union[Unset, SubgraphType]): Types of subgraphs.
-      metadata (Union['CreateSubgraphRequestMetadataType0', None, Unset]): Additional metadata for the subgraph
+      description (None | str | Unset): Optional description of the subgraph's purpose
+      schema_extensions (list[str] | Unset): Schema extensions to include (inherits from parent by default)
+      subgraph_type (SubgraphType | Unset): Types of subgraphs.
+      metadata (CreateSubgraphRequestMetadataType0 | None | Unset): Additional metadata for the subgraph
+      fork_parent (bool | Unset): If true, copy all data from parent graph to create a 'fork' Default: False.
   """
 
   name: str
   display_name: str
-  description: Union[None, Unset, str] = UNSET
-  schema_extensions: Union[Unset, list[str]] = UNSET
-  subgraph_type: Union[Unset, SubgraphType] = UNSET
-  metadata: Union["CreateSubgraphRequestMetadataType0", None, Unset] = UNSET
+  description: None | str | Unset = UNSET
+  schema_extensions: list[str] | Unset = UNSET
+  subgraph_type: SubgraphType | Unset = UNSET
+  metadata: CreateSubgraphRequestMetadataType0 | None | Unset = UNSET
+  fork_parent: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -46,27 +50,29 @@ class CreateSubgraphRequest:
 
     display_name = self.display_name
 
-    description: Union[None, Unset, str]
+    description: None | str | Unset
     if isinstance(self.description, Unset):
       description = UNSET
     else:
       description = self.description
 
-    schema_extensions: Union[Unset, list[str]] = UNSET
+    schema_extensions: list[str] | Unset = UNSET
     if not isinstance(self.schema_extensions, Unset):
       schema_extensions = self.schema_extensions
 
-    subgraph_type: Union[Unset, str] = UNSET
+    subgraph_type: str | Unset = UNSET
     if not isinstance(self.subgraph_type, Unset):
       subgraph_type = self.subgraph_type.value
 
-    metadata: Union[None, Unset, dict[str, Any]]
+    metadata: dict[str, Any] | None | Unset
     if isinstance(self.metadata, Unset):
       metadata = UNSET
     elif isinstance(self.metadata, CreateSubgraphRequestMetadataType0):
       metadata = self.metadata.to_dict()
     else:
       metadata = self.metadata
+
+    fork_parent = self.fork_parent
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -84,6 +90,8 @@ class CreateSubgraphRequest:
       field_dict["subgraph_type"] = subgraph_type
     if metadata is not UNSET:
       field_dict["metadata"] = metadata
+    if fork_parent is not UNSET:
+      field_dict["fork_parent"] = fork_parent
 
     return field_dict
 
@@ -98,19 +106,19 @@ class CreateSubgraphRequest:
 
     display_name = d.pop("display_name")
 
-    def _parse_description(data: object) -> Union[None, Unset, str]:
+    def _parse_description(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
 
     schema_extensions = cast(list[str], d.pop("schema_extensions", UNSET))
 
     _subgraph_type = d.pop("subgraph_type", UNSET)
-    subgraph_type: Union[Unset, SubgraphType]
+    subgraph_type: SubgraphType | Unset
     if isinstance(_subgraph_type, Unset):
       subgraph_type = UNSET
     else:
@@ -118,7 +126,7 @@ class CreateSubgraphRequest:
 
     def _parse_metadata(
       data: object,
-    ) -> Union["CreateSubgraphRequestMetadataType0", None, Unset]:
+    ) -> CreateSubgraphRequestMetadataType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -129,11 +137,13 @@ class CreateSubgraphRequest:
         metadata_type_0 = CreateSubgraphRequestMetadataType0.from_dict(data)
 
         return metadata_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["CreateSubgraphRequestMetadataType0", None, Unset], data)
+      return cast(CreateSubgraphRequestMetadataType0 | None | Unset, data)
 
     metadata = _parse_metadata(d.pop("metadata", UNSET))
+
+    fork_parent = d.pop("fork_parent", UNSET)
 
     create_subgraph_request = cls(
       name=name,
@@ -142,6 +152,7 @@ class CreateSubgraphRequest:
       schema_extensions=schema_extensions,
       subgraph_type=subgraph_type,
       metadata=metadata,
+      fork_parent=fork_parent,
     )
 
     create_subgraph_request.additional_properties = d

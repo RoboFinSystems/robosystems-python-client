@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -12,7 +12,7 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs(
   *,
-  include_disabled: Union[Unset, bool] = False,
+  include_disabled: bool | Unset = False,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
@@ -30,8 +30,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Any | AvailableGraphTiersResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = AvailableGraphTiersResponse.from_dict(response.json())
 
@@ -53,8 +53,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[Any | AvailableGraphTiersResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -66,8 +66,8 @@ def _build_response(
 def sync_detailed(
   *,
   client: AuthenticatedClient,
-  include_disabled: Union[Unset, bool] = False,
-) -> Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
+  include_disabled: bool | Unset = False,
+) -> Response[Any | AvailableGraphTiersResponse | HTTPValidationError]:
   """Get Available Graph Tiers
 
    List all available graph database tier configurations.
@@ -99,14 +99,14 @@ def sync_detailed(
   Tier listing is included - no credit consumption required.
 
   Args:
-      include_disabled (Union[Unset, bool]):  Default: False.
+      include_disabled (bool | Unset):  Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]
+      Response[Any | AvailableGraphTiersResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -123,8 +123,8 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient,
-  include_disabled: Union[Unset, bool] = False,
-) -> Optional[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
+  include_disabled: bool | Unset = False,
+) -> Any | AvailableGraphTiersResponse | HTTPValidationError | None:
   """Get Available Graph Tiers
 
    List all available graph database tier configurations.
@@ -156,14 +156,14 @@ def sync(
   Tier listing is included - no credit consumption required.
 
   Args:
-      include_disabled (Union[Unset, bool]):  Default: False.
+      include_disabled (bool | Unset):  Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, AvailableGraphTiersResponse, HTTPValidationError]
+      Any | AvailableGraphTiersResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -175,8 +175,8 @@ def sync(
 async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
-  include_disabled: Union[Unset, bool] = False,
-) -> Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
+  include_disabled: bool | Unset = False,
+) -> Response[Any | AvailableGraphTiersResponse | HTTPValidationError]:
   """Get Available Graph Tiers
 
    List all available graph database tier configurations.
@@ -208,14 +208,14 @@ async def asyncio_detailed(
   Tier listing is included - no credit consumption required.
 
   Args:
-      include_disabled (Union[Unset, bool]):  Default: False.
+      include_disabled (bool | Unset):  Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]
+      Response[Any | AvailableGraphTiersResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -230,8 +230,8 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient,
-  include_disabled: Union[Unset, bool] = False,
-) -> Optional[Union[Any, AvailableGraphTiersResponse, HTTPValidationError]]:
+  include_disabled: bool | Unset = False,
+) -> Any | AvailableGraphTiersResponse | HTTPValidationError | None:
   """Get Available Graph Tiers
 
    List all available graph database tier configurations.
@@ -263,14 +263,14 @@ async def asyncio(
   Tier listing is included - no credit consumption required.
 
   Args:
-      include_disabled (Union[Unset, bool]):  Default: False.
+      include_disabled (bool | Unset):  Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[Any, AvailableGraphTiersResponse, HTTPValidationError]
+      Any | AvailableGraphTiersResponse | HTTPValidationError
   """
 
   return (

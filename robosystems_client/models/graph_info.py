@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -19,8 +21,8 @@ class GraphInfo:
       role (str): User's role/access level
       is_selected (bool): Whether this is the currently selected graph
       created_at (str): Creation timestamp
-      is_repository (Union[Unset, bool]): Whether this is a shared repository (vs user graph) Default: False.
-      repository_type (Union[None, Unset, str]): Repository type if isRepository=true
+      is_repository (bool | Unset): Whether this is a shared repository (vs user graph) Default: False.
+      repository_type (None | str | Unset): Repository type if isRepository=true
   """
 
   graph_id: str
@@ -28,8 +30,8 @@ class GraphInfo:
   role: str
   is_selected: bool
   created_at: str
-  is_repository: Union[Unset, bool] = False
-  repository_type: Union[None, Unset, str] = UNSET
+  is_repository: bool | Unset = False
+  repository_type: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -45,7 +47,7 @@ class GraphInfo:
 
     is_repository = self.is_repository
 
-    repository_type: Union[None, Unset, str]
+    repository_type: None | str | Unset
     if isinstance(self.repository_type, Unset):
       repository_type = UNSET
     else:
@@ -84,12 +86,12 @@ class GraphInfo:
 
     is_repository = d.pop("isRepository", UNSET)
 
-    def _parse_repository_type(data: object) -> Union[None, Unset, str]:
+    def _parse_repository_type(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     repository_type = _parse_repository_type(d.pop("repositoryType", UNSET))
 

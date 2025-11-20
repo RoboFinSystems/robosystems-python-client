@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -15,31 +17,31 @@ class GraphMetadata:
 
   Attributes:
       graph_name (str): Display name for the graph
-      description (Union[None, Unset, str]): Optional description
-      schema_extensions (Union[Unset, list[str]]): Schema extensions to enable
-      tags (Union[Unset, list[str]]): Tags for organizing graphs
+      description (None | str | Unset): Optional description
+      schema_extensions (list[str] | Unset): Schema extensions to enable
+      tags (list[str] | Unset): Tags for organizing graphs
   """
 
   graph_name: str
-  description: Union[None, Unset, str] = UNSET
-  schema_extensions: Union[Unset, list[str]] = UNSET
-  tags: Union[Unset, list[str]] = UNSET
+  description: None | str | Unset = UNSET
+  schema_extensions: list[str] | Unset = UNSET
+  tags: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     graph_name = self.graph_name
 
-    description: Union[None, Unset, str]
+    description: None | str | Unset
     if isinstance(self.description, Unset):
       description = UNSET
     else:
       description = self.description
 
-    schema_extensions: Union[Unset, list[str]] = UNSET
+    schema_extensions: list[str] | Unset = UNSET
     if not isinstance(self.schema_extensions, Unset):
       schema_extensions = self.schema_extensions
 
-    tags: Union[Unset, list[str]] = UNSET
+    tags: list[str] | Unset = UNSET
     if not isinstance(self.tags, Unset):
       tags = self.tags
 
@@ -64,12 +66,12 @@ class GraphMetadata:
     d = dict(src_dict)
     graph_name = d.pop("graph_name")
 
-    def _parse_description(data: object) -> Union[None, Unset, str]:
+    def _parse_description(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
 

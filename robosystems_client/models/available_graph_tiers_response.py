@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,10 +18,10 @@ class AvailableGraphTiersResponse:
   """Response containing available graph tiers.
 
   Attributes:
-      tiers (list['GraphTierInfo']): List of available tiers
+      tiers (list[GraphTierInfo]): List of available tiers
   """
 
-  tiers: list["GraphTierInfo"]
+  tiers: list[GraphTierInfo]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

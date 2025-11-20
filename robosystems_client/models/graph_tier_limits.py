@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -19,16 +21,16 @@ class GraphTierLimits:
   Attributes:
       storage_gb (int): Storage limit in GB
       monthly_credits (int): Monthly credit allocation
-      max_subgraphs (Union[None, int]): Maximum subgraphs (null for unlimited)
+      max_subgraphs (int | None): Maximum subgraphs (null for unlimited)
       copy_operations (GraphTierCopyOperations): Copy operation limits for a tier.
       backup (GraphTierBackup): Backup configuration for a tier.
   """
 
   storage_gb: int
   monthly_credits: int
-  max_subgraphs: Union[None, int]
-  copy_operations: "GraphTierCopyOperations"
-  backup: "GraphTierBackup"
+  max_subgraphs: int | None
+  copy_operations: GraphTierCopyOperations
+  backup: GraphTierBackup
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -36,7 +38,7 @@ class GraphTierLimits:
 
     monthly_credits = self.monthly_credits
 
-    max_subgraphs: Union[None, int]
+    max_subgraphs: int | None
     max_subgraphs = self.max_subgraphs
 
     copy_operations = self.copy_operations.to_dict()
@@ -67,10 +69,10 @@ class GraphTierLimits:
 
     monthly_credits = d.pop("monthly_credits")
 
-    def _parse_max_subgraphs(data: object) -> Union[None, int]:
+    def _parse_max_subgraphs(data: object) -> int | None:
       if data is None:
         return data
-      return cast(Union[None, int], data)
+      return cast(int | None, data)
 
     max_subgraphs = _parse_max_subgraphs(d.pop("max_subgraphs"))
 

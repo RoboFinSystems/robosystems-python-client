@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -18,12 +20,12 @@ class AgentMessage:
   Attributes:
       role (str): Message role (user/assistant)
       content (str): Message content
-      timestamp (Union[None, Unset, datetime.datetime]): Message timestamp
+      timestamp (datetime.datetime | None | Unset): Message timestamp
   """
 
   role: str
   content: str
-  timestamp: Union[None, Unset, datetime.datetime] = UNSET
+  timestamp: datetime.datetime | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -31,7 +33,7 @@ class AgentMessage:
 
     content = self.content
 
-    timestamp: Union[None, Unset, str]
+    timestamp: None | str | Unset
     if isinstance(self.timestamp, Unset):
       timestamp = UNSET
     elif isinstance(self.timestamp, datetime.datetime):
@@ -59,7 +61,7 @@ class AgentMessage:
 
     content = d.pop("content")
 
-    def _parse_timestamp(data: object) -> Union[None, Unset, datetime.datetime]:
+    def _parse_timestamp(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -70,9 +72,9 @@ class AgentMessage:
         timestamp_type_0 = isoparse(data)
 
         return timestamp_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, datetime.datetime], data)
+      return cast(datetime.datetime | None | Unset, data)
 
     timestamp = _parse_timestamp(d.pop("timestamp", UNSET))
 

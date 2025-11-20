@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,27 +24,26 @@ class AgentRequest:
 
   Attributes:
       message (str): The query or message to process
-      history (Union[Unset, list['AgentMessage']]): Conversation history
-      context (Union['AgentRequestContextType0', None, Unset]): Additional context for analysis (e.g., enable_rag,
+      history (list[AgentMessage] | Unset): Conversation history
+      context (AgentRequestContextType0 | None | Unset): Additional context for analysis (e.g., enable_rag,
           include_schema)
-      mode (Union[AgentMode, None, Unset]): Execution mode Default: AgentMode.STANDARD.
-      agent_type (Union[None, Unset, str]): Specific agent type to use (optional)
-      selection_criteria (Union['SelectionCriteria', None, Unset]): Criteria for agent selection
-      force_extended_analysis (Union[Unset, bool]): Force extended analysis mode with comprehensive research Default:
-          False.
-      enable_rag (Union[Unset, bool]): Enable RAG context enrichment Default: True.
-      stream (Union[Unset, bool]): Enable streaming response Default: False.
+      mode (AgentMode | None | Unset): Execution mode Default: AgentMode.STANDARD.
+      agent_type (None | str | Unset): Specific agent type to use (optional)
+      selection_criteria (None | SelectionCriteria | Unset): Criteria for agent selection
+      force_extended_analysis (bool | Unset): Force extended analysis mode with comprehensive research Default: False.
+      enable_rag (bool | Unset): Enable RAG context enrichment Default: True.
+      stream (bool | Unset): Enable streaming response Default: False.
   """
 
   message: str
-  history: Union[Unset, list["AgentMessage"]] = UNSET
-  context: Union["AgentRequestContextType0", None, Unset] = UNSET
-  mode: Union[AgentMode, None, Unset] = AgentMode.STANDARD
-  agent_type: Union[None, Unset, str] = UNSET
-  selection_criteria: Union["SelectionCriteria", None, Unset] = UNSET
-  force_extended_analysis: Union[Unset, bool] = False
-  enable_rag: Union[Unset, bool] = True
-  stream: Union[Unset, bool] = False
+  history: list[AgentMessage] | Unset = UNSET
+  context: AgentRequestContextType0 | None | Unset = UNSET
+  mode: AgentMode | None | Unset = AgentMode.STANDARD
+  agent_type: None | str | Unset = UNSET
+  selection_criteria: None | SelectionCriteria | Unset = UNSET
+  force_extended_analysis: bool | Unset = False
+  enable_rag: bool | Unset = True
+  stream: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -51,14 +52,14 @@ class AgentRequest:
 
     message = self.message
 
-    history: Union[Unset, list[dict[str, Any]]] = UNSET
+    history: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.history, Unset):
       history = []
       for history_item_data in self.history:
         history_item = history_item_data.to_dict()
         history.append(history_item)
 
-    context: Union[None, Unset, dict[str, Any]]
+    context: dict[str, Any] | None | Unset
     if isinstance(self.context, Unset):
       context = UNSET
     elif isinstance(self.context, AgentRequestContextType0):
@@ -66,7 +67,7 @@ class AgentRequest:
     else:
       context = self.context
 
-    mode: Union[None, Unset, str]
+    mode: None | str | Unset
     if isinstance(self.mode, Unset):
       mode = UNSET
     elif isinstance(self.mode, AgentMode):
@@ -74,13 +75,13 @@ class AgentRequest:
     else:
       mode = self.mode
 
-    agent_type: Union[None, Unset, str]
+    agent_type: None | str | Unset
     if isinstance(self.agent_type, Unset):
       agent_type = UNSET
     else:
       agent_type = self.agent_type
 
-    selection_criteria: Union[None, Unset, dict[str, Any]]
+    selection_criteria: dict[str, Any] | None | Unset
     if isinstance(self.selection_criteria, Unset):
       selection_criteria = UNSET
     elif isinstance(self.selection_criteria, SelectionCriteria):
@@ -129,14 +130,16 @@ class AgentRequest:
     d = dict(src_dict)
     message = d.pop("message")
 
-    history = []
     _history = d.pop("history", UNSET)
-    for history_item_data in _history or []:
-      history_item = AgentMessage.from_dict(history_item_data)
+    history: list[AgentMessage] | Unset = UNSET
+    if _history is not UNSET:
+      history = []
+      for history_item_data in _history:
+        history_item = AgentMessage.from_dict(history_item_data)
 
-      history.append(history_item)
+        history.append(history_item)
 
-    def _parse_context(data: object) -> Union["AgentRequestContextType0", None, Unset]:
+    def _parse_context(data: object) -> AgentRequestContextType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -147,13 +150,13 @@ class AgentRequest:
         context_type_0 = AgentRequestContextType0.from_dict(data)
 
         return context_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["AgentRequestContextType0", None, Unset], data)
+      return cast(AgentRequestContextType0 | None | Unset, data)
 
     context = _parse_context(d.pop("context", UNSET))
 
-    def _parse_mode(data: object) -> Union[AgentMode, None, Unset]:
+    def _parse_mode(data: object) -> AgentMode | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -164,24 +167,22 @@ class AgentRequest:
         mode_type_0 = AgentMode(data)
 
         return mode_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[AgentMode, None, Unset], data)
+      return cast(AgentMode | None | Unset, data)
 
     mode = _parse_mode(d.pop("mode", UNSET))
 
-    def _parse_agent_type(data: object) -> Union[None, Unset, str]:
+    def _parse_agent_type(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     agent_type = _parse_agent_type(d.pop("agent_type", UNSET))
 
-    def _parse_selection_criteria(
-      data: object,
-    ) -> Union["SelectionCriteria", None, Unset]:
+    def _parse_selection_criteria(data: object) -> None | SelectionCriteria | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -192,9 +193,9 @@ class AgentRequest:
         selection_criteria_type_0 = SelectionCriteria.from_dict(data)
 
         return selection_criteria_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SelectionCriteria", None, Unset], data)
+      return cast(None | SelectionCriteria | Unset, data)
 
     selection_criteria = _parse_selection_criteria(d.pop("selection_criteria", UNSET))
 

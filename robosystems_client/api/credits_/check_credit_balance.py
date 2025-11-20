@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -17,13 +17,13 @@ def _get_kwargs(
   graph_id: str,
   *,
   operation_type: str,
-  base_cost: Union[None, Unset, float, str] = UNSET,
+  base_cost: float | None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
   params["operation_type"] = operation_type
 
-  json_base_cost: Union[None, Unset, float, str]
+  json_base_cost: float | None | str | Unset
   if isinstance(base_cost, Unset):
     json_base_cost = UNSET
   else:
@@ -42,12 +42,13 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[
-  Union[
-    CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
-  ]
-]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> (
+  CheckCreditBalanceResponseCheckcreditbalance
+  | ErrorResponse
+  | HTTPValidationError
+  | None
+):
   if response.status_code == 200:
     response_200 = CheckCreditBalanceResponseCheckcreditbalance.from_dict(
       response.json()
@@ -82,11 +83,9 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+  *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> Response[
-  Union[
-    CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
-  ]
+  CheckCreditBalanceResponseCheckcreditbalance | ErrorResponse | HTTPValidationError
 ]:
   return Response(
     status_code=HTTPStatus(response.status_code),
@@ -101,11 +100,9 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   operation_type: str,
-  base_cost: Union[None, Unset, float, str] = UNSET,
+  base_cost: float | None | str | Unset = UNSET,
 ) -> Response[
-  Union[
-    CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
-  ]
+  CheckCreditBalanceResponseCheckcreditbalance | ErrorResponse | HTTPValidationError
 ]:
   """Check Credit Balance
 
@@ -124,15 +121,14 @@ def sync_detailed(
   Args:
       graph_id (str): Graph database identifier
       operation_type (str): Type of operation to check
-      base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
-          provided)
+      base_cost (float | None | str | Unset): Custom base cost (uses default if not provided)
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError]]
+      Response[CheckCreditBalanceResponseCheckcreditbalance | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -153,12 +149,13 @@ def sync(
   *,
   client: AuthenticatedClient,
   operation_type: str,
-  base_cost: Union[None, Unset, float, str] = UNSET,
-) -> Optional[
-  Union[
-    CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
-  ]
-]:
+  base_cost: float | None | str | Unset = UNSET,
+) -> (
+  CheckCreditBalanceResponseCheckcreditbalance
+  | ErrorResponse
+  | HTTPValidationError
+  | None
+):
   """Check Credit Balance
 
    Check if the graph has sufficient credits for a planned operation.
@@ -176,15 +173,14 @@ def sync(
   Args:
       graph_id (str): Graph database identifier
       operation_type (str): Type of operation to check
-      base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
-          provided)
+      base_cost (float | None | str | Unset): Custom base cost (uses default if not provided)
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError]
+      CheckCreditBalanceResponseCheckcreditbalance | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -200,11 +196,9 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   operation_type: str,
-  base_cost: Union[None, Unset, float, str] = UNSET,
+  base_cost: float | None | str | Unset = UNSET,
 ) -> Response[
-  Union[
-    CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
-  ]
+  CheckCreditBalanceResponseCheckcreditbalance | ErrorResponse | HTTPValidationError
 ]:
   """Check Credit Balance
 
@@ -223,15 +217,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str): Graph database identifier
       operation_type (str): Type of operation to check
-      base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
-          provided)
+      base_cost (float | None | str | Unset): Custom base cost (uses default if not provided)
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError]]
+      Response[CheckCreditBalanceResponseCheckcreditbalance | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -250,12 +243,13 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   operation_type: str,
-  base_cost: Union[None, Unset, float, str] = UNSET,
-) -> Optional[
-  Union[
-    CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError
-  ]
-]:
+  base_cost: float | None | str | Unset = UNSET,
+) -> (
+  CheckCreditBalanceResponseCheckcreditbalance
+  | ErrorResponse
+  | HTTPValidationError
+  | None
+):
   """Check Credit Balance
 
    Check if the graph has sufficient credits for a planned operation.
@@ -273,15 +267,14 @@ async def asyncio(
   Args:
       graph_id (str): Graph database identifier
       operation_type (str): Type of operation to check
-      base_cost (Union[None, Unset, float, str]): Custom base cost (uses default if not
-          provided)
+      base_cost (float | None | str | Unset): Custom base cost (uses default if not provided)
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[CheckCreditBalanceResponseCheckcreditbalance, ErrorResponse, HTTPValidationError]
+      CheckCreditBalanceResponseCheckcreditbalance | ErrorResponse | HTTPValidationError
   """
 
   return (

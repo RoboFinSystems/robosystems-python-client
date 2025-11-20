@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import httpx
 
@@ -32,8 +32,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> AgentRecommendationResponse | Any | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = AgentRecommendationResponse.from_dict(response.json())
 
@@ -55,8 +55,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[AgentRecommendationResponse | Any | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -70,7 +70,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
-) -> Response[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
+) -> Response[AgentRecommendationResponse | Any | HTTPValidationError]:
   """Get agent recommendations
 
    Get intelligent agent recommendations for a specific query.
@@ -97,7 +97,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[AgentRecommendationResponse, Any, HTTPValidationError]]
+      Response[AgentRecommendationResponse | Any | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -117,7 +117,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
-) -> Optional[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
+) -> AgentRecommendationResponse | Any | HTTPValidationError | None:
   """Get agent recommendations
 
    Get intelligent agent recommendations for a specific query.
@@ -144,7 +144,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[AgentRecommendationResponse, Any, HTTPValidationError]
+      AgentRecommendationResponse | Any | HTTPValidationError
   """
 
   return sync_detailed(
@@ -159,7 +159,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
-) -> Response[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
+) -> Response[AgentRecommendationResponse | Any | HTTPValidationError]:
   """Get agent recommendations
 
    Get intelligent agent recommendations for a specific query.
@@ -186,7 +186,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[AgentRecommendationResponse, Any, HTTPValidationError]]
+      Response[AgentRecommendationResponse | Any | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -204,7 +204,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
-) -> Optional[Union[AgentRecommendationResponse, Any, HTTPValidationError]]:
+) -> AgentRecommendationResponse | Any | HTTPValidationError | None:
   """Get agent recommendations
 
    Get intelligent agent recommendations for a specific query.
@@ -231,7 +231,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[AgentRecommendationResponse, Any, HTTPValidationError]
+      AgentRecommendationResponse | Any | HTTPValidationError
   """
 
   return (

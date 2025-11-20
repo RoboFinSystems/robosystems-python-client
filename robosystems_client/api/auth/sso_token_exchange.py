@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -32,8 +32,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorResponse | HTTPValidationError | SSOExchangeResponse | None:
   if response.status_code == 200:
     response_200 = SSOExchangeResponse.from_dict(response.json())
 
@@ -61,8 +61,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorResponse | HTTPValidationError | SSOExchangeResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -73,9 +73,9 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: Union[AuthenticatedClient, Client],
+  client: AuthenticatedClient | Client,
   body: SSOExchangeRequest,
-) -> Response[Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]]:
+) -> Response[ErrorResponse | HTTPValidationError | SSOExchangeResponse]:
   """SSO Token Exchange
 
    Exchange SSO token for secure session handoff to target application.
@@ -88,7 +88,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]]
+      Response[ErrorResponse | HTTPValidationError | SSOExchangeResponse]
   """
 
   kwargs = _get_kwargs(
@@ -104,9 +104,9 @@ def sync_detailed(
 
 def sync(
   *,
-  client: Union[AuthenticatedClient, Client],
+  client: AuthenticatedClient | Client,
   body: SSOExchangeRequest,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]]:
+) -> ErrorResponse | HTTPValidationError | SSOExchangeResponse | None:
   """SSO Token Exchange
 
    Exchange SSO token for secure session handoff to target application.
@@ -119,7 +119,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]
+      ErrorResponse | HTTPValidationError | SSOExchangeResponse
   """
 
   return sync_detailed(
@@ -130,9 +130,9 @@ def sync(
 
 async def asyncio_detailed(
   *,
-  client: Union[AuthenticatedClient, Client],
+  client: AuthenticatedClient | Client,
   body: SSOExchangeRequest,
-) -> Response[Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]]:
+) -> Response[ErrorResponse | HTTPValidationError | SSOExchangeResponse]:
   """SSO Token Exchange
 
    Exchange SSO token for secure session handoff to target application.
@@ -145,7 +145,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]]
+      Response[ErrorResponse | HTTPValidationError | SSOExchangeResponse]
   """
 
   kwargs = _get_kwargs(
@@ -159,9 +159,9 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: Union[AuthenticatedClient, Client],
+  client: AuthenticatedClient | Client,
   body: SSOExchangeRequest,
-) -> Optional[Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]]:
+) -> ErrorResponse | HTTPValidationError | SSOExchangeResponse | None:
   """SSO Token Exchange
 
    Exchange SSO token for secure session handoff to target application.
@@ -174,7 +174,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, HTTPValidationError, SSOExchangeResponse]
+      ErrorResponse | HTTPValidationError | SSOExchangeResponse
   """
 
   return (

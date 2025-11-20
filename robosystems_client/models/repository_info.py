@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -21,7 +23,7 @@ class RepositoryInfo:
       description (str): Repository description
       enabled (bool): Whether repository is enabled
       coming_soon (bool): Whether repository is coming soon
-      plans (list['OfferingRepositoryPlan']): Available plans
+      plans (list[OfferingRepositoryPlan]): Available plans
   """
 
   type_: str
@@ -29,7 +31,7 @@ class RepositoryInfo:
   description: str
   enabled: bool
   coming_soon: bool
-  plans: list["OfferingRepositoryPlan"]
+  plans: list[OfferingRepositoryPlan]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

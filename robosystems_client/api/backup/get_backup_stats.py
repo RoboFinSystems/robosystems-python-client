@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -22,8 +22,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[BackupStatsResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> BackupStatsResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = BackupStatsResponse.from_dict(response.json())
 
@@ -41,8 +41,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[BackupStatsResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[BackupStatsResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -55,7 +55,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[BackupStatsResponse, HTTPValidationError]]:
+) -> Response[BackupStatsResponse | HTTPValidationError]:
   """Get backup statistics
 
    Get comprehensive backup statistics for the specified graph database
@@ -68,7 +68,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[BackupStatsResponse, HTTPValidationError]]
+      Response[BackupStatsResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -86,7 +86,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[BackupStatsResponse, HTTPValidationError]]:
+) -> BackupStatsResponse | HTTPValidationError | None:
   """Get backup statistics
 
    Get comprehensive backup statistics for the specified graph database
@@ -99,7 +99,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[BackupStatsResponse, HTTPValidationError]
+      BackupStatsResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -112,7 +112,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[BackupStatsResponse, HTTPValidationError]]:
+) -> Response[BackupStatsResponse | HTTPValidationError]:
   """Get backup statistics
 
    Get comprehensive backup statistics for the specified graph database
@@ -125,7 +125,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[BackupStatsResponse, HTTPValidationError]]
+      Response[BackupStatsResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -141,7 +141,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[BackupStatsResponse, HTTPValidationError]]:
+) -> BackupStatsResponse | HTTPValidationError | None:
   """Get backup statistics
 
    Get comprehensive backup statistics for the specified graph database
@@ -154,7 +154,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[BackupStatsResponse, HTTPValidationError]
+      BackupStatsResponse | HTTPValidationError
   """
 
   return (

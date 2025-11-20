@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -15,11 +17,11 @@ T = TypeVar("T", bound="TableListResponse")
 class TableListResponse:
   """
   Attributes:
-      tables (list['TableInfo']): List of tables
+      tables (list[TableInfo]): List of tables
       total_count (int): Total number of tables
   """
 
-  tables: list["TableInfo"]
+  tables: list[TableInfo]
   total_count: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

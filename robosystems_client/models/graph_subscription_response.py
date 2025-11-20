@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,11 +24,11 @@ class GraphSubscriptionResponse:
       status (str): Subscription status
       base_price_cents (int): Base price in cents
       created_at (str): Creation timestamp
-      current_period_start (Union[None, Unset, str]): Current billing period start
-      current_period_end (Union[None, Unset, str]): Current billing period end
-      started_at (Union[None, Unset, str]): Subscription start date
-      canceled_at (Union[None, Unset, str]): Cancellation date
-      ends_at (Union[None, Unset, str]): Subscription end date (when access will be revoked, especially relevant for
+      current_period_start (None | str | Unset): Current billing period start
+      current_period_end (None | str | Unset): Current billing period end
+      started_at (None | str | Unset): Subscription start date
+      canceled_at (None | str | Unset): Cancellation date
+      ends_at (None | str | Unset): Subscription end date (when access will be revoked, especially relevant for
           cancelled subscriptions)
   """
 
@@ -38,11 +40,11 @@ class GraphSubscriptionResponse:
   status: str
   base_price_cents: int
   created_at: str
-  current_period_start: Union[None, Unset, str] = UNSET
-  current_period_end: Union[None, Unset, str] = UNSET
-  started_at: Union[None, Unset, str] = UNSET
-  canceled_at: Union[None, Unset, str] = UNSET
-  ends_at: Union[None, Unset, str] = UNSET
+  current_period_start: None | str | Unset = UNSET
+  current_period_end: None | str | Unset = UNSET
+  started_at: None | str | Unset = UNSET
+  canceled_at: None | str | Unset = UNSET
+  ends_at: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -62,31 +64,31 @@ class GraphSubscriptionResponse:
 
     created_at = self.created_at
 
-    current_period_start: Union[None, Unset, str]
+    current_period_start: None | str | Unset
     if isinstance(self.current_period_start, Unset):
       current_period_start = UNSET
     else:
       current_period_start = self.current_period_start
 
-    current_period_end: Union[None, Unset, str]
+    current_period_end: None | str | Unset
     if isinstance(self.current_period_end, Unset):
       current_period_end = UNSET
     else:
       current_period_end = self.current_period_end
 
-    started_at: Union[None, Unset, str]
+    started_at: None | str | Unset
     if isinstance(self.started_at, Unset):
       started_at = UNSET
     else:
       started_at = self.started_at
 
-    canceled_at: Union[None, Unset, str]
+    canceled_at: None | str | Unset
     if isinstance(self.canceled_at, Unset):
       canceled_at = UNSET
     else:
       canceled_at = self.canceled_at
 
-    ends_at: Union[None, Unset, str]
+    ends_at: None | str | Unset
     if isinstance(self.ends_at, Unset):
       ends_at = UNSET
     else:
@@ -138,50 +140,50 @@ class GraphSubscriptionResponse:
 
     created_at = d.pop("created_at")
 
-    def _parse_current_period_start(data: object) -> Union[None, Unset, str]:
+    def _parse_current_period_start(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     current_period_start = _parse_current_period_start(
       d.pop("current_period_start", UNSET)
     )
 
-    def _parse_current_period_end(data: object) -> Union[None, Unset, str]:
+    def _parse_current_period_end(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     current_period_end = _parse_current_period_end(d.pop("current_period_end", UNSET))
 
-    def _parse_started_at(data: object) -> Union[None, Unset, str]:
+    def _parse_started_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     started_at = _parse_started_at(d.pop("started_at", UNSET))
 
-    def _parse_canceled_at(data: object) -> Union[None, Unset, str]:
+    def _parse_canceled_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     canceled_at = _parse_canceled_at(d.pop("canceled_at", UNSET))
 
-    def _parse_ends_at(data: object) -> Union[None, Unset, str]:
+    def _parse_ends_at(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     ends_at = _parse_ends_at(d.pop("ends_at", UNSET))
 

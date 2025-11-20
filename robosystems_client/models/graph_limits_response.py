@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -32,19 +34,19 @@ class GraphLimitsResponse:
       copy_operations (CopyOperationLimits): Copy/ingestion operation limits.
       backups (BackupLimits): Backup operation limits.
       rate_limits (RateLimits): API rate limits.
-      credits_ (Union['CreditLimits', None, Unset]): AI credit limits (if applicable)
+      credits_ (CreditLimits | None | Unset): AI credit limits (if applicable)
   """
 
   graph_id: str
   subscription_tier: str
   graph_tier: str
   is_shared_repository: bool
-  storage: "StorageLimits"
-  queries: "QueryLimits"
-  copy_operations: "CopyOperationLimits"
-  backups: "BackupLimits"
-  rate_limits: "RateLimits"
-  credits_: Union["CreditLimits", None, Unset] = UNSET
+  storage: StorageLimits
+  queries: QueryLimits
+  copy_operations: CopyOperationLimits
+  backups: BackupLimits
+  rate_limits: RateLimits
+  credits_: CreditLimits | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -68,7 +70,7 @@ class GraphLimitsResponse:
 
     rate_limits = self.rate_limits.to_dict()
 
-    credits_: Union[None, Unset, dict[str, Any]]
+    credits_: dict[str, Any] | None | Unset
     if isinstance(self.credits_, Unset):
       credits_ = UNSET
     elif isinstance(self.credits_, CreditLimits):
@@ -124,7 +126,7 @@ class GraphLimitsResponse:
 
     rate_limits = RateLimits.from_dict(d.pop("rate_limits"))
 
-    def _parse_credits_(data: object) -> Union["CreditLimits", None, Unset]:
+    def _parse_credits_(data: object) -> CreditLimits | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -135,9 +137,9 @@ class GraphLimitsResponse:
         credits_type_0 = CreditLimits.from_dict(data)
 
         return credits_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["CreditLimits", None, Unset], data)
+      return cast(CreditLimits | None | Unset, data)
 
     credits_ = _parse_credits_(d.pop("credits", UNSET))
 

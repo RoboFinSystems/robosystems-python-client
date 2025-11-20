@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -13,7 +13,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   org_id: str,
   *,
-  days: Union[Unset, int] = 30,
+  days: int | Unset = 30,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
@@ -31,8 +31,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[HTTPValidationError, OrgUsageResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> HTTPValidationError | OrgUsageResponse | None:
   if response.status_code == 200:
     response_200 = OrgUsageResponse.from_dict(response.json())
 
@@ -50,8 +50,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[HTTPValidationError, OrgUsageResponse]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[HTTPValidationError | OrgUsageResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -64,22 +64,22 @@ def sync_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  days: Union[Unset, int] = 30,
-) -> Response[Union[HTTPValidationError, OrgUsageResponse]]:
+  days: int | Unset = 30,
+) -> Response[HTTPValidationError | OrgUsageResponse]:
   """Get Organization Usage
 
    Get detailed usage statistics for an organization aggregated across all graphs.
 
   Args:
       org_id (str):
-      days (Union[Unset, int]):  Default: 30.
+      days (int | Unset):  Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, OrgUsageResponse]]
+      Response[HTTPValidationError | OrgUsageResponse]
   """
 
   kwargs = _get_kwargs(
@@ -98,22 +98,22 @@ def sync(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  days: Union[Unset, int] = 30,
-) -> Optional[Union[HTTPValidationError, OrgUsageResponse]]:
+  days: int | Unset = 30,
+) -> HTTPValidationError | OrgUsageResponse | None:
   """Get Organization Usage
 
    Get detailed usage statistics for an organization aggregated across all graphs.
 
   Args:
       org_id (str):
-      days (Union[Unset, int]):  Default: 30.
+      days (int | Unset):  Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, OrgUsageResponse]
+      HTTPValidationError | OrgUsageResponse
   """
 
   return sync_detailed(
@@ -127,22 +127,22 @@ async def asyncio_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  days: Union[Unset, int] = 30,
-) -> Response[Union[HTTPValidationError, OrgUsageResponse]]:
+  days: int | Unset = 30,
+) -> Response[HTTPValidationError | OrgUsageResponse]:
   """Get Organization Usage
 
    Get detailed usage statistics for an organization aggregated across all graphs.
 
   Args:
       org_id (str):
-      days (Union[Unset, int]):  Default: 30.
+      days (int | Unset):  Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[HTTPValidationError, OrgUsageResponse]]
+      Response[HTTPValidationError | OrgUsageResponse]
   """
 
   kwargs = _get_kwargs(
@@ -159,22 +159,22 @@ async def asyncio(
   org_id: str,
   *,
   client: AuthenticatedClient,
-  days: Union[Unset, int] = 30,
-) -> Optional[Union[HTTPValidationError, OrgUsageResponse]]:
+  days: int | Unset = 30,
+) -> HTTPValidationError | OrgUsageResponse | None:
   """Get Organization Usage
 
    Get detailed usage statistics for an organization aggregated across all graphs.
 
   Args:
       org_id (str):
-      days (Union[Unset, int]):  Default: 30.
+      days (int | Unset):  Default: 30.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[HTTPValidationError, OrgUsageResponse]
+      HTTPValidationError | OrgUsageResponse
   """
 
   return (

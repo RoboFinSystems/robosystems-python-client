@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -20,16 +22,15 @@ class SchemaValidationRequest:
   """Request model for schema validation.
 
   Attributes:
-      schema_definition (Union['SchemaValidationRequestSchemaDefinitionType0', str]): Schema definition as JSON dict
-          or JSON/YAML string
-      format_ (Union[Unset, str]): Schema format: json, yaml, or dict Default: 'json'.
-      check_compatibility (Union[None, Unset, list[str]]): List of existing schema extensions to check compatibility
-          with
+      schema_definition (SchemaValidationRequestSchemaDefinitionType0 | str): Schema definition as JSON dict or
+          JSON/YAML string
+      format_ (str | Unset): Schema format: json, yaml, or dict Default: 'json'.
+      check_compatibility (list[str] | None | Unset): List of existing schema extensions to check compatibility with
   """
 
-  schema_definition: Union["SchemaValidationRequestSchemaDefinitionType0", str]
-  format_: Union[Unset, str] = "json"
-  check_compatibility: Union[None, Unset, list[str]] = UNSET
+  schema_definition: SchemaValidationRequestSchemaDefinitionType0 | str
+  format_: str | Unset = "json"
+  check_compatibility: list[str] | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -37,7 +38,7 @@ class SchemaValidationRequest:
       SchemaValidationRequestSchemaDefinitionType0,
     )
 
-    schema_definition: Union[dict[str, Any], str]
+    schema_definition: dict[str, Any] | str
     if isinstance(self.schema_definition, SchemaValidationRequestSchemaDefinitionType0):
       schema_definition = self.schema_definition.to_dict()
     else:
@@ -45,7 +46,7 @@ class SchemaValidationRequest:
 
     format_ = self.format_
 
-    check_compatibility: Union[None, Unset, list[str]]
+    check_compatibility: list[str] | None | Unset
     if isinstance(self.check_compatibility, Unset):
       check_compatibility = UNSET
     elif isinstance(self.check_compatibility, list):
@@ -78,7 +79,7 @@ class SchemaValidationRequest:
 
     def _parse_schema_definition(
       data: object,
-    ) -> Union["SchemaValidationRequestSchemaDefinitionType0", str]:
+    ) -> SchemaValidationRequestSchemaDefinitionType0 | str:
       try:
         if not isinstance(data, dict):
           raise TypeError()
@@ -87,15 +88,15 @@ class SchemaValidationRequest:
         )
 
         return schema_definition_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["SchemaValidationRequestSchemaDefinitionType0", str], data)
+      return cast(SchemaValidationRequestSchemaDefinitionType0 | str, data)
 
     schema_definition = _parse_schema_definition(d.pop("schema_definition"))
 
     format_ = d.pop("format", UNSET)
 
-    def _parse_check_compatibility(data: object) -> Union[None, Unset, list[str]]:
+    def _parse_check_compatibility(data: object) -> list[str] | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -106,9 +107,9 @@ class SchemaValidationRequest:
         check_compatibility_type_0 = cast(list[str], data)
 
         return check_compatibility_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union[None, Unset, list[str]], data)
+      return cast(list[str] | None | Unset, data)
 
     check_compatibility = _parse_check_compatibility(
       d.pop("check_compatibility", UNSET)

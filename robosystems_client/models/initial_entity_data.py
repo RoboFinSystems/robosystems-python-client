@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -19,24 +21,24 @@ class InitialEntityData:
       Attributes:
           name (str): Entity name
           uri (str): Entity website or URI
-          cik (Union[None, Unset, str]): CIK number for SEC filings
-          sic (Union[None, Unset, str]): SIC code
-          sic_description (Union[None, Unset, str]): SIC description
-          category (Union[None, Unset, str]): Business category
-          state_of_incorporation (Union[None, Unset, str]): State of incorporation
-          fiscal_year_end (Union[None, Unset, str]): Fiscal year end (MMDD)
-          ein (Union[None, Unset, str]): Employer Identification Number
+          cik (None | str | Unset): CIK number for SEC filings
+          sic (None | str | Unset): SIC code
+          sic_description (None | str | Unset): SIC description
+          category (None | str | Unset): Business category
+          state_of_incorporation (None | str | Unset): State of incorporation
+          fiscal_year_end (None | str | Unset): Fiscal year end (MMDD)
+          ein (None | str | Unset): Employer Identification Number
   """
 
   name: str
   uri: str
-  cik: Union[None, Unset, str] = UNSET
-  sic: Union[None, Unset, str] = UNSET
-  sic_description: Union[None, Unset, str] = UNSET
-  category: Union[None, Unset, str] = UNSET
-  state_of_incorporation: Union[None, Unset, str] = UNSET
-  fiscal_year_end: Union[None, Unset, str] = UNSET
-  ein: Union[None, Unset, str] = UNSET
+  cik: None | str | Unset = UNSET
+  sic: None | str | Unset = UNSET
+  sic_description: None | str | Unset = UNSET
+  category: None | str | Unset = UNSET
+  state_of_incorporation: None | str | Unset = UNSET
+  fiscal_year_end: None | str | Unset = UNSET
+  ein: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -44,43 +46,43 @@ class InitialEntityData:
 
     uri = self.uri
 
-    cik: Union[None, Unset, str]
+    cik: None | str | Unset
     if isinstance(self.cik, Unset):
       cik = UNSET
     else:
       cik = self.cik
 
-    sic: Union[None, Unset, str]
+    sic: None | str | Unset
     if isinstance(self.sic, Unset):
       sic = UNSET
     else:
       sic = self.sic
 
-    sic_description: Union[None, Unset, str]
+    sic_description: None | str | Unset
     if isinstance(self.sic_description, Unset):
       sic_description = UNSET
     else:
       sic_description = self.sic_description
 
-    category: Union[None, Unset, str]
+    category: None | str | Unset
     if isinstance(self.category, Unset):
       category = UNSET
     else:
       category = self.category
 
-    state_of_incorporation: Union[None, Unset, str]
+    state_of_incorporation: None | str | Unset
     if isinstance(self.state_of_incorporation, Unset):
       state_of_incorporation = UNSET
     else:
       state_of_incorporation = self.state_of_incorporation
 
-    fiscal_year_end: Union[None, Unset, str]
+    fiscal_year_end: None | str | Unset
     if isinstance(self.fiscal_year_end, Unset):
       fiscal_year_end = UNSET
     else:
       fiscal_year_end = self.fiscal_year_end
 
-    ein: Union[None, Unset, str]
+    ein: None | str | Unset
     if isinstance(self.ein, Unset):
       ein = UNSET
     else:
@@ -118,68 +120,68 @@ class InitialEntityData:
 
     uri = d.pop("uri")
 
-    def _parse_cik(data: object) -> Union[None, Unset, str]:
+    def _parse_cik(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     cik = _parse_cik(d.pop("cik", UNSET))
 
-    def _parse_sic(data: object) -> Union[None, Unset, str]:
+    def _parse_sic(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     sic = _parse_sic(d.pop("sic", UNSET))
 
-    def _parse_sic_description(data: object) -> Union[None, Unset, str]:
+    def _parse_sic_description(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     sic_description = _parse_sic_description(d.pop("sic_description", UNSET))
 
-    def _parse_category(data: object) -> Union[None, Unset, str]:
+    def _parse_category(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     category = _parse_category(d.pop("category", UNSET))
 
-    def _parse_state_of_incorporation(data: object) -> Union[None, Unset, str]:
+    def _parse_state_of_incorporation(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     state_of_incorporation = _parse_state_of_incorporation(
       d.pop("state_of_incorporation", UNSET)
     )
 
-    def _parse_fiscal_year_end(data: object) -> Union[None, Unset, str]:
+    def _parse_fiscal_year_end(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     fiscal_year_end = _parse_fiscal_year_end(d.pop("fiscal_year_end", UNSET))
 
-    def _parse_ein(data: object) -> Union[None, Unset, str]:
+    def _parse_ein(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     ein = _parse_ein(d.pop("ein", UNSET))
 

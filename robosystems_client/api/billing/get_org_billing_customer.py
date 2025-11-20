@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -22,8 +22,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[BillingCustomer, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> BillingCustomer | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = BillingCustomer.from_dict(response.json())
 
@@ -41,8 +41,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[BillingCustomer, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[BillingCustomer | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -55,7 +55,7 @@ def sync_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[BillingCustomer, HTTPValidationError]]:
+) -> Response[BillingCustomer | HTTPValidationError]:
   """Get Organization Customer Info
 
    Get billing customer information for an organization including payment methods on file.
@@ -74,7 +74,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[BillingCustomer, HTTPValidationError]]
+      Response[BillingCustomer | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -92,7 +92,7 @@ def sync(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[BillingCustomer, HTTPValidationError]]:
+) -> BillingCustomer | HTTPValidationError | None:
   """Get Organization Customer Info
 
    Get billing customer information for an organization including payment methods on file.
@@ -111,7 +111,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[BillingCustomer, HTTPValidationError]
+      BillingCustomer | HTTPValidationError
   """
 
   return sync_detailed(
@@ -124,7 +124,7 @@ async def asyncio_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Union[BillingCustomer, HTTPValidationError]]:
+) -> Response[BillingCustomer | HTTPValidationError]:
   """Get Organization Customer Info
 
    Get billing customer information for an organization including payment methods on file.
@@ -143,7 +143,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[BillingCustomer, HTTPValidationError]]
+      Response[BillingCustomer | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -159,7 +159,7 @@ async def asyncio(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Optional[Union[BillingCustomer, HTTPValidationError]]:
+) -> BillingCustomer | HTTPValidationError | None:
   """Get Organization Customer Info
 
    Get billing customer information for an organization including payment methods on file.
@@ -178,7 +178,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[BillingCustomer, HTTPValidationError]
+      BillingCustomer | HTTPValidationError
   """
 
   return (

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
@@ -29,17 +31,17 @@ class OrgUsageResponse:
       start_date (datetime.datetime):
       end_date (datetime.datetime):
       summary (OrgUsageSummary): Organization usage summary.
-      graph_details (list['OrgUsageResponseGraphDetailsItem']):
-      daily_trend (list['OrgUsageResponseDailyTrendItem']):
+      graph_details (list[OrgUsageResponseGraphDetailsItem]):
+      daily_trend (list[OrgUsageResponseDailyTrendItem]):
   """
 
   org_id: str
   period_days: int
   start_date: datetime.datetime
   end_date: datetime.datetime
-  summary: "OrgUsageSummary"
-  graph_details: list["OrgUsageResponseGraphDetailsItem"]
-  daily_trend: list["OrgUsageResponseDailyTrendItem"]
+  summary: OrgUsageSummary
+  graph_details: list[OrgUsageResponseGraphDetailsItem]
+  daily_trend: list[OrgUsageResponseDailyTrendItem]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

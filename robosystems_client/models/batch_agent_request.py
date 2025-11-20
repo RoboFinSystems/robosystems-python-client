@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -18,12 +20,12 @@ class BatchAgentRequest:
   """Request for batch processing multiple queries.
 
   Attributes:
-      queries (list['AgentRequest']): List of queries to process (max 10)
-      parallel (Union[Unset, bool]): Process queries in parallel Default: False.
+      queries (list[AgentRequest]): List of queries to process (max 10)
+      parallel (bool | Unset): Process queries in parallel Default: False.
   """
 
-  queries: list["AgentRequest"]
-  parallel: Union[Unset, bool] = False
+  queries: list[AgentRequest]
+  parallel: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

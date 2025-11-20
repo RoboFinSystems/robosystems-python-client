@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -14,11 +14,11 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  time_range: Union[Unset, str] = "30d",
-  include_storage: Union[Unset, bool] = True,
-  include_credits: Union[Unset, bool] = True,
-  include_performance: Union[Unset, bool] = False,
-  include_events: Union[Unset, bool] = False,
+  time_range: str | Unset = "30d",
+  include_storage: bool | Unset = True,
+  include_credits: bool | Unset = True,
+  include_performance: bool | Unset = False,
+  include_events: bool | Unset = False,
 ) -> dict[str, Any]:
   params: dict[str, Any] = {}
 
@@ -44,8 +44,8 @@ def _get_kwargs(
 
 
 def _parse_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorResponse | GraphUsageResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = GraphUsageResponse.from_dict(response.json())
 
@@ -73,8 +73,8 @@ def _parse_response(
 
 
 def _build_response(
-  *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -87,12 +87,12 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  time_range: Union[Unset, str] = "30d",
-  include_storage: Union[Unset, bool] = True,
-  include_credits: Union[Unset, bool] = True,
-  include_performance: Union[Unset, bool] = False,
-  include_events: Union[Unset, bool] = False,
-) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
+  time_range: str | Unset = "30d",
+  include_storage: bool | Unset = True,
+  include_credits: bool | Unset = True,
+  include_performance: bool | Unset = False,
+  include_events: bool | Unset = False,
+) -> Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]:
   """Get Graph Usage Analytics
 
    Get comprehensive usage analytics tracked by the GraphUsage model.
@@ -127,20 +127,20 @@ def sync_detailed(
 
   Args:
       graph_id (str):
-      time_range (Union[Unset, str]): Time range: 24h, 7d, 30d, current_month, last_month
-          Default: '30d'.
-      include_storage (Union[Unset, bool]): Include storage usage summary Default: True.
-      include_credits (Union[Unset, bool]): Include credit consumption summary Default: True.
-      include_performance (Union[Unset, bool]): Include performance insights (may be slower)
-          Default: False.
-      include_events (Union[Unset, bool]): Include recent usage events Default: False.
+      time_range (str | Unset): Time range: 24h, 7d, 30d, current_month, last_month Default:
+          '30d'.
+      include_storage (bool | Unset): Include storage usage summary Default: True.
+      include_credits (bool | Unset): Include credit consumption summary Default: True.
+      include_performance (bool | Unset): Include performance insights (may be slower) Default:
+          False.
+      include_events (bool | Unset): Include recent usage events Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]
+      Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -163,12 +163,12 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  time_range: Union[Unset, str] = "30d",
-  include_storage: Union[Unset, bool] = True,
-  include_credits: Union[Unset, bool] = True,
-  include_performance: Union[Unset, bool] = False,
-  include_events: Union[Unset, bool] = False,
-) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
+  time_range: str | Unset = "30d",
+  include_storage: bool | Unset = True,
+  include_credits: bool | Unset = True,
+  include_performance: bool | Unset = False,
+  include_events: bool | Unset = False,
+) -> ErrorResponse | GraphUsageResponse | HTTPValidationError | None:
   """Get Graph Usage Analytics
 
    Get comprehensive usage analytics tracked by the GraphUsage model.
@@ -203,20 +203,20 @@ def sync(
 
   Args:
       graph_id (str):
-      time_range (Union[Unset, str]): Time range: 24h, 7d, 30d, current_month, last_month
-          Default: '30d'.
-      include_storage (Union[Unset, bool]): Include storage usage summary Default: True.
-      include_credits (Union[Unset, bool]): Include credit consumption summary Default: True.
-      include_performance (Union[Unset, bool]): Include performance insights (may be slower)
-          Default: False.
-      include_events (Union[Unset, bool]): Include recent usage events Default: False.
+      time_range (str | Unset): Time range: 24h, 7d, 30d, current_month, last_month Default:
+          '30d'.
+      include_storage (bool | Unset): Include storage usage summary Default: True.
+      include_credits (bool | Unset): Include credit consumption summary Default: True.
+      include_performance (bool | Unset): Include performance insights (may be slower) Default:
+          False.
+      include_events (bool | Unset): Include recent usage events Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]
+      ErrorResponse | GraphUsageResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -234,12 +234,12 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  time_range: Union[Unset, str] = "30d",
-  include_storage: Union[Unset, bool] = True,
-  include_credits: Union[Unset, bool] = True,
-  include_performance: Union[Unset, bool] = False,
-  include_events: Union[Unset, bool] = False,
-) -> Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
+  time_range: str | Unset = "30d",
+  include_storage: bool | Unset = True,
+  include_credits: bool | Unset = True,
+  include_performance: bool | Unset = False,
+  include_events: bool | Unset = False,
+) -> Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]:
   """Get Graph Usage Analytics
 
    Get comprehensive usage analytics tracked by the GraphUsage model.
@@ -274,20 +274,20 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str):
-      time_range (Union[Unset, str]): Time range: 24h, 7d, 30d, current_month, last_month
-          Default: '30d'.
-      include_storage (Union[Unset, bool]): Include storage usage summary Default: True.
-      include_credits (Union[Unset, bool]): Include credit consumption summary Default: True.
-      include_performance (Union[Unset, bool]): Include performance insights (may be slower)
-          Default: False.
-      include_events (Union[Unset, bool]): Include recent usage events Default: False.
+      time_range (str | Unset): Time range: 24h, 7d, 30d, current_month, last_month Default:
+          '30d'.
+      include_storage (bool | Unset): Include storage usage summary Default: True.
+      include_credits (bool | Unset): Include credit consumption summary Default: True.
+      include_performance (bool | Unset): Include performance insights (may be slower) Default:
+          False.
+      include_events (bool | Unset): Include recent usage events Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]
+      Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -308,12 +308,12 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  time_range: Union[Unset, str] = "30d",
-  include_storage: Union[Unset, bool] = True,
-  include_credits: Union[Unset, bool] = True,
-  include_performance: Union[Unset, bool] = False,
-  include_events: Union[Unset, bool] = False,
-) -> Optional[Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]]:
+  time_range: str | Unset = "30d",
+  include_storage: bool | Unset = True,
+  include_credits: bool | Unset = True,
+  include_performance: bool | Unset = False,
+  include_events: bool | Unset = False,
+) -> ErrorResponse | GraphUsageResponse | HTTPValidationError | None:
   """Get Graph Usage Analytics
 
    Get comprehensive usage analytics tracked by the GraphUsage model.
@@ -348,20 +348,20 @@ async def asyncio(
 
   Args:
       graph_id (str):
-      time_range (Union[Unset, str]): Time range: 24h, 7d, 30d, current_month, last_month
-          Default: '30d'.
-      include_storage (Union[Unset, bool]): Include storage usage summary Default: True.
-      include_credits (Union[Unset, bool]): Include credit consumption summary Default: True.
-      include_performance (Union[Unset, bool]): Include performance insights (may be slower)
-          Default: False.
-      include_events (Union[Unset, bool]): Include recent usage events Default: False.
+      time_range (str | Unset): Time range: 24h, 7d, 30d, current_month, last_month Default:
+          '30d'.
+      include_storage (bool | Unset): Include storage usage summary Default: True.
+      include_credits (bool | Unset): Include credit consumption summary Default: True.
+      include_performance (bool | Unset): Include performance insights (may be slower) Default:
+          False.
+      include_events (bool | Unset): Include recent usage events Default: False.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Union[ErrorResponse, GraphUsageResponse, HTTPValidationError]
+      ErrorResponse | GraphUsageResponse | HTTPValidationError
   """
 
   return (

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,10 +18,10 @@ class APIKeysResponse:
   """Response model for listing API keys.
 
   Attributes:
-      api_keys (list['APIKeyInfo']): List of user's API keys
+      api_keys (list[APIKeyInfo]): List of user's API keys
   """
 
-  api_keys: list["APIKeyInfo"]
+  api_keys: list[APIKeyInfo]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

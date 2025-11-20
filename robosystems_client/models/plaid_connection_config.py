@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -23,18 +25,18 @@ class PlaidConnectionConfig:
   """Plaid-specific connection configuration.
 
   Attributes:
-      public_token (Union[None, Unset, str]): Plaid public token for exchange
-      access_token (Union[None, Unset, str]): Plaid access token (set after exchange)
-      item_id (Union[None, Unset, str]): Plaid item ID
-      institution (Union['PlaidConnectionConfigInstitutionType0', None, Unset]): Institution information
-      accounts (Union[None, Unset, list['PlaidConnectionConfigAccountsType0Item']]): Connected accounts
+      public_token (None | str | Unset): Plaid public token for exchange
+      access_token (None | str | Unset): Plaid access token (set after exchange)
+      item_id (None | str | Unset): Plaid item ID
+      institution (None | PlaidConnectionConfigInstitutionType0 | Unset): Institution information
+      accounts (list[PlaidConnectionConfigAccountsType0Item] | None | Unset): Connected accounts
   """
 
-  public_token: Union[None, Unset, str] = UNSET
-  access_token: Union[None, Unset, str] = UNSET
-  item_id: Union[None, Unset, str] = UNSET
-  institution: Union["PlaidConnectionConfigInstitutionType0", None, Unset] = UNSET
-  accounts: Union[None, Unset, list["PlaidConnectionConfigAccountsType0Item"]] = UNSET
+  public_token: None | str | Unset = UNSET
+  access_token: None | str | Unset = UNSET
+  item_id: None | str | Unset = UNSET
+  institution: None | PlaidConnectionConfigInstitutionType0 | Unset = UNSET
+  accounts: list[PlaidConnectionConfigAccountsType0Item] | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -42,25 +44,25 @@ class PlaidConnectionConfig:
       PlaidConnectionConfigInstitutionType0,
     )
 
-    public_token: Union[None, Unset, str]
+    public_token: None | str | Unset
     if isinstance(self.public_token, Unset):
       public_token = UNSET
     else:
       public_token = self.public_token
 
-    access_token: Union[None, Unset, str]
+    access_token: None | str | Unset
     if isinstance(self.access_token, Unset):
       access_token = UNSET
     else:
       access_token = self.access_token
 
-    item_id: Union[None, Unset, str]
+    item_id: None | str | Unset
     if isinstance(self.item_id, Unset):
       item_id = UNSET
     else:
       item_id = self.item_id
 
-    institution: Union[None, Unset, dict[str, Any]]
+    institution: dict[str, Any] | None | Unset
     if isinstance(self.institution, Unset):
       institution = UNSET
     elif isinstance(self.institution, PlaidConnectionConfigInstitutionType0):
@@ -68,7 +70,7 @@ class PlaidConnectionConfig:
     else:
       institution = self.institution
 
-    accounts: Union[None, Unset, list[dict[str, Any]]]
+    accounts: list[dict[str, Any]] | None | Unset
     if isinstance(self.accounts, Unset):
       accounts = UNSET
     elif isinstance(self.accounts, list):
@@ -107,36 +109,36 @@ class PlaidConnectionConfig:
 
     d = dict(src_dict)
 
-    def _parse_public_token(data: object) -> Union[None, Unset, str]:
+    def _parse_public_token(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     public_token = _parse_public_token(d.pop("public_token", UNSET))
 
-    def _parse_access_token(data: object) -> Union[None, Unset, str]:
+    def _parse_access_token(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     access_token = _parse_access_token(d.pop("access_token", UNSET))
 
-    def _parse_item_id(data: object) -> Union[None, Unset, str]:
+    def _parse_item_id(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     item_id = _parse_item_id(d.pop("item_id", UNSET))
 
     def _parse_institution(
       data: object,
-    ) -> Union["PlaidConnectionConfigInstitutionType0", None, Unset]:
+    ) -> None | PlaidConnectionConfigInstitutionType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -147,15 +149,15 @@ class PlaidConnectionConfig:
         institution_type_0 = PlaidConnectionConfigInstitutionType0.from_dict(data)
 
         return institution_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(Union["PlaidConnectionConfigInstitutionType0", None, Unset], data)
+      return cast(None | PlaidConnectionConfigInstitutionType0 | Unset, data)
 
     institution = _parse_institution(d.pop("institution", UNSET))
 
     def _parse_accounts(
       data: object,
-    ) -> Union[None, Unset, list["PlaidConnectionConfigAccountsType0Item"]]:
+    ) -> list[PlaidConnectionConfigAccountsType0Item] | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -173,11 +175,9 @@ class PlaidConnectionConfig:
           accounts_type_0.append(accounts_type_0_item)
 
         return accounts_type_0
-      except:  # noqa: E722
+      except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(
-        Union[None, Unset, list["PlaidConnectionConfigAccountsType0Item"]], data
-      )
+      return cast(list[PlaidConnectionConfigAccountsType0Item] | None | Unset, data)
 
     accounts = _parse_accounts(d.pop("accounts", UNSET))
 

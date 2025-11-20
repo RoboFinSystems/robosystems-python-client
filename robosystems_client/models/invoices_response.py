@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -16,12 +18,12 @@ class InvoicesResponse:
   """Response for invoice list.
 
   Attributes:
-      invoices (list['Invoice']): List of invoices
+      invoices (list[Invoice]): List of invoices
       total_count (int): Total number of invoices
       has_more (bool): Whether more invoices are available
   """
 
-  invoices: list["Invoice"]
+  invoices: list[Invoice]
   total_count: int
   has_more: bool
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)

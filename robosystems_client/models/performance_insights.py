@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -24,14 +26,14 @@ class PerformanceInsights:
       analysis_period_days (int): Analysis period in days
       total_operations (int): Total operations analyzed
       operation_stats (PerformanceInsightsOperationStats): Performance stats by operation type
-      slow_queries (list['PerformanceInsightsSlowQueriesItem']): Top slow queries (over 5 seconds)
+      slow_queries (list[PerformanceInsightsSlowQueriesItem]): Top slow queries (over 5 seconds)
       performance_score (int): Performance score (0-100)
   """
 
   analysis_period_days: int
   total_operations: int
-  operation_stats: "PerformanceInsightsOperationStats"
-  slow_queries: list["PerformanceInsightsSlowQueriesItem"]
+  operation_stats: PerformanceInsightsOperationStats
+  slow_queries: list[PerformanceInsightsSlowQueriesItem]
   performance_score: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

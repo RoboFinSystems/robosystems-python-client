@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
@@ -21,13 +23,13 @@ class RepositorySubscriptions:
       Attributes:
           description (str): Description of repository subscriptions
           pricing_model (str): Pricing model type (per_graph or per_organization)
-          repositories (list['RepositoryInfo']): Available repositories
+          repositories (list[RepositoryInfo]): Available repositories
           notes (list[str]): Important notes
   """
 
   description: str
   pricing_model: str
-  repositories: list["RepositoryInfo"]
+  repositories: list[RepositoryInfo]
   notes: list[str]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
-from typing import Any, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -14,22 +16,22 @@ class UpdateUserRequest:
   """Request model for updating user profile.
 
   Attributes:
-      name (Union[None, Unset, str]): User's display name
-      email (Union[None, Unset, str]): User's email address
+      name (None | str | Unset): User's display name
+      email (None | str | Unset): User's email address
   """
 
-  name: Union[None, Unset, str] = UNSET
-  email: Union[None, Unset, str] = UNSET
+  name: None | str | Unset = UNSET
+  email: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    name: Union[None, Unset, str]
+    name: None | str | Unset
     if isinstance(self.name, Unset):
       name = UNSET
     else:
       name = self.name
 
-    email: Union[None, Unset, str]
+    email: None | str | Unset
     if isinstance(self.email, Unset):
       email = UNSET
     else:
@@ -49,21 +51,21 @@ class UpdateUserRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
 
-    def _parse_name(data: object) -> Union[None, Unset, str]:
+    def _parse_name(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     name = _parse_name(d.pop("name", UNSET))
 
-    def _parse_email(data: object) -> Union[None, Unset, str]:
+    def _parse_email(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(Union[None, Unset, str], data)
+      return cast(None | str | Unset, data)
 
     email = _parse_email(d.pop("email", UNSET))
 
