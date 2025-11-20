@@ -4,7 +4,9 @@ import pytest
 from robosystems_client.extensions import (
   RoboSystemsExtensions,
   RoboSystemsExtensionConfig,
-  TableIngestClient,
+  FileClient,
+  MaterializationClient,
+  TableClient,
   QueryClient,
   OperationClient,
   GraphClient,
@@ -22,10 +24,11 @@ class TestRoboSystemsExtensions:
     assert extensions.config["base_url"] == "http://localhost:8000"
     assert isinstance(extensions.query, QueryClient)
     assert isinstance(extensions.operations, OperationClient)
-    assert isinstance(extensions.tables, TableIngestClient)
+    assert isinstance(extensions.files, FileClient)
+    assert isinstance(extensions.materialization, MaterializationClient)
+    assert isinstance(extensions.tables, TableClient)
     assert isinstance(extensions.graphs, GraphClient)
 
-    # Cleanup
     extensions.close()
 
   def test_extensions_initialization_with_config(self):
@@ -103,8 +106,36 @@ class TestRoboSystemsExtensions:
 
     extensions.close()
 
-  def test_table_ingest_client_receives_config(self):
-    """Test that TableIngestClient receives proper config."""
+  def test_file_client_receives_config(self):
+    """Test that FileClient receives proper config."""
+    config = RoboSystemsExtensionConfig(
+      base_url="https://api.robosystems.ai",
+      headers={"X-API-Key": "test-token"},
+    )
+
+    extensions = RoboSystemsExtensions(config)
+
+    assert extensions.files.base_url == "https://api.robosystems.ai"
+    assert "X-API-Key" in extensions.files.headers
+
+    extensions.close()
+
+  def test_materialization_client_receives_config(self):
+    """Test that MaterializationClient receives proper config."""
+    config = RoboSystemsExtensionConfig(
+      base_url="https://api.robosystems.ai",
+      headers={"X-API-Key": "test-token"},
+    )
+
+    extensions = RoboSystemsExtensions(config)
+
+    assert extensions.materialization.base_url == "https://api.robosystems.ai"
+    assert "X-API-Key" in extensions.materialization.headers
+
+    extensions.close()
+
+  def test_table_client_receives_config(self):
+    """Test that TableClient receives proper config."""
     config = RoboSystemsExtensionConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-token"},
