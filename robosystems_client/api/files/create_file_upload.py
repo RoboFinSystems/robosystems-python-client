@@ -14,7 +14,6 @@ from ...types import Response
 
 def _get_kwargs(
   graph_id: str,
-  table_name: str,
   *,
   body: FileUploadRequest,
 ) -> dict[str, Any]:
@@ -22,7 +21,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": f"/v1/graphs/{graph_id}/tables/{table_name}/files",
+    "url": f"/v1/graphs/{graph_id}/files",
   }
 
   _kwargs["json"] = body.to_dict()
@@ -65,10 +64,6 @@ def _parse_response(
 
     return response_422
 
-  if response.status_code == 500:
-    response_500 = cast(Any, None)
-    return response_500
-
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -88,57 +83,42 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  table_name: str,
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
 ) -> Response[Any | ErrorResponse | FileUploadResponse | HTTPValidationError]:
-  r"""Get File Upload URL
+  """Create File Upload
 
-   Generate a presigned S3 URL for secure file upload.
+   Generate presigned S3 URL for file upload.
 
-  Initiates file upload to a staging table by generating a secure, time-limited
-  presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
-  optimal performance.
+  Initiate file upload by generating a secure, time-limited presigned S3 URL.
+  Files are first-class resources uploaded directly to S3.
+
+  **Request Body:**
+  - `file_name`: Name of the file (1-255 characters)
+  - `file_format`: Format (parquet, csv, json)
+  - `table_name`: Table to associate file with
 
   **Upload Workflow:**
   1. Call this endpoint to get presigned URL
   2. PUT file directly to S3 URL
-  3. Call PATCH /tables/files/{file_id} with status='uploaded'
-  4. Backend validates file and calculates metrics
-  5. File ready for ingestion
+  3. Call PATCH /files/{file_id} with status='uploaded'
+  4. Backend validates and stages in DuckDB immediately
+  5. Background task ingests to graph
 
   **Supported Formats:**
-  - Parquet (`application/x-parquet` with `.parquet` extension)
-  - CSV (`text/csv` with `.csv` extension)
-  - JSON (`application/json` with `.json` extension)
-
-  **Validation:**
-  - File extension must match content type
-  - File name 1-255 characters
-  - No path traversal characters (.. / \)
-  - Auto-creates table if it doesn't exist
+  - Parquet, CSV, JSON
 
   **Auto-Table Creation:**
-  Tables are automatically created on first file upload with type inferred from name
-  (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Each subgraph has completely isolated S3 staging areas and tables. Files uploaded
-  to one subgraph do not appear in other subgraphs.
+  Tables are automatically created if they don't exist.
 
   **Important Notes:**
   - Presigned URLs expire (default: 1 hour)
-  - Use appropriate Content-Type header when uploading to S3
-  - File extension must match content type
+  - Files are graph-scoped, independent resources
   - Upload URL generation is included - no credit consumption
 
   Args:
       graph_id (str):
-      table_name (str): Table name
       body (FileUploadRequest):
 
   Raises:
@@ -151,7 +131,6 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    table_name=table_name,
     body=body,
   )
 
@@ -164,57 +143,42 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  table_name: str,
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
 ) -> Any | ErrorResponse | FileUploadResponse | HTTPValidationError | None:
-  r"""Get File Upload URL
+  """Create File Upload
 
-   Generate a presigned S3 URL for secure file upload.
+   Generate presigned S3 URL for file upload.
 
-  Initiates file upload to a staging table by generating a secure, time-limited
-  presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
-  optimal performance.
+  Initiate file upload by generating a secure, time-limited presigned S3 URL.
+  Files are first-class resources uploaded directly to S3.
+
+  **Request Body:**
+  - `file_name`: Name of the file (1-255 characters)
+  - `file_format`: Format (parquet, csv, json)
+  - `table_name`: Table to associate file with
 
   **Upload Workflow:**
   1. Call this endpoint to get presigned URL
   2. PUT file directly to S3 URL
-  3. Call PATCH /tables/files/{file_id} with status='uploaded'
-  4. Backend validates file and calculates metrics
-  5. File ready for ingestion
+  3. Call PATCH /files/{file_id} with status='uploaded'
+  4. Backend validates and stages in DuckDB immediately
+  5. Background task ingests to graph
 
   **Supported Formats:**
-  - Parquet (`application/x-parquet` with `.parquet` extension)
-  - CSV (`text/csv` with `.csv` extension)
-  - JSON (`application/json` with `.json` extension)
-
-  **Validation:**
-  - File extension must match content type
-  - File name 1-255 characters
-  - No path traversal characters (.. / \)
-  - Auto-creates table if it doesn't exist
+  - Parquet, CSV, JSON
 
   **Auto-Table Creation:**
-  Tables are automatically created on first file upload with type inferred from name
-  (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Each subgraph has completely isolated S3 staging areas and tables. Files uploaded
-  to one subgraph do not appear in other subgraphs.
+  Tables are automatically created if they don't exist.
 
   **Important Notes:**
   - Presigned URLs expire (default: 1 hour)
-  - Use appropriate Content-Type header when uploading to S3
-  - File extension must match content type
+  - Files are graph-scoped, independent resources
   - Upload URL generation is included - no credit consumption
 
   Args:
       graph_id (str):
-      table_name (str): Table name
       body (FileUploadRequest):
 
   Raises:
@@ -227,7 +191,6 @@ def sync(
 
   return sync_detailed(
     graph_id=graph_id,
-    table_name=table_name,
     client=client,
     body=body,
   ).parsed
@@ -235,57 +198,42 @@ def sync(
 
 async def asyncio_detailed(
   graph_id: str,
-  table_name: str,
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
 ) -> Response[Any | ErrorResponse | FileUploadResponse | HTTPValidationError]:
-  r"""Get File Upload URL
+  """Create File Upload
 
-   Generate a presigned S3 URL for secure file upload.
+   Generate presigned S3 URL for file upload.
 
-  Initiates file upload to a staging table by generating a secure, time-limited
-  presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
-  optimal performance.
+  Initiate file upload by generating a secure, time-limited presigned S3 URL.
+  Files are first-class resources uploaded directly to S3.
+
+  **Request Body:**
+  - `file_name`: Name of the file (1-255 characters)
+  - `file_format`: Format (parquet, csv, json)
+  - `table_name`: Table to associate file with
 
   **Upload Workflow:**
   1. Call this endpoint to get presigned URL
   2. PUT file directly to S3 URL
-  3. Call PATCH /tables/files/{file_id} with status='uploaded'
-  4. Backend validates file and calculates metrics
-  5. File ready for ingestion
+  3. Call PATCH /files/{file_id} with status='uploaded'
+  4. Backend validates and stages in DuckDB immediately
+  5. Background task ingests to graph
 
   **Supported Formats:**
-  - Parquet (`application/x-parquet` with `.parquet` extension)
-  - CSV (`text/csv` with `.csv` extension)
-  - JSON (`application/json` with `.json` extension)
-
-  **Validation:**
-  - File extension must match content type
-  - File name 1-255 characters
-  - No path traversal characters (.. / \)
-  - Auto-creates table if it doesn't exist
+  - Parquet, CSV, JSON
 
   **Auto-Table Creation:**
-  Tables are automatically created on first file upload with type inferred from name
-  (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Each subgraph has completely isolated S3 staging areas and tables. Files uploaded
-  to one subgraph do not appear in other subgraphs.
+  Tables are automatically created if they don't exist.
 
   **Important Notes:**
   - Presigned URLs expire (default: 1 hour)
-  - Use appropriate Content-Type header when uploading to S3
-  - File extension must match content type
+  - Files are graph-scoped, independent resources
   - Upload URL generation is included - no credit consumption
 
   Args:
       graph_id (str):
-      table_name (str): Table name
       body (FileUploadRequest):
 
   Raises:
@@ -298,7 +246,6 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    table_name=table_name,
     body=body,
   )
 
@@ -309,57 +256,42 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  table_name: str,
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
 ) -> Any | ErrorResponse | FileUploadResponse | HTTPValidationError | None:
-  r"""Get File Upload URL
+  """Create File Upload
 
-   Generate a presigned S3 URL for secure file upload.
+   Generate presigned S3 URL for file upload.
 
-  Initiates file upload to a staging table by generating a secure, time-limited
-  presigned S3 URL. Files are uploaded directly to S3, bypassing the API for
-  optimal performance.
+  Initiate file upload by generating a secure, time-limited presigned S3 URL.
+  Files are first-class resources uploaded directly to S3.
+
+  **Request Body:**
+  - `file_name`: Name of the file (1-255 characters)
+  - `file_format`: Format (parquet, csv, json)
+  - `table_name`: Table to associate file with
 
   **Upload Workflow:**
   1. Call this endpoint to get presigned URL
   2. PUT file directly to S3 URL
-  3. Call PATCH /tables/files/{file_id} with status='uploaded'
-  4. Backend validates file and calculates metrics
-  5. File ready for ingestion
+  3. Call PATCH /files/{file_id} with status='uploaded'
+  4. Backend validates and stages in DuckDB immediately
+  5. Background task ingests to graph
 
   **Supported Formats:**
-  - Parquet (`application/x-parquet` with `.parquet` extension)
-  - CSV (`text/csv` with `.csv` extension)
-  - JSON (`application/json` with `.json` extension)
-
-  **Validation:**
-  - File extension must match content type
-  - File name 1-255 characters
-  - No path traversal characters (.. / \)
-  - Auto-creates table if it doesn't exist
+  - Parquet, CSV, JSON
 
   **Auto-Table Creation:**
-  Tables are automatically created on first file upload with type inferred from name
-  (e.g., \"Transaction\" → relationship) and empty schema populated during ingestion.
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Each subgraph has completely isolated S3 staging areas and tables. Files uploaded
-  to one subgraph do not appear in other subgraphs.
+  Tables are automatically created if they don't exist.
 
   **Important Notes:**
   - Presigned URLs expire (default: 1 hour)
-  - Use appropriate Content-Type header when uploading to S3
-  - File extension must match content type
+  - Files are graph-scoped, independent resources
   - Upload URL generation is included - no credit consumption
 
   Args:
       graph_id (str):
-      table_name (str): Table name
       body (FileUploadRequest):
 
   Raises:
@@ -373,7 +305,6 @@ async def asyncio(
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      table_name=table_name,
       client=client,
       body=body,
     )

@@ -11,21 +11,21 @@ import json
 import logging
 import httpx
 
-from ..api.tables.get_upload_url import (
-  sync_detailed as get_upload_url,
+from ..api.files.create_file_upload import (
+  sync_detailed as create_file_upload,
 )
-from ..api.tables.update_file_status import (
-  sync_detailed as update_file_status,
+from ..api.files.update_file import (
+  sync_detailed as update_file,
 )
 from ..api.tables.list_tables import (
   sync_detailed as list_tables,
 )
-from ..api.tables.ingest_tables import (
-  sync_detailed as ingest_tables,
+from ..api.materialization.materialize_graph import (
+  sync_detailed as materialize_graph,
 )
 from ..models.file_upload_request import FileUploadRequest
 from ..models.file_status_update import FileStatusUpdate
-from ..models.bulk_ingest_request import BulkIngestRequest
+from ..models.materialize_request import MaterializeRequest
 
 logger = logging.getLogger(__name__)
 
@@ -167,17 +167,16 @@ class TableIngestClient:
         )
 
       upload_request = FileUploadRequest(
-        file_name=file_name, content_type="application/x-parquet"
+        file_name=file_name, content_type="application/x-parquet", table_name=table_name
       )
 
       kwargs = {
         "graph_id": graph_id,
-        "table_name": table_name,
         "client": client,
         "body": upload_request,
       }
 
-      response = get_upload_url(**kwargs)
+      response = create_file_upload(**kwargs)
 
       if not response.parsed:
         error_msg = f"Failed to get upload URL (status: {response.status_code})"
@@ -246,11 +245,11 @@ class TableIngestClient:
         "body": status_update,
       }
 
-      update_response = update_file_status(**kwargs)
+      update_response = update_file(**kwargs)
 
       if not update_response.parsed:
         logger.error(
-          f"No parsed response from update_file_status. Status code: {update_response.status_code}"
+          f"No parsed response from update_file. Status code: {update_response.status_code}"
         )
         return UploadResult(
           file_id=file_id,
@@ -354,14 +353,16 @@ class TableIngestClient:
     self, graph_id: str, options: Optional[IngestOptions] = None
   ) -> Dict[str, Any]:
     """
-    Ingest all staging tables into the graph.
+    Materialize the graph from all staging tables.
+
+    This rebuilds the complete graph database from the current state of DuckDB staging tables.
 
     Args:
         graph_id: The graph ID
         options: Ingest options
 
     Returns:
-        Dictionary with ingestion results
+        Dictionary with materialization results
     """
     if options is None:
       options = IngestOptions()
@@ -381,36 +382,36 @@ class TableIngestClient:
       )
 
       if options.on_progress:
-        options.on_progress("Starting table ingestion...")
+        options.on_progress("Starting table materialization...")
 
-      ingest_request = BulkIngestRequest(
-        ignore_errors=options.ignore_errors, rebuild=options.rebuild
+      materialize_request = MaterializeRequest(
+        ignore_errors=options.ignore_errors, rebuild=options.rebuild, force=True
       )
 
       kwargs = {
         "graph_id": graph_id,
         "client": client,
-        "body": ingest_request,
+        "body": materialize_request,
       }
 
-      response = ingest_tables(**kwargs)
+      response = materialize_graph(**kwargs)
 
       if not response.parsed:
-        return {"success": False, "error": "Failed to ingest tables"}
+        return {"success": False, "error": "Failed to materialize graph"}
 
       result = {
         "success": True,
         "operation_id": getattr(response.parsed, "operation_id", None),
-        "message": getattr(response.parsed, "message", "Ingestion started"),
+        "message": getattr(response.parsed, "message", "Materialization started"),
       }
 
       if options.on_progress:
-        options.on_progress("✅ Table ingestion completed")
+        options.on_progress("✅ Graph materialization completed")
 
       return result
 
     except Exception as e:
-      logger.error(f"Failed to ingest tables: {e}")
+      logger.error(f"Failed to materialize graph: {e}")
       return {"success": False, "error": str(e)}
 
   def upload_and_ingest(

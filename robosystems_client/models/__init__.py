@@ -40,8 +40,6 @@ from .backup_stats_response_backup_formats import BackupStatsResponseBackupForma
 from .batch_agent_request import BatchAgentRequest
 from .batch_agent_response import BatchAgentResponse
 from .billing_customer import BillingCustomer
-from .bulk_ingest_request import BulkIngestRequest
-from .bulk_ingest_response import BulkIngestResponse
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -97,6 +95,7 @@ from .enhanced_credit_transaction_response import EnhancedCreditTransactionRespo
 from .enhanced_credit_transaction_response_metadata import (
   EnhancedCreditTransactionResponseMetadata,
 )
+from .enhanced_file_status_layers import EnhancedFileStatusLayers
 from .error_response import ErrorResponse
 from .exchange_token_request import ExchangeTokenRequest
 from .exchange_token_request_metadata_type_0 import ExchangeTokenRequestMetadataType0
@@ -106,6 +105,7 @@ from .execute_cypher_query_response_200_data_item import (
 )
 from .fact_detail import FactDetail
 from .file_info import FileInfo
+from .file_layer_status import FileLayerStatus
 from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
 from .file_upload_response import FileUploadResponse
@@ -160,6 +160,9 @@ from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
+from .materialize_request import MaterializeRequest
+from .materialize_response import MaterializeResponse
+from .materialize_status_response import MaterializeStatusResponse
 from .mcp_tool_call import MCPToolCall
 from .mcp_tool_call_arguments import MCPToolCallArguments
 from .mcp_tools_response import MCPToolsResponse
@@ -270,7 +273,6 @@ from .sync_connection_response_syncconnection import (
   SyncConnectionResponseSyncconnection,
 )
 from .table_info import TableInfo
-from .table_ingest_result import TableIngestResult
 from .table_list_response import TableListResponse
 from .table_query_request import TableQueryRequest
 from .table_query_response import TableQueryResponse
@@ -278,9 +280,7 @@ from .token_pricing import TokenPricing
 from .transaction_summary_response import TransactionSummaryResponse
 from .upcoming_invoice import UpcomingInvoice
 from .update_api_key_request import UpdateAPIKeyRequest
-from .update_file_status_response_updatefilestatus import (
-  UpdateFileStatusResponseUpdatefilestatus,
-)
+from .update_file_response_updatefile import UpdateFileResponseUpdatefile
 from .update_member_role_request import UpdateMemberRoleRequest
 from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
@@ -333,8 +333,6 @@ __all__ = (
   "BatchAgentRequest",
   "BatchAgentResponse",
   "BillingCustomer",
-  "BulkIngestRequest",
-  "BulkIngestResponse",
   "CancelOperationResponseCanceloperation",
   "CheckCreditBalanceResponseCheckcreditbalance",
   "CheckoutResponse",
@@ -380,6 +378,7 @@ __all__ = (
   "EmailVerificationRequest",
   "EnhancedCreditTransactionResponse",
   "EnhancedCreditTransactionResponseMetadata",
+  "EnhancedFileStatusLayers",
   "ErrorResponse",
   "ExchangeTokenRequest",
   "ExchangeTokenRequestMetadataType0",
@@ -387,6 +386,7 @@ __all__ = (
   "ExecuteCypherQueryResponse200DataItem",
   "FactDetail",
   "FileInfo",
+  "FileLayerStatus",
   "FileStatusUpdate",
   "FileUploadRequest",
   "FileUploadResponse",
@@ -431,6 +431,9 @@ __all__ = (
   "ListTableFilesResponse",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
+  "MaterializeRequest",
+  "MaterializeResponse",
+  "MaterializeStatusResponse",
   "MCPToolCall",
   "MCPToolCallArguments",
   "MCPToolsResponse",
@@ -521,7 +524,6 @@ __all__ = (
   "SyncConnectionRequestSyncOptionsType0",
   "SyncConnectionResponseSyncconnection",
   "TableInfo",
-  "TableIngestResult",
   "TableListResponse",
   "TableQueryRequest",
   "TableQueryResponse",
@@ -529,7 +531,7 @@ __all__ = (
   "TransactionSummaryResponse",
   "UpcomingInvoice",
   "UpdateAPIKeyRequest",
-  "UpdateFileStatusResponseUpdatefilestatus",
+  "UpdateFileResponseUpdatefile",
   "UpdateMemberRoleRequest",
   "UpdateOrgRequest",
   "UpdatePasswordRequest",

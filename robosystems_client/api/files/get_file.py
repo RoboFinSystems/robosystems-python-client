@@ -17,7 +17,7 @@ def _get_kwargs(
 ) -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": f"/v1/graphs/{graph_id}/tables/files/{file_id}",
+    "url": f"/v1/graphs/{graph_id}/files/{file_id}",
   }
 
   return _kwargs
@@ -77,16 +77,36 @@ def sync_detailed(
 
    Get detailed information about a specific file.
 
-  Retrieve comprehensive metadata for a single file, including upload status,
-  size, row count, and timestamps. Useful for validating individual files
-  before ingestion.
+  Retrieve comprehensive metadata for a single file by file_id, independent of
+  table context. Files are first-class resources with complete lifecycle tracking.
+
+  **Returned Information:**
+  - File ID, name, format, size
+  - Upload status and timestamps
+  - **Enhanced Multi-Layer Status** (new in this version):
+    - S3 layer: upload_status, uploaded_at, size_bytes, row_count
+    - DuckDB layer: duckdb_status, duckdb_staged_at, duckdb_row_count
+    - Graph layer: graph_status, graph_ingested_at
+  - Table association
+  - S3 location
+
+  **Multi-Layer Pipeline Visibility:**
+  The `layers` object provides independent status tracking across the three-tier
+  data pipeline:
+  - **S3 (Immutable Source)**: File upload and validation
+  - **DuckDB (Mutable Staging)**: Immediate queryability with file provenance
+  - **Graph (Immutable View)**: Optional graph database materialization
+
+  Each layer shows its own status, timestamp, and row count (where applicable),
+  enabling precise debugging and monitoring of the data ingestion flow.
 
   **Use Cases:**
   - Validate file upload completion
-  - Check file metadata before ingestion
-  - Debug upload issues
-  - Verify file format and size
-  - Track file lifecycle
+  - Monitor multi-layer ingestion progress in real-time
+  - Debug upload or staging issues at specific layers
+  - Verify file metadata and row counts
+  - Track file provenance through the pipeline
+  - Identify bottlenecks in the ingestion process
 
   **Note:**
   File info retrieval is included - no credit consumption
@@ -125,16 +145,36 @@ def sync(
 
    Get detailed information about a specific file.
 
-  Retrieve comprehensive metadata for a single file, including upload status,
-  size, row count, and timestamps. Useful for validating individual files
-  before ingestion.
+  Retrieve comprehensive metadata for a single file by file_id, independent of
+  table context. Files are first-class resources with complete lifecycle tracking.
+
+  **Returned Information:**
+  - File ID, name, format, size
+  - Upload status and timestamps
+  - **Enhanced Multi-Layer Status** (new in this version):
+    - S3 layer: upload_status, uploaded_at, size_bytes, row_count
+    - DuckDB layer: duckdb_status, duckdb_staged_at, duckdb_row_count
+    - Graph layer: graph_status, graph_ingested_at
+  - Table association
+  - S3 location
+
+  **Multi-Layer Pipeline Visibility:**
+  The `layers` object provides independent status tracking across the three-tier
+  data pipeline:
+  - **S3 (Immutable Source)**: File upload and validation
+  - **DuckDB (Mutable Staging)**: Immediate queryability with file provenance
+  - **Graph (Immutable View)**: Optional graph database materialization
+
+  Each layer shows its own status, timestamp, and row count (where applicable),
+  enabling precise debugging and monitoring of the data ingestion flow.
 
   **Use Cases:**
   - Validate file upload completion
-  - Check file metadata before ingestion
-  - Debug upload issues
-  - Verify file format and size
-  - Track file lifecycle
+  - Monitor multi-layer ingestion progress in real-time
+  - Debug upload or staging issues at specific layers
+  - Verify file metadata and row counts
+  - Track file provenance through the pipeline
+  - Identify bottlenecks in the ingestion process
 
   **Note:**
   File info retrieval is included - no credit consumption
@@ -168,16 +208,36 @@ async def asyncio_detailed(
 
    Get detailed information about a specific file.
 
-  Retrieve comprehensive metadata for a single file, including upload status,
-  size, row count, and timestamps. Useful for validating individual files
-  before ingestion.
+  Retrieve comprehensive metadata for a single file by file_id, independent of
+  table context. Files are first-class resources with complete lifecycle tracking.
+
+  **Returned Information:**
+  - File ID, name, format, size
+  - Upload status and timestamps
+  - **Enhanced Multi-Layer Status** (new in this version):
+    - S3 layer: upload_status, uploaded_at, size_bytes, row_count
+    - DuckDB layer: duckdb_status, duckdb_staged_at, duckdb_row_count
+    - Graph layer: graph_status, graph_ingested_at
+  - Table association
+  - S3 location
+
+  **Multi-Layer Pipeline Visibility:**
+  The `layers` object provides independent status tracking across the three-tier
+  data pipeline:
+  - **S3 (Immutable Source)**: File upload and validation
+  - **DuckDB (Mutable Staging)**: Immediate queryability with file provenance
+  - **Graph (Immutable View)**: Optional graph database materialization
+
+  Each layer shows its own status, timestamp, and row count (where applicable),
+  enabling precise debugging and monitoring of the data ingestion flow.
 
   **Use Cases:**
   - Validate file upload completion
-  - Check file metadata before ingestion
-  - Debug upload issues
-  - Verify file format and size
-  - Track file lifecycle
+  - Monitor multi-layer ingestion progress in real-time
+  - Debug upload or staging issues at specific layers
+  - Verify file metadata and row counts
+  - Track file provenance through the pipeline
+  - Identify bottlenecks in the ingestion process
 
   **Note:**
   File info retrieval is included - no credit consumption
@@ -214,16 +274,36 @@ async def asyncio(
 
    Get detailed information about a specific file.
 
-  Retrieve comprehensive metadata for a single file, including upload status,
-  size, row count, and timestamps. Useful for validating individual files
-  before ingestion.
+  Retrieve comprehensive metadata for a single file by file_id, independent of
+  table context. Files are first-class resources with complete lifecycle tracking.
+
+  **Returned Information:**
+  - File ID, name, format, size
+  - Upload status and timestamps
+  - **Enhanced Multi-Layer Status** (new in this version):
+    - S3 layer: upload_status, uploaded_at, size_bytes, row_count
+    - DuckDB layer: duckdb_status, duckdb_staged_at, duckdb_row_count
+    - Graph layer: graph_status, graph_ingested_at
+  - Table association
+  - S3 location
+
+  **Multi-Layer Pipeline Visibility:**
+  The `layers` object provides independent status tracking across the three-tier
+  data pipeline:
+  - **S3 (Immutable Source)**: File upload and validation
+  - **DuckDB (Mutable Staging)**: Immediate queryability with file provenance
+  - **Graph (Immutable View)**: Optional graph database materialization
+
+  Each layer shows its own status, timestamp, and row count (where applicable),
+  enabling precise debugging and monitoring of the data ingestion flow.
 
   **Use Cases:**
   - Validate file upload completion
-  - Check file metadata before ingestion
-  - Debug upload issues
-  - Verify file format and size
-  - Track file lifecycle
+  - Monitor multi-layer ingestion progress in real-time
+  - Debug upload or staging issues at specific layers
+  - Verify file metadata and row counts
+  - Track file provenance through the pipeline
+  - Identify bottlenecks in the ingestion process
 
   **Note:**
   File info retrieval is included - no credit consumption

@@ -6,11 +6,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="UpdateFileStatusResponseUpdatefilestatus")
+T = TypeVar("T", bound="UpdateFileResponseUpdatefile")
 
 
 @_attrs_define
-class UpdateFileStatusResponseUpdatefilestatus:
+class UpdateFileResponseUpdatefile:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -24,10 +24,10 @@ class UpdateFileStatusResponseUpdatefilestatus:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    update_file_status_response_updatefilestatus = cls()
+    update_file_response_updatefile = cls()
 
-    update_file_status_response_updatefilestatus.additional_properties = d
-    return update_file_status_response_updatefilestatus
+    update_file_response_updatefile.additional_properties = d
+    return update_file_response_updatefile
 
   @property
   def additional_keys(self) -> list[str]:
