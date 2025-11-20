@@ -134,9 +134,22 @@ class FileClient:
         table_name=table_name,
       )
 
+      from ..client import AuthenticatedClient
+
+      if not self.token:
+        raise Exception("No API key provided. Set X-API-Key in headers.")
+
+      client = AuthenticatedClient(
+        base_url=self.base_url,
+        token=self.token,
+        prefix="",
+        auth_header_name="X-API-Key",
+        headers=self.headers,
+      )
+
       kwargs = {
         "graph_id": graph_id,
-        "client": self.config.get("client"),
+        "client": client,
         "body": upload_request,
       }
 
@@ -195,7 +208,7 @@ class FileClient:
       update_kwargs = {
         "graph_id": graph_id,
         "file_id": file_id,
-        "client": self.config.get("client"),
+        "client": client,
         "body": status_update,
       }
 
@@ -261,9 +274,22 @@ class FileClient:
         List of FileInfo objects
     """
     try:
+      from ..client import AuthenticatedClient
+
+      if not self.token:
+        raise Exception("No API key provided. Set X-API-Key in headers.")
+
+      client = AuthenticatedClient(
+        base_url=self.base_url,
+        token=self.token,
+        prefix="",
+        auth_header_name="X-API-Key",
+        headers=self.headers,
+      )
+
       kwargs = {
         "graph_id": graph_id,
-        "client": self.config.get("client"),
+        "client": client,
       }
 
       if table_name:
@@ -311,10 +337,23 @@ class FileClient:
         FileInfo with multi-layer status tracking, or None if not found
     """
     try:
+      from ..client import AuthenticatedClient
+
+      if not self.token:
+        raise Exception("No API key provided. Set X-API-Key in headers.")
+
+      client = AuthenticatedClient(
+        base_url=self.base_url,
+        token=self.token,
+        prefix="",
+        auth_header_name="X-API-Key",
+        headers=self.headers,
+      )
+
       kwargs = {
         "graph_id": graph_id,
         "file_id": file_id,
-        "client": self.config.get("client"),
+        "client": client,
       }
 
       response = get_file(**kwargs)
@@ -355,10 +394,23 @@ class FileClient:
         True if deletion succeeded, False otherwise
     """
     try:
+      from ..client import AuthenticatedClient
+
+      if not self.token:
+        raise Exception("No API key provided. Set X-API-Key in headers.")
+
+      client = AuthenticatedClient(
+        base_url=self.base_url,
+        token=self.token,
+        prefix="",
+        auth_header_name="X-API-Key",
+        headers=self.headers,
+      )
+
       kwargs = {
         "graph_id": graph_id,
         "file_id": file_id,
-        "client": self.config.get("client"),
+        "client": client,
         "cascade": cascade,
       }
 

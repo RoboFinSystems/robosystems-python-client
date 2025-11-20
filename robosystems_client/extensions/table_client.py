@@ -62,9 +62,22 @@ class TableClient:
         List of TableInfo objects with metadata
     """
     try:
+      from ..client import AuthenticatedClient
+
+      if not self.token:
+        raise Exception("No API key provided. Set X-API-Key in headers.")
+
+      client = AuthenticatedClient(
+        base_url=self.base_url,
+        token=self.token,
+        prefix="",
+        auth_header_name="X-API-Key",
+        headers=self.headers,
+      )
+
       kwargs = {
         "graph_id": graph_id,
-        "client": self.config.get("client"),
+        "client": client,
       }
 
       response = list_tables(**kwargs)
@@ -120,9 +133,22 @@ class TableClient:
 
       request = TableQueryRequest(sql=final_query)
 
+      from ..client import AuthenticatedClient
+
+      if not self.token:
+        raise Exception("No API key provided. Set X-API-Key in headers.")
+
+      client = AuthenticatedClient(
+        base_url=self.base_url,
+        token=self.token,
+        prefix="",
+        auth_header_name="X-API-Key",
+        headers=self.headers,
+      )
+
       kwargs = {
         "graph_id": graph_id,
-        "client": self.config.get("client"),
+        "client": client,
         "body": request,
       }
 

@@ -104,9 +104,22 @@ class MaterializationClient:
         force=options.force,
       )
 
+      from ..client import AuthenticatedClient
+
+      if not self.token:
+        raise Exception("No API key provided. Set X-API-Key in headers.")
+
+      client = AuthenticatedClient(
+        base_url=self.base_url,
+        token=self.token,
+        prefix="",
+        auth_header_name="X-API-Key",
+        headers=self.headers,
+      )
+
       kwargs = {
         "graph_id": graph_id,
-        "client": self.config.get("client"),
+        "client": client,
         "body": request,
       }
 
@@ -182,9 +195,22 @@ class MaterializationClient:
         MaterializationStatus with staleness and timing information
     """
     try:
+      from ..client import AuthenticatedClient
+
+      if not self.token:
+        raise Exception("No API key provided. Set X-API-Key in headers.")
+
+      client = AuthenticatedClient(
+        base_url=self.base_url,
+        token=self.token,
+        prefix="",
+        auth_header_name="X-API-Key",
+        headers=self.headers,
+      )
+
       kwargs = {
         "graph_id": graph_id,
-        "client": self.config.get("client"),
+        "client": client,
       }
 
       response = get_materialization_status(**kwargs)
