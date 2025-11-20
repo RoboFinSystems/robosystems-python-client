@@ -9,7 +9,9 @@ from typing import Dict, Any, Optional, Callable
 from .query_client import QueryClient
 from .agent_client import AgentClient
 from .operation_client import OperationClient
-from .table_ingest_client import TableIngestClient
+from .file_client import FileClient
+from .materialization_client import MaterializationClient
+from .table_client import TableClient
 from .graph_client import GraphClient
 from .sse_client import SSEClient
 
@@ -61,7 +63,9 @@ class RoboSystemsExtensions:
     self.query = QueryClient(self.config)
     self.agent = AgentClient(self.config)
     self.operations = OperationClient(self.config)
-    self.tables = TableIngestClient(self.config)
+    self.files = FileClient(self.config)
+    self.materialization = MaterializationClient(self.config)
+    self.tables = TableClient(self.config)
     self.graphs = GraphClient(self.config)
 
   def monitor_operation(
@@ -92,7 +96,12 @@ class RoboSystemsExtensions:
     self.query.close()
     self.agent.close()
     self.operations.close_all()
-    self.tables.close()
+    if hasattr(self.files, "close"):
+      self.files.close()
+    if hasattr(self.materialization, "close"):
+      self.materialization.close()
+    if hasattr(self.tables, "close"):
+      self.tables.close()
     self.graphs.close()
 
   # Convenience methods that delegate to the appropriate clients

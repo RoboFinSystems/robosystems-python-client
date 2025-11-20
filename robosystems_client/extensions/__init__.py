@@ -28,12 +28,22 @@ from .operation_client import (
   OperationProgress,
   OperationResult,
 )
-from .table_ingest_client import (
-  TableIngestClient,
-  UploadOptions,
-  IngestOptions,
-  UploadResult,
+from .file_client import (
+  FileClient,
+  FileUploadOptions,
+  FileUploadResult,
+  FileInfo,
+)
+from .materialization_client import (
+  MaterializationClient,
+  MaterializationOptions,
+  MaterializationResult,
+  MaterializationStatus,
+)
+from .table_client import (
+  TableClient,
   TableInfo,
+  QueryResult as TableQueryResult,
 )
 from .graph_client import (
   GraphClient,
@@ -177,12 +187,20 @@ __all__ = [
   "OperationStatus",
   "OperationProgress",
   "OperationResult",
-  # Table Ingest Client
-  "TableIngestClient",
-  "UploadOptions",
-  "IngestOptions",
-  "UploadResult",
+  # File Client
+  "FileClient",
+  "FileUploadOptions",
+  "FileUploadResult",
+  "FileInfo",
+  # Materialization Client
+  "MaterializationClient",
+  "MaterializationOptions",
+  "MaterializationResult",
+  "MaterializationStatus",
+  # Table Client
+  "TableClient",
   "TableInfo",
+  "TableQueryResult",
   # Graph Client
   "GraphClient",
   "GraphMetadata",
