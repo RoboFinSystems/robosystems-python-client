@@ -8,10 +8,10 @@ from dataclasses import dataclass
 from typing import Dict, Any, Optional, Callable
 import logging
 
-from ..api.materialization.materialize_graph import (
+from ..api.materialize.materialize_graph import (
   sync_detailed as materialize_graph,
 )
-from ..api.materialization.get_materialization_status import (
+from ..api.materialize.get_materialization_status import (
   sync_detailed as get_materialization_status,
 )
 from ..models.materialize_request import MaterializeRequest
