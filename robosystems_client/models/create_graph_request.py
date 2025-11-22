@@ -27,8 +27,8 @@ class CreateGraphRequest:
 
       Attributes:
           metadata (GraphMetadata): Metadata for graph creation.
-          instance_tier (str | Unset): Instance tier: kuzu-standard, kuzu-large, kuzu-xlarge, neo4j-community-large,
-              neo4j-enterprise-xlarge Default: 'kuzu-standard'.
+          instance_tier (str | Unset): Instance tier: ladybug-standard, ladybug-large, ladybug-xlarge, neo4j-community-
+              large, neo4j-enterprise-xlarge Default: 'ladybug-standard'.
           custom_schema (CustomSchemaDefinition | None | Unset): Custom schema definition to apply. If provided, creates a
               generic custom graph. If omitted, creates an entity graph using schema_extensions.
           initial_entity (InitialEntityData | None | Unset): Optional initial entity to create in the graph. If provided
@@ -40,7 +40,7 @@ class CreateGraphRequest:
   """
 
   metadata: GraphMetadata
-  instance_tier: str | Unset = "kuzu-standard"
+  instance_tier: str | Unset = "ladybug-standard"
   custom_schema: CustomSchemaDefinition | None | Unset = UNSET
   initial_entity: InitialEntityData | None | Unset = UNSET
   create_entity: bool | Unset = True

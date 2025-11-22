@@ -91,7 +91,7 @@ def sync_detailed(
 
   **Required Fields:**
   - `metadata.graph_name`: Unique name for the graph
-  - `instance_tier`: Resource tier (kuzu-standard, kuzu-large, kuzu-xlarge)
+  - `instance_tier`: Resource tier (ladybug-standard, ladybug-large, ladybug-xlarge)
 
   **Optional Fields:**
   - `metadata.description`: Human-readable description of the graph's purpose
@@ -191,7 +191,7 @@ def sync(
 
   **Required Fields:**
   - `metadata.graph_name`: Unique name for the graph
-  - `instance_tier`: Resource tier (kuzu-standard, kuzu-large, kuzu-xlarge)
+  - `instance_tier`: Resource tier (ladybug-standard, ladybug-large, ladybug-xlarge)
 
   **Optional Fields:**
   - `metadata.description`: Human-readable description of the graph's purpose
@@ -286,7 +286,7 @@ async def asyncio_detailed(
 
   **Required Fields:**
   - `metadata.graph_name`: Unique name for the graph
-  - `instance_tier`: Resource tier (kuzu-standard, kuzu-large, kuzu-xlarge)
+  - `instance_tier`: Resource tier (ladybug-standard, ladybug-large, ladybug-xlarge)
 
   **Optional Fields:**
   - `metadata.description`: Human-readable description of the graph's purpose
@@ -384,7 +384,7 @@ async def asyncio(
 
   **Required Fields:**
   - `metadata.graph_name`: Unique name for the graph
-  - `instance_tier`: Resource tier (kuzu-standard, kuzu-large, kuzu-xlarge)
+  - `instance_tier`: Resource tier (ladybug-standard, ladybug-large, ladybug-xlarge)
 
   **Optional Fields:**
   - `metadata.description`: Human-readable description of the graph's purpose

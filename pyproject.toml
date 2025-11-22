@@ -8,7 +8,7 @@ authors = [
     {name = "RFS LLC"},
 ]
 license = {text = "MIT"}
-keywords = ["client", "robosystems", "financial", "graph", "kuzu", "api", "sdk"]
+keywords = ["client", "robosystems", "financial", "graph", "api", "sdk"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Framework :: AsyncIO",

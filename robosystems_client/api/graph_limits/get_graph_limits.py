@@ -82,7 +82,7 @@ def sync_detailed(
 
   This unified endpoint provides all limits in one place for easier client integration.
 
-  **Note**: Limits vary based on subscription tier (kuzu-standard, kuzu-large, kuzu-xlarge).
+  **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
 
   Args:
       graph_id (str):
@@ -125,7 +125,7 @@ def sync(
 
   This unified endpoint provides all limits in one place for easier client integration.
 
-  **Note**: Limits vary based on subscription tier (kuzu-standard, kuzu-large, kuzu-xlarge).
+  **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
 
   Args:
       graph_id (str):
@@ -163,7 +163,7 @@ async def asyncio_detailed(
 
   This unified endpoint provides all limits in one place for easier client integration.
 
-  **Note**: Limits vary based on subscription tier (kuzu-standard, kuzu-large, kuzu-xlarge).
+  **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
 
   Args:
       graph_id (str):
@@ -204,7 +204,7 @@ async def asyncio(
 
   This unified endpoint provides all limits in one place for easier client integration.
 
-  **Note**: Limits vary based on subscription tier (kuzu-standard, kuzu-large, kuzu-xlarge).
+  **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
 
   Args:
       graph_id (str):

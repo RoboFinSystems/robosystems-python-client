@@ -95,7 +95,7 @@ def sync_detailed(
   - Last access time (when available)
 
   **Statistics:**
-  Real-time statistics queried from Kuzu:
+  Real-time statistics queried from LadybugDB:
   - Node count
   - Edge count
   - Database size on disk
@@ -152,7 +152,7 @@ def sync(
   - Last access time (when available)
 
   **Statistics:**
-  Real-time statistics queried from Kuzu:
+  Real-time statistics queried from LadybugDB:
   - Node count
   - Edge count
   - Database size on disk
@@ -204,7 +204,7 @@ async def asyncio_detailed(
   - Last access time (when available)
 
   **Statistics:**
-  Real-time statistics queried from Kuzu:
+  Real-time statistics queried from LadybugDB:
   - Node count
   - Edge count
   - Database size on disk
@@ -259,7 +259,7 @@ async def asyncio(
   - Last access time (when available)
 
   **Statistics:**
-  Real-time statistics queried from Kuzu:
+  Real-time statistics queried from LadybugDB:
   - Node count
   - Edge count
   - Database size on disk
