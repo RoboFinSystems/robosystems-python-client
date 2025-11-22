@@ -68,7 +68,7 @@ def sync_detailed(
   - Credits are allocated per-graph, not shared across organization
 
   Includes:
-  - Graph infrastructure tiers (kuzu-standard, kuzu-large, kuzu-xlarge) - per-graph pricing
+  - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
   - Shared repository subscriptions (SEC, industry, economic data) - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
@@ -114,7 +114,7 @@ def sync(
   - Credits are allocated per-graph, not shared across organization
 
   Includes:
-  - Graph infrastructure tiers (kuzu-standard, kuzu-large, kuzu-xlarge) - per-graph pricing
+  - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
   - Shared repository subscriptions (SEC, industry, economic data) - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
@@ -156,7 +156,7 @@ async def asyncio_detailed(
   - Credits are allocated per-graph, not shared across organization
 
   Includes:
-  - Graph infrastructure tiers (kuzu-standard, kuzu-large, kuzu-xlarge) - per-graph pricing
+  - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
   - Shared repository subscriptions (SEC, industry, economic data) - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
@@ -200,7 +200,7 @@ async def asyncio(
   - Credits are allocated per-graph, not shared across organization
 
   Includes:
-  - Graph infrastructure tiers (kuzu-standard, kuzu-large, kuzu-xlarge) - per-graph pricing
+  - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
   - Shared repository subscriptions (SEC, industry, economic data) - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier

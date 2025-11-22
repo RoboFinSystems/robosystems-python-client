@@ -82,7 +82,7 @@ def sync_detailed(
 ) -> Response[Any | BackupDownloadUrlResponse | HTTPValidationError]:
   """Get temporary download URL for backup
 
-   Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
+   Generate a temporary download URL for a backup (unencrypted, compressed .lbug files only)
 
   Args:
       graph_id (str):
@@ -119,7 +119,7 @@ def sync(
 ) -> Any | BackupDownloadUrlResponse | HTTPValidationError | None:
   """Get temporary download URL for backup
 
-   Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
+   Generate a temporary download URL for a backup (unencrypted, compressed .lbug files only)
 
   Args:
       graph_id (str):
@@ -151,7 +151,7 @@ async def asyncio_detailed(
 ) -> Response[Any | BackupDownloadUrlResponse | HTTPValidationError]:
   """Get temporary download URL for backup
 
-   Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
+   Generate a temporary download URL for a backup (unencrypted, compressed .lbug files only)
 
   Args:
       graph_id (str):
@@ -186,7 +186,7 @@ async def asyncio(
 ) -> Any | BackupDownloadUrlResponse | HTTPValidationError | None:
   """Get temporary download URL for backup
 
-   Generate a temporary download URL for a backup (unencrypted, compressed .kuzu files only)
+   Generate a temporary download URL for a backup (unencrypted, compressed .lbug files only)
 
   Args:
       graph_id (str):

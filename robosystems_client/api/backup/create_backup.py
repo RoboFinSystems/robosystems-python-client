@@ -90,8 +90,8 @@ def sync_detailed(
 
    Create a backup of the graph database.
 
-  Creates a complete backup of the graph database (.kuzu file) with:
-  - **Format**: Full database backup only (complete .kuzu file)
+  Creates a complete backup of the graph database (.lbug file) with:
+  - **Format**: Full database backup only (complete .lbug file)
   - **Compression**: Always enabled for optimal storage
   - **Encryption**: Optional AES-256 encryption for security
   - **Retention**: Configurable retention period (1-2555 days)
@@ -183,8 +183,8 @@ def sync(
 
    Create a backup of the graph database.
 
-  Creates a complete backup of the graph database (.kuzu file) with:
-  - **Format**: Full database backup only (complete .kuzu file)
+  Creates a complete backup of the graph database (.lbug file) with:
+  - **Format**: Full database backup only (complete .lbug file)
   - **Compression**: Always enabled for optimal storage
   - **Encryption**: Optional AES-256 encryption for security
   - **Retention**: Configurable retention period (1-2555 days)
@@ -271,8 +271,8 @@ async def asyncio_detailed(
 
    Create a backup of the graph database.
 
-  Creates a complete backup of the graph database (.kuzu file) with:
-  - **Format**: Full database backup only (complete .kuzu file)
+  Creates a complete backup of the graph database (.lbug file) with:
+  - **Format**: Full database backup only (complete .lbug file)
   - **Compression**: Always enabled for optimal storage
   - **Encryption**: Optional AES-256 encryption for security
   - **Retention**: Configurable retention period (1-2555 days)
@@ -362,8 +362,8 @@ async def asyncio(
 
    Create a backup of the graph database.
 
-  Creates a complete backup of the graph database (.kuzu file) with:
-  - **Format**: Full database backup only (complete .kuzu file)
+  Creates a complete backup of the graph database (.lbug file) with:
+  - **Format**: Full database backup only (complete .lbug file)
   - **Compression**: Always enabled for optimal storage
   - **Encryption**: Optional AES-256 encryption for security
   - **Retention**: Configurable retention period (1-2555 days)

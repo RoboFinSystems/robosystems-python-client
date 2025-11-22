@@ -25,7 +25,7 @@ class GraphTierInfo:
       name (str): Tier name
       display_name (str): Display name for UI
       description (str): Tier description
-      backend (str): Database backend (kuzu or neo4j)
+      backend (str): Database backend (ladybug or neo4j)
       enabled (bool): Whether tier is available
       max_subgraphs (int | None): Maximum subgraphs allowed
       storage_limit_gb (int): Storage limit in GB

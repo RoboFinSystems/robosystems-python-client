@@ -19,7 +19,7 @@ class GraphSubscriptionTier:
   infrastructure, performance, and pricing characteristics.
 
       Attributes:
-          name (str): Infrastructure tier identifier (e.g., kuzu-standard)
+          name (str): Infrastructure tier identifier (e.g., ladybug-standard)
           display_name (str): Display name for UI
           description (str): Tier description
           monthly_price_per_graph (float): Monthly price in USD per graph
@@ -31,7 +31,7 @@ class GraphSubscriptionTier:
           backup_retention_days (int): Backup retention in days
           priority_support (bool): Whether priority support is included
           api_rate_multiplier (float): API rate multiplier
-          backend (str): Database backend (kuzu or neo4j)
+          backend (str): Database backend (ladybug or neo4j)
           max_queries_per_hour (int | None | Unset): Maximum queries per hour
           max_subgraphs (int | Unset): Maximum subgraphs supported Default: 0.
           instance_type (None | str | Unset): Instance type

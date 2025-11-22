@@ -83,9 +83,9 @@ def sync_detailed(
   - Availability status
 
   **Available Tiers:**
-  - **kuzu-standard**: Multi-tenant entry-level tier
-  - **kuzu-large**: Dedicated professional tier with subgraph support
-  - **kuzu-xlarge**: Enterprise tier with maximum resources
+  - **ladybug-standard**: Multi-tenant entry-level tier
+  - **ladybug-large**: Dedicated professional tier with subgraph support
+  - **ladybug-xlarge**: Enterprise tier with maximum resources
   - **neo4j-community-large**: Neo4j Community Edition (optional, if enabled)
   - **neo4j-enterprise-xlarge**: Neo4j Enterprise Edition (optional, if enabled)
 
@@ -140,9 +140,9 @@ def sync(
   - Availability status
 
   **Available Tiers:**
-  - **kuzu-standard**: Multi-tenant entry-level tier
-  - **kuzu-large**: Dedicated professional tier with subgraph support
-  - **kuzu-xlarge**: Enterprise tier with maximum resources
+  - **ladybug-standard**: Multi-tenant entry-level tier
+  - **ladybug-large**: Dedicated professional tier with subgraph support
+  - **ladybug-xlarge**: Enterprise tier with maximum resources
   - **neo4j-community-large**: Neo4j Community Edition (optional, if enabled)
   - **neo4j-enterprise-xlarge**: Neo4j Enterprise Edition (optional, if enabled)
 
@@ -192,9 +192,9 @@ async def asyncio_detailed(
   - Availability status
 
   **Available Tiers:**
-  - **kuzu-standard**: Multi-tenant entry-level tier
-  - **kuzu-large**: Dedicated professional tier with subgraph support
-  - **kuzu-xlarge**: Enterprise tier with maximum resources
+  - **ladybug-standard**: Multi-tenant entry-level tier
+  - **ladybug-large**: Dedicated professional tier with subgraph support
+  - **ladybug-xlarge**: Enterprise tier with maximum resources
   - **neo4j-community-large**: Neo4j Community Edition (optional, if enabled)
   - **neo4j-enterprise-xlarge**: Neo4j Enterprise Edition (optional, if enabled)
 
@@ -247,9 +247,9 @@ async def asyncio(
   - Availability status
 
   **Available Tiers:**
-  - **kuzu-standard**: Multi-tenant entry-level tier
-  - **kuzu-large**: Dedicated professional tier with subgraph support
-  - **kuzu-xlarge**: Enterprise tier with maximum resources
+  - **ladybug-standard**: Multi-tenant entry-level tier
+  - **ladybug-large**: Dedicated professional tier with subgraph support
+  - **ladybug-xlarge**: Enterprise tier with maximum resources
   - **neo4j-community-large**: Neo4j Community Edition (optional, if enabled)
   - **neo4j-enterprise-xlarge**: Neo4j Enterprise Edition (optional, if enabled)
 

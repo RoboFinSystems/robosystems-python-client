@@ -23,7 +23,7 @@ class ListSubgraphsResponse:
       parent_graph_id (str): Parent graph identifier
       parent_graph_name (str): Parent graph name
       parent_graph_tier (str): Parent graph tier
-      subgraphs_enabled (bool): Whether subgraphs are enabled for this tier (requires Kuzu Large/XLarge or Neo4j
+      subgraphs_enabled (bool): Whether subgraphs are enabled for this tier (requires LadybugDB Large/XLarge or Neo4j
           Enterprise XLarge)
       subgraph_count (int): Total number of subgraphs
       subgraphs (list[SubgraphSummary]): List of subgraphs
