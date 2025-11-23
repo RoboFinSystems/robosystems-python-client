@@ -23,6 +23,10 @@ class GraphInfo:
       created_at (str): Creation timestamp
       is_repository (bool | Unset): Whether this is a shared repository (vs user graph) Default: False.
       repository_type (None | str | Unset): Repository type if isRepository=true
+      schema_extensions (list[str] | Unset): List of schema extensions installed on this graph
+      is_subgraph (bool | Unset): Whether this is a subgraph (vs a main graph) Default: False.
+      parent_graph_id (None | str | Unset): Parent graph ID if this is a subgraph
+      graph_type (str | Unset): Type of graph: generic, entity, or repository Default: 'entity'.
   """
 
   graph_id: str
@@ -32,6 +36,10 @@ class GraphInfo:
   created_at: str
   is_repository: bool | Unset = False
   repository_type: None | str | Unset = UNSET
+  schema_extensions: list[str] | Unset = UNSET
+  is_subgraph: bool | Unset = False
+  parent_graph_id: None | str | Unset = UNSET
+  graph_type: str | Unset = "entity"
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -53,6 +61,20 @@ class GraphInfo:
     else:
       repository_type = self.repository_type
 
+    schema_extensions: list[str] | Unset = UNSET
+    if not isinstance(self.schema_extensions, Unset):
+      schema_extensions = self.schema_extensions
+
+    is_subgraph = self.is_subgraph
+
+    parent_graph_id: None | str | Unset
+    if isinstance(self.parent_graph_id, Unset):
+      parent_graph_id = UNSET
+    else:
+      parent_graph_id = self.parent_graph_id
+
+    graph_type = self.graph_type
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -68,6 +90,14 @@ class GraphInfo:
       field_dict["isRepository"] = is_repository
     if repository_type is not UNSET:
       field_dict["repositoryType"] = repository_type
+    if schema_extensions is not UNSET:
+      field_dict["schemaExtensions"] = schema_extensions
+    if is_subgraph is not UNSET:
+      field_dict["isSubgraph"] = is_subgraph
+    if parent_graph_id is not UNSET:
+      field_dict["parentGraphId"] = parent_graph_id
+    if graph_type is not UNSET:
+      field_dict["graphType"] = graph_type
 
     return field_dict
 
@@ -95,6 +125,21 @@ class GraphInfo:
 
     repository_type = _parse_repository_type(d.pop("repositoryType", UNSET))
 
+    schema_extensions = cast(list[str], d.pop("schemaExtensions", UNSET))
+
+    is_subgraph = d.pop("isSubgraph", UNSET)
+
+    def _parse_parent_graph_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    parent_graph_id = _parse_parent_graph_id(d.pop("parentGraphId", UNSET))
+
+    graph_type = d.pop("graphType", UNSET)
+
     graph_info = cls(
       graph_id=graph_id,
       graph_name=graph_name,
@@ -103,6 +148,10 @@ class GraphInfo:
       created_at=created_at,
       is_repository=is_repository,
       repository_type=repository_type,
+      schema_extensions=schema_extensions,
+      is_subgraph=is_subgraph,
+      parent_graph_id=parent_graph_id,
+      graph_type=graph_type,
     )
 
     graph_info.additional_properties = d
