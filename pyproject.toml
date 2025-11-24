@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Office/Business :: Financial",
     "Topic :: Office/Business :: Financial :: Accounting",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -76,7 +77,7 @@ packages = ["robosystems_client"]
 include = ["robosystems_client/extensions"]
 exclude = ["robosystems_client/extensions/tests"]
 extraPaths = ["."]
-pythonVersion = "3.12"
+pythonVersion = "3.13"
 venvPath = "."
 venv = ".venv"
 typeCheckingMode = "standard"
