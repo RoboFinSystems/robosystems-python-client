@@ -25,6 +25,7 @@ class RoboSystemsExtensionConfig:
   max_retries: int = 5
   retry_delay: int = 1000
   timeout: int = 30
+  s3_endpoint_url: Optional[str] = None  # Override S3 endpoint (e.g., for LocalStack)
 
 
 class RoboSystemsExtensions:
@@ -41,6 +42,7 @@ class RoboSystemsExtensions:
       "max_retries": config.max_retries,
       "retry_delay": config.retry_delay,
       "timeout": config.timeout,
+      "s3_endpoint_url": config.s3_endpoint_url,
     }
 
     # Extract token from headers if it was set by auth classes
