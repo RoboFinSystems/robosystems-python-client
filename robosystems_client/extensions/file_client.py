@@ -37,7 +37,6 @@ class FileUploadOptions:
   """Options for file upload operations"""
 
   on_progress: Optional[Callable[[str], None]] = None
-  fix_localstack_url: bool = True
   ingest_to_graph: bool = False
 
 
@@ -78,6 +77,9 @@ class FileClient:
     self.base_url = config["base_url"]
     self.headers = config.get("headers", {})
     self.token = config.get("token")
+    self.s3_endpoint_url = config.get(
+      "s3_endpoint_url"
+    )  # Optional S3 endpoint override
     self._http_client = httpx.Client(timeout=120.0)
 
   def upload(
@@ -171,9 +173,23 @@ class FileClient:
       upload_url = upload_data.upload_url
       file_id = upload_data.file_id
 
-      # Fix LocalStack URL if needed
-      if options.fix_localstack_url and "localstack:4566" in upload_url:
-        upload_url = upload_url.replace("localstack:4566", "localhost:4566")
+      # Override S3 endpoint if configured (e.g., for LocalStack)
+      if self.s3_endpoint_url:
+        from urllib.parse import urlparse, urlunparse
+
+        parsed_url = urlparse(upload_url)
+        override_parsed = urlparse(self.s3_endpoint_url)
+        # Replace scheme, host, and port with the override endpoint
+        upload_url = urlunparse(
+          (
+            override_parsed.scheme or parsed_url.scheme,
+            override_parsed.netloc,
+            parsed_url.path,
+            parsed_url.params,
+            parsed_url.query,
+            parsed_url.fragment,
+          )
+        )
 
       # Step 2: Upload file to S3
       if options.on_progress:
