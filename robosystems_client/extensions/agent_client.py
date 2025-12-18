@@ -177,7 +177,7 @@ class AgentClient:
               else datetime.now().isoformat(),
             )
 
-        # Check if this is a queued response (async Celery execution)
+        # Check if this is a queued response (async background task execution)
         is_queued = False
         queued_response = None
 
