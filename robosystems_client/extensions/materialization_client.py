@@ -15,6 +15,7 @@ from ..api.materialize.get_materialization_status import (
   sync_detailed as get_materialization_status,
 )
 from ..models.materialize_request import MaterializeRequest
+from .operation_client import OperationClient, OperationProgress, MonitorOptions
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ class MaterializationOptions:
   rebuild: bool = False
   force: bool = False
   on_progress: Optional[Callable[[str], None]] = None
+  timeout: Optional[int] = 600  # 10 minute default timeout
 
 
 @dataclass
@@ -66,6 +68,14 @@ class MaterializationClient:
     self.base_url = config["base_url"]
     self.headers = config.get("headers", {})
     self.token = config.get("token")
+    self._operation_client = None
+
+  @property
+  def operation_client(self) -> OperationClient:
+    """Get or create the operation client for SSE monitoring."""
+    if self._operation_client is None:
+      self._operation_client = OperationClient(self.config)
+    return self._operation_client
 
   def materialize(
     self,
@@ -75,13 +85,13 @@ class MaterializationClient:
     """
     Materialize graph from DuckDB staging tables.
 
-    Rebuilds the complete graph database from the current state of DuckDB
-    staging tables. Automatically discovers all tables, materializes them in
-    the correct order (nodes before relationships), and clears the staleness flag.
+    Submits a materialization job to Dagster and monitors progress via SSE.
+    The operation runs asynchronously on the server but this method waits
+    for completion and returns the final result.
 
     Args:
         graph_id: Graph database identifier
-        options: Materialization options (ignore_errors, rebuild, force)
+        options: Materialization options (ignore_errors, rebuild, force, timeout)
 
     Returns:
         MaterializationResult with detailed execution information
@@ -96,7 +106,7 @@ class MaterializationClient:
 
     try:
       if options.on_progress:
-        options.on_progress("Starting graph materialization...")
+        options.on_progress("Submitting materialization job...")
 
       request = MaterializeRequest(
         ignore_errors=options.ignore_errors,
@@ -125,6 +135,7 @@ class MaterializationClient:
 
       response = materialize_graph(**kwargs)
 
+      # Handle non-200 status codes
       if response.status_code != 200 or not response.parsed:
         error_msg = f"Materialization failed: {response.status_code}"
         if hasattr(response, "content"):
@@ -148,24 +159,67 @@ class MaterializationClient:
           error=error_msg,
         )
 
+      # Get the operation_id from the queued response
       result_data = response.parsed
+      operation_id = result_data.operation_id
 
       if options.on_progress:
-        options.on_progress(
-          f"✅ Materialization complete: {len(result_data.tables_materialized)} tables, "
-          f"{result_data.total_rows:,} rows in {result_data.execution_time_ms:.2f}ms"
-        )
+        options.on_progress(f"Materialization queued (operation: {operation_id})")
 
-      return MaterializationResult(
-        status=result_data.status,
-        was_stale=result_data.was_stale,
-        stale_reason=result_data.stale_reason,
-        tables_materialized=result_data.tables_materialized,
-        total_rows=result_data.total_rows,
-        execution_time_ms=result_data.execution_time_ms,
-        message=result_data.message,
-        success=True,
+      # Monitor the operation via SSE until completion
+      def on_sse_progress(progress: OperationProgress):
+        if options.on_progress:
+          msg = progress.message
+          if progress.percentage is not None:
+            msg += f" ({progress.percentage:.0f}%)"
+          options.on_progress(msg)
+
+      monitor_options = MonitorOptions(
+        on_progress=on_sse_progress,
+        timeout=options.timeout,
       )
+
+      op_result = self.operation_client.monitor_operation(operation_id, monitor_options)
+
+      # Convert operation result to materialization result
+      if op_result.status.value == "completed":
+        # Extract details from SSE completion event result
+        sse_result = op_result.result or {}
+
+        if options.on_progress:
+          tables = sse_result.get("tables_materialized", [])
+          rows = sse_result.get("total_rows", 0)
+          time_ms = sse_result.get("execution_time_ms", 0)
+          options.on_progress(
+            f"✅ Materialization complete: {len(tables)} tables, "
+            f"{rows:,} rows in {time_ms:.2f}ms"
+          )
+
+        return MaterializationResult(
+          status="success",
+          was_stale=sse_result.get("was_stale", False),
+          stale_reason=sse_result.get("stale_reason"),
+          tables_materialized=sse_result.get("tables_materialized", []),
+          total_rows=sse_result.get("total_rows", 0),
+          execution_time_ms=sse_result.get(
+            "execution_time_ms", op_result.execution_time_ms or 0
+          ),
+          message=sse_result.get("message", "Graph materialized successfully"),
+          success=True,
+        )
+      else:
+        # Operation failed or was cancelled
+        return MaterializationResult(
+          status=op_result.status.value,
+          was_stale=False,
+          stale_reason=None,
+          tables_materialized=[],
+          total_rows=0,
+          execution_time_ms=op_result.execution_time_ms or 0,
+          message=op_result.error or f"Operation {op_result.status.value}",
+          success=False,
+          error=op_result.error,
+        )
 
     except Exception as e:
       logger.error(f"Materialization failed: {e}")

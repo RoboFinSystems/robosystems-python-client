@@ -103,7 +103,7 @@ def sync_detailed(
   **What Happens (status='uploaded'):**
   1. File validated in S3
   2. Row count calculated
-  3. DuckDB staging triggered immediately (Celery task)
+  3. DuckDB staging triggered immediately (background task)
   4. If ingest_to_graph=true, graph ingestion queued
   5. File queryable in DuckDB within seconds
 
@@ -165,7 +165,7 @@ def sync(
   **What Happens (status='uploaded'):**
   1. File validated in S3
   2. Row count calculated
-  3. DuckDB staging triggered immediately (Celery task)
+  3. DuckDB staging triggered immediately (background task)
   4. If ingest_to_graph=true, graph ingestion queued
   5. File queryable in DuckDB within seconds
 
@@ -222,7 +222,7 @@ async def asyncio_detailed(
   **What Happens (status='uploaded'):**
   1. File validated in S3
   2. Row count calculated
-  3. DuckDB staging triggered immediately (Celery task)
+  3. DuckDB staging triggered immediately (background task)
   4. If ingest_to_graph=true, graph ingestion queued
   5. File queryable in DuckDB within seconds
 
@@ -282,7 +282,7 @@ async def asyncio(
   **What Happens (status='uploaded'):**
   1. File validated in S3
   2. Row count calculated
-  3. DuckDB staging triggered immediately (Celery task)
+  3. DuckDB staging triggered immediately (background task)
   4. If ingest_to_graph=true, graph ingestion queued
   5. File queryable in DuckDB within seconds
 

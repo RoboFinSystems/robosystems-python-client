@@ -124,7 +124,7 @@ def sync_detailed(
   **Execution Strategies (automatic):**
   - Fast operations (<5s): Immediate synchronous response
   - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Async Celery worker with operation tracking
+  - Long operations (>30s): Background queue with operation tracking
 
   **Response Mode Override:**
   Use query parameter `?mode=sync|async` to override automatic strategy selection.
@@ -179,7 +179,7 @@ def sync(
   **Execution Strategies (automatic):**
   - Fast operations (<5s): Immediate synchronous response
   - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Async Celery worker with operation tracking
+  - Long operations (>30s): Background queue with operation tracking
 
   **Response Mode Override:**
   Use query parameter `?mode=sync|async` to override automatic strategy selection.
@@ -229,7 +229,7 @@ async def asyncio_detailed(
   **Execution Strategies (automatic):**
   - Fast operations (<5s): Immediate synchronous response
   - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Async Celery worker with operation tracking
+  - Long operations (>30s): Background queue with operation tracking
 
   **Response Mode Override:**
   Use query parameter `?mode=sync|async` to override automatic strategy selection.
@@ -282,7 +282,7 @@ async def asyncio(
   **Execution Strategies (automatic):**
   - Fast operations (<5s): Immediate synchronous response
   - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Async Celery worker with operation tracking
+  - Long operations (>30s): Background queue with operation tracking
 
   **Response Mode Override:**
   Use query parameter `?mode=sync|async` to override automatic strategy selection.

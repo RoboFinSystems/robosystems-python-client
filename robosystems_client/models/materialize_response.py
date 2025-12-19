@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -13,102 +13,64 @@ T = TypeVar("T", bound="MaterializeResponse")
 
 @_attrs_define
 class MaterializeResponse:
-  """
+  """Response for queued materialization operation.
+
+  Example:
+      {'graph_id': 'kg_abc123', 'message': 'Materialization queued. Monitor via SSE stream.', 'operation_id':
+          '550e8400-e29b-41d4-a716-446655440000', 'status': 'queued'}
+
   Attributes:
-      status (str): Materialization status
       graph_id (str): Graph database identifier
-      was_stale (bool): Whether graph was stale before materialization
-      tables_materialized (list[str]): List of tables successfully materialized
-      total_rows (int): Total rows materialized across all tables
-      execution_time_ms (float): Total materialization time
+      operation_id (str): SSE operation ID for progress tracking
       message (str): Human-readable status message
-      stale_reason (None | str | Unset): Reason graph was stale
+      status (str | Unset): Operation status Default: 'queued'.
   """
 
-  status: str
   graph_id: str
-  was_stale: bool
-  tables_materialized: list[str]
-  total_rows: int
-  execution_time_ms: float
+  operation_id: str
   message: str
-  stale_reason: None | str | Unset = UNSET
+  status: str | Unset = "queued"
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    status = self.status
-
     graph_id = self.graph_id
 
-    was_stale = self.was_stale
-
-    tables_materialized = self.tables_materialized
-
-    total_rows = self.total_rows
-
-    execution_time_ms = self.execution_time_ms
+    operation_id = self.operation_id
 
     message = self.message
 
-    stale_reason: None | str | Unset
-    if isinstance(self.stale_reason, Unset):
-      stale_reason = UNSET
-    else:
-      stale_reason = self.stale_reason
+    status = self.status
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "status": status,
         "graph_id": graph_id,
-        "was_stale": was_stale,
-        "tables_materialized": tables_materialized,
-        "total_rows": total_rows,
-        "execution_time_ms": execution_time_ms,
+        "operation_id": operation_id,
         "message": message,
       }
     )
-    if stale_reason is not UNSET:
-      field_dict["stale_reason"] = stale_reason
+    if status is not UNSET:
+      field_dict["status"] = status
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    status = d.pop("status")
-
     graph_id = d.pop("graph_id")
 
-    was_stale = d.pop("was_stale")
-
-    tables_materialized = cast(list[str], d.pop("tables_materialized"))
-
-    total_rows = d.pop("total_rows")
-
-    execution_time_ms = d.pop("execution_time_ms")
+    operation_id = d.pop("operation_id")
 
     message = d.pop("message")
 
-    def _parse_stale_reason(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    stale_reason = _parse_stale_reason(d.pop("stale_reason", UNSET))
+    status = d.pop("status", UNSET)
 
     materialize_response = cls(
-      status=status,
       graph_id=graph_id,
-      was_stale=was_stale,
-      tables_materialized=tables_materialized,
-      total_rows=total_rows,
-      execution_time_ms=execution_time_ms,
+      operation_id=operation_id,
       message=message,
-      stale_reason=stale_reason,
+      status=status,
     )
 
     materialize_response.additional_properties = d
