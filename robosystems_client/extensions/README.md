@@ -1,6 +1,6 @@
 # RoboSystems Python Client Extensions
 
-🚀 **Production-Ready Extensions** for the RoboSystems Financial Knowledge Graph API
+**Production-Ready Extensions** for the RoboSystems Financial Knowledge Graph API
 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -17,7 +17,7 @@ The RoboSystems Python Client Extensions provide enhanced functionality for the 
 - **Caching** with TTL and LRU eviction
 - **Full Async/Await Support** throughout
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -84,7 +84,7 @@ async def main():
 asyncio.run(main())
 ```
 
-## 🔐 Authentication
+## Authentication
 
 ### API Key Authentication (Recommended)
 
@@ -139,7 +139,7 @@ dev_ext = create_extensions(
 )
 ```
 
-## 🛠 Advanced Features
+## Advanced Features
 
 ### Query Builder
 
@@ -182,7 +182,7 @@ print(f"Complexity: {cost['complexity_category']} (score: {cost['complexity_scor
 
 # Get optimization recommendations  
 for rec in cost['recommendations']:
-    print(f"💡 {rec}")
+    print(f"Tip: {rec}")
 ```
 
 ### Result Processing
@@ -271,7 +271,7 @@ client.connect("operation_id")
 client.close()
 ```
 
-## 📊 Examples
+## Examples
 
 ### Financial Data Analysis
 
@@ -332,7 +332,7 @@ if final_batch:
     process_transaction_batch(final_batch)
     total_processed += len(final_batch)
 
-print(f"✅ Processed {total_processed:,} transactions total")
+print(f"Processed {total_processed:,} transactions total")
 ```
 
 ### Error Handling
@@ -361,7 +361,7 @@ except Exception as e:
     print(f"Query failed: {e}")
 ```
 
-## ⚡ Performance Optimization
+## Performance Optimization
 
 ### Connection Pooling
 
@@ -391,21 +391,21 @@ query = "MATCH (c:Company) WHERE c.revenue > 1000000 RETURN c"
 # Check syntax
 validation = validate_cypher_query(query)
 if not validation['valid']:
-    print("❌ Query has syntax errors:", validation['issues'])
+    print("Query has syntax errors:", validation['issues'])
     
 # Estimate cost
 cost = estimate_query_cost(query)
-print(f"📊 Query complexity: {cost['complexity_category']}")
+print(f"Query complexity: {cost['complexity_category']}")
 
 # Follow recommendations
 for rec in cost['recommendations']:
-    print(f"💡 Optimization tip: {rec}")
+    print(f"Optimization tip: {rec}")
 
 # Execute only if reasonable complexity
 if cost['complexity_category'] in ['low', 'medium']:
     result = extensions.execute_query("graph_id", query)
 else:
-    print("⚠️ Query may be too expensive - consider optimization")
+    print("Query may be too expensive - consider optimization")
 ```
 
 ### Caching Strategy
@@ -425,7 +425,7 @@ else:
     cache = results_cache
 ```
 
-## 🧪 Testing
+## Testing
 
 Run the test suite:
 
@@ -457,7 +457,7 @@ def test_query_execution():
         assert result["data"] == [{"count": 100}]
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -492,7 +492,7 @@ config = RoboSystemsExtensionConfig(
 extensions = RoboSystemsExtensions(config)
 ```
 
-## 📚 API Reference
+## API Reference
 
 ### Core Classes
 
@@ -528,7 +528,7 @@ extensions = RoboSystemsExtensions(config)
 - **`format_duration(milliseconds)`** - Human-readable time formatting
 - **`create_extensions(method, **kwargs)`** - Extensions factory
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -545,9 +545,9 @@ pip install pandas # For DataFrame conversion (optional)
 extensions = AuthenticatedExtensions("your-api-key")
 try:
     result = extensions.execute_query("graph_id", "MATCH (n) RETURN count(n) LIMIT 1")
-    print("✅ Authentication successful")
+    print("Authentication successful")
 except Exception as e:
-    print(f"❌ Auth failed: {e}")
+    print(f"Auth failed: {e}")
 ```
 
 **Connection Issues**
@@ -585,11 +585,7 @@ logging.basicConfig(level=logging.DEBUG)
 extensions = AuthenticatedExtensions("your-key")
 ```
 
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -597,7 +593,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 4. Run the test suite: `python run_tests.py`
 5. Submit a pull request
 
-## 📞 Support
+## Support
 
 - **API Reference**: [api.robosystems.ai](https://api.robosystems.ai)
 - **Issues**: [GitHub Issues](https://github.com/RoboFinSystems/robosystems-python-client/issues)

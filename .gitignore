@@ -93,11 +93,6 @@ ipython_config.py
 #   install all needed dependencies.
 Dockerfile
 
-# celery beat schedule file
-celerybeat-schedule.db
-celerybeat-schedule
-celerybeat.pid
-
 # SageMath parsed files
 *.sage.py
 

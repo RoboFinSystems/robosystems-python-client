@@ -104,8 +104,10 @@ class SSEClient:
 
     try:
       self.client = httpx.Client(timeout=self.config.timeout)
-      self._response = self.client.stream("GET", url, params=params, headers=headers)
-      self._response.__enter__()
+      self._context_manager = self.client.stream(
+        "GET", url, params=params, headers=headers
+      )
+      self._response = self._context_manager.__enter__()
 
       self.reconnect_attempts = 0
       self.emit("connected", None)
@@ -124,11 +126,9 @@ class SSEClient:
 
     try:
       event_buffer = {"event": None, "data": [], "id": None, "retry": None}
-      print("[SSE DEBUG] Starting to process events...")
 
       for line in self._response.iter_lines():
         if self.closed:
-          print("[SSE DEBUG] Stream closed, breaking out of loop")
           break
 
         line = line.strip()
@@ -136,7 +136,6 @@ class SSEClient:
         # Empty line indicates end of event
         if not line:
           if event_buffer["data"] or event_buffer["event"]:
-            print(f"[SSE DEBUG] Dispatching event: {event_buffer.get('event')}")
             self._dispatch_event(event_buffer)
           event_buffer = {"event": None, "data": [], "id": None, "retry": None}
           continue
@@ -172,13 +171,9 @@ class SSEClient:
 
       # Handle final event if stream ends without empty line
       if event_buffer["data"] or event_buffer["event"]:
-        print("[SSE DEBUG] Dispatching final event after stream end")
         self._dispatch_event(event_buffer)
 
-      print("[SSE DEBUG] Event processing loop ended")
-
     except Exception as error:
-      print(f"[SSE DEBUG] Exception in event processing: {error}")
       if not self.closed:
         self.emit("error", error)
 
@@ -214,13 +209,14 @@ class SSEClient:
     # Emit typed event
     self.emit(event_type, parsed_data)
 
-    # Check for completion events
+    # Check for completion events - just set flag, don't close from within loop
+    # The loop will break on next iteration and close() will be called in finally
     if event_type in [
       EventType.OPERATION_COMPLETED.value,
       EventType.OPERATION_ERROR.value,
       EventType.OPERATION_CANCELLED.value,
     ]:
-      self.close()
+      self.closed = True
 
   def _handle_error(
     self, error: Exception, operation_id: str, from_sequence: int
@@ -285,12 +281,13 @@ class SSEClient:
     """Close the SSE connection"""
     self.closed = True
 
-    if self._response:
+    if hasattr(self, "_context_manager") and self._context_manager:
       try:
-        self._response.__exit__(None, None, None)
+        self._context_manager.__exit__(None, None, None)
       except Exception:
         pass
-      self._response = None
+      self._context_manager = None
+    self._response = None
 
     if self.client:
       self.client.close()
@@ -334,10 +331,10 @@ class AsyncSSEClient:
 
     try:
       self.client = httpx.AsyncClient(timeout=self.config.timeout)
-      self._response = await self.client.stream(
+      self._context_manager = self.client.stream(
         "GET", url, params=params, headers=headers
       )
-      await self._response.__aenter__()
+      self._response = await self._context_manager.__aenter__()
 
       self.reconnect_attempts = 0
       self.emit("connected", None)
@@ -401,13 +398,9 @@ class AsyncSSEClient:
 
       # Handle final event if stream ends without empty line
       if event_buffer["data"] or event_buffer["event"]:
-        print("[SSE DEBUG] Dispatching final event after stream end")
         self._dispatch_event(event_buffer)
 
-      print("[SSE DEBUG] Event processing loop ended")
-
     except Exception as error:
-      print(f"[SSE DEBUG] Exception in event processing: {error}")
       if not self.closed:
         self.emit("error", error)
 
@@ -443,13 +436,14 @@ class AsyncSSEClient:
     # Emit typed event
     self.emit(event_type, parsed_data)
 
-    # Check for completion events
+    # Check for completion events - just set flag, don't close from within loop
+    # The loop will break on next iteration and close() will be called in finally
     if event_type in [
       EventType.OPERATION_COMPLETED.value,
       EventType.OPERATION_ERROR.value,
       EventType.OPERATION_CANCELLED.value,
     ]:
-      asyncio.create_task(self.close())
+      self.closed = True
 
   async def _handle_error(
     self, error: Exception, operation_id: str, from_sequence: int
@@ -512,12 +506,13 @@ class AsyncSSEClient:
     """Close the SSE connection (async)"""
     self.closed = True
 
-    if self._response:
+    if hasattr(self, "_context_manager") and self._context_manager:
       try:
-        await self._response.__aexit__(None, None, None)
+        await self._context_manager.__aexit__(None, None, None)
       except Exception:
         pass
-      self._response = None
+      self._context_manager = None
+    self._response = None
 
     if self.client:
       await self.client.aclose()

@@ -197,7 +197,9 @@ class SubgraphWorkspaceClient:
         sse_url = f"{self.api._base_url}/v1/operations/{operation_id}/stream"
         headers = {"X-API-Key": self.api.token}
 
-        async with httpx.AsyncClient() as client:
+        # Use longer timeout for SSE streaming (Dagster jobs can take time)
+        timeout = httpx.Timeout(connect=30.0, read=120.0, write=30.0, pool=30.0)
+        async with httpx.AsyncClient(timeout=timeout) as client:
           async with client.stream("GET", sse_url, headers=headers) as sse_response:
             async for line in sse_response.aiter_lines():
               if line.startswith("data: "):
