@@ -14,12 +14,12 @@ class TokenPricing:
   """AI token pricing for a specific model.
 
   Attributes:
-      input_per_1k_tokens (int): Credits per 1K input tokens
-      output_per_1k_tokens (int): Credits per 1K output tokens
+      input_per_1k_tokens (float): Credits per 1K input tokens
+      output_per_1k_tokens (float): Credits per 1K output tokens
   """
 
-  input_per_1k_tokens: int
-  output_per_1k_tokens: int
+  input_per_1k_tokens: float
+  output_per_1k_tokens: float
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
