@@ -135,6 +135,9 @@ package-lock.json
 # npm package files
 *.tgz
 
-#AI
-.claude/
+# AI - Claude Code
+.claude/settings.local.json
 CLAUDE.local.md
+
+.gemini/
+GEMINI.md
