@@ -26,8 +26,8 @@ test:
 # Run all tests
 test-all:
     @just test
-    @just lint
     @just format
+    @just lint
     @just typecheck
 
 # Run linting
