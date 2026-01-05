@@ -52,18 +52,18 @@ dev = [
 ]
 # Table ingestion features (upload Parquet files, ingest to graph)
 tables = [
-    "pandas>=1.5.0",
-    "pyarrow>=10.0.0",
+    "pandas>=2.1.0",
+    "pyarrow>=17.0.0",
 ]
 # Legacy alias for extensions
 extensions = [
-    "pandas>=1.5.0",
-    "pyarrow>=10.0.0",
+    "pandas>=2.1.0",
+    "pyarrow>=17.0.0",
 ]
 # Install all optional features
 all = [
-    "pandas>=1.5.0",
-    "pyarrow>=10.0.0",
+    "pandas>=2.1.0",
+    "pyarrow>=17.0.0",
 ]
 
 [build-system]
