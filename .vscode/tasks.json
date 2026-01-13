@@ -70,7 +70,7 @@
     {
       "label": "Create Feature",
       "type": "shell",
-      "command": "just create-feature ${input:branchType} ${input:branchName} ${input:baseBranch}",
+      "command": "just create-feature ${input:branchType} ${input:branchName} ${input:baseBranch} ${input:updateDependencies}",
       "problemMatcher": []
     },
     {
@@ -85,6 +85,13 @@
       "command": "just create-release ${input:versionType}",
       "problemMatcher": []
     },
+    {
+      "label": "Claude Code",
+      "type": "shell",
+      "command": "claude",
+      "args": [],
+      "problemMatcher": []
+    }
   ],
   "inputs": [
     {
@@ -112,6 +119,13 @@
       "type": "promptString",
       "description": "Enter base branch (default: main):",
       "default": "main"
+    },
+    {
+      "id": "updateDependencies",
+      "type": "pickString",
+      "description": "Update dependencies after creating branch:",
+      "default": "yes",
+      "options": ["yes", "no"]
     },
     {
       "id": "targetBranch",
