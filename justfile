@@ -45,7 +45,7 @@ typecheck:
 
 # Generate SDK from localhost API
 generate-sdk url="http://localhost:8000/openapi.json":
-    bin/generate-sdk {{url}}
+    bin/generate-sdk.sh {{url}}
 
 # Build python package locally (for testing)
 build-package:
@@ -53,15 +53,15 @@ build-package:
 
 # Create a feature branch
 create-feature branch_type="feature" branch_name="" base_branch="main" update="yes":
-    bin/create-feature {{branch_type}} {{branch_name}} {{base_branch}} {{update}}
+    bin/create-feature.sh {{branch_type}} {{branch_name}} {{base_branch}} {{update}}
 
 # Version management
 create-release type="patch":
-    bin/create-release {{type}}
+    bin/create-release.sh {{type}}
 
 # Create PR
 create-pr target_branch="main" claude_review="true":
-    bin/create-pr {{target_branch}} {{claude_review}}
+    bin/create-pr.sh {{target_branch}} {{claude_review}}
 
 # Clean up development artifacts
 clean:
