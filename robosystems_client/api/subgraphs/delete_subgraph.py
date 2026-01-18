@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from typing import Any, cast
+from urllib.parse import quote
 
 import httpx
 
@@ -21,7 +22,10 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "delete",
-    "url": f"/v1/graphs/{graph_id}/subgraphs/{subgraph_name}",
+    "url": "/v1/graphs/{graph_id}/subgraphs/{subgraph_name}".format(
+      graph_id=quote(str(graph_id), safe=""),
+      subgraph_name=quote(str(subgraph_name), safe=""),
+    ),
   }
 
   _kwargs["json"] = body.to_dict()
