@@ -266,6 +266,23 @@ class QueryClient:
       else:
         raise Exception(f"Query execution failed: {error_msg}")
 
+    # Handle error responses (4xx/5xx) where parsed is None
+    if hasattr(response, "status_code") and response.status_code >= 400:
+      import json as _json
+
+      detail = f"HTTP {response.status_code}"
+      try:
+        body = (
+          response.content.decode("utf-8")
+          if isinstance(response.content, bytes)
+          else str(response.content)
+        )
+        error_data = _json.loads(body)
+        detail = error_data.get("detail", error_data.get("message", body))
+      except Exception:
+        pass
+      raise Exception(f"Query failed ({response.status_code}): {detail}")
+
     # Unexpected response format
     raise Exception("Unexpected response format from query endpoint")
 
