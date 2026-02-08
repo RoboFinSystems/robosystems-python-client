@@ -17,11 +17,14 @@ class MaterializeRequest:
       force (bool | Unset): Force materialization even if graph is not stale Default: False.
       rebuild (bool | Unset): Delete and recreate graph database before materialization Default: False.
       ignore_errors (bool | Unset): Continue ingestion on row errors Default: True.
+      dry_run (bool | Unset): Validate limits without executing materialization. Returns usage, limits, and warnings.
+          Default: False.
   """
 
   force: bool | Unset = False
   rebuild: bool | Unset = False
   ignore_errors: bool | Unset = True
+  dry_run: bool | Unset = False
 
   def to_dict(self) -> dict[str, Any]:
     force = self.force
@@ -29,6 +32,8 @@ class MaterializeRequest:
     rebuild = self.rebuild
 
     ignore_errors = self.ignore_errors
+
+    dry_run = self.dry_run
 
     field_dict: dict[str, Any] = {}
 
@@ -39,6 +44,8 @@ class MaterializeRequest:
       field_dict["rebuild"] = rebuild
     if ignore_errors is not UNSET:
       field_dict["ignore_errors"] = ignore_errors
+    if dry_run is not UNSET:
+      field_dict["dry_run"] = dry_run
 
     return field_dict
 
@@ -51,10 +58,13 @@ class MaterializeRequest:
 
     ignore_errors = d.pop("ignore_errors", UNSET)
 
+    dry_run = d.pop("dry_run", UNSET)
+
     materialize_request = cls(
       force=force,
       rebuild=rebuild,
       ignore_errors=ignore_errors,
+      dry_run=dry_run,
     )
 
     return materialize_request

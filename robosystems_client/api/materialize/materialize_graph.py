@@ -67,6 +67,11 @@ def _parse_response(
 
     return response_409
 
+  if response.status_code == 413:
+    response_413 = ErrorResponse.from_dict(response.json())
+
+    return response_413
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -149,6 +154,10 @@ def sync_detailed(
   **Performance:**
   Full graph materialization can take minutes for large datasets. Consider running
   during off-peak hours for production systems.
+
+  **Dry Run:**
+  Set `dry_run=true` to validate limits without executing. Returns current usage, tier limits,
+  and any warnings or errors. No lock is acquired, no SSE operation is created.
 
   **Credits:**
   Materialization is included - no credit consumption
@@ -234,6 +243,10 @@ def sync(
   Full graph materialization can take minutes for large datasets. Consider running
   during off-peak hours for production systems.
 
+  **Dry Run:**
+  Set `dry_run=true` to validate limits without executing. Returns current usage, tier limits,
+  and any warnings or errors. No lock is acquired, no SSE operation is created.
+
   **Credits:**
   Materialization is included - no credit consumption
 
@@ -312,6 +325,10 @@ async def asyncio_detailed(
   **Performance:**
   Full graph materialization can take minutes for large datasets. Consider running
   during off-peak hours for production systems.
+
+  **Dry Run:**
+  Set `dry_run=true` to validate limits without executing. Returns current usage, tier limits,
+  and any warnings or errors. No lock is acquired, no SSE operation is created.
 
   **Credits:**
   Materialization is included - no credit consumption
@@ -394,6 +411,10 @@ async def asyncio(
   **Performance:**
   Full graph materialization can take minutes for large datasets. Consider running
   during off-peak hours for production systems.
+
+  **Dry Run:**
+  Set `dry_run=true` to validate limits without executing. Returns current usage, tier limits,
+  and any warnings or errors. No lock is acquired, no SSE operation is created.
 
   **Credits:**
   Materialization is included - no credit consumption

@@ -16,14 +16,10 @@ class CreditLimits:
   Attributes:
       monthly_ai_credits (int): Monthly AI credits allocation
       current_balance (int): Current credit balance
-      storage_billing_enabled (bool): Whether storage billing is enabled
-      storage_rate_per_gb_per_day (int): Storage billing rate per GB per day
   """
 
   monthly_ai_credits: int
   current_balance: int
-  storage_billing_enabled: bool
-  storage_rate_per_gb_per_day: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -31,18 +27,12 @@ class CreditLimits:
 
     current_balance = self.current_balance
 
-    storage_billing_enabled = self.storage_billing_enabled
-
-    storage_rate_per_gb_per_day = self.storage_rate_per_gb_per_day
-
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
         "monthly_ai_credits": monthly_ai_credits,
         "current_balance": current_balance,
-        "storage_billing_enabled": storage_billing_enabled,
-        "storage_rate_per_gb_per_day": storage_rate_per_gb_per_day,
       }
     )
 
@@ -55,15 +45,9 @@ class CreditLimits:
 
     current_balance = d.pop("current_balance")
 
-    storage_billing_enabled = d.pop("storage_billing_enabled")
-
-    storage_rate_per_gb_per_day = d.pop("storage_rate_per_gb_per_day")
-
     credit_limits = cls(
       monthly_ai_credits=monthly_ai_credits,
       current_balance=current_balance,
-      storage_billing_enabled=storage_billing_enabled,
-      storage_rate_per_gb_per_day=storage_rate_per_gb_per_day,
     )
 
     credit_limits.additional_properties = d

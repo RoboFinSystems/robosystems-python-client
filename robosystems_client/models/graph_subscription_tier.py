@@ -24,14 +24,13 @@ class GraphSubscriptionTier:
           description (str): Tier description
           monthly_price_per_graph (float): Monthly price in USD per graph
           monthly_credits_per_graph (int): Monthly AI credits per graph
-          storage_included_gb (int): Storage included in GB
-          storage_overage_per_gb (float): Overage cost per GB per month
           infrastructure (str): Infrastructure description
           features (list[str]): List of features
           backup_retention_days (int): Backup retention in days
           priority_support (bool): Whether priority support is included
           api_rate_multiplier (float): API rate multiplier
           backend (str): Database backend (ladybug or neo4j)
+          storage_included (bool | Unset): Whether storage is included in the tier Default: True.
           max_queries_per_hour (int | None | Unset): Maximum queries per hour
           max_subgraphs (int | Unset): Maximum subgraphs supported Default: 0.
           instance_type (None | str | Unset): Instance type
@@ -42,14 +41,13 @@ class GraphSubscriptionTier:
   description: str
   monthly_price_per_graph: float
   monthly_credits_per_graph: int
-  storage_included_gb: int
-  storage_overage_per_gb: float
   infrastructure: str
   features: list[str]
   backup_retention_days: int
   priority_support: bool
   api_rate_multiplier: float
   backend: str
+  storage_included: bool | Unset = True
   max_queries_per_hour: int | None | Unset = UNSET
   max_subgraphs: int | Unset = 0
   instance_type: None | str | Unset = UNSET
@@ -66,10 +64,6 @@ class GraphSubscriptionTier:
 
     monthly_credits_per_graph = self.monthly_credits_per_graph
 
-    storage_included_gb = self.storage_included_gb
-
-    storage_overage_per_gb = self.storage_overage_per_gb
-
     infrastructure = self.infrastructure
 
     features = self.features
@@ -81,6 +75,8 @@ class GraphSubscriptionTier:
     api_rate_multiplier = self.api_rate_multiplier
 
     backend = self.backend
+
+    storage_included = self.storage_included
 
     max_queries_per_hour: int | None | Unset
     if isinstance(self.max_queries_per_hour, Unset):
@@ -105,8 +101,6 @@ class GraphSubscriptionTier:
         "description": description,
         "monthly_price_per_graph": monthly_price_per_graph,
         "monthly_credits_per_graph": monthly_credits_per_graph,
-        "storage_included_gb": storage_included_gb,
-        "storage_overage_per_gb": storage_overage_per_gb,
         "infrastructure": infrastructure,
         "features": features,
         "backup_retention_days": backup_retention_days,
@@ -115,6 +109,8 @@ class GraphSubscriptionTier:
         "backend": backend,
       }
     )
+    if storage_included is not UNSET:
+      field_dict["storage_included"] = storage_included
     if max_queries_per_hour is not UNSET:
       field_dict["max_queries_per_hour"] = max_queries_per_hour
     if max_subgraphs is not UNSET:
@@ -137,10 +133,6 @@ class GraphSubscriptionTier:
 
     monthly_credits_per_graph = d.pop("monthly_credits_per_graph")
 
-    storage_included_gb = d.pop("storage_included_gb")
-
-    storage_overage_per_gb = d.pop("storage_overage_per_gb")
-
     infrastructure = d.pop("infrastructure")
 
     features = cast(list[str], d.pop("features"))
@@ -152,6 +144,8 @@ class GraphSubscriptionTier:
     api_rate_multiplier = d.pop("api_rate_multiplier")
 
     backend = d.pop("backend")
+
+    storage_included = d.pop("storage_included", UNSET)
 
     def _parse_max_queries_per_hour(data: object) -> int | None | Unset:
       if data is None:
@@ -181,14 +175,13 @@ class GraphSubscriptionTier:
       description=description,
       monthly_price_per_graph=monthly_price_per_graph,
       monthly_credits_per_graph=monthly_credits_per_graph,
-      storage_included_gb=storage_included_gb,
-      storage_overage_per_gb=storage_overage_per_gb,
       infrastructure=infrastructure,
       features=features,
       backup_retention_days=backup_retention_days,
       priority_support=priority_support,
       api_rate_multiplier=api_rate_multiplier,
       backend=backend,
+      storage_included=storage_included,
       max_queries_per_hour=max_queries_per_hour,
       max_subgraphs=max_subgraphs,
       instance_type=instance_type,
