@@ -82,6 +82,7 @@ def sync_detailed(
   - **Backup Limits**: Frequency, retention, size limits
   - **Rate Limits**: Requests per minute/hour based on tier
   - **Credit Limits**: AI operation credits (if applicable)
+  - **Content Limits**: Node, relationship, and row limits (if applicable)
 
   This unified endpoint provides all limits in one place for easier client integration.
 
@@ -125,6 +126,7 @@ def sync(
   - **Backup Limits**: Frequency, retention, size limits
   - **Rate Limits**: Requests per minute/hour based on tier
   - **Credit Limits**: AI operation credits (if applicable)
+  - **Content Limits**: Node, relationship, and row limits (if applicable)
 
   This unified endpoint provides all limits in one place for easier client integration.
 
@@ -163,6 +165,7 @@ async def asyncio_detailed(
   - **Backup Limits**: Frequency, retention, size limits
   - **Rate Limits**: Requests per minute/hour based on tier
   - **Credit Limits**: AI operation credits (if applicable)
+  - **Content Limits**: Node, relationship, and row limits (if applicable)
 
   This unified endpoint provides all limits in one place for easier client integration.
 
@@ -204,6 +207,7 @@ async def asyncio(
   - **Backup Limits**: Frequency, retention, size limits
   - **Rate Limits**: Requests per minute/hour based on tier
   - **Credit Limits**: AI operation credits (if applicable)
+  - **Content Limits**: Node, relationship, and row limits (if applicable)
 
   This unified endpoint provides all limits in one place for easier client integration.
 

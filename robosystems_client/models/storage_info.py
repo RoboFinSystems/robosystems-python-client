@@ -1,61 +1,45 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-if TYPE_CHECKING:
-  from ..models.storage_info_included_per_tier import StorageInfoIncludedPerTier
-  from ..models.storage_info_overage_pricing import StorageInfoOveragePricing
-
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="StorageInfo")
 
 
 @_attrs_define
 class StorageInfo:
-  """Storage pricing information.
+  """Storage information.
 
   Attributes:
-      included_per_tier (StorageInfoIncludedPerTier): Storage included per tier in GB
-      overage_pricing (StorageInfoOveragePricing): Overage pricing per GB per tier
+      description (str | Unset): Storage billing description Default: 'Storage included in tier'.
   """
 
-  included_per_tier: StorageInfoIncludedPerTier
-  overage_pricing: StorageInfoOveragePricing
+  description: str | Unset = "Storage included in tier"
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    included_per_tier = self.included_per_tier.to_dict()
-
-    overage_pricing = self.overage_pricing.to_dict()
+    description = self.description
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update(
-      {
-        "included_per_tier": included_per_tier,
-        "overage_pricing": overage_pricing,
-      }
-    )
+    field_dict.update({})
+    if description is not UNSET:
+      field_dict["description"] = description
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.storage_info_included_per_tier import StorageInfoIncludedPerTier
-    from ..models.storage_info_overage_pricing import StorageInfoOveragePricing
-
     d = dict(src_dict)
-    included_per_tier = StorageInfoIncludedPerTier.from_dict(d.pop("included_per_tier"))
-
-    overage_pricing = StorageInfoOveragePricing.from_dict(d.pop("overage_pricing"))
+    description = d.pop("description", UNSET)
 
     storage_info = cls(
-      included_per_tier=included_per_tier,
-      overage_pricing=overage_pricing,
+      description=description,
     )
 
     storage_info.additional_properties = d

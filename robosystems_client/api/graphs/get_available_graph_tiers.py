@@ -83,11 +83,9 @@ def sync_detailed(
   - Availability status
 
   **Available Tiers:**
-  - **ladybug-standard**: Multi-tenant entry-level tier
+  - **ladybug-standard**: Dedicated entry-level tier
   - **ladybug-large**: Dedicated professional tier with subgraph support
   - **ladybug-xlarge**: Enterprise tier with maximum resources
-  - **neo4j-community-large**: Neo4j Community Edition (optional, if enabled)
-  - **neo4j-enterprise-xlarge**: Neo4j Enterprise Edition (optional, if enabled)
 
   **Use Cases:**
   - Display tier options in graph creation UI
@@ -140,11 +138,9 @@ def sync(
   - Availability status
 
   **Available Tiers:**
-  - **ladybug-standard**: Multi-tenant entry-level tier
+  - **ladybug-standard**: Dedicated entry-level tier
   - **ladybug-large**: Dedicated professional tier with subgraph support
   - **ladybug-xlarge**: Enterprise tier with maximum resources
-  - **neo4j-community-large**: Neo4j Community Edition (optional, if enabled)
-  - **neo4j-enterprise-xlarge**: Neo4j Enterprise Edition (optional, if enabled)
 
   **Use Cases:**
   - Display tier options in graph creation UI
@@ -192,11 +188,9 @@ async def asyncio_detailed(
   - Availability status
 
   **Available Tiers:**
-  - **ladybug-standard**: Multi-tenant entry-level tier
+  - **ladybug-standard**: Dedicated entry-level tier
   - **ladybug-large**: Dedicated professional tier with subgraph support
   - **ladybug-xlarge**: Enterprise tier with maximum resources
-  - **neo4j-community-large**: Neo4j Community Edition (optional, if enabled)
-  - **neo4j-enterprise-xlarge**: Neo4j Enterprise Edition (optional, if enabled)
 
   **Use Cases:**
   - Display tier options in graph creation UI
@@ -247,11 +241,9 @@ async def asyncio(
   - Availability status
 
   **Available Tiers:**
-  - **ladybug-standard**: Multi-tenant entry-level tier
+  - **ladybug-standard**: Dedicated entry-level tier
   - **ladybug-large**: Dedicated professional tier with subgraph support
   - **ladybug-xlarge**: Enterprise tier with maximum resources
-  - **neo4j-community-large**: Neo4j Community Edition (optional, if enabled)
-  - **neo4j-enterprise-xlarge**: Neo4j Enterprise Edition (optional, if enabled)
 
   **Use Cases:**
   - Display tier options in graph creation UI

@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+  from ..models.materialize_response_limit_check_type_0 import (
+    MaterializeResponseLimitCheckType0,
+  )
+
 
 T = TypeVar("T", bound="MaterializeResponse")
 
@@ -24,15 +30,22 @@ class MaterializeResponse:
       operation_id (str): SSE operation ID for progress tracking
       message (str): Human-readable status message
       status (str | Unset): Operation status Default: 'queued'.
+      limit_check (MaterializeResponseLimitCheckType0 | None | Unset): Limit check results (only present for dry_run
+          requests)
   """
 
   graph_id: str
   operation_id: str
   message: str
   status: str | Unset = "queued"
+  limit_check: MaterializeResponseLimitCheckType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.materialize_response_limit_check_type_0 import (
+      MaterializeResponseLimitCheckType0,
+    )
+
     graph_id = self.graph_id
 
     operation_id = self.operation_id
@@ -40,6 +53,14 @@ class MaterializeResponse:
     message = self.message
 
     status = self.status
+
+    limit_check: dict[str, Any] | None | Unset
+    if isinstance(self.limit_check, Unset):
+      limit_check = UNSET
+    elif isinstance(self.limit_check, MaterializeResponseLimitCheckType0):
+      limit_check = self.limit_check.to_dict()
+    else:
+      limit_check = self.limit_check
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -52,11 +73,17 @@ class MaterializeResponse:
     )
     if status is not UNSET:
       field_dict["status"] = status
+    if limit_check is not UNSET:
+      field_dict["limit_check"] = limit_check
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.materialize_response_limit_check_type_0 import (
+      MaterializeResponseLimitCheckType0,
+    )
+
     d = dict(src_dict)
     graph_id = d.pop("graph_id")
 
@@ -66,11 +93,31 @@ class MaterializeResponse:
 
     status = d.pop("status", UNSET)
 
+    def _parse_limit_check(
+      data: object,
+    ) -> MaterializeResponseLimitCheckType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        limit_check_type_0 = MaterializeResponseLimitCheckType0.from_dict(data)
+
+        return limit_check_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(MaterializeResponseLimitCheckType0 | None | Unset, data)
+
+    limit_check = _parse_limit_check(d.pop("limit_check", UNSET))
+
     materialize_response = cls(
       graph_id=graph_id,
       operation_id=operation_id,
       message=message,
       status=status,
+      limit_check=limit_check,
     )
 
     materialize_response.additional_properties = d

@@ -10,6 +10,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.backup_limits import BackupLimits
+  from ..models.content_limits import ContentLimits
   from ..models.copy_operation_limits import CopyOperationLimits
   from ..models.credit_limits import CreditLimits
   from ..models.query_limits import QueryLimits
@@ -35,6 +36,7 @@ class GraphLimitsResponse:
       backups (BackupLimits): Backup operation limits.
       rate_limits (RateLimits): API rate limits.
       credits_ (CreditLimits | None | Unset): AI credit limits (if applicable)
+      content (ContentLimits | None | Unset): Graph content limits (if applicable)
   """
 
   graph_id: str
@@ -47,9 +49,11 @@ class GraphLimitsResponse:
   backups: BackupLimits
   rate_limits: RateLimits
   credits_: CreditLimits | None | Unset = UNSET
+  content: ContentLimits | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.content_limits import ContentLimits
     from ..models.credit_limits import CreditLimits
 
     graph_id = self.graph_id
@@ -78,6 +82,14 @@ class GraphLimitsResponse:
     else:
       credits_ = self.credits_
 
+    content: dict[str, Any] | None | Unset
+    if isinstance(self.content, Unset):
+      content = UNSET
+    elif isinstance(self.content, ContentLimits):
+      content = self.content.to_dict()
+    else:
+      content = self.content
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -95,12 +107,15 @@ class GraphLimitsResponse:
     )
     if credits_ is not UNSET:
       field_dict["credits"] = credits_
+    if content is not UNSET:
+      field_dict["content"] = content
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.backup_limits import BackupLimits
+    from ..models.content_limits import ContentLimits
     from ..models.copy_operation_limits import CopyOperationLimits
     from ..models.credit_limits import CreditLimits
     from ..models.query_limits import QueryLimits
@@ -143,6 +158,23 @@ class GraphLimitsResponse:
 
     credits_ = _parse_credits_(d.pop("credits", UNSET))
 
+    def _parse_content(data: object) -> ContentLimits | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        content_type_0 = ContentLimits.from_dict(data)
+
+        return content_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(ContentLimits | None | Unset, data)
+
+    content = _parse_content(d.pop("content", UNSET))
+
     graph_limits_response = cls(
       graph_id=graph_id,
       subscription_tier=subscription_tier,
@@ -154,6 +186,7 @@ class GraphLimitsResponse:
       backups=backups,
       rate_limits=rate_limits,
       credits_=credits_,
+      content=content,
     )
 
     graph_limits_response.additional_properties = d

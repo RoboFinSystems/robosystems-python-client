@@ -26,7 +26,7 @@ class GraphSubscriptions:
           description (str): Description of graph subscriptions
           pricing_model (str): Pricing model type (per_graph or per_organization)
           tiers (list[GraphSubscriptionTier]): Available infrastructure tiers
-          storage (StorageInfo): Storage pricing information.
+          storage (StorageInfo): Storage information.
           notes (list[str]): Important notes
   """
 
