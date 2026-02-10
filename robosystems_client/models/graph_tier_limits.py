@@ -19,14 +19,12 @@ class GraphTierLimits:
   """Resource limits for a tier.
 
   Attributes:
-      storage_gb (int): Storage limit in GB
       monthly_credits (int): Monthly credit allocation
       max_subgraphs (int | None): Maximum subgraphs (null for unlimited)
       copy_operations (GraphTierCopyOperations): Copy operation limits for a tier.
       backup (GraphTierBackup): Backup configuration for a tier.
   """
 
-  storage_gb: int
   monthly_credits: int
   max_subgraphs: int | None
   copy_operations: GraphTierCopyOperations
@@ -34,8 +32,6 @@ class GraphTierLimits:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    storage_gb = self.storage_gb
-
     monthly_credits = self.monthly_credits
 
     max_subgraphs: int | None
@@ -49,7 +45,6 @@ class GraphTierLimits:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "storage_gb": storage_gb,
         "monthly_credits": monthly_credits,
         "max_subgraphs": max_subgraphs,
         "copy_operations": copy_operations,
@@ -65,8 +60,6 @@ class GraphTierLimits:
     from ..models.graph_tier_copy_operations import GraphTierCopyOperations
 
     d = dict(src_dict)
-    storage_gb = d.pop("storage_gb")
-
     monthly_credits = d.pop("monthly_credits")
 
     def _parse_max_subgraphs(data: object) -> int | None:
@@ -81,7 +74,6 @@ class GraphTierLimits:
     backup = GraphTierBackup.from_dict(d.pop("backup"))
 
     graph_tier_limits = cls(
-      storage_gb=storage_gb,
       monthly_credits=monthly_credits,
       max_subgraphs=max_subgraphs,
       copy_operations=copy_operations,

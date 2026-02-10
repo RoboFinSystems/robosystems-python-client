@@ -16,7 +16,7 @@ class CheckoutStatusResponse:
   """Status of a checkout session.
 
   Attributes:
-      status (str): Checkout status: 'pending_payment', 'provisioning', 'completed', 'failed'
+      status (str): Checkout status: 'pending_payment', 'provisioning', 'active', 'failed', 'canceled'
       subscription_id (str): Internal subscription ID
       resource_id (None | str | Unset): Resource ID (graph_id for both graphs and repositories) once provisioned. For
           repositories, this is the repository slug (e.g., 'sec')

@@ -28,7 +28,6 @@ class GraphTierInfo:
       backend (str): Database backend (ladybug or neo4j)
       enabled (bool): Whether tier is available
       max_subgraphs (int | None): Maximum subgraphs allowed
-      storage_limit_gb (int): Storage limit in GB
       monthly_credits (int): Monthly AI credits
       api_rate_multiplier (float): API rate limit multiplier
       features (list[str]): List of tier features
@@ -44,7 +43,6 @@ class GraphTierInfo:
   backend: str
   enabled: bool
   max_subgraphs: int | None
-  storage_limit_gb: int
   monthly_credits: int
   api_rate_multiplier: float
   features: list[str]
@@ -68,8 +66,6 @@ class GraphTierInfo:
 
     max_subgraphs: int | None
     max_subgraphs = self.max_subgraphs
-
-    storage_limit_gb = self.storage_limit_gb
 
     monthly_credits = self.monthly_credits
 
@@ -98,7 +94,6 @@ class GraphTierInfo:
         "backend": backend,
         "enabled": enabled,
         "max_subgraphs": max_subgraphs,
-        "storage_limit_gb": storage_limit_gb,
         "monthly_credits": monthly_credits,
         "api_rate_multiplier": api_rate_multiplier,
         "features": features,
@@ -136,8 +131,6 @@ class GraphTierInfo:
 
     max_subgraphs = _parse_max_subgraphs(d.pop("max_subgraphs"))
 
-    storage_limit_gb = d.pop("storage_limit_gb")
-
     monthly_credits = d.pop("monthly_credits")
 
     api_rate_multiplier = d.pop("api_rate_multiplier")
@@ -165,7 +158,6 @@ class GraphTierInfo:
       backend=backend,
       enabled=enabled,
       max_subgraphs=max_subgraphs,
-      storage_limit_gb=storage_limit_gb,
       monthly_credits=monthly_credits,
       api_rate_multiplier=api_rate_multiplier,
       features=features,
