@@ -69,10 +69,11 @@ def sync_detailed(
   **Status Values:**
   - `pending_payment`: Waiting for payment to complete
   - `provisioning`: Payment confirmed, resource being created
-  - `completed`: Resource is ready (resource_id will be set)
+  - `active`: Resource is ready (resource_id will be set)
   - `failed`: Something went wrong (error field will be set)
+  - `canceled`: Payment was canceled
 
-  **When status is 'completed':**
+  **When status is 'active':**
   - For graphs: `resource_id` will be the graph_id, and `operation_id` can be used to monitor SSE
   progress
   - For repositories: `resource_id` will be the repository name and access is immediately available
@@ -114,10 +115,11 @@ def sync(
   **Status Values:**
   - `pending_payment`: Waiting for payment to complete
   - `provisioning`: Payment confirmed, resource being created
-  - `completed`: Resource is ready (resource_id will be set)
+  - `active`: Resource is ready (resource_id will be set)
   - `failed`: Something went wrong (error field will be set)
+  - `canceled`: Payment was canceled
 
-  **When status is 'completed':**
+  **When status is 'active':**
   - For graphs: `resource_id` will be the graph_id, and `operation_id` can be used to monitor SSE
   progress
   - For repositories: `resource_id` will be the repository name and access is immediately available
@@ -154,10 +156,11 @@ async def asyncio_detailed(
   **Status Values:**
   - `pending_payment`: Waiting for payment to complete
   - `provisioning`: Payment confirmed, resource being created
-  - `completed`: Resource is ready (resource_id will be set)
+  - `active`: Resource is ready (resource_id will be set)
   - `failed`: Something went wrong (error field will be set)
+  - `canceled`: Payment was canceled
 
-  **When status is 'completed':**
+  **When status is 'active':**
   - For graphs: `resource_id` will be the graph_id, and `operation_id` can be used to monitor SSE
   progress
   - For repositories: `resource_id` will be the repository name and access is immediately available
@@ -197,10 +200,11 @@ async def asyncio(
   **Status Values:**
   - `pending_payment`: Waiting for payment to complete
   - `provisioning`: Payment confirmed, resource being created
-  - `completed`: Resource is ready (resource_id will be set)
+  - `active`: Resource is ready (resource_id will be set)
   - `failed`: Something went wrong (error field will be set)
+  - `canceled`: Payment was canceled
 
-  **When status is 'completed':**
+  **When status is 'active':**
   - For graphs: `resource_id` will be the graph_id, and `operation_id` can be used to monitor SSE
   progress
   - For repositories: `resource_id` will be the repository name and access is immediately available

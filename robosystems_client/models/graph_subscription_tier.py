@@ -30,7 +30,6 @@ class GraphSubscriptionTier:
           priority_support (bool): Whether priority support is included
           api_rate_multiplier (float): API rate multiplier
           backend (str): Database backend (ladybug or neo4j)
-          storage_included (bool | Unset): Whether storage is included in the tier Default: True.
           max_queries_per_hour (int | None | Unset): Maximum queries per hour
           max_subgraphs (int | Unset): Maximum subgraphs supported Default: 0.
           instance_type (None | str | Unset): Instance type
@@ -47,7 +46,6 @@ class GraphSubscriptionTier:
   priority_support: bool
   api_rate_multiplier: float
   backend: str
-  storage_included: bool | Unset = True
   max_queries_per_hour: int | None | Unset = UNSET
   max_subgraphs: int | Unset = 0
   instance_type: None | str | Unset = UNSET
@@ -75,8 +73,6 @@ class GraphSubscriptionTier:
     api_rate_multiplier = self.api_rate_multiplier
 
     backend = self.backend
-
-    storage_included = self.storage_included
 
     max_queries_per_hour: int | None | Unset
     if isinstance(self.max_queries_per_hour, Unset):
@@ -109,8 +105,6 @@ class GraphSubscriptionTier:
         "backend": backend,
       }
     )
-    if storage_included is not UNSET:
-      field_dict["storage_included"] = storage_included
     if max_queries_per_hour is not UNSET:
       field_dict["max_queries_per_hour"] = max_queries_per_hour
     if max_subgraphs is not UNSET:
@@ -144,8 +138,6 @@ class GraphSubscriptionTier:
     api_rate_multiplier = d.pop("api_rate_multiplier")
 
     backend = d.pop("backend")
-
-    storage_included = d.pop("storage_included", UNSET)
 
     def _parse_max_queries_per_hour(data: object) -> int | None | Unset:
       if data is None:
@@ -181,7 +173,6 @@ class GraphSubscriptionTier:
       priority_support=priority_support,
       api_rate_multiplier=api_rate_multiplier,
       backend=backend,
-      storage_included=storage_included,
       max_queries_per_hour=max_queries_per_hour,
       max_subgraphs=max_subgraphs,
       instance_type=instance_type,

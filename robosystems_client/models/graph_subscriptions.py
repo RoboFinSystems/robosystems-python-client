@@ -8,7 +8,6 @@ from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
   from ..models.graph_subscription_tier import GraphSubscriptionTier
-  from ..models.storage_info import StorageInfo
 
 
 T = TypeVar("T", bound="GraphSubscriptions")
@@ -26,14 +25,12 @@ class GraphSubscriptions:
           description (str): Description of graph subscriptions
           pricing_model (str): Pricing model type (per_graph or per_organization)
           tiers (list[GraphSubscriptionTier]): Available infrastructure tiers
-          storage (StorageInfo): Storage information.
           notes (list[str]): Important notes
   """
 
   description: str
   pricing_model: str
   tiers: list[GraphSubscriptionTier]
-  storage: StorageInfo
   notes: list[str]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -47,8 +44,6 @@ class GraphSubscriptions:
       tiers_item = tiers_item_data.to_dict()
       tiers.append(tiers_item)
 
-    storage = self.storage.to_dict()
-
     notes = self.notes
 
     field_dict: dict[str, Any] = {}
@@ -58,7 +53,6 @@ class GraphSubscriptions:
         "description": description,
         "pricing_model": pricing_model,
         "tiers": tiers,
-        "storage": storage,
         "notes": notes,
       }
     )
@@ -68,7 +62,6 @@ class GraphSubscriptions:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.graph_subscription_tier import GraphSubscriptionTier
-    from ..models.storage_info import StorageInfo
 
     d = dict(src_dict)
     description = d.pop("description")
@@ -82,15 +75,12 @@ class GraphSubscriptions:
 
       tiers.append(tiers_item)
 
-    storage = StorageInfo.from_dict(d.pop("storage"))
-
     notes = cast(list[str], d.pop("notes"))
 
     graph_subscriptions = cls(
       description=description,
       pricing_model=pricing_model,
       tiers=tiers,
-      storage=storage,
       notes=notes,
     )
 

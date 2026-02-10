@@ -20,6 +20,7 @@ class GraphSubscriptionResponse:
       resource_type (str): Resource type (graph or repository)
       resource_id (str): Resource identifier
       plan_name (str): Current plan name
+      plan_display_name (str): Human-readable plan name for UI display
       billing_interval (str): Billing interval
       status (str): Subscription status
       base_price_cents (int): Base price in cents
@@ -36,6 +37,7 @@ class GraphSubscriptionResponse:
   resource_type: str
   resource_id: str
   plan_name: str
+  plan_display_name: str
   billing_interval: str
   status: str
   base_price_cents: int
@@ -55,6 +57,8 @@ class GraphSubscriptionResponse:
     resource_id = self.resource_id
 
     plan_name = self.plan_name
+
+    plan_display_name = self.plan_display_name
 
     billing_interval = self.billing_interval
 
@@ -102,6 +106,7 @@ class GraphSubscriptionResponse:
         "resource_type": resource_type,
         "resource_id": resource_id,
         "plan_name": plan_name,
+        "plan_display_name": plan_display_name,
         "billing_interval": billing_interval,
         "status": status,
         "base_price_cents": base_price_cents,
@@ -131,6 +136,8 @@ class GraphSubscriptionResponse:
     resource_id = d.pop("resource_id")
 
     plan_name = d.pop("plan_name")
+
+    plan_display_name = d.pop("plan_display_name")
 
     billing_interval = d.pop("billing_interval")
 
@@ -192,6 +199,7 @@ class GraphSubscriptionResponse:
       resource_type=resource_type,
       resource_id=resource_id,
       plan_name=plan_name,
+      plan_display_name=plan_display_name,
       billing_interval=billing_interval,
       status=status,
       base_price_cents=base_price_cents,
