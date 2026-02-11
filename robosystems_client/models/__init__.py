@@ -55,7 +55,6 @@ from .create_api_key_response import CreateAPIKeyResponse
 from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
 from .create_graph_request import CreateGraphRequest
-from .create_org_request import CreateOrgRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
 from .create_subgraph_request import CreateSubgraphRequest
 from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
@@ -299,7 +298,6 @@ __all__ = (
   "CreateCheckoutRequest",
   "CreateCheckoutRequestResourceConfig",
   "CreateGraphRequest",
-  "CreateOrgRequest",
   "CreateRepositorySubscriptionRequest",
   "CreateSubgraphRequest",
   "CreateSubgraphRequestMetadataType0",
