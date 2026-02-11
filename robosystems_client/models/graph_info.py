@@ -27,6 +27,7 @@ class GraphInfo:
       is_subgraph (bool | Unset): Whether this is a subgraph (vs a main graph) Default: False.
       parent_graph_id (None | str | Unset): Parent graph ID if this is a subgraph
       graph_type (str | Unset): Type of graph: generic, entity, or repository Default: 'entity'.
+      status (str | Unset): Graph lifecycle status: queued, provisioning, active, suspended Default: 'active'.
   """
 
   graph_id: str
@@ -40,6 +41,7 @@ class GraphInfo:
   is_subgraph: bool | Unset = False
   parent_graph_id: None | str | Unset = UNSET
   graph_type: str | Unset = "entity"
+  status: str | Unset = "active"
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -75,6 +77,8 @@ class GraphInfo:
 
     graph_type = self.graph_type
 
+    status = self.status
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -98,6 +102,8 @@ class GraphInfo:
       field_dict["parentGraphId"] = parent_graph_id
     if graph_type is not UNSET:
       field_dict["graphType"] = graph_type
+    if status is not UNSET:
+      field_dict["status"] = status
 
     return field_dict
 
@@ -140,6 +146,8 @@ class GraphInfo:
 
     graph_type = d.pop("graphType", UNSET)
 
+    status = d.pop("status", UNSET)
+
     graph_info = cls(
       graph_id=graph_id,
       graph_name=graph_name,
@@ -152,6 +160,7 @@ class GraphInfo:
       is_subgraph=is_subgraph,
       parent_graph_id=parent_graph_id,
       graph_type=graph_type,
+      status=status,
     )
 
     graph_info.additional_properties = d
