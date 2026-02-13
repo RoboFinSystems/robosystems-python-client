@@ -422,7 +422,7 @@ class SubgraphWorkspaceClient:
         MATCH (f)-[:FACT_HAS_PERIOD]->(p:Period)
         MATCH (f)-[:FACT_HAS_ENTITY]->(e:Entity)
         OPTIONAL MATCH (f)-[:FACT_HAS_UNIT]->(u:Unit)
-        OPTIONAL MATCH (f)-[:FACT_HAS_DIMENSION]->(d:FactDimension)
+        OPTIONAL MATCH (f)-[:FACT_HAS_DIMENSION]->(d:Dimension)
         {where_clause}
         RETURN f, el, p, e, u, collect(d) as dimensions
         """
