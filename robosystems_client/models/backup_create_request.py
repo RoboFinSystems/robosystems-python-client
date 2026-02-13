@@ -19,7 +19,7 @@ class BackupCreateRequest:
       backup_format (str | Unset): Backup format - only 'full_dump' is supported (complete .lbug database file)
           Default: 'full_dump'.
       backup_type (str | Unset): Backup type - only 'full' is supported Default: 'full'.
-      retention_days (int | Unset): Retention period in days Default: 90.
+      retention_days (int | Unset): Retention period in days Default: 30.
       compression (bool | Unset): Enable compression (always enabled for optimal storage) Default: True.
       encryption (bool | Unset): Enable encryption (encrypted backups cannot be downloaded) Default: False.
       schedule (None | str | Unset): Optional cron schedule for automated backups
@@ -27,7 +27,7 @@ class BackupCreateRequest:
 
   backup_format: str | Unset = "full_dump"
   backup_type: str | Unset = "full"
-  retention_days: int | Unset = 90
+  retention_days: int | Unset = 30
   compression: bool | Unset = True
   encryption: bool | Unset = False
   schedule: None | str | Unset = UNSET
