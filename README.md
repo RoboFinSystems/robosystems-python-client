@@ -7,7 +7,7 @@ Official Python Client for the RoboSystems Financial Knowledge Graph API. Access
 
 ## Features
 
-- **Type-safe API client** with full type hints and Pydantic models
+- **Type-safe API client** with full type hints and typed models
 - **Async/await support** for high-performance applications
 - **Table ingestion** with simplified Parquet file uploads
 - **Streaming support** for memory-efficient processing of large result sets
@@ -45,4 +45,4 @@ pip install robosystems-client[all]
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-MIT © 2025 RFS LLC
+MIT © 2026 RFS LLC
