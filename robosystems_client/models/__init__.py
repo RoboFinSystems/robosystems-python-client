@@ -48,12 +48,20 @@ from .check_credit_balance_response_checkcreditbalance import (
 )
 from .checkout_response import CheckoutResponse
 from .checkout_status_response import CheckoutStatusResponse
+from .connection_options_response import ConnectionOptionsResponse
+from .connection_provider_info import ConnectionProviderInfo
+from .connection_provider_info_auth_type import ConnectionProviderInfoAuthType
+from .connection_provider_info_provider import ConnectionProviderInfoProvider
+from .connection_response import ConnectionResponse
+from .connection_response_metadata import ConnectionResponseMetadata
 from .content_limits import ContentLimits
 from .copy_operation_limits import CopyOperationLimits
 from .create_api_key_request import CreateAPIKeyRequest
 from .create_api_key_response import CreateAPIKeyResponse
 from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
+from .create_connection_request import CreateConnectionRequest
+from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
 from .create_subgraph_request import CreateSubgraphRequest
@@ -140,6 +148,7 @@ from .invite_member_request import InviteMemberRequest
 from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
+from .list_connections_provider_type_0 import ListConnectionsProviderType0
 from .list_org_graphs_response_200_item import ListOrgGraphsResponse200Item
 from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
@@ -153,6 +162,12 @@ from .mcp_tool_call import MCPToolCall
 from .mcp_tool_call_arguments import MCPToolCallArguments
 from .mcp_tools_response import MCPToolsResponse
 from .mcp_tools_response_tools_item import MCPToolsResponseToolsItem
+from .o_auth_callback_request import OAuthCallbackRequest
+from .o_auth_init_request import OAuthInitRequest
+from .o_auth_init_request_additional_params_type_0 import (
+  OAuthInitRequestAdditionalParamsType0,
+)
+from .o_auth_init_response import OAuthInitResponse
 from .offering_repository_plan import OfferingRepositoryPlan
 from .offering_repository_plan_rate_limits_type_0 import (
   OfferingRepositoryPlanRateLimitsType0,
@@ -185,8 +200,16 @@ from .payment_method import PaymentMethod
 from .performance_insights import PerformanceInsights
 from .performance_insights_operation_stats import PerformanceInsightsOperationStats
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
+from .plaid_connection_config import PlaidConnectionConfig
+from .plaid_connection_config_accounts_type_0_item import (
+  PlaidConnectionConfigAccountsType0Item,
+)
+from .plaid_connection_config_institution_type_0 import (
+  PlaidConnectionConfigInstitutionType0,
+)
 from .portal_session_response import PortalSessionResponse
 from .query_limits import QueryLimits
+from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
 from .register_request import RegisterRequest
 from .repository_info import RepositoryInfo
@@ -213,6 +236,7 @@ from .schema_validation_response_compatibility_type_0 import (
   SchemaValidationResponseCompatibilityType0,
 )
 from .schema_validation_response_stats_type_0 import SchemaValidationResponseStatsType0
+from .sec_connection_config import SECConnectionConfig
 from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
@@ -230,6 +254,13 @@ from .subgraph_summary import SubgraphSummary
 from .subgraph_type import SubgraphType
 from .success_response import SuccessResponse
 from .success_response_data_type_0 import SuccessResponseDataType0
+from .sync_connection_request import SyncConnectionRequest
+from .sync_connection_request_sync_options_type_0 import (
+  SyncConnectionRequestSyncOptionsType0,
+)
+from .sync_connection_response_syncconnection import (
+  SyncConnectionResponseSyncconnection,
+)
 from .table_info import TableInfo
 from .table_list_response import TableListResponse
 from .table_query_request import TableQueryRequest
@@ -291,12 +322,20 @@ __all__ = (
   "CheckCreditBalanceResponseCheckcreditbalance",
   "CheckoutResponse",
   "CheckoutStatusResponse",
+  "ConnectionOptionsResponse",
+  "ConnectionProviderInfo",
+  "ConnectionProviderInfoAuthType",
+  "ConnectionProviderInfoProvider",
+  "ConnectionResponse",
+  "ConnectionResponseMetadata",
   "ContentLimits",
   "CopyOperationLimits",
   "CreateAPIKeyRequest",
   "CreateAPIKeyResponse",
   "CreateCheckoutRequest",
   "CreateCheckoutRequestResourceConfig",
+  "CreateConnectionRequest",
+  "CreateConnectionRequestProvider",
   "CreateGraphRequest",
   "CreateRepositorySubscriptionRequest",
   "CreateSubgraphRequest",
@@ -365,6 +404,7 @@ __all__ = (
   "Invoice",
   "InvoiceLineItem",
   "InvoicesResponse",
+  "ListConnectionsProviderType0",
   "ListOrgGraphsResponse200Item",
   "ListSubgraphsResponse",
   "ListTableFilesResponse",
@@ -378,6 +418,10 @@ __all__ = (
   "MCPToolCallArguments",
   "MCPToolsResponse",
   "MCPToolsResponseToolsItem",
+  "OAuthCallbackRequest",
+  "OAuthInitRequest",
+  "OAuthInitRequestAdditionalParamsType0",
+  "OAuthInitResponse",
   "OfferingRepositoryPlan",
   "OfferingRepositoryPlanRateLimitsType0",
   "OperationCosts",
@@ -408,8 +452,12 @@ __all__ = (
   "PerformanceInsights",
   "PerformanceInsightsOperationStats",
   "PerformanceInsightsSlowQueriesItem",
+  "PlaidConnectionConfig",
+  "PlaidConnectionConfigAccountsType0Item",
+  "PlaidConnectionConfigInstitutionType0",
   "PortalSessionResponse",
   "QueryLimits",
+  "QuickBooksConnectionConfig",
   "RateLimits",
   "RegisterRequest",
   "RepositoryInfo",
@@ -428,6 +476,7 @@ __all__ = (
   "SchemaValidationResponse",
   "SchemaValidationResponseCompatibilityType0",
   "SchemaValidationResponseStatsType0",
+  "SECConnectionConfig",
   "SelectionCriteria",
   "ServiceOfferingsResponse",
   "ServiceOfferingSummary",
@@ -445,6 +494,9 @@ __all__ = (
   "SubgraphType",
   "SuccessResponse",
   "SuccessResponseDataType0",
+  "SyncConnectionRequest",
+  "SyncConnectionRequestSyncOptionsType0",
+  "SyncConnectionResponseSyncconnection",
   "TableInfo",
   "TableListResponse",
   "TableQueryRequest",
