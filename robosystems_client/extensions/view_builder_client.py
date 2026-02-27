@@ -64,7 +64,6 @@ class ViewBuilderClient:
   Provides functionality to:
   - Query trial balance from transactions
   - Query existing facts with aspects
-  - Apply element mappings for aggregation
   - Generate pivot table presentations
   - Write views to subgraph workspaces
   """
