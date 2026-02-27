@@ -69,16 +69,14 @@ class ViewBuilderClient:
   - Write views to subgraph workspaces
   """
 
-  def __init__(self, query_client, element_mapping_client=None):
+  def __init__(self, query_client):
     """
-    Initialize with query client and optional element mapping client.
+    Initialize with query client.
 
     Args:
         query_client: RoboSystems query client
-        element_mapping_client: Optional ElementMappingClient for applying mappings
     """
     self.query = query_client
-    self.element_mapping = element_mapping_client
 
   async def aggregate_trial_balance(
     self,
@@ -253,7 +251,6 @@ class ViewBuilderClient:
     graph_id: str,
     source: ViewSource,
     view_config: Optional[ViewConfig] = None,
-    mapping_structure_id: Optional[str] = None,
     workspace_id: Optional[str] = None,
   ) -> ViewResponse:
     """
@@ -261,15 +258,13 @@ class ViewBuilderClient:
 
     This is the main entry point for view generation. It:
     1. Queries source data (transactions or facts)
-    2. Applies element mappings if specified
-    3. Generates pivot table presentation if configured
-    4. Optionally writes to subgraph workspace
+    2. Generates pivot table presentation if configured
+    3. Optionally writes to subgraph workspace
 
     Args:
         graph_id: Main graph ID to query data from
         source: Source configuration (transactions or fact set)
         view_config: Optional pivot table configuration
-        mapping_structure_id: Optional mapping to apply for aggregation
         workspace_id: Optional subgraph to write results to
 
     Returns:
@@ -300,20 +295,11 @@ class ViewBuilderClient:
     else:
       raise ValueError(f"Unsupported source type: {source.type}")
 
-    # Step 2: Apply element mapping if specified
-    if mapping_structure_id and self.element_mapping:
-      # Get mapping structure from subgraph
-      mapping = await self.element_mapping.get_mapping_structure(
-        workspace_id or graph_id, mapping_structure_id
-      )
-      if mapping:
-        fact_data = self.element_mapping.apply_element_mapping(fact_data, mapping)
-
-    # Step 3: Generate pivot table if configured
+    # Step 2: Generate pivot table if configured
     if view_config:
       fact_data = self._generate_pivot_table(fact_data, view_config)
 
-    # Step 4: Write to workspace if specified
+    # Step 3: Write to workspace if specified
     if workspace_id:
       await self._write_to_workspace(workspace_id, fact_data, source_type)
 
@@ -326,7 +312,6 @@ class ViewBuilderClient:
         "fact_count": len(fact_data),
         "period_start": source.period_start,
         "period_end": source.period_end,
-        "has_mapping": mapping_structure_id is not None,
         "has_pivot": view_config is not None,
       },
       execution_time_ms=execution_time,
