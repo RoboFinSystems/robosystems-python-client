@@ -112,11 +112,6 @@ def sync_detailed(
   - Generates fresh trial balance
   - Duration depends on data volume
 
-  **Plaid Sync**:
-  - Retrieves recent bank transactions
-  - Updates account balances
-  - Categorizes new transactions
-
   Note:
   This operation is included - no credit consumption required.
 
@@ -172,11 +167,6 @@ def sync(
   - Generates fresh trial balance
   - Duration depends on data volume
 
-  **Plaid Sync**:
-  - Retrieves recent bank transactions
-  - Updates account balances
-  - Categorizes new transactions
-
   Note:
   This operation is included - no credit consumption required.
 
@@ -228,11 +218,6 @@ async def asyncio_detailed(
   - Updates chart of accounts
   - Generates fresh trial balance
   - Duration depends on data volume
-
-  **Plaid Sync**:
-  - Retrieves recent bank transactions
-  - Updates account balances
-  - Categorizes new transactions
 
   Note:
   This operation is included - no credit consumption required.
@@ -286,11 +271,6 @@ async def asyncio(
   - Updates chart of accounts
   - Generates fresh trial balance
   - Duration depends on data volume
-
-  **Plaid Sync**:
-  - Retrieves recent bank transactions
-  - Updates account balances
-  - Categorizes new transactions
 
   Note:
   This operation is included - no credit consumption required.

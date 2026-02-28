@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-
-from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="SECConnectionConfig")
 
@@ -16,22 +14,14 @@ class SECConnectionConfig:
   """SEC-specific connection configuration.
 
   Attributes:
-      cik (str): 10-digit CIK number
-      entity_name (None | str | Unset): Entity name from SEC
+      cik (str): SEC Central Index Key
   """
 
   cik: str
-  entity_name: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     cik = self.cik
-
-    entity_name: None | str | Unset
-    if isinstance(self.entity_name, Unset):
-      entity_name = UNSET
-    else:
-      entity_name = self.entity_name
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -40,8 +30,6 @@ class SECConnectionConfig:
         "cik": cik,
       }
     )
-    if entity_name is not UNSET:
-      field_dict["entity_name"] = entity_name
 
     return field_dict
 
@@ -50,18 +38,8 @@ class SECConnectionConfig:
     d = dict(src_dict)
     cik = d.pop("cik")
 
-    def _parse_entity_name(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    entity_name = _parse_entity_name(d.pop("entity_name", UNSET))
-
     sec_connection_config = cls(
       cik=cik,
-      entity_name=entity_name,
     )
 
     sec_connection_config.additional_properties = d

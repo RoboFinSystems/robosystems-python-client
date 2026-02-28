@@ -61,7 +61,8 @@ def sync_detailed(
   **Available Extensions:**
   - **RoboLedger**: Complete accounting system with XBRL reporting, general ledger, and financial
   statements
-  - **RoboInvestor**: Investment portfolio management and tracking
+  - **RoboInvestor**: Investment portfolio management with securities tracking, trade execution, and
+  risk analysis
   - **RoboSCM**: Supply chain management and logistics
   - **RoboFO**: Front office operations and CRM
   - **RoboHRM**: Human resources management
@@ -114,7 +115,8 @@ def sync(
   **Available Extensions:**
   - **RoboLedger**: Complete accounting system with XBRL reporting, general ledger, and financial
   statements
-  - **RoboInvestor**: Investment portfolio management and tracking
+  - **RoboInvestor**: Investment portfolio management with securities tracking, trade execution, and
+  risk analysis
   - **RoboSCM**: Supply chain management and logistics
   - **RoboFO**: Front office operations and CRM
   - **RoboHRM**: Human resources management
@@ -163,7 +165,8 @@ async def asyncio_detailed(
   **Available Extensions:**
   - **RoboLedger**: Complete accounting system with XBRL reporting, general ledger, and financial
   statements
-  - **RoboInvestor**: Investment portfolio management and tracking
+  - **RoboInvestor**: Investment portfolio management with securities tracking, trade execution, and
+  risk analysis
   - **RoboSCM**: Supply chain management and logistics
   - **RoboFO**: Front office operations and CRM
   - **RoboHRM**: Human resources management
@@ -214,7 +217,8 @@ async def asyncio(
   **Available Extensions:**
   - **RoboLedger**: Complete accounting system with XBRL reporting, general ledger, and financial
   statements
-  - **RoboInvestor**: Investment portfolio management and tracking
+  - **RoboInvestor**: Investment portfolio management with securities tracking, trade execution, and
+  risk analysis
   - **RoboSCM**: Supply chain management and logistics
   - **RoboFO**: Front office operations and CRM
   - **RoboHRM**: Human resources management

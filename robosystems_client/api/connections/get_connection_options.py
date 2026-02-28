@@ -86,11 +86,6 @@ def sync_detailed(
   - Chart of accounts, transactions, trial balance
   - Real-time sync capabilities
 
-  **Plaid**: Bank account connections
-  - Secure bank authentication via Plaid Link
-  - Transaction history and balances
-  - Multi-account support
-
   No credits are consumed for viewing connection options.
 
   Args:
@@ -136,11 +131,6 @@ def sync(
   - Chart of accounts, transactions, trial balance
   - Real-time sync capabilities
 
-  **Plaid**: Bank account connections
-  - Secure bank authentication via Plaid Link
-  - Transaction history and balances
-  - Multi-account support
-
   No credits are consumed for viewing connection options.
 
   Args:
@@ -180,11 +170,6 @@ async def asyncio_detailed(
   - OAuth 2.0 authentication
   - Chart of accounts, transactions, trial balance
   - Real-time sync capabilities
-
-  **Plaid**: Bank account connections
-  - Secure bank authentication via Plaid Link
-  - Transaction history and balances
-  - Multi-account support
 
   No credits are consumed for viewing connection options.
 
@@ -228,11 +213,6 @@ async def asyncio(
   - OAuth 2.0 authentication
   - Chart of accounts, transactions, trial balance
   - Real-time sync capabilities
-
-  **Plaid**: Bank account connections
-  - Secure bank authentication via Plaid Link
-  - Transaction history and balances
-  - Multi-account support
 
   No credits are consumed for viewing connection options.
 

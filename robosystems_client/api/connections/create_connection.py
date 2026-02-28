@@ -107,11 +107,6 @@ def sync_detailed(
   - Requires admin permissions in QuickBooks
   - Complete with OAuth callback
 
-  **Plaid Connections**:
-  - Returns Plaid Link token
-  - User completes bank authentication
-  - Exchange public token for access
-
   Note:
   This operation is included - no credit consumption required.
 
@@ -161,11 +156,6 @@ def sync(
   - Requires admin permissions in QuickBooks
   - Complete with OAuth callback
 
-  **Plaid Connections**:
-  - Returns Plaid Link token
-  - User completes bank authentication
-  - Exchange public token for access
-
   Note:
   This operation is included - no credit consumption required.
 
@@ -209,11 +199,6 @@ async def asyncio_detailed(
   - Returns OAuth URL for authorization
   - Requires admin permissions in QuickBooks
   - Complete with OAuth callback
-
-  **Plaid Connections**:
-  - Returns Plaid Link token
-  - User completes bank authentication
-  - Exchange public token for access
 
   Note:
   This operation is included - no credit consumption required.
@@ -261,11 +246,6 @@ async def asyncio(
   - Returns OAuth URL for authorization
   - Requires admin permissions in QuickBooks
   - Complete with OAuth callback
-
-  **Plaid Connections**:
-  - Returns Plaid Link token
-  - User completes bank authentication
-  - Exchange public token for access
 
   Note:
   This operation is included - no credit consumption required.

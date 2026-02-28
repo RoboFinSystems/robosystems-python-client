@@ -24,20 +24,20 @@ class ConnectionResponse:
   Attributes:
       connection_id (str): Unique connection identifier
       provider (str): Connection provider type
-      entity_id (str): Entity identifier
       status (str): Connection status
       created_at (datetime.datetime | str): Creation timestamp
       metadata (ConnectionResponseMetadata): Provider-specific metadata
+      entity_id (None | str | Unset): Entity identifier
       updated_at (datetime.datetime | None | str | Unset): Last update timestamp
       last_sync (datetime.datetime | None | str | Unset): Last sync timestamp
   """
 
   connection_id: str
   provider: str
-  entity_id: str
   status: str
   created_at: datetime.datetime | str
   metadata: ConnectionResponseMetadata
+  entity_id: None | str | Unset = UNSET
   updated_at: datetime.datetime | None | str | Unset = UNSET
   last_sync: datetime.datetime | None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -46,8 +46,6 @@ class ConnectionResponse:
     connection_id = self.connection_id
 
     provider = self.provider
-
-    entity_id = self.entity_id
 
     status = self.status
 
@@ -58,6 +56,12 @@ class ConnectionResponse:
       created_at = self.created_at
 
     metadata = self.metadata.to_dict()
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     updated_at: None | str | Unset
     if isinstance(self.updated_at, Unset):
@@ -81,12 +85,13 @@ class ConnectionResponse:
       {
         "connection_id": connection_id,
         "provider": provider,
-        "entity_id": entity_id,
         "status": status,
         "created_at": created_at,
         "metadata": metadata,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if updated_at is not UNSET:
       field_dict["updated_at"] = updated_at
     if last_sync is not UNSET:
@@ -102,8 +107,6 @@ class ConnectionResponse:
     connection_id = d.pop("connection_id")
 
     provider = d.pop("provider")
-
-    entity_id = d.pop("entity_id")
 
     status = d.pop("status")
 
@@ -121,6 +124,15 @@ class ConnectionResponse:
     created_at = _parse_created_at(d.pop("created_at"))
 
     metadata = ConnectionResponseMetadata.from_dict(d.pop("metadata"))
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_updated_at(data: object) -> datetime.datetime | None | str | Unset:
       if data is None:
@@ -159,10 +171,10 @@ class ConnectionResponse:
     connection_response = cls(
       connection_id=connection_id,
       provider=provider,
-      entity_id=entity_id,
       status=status,
       created_at=created_at,
       metadata=metadata,
+      entity_id=entity_id,
       updated_at=updated_at,
       last_sync=last_sync,
     )
