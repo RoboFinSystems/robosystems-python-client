@@ -2,12 +2,14 @@
 
 from .client import AuthenticatedClient, Client
 
-# Convenience alias for the main SDK
+# Convenience aliases for the main SDK
+RoboSystemsClient = AuthenticatedClient
 RoboSystemsSDK = AuthenticatedClient
 
 __all__ = (
   "AuthenticatedClient",
   "Client",
+  "RoboSystemsClient",
   "RoboSystemsSDK",
 )
 

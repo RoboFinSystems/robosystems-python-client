@@ -66,6 +66,7 @@ from .create_graph_request import CreateGraphRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
 from .create_subgraph_request import CreateSubgraphRequest
 from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
+from .create_view_request import CreateViewRequest
 from .credit_limits import CreditLimits
 from .credit_summary import CreditSummary
 from .credit_summary_operation_breakdown import CreditSummaryOperationBreakdown
@@ -200,13 +201,6 @@ from .payment_method import PaymentMethod
 from .performance_insights import PerformanceInsights
 from .performance_insights_operation_stats import PerformanceInsightsOperationStats
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
-from .plaid_connection_config import PlaidConnectionConfig
-from .plaid_connection_config_accounts_type_0_item import (
-  PlaidConnectionConfigAccountsType0Item,
-)
-from .plaid_connection_config_institution_type_0 import (
-  PlaidConnectionConfigInstitutionType0,
-)
 from .portal_session_response import PortalSessionResponse
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
@@ -280,6 +274,10 @@ from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
 from .validation_error import ValidationError
 from .validation_error_context import ValidationErrorContext
+from .view_axis_config import ViewAxisConfig
+from .view_axis_config_element_labels_type_0 import ViewAxisConfigElementLabelsType0
+from .view_axis_config_member_labels_type_0 import ViewAxisConfigMemberLabelsType0
+from .view_config import ViewConfig
 
 __all__ = (
   "AccountInfo",
@@ -340,6 +338,7 @@ __all__ = (
   "CreateRepositorySubscriptionRequest",
   "CreateSubgraphRequest",
   "CreateSubgraphRequestMetadataType0",
+  "CreateViewRequest",
   "CreditLimits",
   "CreditSummary",
   "CreditSummaryOperationBreakdown",
@@ -452,9 +451,6 @@ __all__ = (
   "PerformanceInsights",
   "PerformanceInsightsOperationStats",
   "PerformanceInsightsSlowQueriesItem",
-  "PlaidConnectionConfig",
-  "PlaidConnectionConfigAccountsType0Item",
-  "PlaidConnectionConfigInstitutionType0",
   "PortalSessionResponse",
   "QueryLimits",
   "QuickBooksConnectionConfig",
@@ -516,4 +512,8 @@ __all__ = (
   "UserResponse",
   "ValidationError",
   "ValidationErrorContext",
+  "ViewAxisConfig",
+  "ViewAxisConfigElementLabelsType0",
+  "ViewAxisConfigMemberLabelsType0",
+  "ViewConfig",
 )

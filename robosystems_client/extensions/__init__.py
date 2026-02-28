@@ -56,12 +56,6 @@ from .extensions import (
   RoboSystemsExtensionConfig,
   AsyncRoboSystemsExtensions,
 )
-from .element_mapping_client import (
-  ElementMappingClient,
-  MappingStructure,
-  ElementAssociation,
-  AggregationMethod,
-)
 from .subgraph_workspace_client import (
   SubgraphWorkspaceClient,
   SubgraphWorkspace,
@@ -145,11 +139,6 @@ __all__ = [
   "RoboSystemsExtensions",
   "RoboSystemsExtensionConfig",
   "AsyncRoboSystemsExtensions",
-  # Element Mapping Client
-  "ElementMappingClient",
-  "MappingStructure",
-  "ElementAssociation",
-  "AggregationMethod",
   # Subgraph Workspace Client
   "SubgraphWorkspaceClient",
   "SubgraphWorkspace",

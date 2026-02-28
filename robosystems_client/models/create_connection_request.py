@@ -10,7 +10,6 @@ from ..models.create_connection_request_provider import CreateConnectionRequestP
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.plaid_connection_config import PlaidConnectionConfig
   from ..models.quick_books_connection_config import QuickBooksConnectionConfig
   from ..models.sec_connection_config import SECConnectionConfig
 
@@ -24,27 +23,29 @@ class CreateConnectionRequest:
 
   Attributes:
       provider (CreateConnectionRequestProvider): Connection provider type
-      entity_id (str): Entity identifier
+      entity_id (None | str | Unset): Entity identifier. Required for QuickBooks, optional for SEC (SEC creates the
+          entity from filing data).
       sec_config (None | SECConnectionConfig | Unset):
       quickbooks_config (None | QuickBooksConnectionConfig | Unset):
-      plaid_config (None | PlaidConnectionConfig | Unset):
   """
 
   provider: CreateConnectionRequestProvider
-  entity_id: str
+  entity_id: None | str | Unset = UNSET
   sec_config: None | SECConnectionConfig | Unset = UNSET
   quickbooks_config: None | QuickBooksConnectionConfig | Unset = UNSET
-  plaid_config: None | PlaidConnectionConfig | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    from ..models.plaid_connection_config import PlaidConnectionConfig
     from ..models.quick_books_connection_config import QuickBooksConnectionConfig
     from ..models.sec_connection_config import SECConnectionConfig
 
     provider = self.provider.value
 
-    entity_id = self.entity_id
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     sec_config: dict[str, Any] | None | Unset
     if isinstance(self.sec_config, Unset):
@@ -62,41 +63,38 @@ class CreateConnectionRequest:
     else:
       quickbooks_config = self.quickbooks_config
 
-    plaid_config: dict[str, Any] | None | Unset
-    if isinstance(self.plaid_config, Unset):
-      plaid_config = UNSET
-    elif isinstance(self.plaid_config, PlaidConnectionConfig):
-      plaid_config = self.plaid_config.to_dict()
-    else:
-      plaid_config = self.plaid_config
-
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
         "provider": provider,
-        "entity_id": entity_id,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if sec_config is not UNSET:
       field_dict["sec_config"] = sec_config
     if quickbooks_config is not UNSET:
       field_dict["quickbooks_config"] = quickbooks_config
-    if plaid_config is not UNSET:
-      field_dict["plaid_config"] = plaid_config
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.plaid_connection_config import PlaidConnectionConfig
     from ..models.quick_books_connection_config import QuickBooksConnectionConfig
     from ..models.sec_connection_config import SECConnectionConfig
 
     d = dict(src_dict)
     provider = CreateConnectionRequestProvider(d.pop("provider"))
 
-    entity_id = d.pop("entity_id")
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_sec_config(data: object) -> None | SECConnectionConfig | Unset:
       if data is None:
@@ -134,29 +132,11 @@ class CreateConnectionRequest:
 
     quickbooks_config = _parse_quickbooks_config(d.pop("quickbooks_config", UNSET))
 
-    def _parse_plaid_config(data: object) -> None | PlaidConnectionConfig | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, dict):
-          raise TypeError()
-        plaid_config_type_0 = PlaidConnectionConfig.from_dict(data)
-
-        return plaid_config_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(None | PlaidConnectionConfig | Unset, data)
-
-    plaid_config = _parse_plaid_config(d.pop("plaid_config", UNSET))
-
     create_connection_request = cls(
       provider=provider,
       entity_id=entity_id,
       sec_config=sec_config,
       quickbooks_config=quickbooks_config,
-      plaid_config=plaid_config,
     )
 
     create_connection_request.additional_properties = d

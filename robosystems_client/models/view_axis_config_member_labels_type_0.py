@@ -6,14 +6,14 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="PlaidConnectionConfigAccountsType0Item")
+T = TypeVar("T", bound="ViewAxisConfigMemberLabelsType0")
 
 
 @_attrs_define
-class PlaidConnectionConfigAccountsType0Item:
+class ViewAxisConfigMemberLabelsType0:
   """ """
 
-  additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+  additional_properties: dict[str, str] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     field_dict: dict[str, Any] = {}
@@ -24,19 +24,19 @@ class PlaidConnectionConfigAccountsType0Item:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    plaid_connection_config_accounts_type_0_item = cls()
+    view_axis_config_member_labels_type_0 = cls()
 
-    plaid_connection_config_accounts_type_0_item.additional_properties = d
-    return plaid_connection_config_accounts_type_0_item
+    view_axis_config_member_labels_type_0.additional_properties = d
+    return view_axis_config_member_labels_type_0
 
   @property
   def additional_keys(self) -> list[str]:
     return list(self.additional_properties.keys())
 
-  def __getitem__(self, key: str) -> Any:
+  def __getitem__(self, key: str) -> str:
     return self.additional_properties[key]
 
-  def __setitem__(self, key: str, value: Any) -> None:
+  def __setitem__(self, key: str, value: str) -> None:
     self.additional_properties[key] = value
 
   def __delitem__(self, key: str) -> None:

@@ -109,7 +109,7 @@ def sync_detailed(
   Returns active and inactive connections with their current status.
   Connections can be filtered by:
   - **Entity**: Show connections for a specific entity
-  - **Provider**: Filter by connection type (sec, quickbooks, plaid)
+  - **Provider**: Filter by connection type (sec, quickbooks)
 
   Each connection shows:
   - Current sync status and health
@@ -159,7 +159,7 @@ def sync(
   Returns active and inactive connections with their current status.
   Connections can be filtered by:
   - **Entity**: Show connections for a specific entity
-  - **Provider**: Filter by connection type (sec, quickbooks, plaid)
+  - **Provider**: Filter by connection type (sec, quickbooks)
 
   Each connection shows:
   - Current sync status and health
@@ -204,7 +204,7 @@ async def asyncio_detailed(
   Returns active and inactive connections with their current status.
   Connections can be filtered by:
   - **Entity**: Show connections for a specific entity
-  - **Provider**: Filter by connection type (sec, quickbooks, plaid)
+  - **Provider**: Filter by connection type (sec, quickbooks)
 
   Each connection shows:
   - Current sync status and health
@@ -252,7 +252,7 @@ async def asyncio(
   Returns active and inactive connections with their current status.
   Connections can be filtered by:
   - **Entity**: Show connections for a specific entity
-  - **Provider**: Filter by connection type (sec, quickbooks, plaid)
+  - **Provider**: Filter by connection type (sec, quickbooks)
 
   Each connection shows:
   - Current sync status and health
