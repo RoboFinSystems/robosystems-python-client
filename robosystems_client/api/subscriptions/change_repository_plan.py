@@ -20,8 +20,8 @@ def _get_kwargs(
   headers: dict[str, Any] = {}
 
   _kwargs: dict[str, Any] = {
-    "method": "put",
-    "url": "/v1/graphs/{graph_id}/subscriptions/upgrade".format(
+    "method": "patch",
+    "url": "/v1/graphs/{graph_id}/subscriptions".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -41,6 +41,10 @@ def _parse_response(
     response_200 = GraphSubscriptionResponse.from_dict(response.json())
 
     return response_200
+
+  if response.status_code == 400:
+    response_400 = cast(Any, None)
+    return response_400
 
   if response.status_code == 404:
     response_404 = cast(Any, None)
@@ -74,15 +78,23 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: UpgradeSubscriptionRequest,
 ) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
-  """Upgrade Subscription
+  """Change Repository Plan
 
-   Upgrade a subscription to a different plan.
+   Upgrade or downgrade a shared repository subscription plan.
 
-  Works for both user graphs and shared repositories.
-  The subscription will be immediately updated to the new plan and pricing.
+  Changes the plan on an existing subscription (e.g., SEC starter -> advanced).
+  Stripe handles proration automatically.
+
+  **Only for shared repositories** - graph subscriptions do not support plan changes
+  (cancel and re-subscribe instead).
+
+  **Requirements:**
+  - User must be an OWNER of their organization
+  - Subscription must be active
+  - New plan must exist in the repository's manifest
 
   Args:
-      graph_id (str): Graph ID or repository name
+      graph_id (str): Repository name (e.g., 'sec')
       body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
@@ -111,15 +123,23 @@ def sync(
   client: AuthenticatedClient,
   body: UpgradeSubscriptionRequest,
 ) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
-  """Upgrade Subscription
+  """Change Repository Plan
 
-   Upgrade a subscription to a different plan.
+   Upgrade or downgrade a shared repository subscription plan.
 
-  Works for both user graphs and shared repositories.
-  The subscription will be immediately updated to the new plan and pricing.
+  Changes the plan on an existing subscription (e.g., SEC starter -> advanced).
+  Stripe handles proration automatically.
+
+  **Only for shared repositories** - graph subscriptions do not support plan changes
+  (cancel and re-subscribe instead).
+
+  **Requirements:**
+  - User must be an OWNER of their organization
+  - Subscription must be active
+  - New plan must exist in the repository's manifest
 
   Args:
-      graph_id (str): Graph ID or repository name
+      graph_id (str): Repository name (e.g., 'sec')
       body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
@@ -143,15 +163,23 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: UpgradeSubscriptionRequest,
 ) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
-  """Upgrade Subscription
+  """Change Repository Plan
 
-   Upgrade a subscription to a different plan.
+   Upgrade or downgrade a shared repository subscription plan.
 
-  Works for both user graphs and shared repositories.
-  The subscription will be immediately updated to the new plan and pricing.
+  Changes the plan on an existing subscription (e.g., SEC starter -> advanced).
+  Stripe handles proration automatically.
+
+  **Only for shared repositories** - graph subscriptions do not support plan changes
+  (cancel and re-subscribe instead).
+
+  **Requirements:**
+  - User must be an OWNER of their organization
+  - Subscription must be active
+  - New plan must exist in the repository's manifest
 
   Args:
-      graph_id (str): Graph ID or repository name
+      graph_id (str): Repository name (e.g., 'sec')
       body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
@@ -178,15 +206,23 @@ async def asyncio(
   client: AuthenticatedClient,
   body: UpgradeSubscriptionRequest,
 ) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
-  """Upgrade Subscription
+  """Change Repository Plan
 
-   Upgrade a subscription to a different plan.
+   Upgrade or downgrade a shared repository subscription plan.
 
-  Works for both user graphs and shared repositories.
-  The subscription will be immediately updated to the new plan and pricing.
+  Changes the plan on an existing subscription (e.g., SEC starter -> advanced).
+  Stripe handles proration automatically.
+
+  **Only for shared repositories** - graph subscriptions do not support plan changes
+  (cancel and re-subscribe instead).
+
+  **Requirements:**
+  - User must be an OWNER of their organization
+  - Subscription must be active
+  - New plan must exist in the repository's manifest
 
   Args:
-      graph_id (str): Graph ID or repository name
+      graph_id (str): Repository name (e.g., 'sec')
       body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
