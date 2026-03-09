@@ -14,7 +14,7 @@ class UpgradeSubscriptionRequest:
   """Request to upgrade a subscription.
 
   Attributes:
-      new_plan_name (str): New plan name to upgrade to
+      new_plan_name (str): New plan name to change to
   """
 
   new_plan_name: str
