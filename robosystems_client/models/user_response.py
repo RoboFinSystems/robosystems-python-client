@@ -21,19 +21,21 @@ class UserResponse:
 
   Example:
       {'accounts': [{'provider': 'github', 'provider_account_id': '12345', 'provider_type': 'oauth'}, {'provider':
-          'google', 'provider_account_id': '67890', 'provider_type': 'oauth'}], 'email': 'john@example.com', 'id':
-          'user-123', 'name': 'johndoe'}
+          'google', 'provider_account_id': '67890', 'provider_type': 'oauth'}], 'email': 'john@example.com',
+          'email_verified': True, 'id': 'user-123', 'name': 'johndoe'}
 
   Attributes:
       id (str): Unique identifier for the user
       name (None | str | Unset): User's display name
       email (None | str | Unset): User's email address
+      email_verified (bool | Unset): Whether user's email is verified Default: False.
       accounts (list[AccountInfo] | Unset): User's authentication accounts
   """
 
   id: str
   name: None | str | Unset = UNSET
   email: None | str | Unset = UNSET
+  email_verified: bool | Unset = False
   accounts: list[AccountInfo] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -51,6 +53,8 @@ class UserResponse:
       email = UNSET
     else:
       email = self.email
+
+    email_verified = self.email_verified
 
     accounts: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.accounts, Unset):
@@ -70,6 +74,8 @@ class UserResponse:
       field_dict["name"] = name
     if email is not UNSET:
       field_dict["email"] = email
+    if email_verified is not UNSET:
+      field_dict["email_verified"] = email_verified
     if accounts is not UNSET:
       field_dict["accounts"] = accounts
 
@@ -100,6 +106,8 @@ class UserResponse:
 
     email = _parse_email(d.pop("email", UNSET))
 
+    email_verified = d.pop("email_verified", UNSET)
+
     _accounts = d.pop("accounts", UNSET)
     accounts: list[AccountInfo] | Unset = UNSET
     if _accounts is not UNSET:
@@ -113,6 +121,7 @@ class UserResponse:
       id=id,
       name=name,
       email=email,
+      email_verified=email_verified,
       accounts=accounts,
     )
 
