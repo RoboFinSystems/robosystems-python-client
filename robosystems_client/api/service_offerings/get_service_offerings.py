@@ -69,7 +69,7 @@ def sync_detailed(
 
   Includes:
   - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
-  - Shared repository subscriptions (SEC, industry, economic data) - org-level
+  - Shared repository subscriptions - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
   - Enabled/disabled status for repositories
@@ -115,7 +115,7 @@ def sync(
 
   Includes:
   - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
-  - Shared repository subscriptions (SEC, industry, economic data) - org-level
+  - Shared repository subscriptions - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
   - Enabled/disabled status for repositories
@@ -157,7 +157,7 @@ async def asyncio_detailed(
 
   Includes:
   - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
-  - Shared repository subscriptions (SEC, industry, economic data) - org-level
+  - Shared repository subscriptions - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
   - Enabled/disabled status for repositories
@@ -201,7 +201,7 @@ async def asyncio(
 
   Includes:
   - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
-  - Shared repository subscriptions (SEC, industry, economic data) - org-level
+  - Shared repository subscriptions - org-level
   - Operation costs and credit information
   - Features and capabilities for each tier
   - Enabled/disabled status for repositories
