@@ -5,74 +5,23 @@ Documents are sectioned on markdown headings, embedded for semantic search,
 and searchable alongside structured graph data.
 """
 
-from dataclasses import dataclass, field
+from http import HTTPStatus
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import httpx
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-@dataclass
-class DocumentUploadResult:
-  """Result from document upload."""
-
-  document_id: str
-  sections_indexed: int
-  total_content_length: int
-  section_ids: List[str]
-  success: bool = True
-  error: Optional[str] = None
-
-
-@dataclass
-class DocumentSearchHit:
-  """A single search result."""
-
-  document_id: str
-  score: float
-  source_type: str
-  snippet: str
-  section_label: Optional[str] = None
-  document_title: Optional[str] = None
-  entity_ticker: Optional[str] = None
-  form_type: Optional[str] = None
-  filing_date: Optional[str] = None
-  tags: Optional[List[str]] = None
-  folder: Optional[str] = None
-
-
-@dataclass
-class DocumentSearchResult:
-  """Result from document search."""
-
-  total: int
-  hits: List[DocumentSearchHit]
-  query: str
-  graph_id: str
-
-
-@dataclass
-class DocumentInfo:
-  """Information about an indexed document."""
-
-  document_title: str
-  section_count: int
-  source_type: str
-  folder: Optional[str] = None
-  tags: Optional[List[str]] = None
-  last_indexed: Optional[str] = None
-
-
-@dataclass
-class DocumentListResult:
-  """Result from listing documents."""
-
-  total: int
-  documents: List[DocumentInfo]
-  graph_id: str
+from ..api.documents.delete_document import sync_detailed as delete_document
+from ..api.documents.list_documents import sync_detailed as list_documents
+from ..api.documents.upload_document import sync_detailed as upload_document
+from ..api.search.get_document_section import sync_detailed as get_document_section
+from ..api.search.search_documents import sync_detailed as search_documents
+from ..client import AuthenticatedClient
+from ..models.document_list_response import DocumentListResponse
+from ..models.document_section import DocumentSection
+from ..models.document_upload_request import DocumentUploadRequest
+from ..models.document_upload_response import DocumentUploadResponse
+from ..models.search_request import SearchRequest
+from ..models.search_response import SearchResponse
+from ..types import UNSET
 
 
 class DocumentClient:
@@ -82,17 +31,19 @@ class DocumentClient:
     self.config = config
     self.base_url = config["base_url"]
     self.headers = config.get("headers", {})
+    self.token = config.get("token")
     self.timeout = config.get("timeout", 60)
-    self._http_client = httpx.Client(
-      timeout=self.timeout,
+
+  def _get_client(self) -> AuthenticatedClient:
+    if not self.token:
+      raise Exception("No API key provided. Set X-API-Key in headers.")
+    return AuthenticatedClient(
+      base_url=self.base_url,
+      token=self.token,
+      prefix="",
+      auth_header_name="X-API-Key",
       headers=self.headers,
     )
-
-  def _url(self, graph_id: str, path: str = "") -> str:
-    return f"{self.base_url}/v1/graphs/{graph_id}/documents{path}"
-
-  def _search_url(self, graph_id: str, path: str = "") -> str:
-    return f"{self.base_url}/v1/graphs/{graph_id}/search{path}"
 
   def upload(
     self,
@@ -102,7 +53,7 @@ class DocumentClient:
     tags: Optional[List[str]] = None,
     folder: Optional[str] = None,
     external_id: Optional[str] = None,
-  ) -> DocumentUploadResult:
+  ) -> DocumentUploadResponse:
     """Upload a markdown document for text indexing.
 
     The document is sectioned on headings, embedded, and indexed
@@ -117,40 +68,23 @@ class DocumentClient:
         external_id: Optional external ID for upsert behavior.
 
     Returns:
-        DocumentUploadResult with section IDs and counts.
+        DocumentUploadResponse with section IDs and counts.
     """
-    payload: Dict[str, Any] = {"title": title, "content": content}
-    if tags is not None:
-      payload["tags"] = tags
-    if folder is not None:
-      payload["folder"] = folder
-    if external_id is not None:
-      payload["external_id"] = external_id
+    body = DocumentUploadRequest(
+      title=title,
+      content=content,
+      tags=tags if tags is not None else UNSET,
+      folder=folder if folder is not None else UNSET,
+      external_id=external_id if external_id is not None else UNSET,
+    )
 
-    response = self._http_client.post(self._url(graph_id), json=payload)
-
-    if response.status_code == 200:
-      data = response.json()
-      return DocumentUploadResult(
-        document_id=data["document_id"],
-        sections_indexed=data["sections_indexed"],
-        total_content_length=data["total_content_length"],
-        section_ids=data["section_ids"],
+    client = self._get_client()
+    response = upload_document(graph_id=graph_id, client=client, body=body)
+    if response.status_code != HTTPStatus.OK:
+      raise Exception(
+        f"Document upload failed ({response.status_code}): {response.content.decode()}"
       )
-    else:
-      error_detail = response.text
-      try:
-        error_detail = response.json().get("detail", response.text)
-      except Exception:
-        pass
-      return DocumentUploadResult(
-        document_id="",
-        sections_indexed=0,
-        total_content_length=0,
-        section_ids=[],
-        success=False,
-        error=f"{response.status_code}: {error_detail}",
-      )
+    return response.parsed
 
   def upload_file(
     self,
@@ -160,7 +94,7 @@ class DocumentClient:
     tags: Optional[List[str]] = None,
     folder: Optional[str] = None,
     external_id: Optional[str] = None,
-  ) -> DocumentUploadResult:
+  ) -> DocumentUploadResponse:
     """Upload a markdown file by path.
 
     Reads the file, optionally extracts title from filename,
@@ -178,7 +112,6 @@ class DocumentClient:
     content = path.read_text()
 
     if title is None:
-      # Try frontmatter title, fall back to filename
       title = path.stem.replace("-", " ").replace("_", " ").title()
 
     return self.upload(
@@ -196,7 +129,7 @@ class DocumentClient:
     directory: str | Path,
     pattern: str = "*.md",
     folder: Optional[str] = None,
-  ) -> List[DocumentUploadResult]:
+  ) -> List[DocumentUploadResponse]:
     """Upload all markdown files from a directory.
 
     Args:
@@ -231,7 +164,7 @@ class DocumentClient:
     section: Optional[str] = None,
     semantic: bool = False,
     size: int = 10,
-  ) -> DocumentSearchResult:
+  ) -> SearchResponse:
     """Search documents with full-text or semantic search.
 
     Args:
@@ -245,49 +178,27 @@ class DocumentClient:
         size: Max results to return.
 
     Returns:
-        DocumentSearchResult with ranked hits.
+        SearchResponse with ranked hits.
     """
-    payload: Dict[str, Any] = {"query": query, "size": size}
-    if source_type is not None:
-      payload["source_type"] = source_type
-    if entity is not None:
-      payload["entity"] = entity
-    if form_type is not None:
-      payload["form_type"] = form_type
-    if section is not None:
-      payload["section"] = section
-    if semantic:
-      payload["semantic"] = True
-
-    response = self._http_client.post(self._search_url(graph_id), json=payload)
-    response.raise_for_status()
-    data = response.json()
-
-    hits = [
-      DocumentSearchHit(
-        document_id=h["document_id"],
-        score=h["score"],
-        source_type=h["source_type"],
-        snippet=h["snippet"],
-        section_label=h.get("section_label"),
-        document_title=h.get("document_title"),
-        entity_ticker=h.get("entity_ticker"),
-        form_type=h.get("form_type"),
-        filing_date=h.get("filing_date"),
-        tags=h.get("tags"),
-        folder=h.get("folder"),
-      )
-      for h in data.get("hits", [])
-    ]
-
-    return DocumentSearchResult(
-      total=data["total"],
-      hits=hits,
-      query=data["query"],
-      graph_id=data["graph_id"],
+    body = SearchRequest(
+      query=query,
+      source_type=source_type if source_type is not None else UNSET,
+      entity=entity if entity is not None else UNSET,
+      form_type=form_type if form_type is not None else UNSET,
+      section=section if section is not None else UNSET,
+      semantic=semantic,
+      size=size,
     )
 
-  def get_section(self, graph_id: str, document_id: str) -> Optional[Dict[str, Any]]:
+    client = self._get_client()
+    response = search_documents(graph_id=graph_id, client=client, body=body)
+    if response.status_code != HTTPStatus.OK:
+      raise Exception(
+        f"Document search failed ({response.status_code}): {response.content.decode()}"
+      )
+    return response.parsed
+
+  def get_section(self, graph_id: str, document_id: str) -> Optional[DocumentSection]:
     """Retrieve the full text of a document section by ID.
 
     Args:
@@ -295,17 +206,23 @@ class DocumentClient:
         document_id: Document section ID.
 
     Returns:
-        Dict with full section content and metadata, or None if not found.
+        DocumentSection with full content and metadata, or None if not found.
     """
-    response = self._http_client.get(self._search_url(graph_id, f"/{document_id}"))
-    if response.status_code == 404:
+    client = self._get_client()
+    response = get_document_section(
+      graph_id=graph_id, document_id=document_id, client=client
+    )
+    if response.status_code == HTTPStatus.NOT_FOUND:
       return None
-    response.raise_for_status()
-    return response.json()
+    if response.status_code != HTTPStatus.OK:
+      raise Exception(
+        f"Get section failed ({response.status_code}): {response.content.decode()}"
+      )
+    return response.parsed
 
   def list(
     self, graph_id: str, source_type: Optional[str] = None
-  ) -> DocumentListResult:
+  ) -> DocumentListResponse:
     """List indexed documents for a graph.
 
     Args:
@@ -313,33 +230,19 @@ class DocumentClient:
         source_type: Optional filter by source type.
 
     Returns:
-        DocumentListResult with document inventory.
+        DocumentListResponse with document inventory.
     """
-    params = {}
-    if source_type is not None:
-      params["source_type"] = source_type
-
-    response = self._http_client.get(self._url(graph_id), params=params)
-    response.raise_for_status()
-    data = response.json()
-
-    documents = [
-      DocumentInfo(
-        document_title=d["document_title"],
-        section_count=d["section_count"],
-        source_type=d["source_type"],
-        folder=d.get("folder"),
-        tags=d.get("tags"),
-        last_indexed=d.get("last_indexed"),
-      )
-      for d in data.get("documents", [])
-    ]
-
-    return DocumentListResult(
-      total=data["total"],
-      documents=documents,
-      graph_id=data["graph_id"],
+    client = self._get_client()
+    response = list_documents(
+      graph_id=graph_id,
+      client=client,
+      source_type=source_type if source_type is not None else UNSET,
     )
+    if response.status_code != HTTPStatus.OK:
+      raise Exception(
+        f"List documents failed ({response.status_code}): {response.content.decode()}"
+      )
+    return response.parsed
 
   def delete(self, graph_id: str, document_id: str) -> bool:
     """Delete a document and all its sections.
@@ -351,14 +254,18 @@ class DocumentClient:
     Returns:
         True if deleted, False if not found.
     """
-    response = self._http_client.delete(self._url(graph_id, f"/{document_id}"))
-    if response.status_code == 204:
+    client = self._get_client()
+    response = delete_document(
+      graph_id=graph_id, document_id=document_id, client=client
+    )
+    if response.status_code == HTTPStatus.NO_CONTENT:
       return True
-    if response.status_code == 404:
+    if response.status_code == HTTPStatus.NOT_FOUND:
       return False
-    response.raise_for_status()
-    return False
+    raise Exception(
+      f"Delete document failed ({response.status_code}): {response.content.decode()}"
+    )
 
   def close(self):
-    """Close the HTTP client."""
-    self._http_client.close()
+    """Close the client (no-op, AuthenticatedClient is created per-call)."""
+    pass
