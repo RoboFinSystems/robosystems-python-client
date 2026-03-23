@@ -44,6 +44,11 @@ from .backup_stats_response_backup_formats import BackupStatsResponseBackupForma
 from .batch_agent_request import BatchAgentRequest
 from .batch_agent_response import BatchAgentResponse
 from .billing_customer import BillingCustomer
+from .bulk_document_upload_request import BulkDocumentUploadRequest
+from .bulk_document_upload_response import BulkDocumentUploadResponse
+from .bulk_document_upload_response_errors_type_0_item import (
+  BulkDocumentUploadResponseErrorsType0Item,
+)
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -93,6 +98,11 @@ from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
 )
 from .detailed_transactions_response_summary import DetailedTransactionsResponseSummary
+from .document_list_item import DocumentListItem
+from .document_list_response import DocumentListResponse
+from .document_section import DocumentSection
+from .document_upload_request import DocumentUploadRequest
+from .document_upload_response import DocumentUploadResponse
 from .download_quota import DownloadQuota
 from .email_verification_request import EmailVerificationRequest
 from .enhanced_credit_transaction_response import EnhancedCreditTransactionResponse
@@ -241,6 +251,9 @@ from .schema_validation_response_compatibility_type_0 import (
   SchemaValidationResponseCompatibilityType0,
 )
 from .schema_validation_response_stats_type_0 import SchemaValidationResponseStatsType0
+from .search_hit import SearchHit
+from .search_request import SearchRequest
+from .search_response import SearchResponse
 from .sec_connection_config import SECConnectionConfig
 from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
@@ -333,6 +346,9 @@ __all__ = (
   "BatchAgentRequest",
   "BatchAgentResponse",
   "BillingCustomer",
+  "BulkDocumentUploadRequest",
+  "BulkDocumentUploadResponse",
+  "BulkDocumentUploadResponseErrorsType0Item",
   "CancelOperationResponseCanceloperation",
   "CheckCreditBalanceResponseCheckcreditbalance",
   "CheckoutResponse",
@@ -374,6 +390,11 @@ __all__ = (
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
+  "DocumentListItem",
+  "DocumentListResponse",
+  "DocumentSection",
+  "DocumentUploadRequest",
+  "DocumentUploadResponse",
   "DownloadQuota",
   "EmailVerificationRequest",
   "EnhancedCreditTransactionResponse",
@@ -496,6 +517,9 @@ __all__ = (
   "SchemaValidationResponse",
   "SchemaValidationResponseCompatibilityType0",
   "SchemaValidationResponseStatsType0",
+  "SearchHit",
+  "SearchRequest",
+  "SearchResponse",
   "SECConnectionConfig",
   "SelectionCriteria",
   "ServiceOfferingsResponse",

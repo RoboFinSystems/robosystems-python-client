@@ -27,6 +27,7 @@ class AccountResponse:
       description (None | str | Unset):
       sub_classification (None | str | Unset):
       parent_id (None | str | Unset):
+      account_type (None | str | Unset):
       external_id (None | str | Unset):
       external_source (None | str | Unset):
   """
@@ -43,6 +44,7 @@ class AccountResponse:
   description: None | str | Unset = UNSET
   sub_classification: None | str | Unset = UNSET
   parent_id: None | str | Unset = UNSET
+  account_type: None | str | Unset = UNSET
   external_id: None | str | Unset = UNSET
   external_source: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -84,6 +86,12 @@ class AccountResponse:
     else:
       parent_id = self.parent_id
 
+    account_type: None | str | Unset
+    if isinstance(self.account_type, Unset):
+      account_type = UNSET
+    else:
+      account_type = self.account_type
+
     external_id: None | str | Unset
     if isinstance(self.external_id, Unset):
       external_id = UNSET
@@ -117,6 +125,8 @@ class AccountResponse:
       field_dict["sub_classification"] = sub_classification
     if parent_id is not UNSET:
       field_dict["parent_id"] = parent_id
+    if account_type is not UNSET:
+      field_dict["account_type"] = account_type
     if external_id is not UNSET:
       field_dict["external_id"] = external_id
     if external_source is not UNSET:
@@ -172,6 +182,15 @@ class AccountResponse:
 
     parent_id = _parse_parent_id(d.pop("parent_id", UNSET))
 
+    def _parse_account_type(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    account_type = _parse_account_type(d.pop("account_type", UNSET))
+
     def _parse_external_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -203,6 +222,7 @@ class AccountResponse:
       description=description,
       sub_classification=sub_classification,
       parent_id=parent_id,
+      account_type=account_type,
       external_id=external_id,
       external_source=external_source,
     )

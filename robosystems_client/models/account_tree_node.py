@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,6 +22,7 @@ class AccountTreeNode:
       balance_type (str):
       depth (int):
       is_active (bool):
+      account_type (None | str | Unset):
       children (list[AccountTreeNode] | Unset):
   """
 
@@ -32,6 +33,7 @@ class AccountTreeNode:
   balance_type: str
   depth: int
   is_active: bool
+  account_type: None | str | Unset = UNSET
   children: list[AccountTreeNode] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -49,6 +51,12 @@ class AccountTreeNode:
     depth = self.depth
 
     is_active = self.is_active
+
+    account_type: None | str | Unset
+    if isinstance(self.account_type, Unset):
+      account_type = UNSET
+    else:
+      account_type = self.account_type
 
     children: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.children, Unset):
@@ -70,6 +78,8 @@ class AccountTreeNode:
         "is_active": is_active,
       }
     )
+    if account_type is not UNSET:
+      field_dict["account_type"] = account_type
     if children is not UNSET:
       field_dict["children"] = children
 
@@ -92,6 +102,15 @@ class AccountTreeNode:
 
     is_active = d.pop("is_active")
 
+    def _parse_account_type(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    account_type = _parse_account_type(d.pop("account_type", UNSET))
+
     _children = d.pop("children", UNSET)
     children: list[AccountTreeNode] | Unset = UNSET
     if _children is not UNSET:
@@ -109,6 +128,7 @@ class AccountTreeNode:
       balance_type=balance_type,
       depth=depth,
       is_active=is_active,
+      account_type=account_type,
       children=children,
     )
 
