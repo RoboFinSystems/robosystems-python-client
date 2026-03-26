@@ -10,6 +10,7 @@ from .query_client import QueryClient
 from .agent_client import AgentClient
 from .operation_client import OperationClient
 from .file_client import FileClient
+from .document_client import DocumentClient
 from .materialization_client import MaterializationClient
 from .table_client import TableClient
 from .graph_client import GraphClient
@@ -68,6 +69,7 @@ class RoboSystemsExtensions:
     self.files = FileClient(self.config)
     self.materialization = MaterializationClient(self.config)
     self.tables = TableClient(self.config)
+    self.documents = DocumentClient(self.config)
     self.graphs = GraphClient(self.config)
 
   def monitor_operation(
@@ -104,6 +106,8 @@ class RoboSystemsExtensions:
       self.materialization.close()
     if hasattr(self.tables, "close"):
       self.tables.close()
+    if hasattr(self.documents, "close"):
+      self.documents.close()
     self.graphs.close()
 
   # Convenience methods that delegate to the appropriate clients
