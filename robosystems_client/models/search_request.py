@@ -26,7 +26,6 @@ class SearchRequest:
       fiscal_year (int | None | Unset): Filter by fiscal year
       date_from (None | str | Unset): Filter filings on or after date (YYYY-MM-DD)
       date_to (None | str | Unset): Filter filings on or before date (YYYY-MM-DD)
-      semantic (bool | Unset): Enable semantic (vector) search if available Default: False.
       size (int | Unset): Max results to return Default: 10.
       offset (int | Unset): Pagination offset Default: 0.
   """
@@ -40,7 +39,6 @@ class SearchRequest:
   fiscal_year: int | None | Unset = UNSET
   date_from: None | str | Unset = UNSET
   date_to: None | str | Unset = UNSET
-  semantic: bool | Unset = False
   size: int | Unset = 10
   offset: int | Unset = 0
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -96,8 +94,6 @@ class SearchRequest:
     else:
       date_to = self.date_to
 
-    semantic = self.semantic
-
     size = self.size
 
     offset = self.offset
@@ -125,8 +121,6 @@ class SearchRequest:
       field_dict["date_from"] = date_from
     if date_to is not UNSET:
       field_dict["date_to"] = date_to
-    if semantic is not UNSET:
-      field_dict["semantic"] = semantic
     if size is not UNSET:
       field_dict["size"] = size
     if offset is not UNSET:
@@ -211,8 +205,6 @@ class SearchRequest:
 
     date_to = _parse_date_to(d.pop("date_to", UNSET))
 
-    semantic = d.pop("semantic", UNSET)
-
     size = d.pop("size", UNSET)
 
     offset = d.pop("offset", UNSET)
@@ -227,7 +219,6 @@ class SearchRequest:
       fiscal_year=fiscal_year,
       date_from=date_from,
       date_to=date_to,
-      semantic=semantic,
       size=size,
       offset=offset,
     )

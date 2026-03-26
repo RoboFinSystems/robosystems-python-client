@@ -162,19 +162,26 @@ class DocumentClient:
     entity: Optional[str] = None,
     form_type: Optional[str] = None,
     section: Optional[str] = None,
-    semantic: bool = False,
+    element: Optional[str] = None,
+    fiscal_year: Optional[int] = None,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
     size: int = 10,
   ) -> SearchResponse:
-    """Search documents with full-text or semantic search.
+    """Search documents with hybrid (BM25 + KNN) search.
 
     Args:
         graph_id: Target graph ID.
         query: Search query string.
-        source_type: Filter by source type (uploaded_doc, memory, etc.).
+        source_type: Filter by source type (xbrl_textblock, narrative_section,
+            ixbrl_disclosure, uploaded_doc, memory).
         entity: Filter by entity ticker/CIK/name.
-        form_type: Filter by SEC form type.
-        section: Filter by section ID.
-        semantic: Enable semantic (vector) search.
+        form_type: Filter by SEC form type (10-K, 10-Q).
+        section: Filter by section ID (item_1, item_1a, item_7, etc.).
+        element: Filter by XBRL element qname (e.g., us-gaap:Goodwill).
+        fiscal_year: Filter by fiscal year.
+        date_from: Filter filings on or after date (YYYY-MM-DD).
+        date_to: Filter filings on or before date (YYYY-MM-DD).
         size: Max results to return.
 
     Returns:
@@ -186,7 +193,10 @@ class DocumentClient:
       entity=entity if entity is not None else UNSET,
       form_type=form_type if form_type is not None else UNSET,
       section=section if section is not None else UNSET,
-      semantic=semantic,
+      element=element if element is not None else UNSET,
+      fiscal_year=fiscal_year if fiscal_year is not None else UNSET,
+      date_from=date_from if date_from is not None else UNSET,
+      date_to=date_to if date_to is not None else UNSET,
       size=size,
     )
 
