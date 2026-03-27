@@ -163,6 +163,7 @@ from .invite_member_request import InviteMemberRequest
 from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
+from .ledger_entity_response import LedgerEntityResponse
 from .ledger_entry_response import LedgerEntryResponse
 from .ledger_line_item_response import LedgerLineItemResponse
 from .ledger_summary_response import LedgerSummaryResponse
@@ -290,6 +291,7 @@ from .trial_balance_response import TrialBalanceResponse
 from .trial_balance_row import TrialBalanceRow
 from .upcoming_invoice import UpcomingInvoice
 from .update_api_key_request import UpdateAPIKeyRequest
+from .update_entity_request import UpdateEntityRequest
 from .update_file_response_updatefile import UpdateFileResponseUpdatefile
 from .update_member_role_request import UpdateMemberRoleRequest
 from .update_org_request import UpdateOrgRequest
@@ -441,6 +443,7 @@ __all__ = (
   "Invoice",
   "InvoiceLineItem",
   "InvoicesResponse",
+  "LedgerEntityResponse",
   "LedgerEntryResponse",
   "LedgerLineItemResponse",
   "LedgerSummaryResponse",
@@ -552,6 +555,7 @@ __all__ = (
   "TrialBalanceRow",
   "UpcomingInvoice",
   "UpdateAPIKeyRequest",
+  "UpdateEntityRequest",
   "UpdateFileResponseUpdatefile",
   "UpdateMemberRoleRequest",
   "UpdateOrgRequest",
