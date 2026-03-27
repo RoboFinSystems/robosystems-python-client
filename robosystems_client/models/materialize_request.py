@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 
@@ -19,12 +19,16 @@ class MaterializeRequest:
       ignore_errors (bool | Unset): Continue ingestion on row errors Default: True.
       dry_run (bool | Unset): Validate limits without executing materialization. Returns usage, limits, and warnings.
           Default: False.
+      source (None | str | Unset): Data source for materialization. Auto-detected from graph type if not specified.
+          'staged' materializes from uploaded files (generic graphs). 'extensions' materializes from the extensions OLTP
+          database (entity graphs).
   """
 
   force: bool | Unset = False
   rebuild: bool | Unset = False
   ignore_errors: bool | Unset = True
   dry_run: bool | Unset = False
+  source: None | str | Unset = UNSET
 
   def to_dict(self) -> dict[str, Any]:
     force = self.force
@@ -34,6 +38,12 @@ class MaterializeRequest:
     ignore_errors = self.ignore_errors
 
     dry_run = self.dry_run
+
+    source: None | str | Unset
+    if isinstance(self.source, Unset):
+      source = UNSET
+    else:
+      source = self.source
 
     field_dict: dict[str, Any] = {}
 
@@ -46,6 +56,8 @@ class MaterializeRequest:
       field_dict["ignore_errors"] = ignore_errors
     if dry_run is not UNSET:
       field_dict["dry_run"] = dry_run
+    if source is not UNSET:
+      field_dict["source"] = source
 
     return field_dict
 
@@ -60,11 +72,21 @@ class MaterializeRequest:
 
     dry_run = d.pop("dry_run", UNSET)
 
+    def _parse_source(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    source = _parse_source(d.pop("source", UNSET))
+
     materialize_request = cls(
       force=force,
       rebuild=rebuild,
       ignore_errors=ignore_errors,
       dry_run=dry_run,
+      source=source,
     )
 
     return materialize_request
