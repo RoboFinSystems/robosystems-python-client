@@ -1,40 +1,41 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="AccountTreeNode")
+if TYPE_CHECKING:
+  from ..models.suggested_target import SuggestedTarget
+
+
+T = TypeVar("T", bound="UnmappedElementResponse")
 
 
 @_attrs_define
-class AccountTreeNode:
-  """
+class UnmappedElementResponse:
+  """An element not yet mapped to the reporting taxonomy.
+
   Attributes:
       id (str):
       name (str):
       classification (str):
       balance_type (str):
-      depth (int):
-      is_active (bool):
       code (None | str | Unset):
-      account_type (None | str | Unset):
-      children (list[AccountTreeNode] | Unset):
+      external_source (None | str | Unset):
+      suggested_targets (list[SuggestedTarget] | Unset):
   """
 
   id: str
   name: str
   classification: str
   balance_type: str
-  depth: int
-  is_active: bool
   code: None | str | Unset = UNSET
-  account_type: None | str | Unset = UNSET
-  children: list[AccountTreeNode] | Unset = UNSET
+  external_source: None | str | Unset = UNSET
+  suggested_targets: list[SuggestedTarget] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -46,28 +47,24 @@ class AccountTreeNode:
 
     balance_type = self.balance_type
 
-    depth = self.depth
-
-    is_active = self.is_active
-
     code: None | str | Unset
     if isinstance(self.code, Unset):
       code = UNSET
     else:
       code = self.code
 
-    account_type: None | str | Unset
-    if isinstance(self.account_type, Unset):
-      account_type = UNSET
+    external_source: None | str | Unset
+    if isinstance(self.external_source, Unset):
+      external_source = UNSET
     else:
-      account_type = self.account_type
+      external_source = self.external_source
 
-    children: list[dict[str, Any]] | Unset = UNSET
-    if not isinstance(self.children, Unset):
-      children = []
-      for children_item_data in self.children:
-        children_item = children_item_data.to_dict()
-        children.append(children_item)
+    suggested_targets: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.suggested_targets, Unset):
+      suggested_targets = []
+      for suggested_targets_item_data in self.suggested_targets:
+        suggested_targets_item = suggested_targets_item_data.to_dict()
+        suggested_targets.append(suggested_targets_item)
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -77,21 +74,21 @@ class AccountTreeNode:
         "name": name,
         "classification": classification,
         "balance_type": balance_type,
-        "depth": depth,
-        "is_active": is_active,
       }
     )
     if code is not UNSET:
       field_dict["code"] = code
-    if account_type is not UNSET:
-      field_dict["account_type"] = account_type
-    if children is not UNSET:
-      field_dict["children"] = children
+    if external_source is not UNSET:
+      field_dict["external_source"] = external_source
+    if suggested_targets is not UNSET:
+      field_dict["suggested_targets"] = suggested_targets
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.suggested_target import SuggestedTarget
+
     d = dict(src_dict)
     id = d.pop("id")
 
@@ -100,10 +97,6 @@ class AccountTreeNode:
     classification = d.pop("classification")
 
     balance_type = d.pop("balance_type")
-
-    depth = d.pop("depth")
-
-    is_active = d.pop("is_active")
 
     def _parse_code(data: object) -> None | str | Unset:
       if data is None:
@@ -114,38 +107,36 @@ class AccountTreeNode:
 
     code = _parse_code(d.pop("code", UNSET))
 
-    def _parse_account_type(data: object) -> None | str | Unset:
+    def _parse_external_source(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
       return cast(None | str | Unset, data)
 
-    account_type = _parse_account_type(d.pop("account_type", UNSET))
+    external_source = _parse_external_source(d.pop("external_source", UNSET))
 
-    _children = d.pop("children", UNSET)
-    children: list[AccountTreeNode] | Unset = UNSET
-    if _children is not UNSET:
-      children = []
-      for children_item_data in _children:
-        children_item = AccountTreeNode.from_dict(children_item_data)
+    _suggested_targets = d.pop("suggested_targets", UNSET)
+    suggested_targets: list[SuggestedTarget] | Unset = UNSET
+    if _suggested_targets is not UNSET:
+      suggested_targets = []
+      for suggested_targets_item_data in _suggested_targets:
+        suggested_targets_item = SuggestedTarget.from_dict(suggested_targets_item_data)
 
-        children.append(children_item)
+        suggested_targets.append(suggested_targets_item)
 
-    account_tree_node = cls(
+    unmapped_element_response = cls(
       id=id,
       name=name,
       classification=classification,
       balance_type=balance_type,
-      depth=depth,
-      is_active=is_active,
       code=code,
-      account_type=account_type,
-      children=children,
+      external_source=external_source,
+      suggested_targets=suggested_targets,
     )
 
-    account_tree_node.additional_properties = d
-    return account_tree_node
+    unmapped_element_response.additional_properties = d
+    return unmapped_element_response
 
   @property
   def additional_keys(self) -> list[str]:

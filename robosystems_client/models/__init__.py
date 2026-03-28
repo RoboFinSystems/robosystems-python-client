@@ -67,14 +67,17 @@ from .content_limits import ContentLimits
 from .copy_operation_limits import CopyOperationLimits
 from .create_api_key_request import CreateAPIKeyRequest
 from .create_api_key_response import CreateAPIKeyResponse
+from .create_association_request import CreateAssociationRequest
 from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
+from .create_structure_request import CreateStructureRequest
 from .create_subgraph_request import CreateSubgraphRequest
 from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
+from .create_taxonomy_request import CreateTaxonomyRequest
 from .create_view_request import CreateViewRequest
 from .credit_limits import CreditLimits
 from .credit_summary import CreditSummary
@@ -104,6 +107,9 @@ from .document_section import DocumentSection
 from .document_upload_request import DocumentUploadRequest
 from .document_upload_response import DocumentUploadResponse
 from .download_quota import DownloadQuota
+from .element_association_response import ElementAssociationResponse
+from .element_list_response import ElementListResponse
+from .element_response import ElementResponse
 from .email_verification_request import EmailVerificationRequest
 from .enhanced_credit_transaction_response import EnhancedCreditTransactionResponse
 from .enhanced_credit_transaction_response_metadata import (
@@ -176,6 +182,8 @@ from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
+from .mapping_coverage_response import MappingCoverageResponse
+from .mapping_detail_response import MappingDetailResponse
 from .materialize_request import MaterializeRequest
 from .materialize_response import MaterializeResponse
 from .materialize_response_limit_check_type_0 import MaterializeResponseLimitCheckType0
@@ -266,6 +274,8 @@ from .sso_token_response import SSOTokenResponse
 from .storage_limit_response import StorageLimitResponse
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
+from .structure_list_response import StructureListResponse
+from .structure_response import StructureResponse
 from .subgraph_quota_response import SubgraphQuotaResponse
 from .subgraph_response import SubgraphResponse
 from .subgraph_response_metadata_type_0 import SubgraphResponseMetadataType0
@@ -273,6 +283,7 @@ from .subgraph_summary import SubgraphSummary
 from .subgraph_type import SubgraphType
 from .success_response import SuccessResponse
 from .success_response_data_type_0 import SuccessResponseDataType0
+from .suggested_target import SuggestedTarget
 from .sync_connection_request import SyncConnectionRequest
 from .sync_connection_request_sync_options_type_0 import (
   SyncConnectionRequestSyncOptionsType0,
@@ -284,11 +295,14 @@ from .table_info import TableInfo
 from .table_list_response import TableListResponse
 from .table_query_request import TableQueryRequest
 from .table_query_response import TableQueryResponse
+from .taxonomy_list_response import TaxonomyListResponse
+from .taxonomy_response import TaxonomyResponse
 from .tier_capacity import TierCapacity
 from .token_pricing import TokenPricing
 from .transaction_summary_response import TransactionSummaryResponse
 from .trial_balance_response import TrialBalanceResponse
 from .trial_balance_row import TrialBalanceRow
+from .unmapped_element_response import UnmappedElementResponse
 from .upcoming_invoice import UpcomingInvoice
 from .update_api_key_request import UpdateAPIKeyRequest
 from .update_entity_request import UpdateEntityRequest
@@ -365,14 +379,17 @@ __all__ = (
   "CopyOperationLimits",
   "CreateAPIKeyRequest",
   "CreateAPIKeyResponse",
+  "CreateAssociationRequest",
   "CreateCheckoutRequest",
   "CreateCheckoutRequestResourceConfig",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateGraphRequest",
   "CreateRepositorySubscriptionRequest",
+  "CreateStructureRequest",
   "CreateSubgraphRequest",
   "CreateSubgraphRequestMetadataType0",
+  "CreateTaxonomyRequest",
   "CreateViewRequest",
   "CreditLimits",
   "CreditSummary",
@@ -398,6 +415,9 @@ __all__ = (
   "DocumentUploadRequest",
   "DocumentUploadResponse",
   "DownloadQuota",
+  "ElementAssociationResponse",
+  "ElementListResponse",
+  "ElementResponse",
   "EmailVerificationRequest",
   "EnhancedCreditTransactionResponse",
   "EnhancedCreditTransactionResponseMetadata",
@@ -456,6 +476,8 @@ __all__ = (
   "ListTableFilesResponse",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
+  "MappingCoverageResponse",
+  "MappingDetailResponse",
   "MaterializeRequest",
   "MaterializeResponse",
   "MaterializeResponseLimitCheckType0",
@@ -534,6 +556,8 @@ __all__ = (
   "StorageLimitResponse",
   "StorageLimits",
   "StorageSummary",
+  "StructureListResponse",
+  "StructureResponse",
   "SubgraphQuotaResponse",
   "SubgraphResponse",
   "SubgraphResponseMetadataType0",
@@ -541,6 +565,7 @@ __all__ = (
   "SubgraphType",
   "SuccessResponse",
   "SuccessResponseDataType0",
+  "SuggestedTarget",
   "SyncConnectionRequest",
   "SyncConnectionRequestSyncOptionsType0",
   "SyncConnectionResponseSyncconnection",
@@ -548,11 +573,14 @@ __all__ = (
   "TableListResponse",
   "TableQueryRequest",
   "TableQueryResponse",
+  "TaxonomyListResponse",
+  "TaxonomyResponse",
   "TierCapacity",
   "TokenPricing",
   "TransactionSummaryResponse",
   "TrialBalanceResponse",
   "TrialBalanceRow",
+  "UnmappedElementResponse",
   "UpcomingInvoice",
   "UpdateAPIKeyRequest",
   "UpdateEntityRequest",
