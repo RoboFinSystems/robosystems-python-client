@@ -16,6 +16,7 @@ class DocumentListItem:
   """A document in the document list.
 
   Attributes:
+      document_id (str):
       document_title (str):
       section_count (int):
       source_type (str):
@@ -24,6 +25,7 @@ class DocumentListItem:
       last_indexed (None | str | Unset):
   """
 
+  document_id: str
   document_title: str
   section_count: int
   source_type: str
@@ -33,6 +35,8 @@ class DocumentListItem:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    document_id = self.document_id
+
     document_title = self.document_title
 
     section_count = self.section_count
@@ -64,6 +68,7 @@ class DocumentListItem:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
+        "document_id": document_id,
         "document_title": document_title,
         "section_count": section_count,
         "source_type": source_type,
@@ -81,6 +86,8 @@ class DocumentListItem:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
+    document_id = d.pop("document_id")
+
     document_title = d.pop("document_title")
 
     section_count = d.pop("section_count")
@@ -123,6 +130,7 @@ class DocumentListItem:
     last_indexed = _parse_last_indexed(d.pop("last_indexed", UNSET))
 
     document_list_item = cls(
+      document_id=document_id,
       document_title=document_title,
       section_count=section_count,
       source_type=source_type,
