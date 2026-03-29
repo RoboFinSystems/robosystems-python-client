@@ -82,7 +82,7 @@ def sync_detailed(
   The tool list is customized based on:
   - Graph type (shared repository vs user graph)
   - User permissions and subscription tier
-  - Backend capabilities (LadybugDB, Neo4j, etc.)
+  - Available graph capabilities for the selected graph
 
   **Subgraph Support:**
   This endpoint accepts both parent graph IDs and subgraph IDs.
@@ -133,7 +133,7 @@ def sync(
   The tool list is customized based on:
   - Graph type (shared repository vs user graph)
   - User permissions and subscription tier
-  - Backend capabilities (LadybugDB, Neo4j, etc.)
+  - Available graph capabilities for the selected graph
 
   **Subgraph Support:**
   This endpoint accepts both parent graph IDs and subgraph IDs.
@@ -179,7 +179,7 @@ async def asyncio_detailed(
   The tool list is customized based on:
   - Graph type (shared repository vs user graph)
   - User permissions and subscription tier
-  - Backend capabilities (LadybugDB, Neo4j, etc.)
+  - Available graph capabilities for the selected graph
 
   **Subgraph Support:**
   This endpoint accepts both parent graph IDs and subgraph IDs.
@@ -228,7 +228,7 @@ async def asyncio(
   The tool list is customized based on:
   - Graph type (shared repository vs user graph)
   - User permissions and subscription tier
-  - Backend capabilities (LadybugDB, Neo4j, etc.)
+  - Available graph capabilities for the selected graph
 
   **Subgraph Support:**
   This endpoint accepts both parent graph IDs and subgraph IDs.

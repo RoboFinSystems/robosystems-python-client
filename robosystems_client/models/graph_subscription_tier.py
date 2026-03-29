@@ -29,7 +29,7 @@ class GraphSubscriptionTier:
           backup_retention_days (int): Backup retention in days
           priority_support (bool): Whether priority support is included
           api_rate_multiplier (float): API rate multiplier
-          backend (str): Database backend (ladybug or neo4j)
+          backend (str): Database backend identifier
           max_queries_per_hour (int | None | Unset): Maximum queries per hour
           max_subgraphs (int | Unset): Maximum subgraphs supported Default: 0.
           instance_type (None | str | Unset): Instance type

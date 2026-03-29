@@ -68,6 +68,9 @@ from .copy_operation_limits import CopyOperationLimits
 from .create_api_key_request import CreateAPIKeyRequest
 from .create_api_key_response import CreateAPIKeyResponse
 from .create_association_request import CreateAssociationRequest
+from .create_association_request_association_type import (
+  CreateAssociationRequestAssociationType,
+)
 from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
 from .create_connection_request import CreateConnectionRequest
@@ -75,9 +78,11 @@ from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
 from .create_structure_request import CreateStructureRequest
+from .create_structure_request_structure_type import CreateStructureRequestStructureType
 from .create_subgraph_request import CreateSubgraphRequest
 from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
 from .create_taxonomy_request import CreateTaxonomyRequest
+from .create_taxonomy_request_taxonomy_type import CreateTaxonomyRequestTaxonomyType
 from .create_view_request import CreateViewRequest
 from .credit_limits import CreditLimits
 from .credit_summary import CreditSummary
@@ -380,6 +385,7 @@ __all__ = (
   "CreateAPIKeyRequest",
   "CreateAPIKeyResponse",
   "CreateAssociationRequest",
+  "CreateAssociationRequestAssociationType",
   "CreateCheckoutRequest",
   "CreateCheckoutRequestResourceConfig",
   "CreateConnectionRequest",
@@ -387,9 +393,11 @@ __all__ = (
   "CreateGraphRequest",
   "CreateRepositorySubscriptionRequest",
   "CreateStructureRequest",
+  "CreateStructureRequestStructureType",
   "CreateSubgraphRequest",
   "CreateSubgraphRequestMetadataType0",
   "CreateTaxonomyRequest",
+  "CreateTaxonomyRequestTaxonomyType",
   "CreateViewRequest",
   "CreditLimits",
   "CreditSummary",

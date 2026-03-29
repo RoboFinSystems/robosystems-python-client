@@ -6,6 +6,9 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.create_association_request_association_type import (
+  CreateAssociationRequestAssociationType,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CreateAssociationRequest")
@@ -17,7 +20,8 @@ class CreateAssociationRequest:
   Attributes:
       from_element_id (str):
       to_element_id (str):
-      association_type (str | Unset):  Default: 'mapping'.
+      association_type (CreateAssociationRequestAssociationType | Unset):  Default:
+          CreateAssociationRequestAssociationType.MAPPING.
       order_value (float | None | Unset):
       weight (float | None | Unset):
       confidence (float | None | Unset):
@@ -26,7 +30,9 @@ class CreateAssociationRequest:
 
   from_element_id: str
   to_element_id: str
-  association_type: str | Unset = "mapping"
+  association_type: CreateAssociationRequestAssociationType | Unset = (
+    CreateAssociationRequestAssociationType.MAPPING
+  )
   order_value: float | None | Unset = UNSET
   weight: float | None | Unset = UNSET
   confidence: float | None | Unset = UNSET
@@ -38,7 +44,9 @@ class CreateAssociationRequest:
 
     to_element_id = self.to_element_id
 
-    association_type = self.association_type
+    association_type: str | Unset = UNSET
+    if not isinstance(self.association_type, Unset):
+      association_type = self.association_type.value
 
     order_value: float | None | Unset
     if isinstance(self.order_value, Unset):
@@ -92,7 +100,12 @@ class CreateAssociationRequest:
 
     to_element_id = d.pop("to_element_id")
 
-    association_type = d.pop("association_type", UNSET)
+    _association_type = d.pop("association_type", UNSET)
+    association_type: CreateAssociationRequestAssociationType | Unset
+    if isinstance(_association_type, Unset):
+      association_type = UNSET
+    else:
+      association_type = CreateAssociationRequestAssociationType(_association_type)
 
     def _parse_order_value(data: object) -> float | None | Unset:
       if data is None:

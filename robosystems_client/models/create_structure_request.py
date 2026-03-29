@@ -6,6 +6,9 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.create_structure_request_structure_type import (
+  CreateStructureRequestStructureType,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CreateStructureRequest")
@@ -16,13 +19,13 @@ class CreateStructureRequest:
   """
   Attributes:
       name (str):
-      structure_type (str):
+      structure_type (CreateStructureRequestStructureType):
       taxonomy_id (str):
       description (None | str | Unset):
   """
 
   name: str
-  structure_type: str
+  structure_type: CreateStructureRequestStructureType
   taxonomy_id: str
   description: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -30,7 +33,7 @@ class CreateStructureRequest:
   def to_dict(self) -> dict[str, Any]:
     name = self.name
 
-    structure_type = self.structure_type
+    structure_type = self.structure_type.value
 
     taxonomy_id = self.taxonomy_id
 
@@ -59,7 +62,7 @@ class CreateStructureRequest:
     d = dict(src_dict)
     name = d.pop("name")
 
-    structure_type = d.pop("structure_type")
+    structure_type = CreateStructureRequestStructureType(d.pop("structure_type"))
 
     taxonomy_id = d.pop("taxonomy_id")
 

@@ -6,6 +6,9 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.create_taxonomy_request_taxonomy_type import (
+  CreateTaxonomyRequestTaxonomyType,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CreateTaxonomyRequest")
@@ -16,7 +19,7 @@ class CreateTaxonomyRequest:
   """
   Attributes:
       name (str):
-      taxonomy_type (str):
+      taxonomy_type (CreateTaxonomyRequestTaxonomyType):
       description (None | str | Unset):
       version (None | str | Unset):
       source_taxonomy_id (None | str | Unset):
@@ -24,7 +27,7 @@ class CreateTaxonomyRequest:
   """
 
   name: str
-  taxonomy_type: str
+  taxonomy_type: CreateTaxonomyRequestTaxonomyType
   description: None | str | Unset = UNSET
   version: None | str | Unset = UNSET
   source_taxonomy_id: None | str | Unset = UNSET
@@ -34,7 +37,7 @@ class CreateTaxonomyRequest:
   def to_dict(self) -> dict[str, Any]:
     name = self.name
 
-    taxonomy_type = self.taxonomy_type
+    taxonomy_type = self.taxonomy_type.value
 
     description: None | str | Unset
     if isinstance(self.description, Unset):
@@ -84,7 +87,7 @@ class CreateTaxonomyRequest:
     d = dict(src_dict)
     name = d.pop("name")
 
-    taxonomy_type = d.pop("taxonomy_type")
+    taxonomy_type = CreateTaxonomyRequestTaxonomyType(d.pop("taxonomy_type"))
 
     def _parse_description(data: object) -> None | str | Unset:
       if data is None:
