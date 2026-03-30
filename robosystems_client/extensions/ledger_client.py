@@ -13,6 +13,7 @@ from ..api.ledger.auto_map_elements import sync_detailed as auto_map_elements
 from ..api.ledger.create_mapping_association import (
   sync_detailed as create_mapping_association,
 )
+from ..api.ledger.create_structure import sync_detailed as create_structure
 from ..api.ledger.delete_mapping_association import (
   sync_detailed as delete_mapping_association,
 )
@@ -220,6 +221,30 @@ class LedgerClient:
     return response.parsed
 
   # ── Mappings ────────────────────────────────────────────────────────
+
+  def create_mapping_structure(
+    self,
+    graph_id: str,
+    name: str = "CoA to Reporting",
+    description: str | None = "Map Chart of Accounts to US GAAP reporting concepts",
+    taxonomy_id: str = "tax_usgaap_reporting",
+  ) -> Any:
+    """Create a new CoA→GAAP mapping structure."""
+    from ..models.create_structure_request import CreateStructureRequest
+    from ..models.create_structure_request_structure_type import (
+      CreateStructureRequestStructureType,
+    )
+
+    body = CreateStructureRequest(
+      name=name,
+      structure_type=CreateStructureRequestStructureType.COA_MAPPING,
+      taxonomy_id=taxonomy_id,
+      description=description,
+    )
+    response = create_structure(graph_id=graph_id, body=body, client=self._get_client())
+    if response.status_code != HTTPStatus.CREATED:
+      raise RuntimeError(f"Create mapping structure failed: {response.status_code}")
+    return response.parsed
 
   def list_mappings(self, graph_id: str) -> Any:
     """List available CoA→GAAP mapping structures."""
