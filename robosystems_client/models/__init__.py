@@ -76,6 +76,7 @@ from .create_checkout_request_resource_config import CreateCheckoutRequestResour
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
+from .create_report_request import CreateReportRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
 from .create_structure_request import CreateStructureRequest
 from .create_structure_request_structure_type import CreateStructureRequestStructureType
@@ -126,6 +127,7 @@ from .execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
 from .execute_cypher_query_response_200_data_item import (
   ExecuteCypherQueryResponse200DataItem,
 )
+from .fact_row_response import FactRowResponse
 from .file_info import FileInfo
 from .file_layer_status import FileLayerStatus
 from .file_status_update import FileStatusUpdate
@@ -240,7 +242,10 @@ from .portal_session_response import PortalSessionResponse
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
+from .regenerate_report_request import RegenerateReportRequest
 from .register_request import RegisterRequest
+from .report_list_response import ReportListResponse
+from .report_response import ReportResponse
 from .repository_info import RepositoryInfo
 from .repository_subscriptions import RepositorySubscriptions
 from .resend_verification_email_response_resendverificationemail import (
@@ -272,15 +277,20 @@ from .sec_connection_config import SECConnectionConfig
 from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
+from .share_report_request import ShareReportRequest
+from .share_report_response import ShareReportResponse
+from .share_result_item import ShareResultItem
 from .sso_complete_request import SSOCompleteRequest
 from .sso_exchange_request import SSOExchangeRequest
 from .sso_exchange_response import SSOExchangeResponse
 from .sso_token_response import SSOTokenResponse
+from .statement_response import StatementResponse
 from .storage_limit_response import StorageLimitResponse
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
 from .structure_list_response import StructureListResponse
 from .structure_response import StructureResponse
+from .structure_summary import StructureSummary
 from .subgraph_quota_response import SubgraphQuotaResponse
 from .subgraph_response import SubgraphResponse
 from .subgraph_response_metadata_type_0 import SubgraphResponseMetadataType0
@@ -319,6 +329,7 @@ from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
+from .validation_check_response import ValidationCheckResponse
 from .validation_error import ValidationError
 from .validation_error_context import ValidationErrorContext
 from .view_axis_config import ViewAxisConfig
@@ -391,6 +402,7 @@ __all__ = (
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateGraphRequest",
+  "CreateReportRequest",
   "CreateRepositorySubscriptionRequest",
   "CreateStructureRequest",
   "CreateStructureRequestStructureType",
@@ -433,6 +445,7 @@ __all__ = (
   "ErrorResponse",
   "ExecuteCypherQueryResponse200",
   "ExecuteCypherQueryResponse200DataItem",
+  "FactRowResponse",
   "FileInfo",
   "FileLayerStatus",
   "FileStatusUpdate",
@@ -533,7 +546,10 @@ __all__ = (
   "QueryLimits",
   "QuickBooksConnectionConfig",
   "RateLimits",
+  "RegenerateReportRequest",
   "RegisterRequest",
+  "ReportListResponse",
+  "ReportResponse",
   "RepositoryInfo",
   "RepositorySubscriptions",
   "ResendVerificationEmailResponseResendverificationemail",
@@ -557,15 +573,20 @@ __all__ = (
   "SelectionCriteria",
   "ServiceOfferingsResponse",
   "ServiceOfferingSummary",
+  "ShareReportRequest",
+  "ShareReportResponse",
+  "ShareResultItem",
   "SSOCompleteRequest",
   "SSOExchangeRequest",
   "SSOExchangeResponse",
   "SSOTokenResponse",
+  "StatementResponse",
   "StorageLimitResponse",
   "StorageLimits",
   "StorageSummary",
   "StructureListResponse",
   "StructureResponse",
+  "StructureSummary",
   "SubgraphQuotaResponse",
   "SubgraphResponse",
   "SubgraphResponseMetadataType0",
@@ -600,6 +621,7 @@ __all__ = (
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",
   "UserResponse",
+  "ValidationCheckResponse",
   "ValidationError",
   "ValidationErrorContext",
   "ViewAxisConfig",
