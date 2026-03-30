@@ -14,6 +14,8 @@ from .document_client import DocumentClient
 from .materialization_client import MaterializationClient
 from .table_client import TableClient
 from .graph_client import GraphClient
+from .ledger_client import LedgerClient
+from .report_client import ReportClient
 from .sse_client import SSEClient
 
 
@@ -71,6 +73,8 @@ class RoboSystemsExtensions:
     self.tables = TableClient(self.config)
     self.documents = DocumentClient(self.config)
     self.graphs = GraphClient(self.config)
+    self.ledger = LedgerClient(self.config)
+    self.reports = ReportClient(self.config)
 
   def monitor_operation(
     self, operation_id: str, on_progress: Optional[Callable] = None

@@ -51,6 +51,8 @@ from .graph_client import (
   InitialEntityData,
   GraphInfo,
 )
+from .ledger_client import LedgerClient
+from .report_client import ReportClient
 from .extensions import (
   RoboSystemsExtensions,
   RoboSystemsExtensionConfig,
@@ -195,6 +197,10 @@ __all__ = [
   "GraphMetadata",
   "InitialEntityData",
   "GraphInfo",
+  # Ledger Client
+  "LedgerClient",
+  # Report Client
+  "ReportClient",
   # Utilities
   "QueryBuilder",
   "ResultProcessor",
