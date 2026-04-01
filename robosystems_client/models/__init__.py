@@ -76,8 +76,12 @@ from .create_checkout_request_resource_config import CreateCheckoutRequestResour
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
+from .create_portfolio_request import CreatePortfolioRequest
+from .create_position_request import CreatePositionRequest
 from .create_report_request import CreateReportRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
+from .create_security_request import CreateSecurityRequest
+from .create_security_request_terms import CreateSecurityRequestTerms
 from .create_structure_request import CreateStructureRequest
 from .create_structure_request_structure_type import CreateStructureRequestStructureType
 from .create_subgraph_request import CreateSubgraphRequest
@@ -170,6 +174,9 @@ from .graph_usage_response import GraphUsageResponse
 from .graph_usage_response_recent_events_item import GraphUsageResponseRecentEventsItem
 from .health_status import HealthStatus
 from .health_status_details_type_0 import HealthStatusDetailsType0
+from .holding_response import HoldingResponse
+from .holding_security_summary import HoldingSecuritySummary
+from .holdings_list_response import HoldingsListResponse
 from .http_validation_error import HTTPValidationError
 from .initial_entity_data import InitialEntityData
 from .invite_member_request import InviteMemberRequest
@@ -239,6 +246,10 @@ from .performance_insights import PerformanceInsights
 from .performance_insights_operation_stats import PerformanceInsightsOperationStats
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
 from .portal_session_response import PortalSessionResponse
+from .portfolio_list_response import PortfolioListResponse
+from .portfolio_response import PortfolioResponse
+from .position_list_response import PositionListResponse
+from .position_response import PositionResponse
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
@@ -274,6 +285,9 @@ from .search_hit import SearchHit
 from .search_request import SearchRequest
 from .search_response import SearchResponse
 from .sec_connection_config import SECConnectionConfig
+from .security_list_response import SecurityListResponse
+from .security_response import SecurityResponse
+from .security_response_terms import SecurityResponseTerms
 from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
@@ -325,6 +339,10 @@ from .update_file_response_updatefile import UpdateFileResponseUpdatefile
 from .update_member_role_request import UpdateMemberRoleRequest
 from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
+from .update_portfolio_request import UpdatePortfolioRequest
+from .update_position_request import UpdatePositionRequest
+from .update_security_request import UpdateSecurityRequest
+from .update_security_request_terms_type_0 import UpdateSecurityRequestTermsType0
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
@@ -402,8 +420,12 @@ __all__ = (
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateGraphRequest",
+  "CreatePortfolioRequest",
+  "CreatePositionRequest",
   "CreateReportRequest",
   "CreateRepositorySubscriptionRequest",
+  "CreateSecurityRequest",
+  "CreateSecurityRequestTerms",
   "CreateStructureRequest",
   "CreateStructureRequestStructureType",
   "CreateSubgraphRequest",
@@ -478,6 +500,9 @@ __all__ = (
   "GraphUsageResponseRecentEventsItem",
   "HealthStatus",
   "HealthStatusDetailsType0",
+  "HoldingResponse",
+  "HoldingSecuritySummary",
+  "HoldingsListResponse",
   "HTTPValidationError",
   "InitialEntityData",
   "InviteMemberRequest",
@@ -543,6 +568,10 @@ __all__ = (
   "PerformanceInsightsOperationStats",
   "PerformanceInsightsSlowQueriesItem",
   "PortalSessionResponse",
+  "PortfolioListResponse",
+  "PortfolioResponse",
+  "PositionListResponse",
+  "PositionResponse",
   "QueryLimits",
   "QuickBooksConnectionConfig",
   "RateLimits",
@@ -570,6 +599,9 @@ __all__ = (
   "SearchRequest",
   "SearchResponse",
   "SECConnectionConfig",
+  "SecurityListResponse",
+  "SecurityResponse",
+  "SecurityResponseTerms",
   "SelectionCriteria",
   "ServiceOfferingsResponse",
   "ServiceOfferingSummary",
@@ -617,6 +649,10 @@ __all__ = (
   "UpdateMemberRoleRequest",
   "UpdateOrgRequest",
   "UpdatePasswordRequest",
+  "UpdatePortfolioRequest",
+  "UpdatePositionRequest",
+  "UpdateSecurityRequest",
+  "UpdateSecurityRequestTermsType0",
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",
