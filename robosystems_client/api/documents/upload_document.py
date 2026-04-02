@@ -72,7 +72,7 @@ def sync_detailed(
 ) -> Response[DocumentUploadResponse | HTTPValidationError]:
   """Upload Document
 
-   Upload a markdown document for text indexing.
+   Upload a markdown document. Stored in PostgreSQL, synced to OpenSearch.
 
   Args:
       graph_id (str):
@@ -106,7 +106,7 @@ def sync(
 ) -> DocumentUploadResponse | HTTPValidationError | None:
   """Upload Document
 
-   Upload a markdown document for text indexing.
+   Upload a markdown document. Stored in PostgreSQL, synced to OpenSearch.
 
   Args:
       graph_id (str):
@@ -135,7 +135,7 @@ async def asyncio_detailed(
 ) -> Response[DocumentUploadResponse | HTTPValidationError]:
   """Upload Document
 
-   Upload a markdown document for text indexing.
+   Upload a markdown document. Stored in PostgreSQL, synced to OpenSearch.
 
   Args:
       graph_id (str):
@@ -167,7 +167,7 @@ async def asyncio(
 ) -> DocumentUploadResponse | HTTPValidationError | None:
   """Upload Document
 
-   Upload a markdown document for text indexing.
+   Upload a markdown document. Stored in PostgreSQL, synced to OpenSearch.
 
   Args:
       graph_id (str):

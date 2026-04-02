@@ -14,12 +14,14 @@ class DocumentUploadResponse:
   """Response from document upload.
 
   Attributes:
+      id (str):
       document_id (str):
       sections_indexed (int):
       total_content_length (int):
       section_ids (list[str]):
   """
 
+  id: str
   document_id: str
   sections_indexed: int
   total_content_length: int
@@ -27,6 +29,8 @@ class DocumentUploadResponse:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    id = self.id
+
     document_id = self.document_id
 
     sections_indexed = self.sections_indexed
@@ -39,6 +43,7 @@ class DocumentUploadResponse:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
+        "id": id,
         "document_id": document_id,
         "sections_indexed": sections_indexed,
         "total_content_length": total_content_length,
@@ -51,6 +56,8 @@ class DocumentUploadResponse:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
+    id = d.pop("id")
+
     document_id = d.pop("document_id")
 
     sections_indexed = d.pop("sections_indexed")
@@ -60,6 +67,7 @@ class DocumentUploadResponse:
     section_ids = cast(list[str], d.pop("section_ids"))
 
     document_upload_response = cls(
+      id=id,
       document_id=document_id,
       sections_indexed=sections_indexed,
       total_content_length=total_content_length,

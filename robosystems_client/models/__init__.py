@@ -113,9 +113,11 @@ from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
 )
 from .detailed_transactions_response_summary import DetailedTransactionsResponseSummary
+from .document_detail_response import DocumentDetailResponse
 from .document_list_item import DocumentListItem
 from .document_list_response import DocumentListResponse
 from .document_section import DocumentSection
+from .document_update_request import DocumentUpdateRequest
 from .document_upload_request import DocumentUploadRequest
 from .document_upload_response import DocumentUploadResponse
 from .download_quota import DownloadQuota
@@ -460,9 +462,11 @@ __all__ = (
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
+  "DocumentDetailResponse",
   "DocumentListItem",
   "DocumentListResponse",
   "DocumentSection",
+  "DocumentUpdateRequest",
   "DocumentUploadRequest",
   "DocumentUploadResponse",
   "DownloadQuota",

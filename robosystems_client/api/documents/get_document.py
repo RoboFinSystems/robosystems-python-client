@@ -6,33 +6,21 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.document_list_response import DocumentListResponse
+from ...models.document_detail_response import DocumentDetailResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
-  *,
-  source_type: None | str | Unset = UNSET,
+  document_id: str,
 ) -> dict[str, Any]:
-  params: dict[str, Any] = {}
-
-  json_source_type: None | str | Unset
-  if isinstance(source_type, Unset):
-    json_source_type = UNSET
-  else:
-    json_source_type = source_type
-  params["source_type"] = json_source_type
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": "/v1/graphs/{graph_id}/documents".format(
+    "url": "/v1/graphs/{graph_id}/documents/{document_id}".format(
       graph_id=quote(str(graph_id), safe=""),
+      document_id=quote(str(document_id), safe=""),
     ),
-    "params": params,
   }
 
   return _kwargs
@@ -40,9 +28,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> DocumentListResponse | HTTPValidationError | None:
+) -> DocumentDetailResponse | HTTPValidationError | None:
   if response.status_code == 200:
-    response_200 = DocumentListResponse.from_dict(response.json())
+    response_200 = DocumentDetailResponse.from_dict(response.json())
 
     return response_200
 
@@ -59,7 +47,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[DocumentListResponse | HTTPValidationError]:
+) -> Response[DocumentDetailResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -70,29 +58,29 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
+  document_id: str,
   *,
   client: AuthenticatedClient,
-  source_type: None | str | Unset = UNSET,
-) -> Response[DocumentListResponse | HTTPValidationError]:
-  """List Documents
+) -> Response[DocumentDetailResponse | HTTPValidationError]:
+  """Get Document
 
-   List documents for a graph from PostgreSQL.
+   Get a document with full content from PostgreSQL.
 
   Args:
       graph_id (str):
-      source_type (None | str | Unset):
+      document_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[DocumentListResponse | HTTPValidationError]
+      Response[DocumentDetailResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    source_type=source_type,
+    document_id=document_id,
   )
 
   response = client.get_httpx_client().request(
@@ -104,58 +92,58 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
+  document_id: str,
   *,
   client: AuthenticatedClient,
-  source_type: None | str | Unset = UNSET,
-) -> DocumentListResponse | HTTPValidationError | None:
-  """List Documents
+) -> DocumentDetailResponse | HTTPValidationError | None:
+  """Get Document
 
-   List documents for a graph from PostgreSQL.
+   Get a document with full content from PostgreSQL.
 
   Args:
       graph_id (str):
-      source_type (None | str | Unset):
+      document_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      DocumentListResponse | HTTPValidationError
+      DocumentDetailResponse | HTTPValidationError
   """
 
   return sync_detailed(
     graph_id=graph_id,
+    document_id=document_id,
     client=client,
-    source_type=source_type,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
+  document_id: str,
   *,
   client: AuthenticatedClient,
-  source_type: None | str | Unset = UNSET,
-) -> Response[DocumentListResponse | HTTPValidationError]:
-  """List Documents
+) -> Response[DocumentDetailResponse | HTTPValidationError]:
+  """Get Document
 
-   List documents for a graph from PostgreSQL.
+   Get a document with full content from PostgreSQL.
 
   Args:
       graph_id (str):
-      source_type (None | str | Unset):
+      document_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[DocumentListResponse | HTTPValidationError]
+      Response[DocumentDetailResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    source_type=source_type,
+    document_id=document_id,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -165,30 +153,30 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
+  document_id: str,
   *,
   client: AuthenticatedClient,
-  source_type: None | str | Unset = UNSET,
-) -> DocumentListResponse | HTTPValidationError | None:
-  """List Documents
+) -> DocumentDetailResponse | HTTPValidationError | None:
+  """Get Document
 
-   List documents for a graph from PostgreSQL.
+   Get a document with full content from PostgreSQL.
 
   Args:
       graph_id (str):
-      source_type (None | str | Unset):
+      document_id (str):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      DocumentListResponse | HTTPValidationError
+      DocumentDetailResponse | HTTPValidationError
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
+      document_id=document_id,
       client=client,
-      source_type=source_type,
     )
   ).parsed

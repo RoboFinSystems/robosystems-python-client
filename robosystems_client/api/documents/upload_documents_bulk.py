@@ -72,7 +72,7 @@ def sync_detailed(
 ) -> Response[BulkDocumentUploadResponse | HTTPValidationError]:
   """Upload Documents Bulk
 
-   Upload multiple markdown documents for text indexing (max 50).
+   Upload multiple markdown documents (max 50).
 
   Args:
       graph_id (str):
@@ -106,7 +106,7 @@ def sync(
 ) -> BulkDocumentUploadResponse | HTTPValidationError | None:
   """Upload Documents Bulk
 
-   Upload multiple markdown documents for text indexing (max 50).
+   Upload multiple markdown documents (max 50).
 
   Args:
       graph_id (str):
@@ -135,7 +135,7 @@ async def asyncio_detailed(
 ) -> Response[BulkDocumentUploadResponse | HTTPValidationError]:
   """Upload Documents Bulk
 
-   Upload multiple markdown documents for text indexing (max 50).
+   Upload multiple markdown documents (max 50).
 
   Args:
       graph_id (str):
@@ -167,7 +167,7 @@ async def asyncio(
 ) -> BulkDocumentUploadResponse | HTTPValidationError | None:
   """Upload Documents Bulk
 
-   Upload multiple markdown documents for text indexing (max 50).
+   Upload multiple markdown documents (max 50).
 
   Args:
       graph_id (str):
