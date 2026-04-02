@@ -21,6 +21,8 @@ T = TypeVar("T", bound="UpdateSecurityRequest")
 class UpdateSecurityRequest:
   """
   Attributes:
+      entity_id (None | str | Unset):
+      source_graph_id (None | str | Unset):
       name (None | str | Unset):
       security_type (None | str | Unset):
       security_subtype (None | str | Unset):
@@ -30,6 +32,8 @@ class UpdateSecurityRequest:
       outstanding_shares (int | None | Unset):
   """
 
+  entity_id: None | str | Unset = UNSET
+  source_graph_id: None | str | Unset = UNSET
   name: None | str | Unset = UNSET
   security_type: None | str | Unset = UNSET
   security_subtype: None | str | Unset = UNSET
@@ -43,6 +47,18 @@ class UpdateSecurityRequest:
     from ..models.update_security_request_terms_type_0 import (
       UpdateSecurityRequestTermsType0,
     )
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
+    source_graph_id: None | str | Unset
+    if isinstance(self.source_graph_id, Unset):
+      source_graph_id = UNSET
+    else:
+      source_graph_id = self.source_graph_id
 
     name: None | str | Unset
     if isinstance(self.name, Unset):
@@ -91,6 +107,10 @@ class UpdateSecurityRequest:
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
+    if source_graph_id is not UNSET:
+      field_dict["source_graph_id"] = source_graph_id
     if name is not UNSET:
       field_dict["name"] = name
     if security_type is not UNSET:
@@ -115,6 +135,24 @@ class UpdateSecurityRequest:
     )
 
     d = dict(src_dict)
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
+    def _parse_source_graph_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    source_graph_id = _parse_source_graph_id(d.pop("source_graph_id", UNSET))
 
     def _parse_name(data: object) -> None | str | Unset:
       if data is None:
@@ -188,6 +226,8 @@ class UpdateSecurityRequest:
     outstanding_shares = _parse_outstanding_shares(d.pop("outstanding_shares", UNSET))
 
     update_security_request = cls(
+      entity_id=entity_id,
+      source_graph_id=source_graph_id,
       name=name,
       security_type=security_type,
       security_subtype=security_subtype,
