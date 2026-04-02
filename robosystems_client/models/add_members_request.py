@@ -1,32 +1,32 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="ShareReportRequest")
+T = TypeVar("T", bound="AddMembersRequest")
 
 
 @_attrs_define
-class ShareReportRequest:
+class AddMembersRequest:
   """
   Attributes:
-      publish_list_id (str): Publish list to share the report to
+      target_graph_ids (list[str]): Graph IDs to add to this list
   """
 
-  publish_list_id: str
+  target_graph_ids: list[str]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    publish_list_id = self.publish_list_id
+    target_graph_ids = self.target_graph_ids
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "publish_list_id": publish_list_id,
+        "target_graph_ids": target_graph_ids,
       }
     )
 
@@ -35,14 +35,14 @@ class ShareReportRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    publish_list_id = d.pop("publish_list_id")
+    target_graph_ids = cast(list[str], d.pop("target_graph_ids"))
 
-    share_report_request = cls(
-      publish_list_id=publish_list_id,
+    add_members_request = cls(
+      target_graph_ids=target_graph_ids,
     )
 
-    share_report_request.additional_properties = d
-    return share_report_request
+    add_members_request.additional_properties = d
+    return add_members_request
 
   @property
   def additional_keys(self) -> list[str]:

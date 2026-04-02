@@ -35,6 +35,7 @@ class ReportResponse:
       ai_generated (bool | Unset):  Default: False.
       last_generated (datetime.datetime | None | Unset):
       structures (list[StructureSummary] | Unset):
+      entity_name (None | str | Unset):
       source_graph_id (None | str | Unset):
       source_report_id (None | str | Unset):
       shared_at (datetime.datetime | None | Unset):
@@ -53,6 +54,7 @@ class ReportResponse:
   ai_generated: bool | Unset = False
   last_generated: datetime.datetime | None | Unset = UNSET
   structures: list[StructureSummary] | Unset = UNSET
+  entity_name: None | str | Unset = UNSET
   source_graph_id: None | str | Unset = UNSET
   source_report_id: None | str | Unset = UNSET
   shared_at: datetime.datetime | None | Unset = UNSET
@@ -112,6 +114,12 @@ class ReportResponse:
         structures_item = structures_item_data.to_dict()
         structures.append(structures_item)
 
+    entity_name: None | str | Unset
+    if isinstance(self.entity_name, Unset):
+      entity_name = UNSET
+    else:
+      entity_name = self.entity_name
+
     source_graph_id: None | str | Unset
     if isinstance(self.source_graph_id, Unset):
       source_graph_id = UNSET
@@ -157,6 +165,8 @@ class ReportResponse:
       field_dict["last_generated"] = last_generated
     if structures is not UNSET:
       field_dict["structures"] = structures
+    if entity_name is not UNSET:
+      field_dict["entity_name"] = entity_name
     if source_graph_id is not UNSET:
       field_dict["source_graph_id"] = source_graph_id
     if source_report_id is not UNSET:
@@ -256,6 +266,15 @@ class ReportResponse:
 
         structures.append(structures_item)
 
+    def _parse_entity_name(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_name = _parse_entity_name(d.pop("entity_name", UNSET))
+
     def _parse_source_graph_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -305,6 +324,7 @@ class ReportResponse:
       ai_generated=ai_generated,
       last_generated=last_generated,
       structures=structures,
+      entity_name=entity_name,
       source_graph_id=source_graph_id,
       source_report_id=source_report_id,
       shared_at=shared_at,

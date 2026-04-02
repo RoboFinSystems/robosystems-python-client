@@ -39,6 +39,7 @@ class LedgerEntityResponse:
       parent_entity_id (None | str | Unset):
       source (str | Unset):  Default: 'native'.
       source_id (None | str | Unset):
+      source_graph_id (None | str | Unset):
       connection_id (None | str | Unset):
       address_line1 (None | str | Unset):
       address_city (None | str | Unset):
@@ -72,6 +73,7 @@ class LedgerEntityResponse:
   parent_entity_id: None | str | Unset = UNSET
   source: str | Unset = "native"
   source_id: None | str | Unset = UNSET
+  source_graph_id: None | str | Unset = UNSET
   connection_id: None | str | Unset = UNSET
   address_line1: None | str | Unset = UNSET
   address_city: None | str | Unset = UNSET
@@ -201,6 +203,12 @@ class LedgerEntityResponse:
     else:
       source_id = self.source_id
 
+    source_graph_id: None | str | Unset
+    if isinstance(self.source_graph_id, Unset):
+      source_graph_id = UNSET
+    else:
+      source_graph_id = self.source_graph_id
+
     connection_id: None | str | Unset
     if isinstance(self.connection_id, Unset):
       connection_id = UNSET
@@ -299,6 +307,8 @@ class LedgerEntityResponse:
       field_dict["source"] = source
     if source_id is not UNSET:
       field_dict["source_id"] = source_id
+    if source_graph_id is not UNSET:
+      field_dict["source_graph_id"] = source_graph_id
     if connection_id is not UNSET:
       field_dict["connection_id"] = connection_id
     if address_line1 is not UNSET:
@@ -495,6 +505,15 @@ class LedgerEntityResponse:
 
     source_id = _parse_source_id(d.pop("source_id", UNSET))
 
+    def _parse_source_graph_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    source_graph_id = _parse_source_graph_id(d.pop("source_graph_id", UNSET))
+
     def _parse_connection_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -593,6 +612,7 @@ class LedgerEntityResponse:
       parent_entity_id=parent_entity_id,
       source=source,
       source_id=source_id,
+      source_graph_id=source_graph_id,
       connection_id=connection_id,
       address_line1=address_line1,
       address_city=address_city,

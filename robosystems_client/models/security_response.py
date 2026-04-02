@@ -30,6 +30,7 @@ class SecurityResponse:
       updated_at (datetime.datetime):
       entity_id (None | str | Unset):
       entity_name (None | str | Unset):
+      source_graph_id (None | str | Unset):
       security_subtype (None | str | Unset):
       authorized_shares (int | None | Unset):
       outstanding_shares (int | None | Unset):
@@ -44,6 +45,7 @@ class SecurityResponse:
   updated_at: datetime.datetime
   entity_id: None | str | Unset = UNSET
   entity_name: None | str | Unset = UNSET
+  source_graph_id: None | str | Unset = UNSET
   security_subtype: None | str | Unset = UNSET
   authorized_shares: int | None | Unset = UNSET
   outstanding_shares: int | None | Unset = UNSET
@@ -75,6 +77,12 @@ class SecurityResponse:
       entity_name = UNSET
     else:
       entity_name = self.entity_name
+
+    source_graph_id: None | str | Unset
+    if isinstance(self.source_graph_id, Unset):
+      source_graph_id = UNSET
+    else:
+      source_graph_id = self.source_graph_id
 
     security_subtype: None | str | Unset
     if isinstance(self.security_subtype, Unset):
@@ -111,6 +119,8 @@ class SecurityResponse:
       field_dict["entity_id"] = entity_id
     if entity_name is not UNSET:
       field_dict["entity_name"] = entity_name
+    if source_graph_id is not UNSET:
+      field_dict["source_graph_id"] = source_graph_id
     if security_subtype is not UNSET:
       field_dict["security_subtype"] = security_subtype
     if authorized_shares is not UNSET:
@@ -157,6 +167,15 @@ class SecurityResponse:
 
     entity_name = _parse_entity_name(d.pop("entity_name", UNSET))
 
+    def _parse_source_graph_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    source_graph_id = _parse_source_graph_id(d.pop("source_graph_id", UNSET))
+
     def _parse_security_subtype(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -194,6 +213,7 @@ class SecurityResponse:
       updated_at=updated_at,
       entity_id=entity_id,
       entity_name=entity_name,
+      source_graph_id=source_graph_id,
       security_subtype=security_subtype,
       authorized_shares=authorized_shares,
       outstanding_shares=outstanding_shares,

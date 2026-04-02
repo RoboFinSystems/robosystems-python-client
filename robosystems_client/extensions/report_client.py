@@ -118,11 +118,11 @@ class ReportClient:
     if response.status_code != HTTPStatus.NO_CONTENT:
       raise RuntimeError(f"Delete report failed: {response.status_code}")
 
-  def share(self, graph_id: str, report_id: str, target_graph_ids: list[str]) -> Any:
-    """Share a published report to other graphs (snapshot copy)."""
+  def share(self, graph_id: str, report_id: str, publish_list_id: str) -> Any:
+    """Share a published report to all members of a publish list (snapshot copy)."""
     from ..models.share_report_request import ShareReportRequest
 
-    body = ShareReportRequest(target_graph_ids=target_graph_ids)
+    body = ShareReportRequest(publish_list_id=publish_list_id)
     response = share_report(
       graph_id=graph_id, report_id=report_id, body=body, client=self._get_client()
     )
