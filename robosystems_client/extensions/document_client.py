@@ -10,14 +10,18 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from ..api.documents.delete_document import sync_detailed as delete_document
+from ..api.documents.get_document import sync_detailed as get_document
 from ..api.documents.list_documents import sync_detailed as list_documents
+from ..api.documents.update_document import sync_detailed as update_document
 from ..api.documents.upload_document import sync_detailed as upload_document
 from ..api.documents.upload_documents_bulk import sync_detailed as upload_documents_bulk
 from ..api.search.get_document_section import sync_detailed as get_document_section
 from ..api.search.search_documents import sync_detailed as search_documents
 from ..client import AuthenticatedClient
+from ..models.document_detail_response import DocumentDetailResponse
 from ..models.document_list_response import DocumentListResponse
 from ..models.document_section import DocumentSection
+from ..models.document_update_request import DocumentUpdateRequest
 from ..models.bulk_document_upload_request import BulkDocumentUploadRequest
 from ..models.bulk_document_upload_response import BulkDocumentUploadResponse
 from ..models.document_upload_request import DocumentUploadRequest
@@ -86,6 +90,74 @@ class DocumentClient:
     if response.status_code != HTTPStatus.OK:
       raise Exception(
         f"Document upload failed ({response.status_code}): {response.content.decode()}"
+      )
+    return response.parsed
+
+  def get(
+    self,
+    graph_id: str,
+    document_id: str,
+  ) -> Optional[DocumentDetailResponse]:
+    """Get a document with full content by ID.
+
+    Returns the raw markdown content and metadata from PostgreSQL.
+
+    Args:
+        graph_id: Target graph ID.
+        document_id: Document ID.
+
+    Returns:
+        DocumentDetailResponse or None if not found.
+    """
+    client = self._get_client()
+    response = get_document(graph_id=graph_id, document_id=document_id, client=client)
+    if response.status_code == HTTPStatus.NOT_FOUND:
+      return None
+    if response.status_code != HTTPStatus.OK:
+      raise Exception(
+        f"Get document failed ({response.status_code}): {response.content.decode()}"
+      )
+    return response.parsed
+
+  def update(
+    self,
+    graph_id: str,
+    document_id: str,
+    title: Optional[str] = None,
+    content: Optional[str] = None,
+    tags: Optional[List[str]] = UNSET,
+    folder: Optional[str] = UNSET,
+  ) -> DocumentUploadResponse:
+    """Update a document's content and/or metadata.
+
+    Only provided fields are updated. Content is re-sectioned,
+    re-embedded, and re-indexed in OpenSearch.
+
+    Args:
+        graph_id: Target graph ID.
+        document_id: Document ID.
+        title: Updated title.
+        content: Updated markdown content.
+        tags: Updated tags (None to clear, UNSET to leave unchanged).
+        folder: Updated folder (None to clear, UNSET to leave unchanged).
+
+    Returns:
+        DocumentUploadResponse with updated section counts.
+    """
+    body = DocumentUpdateRequest(
+      title=title if title is not None else UNSET,
+      content=content if content is not None else UNSET,
+      tags=tags,
+      folder=folder,
+    )
+
+    client = self._get_client()
+    response = update_document(
+      graph_id=graph_id, document_id=document_id, client=client, body=body
+    )
+    if response.status_code != HTTPStatus.OK:
+      raise Exception(
+        f"Update document failed ({response.status_code}): {response.content.decode()}"
       )
     return response.parsed
 

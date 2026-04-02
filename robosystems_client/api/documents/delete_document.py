@@ -62,7 +62,7 @@ def sync_detailed(
 ) -> Response[Any | HTTPValidationError]:
   """Delete Document
 
-   Delete a document and all its sections.
+   Delete a document from PostgreSQL and OpenSearch.
 
   Args:
       graph_id (str):
@@ -96,7 +96,7 @@ def sync(
 ) -> Any | HTTPValidationError | None:
   """Delete Document
 
-   Delete a document and all its sections.
+   Delete a document from PostgreSQL and OpenSearch.
 
   Args:
       graph_id (str):
@@ -125,7 +125,7 @@ async def asyncio_detailed(
 ) -> Response[Any | HTTPValidationError]:
   """Delete Document
 
-   Delete a document and all its sections.
+   Delete a document from PostgreSQL and OpenSearch.
 
   Args:
       graph_id (str):
@@ -157,7 +157,7 @@ async def asyncio(
 ) -> Any | HTTPValidationError | None:
   """Delete Document
 
-   Delete a document and all its sections.
+   Delete a document from PostgreSQL and OpenSearch.
 
   Args:
       graph_id (str):

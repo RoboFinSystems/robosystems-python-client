@@ -8,52 +8,38 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="DocumentListItem")
+T = TypeVar("T", bound="DocumentUpdateRequest")
 
 
 @_attrs_define
-class DocumentListItem:
-  """A document in the document list.
+class DocumentUpdateRequest:
+  """Update a document's metadata and/or content.
 
   Attributes:
-      id (str):
-      document_title (str):
-      section_count (int):
-      source_type (str):
-      created_at (str):
-      updated_at (str):
-      folder (None | str | Unset):
+      title (None | str | Unset):
+      content (None | str | Unset):
       tags (list[str] | None | Unset):
+      folder (None | str | Unset):
   """
 
-  id: str
-  document_title: str
-  section_count: int
-  source_type: str
-  created_at: str
-  updated_at: str
-  folder: None | str | Unset = UNSET
+  title: None | str | Unset = UNSET
+  content: None | str | Unset = UNSET
   tags: list[str] | None | Unset = UNSET
+  folder: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    id = self.id
-
-    document_title = self.document_title
-
-    section_count = self.section_count
-
-    source_type = self.source_type
-
-    created_at = self.created_at
-
-    updated_at = self.updated_at
-
-    folder: None | str | Unset
-    if isinstance(self.folder, Unset):
-      folder = UNSET
+    title: None | str | Unset
+    if isinstance(self.title, Unset):
+      title = UNSET
     else:
-      folder = self.folder
+      title = self.title
+
+    content: None | str | Unset
+    if isinstance(self.content, Unset):
+      content = UNSET
+    else:
+      content = self.content
 
     tags: list[str] | None | Unset
     if isinstance(self.tags, Unset):
@@ -64,48 +50,47 @@ class DocumentListItem:
     else:
       tags = self.tags
 
+    folder: None | str | Unset
+    if isinstance(self.folder, Unset):
+      folder = UNSET
+    else:
+      folder = self.folder
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update(
-      {
-        "id": id,
-        "document_title": document_title,
-        "section_count": section_count,
-        "source_type": source_type,
-        "created_at": created_at,
-        "updated_at": updated_at,
-      }
-    )
-    if folder is not UNSET:
-      field_dict["folder"] = folder
+    field_dict.update({})
+    if title is not UNSET:
+      field_dict["title"] = title
+    if content is not UNSET:
+      field_dict["content"] = content
     if tags is not UNSET:
       field_dict["tags"] = tags
+    if folder is not UNSET:
+      field_dict["folder"] = folder
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    id = d.pop("id")
 
-    document_title = d.pop("document_title")
-
-    section_count = d.pop("section_count")
-
-    source_type = d.pop("source_type")
-
-    created_at = d.pop("created_at")
-
-    updated_at = d.pop("updated_at")
-
-    def _parse_folder(data: object) -> None | str | Unset:
+    def _parse_title(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
       return cast(None | str | Unset, data)
 
-    folder = _parse_folder(d.pop("folder", UNSET))
+    title = _parse_title(d.pop("title", UNSET))
+
+    def _parse_content(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    content = _parse_content(d.pop("content", UNSET))
 
     def _parse_tags(data: object) -> list[str] | None | Unset:
       if data is None:
@@ -124,19 +109,24 @@ class DocumentListItem:
 
     tags = _parse_tags(d.pop("tags", UNSET))
 
-    document_list_item = cls(
-      id=id,
-      document_title=document_title,
-      section_count=section_count,
-      source_type=source_type,
-      created_at=created_at,
-      updated_at=updated_at,
-      folder=folder,
+    def _parse_folder(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    folder = _parse_folder(d.pop("folder", UNSET))
+
+    document_update_request = cls(
+      title=title,
+      content=content,
       tags=tags,
+      folder=folder,
     )
 
-    document_list_item.additional_properties = d
-    return document_list_item
+    document_update_request.additional_properties = d
+    return document_update_request
 
   @property
   def additional_keys(self) -> list[str]:
