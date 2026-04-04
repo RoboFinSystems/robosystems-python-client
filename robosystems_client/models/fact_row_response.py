@@ -19,8 +19,7 @@ class FactRowResponse:
       element_qname (str):
       element_name (str):
       classification (str):
-      current_value (float):
-      prior_value (float | None | Unset):
+      values (list[float | None] | Unset):
       is_subtotal (bool | Unset):  Default: False.
       depth (int | Unset):  Default: 0.
   """
@@ -29,8 +28,7 @@ class FactRowResponse:
   element_qname: str
   element_name: str
   classification: str
-  current_value: float
-  prior_value: float | None | Unset = UNSET
+  values: list[float | None] | Unset = UNSET
   is_subtotal: bool | Unset = False
   depth: int | Unset = 0
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -44,13 +42,13 @@ class FactRowResponse:
 
     classification = self.classification
 
-    current_value = self.current_value
-
-    prior_value: float | None | Unset
-    if isinstance(self.prior_value, Unset):
-      prior_value = UNSET
-    else:
-      prior_value = self.prior_value
+    values: list[float | None] | Unset = UNSET
+    if not isinstance(self.values, Unset):
+      values = []
+      for values_item_data in self.values:
+        values_item: float | None
+        values_item = values_item_data
+        values.append(values_item)
 
     is_subtotal = self.is_subtotal
 
@@ -64,11 +62,10 @@ class FactRowResponse:
         "element_qname": element_qname,
         "element_name": element_name,
         "classification": classification,
-        "current_value": current_value,
       }
     )
-    if prior_value is not UNSET:
-      field_dict["prior_value"] = prior_value
+    if values is not UNSET:
+      field_dict["values"] = values
     if is_subtotal is not UNSET:
       field_dict["is_subtotal"] = is_subtotal
     if depth is not UNSET:
@@ -87,16 +84,20 @@ class FactRowResponse:
 
     classification = d.pop("classification")
 
-    current_value = d.pop("current_value")
+    _values = d.pop("values", UNSET)
+    values: list[float | None] | Unset = UNSET
+    if _values is not UNSET:
+      values = []
+      for values_item_data in _values:
 
-    def _parse_prior_value(data: object) -> float | None | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(float | None | Unset, data)
+        def _parse_values_item(data: object) -> float | None:
+          if data is None:
+            return data
+          return cast(float | None, data)
 
-    prior_value = _parse_prior_value(d.pop("prior_value", UNSET))
+        values_item = _parse_values_item(values_item_data)
+
+        values.append(values_item)
 
     is_subtotal = d.pop("is_subtotal", UNSET)
 
@@ -107,8 +108,7 @@ class FactRowResponse:
       element_qname=element_qname,
       element_name=element_name,
       classification=classification,
-      current_value=current_value,
-      prior_value=prior_value,
+      values=values,
       is_subtotal=is_subtotal,
       depth=depth,
     )

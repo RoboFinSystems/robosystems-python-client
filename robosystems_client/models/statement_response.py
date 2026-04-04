@@ -1,17 +1,16 @@
 from __future__ import annotations
 
-import datetime
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.fact_row_response import FactRowResponse
+  from ..models.period_spec import PeriodSpec
   from ..models.validation_check_response import ValidationCheckResponse
 
 
@@ -27,10 +26,7 @@ class StatementResponse:
       structure_id (str):
       structure_name (str):
       structure_type (str):
-      period_start (datetime.date):
-      period_end (datetime.date):
-      comparative_period_start (datetime.date | None | Unset):
-      comparative_period_end (datetime.date | None | Unset):
+      periods (list[PeriodSpec] | Unset):
       rows (list[FactRowResponse] | Unset):
       validation (None | Unset | ValidationCheckResponse):
       unmapped_count (int | Unset):  Default: 0.
@@ -40,10 +36,7 @@ class StatementResponse:
   structure_id: str
   structure_name: str
   structure_type: str
-  period_start: datetime.date
-  period_end: datetime.date
-  comparative_period_start: datetime.date | None | Unset = UNSET
-  comparative_period_end: datetime.date | None | Unset = UNSET
+  periods: list[PeriodSpec] | Unset = UNSET
   rows: list[FactRowResponse] | Unset = UNSET
   validation: None | Unset | ValidationCheckResponse = UNSET
   unmapped_count: int | Unset = 0
@@ -60,25 +53,12 @@ class StatementResponse:
 
     structure_type = self.structure_type
 
-    period_start = self.period_start.isoformat()
-
-    period_end = self.period_end.isoformat()
-
-    comparative_period_start: None | str | Unset
-    if isinstance(self.comparative_period_start, Unset):
-      comparative_period_start = UNSET
-    elif isinstance(self.comparative_period_start, datetime.date):
-      comparative_period_start = self.comparative_period_start.isoformat()
-    else:
-      comparative_period_start = self.comparative_period_start
-
-    comparative_period_end: None | str | Unset
-    if isinstance(self.comparative_period_end, Unset):
-      comparative_period_end = UNSET
-    elif isinstance(self.comparative_period_end, datetime.date):
-      comparative_period_end = self.comparative_period_end.isoformat()
-    else:
-      comparative_period_end = self.comparative_period_end
+    periods: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.periods, Unset):
+      periods = []
+      for periods_item_data in self.periods:
+        periods_item = periods_item_data.to_dict()
+        periods.append(periods_item)
 
     rows: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.rows, Unset):
@@ -105,14 +85,10 @@ class StatementResponse:
         "structure_id": structure_id,
         "structure_name": structure_name,
         "structure_type": structure_type,
-        "period_start": period_start,
-        "period_end": period_end,
       }
     )
-    if comparative_period_start is not UNSET:
-      field_dict["comparative_period_start"] = comparative_period_start
-    if comparative_period_end is not UNSET:
-      field_dict["comparative_period_end"] = comparative_period_end
+    if periods is not UNSET:
+      field_dict["periods"] = periods
     if rows is not UNSET:
       field_dict["rows"] = rows
     if validation is not UNSET:
@@ -125,6 +101,7 @@ class StatementResponse:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.fact_row_response import FactRowResponse
+    from ..models.period_spec import PeriodSpec
     from ..models.validation_check_response import ValidationCheckResponse
 
     d = dict(src_dict)
@@ -136,47 +113,14 @@ class StatementResponse:
 
     structure_type = d.pop("structure_type")
 
-    period_start = isoparse(d.pop("period_start")).date()
+    _periods = d.pop("periods", UNSET)
+    periods: list[PeriodSpec] | Unset = UNSET
+    if _periods is not UNSET:
+      periods = []
+      for periods_item_data in _periods:
+        periods_item = PeriodSpec.from_dict(periods_item_data)
 
-    period_end = isoparse(d.pop("period_end")).date()
-
-    def _parse_comparative_period_start(data: object) -> datetime.date | None | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, str):
-          raise TypeError()
-        comparative_period_start_type_0 = isoparse(data).date()
-
-        return comparative_period_start_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(datetime.date | None | Unset, data)
-
-    comparative_period_start = _parse_comparative_period_start(
-      d.pop("comparative_period_start", UNSET)
-    )
-
-    def _parse_comparative_period_end(data: object) -> datetime.date | None | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, str):
-          raise TypeError()
-        comparative_period_end_type_0 = isoparse(data).date()
-
-        return comparative_period_end_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(datetime.date | None | Unset, data)
-
-    comparative_period_end = _parse_comparative_period_end(
-      d.pop("comparative_period_end", UNSET)
-    )
+        periods.append(periods_item)
 
     _rows = d.pop("rows", UNSET)
     rows: list[FactRowResponse] | Unset = UNSET
@@ -211,10 +155,7 @@ class StatementResponse:
       structure_id=structure_id,
       structure_name=structure_name,
       structure_type=structure_type,
-      period_start=period_start,
-      period_end=period_end,
-      comparative_period_start=comparative_period_start,
-      comparative_period_end=comparative_period_end,
+      periods=periods,
       rows=rows,
       validation=validation,
       unmapped_count=unmapped_count,
