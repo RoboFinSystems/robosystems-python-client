@@ -6,43 +6,31 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.association_response import AssociationResponse
-from ...models.create_association_request import CreateAssociationRequest
 from ...models.http_validation_error import HTTPValidationError
+from ...models.schedule_list_response import ScheduleListResponse
 from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
-  mapping_id: str,
-  *,
-  body: CreateAssociationRequest,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
-
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": "/v1/ledger/{graph_id}/mappings/{mapping_id}/associations".format(
+    "method": "get",
+    "url": "/v1/ledger/{graph_id}/schedules".format(
       graph_id=quote(str(graph_id), safe=""),
-      mapping_id=quote(str(mapping_id), safe=""),
     ),
   }
 
-  _kwargs["json"] = body.to_dict()
-
-  headers["Content-Type"] = "application/json"
-
-  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AssociationResponse | HTTPValidationError | None:
-  if response.status_code == 201:
-    response_201 = AssociationResponse.from_dict(response.json())
+) -> HTTPValidationError | ScheduleListResponse | None:
+  if response.status_code == 200:
+    response_200 = ScheduleListResponse.from_dict(response.json())
 
-    return response_201
+    return response_200
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
@@ -57,7 +45,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AssociationResponse | HTTPValidationError]:
+) -> Response[HTTPValidationError | ScheduleListResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -68,32 +56,26 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> Response[AssociationResponse | HTTPValidationError]:
-  """Create Mapping Association
+) -> Response[HTTPValidationError | ScheduleListResponse]:
+  """List Schedules
 
-   Add a mapping association (CoA element → reporting concept).
+   List all active schedules for this graph.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AssociationResponse | HTTPValidationError]
+      Response[HTTPValidationError | ScheduleListResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    mapping_id=mapping_id,
-    body=body,
   )
 
   response = client.get_httpx_client().request(
@@ -105,64 +87,52 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> AssociationResponse | HTTPValidationError | None:
-  """Create Mapping Association
+) -> HTTPValidationError | ScheduleListResponse | None:
+  """List Schedules
 
-   Add a mapping association (CoA element → reporting concept).
+   List all active schedules for this graph.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AssociationResponse | HTTPValidationError
+      HTTPValidationError | ScheduleListResponse
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    mapping_id=mapping_id,
     client=client,
-    body=body,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> Response[AssociationResponse | HTTPValidationError]:
-  """Create Mapping Association
+) -> Response[HTTPValidationError | ScheduleListResponse]:
+  """List Schedules
 
-   Add a mapping association (CoA element → reporting concept).
+   List all active schedules for this graph.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AssociationResponse | HTTPValidationError]
+      Response[HTTPValidationError | ScheduleListResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    mapping_id=mapping_id,
-    body=body,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -172,33 +142,27 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> AssociationResponse | HTTPValidationError | None:
-  """Create Mapping Association
+) -> HTTPValidationError | ScheduleListResponse | None:
+  """List Schedules
 
-   Add a mapping association (CoA element → reporting concept).
+   List all active schedules for this graph.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AssociationResponse | HTTPValidationError
+      HTTPValidationError | ScheduleListResponse
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      mapping_id=mapping_id,
       client=client,
-      body=body,
     )
   ).parsed

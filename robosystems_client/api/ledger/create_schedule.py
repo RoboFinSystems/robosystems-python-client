@@ -6,25 +6,23 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.association_response import AssociationResponse
-from ...models.create_association_request import CreateAssociationRequest
+from ...models.create_schedule_request import CreateScheduleRequest
 from ...models.http_validation_error import HTTPValidationError
+from ...models.schedule_created_response import ScheduleCreatedResponse
 from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
-  mapping_id: str,
   *,
-  body: CreateAssociationRequest,
+  body: CreateScheduleRequest,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/ledger/{graph_id}/mappings/{mapping_id}/associations".format(
+    "url": "/v1/ledger/{graph_id}/schedules".format(
       graph_id=quote(str(graph_id), safe=""),
-      mapping_id=quote(str(mapping_id), safe=""),
     ),
   }
 
@@ -38,9 +36,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AssociationResponse | HTTPValidationError | None:
+) -> HTTPValidationError | ScheduleCreatedResponse | None:
   if response.status_code == 201:
-    response_201 = AssociationResponse.from_dict(response.json())
+    response_201 = ScheduleCreatedResponse.from_dict(response.json())
 
     return response_201
 
@@ -57,7 +55,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AssociationResponse | HTTPValidationError]:
+) -> Response[HTTPValidationError | ScheduleCreatedResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -68,31 +66,28 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> Response[AssociationResponse | HTTPValidationError]:
-  """Create Mapping Association
+  body: CreateScheduleRequest,
+) -> Response[HTTPValidationError | ScheduleCreatedResponse]:
+  """Create Schedule
 
-   Add a mapping association (CoA element → reporting concept).
+   Create a schedule with pre-generated facts for each monthly period.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
+      body (CreateScheduleRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AssociationResponse | HTTPValidationError]
+      Response[HTTPValidationError | ScheduleCreatedResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    mapping_id=mapping_id,
     body=body,
   )
 
@@ -105,31 +100,28 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> AssociationResponse | HTTPValidationError | None:
-  """Create Mapping Association
+  body: CreateScheduleRequest,
+) -> HTTPValidationError | ScheduleCreatedResponse | None:
+  """Create Schedule
 
-   Add a mapping association (CoA element → reporting concept).
+   Create a schedule with pre-generated facts for each monthly period.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
+      body (CreateScheduleRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AssociationResponse | HTTPValidationError
+      HTTPValidationError | ScheduleCreatedResponse
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    mapping_id=mapping_id,
     client=client,
     body=body,
   ).parsed
@@ -137,31 +129,28 @@ def sync(
 
 async def asyncio_detailed(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> Response[AssociationResponse | HTTPValidationError]:
-  """Create Mapping Association
+  body: CreateScheduleRequest,
+) -> Response[HTTPValidationError | ScheduleCreatedResponse]:
+  """Create Schedule
 
-   Add a mapping association (CoA element → reporting concept).
+   Create a schedule with pre-generated facts for each monthly period.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
+      body (CreateScheduleRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AssociationResponse | HTTPValidationError]
+      Response[HTTPValidationError | ScheduleCreatedResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    mapping_id=mapping_id,
     body=body,
   )
 
@@ -172,32 +161,29 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> AssociationResponse | HTTPValidationError | None:
-  """Create Mapping Association
+  body: CreateScheduleRequest,
+) -> HTTPValidationError | ScheduleCreatedResponse | None:
+  """Create Schedule
 
-   Add a mapping association (CoA element → reporting concept).
+   Create a schedule with pre-generated facts for each monthly period.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
+      body (CreateScheduleRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AssociationResponse | HTTPValidationError
+      HTTPValidationError | ScheduleCreatedResponse
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      mapping_id=mapping_id,
       client=client,
       body=body,
     )

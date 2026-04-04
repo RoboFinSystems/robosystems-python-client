@@ -1,3 +1,4 @@
+import datetime
 from http import HTTPStatus
 from typing import Any
 from urllib.parse import quote
@@ -6,43 +7,45 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.association_response import AssociationResponse
-from ...models.create_association_request import CreateAssociationRequest
 from ...models.http_validation_error import HTTPValidationError
-from ...types import Response
+from ...models.period_close_status_response import PeriodCloseStatusResponse
+from ...types import UNSET, Response
 
 
 def _get_kwargs(
   graph_id: str,
-  mapping_id: str,
   *,
-  body: CreateAssociationRequest,
+  period_start: datetime.date,
+  period_end: datetime.date,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
+  params: dict[str, Any] = {}
+
+  json_period_start = period_start.isoformat()
+  params["period_start"] = json_period_start
+
+  json_period_end = period_end.isoformat()
+  params["period_end"] = json_period_end
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": "/v1/ledger/{graph_id}/mappings/{mapping_id}/associations".format(
+    "method": "get",
+    "url": "/v1/ledger/{graph_id}/schedules/close-status".format(
       graph_id=quote(str(graph_id), safe=""),
-      mapping_id=quote(str(mapping_id), safe=""),
     ),
+    "params": params,
   }
 
-  _kwargs["json"] = body.to_dict()
-
-  headers["Content-Type"] = "application/json"
-
-  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AssociationResponse | HTTPValidationError | None:
-  if response.status_code == 201:
-    response_201 = AssociationResponse.from_dict(response.json())
+) -> HTTPValidationError | PeriodCloseStatusResponse | None:
+  if response.status_code == 200:
+    response_200 = PeriodCloseStatusResponse.from_dict(response.json())
 
-    return response_201
+    return response_200
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
@@ -57,7 +60,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AssociationResponse | HTTPValidationError]:
+) -> Response[HTTPValidationError | PeriodCloseStatusResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -68,32 +71,32 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> Response[AssociationResponse | HTTPValidationError]:
-  """Create Mapping Association
+  period_start: datetime.date,
+  period_end: datetime.date,
+) -> Response[HTTPValidationError | PeriodCloseStatusResponse]:
+  """Get Period Close Status
 
-   Add a mapping association (CoA element → reporting concept).
+   Get close status for all schedules in a fiscal period.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
+      period_start (datetime.date): Fiscal period start
+      period_end (datetime.date): Fiscal period end
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AssociationResponse | HTTPValidationError]
+      Response[HTTPValidationError | PeriodCloseStatusResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    mapping_id=mapping_id,
-    body=body,
+    period_start=period_start,
+    period_end=period_end,
   )
 
   response = client.get_httpx_client().request(
@@ -105,64 +108,64 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> AssociationResponse | HTTPValidationError | None:
-  """Create Mapping Association
+  period_start: datetime.date,
+  period_end: datetime.date,
+) -> HTTPValidationError | PeriodCloseStatusResponse | None:
+  """Get Period Close Status
 
-   Add a mapping association (CoA element → reporting concept).
+   Get close status for all schedules in a fiscal period.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
+      period_start (datetime.date): Fiscal period start
+      period_end (datetime.date): Fiscal period end
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AssociationResponse | HTTPValidationError
+      HTTPValidationError | PeriodCloseStatusResponse
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    mapping_id=mapping_id,
     client=client,
-    body=body,
+    period_start=period_start,
+    period_end=period_end,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> Response[AssociationResponse | HTTPValidationError]:
-  """Create Mapping Association
+  period_start: datetime.date,
+  period_end: datetime.date,
+) -> Response[HTTPValidationError | PeriodCloseStatusResponse]:
+  """Get Period Close Status
 
-   Add a mapping association (CoA element → reporting concept).
+   Get close status for all schedules in a fiscal period.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
+      period_start (datetime.date): Fiscal period start
+      period_end (datetime.date): Fiscal period end
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AssociationResponse | HTTPValidationError]
+      Response[HTTPValidationError | PeriodCloseStatusResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    mapping_id=mapping_id,
-    body=body,
+    period_start=period_start,
+    period_end=period_end,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -172,33 +175,33 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  mapping_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateAssociationRequest,
-) -> AssociationResponse | HTTPValidationError | None:
-  """Create Mapping Association
+  period_start: datetime.date,
+  period_end: datetime.date,
+) -> HTTPValidationError | PeriodCloseStatusResponse | None:
+  """Get Period Close Status
 
-   Add a mapping association (CoA element → reporting concept).
+   Get close status for all schedules in a fiscal period.
 
   Args:
       graph_id (str):
-      mapping_id (str):
-      body (CreateAssociationRequest):
+      period_start (datetime.date): Fiscal period start
+      period_end (datetime.date): Fiscal period end
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AssociationResponse | HTTPValidationError
+      HTTPValidationError | PeriodCloseStatusResponse
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      mapping_id=mapping_id,
       client=client,
-      body=body,
+      period_start=period_start,
+      period_end=period_end,
     )
   ).parsed

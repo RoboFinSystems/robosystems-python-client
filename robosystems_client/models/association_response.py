@@ -8,11 +8,11 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="ElementAssociationResponse")
+T = TypeVar("T", bound="AssociationResponse")
 
 
 @_attrs_define
-class ElementAssociationResponse:
+class AssociationResponse:
   """
   Attributes:
       id (str):
@@ -238,7 +238,7 @@ class ElementAssociationResponse:
 
     approved_by = _parse_approved_by(d.pop("approved_by", UNSET))
 
-    element_association_response = cls(
+    association_response = cls(
       id=id,
       structure_id=structure_id,
       from_element_id=from_element_id,
@@ -255,8 +255,8 @@ class ElementAssociationResponse:
       approved_by=approved_by,
     )
 
-    element_association_response.additional_properties = d
-    return element_association_response
+    association_response.additional_properties = d
+    return association_response
 
   @property
   def additional_keys(self) -> list[str]:

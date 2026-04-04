@@ -28,6 +28,7 @@ from .agent_response_metadata_type_0 import AgentResponseMetadataType0
 from .agent_response_tokens_used_type_0 import AgentResponseTokensUsedType0
 from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
+from .association_response import AssociationResponse
 from .auth_response import AuthResponse
 from .auth_response_org_type_0 import AuthResponseOrgType0
 from .auth_response_user import AuthResponseUser
@@ -58,6 +59,7 @@ from .check_credit_balance_response_checkcreditbalance import (
 )
 from .checkout_response import CheckoutResponse
 from .checkout_status_response import CheckoutStatusResponse
+from .closing_entry_response import ClosingEntryResponse
 from .connection_options_response import ConnectionOptionsResponse
 from .connection_provider_info import ConnectionProviderInfo
 from .connection_provider_info_auth_type import ConnectionProviderInfoAuthType
@@ -74,6 +76,7 @@ from .create_association_request_association_type import (
 )
 from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
+from .create_closing_entry_request import CreateClosingEntryRequest
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
@@ -82,6 +85,7 @@ from .create_position_request import CreatePositionRequest
 from .create_publish_list_request import CreatePublishListRequest
 from .create_report_request import CreateReportRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
+from .create_schedule_request import CreateScheduleRequest
 from .create_security_request import CreateSecurityRequest
 from .create_security_request_terms import CreateSecurityRequestTerms
 from .create_structure_request import CreateStructureRequest
@@ -121,7 +125,6 @@ from .document_update_request import DocumentUpdateRequest
 from .document_upload_request import DocumentUploadRequest
 from .document_upload_response import DocumentUploadResponse
 from .download_quota import DownloadQuota
-from .element_association_response import ElementAssociationResponse
 from .element_list_response import ElementListResponse
 from .element_response import ElementResponse
 from .email_verification_request import EmailVerificationRequest
@@ -130,6 +133,7 @@ from .enhanced_credit_transaction_response_metadata import (
   EnhancedCreditTransactionResponseMetadata,
 )
 from .enhanced_file_status_layers import EnhancedFileStatusLayers
+from .entry_template_request import EntryTemplateRequest
 from .error_response import ErrorResponse
 from .execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
 from .execute_cypher_query_response_200_data_item import (
@@ -249,6 +253,9 @@ from .payment_method import PaymentMethod
 from .performance_insights import PerformanceInsights
 from .performance_insights_operation_stats import PerformanceInsightsOperationStats
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
+from .period_close_item_response import PeriodCloseItemResponse
+from .period_close_status_response import PeriodCloseStatusResponse
+from .period_spec import PeriodSpec
 from .portal_session_response import PortalSessionResponse
 from .portfolio_list_response import PortfolioListResponse
 from .portfolio_response import PortfolioResponse
@@ -273,6 +280,18 @@ from .resend_verification_email_response_resendverificationemail import (
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
+from .schedule_created_response import ScheduleCreatedResponse
+from .schedule_fact_response import ScheduleFactResponse
+from .schedule_facts_response import ScheduleFactsResponse
+from .schedule_list_response import ScheduleListResponse
+from .schedule_metadata_request import ScheduleMetadataRequest
+from .schedule_summary_response import ScheduleSummaryResponse
+from .schedule_summary_response_entry_template_type_0 import (
+  ScheduleSummaryResponseEntryTemplateType0,
+)
+from .schedule_summary_response_schedule_metadata_type_0 import (
+  ScheduleSummaryResponseScheduleMetadataType0,
+)
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
 from .schema_export_response_schema_definition_type_0 import (
@@ -389,6 +408,7 @@ __all__ = (
   "AgentResponseTokensUsedType0",
   "APIKeyInfo",
   "APIKeysResponse",
+  "AssociationResponse",
   "AuthResponse",
   "AuthResponseOrgType0",
   "AuthResponseUser",
@@ -413,6 +433,7 @@ __all__ = (
   "CheckCreditBalanceResponseCheckcreditbalance",
   "CheckoutResponse",
   "CheckoutStatusResponse",
+  "ClosingEntryResponse",
   "ConnectionOptionsResponse",
   "ConnectionProviderInfo",
   "ConnectionProviderInfoAuthType",
@@ -427,6 +448,7 @@ __all__ = (
   "CreateAssociationRequestAssociationType",
   "CreateCheckoutRequest",
   "CreateCheckoutRequestResourceConfig",
+  "CreateClosingEntryRequest",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateGraphRequest",
@@ -435,6 +457,7 @@ __all__ = (
   "CreatePublishListRequest",
   "CreateReportRequest",
   "CreateRepositorySubscriptionRequest",
+  "CreateScheduleRequest",
   "CreateSecurityRequest",
   "CreateSecurityRequestTerms",
   "CreateStructureRequest",
@@ -470,13 +493,13 @@ __all__ = (
   "DocumentUploadRequest",
   "DocumentUploadResponse",
   "DownloadQuota",
-  "ElementAssociationResponse",
   "ElementListResponse",
   "ElementResponse",
   "EmailVerificationRequest",
   "EnhancedCreditTransactionResponse",
   "EnhancedCreditTransactionResponseMetadata",
   "EnhancedFileStatusLayers",
+  "EntryTemplateRequest",
   "ErrorResponse",
   "ExecuteCypherQueryResponse200",
   "ExecuteCypherQueryResponse200DataItem",
@@ -580,6 +603,9 @@ __all__ = (
   "PerformanceInsights",
   "PerformanceInsightsOperationStats",
   "PerformanceInsightsSlowQueriesItem",
+  "PeriodCloseItemResponse",
+  "PeriodCloseStatusResponse",
+  "PeriodSpec",
   "PortalSessionResponse",
   "PortfolioListResponse",
   "PortfolioResponse",
@@ -602,6 +628,14 @@ __all__ = (
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
   "ResponseMode",
+  "ScheduleCreatedResponse",
+  "ScheduleFactResponse",
+  "ScheduleFactsResponse",
+  "ScheduleListResponse",
+  "ScheduleMetadataRequest",
+  "ScheduleSummaryResponse",
+  "ScheduleSummaryResponseEntryTemplateType0",
+  "ScheduleSummaryResponseScheduleMetadataType0",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",

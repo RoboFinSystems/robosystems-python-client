@@ -7,7 +7,7 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-  from ..models.element_association_response import ElementAssociationResponse
+  from ..models.association_response import AssociationResponse
 
 
 T = TypeVar("T", bound="MappingDetailResponse")
@@ -22,7 +22,7 @@ class MappingDetailResponse:
       name (str):
       structure_type (str):
       taxonomy_id (str):
-      associations (list[ElementAssociationResponse]):
+      associations (list[AssociationResponse]):
       total_associations (int):
   """
 
@@ -30,7 +30,7 @@ class MappingDetailResponse:
   name: str
   structure_type: str
   taxonomy_id: str
-  associations: list[ElementAssociationResponse]
+  associations: list[AssociationResponse]
   total_associations: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -67,7 +67,7 @@ class MappingDetailResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.element_association_response import ElementAssociationResponse
+    from ..models.association_response import AssociationResponse
 
     d = dict(src_dict)
     id = d.pop("id")
@@ -81,7 +81,7 @@ class MappingDetailResponse:
     associations = []
     _associations = d.pop("associations")
     for associations_item_data in _associations:
-      associations_item = ElementAssociationResponse.from_dict(associations_item_data)
+      associations_item = AssociationResponse.from_dict(associations_item_data)
 
       associations.append(associations_item)
 

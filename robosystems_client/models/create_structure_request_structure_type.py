@@ -9,6 +9,7 @@ class CreateStructureRequestStructureType(str, Enum):
   CUSTOM = "custom"
   EQUITY_STATEMENT = "equity_statement"
   INCOME_STATEMENT = "income_statement"
+  SCHEDULE = "schedule"
 
   def __str__(self) -> str:
     return str(self.value)

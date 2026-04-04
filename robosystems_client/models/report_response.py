@@ -11,6 +11,7 @@ from dateutil.parser import isoparse
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+  from ..models.period_spec import PeriodSpec
   from ..models.structure_summary import StructureSummary
 
 
@@ -31,6 +32,7 @@ class ReportResponse:
       created_at (datetime.datetime):
       period_start (datetime.date | None | Unset):
       period_end (datetime.date | None | Unset):
+      periods (list[PeriodSpec] | None | Unset):
       mapping_id (None | str | Unset):
       ai_generated (bool | Unset):  Default: False.
       last_generated (datetime.datetime | None | Unset):
@@ -50,6 +52,7 @@ class ReportResponse:
   created_at: datetime.datetime
   period_start: datetime.date | None | Unset = UNSET
   period_end: datetime.date | None | Unset = UNSET
+  periods: list[PeriodSpec] | None | Unset = UNSET
   mapping_id: None | str | Unset = UNSET
   ai_generated: bool | Unset = False
   last_generated: datetime.datetime | None | Unset = UNSET
@@ -90,6 +93,18 @@ class ReportResponse:
       period_end = self.period_end.isoformat()
     else:
       period_end = self.period_end
+
+    periods: list[dict[str, Any]] | None | Unset
+    if isinstance(self.periods, Unset):
+      periods = UNSET
+    elif isinstance(self.periods, list):
+      periods = []
+      for periods_type_0_item_data in self.periods:
+        periods_type_0_item = periods_type_0_item_data.to_dict()
+        periods.append(periods_type_0_item)
+
+    else:
+      periods = self.periods
 
     mapping_id: None | str | Unset
     if isinstance(self.mapping_id, Unset):
@@ -157,6 +172,8 @@ class ReportResponse:
       field_dict["period_start"] = period_start
     if period_end is not UNSET:
       field_dict["period_end"] = period_end
+    if periods is not UNSET:
+      field_dict["periods"] = periods
     if mapping_id is not UNSET:
       field_dict["mapping_id"] = mapping_id
     if ai_generated is not UNSET:
@@ -178,6 +195,7 @@ class ReportResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.period_spec import PeriodSpec
     from ..models.structure_summary import StructureSummary
 
     d = dict(src_dict)
@@ -228,6 +246,28 @@ class ReportResponse:
       return cast(datetime.date | None | Unset, data)
 
     period_end = _parse_period_end(d.pop("period_end", UNSET))
+
+    def _parse_periods(data: object) -> list[PeriodSpec] | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, list):
+          raise TypeError()
+        periods_type_0 = []
+        _periods_type_0 = data
+        for periods_type_0_item_data in _periods_type_0:
+          periods_type_0_item = PeriodSpec.from_dict(periods_type_0_item_data)
+
+          periods_type_0.append(periods_type_0_item)
+
+        return periods_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(list[PeriodSpec] | None | Unset, data)
+
+    periods = _parse_periods(d.pop("periods", UNSET))
 
     def _parse_mapping_id(data: object) -> None | str | Unset:
       if data is None:
@@ -320,6 +360,7 @@ class ReportResponse:
       created_at=created_at,
       period_start=period_start,
       period_end=period_end,
+      periods=periods,
       mapping_id=mapping_id,
       ai_generated=ai_generated,
       last_generated=last_generated,
