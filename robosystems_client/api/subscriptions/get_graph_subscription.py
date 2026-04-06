@@ -63,7 +63,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
-  """Get Subscription
+  """Get Graph and Shared Repository Subscription
 
    Get subscription details for a graph or shared repository.
 
@@ -101,7 +101,7 @@ def sync(
   *,
   client: AuthenticatedClient,
 ) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
-  """Get Subscription
+  """Get Graph and Shared Repository Subscription
 
    Get subscription details for a graph or shared repository.
 
@@ -134,7 +134,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
-  """Get Subscription
+  """Get Graph and Shared Repository Subscription
 
    Get subscription details for a graph or shared repository.
 
@@ -170,7 +170,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
 ) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
-  """Get Subscription
+  """Get Graph and Shared Repository Subscription
 
    Get subscription details for a graph or shared repository.
 

@@ -78,23 +78,29 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: UpgradeSubscriptionRequest,
 ) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
-  """Change Repository Plan
+  """Change Subscription Plan
 
-   Upgrade or downgrade a shared repository subscription plan.
+   Change the plan on an existing subscription.
 
-  Changes the plan on an existing subscription (e.g., SEC starter -> advanced).
-  Stripe handles proration automatically.
+  **For shared repositories** (sec, industry, etc.): Changes access tier (e.g., starter -> advanced).
+  Synchronous — takes effect immediately.
 
-  **Only for shared repositories** - graph subscriptions do not support plan changes
-  (cancel and re-subscribe instead).
+  **For user graphs** (kg*): Changes infrastructure tier (e.g., ladybug-standard -> ladybug-large).
+  Asynchronous — returns an `operation_id` for tracking the EBS volume migration via SSE.
+
+  Stripe handles proration automatically for both types.
 
   **Requirements:**
   - User must be an OWNER of their organization
   - Subscription must be active
-  - New plan must exist in the repository's manifest
+  - New plan must be valid for the resource type
+
+  **Downgrade restrictions (graphs only):**
+  - Subgraph count must fit the target tier's limit
+  - Storage usage must fit the target tier's limit
 
   Args:
-      graph_id (str): Repository name (e.g., 'sec')
+      graph_id (str): Graph ID or repository name
       body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
@@ -123,23 +129,29 @@ def sync(
   client: AuthenticatedClient,
   body: UpgradeSubscriptionRequest,
 ) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
-  """Change Repository Plan
+  """Change Subscription Plan
 
-   Upgrade or downgrade a shared repository subscription plan.
+   Change the plan on an existing subscription.
 
-  Changes the plan on an existing subscription (e.g., SEC starter -> advanced).
-  Stripe handles proration automatically.
+  **For shared repositories** (sec, industry, etc.): Changes access tier (e.g., starter -> advanced).
+  Synchronous — takes effect immediately.
 
-  **Only for shared repositories** - graph subscriptions do not support plan changes
-  (cancel and re-subscribe instead).
+  **For user graphs** (kg*): Changes infrastructure tier (e.g., ladybug-standard -> ladybug-large).
+  Asynchronous — returns an `operation_id` for tracking the EBS volume migration via SSE.
+
+  Stripe handles proration automatically for both types.
 
   **Requirements:**
   - User must be an OWNER of their organization
   - Subscription must be active
-  - New plan must exist in the repository's manifest
+  - New plan must be valid for the resource type
+
+  **Downgrade restrictions (graphs only):**
+  - Subgraph count must fit the target tier's limit
+  - Storage usage must fit the target tier's limit
 
   Args:
-      graph_id (str): Repository name (e.g., 'sec')
+      graph_id (str): Graph ID or repository name
       body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
@@ -163,23 +175,29 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: UpgradeSubscriptionRequest,
 ) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
-  """Change Repository Plan
+  """Change Subscription Plan
 
-   Upgrade or downgrade a shared repository subscription plan.
+   Change the plan on an existing subscription.
 
-  Changes the plan on an existing subscription (e.g., SEC starter -> advanced).
-  Stripe handles proration automatically.
+  **For shared repositories** (sec, industry, etc.): Changes access tier (e.g., starter -> advanced).
+  Synchronous — takes effect immediately.
 
-  **Only for shared repositories** - graph subscriptions do not support plan changes
-  (cancel and re-subscribe instead).
+  **For user graphs** (kg*): Changes infrastructure tier (e.g., ladybug-standard -> ladybug-large).
+  Asynchronous — returns an `operation_id` for tracking the EBS volume migration via SSE.
+
+  Stripe handles proration automatically for both types.
 
   **Requirements:**
   - User must be an OWNER of their organization
   - Subscription must be active
-  - New plan must exist in the repository's manifest
+  - New plan must be valid for the resource type
+
+  **Downgrade restrictions (graphs only):**
+  - Subgraph count must fit the target tier's limit
+  - Storage usage must fit the target tier's limit
 
   Args:
-      graph_id (str): Repository name (e.g., 'sec')
+      graph_id (str): Graph ID or repository name
       body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
@@ -206,23 +224,29 @@ async def asyncio(
   client: AuthenticatedClient,
   body: UpgradeSubscriptionRequest,
 ) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
-  """Change Repository Plan
+  """Change Subscription Plan
 
-   Upgrade or downgrade a shared repository subscription plan.
+   Change the plan on an existing subscription.
 
-  Changes the plan on an existing subscription (e.g., SEC starter -> advanced).
-  Stripe handles proration automatically.
+  **For shared repositories** (sec, industry, etc.): Changes access tier (e.g., starter -> advanced).
+  Synchronous — takes effect immediately.
 
-  **Only for shared repositories** - graph subscriptions do not support plan changes
-  (cancel and re-subscribe instead).
+  **For user graphs** (kg*): Changes infrastructure tier (e.g., ladybug-standard -> ladybug-large).
+  Asynchronous — returns an `operation_id` for tracking the EBS volume migration via SSE.
+
+  Stripe handles proration automatically for both types.
 
   **Requirements:**
   - User must be an OWNER of their organization
   - Subscription must be active
-  - New plan must exist in the repository's manifest
+  - New plan must be valid for the resource type
+
+  **Downgrade restrictions (graphs only):**
+  - Subgraph count must fit the target tier's limit
+  - Storage usage must fit the target tier's limit
 
   Args:
-      graph_id (str): Repository name (e.g., 'sec')
+      graph_id (str): Graph ID or repository name
       body (UpgradeSubscriptionRequest): Request to upgrade a subscription.
 
   Raises:
