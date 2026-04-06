@@ -31,6 +31,7 @@ class GraphSubscriptionResponse:
       canceled_at (None | str | Unset): Cancellation date
       ends_at (None | str | Unset): Subscription end date (when access will be revoked, especially relevant for
           cancelled subscriptions)
+      operation_id (None | str | Unset): Operation ID for tracking async tier changes via SSE
   """
 
   id: str
@@ -47,6 +48,7 @@ class GraphSubscriptionResponse:
   started_at: None | str | Unset = UNSET
   canceled_at: None | str | Unset = UNSET
   ends_at: None | str | Unset = UNSET
+  operation_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -98,6 +100,12 @@ class GraphSubscriptionResponse:
     else:
       ends_at = self.ends_at
 
+    operation_id: None | str | Unset
+    if isinstance(self.operation_id, Unset):
+      operation_id = UNSET
+    else:
+      operation_id = self.operation_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -123,6 +131,8 @@ class GraphSubscriptionResponse:
       field_dict["canceled_at"] = canceled_at
     if ends_at is not UNSET:
       field_dict["ends_at"] = ends_at
+    if operation_id is not UNSET:
+      field_dict["operation_id"] = operation_id
 
     return field_dict
 
@@ -194,6 +204,15 @@ class GraphSubscriptionResponse:
 
     ends_at = _parse_ends_at(d.pop("ends_at", UNSET))
 
+    def _parse_operation_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    operation_id = _parse_operation_id(d.pop("operation_id", UNSET))
+
     graph_subscription_response = cls(
       id=id,
       resource_type=resource_type,
@@ -209,6 +228,7 @@ class GraphSubscriptionResponse:
       started_at=started_at,
       canceled_at=canceled_at,
       ends_at=ends_at,
+      operation_id=operation_id,
     )
 
     graph_subscription_response.additional_properties = d
