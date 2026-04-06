@@ -30,7 +30,6 @@ class GraphSubscriptionTier:
           priority_support (bool): Whether priority support is included
           api_rate_multiplier (float): API rate multiplier
           backend (str): Database backend identifier
-          max_queries_per_hour (int | None | Unset): Maximum queries per hour
           max_subgraphs (int | Unset): Maximum subgraphs supported Default: 0.
           instance_type (None | str | Unset): Instance type
   """
@@ -46,7 +45,6 @@ class GraphSubscriptionTier:
   priority_support: bool
   api_rate_multiplier: float
   backend: str
-  max_queries_per_hour: int | None | Unset = UNSET
   max_subgraphs: int | Unset = 0
   instance_type: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -74,12 +72,6 @@ class GraphSubscriptionTier:
 
     backend = self.backend
 
-    max_queries_per_hour: int | None | Unset
-    if isinstance(self.max_queries_per_hour, Unset):
-      max_queries_per_hour = UNSET
-    else:
-      max_queries_per_hour = self.max_queries_per_hour
-
     max_subgraphs = self.max_subgraphs
 
     instance_type: None | str | Unset
@@ -105,8 +97,6 @@ class GraphSubscriptionTier:
         "backend": backend,
       }
     )
-    if max_queries_per_hour is not UNSET:
-      field_dict["max_queries_per_hour"] = max_queries_per_hour
     if max_subgraphs is not UNSET:
       field_dict["max_subgraphs"] = max_subgraphs
     if instance_type is not UNSET:
@@ -139,17 +129,6 @@ class GraphSubscriptionTier:
 
     backend = d.pop("backend")
 
-    def _parse_max_queries_per_hour(data: object) -> int | None | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(int | None | Unset, data)
-
-    max_queries_per_hour = _parse_max_queries_per_hour(
-      d.pop("max_queries_per_hour", UNSET)
-    )
-
     max_subgraphs = d.pop("max_subgraphs", UNSET)
 
     def _parse_instance_type(data: object) -> None | str | Unset:
@@ -173,7 +152,6 @@ class GraphSubscriptionTier:
       priority_support=priority_support,
       api_rate_multiplier=api_rate_multiplier,
       backend=backend,
-      max_queries_per_hour=max_queries_per_hour,
       max_subgraphs=max_subgraphs,
       instance_type=instance_type,
     )
