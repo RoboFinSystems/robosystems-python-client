@@ -82,9 +82,8 @@ def sync_detailed(
   - **Backup Limits**: Frequency, retention, size limits
   - **Rate Limits**: Requests per minute/hour based on tier
   - **Credit Limits**: AI operation credits (if applicable)
-  - **Content Limits**: Node, relationship, and row limits (if applicable)
-
-  This unified endpoint provides all limits in one place for easier client integration.
+  - **Content Limits**: Per-operation materialization limits (if applicable)
+  - **Instance Usage**: Aggregate storage across parent + subgraphs (user graphs only)
 
   **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
 
@@ -126,9 +125,8 @@ def sync(
   - **Backup Limits**: Frequency, retention, size limits
   - **Rate Limits**: Requests per minute/hour based on tier
   - **Credit Limits**: AI operation credits (if applicable)
-  - **Content Limits**: Node, relationship, and row limits (if applicable)
-
-  This unified endpoint provides all limits in one place for easier client integration.
+  - **Content Limits**: Per-operation materialization limits (if applicable)
+  - **Instance Usage**: Aggregate storage across parent + subgraphs (user graphs only)
 
   **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
 
@@ -165,9 +163,8 @@ async def asyncio_detailed(
   - **Backup Limits**: Frequency, retention, size limits
   - **Rate Limits**: Requests per minute/hour based on tier
   - **Credit Limits**: AI operation credits (if applicable)
-  - **Content Limits**: Node, relationship, and row limits (if applicable)
-
-  This unified endpoint provides all limits in one place for easier client integration.
+  - **Content Limits**: Per-operation materialization limits (if applicable)
+  - **Instance Usage**: Aggregate storage across parent + subgraphs (user graphs only)
 
   **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
 
@@ -207,9 +204,8 @@ async def asyncio(
   - **Backup Limits**: Frequency, retention, size limits
   - **Rate Limits**: Requests per minute/hour based on tier
   - **Credit Limits**: AI operation credits (if applicable)
-  - **Content Limits**: Node, relationship, and row limits (if applicable)
-
-  This unified endpoint provides all limits in one place for easier client integration.
+  - **Content Limits**: Per-operation materialization limits (if applicable)
+  - **Instance Usage**: Aggregate storage across parent + subgraphs (user graphs only)
 
   **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
 

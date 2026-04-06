@@ -27,7 +27,7 @@ class GraphInfo:
       is_subgraph (bool | Unset): Whether this is a subgraph (vs a main graph) Default: False.
       parent_graph_id (None | str | Unset): Parent graph ID if this is a subgraph
       graph_type (str | Unset): Type of graph: generic, entity, or repository Default: 'entity'.
-      status (str | Unset): Graph lifecycle status: queued, provisioning, active, suspended Default: 'active'.
+      status (str | Unset): Graph lifecycle status: active, suspended, deprovisioned Default: 'active'.
   """
 
   graph_id: str

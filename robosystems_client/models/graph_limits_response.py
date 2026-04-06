@@ -13,6 +13,7 @@ if TYPE_CHECKING:
   from ..models.content_limits import ContentLimits
   from ..models.copy_operation_limits import CopyOperationLimits
   from ..models.credit_limits import CreditLimits
+  from ..models.instance_usage import InstanceUsage
   from ..models.query_limits import QueryLimits
   from ..models.rate_limits import RateLimits
   from ..models.storage_limits import StorageLimits
@@ -36,7 +37,8 @@ class GraphLimitsResponse:
       backups (BackupLimits): Backup operation limits.
       rate_limits (RateLimits): API rate limits.
       credits_ (CreditLimits | None | Unset): AI credit limits (if applicable)
-      content (ContentLimits | None | Unset): Graph content limits (if applicable)
+      content (ContentLimits | None | Unset): Per-operation materialization limits (if applicable)
+      instance (InstanceUsage | None | Unset): Aggregate instance storage usage (user graphs only)
   """
 
   graph_id: str
@@ -50,11 +52,13 @@ class GraphLimitsResponse:
   rate_limits: RateLimits
   credits_: CreditLimits | None | Unset = UNSET
   content: ContentLimits | None | Unset = UNSET
+  instance: InstanceUsage | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     from ..models.content_limits import ContentLimits
     from ..models.credit_limits import CreditLimits
+    from ..models.instance_usage import InstanceUsage
 
     graph_id = self.graph_id
 
@@ -90,6 +94,14 @@ class GraphLimitsResponse:
     else:
       content = self.content
 
+    instance: dict[str, Any] | None | Unset
+    if isinstance(self.instance, Unset):
+      instance = UNSET
+    elif isinstance(self.instance, InstanceUsage):
+      instance = self.instance.to_dict()
+    else:
+      instance = self.instance
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -109,6 +121,8 @@ class GraphLimitsResponse:
       field_dict["credits"] = credits_
     if content is not UNSET:
       field_dict["content"] = content
+    if instance is not UNSET:
+      field_dict["instance"] = instance
 
     return field_dict
 
@@ -118,6 +132,7 @@ class GraphLimitsResponse:
     from ..models.content_limits import ContentLimits
     from ..models.copy_operation_limits import CopyOperationLimits
     from ..models.credit_limits import CreditLimits
+    from ..models.instance_usage import InstanceUsage
     from ..models.query_limits import QueryLimits
     from ..models.rate_limits import RateLimits
     from ..models.storage_limits import StorageLimits
@@ -175,6 +190,23 @@ class GraphLimitsResponse:
 
     content = _parse_content(d.pop("content", UNSET))
 
+    def _parse_instance(data: object) -> InstanceUsage | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        instance_type_0 = InstanceUsage.from_dict(data)
+
+        return instance_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(InstanceUsage | None | Unset, data)
+
+    instance = _parse_instance(d.pop("instance", UNSET))
+
     graph_limits_response = cls(
       graph_id=graph_id,
       subscription_tier=subscription_tier,
@@ -187,6 +219,7 @@ class GraphLimitsResponse:
       rate_limits=rate_limits,
       credits_=credits_,
       content=content,
+      instance=instance,
     )
 
     graph_limits_response.additional_properties = d
