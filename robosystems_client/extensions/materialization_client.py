@@ -27,6 +27,7 @@ class MaterializationOptions:
   ignore_errors: bool = True
   rebuild: bool = False
   force: bool = False
+  materialize_embeddings: bool = False
   on_progress: Optional[Callable[[str], None]] = None
   timeout: Optional[int] = 600  # 10 minute default timeout
 
@@ -112,6 +113,7 @@ class MaterializationClient:
         ignore_errors=options.ignore_errors,
         rebuild=options.rebuild,
         force=options.force,
+        materialize_embeddings=options.materialize_embeddings,
       )
 
       from ..client import AuthenticatedClient
