@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
+
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="ClosingEntryResponse")
 
@@ -22,6 +24,7 @@ class ClosingEntryResponse:
       debit_element_id (str):
       credit_element_id (str):
       amount (float):
+      reversal (ClosingEntryResponse | None | Unset):
   """
 
   entry_id: str
@@ -31,6 +34,7 @@ class ClosingEntryResponse:
   debit_element_id: str
   credit_element_id: str
   amount: float
+  reversal: ClosingEntryResponse | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -48,6 +52,14 @@ class ClosingEntryResponse:
 
     amount = self.amount
 
+    reversal: dict[str, Any] | None | Unset
+    if isinstance(self.reversal, Unset):
+      reversal = UNSET
+    elif isinstance(self.reversal, ClosingEntryResponse):
+      reversal = self.reversal.to_dict()
+    else:
+      reversal = self.reversal
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -61,6 +73,8 @@ class ClosingEntryResponse:
         "amount": amount,
       }
     )
+    if reversal is not UNSET:
+      field_dict["reversal"] = reversal
 
     return field_dict
 
@@ -81,6 +95,23 @@ class ClosingEntryResponse:
 
     amount = d.pop("amount")
 
+    def _parse_reversal(data: object) -> ClosingEntryResponse | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        reversal_type_0 = ClosingEntryResponse.from_dict(data)
+
+        return reversal_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(ClosingEntryResponse | None | Unset, data)
+
+    reversal = _parse_reversal(d.pop("reversal", UNSET))
+
     closing_entry_response = cls(
       entry_id=entry_id,
       status=status,
@@ -89,6 +120,7 @@ class ClosingEntryResponse:
       debit_element_id=debit_element_id,
       credit_element_id=credit_element_id,
       amount=amount,
+      reversal=reversal,
     )
 
     closing_entry_response.additional_properties = d

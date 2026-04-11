@@ -126,7 +126,7 @@ class TestParseDateTimeColumns:
     df = parse_datetime_columns(df, infer=True)
 
     assert pd.api.types.is_datetime64_any_dtype(df["timestamp"])
-    assert df["not_a_date"].dtype == "object"
+    assert not pd.api.types.is_datetime64_any_dtype(df["not_a_date"])
 
 
 class TestStreamToDataFrame:

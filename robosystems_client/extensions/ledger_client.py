@@ -10,12 +10,18 @@ from http import HTTPStatus
 from typing import Any
 
 from ..api.ledger.auto_map_elements import sync_detailed as auto_map_elements
+from ..api.ledger.create_closing_entry import sync_detailed as create_closing_entry
 from ..api.ledger.create_mapping_association import (
   sync_detailed as create_mapping_association,
 )
+from ..api.ledger.create_schedule import sync_detailed as create_schedule
 from ..api.ledger.create_structure import sync_detailed as create_structure
 from ..api.ledger.delete_mapping_association import (
   sync_detailed as delete_mapping_association,
+)
+from ..api.ledger.get_account_rollups import sync_detailed as get_account_rollups
+from ..api.ledger.get_closing_book_structures import (
+  sync_detailed as get_closing_book_structures,
 )
 from ..api.ledger.get_ledger_account_tree import (
   sync_detailed as get_ledger_account_tree,
@@ -35,9 +41,13 @@ from ..api.ledger.get_mapping_coverage import (
   sync_detailed as get_mapping_coverage,
 )
 from ..api.ledger.get_mapping_detail import sync_detailed as get_mapping_detail
+from ..api.ledger.get_period_close_status import (
+  sync_detailed as get_period_close_status,
+)
 from ..api.ledger.get_reporting_taxonomy import (
   sync_detailed as get_reporting_taxonomy,
 )
+from ..api.ledger.get_schedule_facts import sync_detailed as get_schedule_facts
 from ..api.ledger.list_elements import sync_detailed as list_elements
 from ..api.ledger.list_ledger_accounts import (
   sync_detailed as list_ledger_accounts,
@@ -46,6 +56,7 @@ from ..api.ledger.list_ledger_transactions import (
   sync_detailed as list_ledger_transactions,
 )
 from ..api.ledger.list_mappings import sync_detailed as list_mappings
+from ..api.ledger.list_schedules import sync_detailed as list_schedules
 from ..api.ledger.list_structures import sync_detailed as list_structures
 from ..client import AuthenticatedClient
 
@@ -280,11 +291,9 @@ class LedgerClient:
     confidence: float = 1.0,
   ) -> None:
     """Create a manual mapping association (CoA element → GAAP element)."""
-    from ..models.create_mapping_association_request import (
-      CreateMappingAssociationRequest,
-    )
+    from ..models.create_association_request import CreateAssociationRequest
 
-    body = CreateMappingAssociationRequest(
+    body = CreateAssociationRequest(
       from_element_id=from_element_id,
       to_element_id=to_element_id,
       confidence=confidence,
@@ -314,3 +323,165 @@ class LedgerClient:
     if response.status_code != HTTPStatus.ACCEPTED:
       raise RuntimeError(f"Auto-map failed: {response.status_code}")
     return response.parsed or {}
+
+  # ── Schedules ──────────────────────────────────────────────────────
+
+  def create_schedule(
+    self,
+    graph_id: str,
+    *,
+    name: str,
+    element_ids: list[str],
+    period_start: str,
+    period_end: str,
+    monthly_amount: int,
+    debit_element_id: str,
+    credit_element_id: str,
+    entry_type: str = "closing",
+    memo_template: str = "",
+    taxonomy_id: str | None = None,
+    method: str | None = None,
+    original_amount: int | None = None,
+    residual_value: int | None = None,
+    useful_life_months: int | None = None,
+    asset_element_id: str | None = None,
+    auto_reverse: bool = False,
+  ) -> Any:
+    """Create a schedule with pre-generated monthly facts."""
+    body: dict[str, Any] = {
+      "name": name,
+      "element_ids": element_ids,
+      "period_start": period_start,
+      "period_end": period_end,
+      "monthly_amount": monthly_amount,
+      "entry_template": {
+        "debit_element_id": debit_element_id,
+        "credit_element_id": credit_element_id,
+        "entry_type": entry_type,
+        "memo_template": memo_template,
+        "auto_reverse": auto_reverse,
+      },
+    }
+    if taxonomy_id:
+      body["taxonomy_id"] = taxonomy_id
+    schedule_metadata: dict[str, Any] = {}
+    if method:
+      schedule_metadata["method"] = method
+    if original_amount is not None:
+      schedule_metadata["original_amount"] = original_amount
+    if residual_value is not None:
+      schedule_metadata["residual_value"] = residual_value
+    if useful_life_months is not None:
+      schedule_metadata["useful_life_months"] = useful_life_months
+    if asset_element_id:
+      schedule_metadata["asset_element_id"] = asset_element_id
+    if schedule_metadata:
+      body["schedule_metadata"] = schedule_metadata
+
+    response = create_schedule(graph_id=graph_id, body=body, client=self._get_client())
+    if response.status_code != HTTPStatus.CREATED:
+      raise RuntimeError(f"Create schedule failed: {response.status_code}")
+    return response.parsed
+
+  def list_schedules(self, graph_id: str) -> Any:
+    """List all active schedule structures."""
+    response = list_schedules(graph_id=graph_id, client=self._get_client())
+    if response.status_code != HTTPStatus.OK:
+      raise RuntimeError(f"List schedules failed: {response.status_code}")
+    return response.parsed
+
+  def get_schedule_facts(
+    self,
+    graph_id: str,
+    structure_id: str,
+    period_start: str | None = None,
+    period_end: str | None = None,
+  ) -> Any:
+    """Get fact values for a schedule, optionally filtered by period."""
+    response = get_schedule_facts(
+      graph_id=graph_id,
+      structure_id=structure_id,
+      period_start=period_start,
+      period_end=period_end,
+      client=self._get_client(),
+    )
+    if response.status_code != HTTPStatus.OK:
+      raise RuntimeError(f"Get schedule facts failed: {response.status_code}")
+    return response.parsed
+
+  def get_period_close_status(
+    self,
+    graph_id: str,
+    period_start: str,
+    period_end: str,
+  ) -> Any:
+    """Get close status for all schedules in a fiscal period."""
+    response = get_period_close_status(
+      graph_id=graph_id,
+      period_start=period_start,
+      period_end=period_end,
+      client=self._get_client(),
+    )
+    if response.status_code != HTTPStatus.OK:
+      raise RuntimeError(f"Get period close status failed: {response.status_code}")
+    return response.parsed
+
+  def create_closing_entry(
+    self,
+    graph_id: str,
+    structure_id: str,
+    posting_date: str,
+    period_start: str,
+    period_end: str,
+    memo: str | None = None,
+  ) -> Any:
+    """Create a draft closing entry from a schedule's facts for a period."""
+    body: dict[str, Any] = {
+      "posting_date": posting_date,
+      "period_start": period_start,
+      "period_end": period_end,
+    }
+    if memo:
+      body["memo"] = memo
+
+    response = create_closing_entry(
+      graph_id=graph_id,
+      structure_id=structure_id,
+      body=body,
+      client=self._get_client(),
+    )
+    if response.status_code != HTTPStatus.CREATED:
+      raise RuntimeError(f"Create closing entry failed: {response.status_code}")
+    return response.parsed
+
+  # ── Closing Book ─────────────────────────────────────────────────────
+
+  def get_closing_book_structures(self, graph_id: str) -> Any:
+    """Get all closing book structure categories for the sidebar."""
+    response = get_closing_book_structures(graph_id=graph_id, client=self._get_client())
+    if response.status_code != HTTPStatus.OK:
+      raise RuntimeError(f"Get closing book structures failed: {response.status_code}")
+    return response.parsed
+
+  def get_account_rollups(
+    self,
+    graph_id: str,
+    mapping_id: str | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+  ) -> Any:
+    """Get account rollups — CoA accounts grouped by reporting element with balances.
+
+    Shows how company-specific accounts roll up to standardized reporting lines.
+    Auto-discovers the mapping structure if mapping_id is not provided.
+    """
+    response = get_account_rollups(
+      graph_id=graph_id,
+      mapping_id=mapping_id,
+      start_date=start_date,
+      end_date=end_date,
+      client=self._get_client(),
+    )
+    if response.status_code != HTTPStatus.OK:
+      raise RuntimeError(f"Get account rollups failed: {response.status_code}")
+    return response.parsed

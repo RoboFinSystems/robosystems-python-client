@@ -105,7 +105,7 @@ def parse_datetime_columns(
   elif infer:
     # Infer datetime columns
     for col in df.columns:
-      if df[col].dtype == "object":
+      if pd.api.types.is_string_dtype(df[col]):
         # Check if column contains date-like strings
         sample = df[col].dropna().head(10)
         if len(sample) > 0:

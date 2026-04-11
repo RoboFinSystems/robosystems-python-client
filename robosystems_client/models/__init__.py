@@ -3,6 +3,9 @@
 from .account_info import AccountInfo
 from .account_list_response import AccountListResponse
 from .account_response import AccountResponse
+from .account_rollup_group import AccountRollupGroup
+from .account_rollup_row import AccountRollupRow
+from .account_rollups_response import AccountRollupsResponse
 from .account_tree_node import AccountTreeNode
 from .account_tree_response import AccountTreeResponse
 from .add_members_request import AddMembersRequest
@@ -56,6 +59,9 @@ from .cancel_operation_response_canceloperation import (
 )
 from .checkout_response import CheckoutResponse
 from .checkout_status_response import CheckoutStatusResponse
+from .closing_book_category import ClosingBookCategory
+from .closing_book_item import ClosingBookItem
+from .closing_book_structures_response import ClosingBookStructuresResponse
 from .closing_entry_response import ClosingEntryResponse
 from .connection_options_response import ConnectionOptionsResponse
 from .connection_provider_info import ConnectionProviderInfo
@@ -382,6 +388,9 @@ __all__ = (
   "AccountInfo",
   "AccountListResponse",
   "AccountResponse",
+  "AccountRollupGroup",
+  "AccountRollupRow",
+  "AccountRollupsResponse",
   "AccountTreeNode",
   "AccountTreeResponse",
   "AddMembersRequest",
@@ -427,6 +436,9 @@ __all__ = (
   "CancelOperationResponseCanceloperation",
   "CheckoutResponse",
   "CheckoutStatusResponse",
+  "ClosingBookCategory",
+  "ClosingBookItem",
+  "ClosingBookStructuresResponse",
   "ClosingEntryResponse",
   "ConnectionOptionsResponse",
   "ConnectionProviderInfo",
