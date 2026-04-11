@@ -20,6 +20,7 @@ class SearchHit:
       score (float):
       source_type (str):
       snippet (str):
+      parent_document_id (None | str | Unset):
       entity_ticker (None | str | Unset):
       entity_name (None | str | Unset):
       section_label (None | str | Unset):
@@ -40,6 +41,7 @@ class SearchHit:
   score: float
   source_type: str
   snippet: str
+  parent_document_id: None | str | Unset = UNSET
   entity_ticker: None | str | Unset = UNSET
   entity_name: None | str | Unset = UNSET
   section_label: None | str | Unset = UNSET
@@ -64,6 +66,12 @@ class SearchHit:
     source_type = self.source_type
 
     snippet = self.snippet
+
+    parent_document_id: None | str | Unset
+    if isinstance(self.parent_document_id, Unset):
+      parent_document_id = UNSET
+    else:
+      parent_document_id = self.parent_document_id
 
     entity_ticker: None | str | Unset
     if isinstance(self.entity_ticker, Unset):
@@ -161,6 +169,8 @@ class SearchHit:
         "snippet": snippet,
       }
     )
+    if parent_document_id is not UNSET:
+      field_dict["parent_document_id"] = parent_document_id
     if entity_ticker is not UNSET:
       field_dict["entity_ticker"] = entity_ticker
     if entity_name is not UNSET:
@@ -202,6 +212,15 @@ class SearchHit:
     source_type = d.pop("source_type")
 
     snippet = d.pop("snippet")
+
+    def _parse_parent_document_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    parent_document_id = _parse_parent_document_id(d.pop("parent_document_id", UNSET))
 
     def _parse_entity_ticker(data: object) -> None | str | Unset:
       if data is None:
@@ -343,6 +362,7 @@ class SearchHit:
       score=score,
       source_type=source_type,
       snippet=snippet,
+      parent_document_id=parent_document_id,
       entity_ticker=entity_ticker,
       entity_name=entity_name,
       section_label=section_label,
