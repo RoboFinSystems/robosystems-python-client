@@ -78,14 +78,9 @@ def sync_detailed(
 
    Close a fiscal period — the final commit action.
 
-  In a single transaction:
-  1. Validates closeable gates
-  2. Transitions all draft entries in the period to 'posted'
-  3. Verifies BS equation balances
-  4. Transitions the FiscalPeriod to 'closed'
-  5. Advances closed_through; auto-advances close_target if reached
-
-  This is synchronous in v1. With QB writeback (future) it will become async.
+  All mechanics live in `PeriodCloseService.close()`. This endpoint just
+  resolves auth + QB sync state, invokes the service, and translates
+  domain exceptions into HTTP responses.
 
   Args:
       graph_id (str):
@@ -124,14 +119,9 @@ def sync(
 
    Close a fiscal period — the final commit action.
 
-  In a single transaction:
-  1. Validates closeable gates
-  2. Transitions all draft entries in the period to 'posted'
-  3. Verifies BS equation balances
-  4. Transitions the FiscalPeriod to 'closed'
-  5. Advances closed_through; auto-advances close_target if reached
-
-  This is synchronous in v1. With QB writeback (future) it will become async.
+  All mechanics live in `PeriodCloseService.close()`. This endpoint just
+  resolves auth + QB sync state, invokes the service, and translates
+  domain exceptions into HTTP responses.
 
   Args:
       graph_id (str):
@@ -165,14 +155,9 @@ async def asyncio_detailed(
 
    Close a fiscal period — the final commit action.
 
-  In a single transaction:
-  1. Validates closeable gates
-  2. Transitions all draft entries in the period to 'posted'
-  3. Verifies BS equation balances
-  4. Transitions the FiscalPeriod to 'closed'
-  5. Advances closed_through; auto-advances close_target if reached
-
-  This is synchronous in v1. With QB writeback (future) it will become async.
+  All mechanics live in `PeriodCloseService.close()`. This endpoint just
+  resolves auth + QB sync state, invokes the service, and translates
+  domain exceptions into HTTP responses.
 
   Args:
       graph_id (str):
@@ -209,14 +194,9 @@ async def asyncio(
 
    Close a fiscal period — the final commit action.
 
-  In a single transaction:
-  1. Validates closeable gates
-  2. Transitions all draft entries in the period to 'posted'
-  3. Verifies BS equation balances
-  4. Transitions the FiscalPeriod to 'closed'
-  5. Advances closed_through; auto-advances close_target if reached
-
-  This is synchronous in v1. With QB writeback (future) it will become async.
+  All mechanics live in `PeriodCloseService.close()`. This endpoint just
+  resolves auth + QB sync state, invokes the service, and translates
+  domain exceptions into HTTP responses.
 
   Args:
       graph_id (str):
