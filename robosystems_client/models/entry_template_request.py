@@ -6,6 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.entry_template_request_entry_type import EntryTemplateRequestEntryType
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="EntryTemplateRequest")
@@ -17,14 +18,17 @@ class EntryTemplateRequest:
   Attributes:
       debit_element_id (str): Element to debit (e.g., Depreciation Expense)
       credit_element_id (str): Element to credit (e.g., Accumulated Depreciation)
-      entry_type (str | Unset): Entry type for generated entries Default: 'closing'.
+      entry_type (EntryTemplateRequestEntryType | Unset): Entry type for generated entries Default:
+          EntryTemplateRequestEntryType.CLOSING.
       memo_template (str | Unset): Memo template ({structure_name} is replaced) Default: ''.
       auto_reverse (bool | Unset): Auto-generate a reversing entry on the first day of the next period Default: False.
   """
 
   debit_element_id: str
   credit_element_id: str
-  entry_type: str | Unset = "closing"
+  entry_type: EntryTemplateRequestEntryType | Unset = (
+    EntryTemplateRequestEntryType.CLOSING
+  )
   memo_template: str | Unset = ""
   auto_reverse: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -34,7 +38,9 @@ class EntryTemplateRequest:
 
     credit_element_id = self.credit_element_id
 
-    entry_type = self.entry_type
+    entry_type: str | Unset = UNSET
+    if not isinstance(self.entry_type, Unset):
+      entry_type = self.entry_type.value
 
     memo_template = self.memo_template
 
@@ -64,7 +70,12 @@ class EntryTemplateRequest:
 
     credit_element_id = d.pop("credit_element_id")
 
-    entry_type = d.pop("entry_type", UNSET)
+    _entry_type = d.pop("entry_type", UNSET)
+    entry_type: EntryTemplateRequestEntryType | Unset
+    if isinstance(_entry_type, Unset):
+      entry_type = UNSET
+    else:
+      entry_type = EntryTemplateRequestEntryType(_entry_type)
 
     memo_template = d.pop("memo_template", UNSET)
 
