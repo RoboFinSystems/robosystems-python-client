@@ -6,22 +6,18 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.fiscal_calendar_response import FiscalCalendarResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.statement_response import StatementResponse
 from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
 ) -> dict[str, Any]:
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": "/v1/ledger/{graph_id}/reports/{report_id}/statements/{structure_type}".format(
+    "url": "/v1/ledger/{graph_id}/fiscal-calendar".format(
       graph_id=quote(str(graph_id), safe=""),
-      report_id=quote(str(report_id), safe=""),
-      structure_type=quote(str(structure_type), safe=""),
     ),
   }
 
@@ -30,9 +26,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> HTTPValidationError | StatementResponse | None:
+) -> FiscalCalendarResponse | HTTPValidationError | None:
   if response.status_code == 200:
-    response_200 = StatementResponse.from_dict(response.json())
+    response_200 = FiscalCalendarResponse.from_dict(response.json())
 
     return response_200
 
@@ -49,7 +45,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[HTTPValidationError | StatementResponse]:
+) -> Response[FiscalCalendarResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -60,34 +56,26 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
   *,
   client: AuthenticatedClient,
-) -> Response[HTTPValidationError | StatementResponse]:
-  """Get Statement
+) -> Response[FiscalCalendarResponse | HTTPValidationError]:
+  """Get Fiscal Calendar
 
-   Render a financial statement — facts viewed through a structure's hierarchy.
-
-  Same report, different structure_type = different view (IS, BS, CF).
+   Return the current fiscal calendar state — pointers, gap, closeable status.
 
   Args:
       graph_id (str):
-      report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | StatementResponse]
+      Response[FiscalCalendarResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    report_id=report_id,
-    structure_type=structure_type,
   )
 
   response = client.get_httpx_client().request(
@@ -99,68 +87,52 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
   *,
   client: AuthenticatedClient,
-) -> HTTPValidationError | StatementResponse | None:
-  """Get Statement
+) -> FiscalCalendarResponse | HTTPValidationError | None:
+  """Get Fiscal Calendar
 
-   Render a financial statement — facts viewed through a structure's hierarchy.
-
-  Same report, different structure_type = different view (IS, BS, CF).
+   Return the current fiscal calendar state — pointers, gap, closeable status.
 
   Args:
       graph_id (str):
-      report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | StatementResponse
+      FiscalCalendarResponse | HTTPValidationError
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    report_id=report_id,
-    structure_type=structure_type,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
   *,
   client: AuthenticatedClient,
-) -> Response[HTTPValidationError | StatementResponse]:
-  """Get Statement
+) -> Response[FiscalCalendarResponse | HTTPValidationError]:
+  """Get Fiscal Calendar
 
-   Render a financial statement — facts viewed through a structure's hierarchy.
-
-  Same report, different structure_type = different view (IS, BS, CF).
+   Return the current fiscal calendar state — pointers, gap, closeable status.
 
   Args:
       graph_id (str):
-      report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | StatementResponse]
+      Response[FiscalCalendarResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    report_id=report_id,
-    structure_type=structure_type,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -170,35 +142,27 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
   *,
   client: AuthenticatedClient,
-) -> HTTPValidationError | StatementResponse | None:
-  """Get Statement
+) -> FiscalCalendarResponse | HTTPValidationError | None:
+  """Get Fiscal Calendar
 
-   Render a financial statement — facts viewed through a structure's hierarchy.
-
-  Same report, different structure_type = different view (IS, BS, CF).
+   Return the current fiscal calendar state — pointers, gap, closeable status.
 
   Args:
       graph_id (str):
-      report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | StatementResponse
+      FiscalCalendarResponse | HTTPValidationError
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      report_id=report_id,
-      structure_type=structure_type,
       client=client,
     )
   ).parsed

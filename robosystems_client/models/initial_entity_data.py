@@ -21,6 +21,8 @@ class InitialEntityData:
       Attributes:
           name (str): Entity name
           uri (str): Entity website or URI
+          ticker (None | str | Unset): Entity symbol/ticker (e.g., 'HARB', 'NVDA'). Auto-generated from name if not
+              provided.
           cik (None | str | Unset): CIK number for SEC filings
           sic (None | str | Unset): SIC code
           sic_description (None | str | Unset): SIC description
@@ -32,6 +34,7 @@ class InitialEntityData:
 
   name: str
   uri: str
+  ticker: None | str | Unset = UNSET
   cik: None | str | Unset = UNSET
   sic: None | str | Unset = UNSET
   sic_description: None | str | Unset = UNSET
@@ -45,6 +48,12 @@ class InitialEntityData:
     name = self.name
 
     uri = self.uri
+
+    ticker: None | str | Unset
+    if isinstance(self.ticker, Unset):
+      ticker = UNSET
+    else:
+      ticker = self.ticker
 
     cik: None | str | Unset
     if isinstance(self.cik, Unset):
@@ -96,6 +105,8 @@ class InitialEntityData:
         "uri": uri,
       }
     )
+    if ticker is not UNSET:
+      field_dict["ticker"] = ticker
     if cik is not UNSET:
       field_dict["cik"] = cik
     if sic is not UNSET:
@@ -119,6 +130,15 @@ class InitialEntityData:
     name = d.pop("name")
 
     uri = d.pop("uri")
+
+    def _parse_ticker(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    ticker = _parse_ticker(d.pop("ticker", UNSET))
 
     def _parse_cik(data: object) -> None | str | Unset:
       if data is None:
@@ -188,6 +208,7 @@ class InitialEntityData:
     initial_entity_data = cls(
       name=name,
       uri=uri,
+      ticker=ticker,
       cik=cik,
       sic=sic,
       sic_description=sic_description,

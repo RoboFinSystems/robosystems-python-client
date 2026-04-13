@@ -30,6 +30,9 @@ class CreateScheduleRequest:
       entry_template (EntryTemplateRequest):
       taxonomy_id (None | str | Unset): Taxonomy ID (auto-creates if omitted)
       schedule_metadata (None | ScheduleMetadataRequest | Unset):
+      closed_through (datetime.date | None | Unset): If provided, facts with period_end ≤ this date are flagged as
+          'historical' (already reflected in opening balances, ignored by the close workflow). Used during initial ledger
+          setup to create schedules whose early facts have already been captured elsewhere.
   """
 
   name: str
@@ -40,6 +43,7 @@ class CreateScheduleRequest:
   entry_template: EntryTemplateRequest
   taxonomy_id: None | str | Unset = UNSET
   schedule_metadata: None | ScheduleMetadataRequest | Unset = UNSET
+  closed_through: datetime.date | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -71,6 +75,14 @@ class CreateScheduleRequest:
     else:
       schedule_metadata = self.schedule_metadata
 
+    closed_through: None | str | Unset
+    if isinstance(self.closed_through, Unset):
+      closed_through = UNSET
+    elif isinstance(self.closed_through, datetime.date):
+      closed_through = self.closed_through.isoformat()
+    else:
+      closed_through = self.closed_through
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -87,6 +99,8 @@ class CreateScheduleRequest:
       field_dict["taxonomy_id"] = taxonomy_id
     if schedule_metadata is not UNSET:
       field_dict["schedule_metadata"] = schedule_metadata
+    if closed_through is not UNSET:
+      field_dict["closed_through"] = closed_through
 
     return field_dict
 
@@ -136,6 +150,23 @@ class CreateScheduleRequest:
 
     schedule_metadata = _parse_schedule_metadata(d.pop("schedule_metadata", UNSET))
 
+    def _parse_closed_through(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        closed_through_type_0 = isoparse(data).date()
+
+        return closed_through_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    closed_through = _parse_closed_through(d.pop("closed_through", UNSET))
+
     create_schedule_request = cls(
       name=name,
       element_ids=element_ids,
@@ -145,6 +176,7 @@ class CreateScheduleRequest:
       entry_template=entry_template,
       taxonomy_id=taxonomy_id,
       schedule_metadata=schedule_metadata,
+      closed_through=closed_through,
     )
 
     create_schedule_request.additional_properties = d

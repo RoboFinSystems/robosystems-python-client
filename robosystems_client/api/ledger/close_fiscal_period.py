@@ -6,33 +6,42 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.close_period_request import ClosePeriodRequest
+from ...models.close_period_response import ClosePeriodResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.statement_response import StatementResponse
-from ...types import Response
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
+  period: str,
+  *,
+  body: ClosePeriodRequest | Unset = UNSET,
 ) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
+
   _kwargs: dict[str, Any] = {
-    "method": "get",
-    "url": "/v1/ledger/{graph_id}/reports/{report_id}/statements/{structure_type}".format(
+    "method": "post",
+    "url": "/v1/ledger/{graph_id}/periods/{period}/close".format(
       graph_id=quote(str(graph_id), safe=""),
-      report_id=quote(str(report_id), safe=""),
-      structure_type=quote(str(structure_type), safe=""),
+      period=quote(str(period), safe=""),
     ),
   }
 
+  if not isinstance(body, Unset):
+    _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
+
+  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> HTTPValidationError | StatementResponse | None:
+) -> ClosePeriodResponse | HTTPValidationError | None:
   if response.status_code == 200:
-    response_200 = StatementResponse.from_dict(response.json())
+    response_200 = ClosePeriodResponse.from_dict(response.json())
 
     return response_200
 
@@ -49,7 +58,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[HTTPValidationError | StatementResponse]:
+) -> Response[ClosePeriodResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -60,34 +69,36 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
+  period: str,
   *,
   client: AuthenticatedClient,
-) -> Response[HTTPValidationError | StatementResponse]:
-  """Get Statement
+  body: ClosePeriodRequest | Unset = UNSET,
+) -> Response[ClosePeriodResponse | HTTPValidationError]:
+  """Close Fiscal Period
 
-   Render a financial statement — facts viewed through a structure's hierarchy.
+   Close a fiscal period — the final commit action.
 
-  Same report, different structure_type = different view (IS, BS, CF).
+  All mechanics live in `PeriodCloseService.close()`. This endpoint just
+  resolves auth + QB sync state, invokes the service, and translates
+  domain exceptions into HTTP responses.
 
   Args:
       graph_id (str):
-      report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
+      period (str): Target period in YYYY-MM format
+      body (ClosePeriodRequest | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | StatementResponse]
+      Response[ClosePeriodResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    report_id=report_id,
-    structure_type=structure_type,
+    period=period,
+    body=body,
   )
 
   response = client.get_httpx_client().request(
@@ -99,68 +110,72 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
+  period: str,
   *,
   client: AuthenticatedClient,
-) -> HTTPValidationError | StatementResponse | None:
-  """Get Statement
+  body: ClosePeriodRequest | Unset = UNSET,
+) -> ClosePeriodResponse | HTTPValidationError | None:
+  """Close Fiscal Period
 
-   Render a financial statement — facts viewed through a structure's hierarchy.
+   Close a fiscal period — the final commit action.
 
-  Same report, different structure_type = different view (IS, BS, CF).
+  All mechanics live in `PeriodCloseService.close()`. This endpoint just
+  resolves auth + QB sync state, invokes the service, and translates
+  domain exceptions into HTTP responses.
 
   Args:
       graph_id (str):
-      report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
+      period (str): Target period in YYYY-MM format
+      body (ClosePeriodRequest | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | StatementResponse
+      ClosePeriodResponse | HTTPValidationError
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    report_id=report_id,
-    structure_type=structure_type,
+    period=period,
     client=client,
+    body=body,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
+  period: str,
   *,
   client: AuthenticatedClient,
-) -> Response[HTTPValidationError | StatementResponse]:
-  """Get Statement
+  body: ClosePeriodRequest | Unset = UNSET,
+) -> Response[ClosePeriodResponse | HTTPValidationError]:
+  """Close Fiscal Period
 
-   Render a financial statement — facts viewed through a structure's hierarchy.
+   Close a fiscal period — the final commit action.
 
-  Same report, different structure_type = different view (IS, BS, CF).
+  All mechanics live in `PeriodCloseService.close()`. This endpoint just
+  resolves auth + QB sync state, invokes the service, and translates
+  domain exceptions into HTTP responses.
 
   Args:
       graph_id (str):
-      report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
+      period (str): Target period in YYYY-MM format
+      body (ClosePeriodRequest | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | StatementResponse]
+      Response[ClosePeriodResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    report_id=report_id,
-    structure_type=structure_type,
+    period=period,
+    body=body,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -170,35 +185,37 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  report_id: str,
-  structure_type: str,
+  period: str,
   *,
   client: AuthenticatedClient,
-) -> HTTPValidationError | StatementResponse | None:
-  """Get Statement
+  body: ClosePeriodRequest | Unset = UNSET,
+) -> ClosePeriodResponse | HTTPValidationError | None:
+  """Close Fiscal Period
 
-   Render a financial statement — facts viewed through a structure's hierarchy.
+   Close a fiscal period — the final commit action.
 
-  Same report, different structure_type = different view (IS, BS, CF).
+  All mechanics live in `PeriodCloseService.close()`. This endpoint just
+  resolves auth + QB sync state, invokes the service, and translates
+  domain exceptions into HTTP responses.
 
   Args:
       graph_id (str):
-      report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
+      period (str): Target period in YYYY-MM format
+      body (ClosePeriodRequest | Unset):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | StatementResponse
+      ClosePeriodResponse | HTTPValidationError
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      report_id=report_id,
-      structure_type=structure_type,
+      period=period,
       client=client,
+      body=body,
     )
   ).parsed

@@ -59,6 +59,8 @@ from .cancel_operation_response_canceloperation import (
 )
 from .checkout_response import CheckoutResponse
 from .checkout_status_response import CheckoutStatusResponse
+from .close_period_request import ClosePeriodRequest
+from .close_period_response import ClosePeriodResponse
 from .closing_book_category import ClosingBookCategory
 from .closing_book_item import ClosingBookItem
 from .closing_book_structures_response import ClosingBookStructuresResponse
@@ -83,6 +85,10 @@ from .create_closing_entry_request import CreateClosingEntryRequest
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
+from .create_manual_closing_entry_request import CreateManualClosingEntryRequest
+from .create_manual_closing_entry_request_entry_type import (
+  CreateManualClosingEntryRequestEntryType,
+)
 from .create_portfolio_request import CreatePortfolioRequest
 from .create_position_request import CreatePositionRequest
 from .create_publish_list_request import CreatePublishListRequest
@@ -129,6 +135,8 @@ from .document_update_request import DocumentUpdateRequest
 from .document_upload_request import DocumentUploadRequest
 from .document_upload_response import DocumentUploadResponse
 from .download_quota import DownloadQuota
+from .draft_entry_response import DraftEntryResponse
+from .draft_line_item import DraftLineItem
 from .element_list_response import ElementListResponse
 from .element_response import ElementResponse
 from .email_verification_request import EmailVerificationRequest
@@ -138,6 +146,7 @@ from .enhanced_credit_transaction_response_metadata import (
 )
 from .enhanced_file_status_layers import EnhancedFileStatusLayers
 from .entry_template_request import EntryTemplateRequest
+from .entry_template_request_entry_type import EntryTemplateRequestEntryType
 from .error_response import ErrorResponse
 from .execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
 from .execute_cypher_query_response_200_data_item import (
@@ -149,6 +158,8 @@ from .file_layer_status import FileLayerStatus
 from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
 from .file_upload_response import FileUploadResponse
+from .fiscal_calendar_response import FiscalCalendarResponse
+from .fiscal_period_summary import FiscalPeriodSummary
 from .forgot_password_request import ForgotPasswordRequest
 from .forgot_password_response_forgotpassword import (
   ForgotPasswordResponseForgotpassword,
@@ -188,6 +199,8 @@ from .holding_security_summary import HoldingSecuritySummary
 from .holdings_list_response import HoldingsListResponse
 from .http_validation_error import HTTPValidationError
 from .initial_entity_data import InitialEntityData
+from .initialize_ledger_request import InitializeLedgerRequest
+from .initialize_ledger_response import InitializeLedgerResponse
 from .instance_usage import InstanceUsage
 from .invite_member_request import InviteMemberRequest
 from .invoice import Invoice
@@ -206,6 +219,7 @@ from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
+from .manual_line_item_request import ManualLineItemRequest
 from .mapping_coverage_response import MappingCoverageResponse
 from .mapping_detail_response import MappingDetailResponse
 from .materialize_request import MaterializeRequest
@@ -257,6 +271,7 @@ from .performance_insights_operation_stats import PerformanceInsightsOperationSt
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
 from .period_close_item_response import PeriodCloseItemResponse
 from .period_close_status_response import PeriodCloseStatusResponse
+from .period_drafts_response import PeriodDraftsResponse
 from .period_spec import PeriodSpec
 from .portal_session_response import PortalSessionResponse
 from .portfolio_list_response import PortfolioListResponse
@@ -272,6 +287,7 @@ from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
 from .regenerate_report_request import RegenerateReportRequest
 from .register_request import RegisterRequest
+from .reopen_period_request import ReopenPeriodRequest
 from .report_list_response import ReportListResponse
 from .report_response import ReportResponse
 from .repository_info import RepositoryInfo
@@ -320,6 +336,7 @@ from .security_response_terms import SecurityResponseTerms
 from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
+from .set_close_target_request import SetCloseTargetRequest
 from .share_report_request import ShareReportRequest
 from .share_report_response import ShareReportResponse
 from .share_result_item import ShareResultItem
@@ -359,6 +376,8 @@ from .token_pricing import TokenPricing
 from .transaction_summary_response import TransactionSummaryResponse
 from .trial_balance_response import TrialBalanceResponse
 from .trial_balance_row import TrialBalanceRow
+from .truncate_schedule_request import TruncateScheduleRequest
+from .truncate_schedule_response import TruncateScheduleResponse
 from .unmapped_element_response import UnmappedElementResponse
 from .upcoming_invoice import UpcomingInvoice
 from .update_api_key_request import UpdateAPIKeyRequest
@@ -436,6 +455,8 @@ __all__ = (
   "CancelOperationResponseCanceloperation",
   "CheckoutResponse",
   "CheckoutStatusResponse",
+  "ClosePeriodRequest",
+  "ClosePeriodResponse",
   "ClosingBookCategory",
   "ClosingBookItem",
   "ClosingBookStructuresResponse",
@@ -458,6 +479,8 @@ __all__ = (
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateGraphRequest",
+  "CreateManualClosingEntryRequest",
+  "CreateManualClosingEntryRequestEntryType",
   "CreatePortfolioRequest",
   "CreatePositionRequest",
   "CreatePublishListRequest",
@@ -500,6 +523,8 @@ __all__ = (
   "DocumentUploadRequest",
   "DocumentUploadResponse",
   "DownloadQuota",
+  "DraftEntryResponse",
+  "DraftLineItem",
   "ElementListResponse",
   "ElementResponse",
   "EmailVerificationRequest",
@@ -507,6 +532,7 @@ __all__ = (
   "EnhancedCreditTransactionResponseMetadata",
   "EnhancedFileStatusLayers",
   "EntryTemplateRequest",
+  "EntryTemplateRequestEntryType",
   "ErrorResponse",
   "ExecuteCypherQueryResponse200",
   "ExecuteCypherQueryResponse200DataItem",
@@ -516,6 +542,8 @@ __all__ = (
   "FileStatusUpdate",
   "FileUploadRequest",
   "FileUploadResponse",
+  "FiscalCalendarResponse",
+  "FiscalPeriodSummary",
   "ForgotPasswordRequest",
   "ForgotPasswordResponseForgotpassword",
   "GetCurrentAuthUserResponseGetcurrentauthuser",
@@ -547,6 +575,8 @@ __all__ = (
   "HoldingsListResponse",
   "HTTPValidationError",
   "InitialEntityData",
+  "InitializeLedgerRequest",
+  "InitializeLedgerResponse",
   "InstanceUsage",
   "InviteMemberRequest",
   "Invoice",
@@ -565,6 +595,7 @@ __all__ = (
   "ListTableFilesResponse",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
+  "ManualLineItemRequest",
   "MappingCoverageResponse",
   "MappingDetailResponse",
   "MaterializeRequest",
@@ -612,6 +643,7 @@ __all__ = (
   "PerformanceInsightsSlowQueriesItem",
   "PeriodCloseItemResponse",
   "PeriodCloseStatusResponse",
+  "PeriodDraftsResponse",
   "PeriodSpec",
   "PortalSessionResponse",
   "PortfolioListResponse",
@@ -627,6 +659,7 @@ __all__ = (
   "RateLimits",
   "RegenerateReportRequest",
   "RegisterRequest",
+  "ReopenPeriodRequest",
   "ReportListResponse",
   "ReportResponse",
   "RepositoryInfo",
@@ -663,6 +696,7 @@ __all__ = (
   "SelectionCriteria",
   "ServiceOfferingsResponse",
   "ServiceOfferingSummary",
+  "SetCloseTargetRequest",
   "ShareReportRequest",
   "ShareReportResponse",
   "ShareResultItem",
@@ -698,6 +732,8 @@ __all__ = (
   "TransactionSummaryResponse",
   "TrialBalanceResponse",
   "TrialBalanceRow",
+  "TruncateScheduleRequest",
+  "TruncateScheduleResponse",
   "UnmappedElementResponse",
   "UpcomingInvoice",
   "UpdateAPIKeyRequest",
