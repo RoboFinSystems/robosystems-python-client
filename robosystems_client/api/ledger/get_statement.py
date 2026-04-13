@@ -74,7 +74,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, cash_flow_statement
+      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -113,7 +113,7 @@ def sync(
   Args:
       graph_id (str):
       report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, cash_flow_statement
+      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -147,7 +147,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, cash_flow_statement
+      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -184,7 +184,7 @@ async def asyncio(
   Args:
       graph_id (str):
       report_id (str): Report definition ID
-      structure_type (str): Structure type: income_statement, balance_sheet, cash_flow_statement
+      structure_type (str): Structure type: income_statement, balance_sheet, equity_statement
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
