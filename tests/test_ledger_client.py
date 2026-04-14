@@ -379,3 +379,75 @@ class TestLedgerWrites:
       graph_id, "str_1", new_end_date="2026-06-30", reason="asset disposed"
     )
     assert result["facts_deleted"] == 6
+
+  @patch("robosystems_client.extensions.ledger_client.op_build_fact_grid")
+  def test_build_fact_grid_dispatches_via_operations(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope(
+      "build-fact-grid",
+      {
+        "rows": [
+          {"element": "us-gaap:Revenues", "period": "2026-03-31", "value": 1000000},
+        ],
+        "row_count": 1,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.build_fact_grid(
+      graph_id,
+      {
+        "elements": ["us-gaap:Revenues"],
+        "periods": ["2026-03-31"],
+        "include_summary": False,
+      },
+    )
+    assert result["row_count"] == 1
+    assert result["rows"][0]["value"] == 1000000
+    # Body serialized into the generated CreateViewRequest attrs model
+    call_kwargs = mock_op.call_args.kwargs
+    assert call_kwargs["graph_id"] == graph_id
+    body = call_kwargs["body"]
+    assert body.elements == ["us-gaap:Revenues"]
+    assert body.periods == ["2026-03-31"]
+    assert body.include_summary is False
+
+
+# ── Variable-stripping behaviour in _query ────────────────────────────
+
+
+@pytest.mark.unit
+class TestLedgerQueryNoneStripping:
+  """``_query`` drops ``None`` variables before sending to GraphQL.
+
+  Rationale lives in ``strip_none_vars`` — some Strawberry resolvers
+  treat ``isActive: null`` as "filter for inactive" rather than "not
+  provided". The facade takes ``None`` to mean "not provided".
+  """
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_accounts_strips_none_filters(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {"accounts": {"accounts": [], "pagination": {}}}
+    client = LedgerClient(mock_config)
+    client.list_accounts(graph_id, classification=None, is_active=None, limit=25)
+    # Only the non-None variables are forwarded
+    variables = mock_execute.call_args[0][2]
+    assert variables == {"limit": 25, "offset": 0}
+    assert "classification" not in variables
+    assert "isActive" not in variables
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_accounts_keeps_explicitly_set_filters(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"accounts": {"accounts": [], "pagination": {}}}
+    client = LedgerClient(mock_config)
+    client.list_accounts(graph_id, classification="asset", is_active=True)
+    variables = mock_execute.call_args[0][2]
+    assert variables["classification"] == "asset"
+    assert variables["isActive"] is True
+    # And False (falsy but not None) is also kept
+    client.list_accounts(graph_id, is_active=False)
+    variables = mock_execute.call_args[0][2]
+    assert variables["isActive"] is False

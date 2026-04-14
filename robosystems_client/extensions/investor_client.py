@@ -45,7 +45,7 @@ from ..api.extensions_robo_investor.op_update_security import (
   sync_detailed as op_update_security,
 )
 from ..client import AuthenticatedClient
-from ..graphql.client import GraphQLClient
+from ..graphql.client import GraphQLClient, strip_none_vars
 from ..graphql.queries.investor import (
   GET_HOLDINGS_QUERY,
   GET_PORTFOLIO_QUERY,
@@ -111,7 +111,13 @@ class InvestorClient:
     query: str,
     variables: dict[str, Any] | None = None,
   ) -> dict[str, Any]:
-    return self._get_graphql_client().execute(graph_id, query, variables)
+    """Execute a read against the per-graph GraphQL endpoint.
+
+    ``None`` values in ``variables`` are stripped before sending — see
+    the ``LedgerClient._query`` docstring for the rationale.
+    """
+    cleaned = strip_none_vars(variables) if variables else None
+    return self._get_graphql_client().execute(graph_id, query, cleaned)
 
   def _call_op(self, label: str, response: Any) -> OperationEnvelope:
     if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
@@ -170,7 +176,7 @@ class InvestorClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete portfolio", response)
-    return envelope.result or {"deleted": True}
+    return envelope.result if envelope.result is not None else {"deleted": True}
 
   # ── Securities ──────────────────────────────────────────────────────
 
@@ -233,7 +239,7 @@ class InvestorClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete security", response)
-    return envelope.result or {"deleted": True}
+    return envelope.result if envelope.result is not None else {"deleted": True}
 
   # ── Positions ───────────────────────────────────────────────────────
 
@@ -296,7 +302,7 @@ class InvestorClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete position", response)
-    return envelope.result or {"deleted": True}
+    return envelope.result if envelope.result is not None else {"deleted": True}
 
   # ── Holdings (aggregation) ─────────────────────────────────────────
 

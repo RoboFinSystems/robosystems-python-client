@@ -124,12 +124,46 @@ class GraphQLClient:
 
 # ── Shared helpers for query parsers ──────────────────────────────────
 
-_CAMEL_TO_SNAKE = re.compile(r"(?<!^)(?=[A-Z])")
+# Two-group pattern that correctly handles consecutive uppercase letters
+# (acronyms). A naive `(?<!^)(?=[A-Z])` pattern explodes things like
+# "getCIK" into "get_c_i_k"; this one produces "get_cik". The first
+# alternative `([A-Z]+)(?=[A-Z][a-z])` matches a run of caps followed by
+# an acronym boundary (e.g. "XMLData" → "XML|Data"). The second
+# `([a-z\d])([A-Z])` matches the usual camelCase boundary.
+_CAMEL_TO_SNAKE = re.compile(r"([A-Z]+)(?=[A-Z][a-z])|([a-z\d])([A-Z])")
 
 
 def camel_to_snake(name: str) -> str:
-  """Convert a camelCase field name to snake_case."""
-  return _CAMEL_TO_SNAKE.sub("_", name).lower()
+  """Convert a camelCase field name to snake_case.
+
+  Handles acronyms correctly: ``getCIK`` → ``get_cik``, ``XMLData`` →
+  ``xml_data``, ``parentSIC`` → ``parent_sic``. Without acronym-aware
+  splitting, each uppercase letter in an acronym would become its own
+  underscore-separated token, producing garbled keys at the GraphQL →
+  Pydantic boundary.
+  """
+
+  def _sub(match: re.Match[str]) -> str:
+    # Group 1 matches acronym runs like "XML" in "XMLData". Groups 2+3
+    # match a lowercase/digit followed by an uppercase letter.
+    if match.group(1) is not None:
+      return match.group(1) + "_"
+    return match.group(2) + "_" + match.group(3)
+
+  return _CAMEL_TO_SNAKE.sub(_sub, name).lower()
+
+
+def strip_none_vars(variables: dict[str, Any]) -> dict[str, Any]:
+  """Drop ``None`` values from a GraphQL variables dict.
+
+  Strawberry distinguishes between an argument being *unset* and being
+  explicitly ``null`` — some resolvers treat ``isActive: null`` as
+  "filter for inactive" rather than "don't filter". The facade takes
+  ``None`` to mean "not provided", so strip those keys before sending
+  the request instead of letting JSON serialization turn them into
+  explicit GraphQL ``null`` literals.
+  """
+  return {k: v for k, v in variables.items() if v is not None}
 
 
 def keys_to_snake(value: Any) -> Any:

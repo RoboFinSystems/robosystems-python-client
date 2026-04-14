@@ -29,6 +29,9 @@ from typing import Any
 from ..api.extensions_robo_ledger.op_auto_map_elements import (
   sync_detailed as op_auto_map_elements,
 )
+from ..api.extensions_robo_ledger.op_build_fact_grid import (
+  sync_detailed as op_build_fact_grid,
+)
 from ..api.extensions_robo_ledger.op_close_period import (
   sync_detailed as op_close_period,
 )
@@ -69,7 +72,7 @@ from ..api.extensions_robo_ledger.op_update_entity import (
   sync_detailed as op_update_entity,
 )
 from ..client import AuthenticatedClient
-from ..graphql.client import GraphQLClient
+from ..graphql.client import GraphQLClient, strip_none_vars
 from ..graphql.queries.ledger import (
   GET_ACCOUNT_ROLLUPS_QUERY,
   GET_ACCOUNT_TREE_QUERY,
@@ -123,6 +126,7 @@ from ..graphql.queries.ledger import (
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
 from ..models.close_period_operation import ClosePeriodOperation
 from ..models.create_closing_entry_operation import CreateClosingEntryOperation
+from ..models.create_view_request import CreateViewRequest
 from ..models.create_manual_closing_entry_request import CreateManualClosingEntryRequest
 from ..models.create_manual_closing_entry_request_entry_type import (
   CreateManualClosingEntryRequestEntryType,
@@ -204,8 +208,15 @@ class LedgerClient:
     query: str,
     variables: dict[str, Any] | None = None,
   ) -> dict[str, Any]:
-    """Execute a read against the per-graph GraphQL endpoint."""
-    return self._get_graphql_client().execute(graph_id, query, variables)
+    """Execute a read against the per-graph GraphQL endpoint.
+
+    ``None`` values in ``variables`` are stripped before sending — the
+    facade takes ``None`` to mean "not provided", and some Strawberry
+    resolvers treat an explicit ``null`` differently from an unset arg.
+    See ``strip_none_vars`` in ``graphql/client.py``.
+    """
+    cleaned = strip_none_vars(variables) if variables else None
+    return self._get_graphql_client().execute(graph_id, query, cleaned)
 
   def _unwrap(self, label: str, envelope: OperationEnvelope | Any) -> Any:
     """Unwrap an operation envelope and return `result` (None on failure)."""
@@ -515,7 +526,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete mapping association", response)
-    return envelope.result or {"deleted": True}
+    return envelope.result if envelope.result is not None else {"deleted": True}
 
   def auto_map_elements(self, graph_id: str, mapping_id: str) -> dict[str, Any]:
     """Trigger the AI MappingAgent (async). Returns an operation ack."""
@@ -712,6 +723,33 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Create manual closing entry", response)
+    return envelope.result or {}
+
+  # ── Fact grid (graph-backed analytical query) ─────────────────────
+
+  def build_fact_grid(self, graph_id: str, request: dict[str, Any]) -> dict[str, Any]:
+    """Build a multi-dimensional fact grid against the graph schema.
+
+    This is a graph-database *read* dispatched through the operation
+    surface — it runs against LadybugDB (not the extensions OLTP
+    database) and returns a deduplicated pivot table of XBRL facts.
+    The same operation works for roboledger tenant graphs (after
+    materialization) and for the SEC shared repository, which uses the
+    same hypercube schema.
+
+    ``request`` accepts any fields of
+    ``robosystems_client.models.create_view_request.CreateViewRequest``:
+    ``elements`` (qnames), ``canonical_concepts``, ``periods``,
+    ``entities``, ``form``, ``fiscal_year``, ``fiscal_period``,
+    ``period_type``, ``include_summary``, ``view_config``. The legacy
+    model name ``CreateViewRequest`` is a holdover from when fact grids
+    were exposed under a ``/views`` route; the shape is unchanged.
+    """
+    body = CreateViewRequest.from_dict(request)
+    response = op_build_fact_grid(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Build fact grid", response)
     return envelope.result or {}
 
   # ── Closing book ───────────────────────────────────────────────────

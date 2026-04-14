@@ -296,4 +296,4 @@ class ReportClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Remove publish list member", response)
-    return envelope.result or {"deleted": True}
+    return envelope.result if envelope.result is not None else {"deleted": True}

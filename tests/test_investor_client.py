@@ -131,6 +131,39 @@ class TestPortfolioWrites:
     result = client.delete_portfolio(graph_id, "port_1")
     assert result["deleted"] is True
 
+  @patch("robosystems_client.extensions.investor_client.op_delete_portfolio")
+  def test_delete_portfolio_returns_server_response_when_present(
+    self, mock_op, mock_config, graph_id
+  ):
+    """The facade must not overwrite a non-empty server response with the stub.
+
+    Before the ``is not None`` fix, an empty ``{}`` from the server would
+    trip the ``or {...}`` fallback — but so would any falsy value. This
+    exercises the happy path: a real response with fields carries through.
+    """
+    envelope = _envelope(
+      "delete-portfolio",
+      {"id": "port_1", "deleted_at": "2026-04-14T12:00:00Z"},
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = InvestorClient(mock_config)
+    result = client.delete_portfolio(graph_id, "port_1")
+    assert result["id"] == "port_1"
+    assert result["deleted_at"] == "2026-04-14T12:00:00Z"
+    assert "deleted" not in result  # stub didn't fire
+
+  @patch("robosystems_client.extensions.investor_client.op_delete_portfolio")
+  def test_delete_portfolio_stubs_when_result_is_none(
+    self, mock_op, mock_config, graph_id
+  ):
+    """When the server returns an envelope with ``result: null`` the facade
+    substitutes a ``{"deleted": True}`` stub so callers get a dict."""
+    envelope = _envelope("delete-portfolio", None)
+    mock_op.return_value = _mock_response(envelope)
+    client = InvestorClient(mock_config)
+    result = client.delete_portfolio(graph_id, "port_1")
+    assert result == {"deleted": True}
+
 
 # ── Securities ─────────────────────────────────────────────────────────
 
@@ -151,6 +184,25 @@ class TestSecurities:
     client.list_securities(graph_id, entity_id="ent_1")
     variables = mock_execute.call_args[0][2]
     assert variables["entityId"] == "ent_1"
+    # None filters are stripped so Strawberry sees them as "not provided"
+    assert "securityType" not in variables
+    assert "isActive" not in variables
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_securities_all_none_filters_stripped(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {
+      "securities": {
+        "securities": [],
+        "pagination": {"total": 0, "limit": 100, "offset": 0, "hasMore": False},
+      }
+    }
+    client = InvestorClient(mock_config)
+    client.list_securities(graph_id)
+    variables = mock_execute.call_args[0][2]
+    # Pagination defaults stay; every optional filter is gone.
+    assert variables == {"limit": 100, "offset": 0}
 
   @patch("robosystems_client.extensions.investor_client.op_create_security")
   def test_create_security(self, mock_op, mock_config, graph_id):
