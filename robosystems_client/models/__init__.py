@@ -1,14 +1,7 @@
 """Contains all the data models used in inputs/outputs"""
 
 from .account_info import AccountInfo
-from .account_list_response import AccountListResponse
-from .account_response import AccountResponse
-from .account_rollup_group import AccountRollupGroup
-from .account_rollup_row import AccountRollupRow
-from .account_rollups_response import AccountRollupsResponse
-from .account_tree_node import AccountTreeNode
-from .account_tree_response import AccountTreeResponse
-from .add_members_request import AddMembersRequest
+from .add_publish_list_members_operation import AddPublishListMembersOperation
 from .agent_list_response import AgentListResponse
 from .agent_list_response_agents import AgentListResponseAgents
 from .agent_list_response_agents_additional_property import (
@@ -31,10 +24,10 @@ from .agent_response_metadata_type_0 import AgentResponseMetadataType0
 from .agent_response_tokens_used_type_0 import AgentResponseTokensUsedType0
 from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
-from .association_response import AssociationResponse
 from .auth_response import AuthResponse
 from .auth_response_org_type_0 import AuthResponseOrgType0
 from .auth_response_user import AuthResponseUser
+from .auto_map_elements_operation import AutoMapElementsOperation
 from .available_extension import AvailableExtension
 from .available_extensions_response import AvailableExtensionsResponse
 from .available_graph_tiers_response import AvailableGraphTiersResponse
@@ -59,12 +52,7 @@ from .cancel_operation_response_canceloperation import (
 )
 from .checkout_response import CheckoutResponse
 from .checkout_status_response import CheckoutStatusResponse
-from .close_period_request import ClosePeriodRequest
-from .close_period_response import ClosePeriodResponse
-from .closing_book_category import ClosingBookCategory
-from .closing_book_item import ClosingBookItem
-from .closing_book_structures_response import ClosingBookStructuresResponse
-from .closing_entry_response import ClosingEntryResponse
+from .close_period_operation import ClosePeriodOperation
 from .connection_options_response import ConnectionOptionsResponse
 from .connection_provider_info import ConnectionProviderInfo
 from .connection_provider_info_auth_type import ConnectionProviderInfoAuthType
@@ -75,19 +63,19 @@ from .content_limits import ContentLimits
 from .copy_operation_limits import CopyOperationLimits
 from .create_api_key_request import CreateAPIKeyRequest
 from .create_api_key_response import CreateAPIKeyResponse
-from .create_association_request import CreateAssociationRequest
-from .create_association_request_association_type import (
-  CreateAssociationRequestAssociationType,
-)
 from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
-from .create_closing_entry_request import CreateClosingEntryRequest
+from .create_closing_entry_operation import CreateClosingEntryOperation
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_graph_request import CreateGraphRequest
 from .create_manual_closing_entry_request import CreateManualClosingEntryRequest
 from .create_manual_closing_entry_request_entry_type import (
   CreateManualClosingEntryRequestEntryType,
+)
+from .create_mapping_association_operation import CreateMappingAssociationOperation
+from .create_mapping_association_operation_association_type import (
+  CreateMappingAssociationOperationAssociationType,
 )
 from .create_portfolio_request import CreatePortfolioRequest
 from .create_position_request import CreatePositionRequest
@@ -120,6 +108,12 @@ from .database_health_response import DatabaseHealthResponse
 from .database_info_response import DatabaseInfoResponse
 from .database_storage_entry import DatabaseStorageEntry
 from .delete_file_response import DeleteFileResponse
+from .delete_mapping_association_operation import DeleteMappingAssociationOperation
+from .delete_portfolio_operation import DeletePortfolioOperation
+from .delete_position_operation import DeletePositionOperation
+from .delete_publish_list_operation import DeletePublishListOperation
+from .delete_report_operation import DeleteReportOperation
+from .delete_security_operation import DeleteSecurityOperation
 from .delete_subgraph_request import DeleteSubgraphRequest
 from .delete_subgraph_response import DeleteSubgraphResponse
 from .detailed_transactions_response import DetailedTransactionsResponse
@@ -135,10 +129,6 @@ from .document_update_request import DocumentUpdateRequest
 from .document_upload_request import DocumentUploadRequest
 from .document_upload_response import DocumentUploadResponse
 from .download_quota import DownloadQuota
-from .draft_entry_response import DraftEntryResponse
-from .draft_line_item import DraftLineItem
-from .element_list_response import ElementListResponse
-from .element_response import ElementResponse
 from .email_verification_request import EmailVerificationRequest
 from .enhanced_credit_transaction_response import EnhancedCreditTransactionResponse
 from .enhanced_credit_transaction_response_metadata import (
@@ -152,14 +142,11 @@ from .execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
 from .execute_cypher_query_response_200_data_item import (
   ExecuteCypherQueryResponse200DataItem,
 )
-from .fact_row_response import FactRowResponse
 from .file_info import FileInfo
 from .file_layer_status import FileLayerStatus
 from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
 from .file_upload_response import FileUploadResponse
-from .fiscal_calendar_response import FiscalCalendarResponse
-from .fiscal_period_summary import FiscalPeriodSummary
 from .forgot_password_request import ForgotPasswordRequest
 from .forgot_password_response_forgotpassword import (
   ForgotPasswordResponseForgotpassword,
@@ -194,25 +181,14 @@ from .graph_usage_response import GraphUsageResponse
 from .graph_usage_response_recent_events_item import GraphUsageResponseRecentEventsItem
 from .health_status import HealthStatus
 from .health_status_details_type_0 import HealthStatusDetailsType0
-from .holding_response import HoldingResponse
-from .holding_security_summary import HoldingSecuritySummary
-from .holdings_list_response import HoldingsListResponse
 from .http_validation_error import HTTPValidationError
 from .initial_entity_data import InitialEntityData
 from .initialize_ledger_request import InitializeLedgerRequest
-from .initialize_ledger_response import InitializeLedgerResponse
 from .instance_usage import InstanceUsage
 from .invite_member_request import InviteMemberRequest
 from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
-from .ledger_entity_response import LedgerEntityResponse
-from .ledger_entry_response import LedgerEntryResponse
-from .ledger_line_item_response import LedgerLineItemResponse
-from .ledger_summary_response import LedgerSummaryResponse
-from .ledger_transaction_detail_response import LedgerTransactionDetailResponse
-from .ledger_transaction_list_response import LedgerTransactionListResponse
-from .ledger_transaction_summary_response import LedgerTransactionSummaryResponse
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
 from .list_org_graphs_response_200_item import ListOrgGraphsResponse200Item
 from .list_subgraphs_response import ListSubgraphsResponse
@@ -220,8 +196,6 @@ from .list_table_files_response import ListTableFilesResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .manual_line_item_request import ManualLineItemRequest
-from .mapping_coverage_response import MappingCoverageResponse
-from .mapping_detail_response import MappingDetailResponse
 from .materialize_request import MaterializeRequest
 from .materialize_response import MaterializeResponse
 from .materialize_response_limit_check_type_0 import MaterializeResponseLimitCheckType0
@@ -243,6 +217,9 @@ from .offering_repository_plan_rate_limits_type_0 import (
 from .operation_costs import OperationCosts
 from .operation_costs_ai_operations import OperationCostsAiOperations
 from .operation_costs_token_pricing import OperationCostsTokenPricing
+from .operation_envelope import OperationEnvelope
+from .operation_envelope_result_type_0 import OperationEnvelopeResultType0
+from .operation_envelope_status import OperationEnvelopeStatus
 from .org_detail_response import OrgDetailResponse
 from .org_detail_response_graphs_item import OrgDetailResponseGraphsItem
 from .org_detail_response_limits_type_0 import OrgDetailResponseLimitsType0
@@ -259,7 +236,6 @@ from .org_usage_response import OrgUsageResponse
 from .org_usage_response_daily_trend_item import OrgUsageResponseDailyTrendItem
 from .org_usage_response_graph_details_item import OrgUsageResponseGraphDetailsItem
 from .org_usage_summary import OrgUsageSummary
-from .pagination_info import PaginationInfo
 from .password_check_request import PasswordCheckRequest
 from .password_check_response import PasswordCheckResponse
 from .password_check_response_character_types import PasswordCheckResponseCharacterTypes
@@ -269,27 +245,15 @@ from .payment_method import PaymentMethod
 from .performance_insights import PerformanceInsights
 from .performance_insights_operation_stats import PerformanceInsightsOperationStats
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
-from .period_close_item_response import PeriodCloseItemResponse
-from .period_close_status_response import PeriodCloseStatusResponse
-from .period_drafts_response import PeriodDraftsResponse
 from .period_spec import PeriodSpec
 from .portal_session_response import PortalSessionResponse
-from .portfolio_list_response import PortfolioListResponse
-from .portfolio_response import PortfolioResponse
-from .position_list_response import PositionListResponse
-from .position_response import PositionResponse
-from .publish_list_detail_response import PublishListDetailResponse
-from .publish_list_list_response import PublishListListResponse
-from .publish_list_member_response import PublishListMemberResponse
-from .publish_list_response import PublishListResponse
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
-from .regenerate_report_request import RegenerateReportRequest
+from .regenerate_report_operation import RegenerateReportOperation
 from .register_request import RegisterRequest
-from .reopen_period_request import ReopenPeriodRequest
-from .report_list_response import ReportListResponse
-from .report_response import ReportResponse
+from .remove_publish_list_member_operation import RemovePublishListMemberOperation
+from .reopen_period_operation import ReopenPeriodOperation
 from .repository_info import RepositoryInfo
 from .repository_subscriptions import RepositorySubscriptions
 from .resend_verification_email_response_resendverificationemail import (
@@ -298,18 +262,7 @@ from .resend_verification_email_response_resendverificationemail import (
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
-from .schedule_created_response import ScheduleCreatedResponse
-from .schedule_fact_response import ScheduleFactResponse
-from .schedule_facts_response import ScheduleFactsResponse
-from .schedule_list_response import ScheduleListResponse
 from .schedule_metadata_request import ScheduleMetadataRequest
-from .schedule_summary_response import ScheduleSummaryResponse
-from .schedule_summary_response_entry_template_type_0 import (
-  ScheduleSummaryResponseEntryTemplateType0,
-)
-from .schedule_summary_response_schedule_metadata_type_0 import (
-  ScheduleSummaryResponseScheduleMetadataType0,
-)
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
 from .schema_export_response_schema_definition_type_0 import (
@@ -330,26 +283,17 @@ from .search_hit import SearchHit
 from .search_request import SearchRequest
 from .search_response import SearchResponse
 from .sec_connection_config import SECConnectionConfig
-from .security_list_response import SecurityListResponse
-from .security_response import SecurityResponse
-from .security_response_terms import SecurityResponseTerms
 from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
-from .set_close_target_request import SetCloseTargetRequest
-from .share_report_request import ShareReportRequest
-from .share_report_response import ShareReportResponse
-from .share_result_item import ShareResultItem
+from .set_close_target_operation import SetCloseTargetOperation
+from .share_report_operation import ShareReportOperation
 from .sso_complete_request import SSOCompleteRequest
 from .sso_exchange_request import SSOExchangeRequest
 from .sso_exchange_response import SSOExchangeResponse
 from .sso_token_response import SSOTokenResponse
-from .statement_response import StatementResponse
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
-from .structure_list_response import StructureListResponse
-from .structure_response import StructureResponse
-from .structure_summary import StructureSummary
 from .subgraph_quota_response import SubgraphQuotaResponse
 from .subgraph_response import SubgraphResponse
 from .subgraph_response_metadata_type_0 import SubgraphResponseMetadataType0
@@ -357,7 +301,6 @@ from .subgraph_summary import SubgraphSummary
 from .subgraph_type import SubgraphType
 from .success_response import SuccessResponse
 from .success_response_data_type_0 import SuccessResponseDataType0
-from .suggested_target import SuggestedTarget
 from .sync_connection_request import SyncConnectionRequest
 from .sync_connection_request_sync_options_type_0 import (
   SyncConnectionRequestSyncOptionsType0,
@@ -369,16 +312,10 @@ from .table_info import TableInfo
 from .table_list_response import TableListResponse
 from .table_query_request import TableQueryRequest
 from .table_query_response import TableQueryResponse
-from .taxonomy_list_response import TaxonomyListResponse
-from .taxonomy_response import TaxonomyResponse
 from .tier_capacity import TierCapacity
 from .token_pricing import TokenPricing
 from .transaction_summary_response import TransactionSummaryResponse
-from .trial_balance_response import TrialBalanceResponse
-from .trial_balance_row import TrialBalanceRow
-from .truncate_schedule_request import TruncateScheduleRequest
-from .truncate_schedule_response import TruncateScheduleResponse
-from .unmapped_element_response import UnmappedElementResponse
+from .truncate_schedule_operation import TruncateScheduleOperation
 from .upcoming_invoice import UpcomingInvoice
 from .update_api_key_request import UpdateAPIKeyRequest
 from .update_entity_request import UpdateEntityRequest
@@ -386,16 +323,15 @@ from .update_file_response_updatefile import UpdateFileResponseUpdatefile
 from .update_member_role_request import UpdateMemberRoleRequest
 from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
-from .update_portfolio_request import UpdatePortfolioRequest
-from .update_position_request import UpdatePositionRequest
-from .update_publish_list_request import UpdatePublishListRequest
-from .update_security_request import UpdateSecurityRequest
-from .update_security_request_terms_type_0 import UpdateSecurityRequestTermsType0
+from .update_portfolio_operation import UpdatePortfolioOperation
+from .update_position_operation import UpdatePositionOperation
+from .update_publish_list_operation import UpdatePublishListOperation
+from .update_security_operation import UpdateSecurityOperation
+from .update_security_operation_terms_type_0 import UpdateSecurityOperationTermsType0
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
-from .validation_check_response import ValidationCheckResponse
 from .validation_error import ValidationError
 from .validation_error_context import ValidationErrorContext
 from .view_axis_config import ViewAxisConfig
@@ -405,14 +341,7 @@ from .view_config import ViewConfig
 
 __all__ = (
   "AccountInfo",
-  "AccountListResponse",
-  "AccountResponse",
-  "AccountRollupGroup",
-  "AccountRollupRow",
-  "AccountRollupsResponse",
-  "AccountTreeNode",
-  "AccountTreeResponse",
-  "AddMembersRequest",
+  "AddPublishListMembersOperation",
   "AgentListResponse",
   "AgentListResponseAgents",
   "AgentListResponseAgentsAdditionalProperty",
@@ -431,10 +360,10 @@ __all__ = (
   "AgentResponseTokensUsedType0",
   "APIKeyInfo",
   "APIKeysResponse",
-  "AssociationResponse",
   "AuthResponse",
   "AuthResponseOrgType0",
   "AuthResponseUser",
+  "AutoMapElementsOperation",
   "AvailableExtension",
   "AvailableExtensionsResponse",
   "AvailableGraphTiersResponse",
@@ -455,12 +384,7 @@ __all__ = (
   "CancelOperationResponseCanceloperation",
   "CheckoutResponse",
   "CheckoutStatusResponse",
-  "ClosePeriodRequest",
-  "ClosePeriodResponse",
-  "ClosingBookCategory",
-  "ClosingBookItem",
-  "ClosingBookStructuresResponse",
-  "ClosingEntryResponse",
+  "ClosePeriodOperation",
   "ConnectionOptionsResponse",
   "ConnectionProviderInfo",
   "ConnectionProviderInfoAuthType",
@@ -471,16 +395,16 @@ __all__ = (
   "CopyOperationLimits",
   "CreateAPIKeyRequest",
   "CreateAPIKeyResponse",
-  "CreateAssociationRequest",
-  "CreateAssociationRequestAssociationType",
   "CreateCheckoutRequest",
   "CreateCheckoutRequestResourceConfig",
-  "CreateClosingEntryRequest",
+  "CreateClosingEntryOperation",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateGraphRequest",
   "CreateManualClosingEntryRequest",
   "CreateManualClosingEntryRequestEntryType",
+  "CreateMappingAssociationOperation",
+  "CreateMappingAssociationOperationAssociationType",
   "CreatePortfolioRequest",
   "CreatePositionRequest",
   "CreatePublishListRequest",
@@ -510,6 +434,12 @@ __all__ = (
   "DatabaseInfoResponse",
   "DatabaseStorageEntry",
   "DeleteFileResponse",
+  "DeleteMappingAssociationOperation",
+  "DeletePortfolioOperation",
+  "DeletePositionOperation",
+  "DeletePublishListOperation",
+  "DeleteReportOperation",
+  "DeleteSecurityOperation",
   "DeleteSubgraphRequest",
   "DeleteSubgraphResponse",
   "DetailedTransactionsResponse",
@@ -523,10 +453,6 @@ __all__ = (
   "DocumentUploadRequest",
   "DocumentUploadResponse",
   "DownloadQuota",
-  "DraftEntryResponse",
-  "DraftLineItem",
-  "ElementListResponse",
-  "ElementResponse",
   "EmailVerificationRequest",
   "EnhancedCreditTransactionResponse",
   "EnhancedCreditTransactionResponseMetadata",
@@ -536,14 +462,11 @@ __all__ = (
   "ErrorResponse",
   "ExecuteCypherQueryResponse200",
   "ExecuteCypherQueryResponse200DataItem",
-  "FactRowResponse",
   "FileInfo",
   "FileLayerStatus",
   "FileStatusUpdate",
   "FileUploadRequest",
   "FileUploadResponse",
-  "FiscalCalendarResponse",
-  "FiscalPeriodSummary",
   "ForgotPasswordRequest",
   "ForgotPasswordResponseForgotpassword",
   "GetCurrentAuthUserResponseGetcurrentauthuser",
@@ -570,25 +493,14 @@ __all__ = (
   "GraphUsageResponseRecentEventsItem",
   "HealthStatus",
   "HealthStatusDetailsType0",
-  "HoldingResponse",
-  "HoldingSecuritySummary",
-  "HoldingsListResponse",
   "HTTPValidationError",
   "InitialEntityData",
   "InitializeLedgerRequest",
-  "InitializeLedgerResponse",
   "InstanceUsage",
   "InviteMemberRequest",
   "Invoice",
   "InvoiceLineItem",
   "InvoicesResponse",
-  "LedgerEntityResponse",
-  "LedgerEntryResponse",
-  "LedgerLineItemResponse",
-  "LedgerSummaryResponse",
-  "LedgerTransactionDetailResponse",
-  "LedgerTransactionListResponse",
-  "LedgerTransactionSummaryResponse",
   "ListConnectionsProviderType0",
   "ListOrgGraphsResponse200Item",
   "ListSubgraphsResponse",
@@ -596,8 +508,6 @@ __all__ = (
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "ManualLineItemRequest",
-  "MappingCoverageResponse",
-  "MappingDetailResponse",
   "MaterializeRequest",
   "MaterializeResponse",
   "MaterializeResponseLimitCheckType0",
@@ -615,6 +525,9 @@ __all__ = (
   "OperationCosts",
   "OperationCostsAiOperations",
   "OperationCostsTokenPricing",
+  "OperationEnvelope",
+  "OperationEnvelopeResultType0",
+  "OperationEnvelopeStatus",
   "OrgDetailResponse",
   "OrgDetailResponseGraphsItem",
   "OrgDetailResponseLimitsType0",
@@ -631,7 +544,6 @@ __all__ = (
   "OrgUsageResponseDailyTrendItem",
   "OrgUsageResponseGraphDetailsItem",
   "OrgUsageSummary",
-  "PaginationInfo",
   "PasswordCheckRequest",
   "PasswordCheckResponse",
   "PasswordCheckResponseCharacterTypes",
@@ -641,41 +553,22 @@ __all__ = (
   "PerformanceInsights",
   "PerformanceInsightsOperationStats",
   "PerformanceInsightsSlowQueriesItem",
-  "PeriodCloseItemResponse",
-  "PeriodCloseStatusResponse",
-  "PeriodDraftsResponse",
   "PeriodSpec",
   "PortalSessionResponse",
-  "PortfolioListResponse",
-  "PortfolioResponse",
-  "PositionListResponse",
-  "PositionResponse",
-  "PublishListDetailResponse",
-  "PublishListListResponse",
-  "PublishListMemberResponse",
-  "PublishListResponse",
   "QueryLimits",
   "QuickBooksConnectionConfig",
   "RateLimits",
-  "RegenerateReportRequest",
+  "RegenerateReportOperation",
   "RegisterRequest",
-  "ReopenPeriodRequest",
-  "ReportListResponse",
-  "ReportResponse",
+  "RemovePublishListMemberOperation",
+  "ReopenPeriodOperation",
   "RepositoryInfo",
   "RepositorySubscriptions",
   "ResendVerificationEmailResponseResendverificationemail",
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
   "ResponseMode",
-  "ScheduleCreatedResponse",
-  "ScheduleFactResponse",
-  "ScheduleFactsResponse",
-  "ScheduleListResponse",
   "ScheduleMetadataRequest",
-  "ScheduleSummaryResponse",
-  "ScheduleSummaryResponseEntryTemplateType0",
-  "ScheduleSummaryResponseScheduleMetadataType0",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",
@@ -690,26 +583,17 @@ __all__ = (
   "SearchRequest",
   "SearchResponse",
   "SECConnectionConfig",
-  "SecurityListResponse",
-  "SecurityResponse",
-  "SecurityResponseTerms",
   "SelectionCriteria",
   "ServiceOfferingsResponse",
   "ServiceOfferingSummary",
-  "SetCloseTargetRequest",
-  "ShareReportRequest",
-  "ShareReportResponse",
-  "ShareResultItem",
+  "SetCloseTargetOperation",
+  "ShareReportOperation",
   "SSOCompleteRequest",
   "SSOExchangeRequest",
   "SSOExchangeResponse",
   "SSOTokenResponse",
-  "StatementResponse",
   "StorageLimits",
   "StorageSummary",
-  "StructureListResponse",
-  "StructureResponse",
-  "StructureSummary",
   "SubgraphQuotaResponse",
   "SubgraphResponse",
   "SubgraphResponseMetadataType0",
@@ -717,7 +601,6 @@ __all__ = (
   "SubgraphType",
   "SuccessResponse",
   "SuccessResponseDataType0",
-  "SuggestedTarget",
   "SyncConnectionRequest",
   "SyncConnectionRequestSyncOptionsType0",
   "SyncConnectionResponseSyncconnection",
@@ -725,16 +608,10 @@ __all__ = (
   "TableListResponse",
   "TableQueryRequest",
   "TableQueryResponse",
-  "TaxonomyListResponse",
-  "TaxonomyResponse",
   "TierCapacity",
   "TokenPricing",
   "TransactionSummaryResponse",
-  "TrialBalanceResponse",
-  "TrialBalanceRow",
-  "TruncateScheduleRequest",
-  "TruncateScheduleResponse",
-  "UnmappedElementResponse",
+  "TruncateScheduleOperation",
   "UpcomingInvoice",
   "UpdateAPIKeyRequest",
   "UpdateEntityRequest",
@@ -742,16 +619,15 @@ __all__ = (
   "UpdateMemberRoleRequest",
   "UpdateOrgRequest",
   "UpdatePasswordRequest",
-  "UpdatePortfolioRequest",
-  "UpdatePositionRequest",
-  "UpdatePublishListRequest",
-  "UpdateSecurityRequest",
-  "UpdateSecurityRequestTermsType0",
+  "UpdatePortfolioOperation",
+  "UpdatePositionOperation",
+  "UpdatePublishListOperation",
+  "UpdateSecurityOperation",
+  "UpdateSecurityOperationTermsType0",
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",
   "UserResponse",
-  "ValidationCheckResponse",
   "ValidationError",
   "ValidationErrorContext",
   "ViewAxisConfig",

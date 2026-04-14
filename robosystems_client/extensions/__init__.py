@@ -51,6 +51,7 @@ from .graph_client import (
   InitialEntityData,
   GraphInfo,
 )
+from .investor_client import InvestorClient
 from .ledger_client import LedgerClient
 from .report_client import ReportClient
 from .extensions import (
@@ -171,6 +172,8 @@ __all__ = [
   "GraphInfo",
   # Ledger Client
   "LedgerClient",
+  # Investor Client
+  "InvestorClient",
   # Report Client
   "ReportClient",
   # Utilities
