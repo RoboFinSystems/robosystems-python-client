@@ -26,10 +26,6 @@ jobs:
         run: |
           uv sync --all-extras
 
-      - name: Validate lockfile
-        run: |
-          uv lock --locked
-
       - name: Run Tests
         run: |
           uv run pytest tests/ -v

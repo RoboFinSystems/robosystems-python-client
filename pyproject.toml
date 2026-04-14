@@ -73,6 +73,21 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["robosystems_client"]
 
+# Keep internal dev tooling out of the sdist uploaded to PyPI. Hatchling
+# defaults to "everything not in .gitignore", which would drag along
+# `.claude/`, `.vscode/`, `.githooks/`, and other repo-local config. The
+# wheel target above is unaffected — it only includes the package dir.
+[tool.hatch.build.targets.sdist]
+include = [
+    "/robosystems_client",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+    "/pyproject.toml",
+    "/pytest.ini",
+    "/ruff.toml",
+]
+
 [tool.basedpyright]
 include = ["robosystems_client/extensions"]
 exclude = ["robosystems_client/extensions/tests"]
