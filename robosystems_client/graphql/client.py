@@ -64,8 +64,24 @@ class GraphQLClient:
     if headers:
       self._headers.update(headers)
     if token:
-      # Match the existing facade convention: send the token as X-API-Key.
-      self._headers["X-API-Key"] = token
+      # The backend accepts two credential formats, and they go in
+      # DIFFERENT headers — not interchangeable:
+      #
+      #   - Long-lived API keys (``rfs…`` prefix) → ``X-API-Key``.
+      #     Validated against the api_keys table.
+      #   - Short-lived JWTs → ``Authorization: Bearer …``. Validated
+      #     by the JWT middleware.
+      #
+      # Sending a JWT as ``X-API-Key`` (or an API key as Bearer) both
+      # fail with 401 "Invalid API key". Python callers overwhelmingly
+      # pass ``rfs…`` keys since this client targets server/CLI/MCP
+      # use cases, but we keep the routing symmetric with the TS
+      # client so a caller that forwards a JWT (e.g. a backend
+      # proxying a request-scoped token) still works.
+      if token.startswith("rfs"):
+        self._headers["X-API-Key"] = token
+      else:
+        self._headers["Authorization"] = f"Bearer {token}"
 
   def _url_for(self, graph_id: str) -> str:
     if not graph_id:
