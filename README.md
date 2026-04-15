@@ -9,7 +9,7 @@ Official Python Client for the RoboSystems Financial Knowledge Graph API. Access
 
 - **Type-safe API client** with full type hints and typed models
 - **Async/await support** for high-performance applications
-- **Table ingestion** with simplified Parquet file uploads
+- **Parquet file uploads** for table ingestion
 - **Streaming support** for memory-efficient processing of large result sets
 - **Financial AI Agent** integration for natural language queries
 - **Comprehensive error handling** with typed exceptions
@@ -17,14 +17,7 @@ Official Python Client for the RoboSystems Financial Knowledge Graph API. Access
 ## Installation
 
 ```bash
-# Basic installation
 pip install robosystems-client
-
-# With table ingestion support (for uploading Parquet files)
-pip install robosystems-client[tables]
-
-# All optional features
-pip install robosystems-client[all]
 ```
 
 ## Resources
