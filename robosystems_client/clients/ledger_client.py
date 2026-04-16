@@ -16,8 +16,8 @@ schedules, and period close.
   `envelope.result` and returns either a dict or, for async dispatches
   (e.g. auto-map, create-report), a small ack dict.
 
-Reports + publish lists + statements live on `ReportClient` — they
-belong to the same backend surface but deserve their own facade.
+Reports, statements, and publish lists are included on this client —
+same backend surface as the ledger operations.
 """
 
 from __future__ import annotations
