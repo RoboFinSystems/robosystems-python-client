@@ -9,13 +9,13 @@ Dataclass and enum tests already exist in tests/test_operation_client.py.
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
-from robosystems_client.extensions.operation_client import (
+from robosystems_client.clients.operation_client import (
   OperationClient,
   OperationStatus,
   OperationProgress,
   MonitorOptions,
 )
-from robosystems_client.extensions.sse_client import SSEClient
+from robosystems_client.clients.sse_client import SSEClient
 
 
 # ── Helpers ──────────────────────────────────────────────────────────
@@ -37,7 +37,7 @@ def _fire_events(sse_client_instance, events):
 class TestMonitorOperation:
   """Test OperationClient.monitor_operation via mocked SSE."""
 
-  @patch("robosystems_client.extensions.operation_client.SSEClient")
+  @patch("robosystems_client.clients.operation_client.SSEClient")
   @patch("time.sleep")
   def test_monitor_completed(self, mock_sleep, MockSSE, mock_config):
     """Test monitoring an operation that completes successfully."""
@@ -70,7 +70,7 @@ class TestMonitorOperation:
     assert result.progress[0].message == "Processing"
     assert result.progress[0].percentage == 50
 
-  @patch("robosystems_client.extensions.operation_client.SSEClient")
+  @patch("robosystems_client.clients.operation_client.SSEClient")
   @patch("time.sleep")
   def test_monitor_failed(self, mock_sleep, MockSSE, mock_config):
     """Test monitoring an operation that fails."""
@@ -94,7 +94,7 @@ class TestMonitorOperation:
     assert result.status == OperationStatus.FAILED
     assert result.error == "Database connection lost"
 
-  @patch("robosystems_client.extensions.operation_client.SSEClient")
+  @patch("robosystems_client.clients.operation_client.SSEClient")
   @patch("time.sleep")
   def test_monitor_cancelled(self, mock_sleep, MockSSE, mock_config):
     """Test monitoring a cancelled operation."""
@@ -117,7 +117,7 @@ class TestMonitorOperation:
 
     assert result.status == OperationStatus.CANCELLED
 
-  @patch("robosystems_client.extensions.operation_client.SSEClient")
+  @patch("robosystems_client.clients.operation_client.SSEClient")
   @patch("time.sleep")
   def test_monitor_with_progress_callback(self, mock_sleep, MockSSE, mock_config):
     """Test that progress callback is invoked."""
@@ -152,7 +152,7 @@ class TestMonitorOperation:
     assert progress_updates[0].message == "Step 1"
     assert progress_updates[1].current_step == 2
 
-  @patch("robosystems_client.extensions.operation_client.SSEClient")
+  @patch("robosystems_client.clients.operation_client.SSEClient")
   @patch("time.sleep")
   def test_monitor_with_queue_update(self, mock_sleep, MockSSE, mock_config):
     """Test queue update callback."""
@@ -182,7 +182,7 @@ class TestMonitorOperation:
     assert queue_updates == [(3, 15)]
     assert result.status == OperationStatus.COMPLETED
 
-  @patch("robosystems_client.extensions.operation_client.SSEClient")
+  @patch("robosystems_client.clients.operation_client.SSEClient")
   @patch("time.sleep")
   def test_monitor_error_uses_fallback_key(self, mock_sleep, MockSSE, mock_config):
     """Test error event falls back to 'error' key when 'message' absent."""
@@ -206,7 +206,7 @@ class TestMonitorOperation:
     assert result.status == OperationStatus.FAILED
     assert result.error == "Timeout exceeded"
 
-  @patch("robosystems_client.extensions.operation_client.SSEClient")
+  @patch("robosystems_client.clients.operation_client.SSEClient")
   @patch("time.sleep")
   def test_monitor_cleanup_on_completion(self, mock_sleep, MockSSE, mock_config):
     """Test that SSE client is cleaned up after completion."""

@@ -54,10 +54,10 @@ from .graph_client import (
 from .investor_client import InvestorClient
 from .ledger_client import LedgerClient
 from .report_client import ReportClient
-from .extensions import (
-  RoboSystemsExtensions,
-  RoboSystemsExtensionConfig,
-  AsyncRoboSystemsExtensions,
+from .facade import (
+  RoboSystemsClients,
+  RoboSystemsClientConfig,
+  AsyncRoboSystemsClients,
 )
 from .utils import (
   QueryBuilder,
@@ -72,12 +72,12 @@ from .utils import (
   validate_cypher_query,
 )
 from .auth_integration import (
-  AuthenticatedExtensions,
-  CookieAuthExtensions,
-  TokenExtensions,
-  create_extensions,
-  create_production_extensions,
-  create_development_extensions,
+  AuthenticatedClients,
+  CookieAuthClients,
+  TokenClients,
+  create_clients,
+  create_production_clients,
+  create_development_clients,
 )
 
 # JWT Token utilities
@@ -124,9 +124,9 @@ except ImportError:
 
 __all__ = [
   # Core extension classes
-  "RoboSystemsExtensions",
-  "RoboSystemsExtensionConfig",
-  "AsyncRoboSystemsExtensions",
+  "RoboSystemsClients",
+  "RoboSystemsClientConfig",
+  "AsyncRoboSystemsClients",
   # SSE Client
   "SSEClient",
   "EventType",
@@ -188,12 +188,12 @@ __all__ = [
   "format_duration",
   "validate_cypher_query",
   # Authentication Integration
-  "AuthenticatedExtensions",
-  "CookieAuthExtensions",
-  "TokenExtensions",
-  "create_extensions",
-  "create_production_extensions",
-  "create_development_extensions",
+  "AuthenticatedClients",
+  "CookieAuthClients",
+  "TokenClients",
+  "create_clients",
+  "create_production_clients",
+  "create_development_clients",
   # JWT Token utilities
   "validate_jwt_format",
   "extract_jwt_from_header",
@@ -212,7 +212,7 @@ __all__ = [
 ]
 
 # Create a default extensions instance
-extensions = RoboSystemsExtensions()
+extensions = RoboSystemsClients()
 
 
 # Export convenience functions

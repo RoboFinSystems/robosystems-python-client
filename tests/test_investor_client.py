@@ -12,7 +12,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from robosystems_client.extensions.investor_client import InvestorClient
+from robosystems_client.clients.investor_client import InvestorClient
 from robosystems_client.models.operation_envelope import OperationEnvelope
 from robosystems_client.models.operation_envelope_status import OperationEnvelopeStatus
 
@@ -98,7 +98,7 @@ class TestPortfolioReads:
 
 @pytest.mark.unit
 class TestPortfolioWrites:
-  @patch("robosystems_client.extensions.investor_client.op_create_portfolio")
+  @patch("robosystems_client.clients.investor_client.op_create_portfolio")
   def test_create_portfolio(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-portfolio",
@@ -109,7 +109,7 @@ class TestPortfolioWrites:
     result = client.create_portfolio(graph_id, {"name": "New Fund"})
     assert result["id"] == "port_new"
 
-  @patch("robosystems_client.extensions.investor_client.op_update_portfolio")
+  @patch("robosystems_client.clients.investor_client.op_update_portfolio")
   def test_update_portfolio_merges_id_into_body(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "update-portfolio",
@@ -123,7 +123,7 @@ class TestPortfolioWrites:
     assert body.portfolio_id == "port_1"
     assert body.name == "Renamed"
 
-  @patch("robosystems_client.extensions.investor_client.op_delete_portfolio")
+  @patch("robosystems_client.clients.investor_client.op_delete_portfolio")
   def test_delete_portfolio(self, mock_op, mock_config, graph_id):
     envelope = _envelope("delete-portfolio", {"deleted": True})
     mock_op.return_value = _mock_response(envelope)
@@ -131,7 +131,7 @@ class TestPortfolioWrites:
     result = client.delete_portfolio(graph_id, "port_1")
     assert result["deleted"] is True
 
-  @patch("robosystems_client.extensions.investor_client.op_delete_portfolio")
+  @patch("robosystems_client.clients.investor_client.op_delete_portfolio")
   def test_delete_portfolio_returns_server_response_when_present(
     self, mock_op, mock_config, graph_id
   ):
@@ -152,7 +152,7 @@ class TestPortfolioWrites:
     assert result["deleted_at"] == "2026-04-14T12:00:00Z"
     assert "deleted" not in result  # stub didn't fire
 
-  @patch("robosystems_client.extensions.investor_client.op_delete_portfolio")
+  @patch("robosystems_client.clients.investor_client.op_delete_portfolio")
   def test_delete_portfolio_stubs_when_result_is_none(
     self, mock_op, mock_config, graph_id
   ):
@@ -204,7 +204,7 @@ class TestSecurities:
     # Pagination defaults stay; every optional filter is gone.
     assert variables == {"limit": 100, "offset": 0}
 
-  @patch("robosystems_client.extensions.investor_client.op_create_security")
+  @patch("robosystems_client.clients.investor_client.op_create_security")
   def test_create_security(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-security",
@@ -270,7 +270,7 @@ class TestPositions:
     assert len(result["positions"]) == 1
     assert result["positions"][0]["cost_basis_dollars"] == 1000
 
-  @patch("robosystems_client.extensions.investor_client.op_create_position")
+  @patch("robosystems_client.clients.investor_client.op_create_position")
   def test_create_position(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-position",

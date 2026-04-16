@@ -5,14 +5,14 @@ Provides proper integration with the generated Client authentication system.
 
 from typing import Dict, Any
 from ..client import Client, AuthenticatedClient
-from .extensions import RoboSystemsExtensions, RoboSystemsExtensionConfig
+from .facade import RoboSystemsClients, RoboSystemsClientConfig
 
 
-class AuthenticatedExtensions(RoboSystemsExtensions):
+class AuthenticatedClients(RoboSystemsClients):
   """Extensions with proper authentication integration"""
 
   def __init__(
-    self, api_key: str, config: RoboSystemsExtensionConfig = None, base_url: str = None
+    self, api_key: str, config: RoboSystemsClientConfig = None, base_url: str = None
   ):
     """Initialize extensions with API key authentication
 
@@ -22,7 +22,7 @@ class AuthenticatedExtensions(RoboSystemsExtensions):
         base_url: API base URL (defaults to production)
     """
     if config is None:
-      config = RoboSystemsExtensionConfig()
+      config = RoboSystemsClientConfig()
 
     # Set base URL
     if base_url:
@@ -78,13 +78,13 @@ class AuthenticatedExtensions(RoboSystemsExtensions):
       raise Exception(f"Query failed: {response.status_code}")
 
 
-class CookieAuthExtensions(RoboSystemsExtensions):
+class CookieAuthClients(RoboSystemsClients):
   """Extensions with cookie-based authentication"""
 
   def __init__(
     self,
     cookies: Dict[str, str],
-    config: RoboSystemsExtensionConfig = None,
+    config: RoboSystemsClientConfig = None,
     base_url: str = None,
   ):
     """Initialize extensions with cookie authentication
@@ -95,7 +95,7 @@ class CookieAuthExtensions(RoboSystemsExtensions):
         base_url: API base URL
     """
     if config is None:
-      config = RoboSystemsExtensionConfig()
+      config = RoboSystemsClientConfig()
 
     if base_url:
       config.base_url = base_url
@@ -121,11 +121,11 @@ class CookieAuthExtensions(RoboSystemsExtensions):
     return self._client
 
 
-class TokenExtensions(RoboSystemsExtensions):
+class TokenClients(RoboSystemsClients):
   """Extensions with JWT/Bearer token authentication"""
 
   def __init__(
-    self, token: str, config: RoboSystemsExtensionConfig = None, base_url: str = None
+    self, token: str, config: RoboSystemsClientConfig = None, base_url: str = None
   ):
     """Initialize extensions with JWT token
 
@@ -135,7 +135,7 @@ class TokenExtensions(RoboSystemsExtensions):
         base_url: API base URL
     """
     if config is None:
-      config = RoboSystemsExtensionConfig()
+      config = RoboSystemsClientConfig()
 
     if base_url:
       config.base_url = base_url
@@ -163,7 +163,7 @@ class TokenExtensions(RoboSystemsExtensions):
     return self._authenticated_client
 
 
-def create_extensions(auth_method: str, **kwargs) -> RoboSystemsExtensions:
+def create_clients(auth_method: str, **kwargs) -> RoboSystemsClients:
   """Factory function to create extensions with proper authentication
 
   Args:
@@ -175,25 +175,25 @@ def create_extensions(auth_method: str, **kwargs) -> RoboSystemsExtensions:
 
   Examples:
       # API Key authentication
-      ext = create_extensions('api_key', api_key='your-key', base_url='https://api.robosystems.ai')
+      ext = create_clients('api_key', api_key='your-key', base_url='https://api.robosystems.ai')
 
       # Cookie authentication
-      ext = create_extensions('cookie', cookies={'auth-token': 'token'})
+      ext = create_clients('cookie', cookies={'auth-token': 'token'})
 
       # JWT Token authentication
-      ext = create_extensions('token', token='jwt-token')
+      ext = create_clients('token', token='jwt-token')
   """
   if auth_method == "api_key":
     api_key = kwargs.pop("api_key")
-    return AuthenticatedExtensions(api_key, **kwargs)
+    return AuthenticatedClients(api_key, **kwargs)
 
   elif auth_method == "cookie":
     cookies = kwargs.pop("cookies")
-    return CookieAuthExtensions(cookies, **kwargs)
+    return CookieAuthClients(cookies, **kwargs)
 
   elif auth_method == "token":
     token = kwargs.pop("token")
-    return TokenExtensions(token, **kwargs)
+    return TokenClients(token, **kwargs)
 
   else:
     raise ValueError(
@@ -202,21 +202,21 @@ def create_extensions(auth_method: str, **kwargs) -> RoboSystemsExtensions:
 
 
 # Example usage functions
-def create_production_extensions(api_key: str) -> AuthenticatedExtensions:
+def create_production_clients(api_key: str) -> AuthenticatedClients:
   """Create extensions for production environment"""
-  return AuthenticatedExtensions(
+  return AuthenticatedClients(
     api_key=api_key,
-    config=RoboSystemsExtensionConfig(
+    config=RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai", max_retries=3, retry_delay=2000, timeout=60
     ),
   )
 
 
-def create_development_extensions(api_key: str) -> AuthenticatedExtensions:
+def create_development_clients(api_key: str) -> AuthenticatedClients:
   """Create extensions for development environment"""
-  return AuthenticatedExtensions(
+  return AuthenticatedClients(
     api_key=api_key,
-    config=RoboSystemsExtensionConfig(
+    config=RoboSystemsClientConfig(
       base_url="http://localhost:8000", max_retries=5, retry_delay=1000, timeout=30
     ),
   )

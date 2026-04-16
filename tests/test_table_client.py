@@ -2,7 +2,7 @@
 
 import pytest
 from unittest.mock import Mock, patch
-from robosystems_client.extensions.table_client import (
+from robosystems_client.clients.table_client import (
   TableClient,
   TableInfo,
   QueryResult,
@@ -77,7 +77,7 @@ class TestTableClientInit:
 class TestTableList:
   """Test suite for TableClient.list method."""
 
-  @patch("robosystems_client.extensions.table_client.list_tables")
+  @patch("robosystems_client.clients.table_client.list_tables")
   def test_list_tables(self, mock_list, mock_config, graph_id):
     """Test listing tables."""
     mock_table_1 = Mock()
@@ -109,7 +109,7 @@ class TestTableList:
     assert tables[1].table_name == "Transaction"
     assert tables[1].row_count == 500
 
-  @patch("robosystems_client.extensions.table_client.list_tables")
+  @patch("robosystems_client.clients.table_client.list_tables")
   def test_list_tables_failure(self, mock_list, mock_config, graph_id):
     """Test list tables returns empty list on failure."""
     mock_resp = Mock()
@@ -130,7 +130,7 @@ class TestTableList:
 
     assert tables == []
 
-  @patch("robosystems_client.extensions.table_client.list_tables")
+  @patch("robosystems_client.clients.table_client.list_tables")
   def test_list_tables_empty(self, mock_list, mock_config, graph_id):
     """Test listing when no tables exist."""
     mock_resp = Mock()
@@ -149,7 +149,7 @@ class TestTableList:
 class TestTableQuery:
   """Test suite for TableClient.query method."""
 
-  @patch("robosystems_client.extensions.table_client.query_tables")
+  @patch("robosystems_client.clients.table_client.query_tables")
   def test_query_success(self, mock_query, mock_config, graph_id):
     """Test successful SQL query."""
     mock_resp = Mock()
@@ -169,7 +169,7 @@ class TestTableQuery:
     assert result.row_count == 2
     assert result.execution_time_ms == 30.0
 
-  @patch("robosystems_client.extensions.table_client.query_tables")
+  @patch("robosystems_client.clients.table_client.query_tables")
   def test_query_with_limit(self, mock_query, mock_config, graph_id):
     """Test query with limit appended."""
     mock_resp = Mock()
@@ -186,7 +186,7 @@ class TestTableQuery:
     call_kwargs = mock_query.call_args[1]
     assert "LIMIT 5" in call_kwargs["body"].sql
 
-  @patch("robosystems_client.extensions.table_client.query_tables")
+  @patch("robosystems_client.clients.table_client.query_tables")
   def test_query_strips_trailing_semicolon(self, mock_query, mock_config, graph_id):
     """Test query strips trailing semicolon before adding LIMIT."""
     mock_resp = Mock()
@@ -205,7 +205,7 @@ class TestTableQuery:
     assert not sql.endswith("; LIMIT 10")
     assert sql.endswith("LIMIT 10")
 
-  @patch("robosystems_client.extensions.table_client.query_tables")
+  @patch("robosystems_client.clients.table_client.query_tables")
   def test_query_failure(self, mock_query, mock_config, graph_id):
     """Test query failure."""
     mock_resp = Mock()
@@ -228,7 +228,7 @@ class TestTableQuery:
     assert result.success is False
     assert "No API key" in result.error
 
-  @patch("robosystems_client.extensions.table_client.query_tables")
+  @patch("robosystems_client.clients.table_client.query_tables")
   def test_query_exception_handling(self, mock_query, mock_config, graph_id):
     """Test query handles unexpected exceptions."""
     mock_query.side_effect = Exception("Network error")

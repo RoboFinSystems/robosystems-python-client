@@ -2,13 +2,13 @@
 
 import pytest
 from unittest.mock import Mock, patch
-from robosystems_client.extensions.materialization_client import (
+from robosystems_client.clients.materialization_client import (
   MaterializationClient,
   MaterializationOptions,
   MaterializationResult,
   MaterializationStatus,
 )
-from robosystems_client.extensions.operation_client import (
+from robosystems_client.clients.operation_client import (
   OperationResult,
   OperationStatus,
 )
@@ -133,7 +133,7 @@ class TestMaterializationClientInit:
 class TestMaterialize:
   """Test suite for MaterializationClient.materialize method."""
 
-  @patch("robosystems_client.extensions.materialization_client.materialize_graph")
+  @patch("robosystems_client.clients.materialization_client.materialize_graph")
   def test_materialize_success(self, mock_mat, mock_config, graph_id):
     """Test successful materialization."""
     # Mock initial response with operation_id
@@ -168,7 +168,7 @@ class TestMaterialize:
     assert result.tables_materialized == ["Entity"]
     assert result.total_rows == 100
 
-  @patch("robosystems_client.extensions.materialization_client.materialize_graph")
+  @patch("robosystems_client.clients.materialization_client.materialize_graph")
   def test_materialize_api_failure(self, mock_mat, mock_config, graph_id):
     """Test materialization when API returns error."""
     mock_resp = Mock()
@@ -183,7 +183,7 @@ class TestMaterialize:
     assert result.success is False
     assert result.status == "failed"
 
-  @patch("robosystems_client.extensions.materialization_client.materialize_graph")
+  @patch("robosystems_client.clients.materialization_client.materialize_graph")
   def test_materialize_operation_failed(self, mock_mat, mock_config, graph_id):
     """Test materialization when operation fails."""
     mock_resp = Mock()
@@ -217,7 +217,7 @@ class TestMaterialize:
     assert result.success is False
     assert "No API key" in result.error
 
-  @patch("robosystems_client.extensions.materialization_client.materialize_graph")
+  @patch("robosystems_client.clients.materialization_client.materialize_graph")
   def test_materialize_with_progress(self, mock_mat, mock_config, graph_id):
     """Test materialize calls progress callback."""
     mock_resp = Mock()
@@ -251,7 +251,7 @@ class TestMaterialize:
 
     assert len(progress_messages) >= 2  # At least "Submitting" and "queued"
 
-  @patch("robosystems_client.extensions.materialization_client.materialize_graph")
+  @patch("robosystems_client.clients.materialization_client.materialize_graph")
   def test_materialize_with_rebuild(self, mock_mat, mock_config, graph_id):
     """Test materialize passes rebuild option."""
     mock_resp = Mock()
@@ -290,9 +290,7 @@ class TestMaterialize:
 class TestMaterializationStatus:
   """Test suite for MaterializationClient.status method."""
 
-  @patch(
-    "robosystems_client.extensions.materialization_client.get_materialization_status"
-  )
+  @patch("robosystems_client.clients.materialization_client.get_materialization_status")
   def test_get_status(self, mock_status, mock_config, graph_id):
     """Test getting materialization status."""
     mock_resp = Mock()
@@ -316,9 +314,7 @@ class TestMaterializationStatus:
     assert status.is_stale is True
     assert status.materialization_count == 3
 
-  @patch(
-    "robosystems_client.extensions.materialization_client.get_materialization_status"
-  )
+  @patch("robosystems_client.clients.materialization_client.get_materialization_status")
   def test_get_status_failure(self, mock_status, mock_config, graph_id):
     """Test status returns None on failure."""
     mock_resp = Mock()

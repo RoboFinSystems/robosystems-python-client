@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from unittest.mock import Mock
 
-from robosystems_client.extensions import (
+from robosystems_client.clients import (
   SSEClient,
   SSEConfig,
   SSEEvent,

@@ -3,7 +3,7 @@
 import pytest
 from http import HTTPStatus
 from unittest.mock import Mock, patch
-from robosystems_client.extensions.document_client import DocumentClient
+from robosystems_client.clients.document_client import DocumentClient
 
 
 @pytest.mark.unit
@@ -44,7 +44,7 @@ class TestDocumentClientInit:
 class TestDocumentUpload:
   """Test suite for DocumentClient.upload method."""
 
-  @patch("robosystems_client.extensions.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.upload_document")
   def test_upload_document(self, mock_upload, mock_config, graph_id):
     """Test uploading a markdown document."""
     mock_resp = Mock()
@@ -65,7 +65,7 @@ class TestDocumentUpload:
     assert result.section_count == 3
     mock_upload.assert_called_once()
 
-  @patch("robosystems_client.extensions.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.upload_document")
   def test_upload_document_failure(self, mock_upload, mock_config, graph_id):
     """Test upload failure raises exception."""
     mock_resp = Mock()
@@ -78,7 +78,7 @@ class TestDocumentUpload:
     with pytest.raises(Exception, match="Document upload failed"):
       client.upload(graph_id=graph_id, title="Bad", content="content")
 
-  @patch("robosystems_client.extensions.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.upload_document")
   def test_upload_minimal(self, mock_upload, mock_config, graph_id):
     """Test upload with only required fields."""
     mock_resp = Mock()
@@ -96,7 +96,7 @@ class TestDocumentUpload:
 class TestDocumentGet:
   """Test suite for DocumentClient.get method."""
 
-  @patch("robosystems_client.extensions.document_client.get_document")
+  @patch("robosystems_client.clients.document_client.get_document")
   def test_get_document(self, mock_get, mock_config, graph_id):
     """Test getting a document by ID."""
     mock_resp = Mock()
@@ -112,7 +112,7 @@ class TestDocumentGet:
     assert result is not None
     assert result.title == "Found Document"
 
-  @patch("robosystems_client.extensions.document_client.get_document")
+  @patch("robosystems_client.clients.document_client.get_document")
   def test_get_document_not_found(self, mock_get, mock_config, graph_id):
     """Test getting a document that doesn't exist."""
     mock_resp = Mock()
@@ -124,7 +124,7 @@ class TestDocumentGet:
 
     assert result is None
 
-  @patch("robosystems_client.extensions.document_client.get_document")
+  @patch("robosystems_client.clients.document_client.get_document")
   def test_get_document_server_error(self, mock_get, mock_config, graph_id):
     """Test get raises on server error."""
     mock_resp = Mock()
@@ -142,7 +142,7 @@ class TestDocumentGet:
 class TestDocumentUpdate:
   """Test suite for DocumentClient.update method."""
 
-  @patch("robosystems_client.extensions.document_client.update_document")
+  @patch("robosystems_client.clients.document_client.update_document")
   def test_update_document(self, mock_update, mock_config, graph_id):
     """Test updating a document."""
     mock_resp = Mock()
@@ -160,7 +160,7 @@ class TestDocumentUpdate:
 
     assert result.section_count == 5
 
-  @patch("robosystems_client.extensions.document_client.update_document")
+  @patch("robosystems_client.clients.document_client.update_document")
   def test_update_document_failure(self, mock_update, mock_config, graph_id):
     """Test update failure raises exception."""
     mock_resp = Mock()
@@ -178,7 +178,7 @@ class TestDocumentUpdate:
 class TestDocumentSearch:
   """Test suite for DocumentClient.search method."""
 
-  @patch("robosystems_client.extensions.document_client.search_documents")
+  @patch("robosystems_client.clients.document_client.search_documents")
   def test_search_documents(self, mock_search, mock_config, graph_id):
     """Test searching documents."""
     mock_resp = Mock()
@@ -192,7 +192,7 @@ class TestDocumentSearch:
     assert result.total == 2
     assert len(result.hits) == 2
 
-  @patch("robosystems_client.extensions.document_client.search_documents")
+  @patch("robosystems_client.clients.document_client.search_documents")
   def test_search_with_filters(self, mock_search, mock_config, graph_id):
     """Test searching with filters."""
     mock_resp = Mock()
@@ -214,7 +214,7 @@ class TestDocumentSearch:
     assert result.total == 1
     mock_search.assert_called_once()
 
-  @patch("robosystems_client.extensions.document_client.search_documents")
+  @patch("robosystems_client.clients.document_client.search_documents")
   def test_search_failure(self, mock_search, mock_config, graph_id):
     """Test search failure raises exception."""
     mock_resp = Mock()
@@ -232,7 +232,7 @@ class TestDocumentSearch:
 class TestDocumentList:
   """Test suite for DocumentClient.list method."""
 
-  @patch("robosystems_client.extensions.document_client.list_documents")
+  @patch("robosystems_client.clients.document_client.list_documents")
   def test_list_documents(self, mock_list, mock_config, graph_id):
     """Test listing documents."""
     mock_resp = Mock()
@@ -245,7 +245,7 @@ class TestDocumentList:
 
     assert result.total == 3
 
-  @patch("robosystems_client.extensions.document_client.list_documents")
+  @patch("robosystems_client.clients.document_client.list_documents")
   def test_list_documents_with_filter(self, mock_list, mock_config, graph_id):
     """Test listing with source type filter."""
     mock_resp = Mock()
@@ -263,7 +263,7 @@ class TestDocumentList:
 class TestDocumentDelete:
   """Test suite for DocumentClient.delete method."""
 
-  @patch("robosystems_client.extensions.document_client.delete_document")
+  @patch("robosystems_client.clients.document_client.delete_document")
   def test_delete_document(self, mock_delete, mock_config, graph_id):
     """Test deleting a document."""
     mock_resp = Mock()
@@ -275,7 +275,7 @@ class TestDocumentDelete:
 
     assert result is True
 
-  @patch("robosystems_client.extensions.document_client.delete_document")
+  @patch("robosystems_client.clients.document_client.delete_document")
   def test_delete_document_not_found(self, mock_delete, mock_config, graph_id):
     """Test deleting a document that doesn't exist."""
     mock_resp = Mock()
@@ -287,7 +287,7 @@ class TestDocumentDelete:
 
     assert result is False
 
-  @patch("robosystems_client.extensions.document_client.delete_document")
+  @patch("robosystems_client.clients.document_client.delete_document")
   def test_delete_document_server_error(self, mock_delete, mock_config, graph_id):
     """Test delete raises on server error."""
     mock_resp = Mock()
@@ -305,7 +305,7 @@ class TestDocumentDelete:
 class TestDocumentSection:
   """Test suite for DocumentClient.get_section method."""
 
-  @patch("robosystems_client.extensions.document_client.get_document_section")
+  @patch("robosystems_client.clients.document_client.get_document_section")
   def test_get_section(self, mock_get_section, mock_config, graph_id):
     """Test getting a document section."""
     mock_resp = Mock()
@@ -321,7 +321,7 @@ class TestDocumentSection:
     assert result is not None
     assert result.title == "Revenue"
 
-  @patch("robosystems_client.extensions.document_client.get_document_section")
+  @patch("robosystems_client.clients.document_client.get_document_section")
   def test_get_section_not_found(self, mock_get_section, mock_config, graph_id):
     """Test getting a section that doesn't exist."""
     mock_resp = Mock()
@@ -338,7 +338,7 @@ class TestDocumentSection:
 class TestDocumentBulkUpload:
   """Test suite for DocumentClient.upload_bulk method."""
 
-  @patch("robosystems_client.extensions.document_client.upload_documents_bulk")
+  @patch("robosystems_client.clients.document_client.upload_documents_bulk")
   def test_upload_bulk(self, mock_bulk, mock_config, graph_id):
     """Test bulk uploading documents."""
     mock_resp = Mock()
@@ -356,7 +356,7 @@ class TestDocumentBulkUpload:
     assert result.total == 2
     assert result.succeeded == 2
 
-  @patch("robosystems_client.extensions.document_client.upload_documents_bulk")
+  @patch("robosystems_client.clients.document_client.upload_documents_bulk")
   def test_upload_bulk_failure(self, mock_bulk, mock_config, graph_id):
     """Test bulk upload failure raises exception."""
     mock_resp = Mock()
@@ -374,7 +374,7 @@ class TestDocumentBulkUpload:
 class TestDocumentUploadFile:
   """Test suite for DocumentClient.upload_file method."""
 
-  @patch("robosystems_client.extensions.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.upload_document")
   def test_upload_file(self, mock_upload, mock_config, graph_id, tmp_path):
     """Test uploading a file from disk."""
     md_file = tmp_path / "test-doc.md"
@@ -390,7 +390,7 @@ class TestDocumentUploadFile:
 
     assert result.document_id == "doc-file"
 
-  @patch("robosystems_client.extensions.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.upload_document")
   def test_upload_file_title_from_filename(
     self, mock_upload, mock_config, graph_id, tmp_path
   ):
@@ -415,7 +415,7 @@ class TestDocumentUploadFile:
 class TestDocumentUploadDirectory:
   """Test suite for DocumentClient.upload_directory method."""
 
-  @patch("robosystems_client.extensions.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.upload_document")
   def test_upload_directory(self, mock_upload, mock_config, graph_id, tmp_path):
     """Test uploading all markdown files from a directory."""
     (tmp_path / "doc1.md").write_text("# Doc 1")

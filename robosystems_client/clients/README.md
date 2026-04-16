@@ -32,10 +32,10 @@ pip install httpx pandas  # For SSE and DataFrame support
 ### Basic Usage
 
 ```python
-from robosystems_client.extensions import create_production_extensions
+from robosystems_client.extensions import create_production_clients
 
 # Initialize with API key
-extensions = create_production_extensions("your-api-key-here")
+extensions = create_production_clients("your-api-key-here")
 
 # Execute a simple query
 result = extensions.execute_query(
@@ -66,10 +66,10 @@ for transaction in extensions.stream_query("your_graph_id", query, chunk_size=10
 
 ```python
 import asyncio
-from robosystems_client.extensions import AsyncRoboSystemsExtensions
+from robosystems_client.extensions import AsyncRoboSystemsClients
 
 async def main():
-    extensions = AsyncRoboSystemsExtensions(config)
+    extensions = AsyncRoboSystemsClients(config)
     
     # Async query execution
     result = await extensions.execute_query("graph_id", "MATCH (n) RETURN COUNT(n)")
@@ -89,9 +89,9 @@ asyncio.run(main())
 ### API Key Authentication (Recommended)
 
 ```python
-from robosystems_client.extensions import AuthenticatedExtensions
+from robosystems_client.extensions import AuthenticatedClients
 
-extensions = AuthenticatedExtensions(
+extensions = AuthenticatedClients(
     api_key="your-api-key-here",
     base_url="https://api.robosystems.ai"
 )
@@ -100,9 +100,9 @@ extensions = AuthenticatedExtensions(
 ### Cookie Authentication
 
 ```python
-from robosystems_client.extensions import CookieAuthExtensions
+from robosystems_client.extensions import CookieAuthClients
 
-extensions = CookieAuthExtensions(
+extensions = CookieAuthClients(
     cookies={"auth-token": "your-cookie-token"},
     base_url="https://api.robosystems.ai"
 )
@@ -111,9 +111,9 @@ extensions = CookieAuthExtensions(
 ### JWT Token Authentication
 
 ```python
-from robosystems_client.extensions import TokenExtensions
+from robosystems_client.extensions import TokenClients
 
-extensions = TokenExtensions(
+extensions = TokenClients(
     token="your-jwt-token",
     base_url="https://api.robosystems.ai"
 )
@@ -122,17 +122,17 @@ extensions = TokenExtensions(
 ### Environment-Specific Configurations
 
 ```python
-from robosystems_client.extensions import create_extensions
+from robosystems_client.extensions import create_clients
 
 # Production
-prod_ext = create_extensions(
+prod_ext = create_clients(
     'api_key', 
     api_key=os.getenv('ROBOSYSTEMS_API_KEY'),
     base_url="https://api.robosystems.ai"
 )
 
 # Development  
-dev_ext = create_extensions(
+dev_ext = create_clients(
     'api_key',
     api_key="dev-key-123",
     base_url="http://localhost:8000"
@@ -276,9 +276,9 @@ client.close()
 ### Financial Data Analysis
 
 ```python
-from robosystems_client.extensions import create_production_extensions, QueryBuilder
+from robosystems_client.extensions import create_production_clients, QueryBuilder
 
-extensions = create_production_extensions(api_key)
+extensions = create_production_clients(api_key)
 
 # Find top performing companies by revenue growth
 builder = QueryBuilder()
@@ -369,13 +369,13 @@ Extensions automatically manage SSE connections with pooling:
 
 ```python
 # Configure connection limits
-config = RoboSystemsExtensionConfig(
+config = RoboSystemsClientConfig(
     max_retries=5,
     retry_delay=2000,  # 2 seconds
     timeout=60
 )
 
-extensions = RoboSystemsExtensions(config)
+extensions = RoboSystemsClients(config)
 ```
 
 ### Query Optimization
@@ -441,11 +441,11 @@ python -c "from robosystems_client.extensions.tests.test_integration import run_
 ### Writing Tests
 
 ```python
-from robosystems_client.extensions import AuthenticatedExtensions
+from robosystems_client.extensions import AuthenticatedClients
 from unittest.mock import Mock, patch
 
 def test_query_execution():
-    extensions = AuthenticatedExtensions("test-key")
+    extensions = AuthenticatedClients("test-key")
     
     with patch('robosystems_client.extensions.auth_integration.sync_detailed') as mock_query:
         # Mock successful response
@@ -476,9 +476,9 @@ export ROBOSYSTEMS_RETRY_DELAY="2000"
 ### Configuration Object
 
 ```python
-from robosystems_client.extensions import RoboSystemsExtensionConfig
+from robosystems_client.extensions import RoboSystemsClientConfig
 
-config = RoboSystemsExtensionConfig(
+config = RoboSystemsClientConfig(
     base_url="https://api.robosystems.ai",
     headers={
         "X-Custom-Header": "value",
@@ -489,18 +489,18 @@ config = RoboSystemsExtensionConfig(
     timeout=45
 )
 
-extensions = RoboSystemsExtensions(config)
+extensions = RoboSystemsClients(config)
 ```
 
 ## API Reference
 
 ### Core Classes
 
-- **`RoboSystemsExtensions`** - Main extensions class
-- **`AuthenticatedExtensions`** - API key authentication
-- **`CookieAuthExtensions`** - Cookie authentication  
-- **`TokenExtensions`** - JWT token authentication
-- **`AsyncRoboSystemsExtensions`** - Async version
+- **`RoboSystemsClients`** - Main extensions class
+- **`AuthenticatedClients`** - API key authentication
+- **`CookieAuthClients`** - Cookie authentication  
+- **`TokenClients`** - JWT token authentication
+- **`AsyncRoboSystemsClients`** - Async version
 
 ### SSE Components
 
@@ -526,7 +526,7 @@ extensions = RoboSystemsExtensions(config)
 - **`validate_cypher_query(query)`** - Query syntax validation
 - **`estimate_query_cost(query, params)`** - Complexity analysis
 - **`format_duration(milliseconds)`** - Human-readable time formatting
-- **`create_extensions(method, **kwargs)`** - Extensions factory
+- **`create_clients(method, **kwargs)`** - Extensions factory
 
 ## Troubleshooting
 
@@ -542,7 +542,7 @@ pip install pandas # For DataFrame conversion (optional)
 **Authentication Failures**
 ```python
 # Verify API key is valid
-extensions = AuthenticatedExtensions("your-api-key")
+extensions = AuthenticatedClients("your-api-key")
 try:
     result = extensions.execute_query("graph_id", "MATCH (n) RETURN count(n) LIMIT 1")
     print("Authentication successful")
@@ -582,7 +582,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 # This will show internal HTTP requests and SSE events
-extensions = AuthenticatedExtensions("your-key")
+extensions = AuthenticatedClients("your-key")
 ```
 
 ## Contributing

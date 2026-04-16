@@ -3,7 +3,7 @@
 import pytest
 from io import BytesIO
 from unittest.mock import Mock, patch
-from robosystems_client.extensions.file_client import (
+from robosystems_client.clients.file_client import (
   FileClient,
   FileUploadOptions,
   FileUploadResult,
@@ -137,8 +137,8 @@ class TestFileDataclasses:
 class TestFileUpload:
   """Test suite for FileClient.upload method."""
 
-  @patch("robosystems_client.extensions.file_client.update_file")
-  @patch("robosystems_client.extensions.file_client.create_file_upload")
+  @patch("robosystems_client.clients.file_client.update_file")
+  @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_bytesio(self, mock_create, mock_update, mock_config, graph_id):
     """Test uploading a BytesIO buffer."""
     # Mock presigned URL response
@@ -171,7 +171,7 @@ class TestFileUpload:
     assert result.row_count == 10
     assert result.table_name == "Entity"
 
-  @patch("robosystems_client.extensions.file_client.create_file_upload")
+  @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_presigned_url_failure(self, mock_create, mock_config, graph_id):
     """Test upload failure when presigned URL request fails."""
     mock_create_resp = Mock()
@@ -185,7 +185,7 @@ class TestFileUpload:
     assert result.success is False
     assert "Failed to get upload URL" in result.error
 
-  @patch("robosystems_client.extensions.file_client.create_file_upload")
+  @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_s3_failure(self, mock_create, mock_config, graph_id):
     """Test upload failure when S3 PUT fails."""
     mock_create_resp = Mock()
@@ -204,8 +204,8 @@ class TestFileUpload:
     assert result.success is False
     assert "S3 upload failed" in result.error
 
-  @patch("robosystems_client.extensions.file_client.update_file")
-  @patch("robosystems_client.extensions.file_client.create_file_upload")
+  @patch("robosystems_client.clients.file_client.update_file")
+  @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_status_update_failure(
     self, mock_create, mock_update, mock_config, graph_id
   ):
@@ -250,8 +250,8 @@ class TestFileUpload:
     assert result.success is False
     assert "Unsupported file type" in result.error
 
-  @patch("robosystems_client.extensions.file_client.update_file")
-  @patch("robosystems_client.extensions.file_client.create_file_upload")
+  @patch("robosystems_client.clients.file_client.update_file")
+  @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_with_progress_callback(
     self, mock_create, mock_update, mock_config, graph_id
   ):
@@ -281,8 +281,8 @@ class TestFileUpload:
 
     assert len(progress_messages) >= 3  # URL, upload, mark uploaded
 
-  @patch("robosystems_client.extensions.file_client.update_file")
-  @patch("robosystems_client.extensions.file_client.create_file_upload")
+  @patch("robosystems_client.clients.file_client.update_file")
+  @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_with_s3_endpoint_override(
     self, mock_create, mock_update, mock_config, graph_id
   ):
@@ -320,7 +320,7 @@ class TestFileUpload:
 class TestFileList:
   """Test suite for FileClient.list method."""
 
-  @patch("robosystems_client.extensions.file_client.list_files")
+  @patch("robosystems_client.clients.file_client.list_files")
   def test_list_files(self, mock_list, mock_config, graph_id):
     """Test listing files returns FileInfo objects."""
     mock_file = Mock()
@@ -348,7 +348,7 @@ class TestFileList:
     assert files[0].file_name == "data.parquet"
     assert files[0].size_bytes == 5000
 
-  @patch("robosystems_client.extensions.file_client.list_files")
+  @patch("robosystems_client.clients.file_client.list_files")
   def test_list_files_failure(self, mock_list, mock_config, graph_id):
     """Test listing files returns empty list on failure."""
     mock_resp = Mock()
@@ -374,7 +374,7 @@ class TestFileList:
 class TestFileGet:
   """Test suite for FileClient.get method."""
 
-  @patch("robosystems_client.extensions.file_client.get_file")
+  @patch("robosystems_client.clients.file_client.get_file")
   def test_get_file(self, mock_get, mock_config, graph_id):
     """Test getting a specific file."""
     mock_file_data = Mock()
@@ -401,7 +401,7 @@ class TestFileGet:
     assert info.file_id == "file-detail"
     assert info.layers == {"s3": "uploaded", "duckdb": "staged"}
 
-  @patch("robosystems_client.extensions.file_client.get_file")
+  @patch("robosystems_client.clients.file_client.get_file")
   def test_get_file_not_found(self, mock_get, mock_config, graph_id):
     """Test getting a file that doesn't exist."""
     mock_resp = Mock()
@@ -419,7 +419,7 @@ class TestFileGet:
 class TestFileDelete:
   """Test suite for FileClient.delete method."""
 
-  @patch("robosystems_client.extensions.file_client.delete_file")
+  @patch("robosystems_client.clients.file_client.delete_file")
   def test_delete_file(self, mock_delete, mock_config, graph_id):
     """Test deleting a file."""
     mock_resp = Mock()
@@ -431,7 +431,7 @@ class TestFileDelete:
 
     assert result is True
 
-  @patch("robosystems_client.extensions.file_client.delete_file")
+  @patch("robosystems_client.clients.file_client.delete_file")
   def test_delete_file_failure(self, mock_delete, mock_config, graph_id):
     """Test delete failure returns False."""
     mock_resp = Mock()
@@ -443,7 +443,7 @@ class TestFileDelete:
 
     assert result is False
 
-  @patch("robosystems_client.extensions.file_client.delete_file")
+  @patch("robosystems_client.clients.file_client.delete_file")
   def test_delete_file_with_cascade(self, mock_delete, mock_config, graph_id):
     """Test cascade delete passes parameter."""
     mock_resp = Mock()
