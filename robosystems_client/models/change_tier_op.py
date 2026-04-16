@@ -6,20 +6,20 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.upgrade_tier_op_new_tier import UpgradeTierOpNewTier
+from ..models.change_tier_op_new_tier import ChangeTierOpNewTier
 
-T = TypeVar("T", bound="UpgradeTierOp")
+T = TypeVar("T", bound="ChangeTierOp")
 
 
 @_attrs_define
-class UpgradeTierOp:
-  """Body for the upgrade-tier operation.
+class ChangeTierOp:
+  """Body for the change-tier operation (supports upgrades and downgrades).
 
   Attributes:
-      new_tier (UpgradeTierOpNewTier): Target infrastructure tier
+      new_tier (ChangeTierOpNewTier): Target infrastructure tier
   """
 
-  new_tier: UpgradeTierOpNewTier
+  new_tier: ChangeTierOpNewTier
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -38,14 +38,14 @@ class UpgradeTierOp:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    new_tier = UpgradeTierOpNewTier(d.pop("new_tier"))
+    new_tier = ChangeTierOpNewTier(d.pop("new_tier"))
 
-    upgrade_tier_op = cls(
+    change_tier_op = cls(
       new_tier=new_tier,
     )
 
-    upgrade_tier_op.additional_properties = d
-    return upgrade_tier_op
+    change_tier_op.additional_properties = d
+    return change_tier_op
 
   @property
   def additional_keys(self) -> list[str]:

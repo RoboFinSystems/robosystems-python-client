@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class UpgradeTierOpNewTier(str, Enum):
+class ChangeTierOpNewTier(str, Enum):
   LADYBUG_LARGE = "ladybug-large"
   LADYBUG_STANDARD = "ladybug-standard"
   LADYBUG_XLARGE = "ladybug-xlarge"

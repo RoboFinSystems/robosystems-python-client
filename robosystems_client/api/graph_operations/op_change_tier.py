@@ -6,17 +6,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.change_tier_op import ChangeTierOp
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
-from ...models.upgrade_tier_op import UpgradeTierOp
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: UpgradeTierOp,
+  body: ChangeTierOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/operations/upgrade-tier".format(
+    "url": "/v1/graphs/{graph_id}/operations/change-tier".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,10 +103,10 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpgradeTierOp,
+  body: ChangeTierOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Upgrade Tier
+  """Change Tier
 
    Change the infrastructure tier on a graph (async EBS migration).
 
@@ -116,7 +116,8 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpgradeTierOp): Body for the upgrade-tier operation.
+      body (ChangeTierOp): Body for the change-tier operation (supports upgrades and
+          downgrades).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -143,10 +144,10 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpgradeTierOp,
+  body: ChangeTierOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Upgrade Tier
+  """Change Tier
 
    Change the infrastructure tier on a graph (async EBS migration).
 
@@ -156,7 +157,8 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpgradeTierOp): Body for the upgrade-tier operation.
+      body (ChangeTierOp): Body for the change-tier operation (supports upgrades and
+          downgrades).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -178,10 +180,10 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpgradeTierOp,
+  body: ChangeTierOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Upgrade Tier
+  """Change Tier
 
    Change the infrastructure tier on a graph (async EBS migration).
 
@@ -191,7 +193,8 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpgradeTierOp): Body for the upgrade-tier operation.
+      body (ChangeTierOp): Body for the change-tier operation (supports upgrades and
+          downgrades).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -216,10 +219,10 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpgradeTierOp,
+  body: ChangeTierOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Upgrade Tier
+  """Change Tier
 
    Change the infrastructure tier on a graph (async EBS migration).
 
@@ -229,7 +232,8 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpgradeTierOp): Body for the upgrade-tier operation.
+      body (ChangeTierOp): Body for the change-tier operation (supports upgrades and
+          downgrades).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
