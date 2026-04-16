@@ -1027,7 +1027,7 @@ class LedgerClient:
       graph_id=graph_id,
       body=body,
       client=self._get_client(),
-      idempotency_key=idempotency_key,
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
     )
     envelope = self._call_op("Create journal entry", response)
     return envelope.result or {}

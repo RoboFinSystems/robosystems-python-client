@@ -20,6 +20,7 @@ import pytest
 from robosystems_client.clients.ledger_client import LedgerClient
 from robosystems_client.models.operation_envelope import OperationEnvelope
 from robosystems_client.models.operation_envelope_status import OperationEnvelopeStatus
+from robosystems_client.types import UNSET
 
 
 # ── Helpers ────────────────────────────────────────────────────────────
@@ -442,7 +443,7 @@ class TestJournalEntries:
     assert result["status"] == "draft"
     call_kwargs = mock_op.call_args.kwargs
     assert call_kwargs["graph_id"] == graph_id
-    assert call_kwargs["idempotency_key"] is None
+    assert call_kwargs["idempotency_key"] is UNSET
     body = call_kwargs["body"]
     assert body.memo == "Q1 revenue"
     assert len(body.line_items) == 2
