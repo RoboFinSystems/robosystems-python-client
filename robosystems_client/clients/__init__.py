@@ -54,10 +54,10 @@ from .graph_client import (
 from .investor_client import InvestorClient
 from .ledger_client import LedgerClient
 from .report_client import ReportClient
-from .extensions import (
-  RoboSystemsExtensions,
-  RoboSystemsExtensionConfig,
-  AsyncRoboSystemsExtensions,
+from .facade import (
+  RoboSystemsClients,
+  RoboSystemsClientConfig,
+  AsyncRoboSystemsClients,
 )
 from .utils import (
   QueryBuilder,
@@ -72,12 +72,12 @@ from .utils import (
   validate_cypher_query,
 )
 from .auth_integration import (
-  AuthenticatedExtensions,
-  CookieAuthExtensions,
-  TokenExtensions,
-  create_extensions,
-  create_production_extensions,
-  create_development_extensions,
+  AuthenticatedClients,
+  CookieAuthClients,
+  TokenClients,
+  create_clients,
+  create_production_clients,
+  create_development_clients,
 )
 
 # JWT Token utilities
@@ -124,9 +124,9 @@ except ImportError:
 
 __all__ = [
   # Core extension classes
-  "RoboSystemsExtensions",
-  "RoboSystemsExtensionConfig",
-  "AsyncRoboSystemsExtensions",
+  "RoboSystemsClients",
+  "RoboSystemsClientConfig",
+  "AsyncRoboSystemsClients",
   # SSE Client
   "SSEClient",
   "EventType",
@@ -188,12 +188,12 @@ __all__ = [
   "format_duration",
   "validate_cypher_query",
   # Authentication Integration
-  "AuthenticatedExtensions",
-  "CookieAuthExtensions",
-  "TokenExtensions",
-  "create_extensions",
-  "create_production_extensions",
-  "create_development_extensions",
+  "AuthenticatedClients",
+  "CookieAuthClients",
+  "TokenClients",
+  "create_clients",
+  "create_production_clients",
+  "create_development_clients",
   # JWT Token utilities
   "validate_jwt_format",
   "extract_jwt_from_header",
@@ -211,34 +211,34 @@ __all__ = [
   "DataFrameQueryClient",
 ]
 
-# Create a default extensions instance
-extensions = RoboSystemsExtensions()
+# Create a default clients instance
+clients = RoboSystemsClients()
 
 
 # Export convenience functions
 def monitor_operation(operation_id: str, on_progress=None):
-  """Monitor an operation using the default extensions instance"""
-  return extensions.monitor_operation(operation_id, on_progress)
+  """Monitor an operation using the default clients instance"""
+  return clients.monitor_operation(operation_id, on_progress)
 
 
 def execute_query(graph_id: str, query: str, parameters=None):
-  """Execute a query using the default extensions instance"""
-  return extensions.query.query(graph_id, query, parameters)
+  """Execute a query using the default clients instance"""
+  return clients.query.query(graph_id, query, parameters)
 
 
 def stream_query(graph_id: str, query: str, parameters=None, chunk_size=None):
-  """Stream a query using the default extensions instance"""
-  return extensions.query.stream_query(graph_id, query, parameters, chunk_size)
+  """Stream a query using the default clients instance"""
+  return clients.query.stream_query(graph_id, query, parameters, chunk_size)
 
 
 def agent_query(graph_id: str, message: str, context=None):
-  """Execute an agent query using the default extensions instance"""
-  return extensions.agent.query(graph_id, message, context)
+  """Execute an agent query using the default clients instance"""
+  return clients.agent.query(graph_id, message, context)
 
 
 def analyze_financials(graph_id: str, message: str, on_progress=None):
-  """Execute financial agent using the default extensions instance"""
-  return extensions.agent.analyze_financials(graph_id, message, on_progress)
+  """Execute financial agent using the default clients instance"""
+  return clients.agent.analyze_financials(graph_id, message, on_progress)
 
 
 # DataFrame convenience functions (if pandas is available)

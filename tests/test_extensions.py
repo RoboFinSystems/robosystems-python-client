@@ -1,9 +1,9 @@
-"""Integration tests for RoboSystemsExtensions."""
+"""Integration tests for RoboSystemsClients."""
 
 import pytest
-from robosystems_client.extensions import (
-  RoboSystemsExtensions,
-  RoboSystemsExtensionConfig,
+from robosystems_client.clients import (
+  RoboSystemsClients,
+  RoboSystemsClientConfig,
   FileClient,
   MaterializationClient,
   TableClient,
@@ -14,12 +14,12 @@ from robosystems_client.extensions import (
 
 
 @pytest.mark.unit
-class TestRoboSystemsExtensions:
-  """Test suite for RoboSystemsExtensions integration."""
+class TestRoboSystemsClients:
+  """Test suite for RoboSystemsClients integration."""
 
   def test_extensions_initialization_default(self):
     """Test default initialization of extensions."""
-    extensions = RoboSystemsExtensions()
+    extensions = RoboSystemsClients()
 
     assert extensions.config["base_url"] == "http://localhost:8000"
     assert isinstance(extensions.query, QueryClient)
@@ -33,14 +33,14 @@ class TestRoboSystemsExtensions:
 
   def test_extensions_initialization_with_config(self):
     """Test initialization with custom config."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-key-123"},
       max_retries=3,
       retry_delay=500,
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     assert extensions.config["base_url"] == "https://api.robosystems.ai"
     assert extensions.config["headers"]["X-API-Key"] == "test-key-123"
@@ -51,12 +51,12 @@ class TestRoboSystemsExtensions:
 
   def test_extensions_initialization_with_token(self):
     """Test initialization with JWT token in headers."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"Authorization": "Bearer jwt-token-123"},
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     assert "Authorization" in extensions.config["headers"]
 
@@ -64,12 +64,12 @@ class TestRoboSystemsExtensions:
 
   def test_config_dict_format(self):
     """Test that config is properly formatted as dict."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"Custom-Header": "value"},
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     # Config should be a dict
     assert isinstance(extensions.config, dict)
@@ -80,12 +80,12 @@ class TestRoboSystemsExtensions:
 
   def test_query_client_receives_config(self):
     """Test that QueryClient receives proper config."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-token"},
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     assert extensions.query.base_url == "https://api.robosystems.ai"
     assert "X-API-Key" in extensions.query.headers
@@ -94,12 +94,12 @@ class TestRoboSystemsExtensions:
 
   def test_operation_client_receives_config(self):
     """Test that OperationClient receives proper config."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-token"},
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     assert extensions.operations.base_url == "https://api.robosystems.ai"
     assert "X-API-Key" in extensions.operations.headers
@@ -108,12 +108,12 @@ class TestRoboSystemsExtensions:
 
   def test_file_client_receives_config(self):
     """Test that FileClient receives proper config."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-token"},
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     assert extensions.files.base_url == "https://api.robosystems.ai"
     assert "X-API-Key" in extensions.files.headers
@@ -122,12 +122,12 @@ class TestRoboSystemsExtensions:
 
   def test_materialization_client_receives_config(self):
     """Test that MaterializationClient receives proper config."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-token"},
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     assert extensions.materialization.base_url == "https://api.robosystems.ai"
     assert "X-API-Key" in extensions.materialization.headers
@@ -136,12 +136,12 @@ class TestRoboSystemsExtensions:
 
   def test_table_client_receives_config(self):
     """Test that TableClient receives proper config."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-token"},
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     assert extensions.tables.base_url == "https://api.robosystems.ai"
     assert "X-API-Key" in extensions.tables.headers
@@ -150,12 +150,12 @@ class TestRoboSystemsExtensions:
 
   def test_graph_client_receives_config(self):
     """Test that GraphClient receives proper config."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-token"},
     )
 
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
 
     assert extensions.graphs.base_url == "https://api.robosystems.ai"
     assert "X-API-Key" in extensions.graphs.headers
@@ -164,11 +164,9 @@ class TestRoboSystemsExtensions:
 
   def test_multiple_extensions_instances(self):
     """Test that multiple extension instances can coexist."""
-    ext1 = RoboSystemsExtensions(
-      RoboSystemsExtensionConfig(base_url="http://localhost:8000")
-    )
-    ext2 = RoboSystemsExtensions(
-      RoboSystemsExtensionConfig(base_url="https://api.robosystems.ai")
+    ext1 = RoboSystemsClients(RoboSystemsClientConfig(base_url="http://localhost:8000"))
+    ext2 = RoboSystemsClients(
+      RoboSystemsClientConfig(base_url="https://api.robosystems.ai")
     )
 
     assert ext1.config["base_url"] == "http://localhost:8000"
@@ -180,12 +178,12 @@ class TestRoboSystemsExtensions:
 
 
 @pytest.mark.unit
-class TestRoboSystemsExtensionConfig:
-  """Test suite for RoboSystemsExtensionConfig dataclass."""
+class TestRoboSystemsClientConfig:
+  """Test suite for RoboSystemsClientConfig dataclass."""
 
   def test_config_defaults(self):
     """Test default configuration values."""
-    config = RoboSystemsExtensionConfig()
+    config = RoboSystemsClientConfig()
 
     assert config.base_url is None  # Default is None, set in Extensions class
     assert config.headers is None
@@ -195,7 +193,7 @@ class TestRoboSystemsExtensionConfig:
 
   def test_config_custom_values(self):
     """Test custom configuration values."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://custom.api.com",
       headers={"Authorization": "Bearer token"},
       max_retries=10,
@@ -211,13 +209,13 @@ class TestRoboSystemsExtensionConfig:
 
   def test_config_to_dict(self):
     """Test converting config to dictionary."""
-    config = RoboSystemsExtensionConfig(
+    config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-key"},
     )
 
     # The Extensions class converts this to dict internally
-    extensions = RoboSystemsExtensions(config)
+    extensions = RoboSystemsClients(config)
     config_dict = extensions.config
 
     assert isinstance(config_dict, dict)

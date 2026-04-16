@@ -2,7 +2,7 @@
 
 import pytest
 from unittest.mock import Mock, patch
-from robosystems_client.extensions.agent_client import (
+from robosystems_client.clients.agent_client import (
   AgentClient,
   AgentQueryRequest,
   AgentOptions,
@@ -155,7 +155,7 @@ class TestAgentClientInit:
 class TestAgentExecuteQuery:
   """Test suite for AgentClient.execute_query method."""
 
-  @patch("robosystems_client.extensions.agent_client.auto_select_agent")
+  @patch("robosystems_client.clients.agent_client.auto_select_agent")
   def test_execute_query_dict_response(self, mock_auto, mock_config, graph_id):
     """Test execute_query with dict response."""
     mock_resp = Mock()
@@ -179,7 +179,7 @@ class TestAgentExecuteQuery:
     assert result.agent_used == "financial"
     assert result.confidence_score == 0.9
 
-  @patch("robosystems_client.extensions.agent_client.auto_select_agent")
+  @patch("robosystems_client.clients.agent_client.auto_select_agent")
   def test_execute_query_queued_max_wait_zero(self, mock_auto, mock_config, graph_id):
     """Test execute_query raises QueuedAgentError when max_wait=0."""
     mock_resp = Mock()
@@ -199,7 +199,7 @@ class TestAgentExecuteQuery:
 
     assert exc_info.value.queue_info.operation_id == "op-queued"
 
-  @patch("robosystems_client.extensions.agent_client.auto_select_agent")
+  @patch("robosystems_client.clients.agent_client.auto_select_agent")
   def test_execute_query_no_token(self, mock_auto, mock_config, graph_id):
     """Test execute_query fails without token."""
     mock_config["token"] = None
@@ -209,7 +209,7 @@ class TestAgentExecuteQuery:
     with pytest.raises(Exception, match="Authentication failed|No API key"):
       client.execute_query(graph_id, request)
 
-  @patch("robosystems_client.extensions.agent_client.auto_select_agent")
+  @patch("robosystems_client.clients.agent_client.auto_select_agent")
   def test_execute_query_auth_error(self, mock_auto, mock_config, graph_id):
     """Test execute_query wraps 401 errors."""
     mock_auto.side_effect = Exception("401 Unauthorized")
@@ -220,7 +220,7 @@ class TestAgentExecuteQuery:
     with pytest.raises(Exception, match="Authentication failed"):
       client.execute_query(graph_id, request)
 
-  @patch("robosystems_client.extensions.agent_client.auto_select_agent")
+  @patch("robosystems_client.clients.agent_client.auto_select_agent")
   def test_execute_query_generic_error(self, mock_auto, mock_config, graph_id):
     """Test execute_query wraps generic errors."""
     mock_auto.side_effect = Exception("Connection timeout")
@@ -236,7 +236,7 @@ class TestAgentExecuteQuery:
 class TestAgentExecuteSpecific:
   """Test suite for AgentClient.execute_agent method."""
 
-  @patch("robosystems_client.extensions.agent_client.execute_specific_agent")
+  @patch("robosystems_client.clients.agent_client.execute_specific_agent")
   def test_execute_specific_agent(self, mock_exec, mock_config, graph_id):
     """Test executing a specific agent type."""
     mock_resp = Mock()
@@ -254,7 +254,7 @@ class TestAgentExecuteSpecific:
     assert result.content == "Deep analysis of financials."
     assert result.agent_used == "financial"
 
-  @patch("robosystems_client.extensions.agent_client.execute_specific_agent")
+  @patch("robosystems_client.clients.agent_client.execute_specific_agent")
   def test_execute_specific_agent_queued(self, mock_exec, mock_config, graph_id):
     """Test specific agent returns queued response."""
     mock_resp = Mock()

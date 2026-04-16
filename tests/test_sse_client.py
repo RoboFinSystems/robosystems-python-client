@@ -7,7 +7,7 @@ tests already exist in extensions/tests/test_unit.py.
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
-from robosystems_client.extensions.sse_client import (
+from robosystems_client.clients.sse_client import (
   SSEClient,
   SSEConfig,
 )
@@ -284,8 +284,8 @@ class TestCompletionAutoClose:
 class TestReconnection:
   """Test _handle_error retry logic."""
 
-  @patch("robosystems_client.extensions.sse_client.time.sleep")
-  @patch("robosystems_client.extensions.sse_client.httpx")
+  @patch("robosystems_client.clients.sse_client.time.sleep")
+  @patch("robosystems_client.clients.sse_client.httpx")
   def test_retry_with_backoff(self, mock_httpx, mock_sleep, sse_config):
     """Test exponential backoff on retry."""
     # Make httpx.Client always raise to trigger retry chain
@@ -325,7 +325,7 @@ class TestReconnection:
     assert len(exceeded_events) == 1
     assert client.closed is True
 
-  @patch("robosystems_client.extensions.sse_client.time.sleep")
+  @patch("robosystems_client.clients.sse_client.time.sleep")
   def test_resume_from_last_event_id(self, mock_sleep, sse_config):
     """Test reconnection resumes from last_event_id."""
     sse_config.max_retries = 1
@@ -341,7 +341,7 @@ class TestReconnection:
 
     assert connect_calls == [("op-1", 11)]  # last_event_id + 1
 
-  @patch("robosystems_client.extensions.sse_client.time.sleep")
+  @patch("robosystems_client.clients.sse_client.time.sleep")
   def test_resume_with_non_numeric_event_id(self, mock_sleep, sse_config):
     """Test reconnection falls back to from_sequence for non-numeric IDs."""
     sse_config.max_retries = 1
@@ -376,7 +376,7 @@ class TestReconnection:
 class TestConnect:
   """Test connect method."""
 
-  @patch("robosystems_client.extensions.sse_client.httpx")
+  @patch("robosystems_client.clients.sse_client.httpx")
   def test_connect_sets_up_stream(self, mock_httpx, sse_config):
     """Test connect creates httpx client and starts streaming."""
     mock_http_client = MagicMock()
@@ -402,7 +402,7 @@ class TestConnect:
     assert len(connected_events) == 1
     assert client.reconnect_attempts == 0
 
-  @patch("robosystems_client.extensions.sse_client.httpx")
+  @patch("robosystems_client.clients.sse_client.httpx")
   def test_connect_error_triggers_retry(self, mock_httpx, sse_config):
     """Test that connection error triggers _handle_error."""
     sse_config.max_retries = 0  # Don't actually retry

@@ -2,7 +2,7 @@
 
 import pytest
 from datetime import datetime
-from robosystems_client.extensions.operation_client import (
+from robosystems_client.clients.operation_client import (
   OperationClient,
   OperationStatus,
   OperationProgress,

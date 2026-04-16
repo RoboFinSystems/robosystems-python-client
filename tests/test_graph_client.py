@@ -2,7 +2,7 @@
 
 import pytest
 from unittest.mock import Mock, MagicMock, patch
-from robosystems_client.extensions.graph_client import (
+from robosystems_client.clients.graph_client import (
   GraphClient,
   GraphMetadata,
   InitialEntityData,
@@ -306,7 +306,7 @@ class TestWaitWithSSE:
     mock_client.__exit__ = Mock(return_value=False)
     return mock_client
 
-  @patch("robosystems_client.extensions.graph_client.httpx.Client")
+  @patch("robosystems_client.clients.graph_client.httpx.Client")
   def test_sse_successful_completion(self, mock_httpx_client, mock_config):
     """Test SSE stream completes successfully with graph_id."""
     sse_lines = [
@@ -339,7 +339,7 @@ class TestWaitWithSSE:
     assert "Processing (50%)" in progress_messages
     assert "Graph created: graph-456" in progress_messages
 
-  @patch("robosystems_client.extensions.graph_client.httpx.Client")
+  @patch("robosystems_client.clients.graph_client.httpx.Client")
   def test_sse_connection_failure(self, mock_httpx_client, mock_config):
     """Test SSE raises error on non-200 response."""
     mock_response = self._create_mock_response([], status_code=503)
@@ -351,7 +351,7 @@ class TestWaitWithSSE:
     with pytest.raises(RuntimeError, match="SSE connection failed: 503"):
       client._wait_with_sse("op-123", timeout=60, on_progress=None)
 
-  @patch("robosystems_client.extensions.graph_client.httpx.Client")
+  @patch("robosystems_client.clients.graph_client.httpx.Client")
   def test_sse_operation_error(self, mock_httpx_client, mock_config):
     """Test SSE handles operation error event."""
     sse_lines = [
@@ -369,7 +369,7 @@ class TestWaitWithSSE:
     with pytest.raises(RuntimeError, match="Graph creation failed: Validation failed"):
       client._wait_with_sse("op-123", timeout=60, on_progress=None)
 
-  @patch("robosystems_client.extensions.graph_client.httpx.Client")
+  @patch("robosystems_client.clients.graph_client.httpx.Client")
   def test_sse_stream_ends_without_completion(self, mock_httpx_client, mock_config):
     """Test SSE raises timeout if stream ends without completion."""
     sse_lines = [
@@ -387,8 +387,8 @@ class TestWaitWithSSE:
     with pytest.raises(TimeoutError, match="SSE stream ended without completion"):
       client._wait_with_sse("op-123", timeout=60, on_progress=None)
 
-  @patch("robosystems_client.extensions.graph_client.httpx.Client")
-  @patch("robosystems_client.extensions.graph_client.time.time")
+  @patch("robosystems_client.clients.graph_client.httpx.Client")
+  @patch("robosystems_client.clients.graph_client.time.time")
   def test_sse_timeout_during_stream(self, mock_time, mock_httpx_client, mock_config):
     """Test SSE raises timeout during long stream."""
     # Simulate time passing: start at 0, then jump past timeout
@@ -412,7 +412,7 @@ class TestWaitWithSSE:
     with pytest.raises(TimeoutError, match="timed out after"):
       client._wait_with_sse("op-123", timeout=60, on_progress=None)
 
-  @patch("robosystems_client.extensions.graph_client.httpx.Client")
+  @patch("robosystems_client.clients.graph_client.httpx.Client")
   def test_sse_ignores_comments_and_other_lines(self, mock_httpx_client, mock_config):
     """Test SSE ignores comment lines and other non-event lines."""
     sse_lines = [
@@ -434,7 +434,7 @@ class TestWaitWithSSE:
 
     assert result == "graph-789"
 
-  @patch("robosystems_client.extensions.graph_client.httpx.Client")
+  @patch("robosystems_client.clients.graph_client.httpx.Client")
   def test_sse_uses_correct_url_and_headers(self, mock_httpx_client, mock_config):
     """Test SSE constructs correct URL and headers."""
     sse_lines = [
@@ -473,13 +473,13 @@ class TestWaitWithPolling:
       mock_response.parsed["error"] = error
     return mock_response
 
-  @patch("robosystems_client.extensions.graph_client.time.sleep")
+  @patch("robosystems_client.clients.graph_client.time.sleep")
   def test_polling_successful_completion(self, mock_sleep, mock_config):
     """Test polling completes successfully on completed status."""
     mock_client = Mock()
 
     with patch(
-      "robosystems_client.extensions.graph_client.GraphClient._wait_with_polling"
+      "robosystems_client.clients.graph_client.GraphClient._wait_with_polling"
     ) as original:
       # Call the real method but mock the API call
       original.side_effect = lambda *args, **kwargs: "graph-poll-123"
@@ -492,7 +492,7 @@ class TestWaitWithPolling:
       assert result == "graph-poll-123"
 
   @patch("robosystems_client.api.operations.get_operation_status.sync_detailed")
-  @patch("robosystems_client.extensions.graph_client.time.sleep")
+  @patch("robosystems_client.clients.graph_client.time.sleep")
   def test_polling_with_dict_response(self, mock_sleep, mock_get_status, mock_config):
     """Test polling handles dict response format."""
     mock_client = Mock()
@@ -519,7 +519,7 @@ class TestWaitWithPolling:
     assert any("completed" in msg.lower() for msg in progress_messages)
 
   @patch("robosystems_client.api.operations.get_operation_status.sync_detailed")
-  @patch("robosystems_client.extensions.graph_client.time.sleep")
+  @patch("robosystems_client.clients.graph_client.time.sleep")
   def test_polling_failed_status(self, mock_sleep, mock_get_status, mock_config):
     """Test polling raises error on failed status."""
     mock_client = Mock()
@@ -536,7 +536,7 @@ class TestWaitWithPolling:
       )
 
   @patch("robosystems_client.api.operations.get_operation_status.sync_detailed")
-  @patch("robosystems_client.extensions.graph_client.time.sleep")
+  @patch("robosystems_client.clients.graph_client.time.sleep")
   def test_polling_timeout(self, mock_sleep, mock_get_status, mock_config):
     """Test polling raises timeout after max attempts."""
     mock_client = Mock()
@@ -555,7 +555,7 @@ class TestWaitWithPolling:
     assert mock_get_status.call_count == 3
 
   @patch("robosystems_client.api.operations.get_operation_status.sync_detailed")
-  @patch("robosystems_client.extensions.graph_client.time.sleep")
+  @patch("robosystems_client.clients.graph_client.time.sleep")
   def test_polling_completed_no_graph_id(
     self, mock_sleep, mock_get_status, mock_config
   ):
@@ -572,7 +572,7 @@ class TestWaitWithPolling:
       )
 
   @patch("robosystems_client.api.operations.get_operation_status.sync_detailed")
-  @patch("robosystems_client.extensions.graph_client.time.sleep")
+  @patch("robosystems_client.clients.graph_client.time.sleep")
   def test_polling_skips_empty_response(self, mock_sleep, mock_get_status, mock_config):
     """Test polling continues when response.parsed is None."""
     mock_client = Mock()
@@ -592,7 +592,7 @@ class TestWaitWithPolling:
     assert mock_get_status.call_count == 2
 
   @patch("robosystems_client.api.operations.get_operation_status.sync_detailed")
-  @patch("robosystems_client.extensions.graph_client.time.sleep")
+  @patch("robosystems_client.clients.graph_client.time.sleep")
   def test_polling_with_object_response(self, mock_sleep, mock_get_status, mock_config):
     """Test polling handles object response with additional_properties."""
     mock_client = Mock()

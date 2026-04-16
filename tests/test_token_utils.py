@@ -6,7 +6,7 @@ import json
 import base64
 import os
 
-from robosystems_client.extensions.token_utils import (
+from robosystems_client.clients.token_utils import (
   validate_jwt_format,
   extract_jwt_from_header,
   decode_jwt_payload,

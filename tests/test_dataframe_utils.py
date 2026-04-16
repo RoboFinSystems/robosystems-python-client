@@ -18,7 +18,7 @@ except ImportError:
 pytestmark = pytest.mark.skipif(not HAS_PANDAS, reason="pandas not installed")
 
 if HAS_PANDAS:
-  from robosystems_client.extensions.dataframe_utils import (
+  from robosystems_client.clients.dataframe_utils import (
     query_result_to_dataframe,
     parse_datetime_columns,
     stream_to_dataframe,
@@ -197,7 +197,7 @@ class TestDataFrameToCypherParams:
 class TestExportQueryToCSV:
   """Test CSV export functionality"""
 
-  @patch("robosystems_client.extensions.dataframe_utils.logger")
+  @patch("robosystems_client.clients.dataframe_utils.logger")
   def test_export_query_to_csv(self, mock_logger):
     """Test exporting query results to CSV"""
     mock_client = Mock()
@@ -323,7 +323,7 @@ class TestDataFrameQueryClient:
     mock_client = Mock()
 
     with patch(
-      "robosystems_client.extensions.dataframe_utils.export_query_to_csv"
+      "robosystems_client.clients.dataframe_utils.export_query_to_csv"
     ) as mock_export:
       mock_export.return_value = 100
 

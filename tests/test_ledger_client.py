@@ -17,7 +17,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from robosystems_client.extensions.ledger_client import LedgerClient
+from robosystems_client.clients.ledger_client import LedgerClient
 from robosystems_client.models.operation_envelope import OperationEnvelope
 from robosystems_client.models.operation_envelope_status import OperationEnvelopeStatus
 
@@ -242,7 +242,7 @@ class TestLedgerReads:
 
 @pytest.mark.unit
 class TestLedgerWrites:
-  @patch("robosystems_client.extensions.ledger_client.op_update_entity")
+  @patch("robosystems_client.clients.ledger_client.op_update_entity")
   def test_update_entity_unwraps_envelope(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "update-entity",
@@ -255,7 +255,7 @@ class TestLedgerWrites:
     assert mock_op.called
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
 
-  @patch("robosystems_client.extensions.ledger_client.op_update_entity")
+  @patch("robosystems_client.clients.ledger_client.op_update_entity")
   def test_update_entity_raises_on_4xx(self, mock_op, mock_config, graph_id):
     resp = Mock()
     resp.status_code = 400
@@ -266,7 +266,7 @@ class TestLedgerWrites:
     with pytest.raises(RuntimeError, match="Update entity failed"):
       client.update_entity(graph_id, {})
 
-  @patch("robosystems_client.extensions.ledger_client.op_initialize_ledger")
+  @patch("robosystems_client.clients.ledger_client.op_initialize_ledger")
   def test_initialize_ledger(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "initialize",
@@ -286,7 +286,7 @@ class TestLedgerWrites:
     result = client.initialize_ledger(graph_id, fiscal_year_start_month=1)
     assert result["periods_created"] == 12
 
-  @patch("robosystems_client.extensions.ledger_client.op_close_period")
+  @patch("robosystems_client.clients.ledger_client.op_close_period")
   def test_close_period(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "close-period",
@@ -305,7 +305,7 @@ class TestLedgerWrites:
     assert body.period == "2026-03"
     assert body.allow_stale_sync is True
 
-  @patch("robosystems_client.extensions.ledger_client.op_create_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_create_schedule")
   def test_create_schedule(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-schedule",
@@ -331,7 +331,7 @@ class TestLedgerWrites:
     )
     assert result["total_periods"] == 36
 
-  @patch("robosystems_client.extensions.ledger_client.op_auto_map_elements")
+  @patch("robosystems_client.clients.ledger_client.op_auto_map_elements")
   def test_auto_map_elements_returns_ack(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "auto-map-elements", None, status=OperationEnvelopeStatus.PENDING
@@ -342,7 +342,7 @@ class TestLedgerWrites:
     assert ack["operation_id"].startswith("op_")
     assert ack["status"] == OperationEnvelopeStatus.PENDING
 
-  @patch("robosystems_client.extensions.ledger_client.op_create_closing_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_closing_entry")
   def test_create_closing_entry(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-closing-entry",
@@ -362,7 +362,7 @@ class TestLedgerWrites:
     body = mock_op.call_args.kwargs["body"]
     assert body.memo == "Depr"
 
-  @patch("robosystems_client.extensions.ledger_client.op_truncate_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_truncate_schedule")
   def test_truncate_schedule(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "truncate-schedule",
@@ -380,7 +380,7 @@ class TestLedgerWrites:
     )
     assert result["facts_deleted"] == 6
 
-  @patch("robosystems_client.extensions.ledger_client.op_build_fact_grid")
+  @patch("robosystems_client.clients.ledger_client.op_build_fact_grid")
   def test_build_fact_grid_dispatches_via_operations(
     self, mock_op, mock_config, graph_id
   ):
@@ -424,7 +424,7 @@ class TestJournalEntries:
     {"element_id": "elem_revenue", "debit_amount": 0, "credit_amount": 50000},
   ]
 
-  @patch("robosystems_client.extensions.ledger_client.op_create_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_journal_entry")
   def test_create_journal_entry_basic(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-journal-entry",
@@ -447,7 +447,7 @@ class TestJournalEntries:
     assert body.memo == "Q1 revenue"
     assert len(body.line_items) == 2
 
-  @patch("robosystems_client.extensions.ledger_client.op_create_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_journal_entry")
   def test_create_journal_entry_idempotency_key_forwarded(
     self, mock_op, mock_config, graph_id
   ):
@@ -466,7 +466,7 @@ class TestJournalEntries:
     )
     assert mock_op.call_args.kwargs["idempotency_key"] == "idem-key-abc123"
 
-  @patch("robosystems_client.extensions.ledger_client.op_create_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_journal_entry")
   def test_create_journal_entry_posted_status(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-journal-entry",
@@ -484,7 +484,7 @@ class TestJournalEntries:
     body = mock_op.call_args.kwargs["body"]
     assert body.status.value == "posted"
 
-  @patch("robosystems_client.extensions.ledger_client.op_update_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_update_journal_entry")
   def test_update_journal_entry(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "update-journal-entry",
@@ -498,7 +498,7 @@ class TestJournalEntries:
     assert result["memo"] == "Updated memo"
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_delete_journal_entry")
   def test_delete_journal_entry_returns_deleted_sentinel(
     self, mock_op, mock_config, graph_id
   ):
@@ -510,7 +510,7 @@ class TestJournalEntries:
     body = mock_op.call_args.kwargs["body"]
     assert body.entry_id == "je_1"
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_delete_journal_entry")
   def test_delete_journal_entry_returns_result_when_present(
     self, mock_op, mock_config, graph_id
   ):
@@ -520,7 +520,7 @@ class TestJournalEntries:
     result = client.delete_journal_entry(graph_id, "je_1")
     assert result["entry_id"] == "je_1"
 
-  @patch("robosystems_client.extensions.ledger_client.op_reverse_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_reverse_journal_entry")
   def test_reverse_journal_entry(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "reverse-journal-entry",
@@ -546,7 +546,7 @@ class TestJournalEntries:
 
 @pytest.mark.unit
 class TestLinkEntityTaxonomy:
-  @patch("robosystems_client.extensions.ledger_client.op_link_entity_taxonomy")
+  @patch("robosystems_client.clients.ledger_client.op_link_entity_taxonomy")
   def test_link_entity_taxonomy_uses_sdk_op(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "link-entity-taxonomy",
@@ -560,7 +560,7 @@ class TestLinkEntityTaxonomy:
     call_kwargs = mock_op.call_args.kwargs
     assert call_kwargs["graph_id"] == graph_id
 
-  @patch("robosystems_client.extensions.ledger_client.op_link_entity_taxonomy")
+  @patch("robosystems_client.clients.ledger_client.op_link_entity_taxonomy")
   def test_link_entity_taxonomy_forwards_all_params(
     self, mock_op, mock_config, graph_id
   ):
@@ -580,7 +580,7 @@ class TestLinkEntityTaxonomy:
     assert body.is_primary is False
     assert body.adoption_context == "required"
 
-  @patch("robosystems_client.extensions.ledger_client.op_link_entity_taxonomy")
+  @patch("robosystems_client.clients.ledger_client.op_link_entity_taxonomy")
   def test_link_entity_taxonomy_raises_on_error(self, mock_op, mock_config, graph_id):
     resp = Mock()
     resp.status_code = 404
@@ -1107,7 +1107,7 @@ class TestLedgerReadsAdditional:
 
 @pytest.mark.unit
 class TestTaxonomyOps:
-  @patch("robosystems_client.extensions.ledger_client.op_create_taxonomy")
+  @patch("robosystems_client.clients.ledger_client.op_create_taxonomy")
   def test_create_taxonomy(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-taxonomy",
@@ -1125,7 +1125,7 @@ class TestTaxonomyOps:
     assert result["taxonomy_id"] == "tax_coa_1"
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
 
-  @patch("robosystems_client.extensions.ledger_client.op_update_taxonomy")
+  @patch("robosystems_client.clients.ledger_client.op_update_taxonomy")
   def test_update_taxonomy(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "update-taxonomy",
@@ -1138,7 +1138,7 @@ class TestTaxonomyOps:
     )
     assert result["name"] == "Updated CoA"
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_taxonomy")
+  @patch("robosystems_client.clients.ledger_client.op_delete_taxonomy")
   def test_delete_taxonomy(self, mock_op, mock_config, graph_id):
     envelope = _envelope("delete-taxonomy", {"taxonomy_id": "tax_coa_1"})
     mock_op.return_value = _mock_response(envelope)
@@ -1154,7 +1154,7 @@ class TestTaxonomyOps:
 
 @pytest.mark.unit
 class TestElementOps:
-  @patch("robosystems_client.extensions.ledger_client.op_create_element")
+  @patch("robosystems_client.clients.ledger_client.op_create_element")
   def test_create_element(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-element",
@@ -1174,7 +1174,7 @@ class TestElementOps:
     assert result["element_id"] == "elem_1"
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
 
-  @patch("robosystems_client.extensions.ledger_client.op_update_element")
+  @patch("robosystems_client.clients.ledger_client.op_update_element")
   def test_update_element(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "update-element",
@@ -1187,7 +1187,7 @@ class TestElementOps:
     )
     assert result["name"] == "Cash and Cash Equivalents"
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_element")
+  @patch("robosystems_client.clients.ledger_client.op_delete_element")
   def test_delete_element(self, mock_op, mock_config, graph_id):
     envelope = _envelope("delete-element", {"element_id": "elem_1"})
     mock_op.return_value = _mock_response(envelope)
@@ -1203,7 +1203,7 @@ class TestElementOps:
 
 @pytest.mark.unit
 class TestStructureOps:
-  @patch("robosystems_client.extensions.ledger_client.op_create_structure")
+  @patch("robosystems_client.clients.ledger_client.op_create_structure")
   def test_create_structure(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-structure",
@@ -1222,7 +1222,7 @@ class TestStructureOps:
     assert result["structure_id"] == "str_1"
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
 
-  @patch("robosystems_client.extensions.ledger_client.op_update_structure")
+  @patch("robosystems_client.clients.ledger_client.op_update_structure")
   def test_update_structure(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "update-structure",
@@ -1235,7 +1235,7 @@ class TestStructureOps:
     )
     assert result["name"] == "Updated Mapping"
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_structure")
+  @patch("robosystems_client.clients.ledger_client.op_delete_structure")
   def test_delete_structure(self, mock_op, mock_config, graph_id):
     envelope = _envelope("delete-structure", {"structure_id": "str_1"})
     mock_op.return_value = _mock_response(envelope)
@@ -1245,7 +1245,7 @@ class TestStructureOps:
     body = mock_op.call_args.kwargs["body"]
     assert body.structure_id == "str_1"
 
-  @patch("robosystems_client.extensions.ledger_client.op_create_structure")
+  @patch("robosystems_client.clients.ledger_client.op_create_structure")
   def test_create_mapping_structure_convenience(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-structure",
@@ -1265,7 +1265,7 @@ class TestStructureOps:
 
 @pytest.mark.unit
 class TestAssociationOps:
-  @patch("robosystems_client.extensions.ledger_client.op_create_mapping_association")
+  @patch("robosystems_client.clients.ledger_client.op_create_mapping_association")
   def test_create_mapping_association(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-mapping-association",
@@ -1286,7 +1286,7 @@ class TestAssociationOps:
     assert body.from_element_id == "elem_cash"
     assert body.confidence == 0.95
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_mapping_association")
+  @patch("robosystems_client.clients.ledger_client.op_delete_mapping_association")
   def test_delete_mapping_association_returns_sentinel(
     self, mock_op, mock_config, graph_id
   ):
@@ -1299,7 +1299,7 @@ class TestAssociationOps:
     assert body.mapping_id == "map_1"
     assert body.association_id == "assoc_1"
 
-  @patch("robosystems_client.extensions.ledger_client.op_create_associations")
+  @patch("robosystems_client.clients.ledger_client.op_create_associations")
   def test_create_associations_bulk(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-associations",
@@ -1328,7 +1328,7 @@ class TestAssociationOps:
     assert body.structure_id == "str_1"
     assert len(body.associations) == 2
 
-  @patch("robosystems_client.extensions.ledger_client.op_update_association")
+  @patch("robosystems_client.clients.ledger_client.op_update_association")
   def test_update_association(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "update-association",
@@ -1341,7 +1341,7 @@ class TestAssociationOps:
     )
     assert result["confidence"] == 0.75
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_association")
+  @patch("robosystems_client.clients.ledger_client.op_delete_association")
   def test_delete_association_returns_sentinel(self, mock_op, mock_config, graph_id):
     envelope = _envelope("delete-association", None)
     mock_op.return_value = _mock_response(envelope)
@@ -1351,7 +1351,7 @@ class TestAssociationOps:
     body = mock_op.call_args.kwargs["body"]
     assert body.association_id == "assoc_1"
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_association")
+  @patch("robosystems_client.clients.ledger_client.op_delete_association")
   def test_delete_association_returns_result_when_present(
     self, mock_op, mock_config, graph_id
   ):
@@ -1367,7 +1367,7 @@ class TestAssociationOps:
 
 @pytest.mark.unit
 class TestScheduleAdditionalOps:
-  @patch("robosystems_client.extensions.ledger_client.op_update_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_update_schedule")
   def test_update_schedule(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "update-schedule",
@@ -1381,7 +1381,7 @@ class TestScheduleAdditionalOps:
     assert result["name"] == "Renamed Schedule"
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_delete_schedule")
   def test_delete_schedule_returns_sentinel(self, mock_op, mock_config, graph_id):
     envelope = _envelope("delete-schedule", None)
     mock_op.return_value = _mock_response(envelope)
@@ -1391,7 +1391,7 @@ class TestScheduleAdditionalOps:
     body = mock_op.call_args.kwargs["body"]
     assert body.structure_id == "str_sched_1"
 
-  @patch("robosystems_client.extensions.ledger_client.op_delete_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_delete_schedule")
   def test_delete_schedule_returns_result_when_present(
     self, mock_op, mock_config, graph_id
   ):
@@ -1407,7 +1407,7 @@ class TestScheduleAdditionalOps:
 
 @pytest.mark.unit
 class TestPeriodCloseAdditionalOps:
-  @patch("robosystems_client.extensions.ledger_client.op_set_close_target")
+  @patch("robosystems_client.clients.ledger_client.op_set_close_target")
   def test_set_close_target(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "set-close-target",
@@ -1421,7 +1421,7 @@ class TestPeriodCloseAdditionalOps:
     assert body.period == "2026-03"
     assert body.note == "End of Q1"
 
-  @patch("robosystems_client.extensions.ledger_client.op_reopen_period")
+  @patch("robosystems_client.clients.ledger_client.op_reopen_period")
   def test_reopen_period(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "reopen-period",
@@ -1438,7 +1438,7 @@ class TestPeriodCloseAdditionalOps:
     assert body.reason == "Correction required"
     assert body.note == "Found error in entry"
 
-  @patch("robosystems_client.extensions.ledger_client.op_create_manual_closing_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_manual_closing_entry")
   def test_create_manual_closing_entry(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-manual-closing-entry",

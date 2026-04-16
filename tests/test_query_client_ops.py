@@ -9,7 +9,7 @@ Dataclass tests already exist in tests/test_query_client.py.
 
 import pytest
 from unittest.mock import Mock, patch
-from robosystems_client.extensions.query_client import (
+from robosystems_client.clients.query_client import (
   QueryClient,
   QueryRequest,
   QueryOptions,
@@ -25,7 +25,7 @@ from robosystems_client.extensions.query_client import (
 class TestExecuteQuerySync:
   """Test execute_query with immediate sync responses."""
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_dict_response(self, mock_exec, mock_config, graph_id):
     """Test execute_query with a dict response."""
     mock_resp = Mock()
@@ -52,7 +52,7 @@ class TestExecuteQuerySync:
     assert result.execution_time_ms == 42
     assert result.graph_id == graph_id
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_attrs_response(self, mock_exec, mock_config, graph_id):
     """Test execute_query with an attrs object response."""
     mock_data_item = Mock()
@@ -78,7 +78,7 @@ class TestExecuteQuerySync:
     assert isinstance(result, QueryResult)
     assert result.data == [{"name": "Beta Corp"}]
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_attrs_with_additional_properties(self, mock_exec, mock_config, graph_id):
     """Test attrs response items using additional_properties fallback."""
     mock_data_item = Mock(spec=[])
@@ -112,7 +112,7 @@ class TestExecuteQuerySync:
 class TestExecuteQueryQueued:
   """Test execute_query with queued responses."""
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_queued_max_wait_zero_raises(self, mock_exec, mock_config, graph_id):
     """Test queued response with max_wait=0 raises QueuedQueryError."""
     mock_resp = Mock()
@@ -137,7 +137,7 @@ class TestExecuteQueryQueued:
     assert exc_info.value.queue_info.operation_id == "op-q1"
     assert exc_info.value.queue_info.queue_position == 3
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_queued_calls_queue_update_callback(self, mock_exec, mock_config, graph_id):
     """Test queued response invokes on_queue_update."""
     mock_resp = Mock()
@@ -183,7 +183,7 @@ class TestExecuteQueryErrors:
     with pytest.raises(Exception, match="Authentication failed|No API key"):
       client.execute_query(graph_id, request)
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_auth_error_wrapped(self, mock_exec, mock_config, graph_id):
     """Test 401/403 errors are wrapped as auth errors."""
     mock_exec.side_effect = Exception("401 Unauthorized")
@@ -194,7 +194,7 @@ class TestExecuteQueryErrors:
     with pytest.raises(Exception, match="Authentication failed"):
       client.execute_query(graph_id, request)
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_generic_error_wrapped(self, mock_exec, mock_config, graph_id):
     """Test generic errors are wrapped."""
     mock_exec.side_effect = Exception("Connection timeout")
@@ -205,7 +205,7 @@ class TestExecuteQueryErrors:
     with pytest.raises(Exception, match="Query execution failed"):
       client.execute_query(graph_id, request)
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_http_error_response(self, mock_exec, mock_config, graph_id):
     """Test HTTP 4xx/5xx with error body."""
     mock_resp = Mock()
@@ -318,7 +318,7 @@ class TestNDJSON:
 class TestNDJSONDetection:
   """Test that NDJSON responses are detected and parsed."""
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_ndjson_content_type_detected(self, mock_exec, mock_config, graph_id):
     """Test NDJSON response detected by content-type header."""
     mock_resp = Mock()
@@ -335,7 +335,7 @@ class TestNDJSONDetection:
     assert isinstance(result, QueryResult)
     assert result.data == [["x"]]
 
-  @patch("robosystems_client.extensions.query_client.execute_cypher_query")
+  @patch("robosystems_client.clients.query_client.execute_cypher_query")
   def test_ndjson_stream_format_header(self, mock_exec, mock_config, graph_id):
     """Test NDJSON detected by x-stream-format header."""
     mock_resp = Mock()

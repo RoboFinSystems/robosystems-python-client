@@ -11,7 +11,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from robosystems_client.extensions.report_client import ReportClient
+from robosystems_client.clients.report_client import ReportClient
 from robosystems_client.models.operation_envelope import OperationEnvelope
 from robosystems_client.models.operation_envelope_status import OperationEnvelopeStatus
 
@@ -173,7 +173,7 @@ class TestReportReads:
 
 @pytest.mark.unit
 class TestReportWrites:
-  @patch("robosystems_client.extensions.report_client.op_create_report")
+  @patch("robosystems_client.clients.report_client.op_create_report")
   def test_create_returns_ack(self, mock_op, mock_config, graph_id):
     envelope = _envelope("create-report", None, status=OperationEnvelopeStatus.PENDING)
     mock_op.return_value = _mock_response(envelope, status_code=HTTPStatus.ACCEPTED)
@@ -188,7 +188,7 @@ class TestReportWrites:
     assert ack["status"] == OperationEnvelopeStatus.PENDING
     assert ack["operation_id"].startswith("op_")
 
-  @patch("robosystems_client.extensions.report_client.op_regenerate_report")
+  @patch("robosystems_client.clients.report_client.op_regenerate_report")
   def test_regenerate_returns_ack(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "regenerate-report", None, status=OperationEnvelopeStatus.PENDING
@@ -200,7 +200,7 @@ class TestReportWrites:
     )
     assert ack["status"] == OperationEnvelopeStatus.PENDING
 
-  @patch("robosystems_client.extensions.report_client.op_delete_report")
+  @patch("robosystems_client.clients.report_client.op_delete_report")
   def test_delete(self, mock_op, mock_config, graph_id):
     envelope = _envelope("delete-report", {"deleted": True})
     mock_op.return_value = _mock_response(envelope)
@@ -208,7 +208,7 @@ class TestReportWrites:
     client.delete(graph_id, "rep_1")
     assert mock_op.called
 
-  @patch("robosystems_client.extensions.report_client.op_share_report")
+  @patch("robosystems_client.clients.report_client.op_share_report")
   def test_share_returns_ack(self, mock_op, mock_config, graph_id):
     envelope = _envelope("share-report", None, status=OperationEnvelopeStatus.PENDING)
     mock_op.return_value = _mock_response(envelope, status_code=HTTPStatus.ACCEPTED)
@@ -216,7 +216,7 @@ class TestReportWrites:
     ack = client.share(graph_id, "rep_1", "pl_1")
     assert ack["operation_id"].startswith("op_")
 
-  @patch("robosystems_client.extensions.report_client.op_create_publish_list")
+  @patch("robosystems_client.clients.report_client.op_create_publish_list")
   def test_create_publish_list(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
       "create-publish-list",
@@ -232,7 +232,7 @@ class TestReportWrites:
     result = client.create_publish_list(graph_id, "New List")
     assert result["id"] == "pl_new"
 
-  @patch("robosystems_client.extensions.report_client.op_add_publish_list_members")
+  @patch("robosystems_client.clients.report_client.op_add_publish_list_members")
   def test_add_members(self, mock_op, mock_config, graph_id):
     envelope = _envelope("add-publish-list-members", {"added": 2})
     mock_op.return_value = _mock_response(envelope)
@@ -243,7 +243,7 @@ class TestReportWrites:
     assert body.list_id == "pl_1"
     assert body.target_graph_ids == ["graph_a", "graph_b"]
 
-  @patch("robosystems_client.extensions.report_client.op_remove_publish_list_member")
+  @patch("robosystems_client.clients.report_client.op_remove_publish_list_member")
   def test_remove_member(self, mock_op, mock_config, graph_id):
     envelope = _envelope("remove-publish-list-member", {"deleted": True})
     mock_op.return_value = _mock_response(envelope)

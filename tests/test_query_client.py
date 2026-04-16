@@ -1,7 +1,7 @@
 """Unit tests for QueryClient."""
 
 import pytest
-from robosystems_client.extensions.query_client import (
+from robosystems_client.clients.query_client import (
   QueryClient,
   QueryRequest,
   QueryOptions,

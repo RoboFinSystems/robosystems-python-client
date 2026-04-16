@@ -10,13 +10,13 @@ from unittest.mock import Mock, patch
 from datetime import datetime
 
 # Import extensions
-from robosystems_client.extensions import (
-  RoboSystemsExtensionConfig,
+from robosystems_client.clients import (
+  RoboSystemsClientConfig,
   QueryBuilder,
   CacheManager,
   ProgressTracker,
-  AuthenticatedExtensions,
-  create_extensions,
+  AuthenticatedClients,
+  create_clients,
   SSEClient,
   SSEConfig,
   EventType,
@@ -36,9 +36,9 @@ class TestAuthenticatedIntegration:
 
   @pytest.fixture
   def extensions(self, mock_api_key):
-    return AuthenticatedExtensions(
+    return AuthenticatedClients(
       api_key=mock_api_key,
-      config=RoboSystemsExtensionConfig(
+      config=RoboSystemsClientConfig(
         base_url="https://api.test.robosystems.ai", timeout=30
       ),
     )
@@ -49,16 +49,16 @@ class TestAuthenticatedIntegration:
     assert extensions.config["headers"]["X-API-Key"] == mock_api_key
     assert extensions.config["headers"]["Authorization"] == f"Bearer {mock_api_key}"
 
-  def test_create_extensions_factory(self, mock_api_key):
+  def test_create_clients_factory(self, mock_api_key):
     """Test the extensions factory function"""
     # API Key method
-    ext = create_extensions(
+    ext = create_clients(
       "api_key", api_key=mock_api_key, base_url="https://api.test.robosystems.ai"
     )
-    assert isinstance(ext, AuthenticatedExtensions)
+    assert isinstance(ext, AuthenticatedClients)
 
     # Cookie method
-    ext = create_extensions(
+    ext = create_clients(
       "cookie",
       cookies={"auth-token": "cookie_token"},
       base_url="https://api.test.robosystems.ai",
@@ -66,7 +66,7 @@ class TestAuthenticatedIntegration:
     assert ext.config["base_url"] == "https://api.test.robosystems.ai"
 
     # Token method
-    ext = create_extensions(
+    ext = create_clients(
       "token", token="jwt_token_here", base_url="https://api.test.robosystems.ai"
     )
     assert ext.config["headers"]["Authorization"] == "Bearer jwt_token_here"

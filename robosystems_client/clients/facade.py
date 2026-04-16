@@ -21,7 +21,7 @@ from .sse_client import SSEClient
 
 
 @dataclass
-class RoboSystemsExtensionConfig:
+class RoboSystemsClientConfig:
   """Configuration for RoboSystems extensions"""
 
   base_url: Optional[str] = None
@@ -32,12 +32,12 @@ class RoboSystemsExtensionConfig:
   s3_endpoint_url: Optional[str] = None  # Override S3 endpoint (e.g., for LocalStack)
 
 
-class RoboSystemsExtensions:
+class RoboSystemsClients:
   """Main extensions class providing enhanced RoboSystems API functionality"""
 
-  def __init__(self, config: RoboSystemsExtensionConfig = None):
+  def __init__(self, config: RoboSystemsClientConfig = None):
     if config is None:
-      config = RoboSystemsExtensionConfig()
+      config = RoboSystemsClientConfig()
 
     # Get base URL from config or use default
     self.config = {
@@ -140,12 +140,12 @@ class RoboSystemsExtensions:
     return self.operations.cancel_operation(operation_id)
 
 
-class AsyncRoboSystemsExtensions:
+class AsyncRoboSystemsClients:
   """Async version of the extensions class"""
 
-  def __init__(self, config: RoboSystemsExtensionConfig = None):
+  def __init__(self, config: RoboSystemsClientConfig = None):
     if config is None:
-      config = RoboSystemsExtensionConfig()
+      config = RoboSystemsClientConfig()
 
     self.config = {
       "base_url": config.base_url or "http://localhost:8000",
