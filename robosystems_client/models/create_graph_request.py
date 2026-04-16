@@ -22,8 +22,9 @@ class CreateGraphRequest:
   """Request model for creating a new graph.
 
   Use this to create either:
-  - **Entity graphs**: Standard graphs with entity schema and optional extensions
-  - **Custom graphs**: Generic graphs with fully custom schema definitions
+  - **Entity graphs**: Standard graphs with entity schema. Requires `initial_entity`.
+  - **Custom graphs**: Generic graphs with a fully custom schema. Requires `custom_schema`; `initial_entity` is not
+  used.
 
       Attributes:
           metadata (GraphMetadata): Metadata for graph creation.
@@ -31,8 +32,8 @@ class CreateGraphRequest:
               standard'.
           custom_schema (CustomSchemaDefinition | None | Unset): Custom schema definition to apply. If provided, creates a
               generic custom graph. If omitted, creates an entity graph using schema_extensions.
-          initial_entity (InitialEntityData | None | Unset): Optional initial entity to create in the graph. If provided
-              with entity graph, populates the first entity node.
+          initial_entity (InitialEntityData | None | Unset): Initial entity for the graph. Required for entity graphs
+              (when custom_schema is omitted). Omit only when providing custom_schema for a generic graph.
           create_entity (bool | Unset): Whether to create the entity node and upload initial data. Only applies when
               initial_entity is provided. Set to False to create graph without populating entity data (useful for file-based
               ingestion workflows). Default: True.

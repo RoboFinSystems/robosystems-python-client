@@ -52,6 +52,8 @@ from .bulk_document_upload_response_errors_type_0_item import (
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
+from .change_tier_op import ChangeTierOp
+from .change_tier_op_new_tier import ChangeTierOpNewTier
 from .checkout_response import CheckoutResponse
 from .checkout_status_response import CheckoutStatusResponse
 from .close_period_operation import ClosePeriodOperation
@@ -365,8 +367,6 @@ from .update_structure_request import UpdateStructureRequest
 from .update_taxonomy_request import UpdateTaxonomyRequest
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
-from .upgrade_tier_op import UpgradeTierOp
-from .upgrade_tier_op_new_tier import UpgradeTierOpNewTier
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
 from .validation_error import ValidationError
@@ -421,6 +421,8 @@ __all__ = (
   "BulkDocumentUploadResponse",
   "BulkDocumentUploadResponseErrorsType0Item",
   "CancelOperationResponseCanceloperation",
+  "ChangeTierOp",
+  "ChangeTierOpNewTier",
   "CheckoutResponse",
   "CheckoutStatusResponse",
   "ClosePeriodOperation",
@@ -694,8 +696,6 @@ __all__ = (
   "UpdateTaxonomyRequest",
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
-  "UpgradeTierOp",
-  "UpgradeTierOpNewTier",
   "UserGraphsResponse",
   "UserResponse",
   "ValidationError",

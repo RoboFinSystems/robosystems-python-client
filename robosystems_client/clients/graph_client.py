@@ -5,7 +5,7 @@ automatic operation monitoring. Supports both SSE (Server-Sent Events)
 for real-time updates and polling fallback.
 
 Graph lifecycle operations (create-subgraph, delete-subgraph, create-backup,
-restore-backup, upgrade-tier, materialize) all go through the operations
+restore-backup, change-tier, materialize) all go through the operations
 surface at ``POST /v1/graphs/{graph_id}/operations/{op_name}`` and return
 an ``OperationEnvelope``.
 """
@@ -132,7 +132,7 @@ class GraphClient:
   def create_graph_and_wait(
     self,
     metadata: GraphMetadata,
-    initial_entity: Optional[InitialEntityData] = None,
+    initial_entity: InitialEntityData,
     create_entity: bool = True,
     timeout: int = 60,
     poll_interval: int = 2,
@@ -147,8 +147,9 @@ class GraphClient:
 
     Args:
         metadata: Graph metadata
-        initial_entity: Optional initial entity data
-        create_entity: Whether to create the entity node and upload initial data.
+        initial_entity: Initial entity data (required — entity graphs must have an entity)
+        create_entity: Whether to populate entity data on creation (default True).
+            Set False to defer population for file-based ingestion workflows.
         timeout: Maximum time to wait in seconds
         poll_interval: Time between status checks in seconds (for polling fallback)
         on_progress: Callback for progress updates
@@ -440,6 +441,85 @@ class GraphClient:
         success=False,
         error=str(e),
       )
+
+  # ---------------------------------------------------------------------------
+  # Tier change
+  # ---------------------------------------------------------------------------
+
+  def change_tier(
+    self,
+    graph_id: str,
+    new_tier: str,
+    timeout: int = 600,
+    on_progress: Optional[Callable[[str], None]] = None,
+  ) -> None:
+    """
+    Change the infrastructure tier of a graph (upgrade or downgrade).
+
+    Submits an async tier change operation and monitors progress via SSE
+    until the migration completes.
+
+    Args:
+        graph_id: Graph database identifier
+        new_tier: Target tier — "ladybug-standard", "ladybug-large", or "ladybug-xlarge"
+        timeout: Maximum time to wait in seconds (default 600 — EBS migrations can be slow)
+        on_progress: Callback for progress updates
+
+    Raises:
+        RuntimeError: If the tier change fails or the operation errors out
+        TimeoutError: If the operation does not complete within timeout
+    """
+    from ..api.graph_operations.op_change_tier import sync_detailed as change_tier_op
+    from ..models.change_tier_op import ChangeTierOp
+
+    client = self._get_authenticated_client()
+
+    if on_progress:
+      on_progress(f"Submitting tier change to {new_tier}...")
+
+    response = change_tier_op(
+      graph_id=graph_id,
+      client=client,
+      body=ChangeTierOp(new_tier=new_tier),  # type: ignore[arg-type]
+    )
+
+    if response.status_code not in (200, 202) or not response.parsed:
+      error_msg = f"Tier change failed: HTTP {response.status_code}"
+      if hasattr(response, "content"):
+        try:
+          error_data = json.loads(response.content)
+          error_msg = error_data.get("detail", error_msg)
+        except Exception:
+          pass
+      raise RuntimeError(error_msg)
+
+    operation_id = getattr(response.parsed, "operation_id", None)
+    if not operation_id:
+      raise RuntimeError("No operation_id in tier change response")
+
+    if on_progress:
+      on_progress(f"Tier change queued (operation: {operation_id})")
+
+    def on_sse_progress(progress: OperationProgress) -> None:
+      if on_progress:
+        msg = progress.message
+        if progress.percentage is not None:
+          msg += f" ({progress.percentage:.0f}%)"
+        on_progress(msg)
+
+    op_result = self.operation_client.monitor_operation(
+      operation_id,
+      MonitorOptions(on_progress=on_sse_progress, timeout=timeout),
+    )
+
+    if op_result.status.value == "completed":
+      if on_progress:
+        on_progress(f"Tier changed to {new_tier} successfully")
+      return
+
+    raise RuntimeError(
+      f"Tier change {op_result.status.value}: {op_result.error or 'unknown error'}"
+    )
 
   # ---------------------------------------------------------------------------
   # SSE / polling helpers (used by create_graph_and_wait)

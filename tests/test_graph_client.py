@@ -646,6 +646,7 @@ class TestSSEFallback:
 
     result = client.create_graph_and_wait(
       metadata=GraphMetadata(graph_name="Test Graph"),
+      initial_entity=InitialEntityData(name="Test Corp", uri="https://testcorp.com"),
       on_progress=lambda msg: progress_messages.append(msg),
     )
 
@@ -674,6 +675,7 @@ class TestSSEFallback:
 
     result = client.create_graph_and_wait(
       metadata=GraphMetadata(graph_name="Test Graph"),
+      initial_entity=InitialEntityData(name="Test Corp", uri="https://testcorp.com"),
       use_sse=False,
     )
 
@@ -701,6 +703,7 @@ class TestSSEFallback:
 
     result = client.create_graph_and_wait(
       metadata=GraphMetadata(graph_name="Test Graph"),
+      initial_entity=InitialEntityData(name="Test Corp", uri="https://testcorp.com"),
     )
 
     assert result == "graph-sse-only-456"
@@ -724,6 +727,7 @@ class TestSSEFallback:
 
     result = client.create_graph_and_wait(
       metadata=GraphMetadata(graph_name="Test Graph"),
+      initial_entity=InitialEntityData(name="Test Corp", uri="https://testcorp.com"),
       on_progress=lambda msg: progress_messages.append(msg),
     )
 
