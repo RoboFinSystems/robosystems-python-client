@@ -27,6 +27,11 @@ class DatabaseHealthResponse:
       memory_usage_mb (float | None | Unset): Memory usage in MB
       storage_usage_mb (float | None | Unset): Storage usage in MB
       alerts (list[str] | Unset): Active alerts or warnings
+      is_stale (bool | Unset): Whether the graph has staged changes not yet materialized Default: False.
+      stale_reason (None | str | Unset): Reason the graph was marked stale (e.g. 'file_deleted: data.parquet')
+      stale_since (None | str | Unset): ISO timestamp when the graph became stale
+      last_materialized_at (None | str | Unset): ISO timestamp of the last successful materialization
+      hours_since_materialization (float | None | Unset): Hours elapsed since last materialization
   """
 
   graph_id: str
@@ -40,6 +45,11 @@ class DatabaseHealthResponse:
   memory_usage_mb: float | None | Unset = UNSET
   storage_usage_mb: float | None | Unset = UNSET
   alerts: list[str] | Unset = UNSET
+  is_stale: bool | Unset = False
+  stale_reason: None | str | Unset = UNSET
+  stale_since: None | str | Unset = UNSET
+  last_materialized_at: None | str | Unset = UNSET
+  hours_since_materialization: float | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -79,6 +89,32 @@ class DatabaseHealthResponse:
     if not isinstance(self.alerts, Unset):
       alerts = self.alerts
 
+    is_stale = self.is_stale
+
+    stale_reason: None | str | Unset
+    if isinstance(self.stale_reason, Unset):
+      stale_reason = UNSET
+    else:
+      stale_reason = self.stale_reason
+
+    stale_since: None | str | Unset
+    if isinstance(self.stale_since, Unset):
+      stale_since = UNSET
+    else:
+      stale_since = self.stale_since
+
+    last_materialized_at: None | str | Unset
+    if isinstance(self.last_materialized_at, Unset):
+      last_materialized_at = UNSET
+    else:
+      last_materialized_at = self.last_materialized_at
+
+    hours_since_materialization: float | None | Unset
+    if isinstance(self.hours_since_materialization, Unset):
+      hours_since_materialization = UNSET
+    else:
+      hours_since_materialization = self.hours_since_materialization
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -100,6 +136,16 @@ class DatabaseHealthResponse:
       field_dict["storage_usage_mb"] = storage_usage_mb
     if alerts is not UNSET:
       field_dict["alerts"] = alerts
+    if is_stale is not UNSET:
+      field_dict["is_stale"] = is_stale
+    if stale_reason is not UNSET:
+      field_dict["stale_reason"] = stale_reason
+    if stale_since is not UNSET:
+      field_dict["stale_since"] = stale_since
+    if last_materialized_at is not UNSET:
+      field_dict["last_materialized_at"] = last_materialized_at
+    if hours_since_materialization is not UNSET:
+      field_dict["hours_since_materialization"] = hours_since_materialization
 
     return field_dict
 
@@ -149,6 +195,48 @@ class DatabaseHealthResponse:
 
     alerts = cast(list[str], d.pop("alerts", UNSET))
 
+    is_stale = d.pop("is_stale", UNSET)
+
+    def _parse_stale_reason(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    stale_reason = _parse_stale_reason(d.pop("stale_reason", UNSET))
+
+    def _parse_stale_since(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    stale_since = _parse_stale_since(d.pop("stale_since", UNSET))
+
+    def _parse_last_materialized_at(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    last_materialized_at = _parse_last_materialized_at(
+      d.pop("last_materialized_at", UNSET)
+    )
+
+    def _parse_hours_since_materialization(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    hours_since_materialization = _parse_hours_since_materialization(
+      d.pop("hours_since_materialization", UNSET)
+    )
+
     database_health_response = cls(
       graph_id=graph_id,
       status=status,
@@ -161,6 +249,11 @@ class DatabaseHealthResponse:
       memory_usage_mb=memory_usage_mb,
       storage_usage_mb=storage_usage_mb,
       alerts=alerts,
+      is_stale=is_stale,
+      stale_reason=stale_reason,
+      stale_since=stale_since,
+      last_materialized_at=last_materialized_at,
+      hours_since_materialization=hours_since_materialization,
     )
 
     database_health_response.additional_properties = d

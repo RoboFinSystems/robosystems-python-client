@@ -215,6 +215,7 @@ from .list_table_files_response import ListTableFilesResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .manual_line_item_request import ManualLineItemRequest
+from .materialize_op import MaterializeOp
 from .mcp_tool_call import MCPToolCall
 from .mcp_tool_call_arguments import MCPToolCallArguments
 from .mcp_tools_response import MCPToolsResponse
@@ -366,6 +367,7 @@ from .update_taxonomy_request import UpdateTaxonomyRequest
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .upgrade_tier_op import UpgradeTierOp
+from .upgrade_tier_op_new_tier import UpgradeTierOpNewTier
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
 from .validation_error import ValidationError
@@ -563,6 +565,7 @@ __all__ = (
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "ManualLineItemRequest",
+  "MaterializeOp",
   "MCPToolCall",
   "MCPToolCallArguments",
   "MCPToolsResponse",
@@ -692,6 +695,7 @@ __all__ = (
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
   "UpgradeTierOp",
+  "UpgradeTierOpNewTier",
   "UserGraphsResponse",
   "UserResponse",
   "ValidationError",

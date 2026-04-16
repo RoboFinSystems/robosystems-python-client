@@ -333,13 +333,17 @@ class GraphClient:
 
       client = self._get_authenticated_client()
 
+      from ..models.materialize_op import MaterializeOp
+
       response = materialize_graph(
         graph_id=graph_id,
         client=client,
-        ignore_errors=options.ignore_errors,
-        rebuild=options.rebuild,
-        force=options.force,
-        materialize_embeddings=options.materialize_embeddings,
+        body=MaterializeOp(
+          ignore_errors=options.ignore_errors,
+          rebuild=options.rebuild,
+          force=options.force,
+          materialize_embeddings=options.materialize_embeddings,
+        ),
       )
 
       # Handle non-success status codes

@@ -276,7 +276,7 @@ class TestMaterialize:
     result = client.materialize(graph_id, options)
 
     assert result.success is True
-    # Verify the call had rebuild=True and force=True
+    # Verify the call had rebuild=True and force=True in the body
     call_kwargs = mock_mat.call_args[1]
-    assert call_kwargs["rebuild"] is True
-    assert call_kwargs["force"] is True
+    assert call_kwargs["body"].rebuild is True
+    assert call_kwargs["body"].force is True
