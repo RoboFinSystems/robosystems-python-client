@@ -1,0 +1,15 @@
+from enum import Enum
+
+
+class CreateElementRequestSource(str, Enum):
+  IFRS = "ifrs"
+  IMPORT = "import"
+  NATIVE = "native"
+  PLAID = "plaid"
+  QUICKBOOKS = "quickbooks"
+  SFAC6 = "sfac6"
+  US_GAAP = "us-gaap"
+  XERO = "xero"
+
+  def __str__(self) -> str:
+    return str(self.value)

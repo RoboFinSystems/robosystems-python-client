@@ -42,6 +42,9 @@ from .backup_stats_response_backup_formats import BackupStatsResponseBackupForma
 from .batch_agent_request import BatchAgentRequest
 from .batch_agent_response import BatchAgentResponse
 from .billing_customer import BillingCustomer
+from .bulk_association_item import BulkAssociationItem
+from .bulk_association_item_association_type import BulkAssociationItemAssociationType
+from .bulk_create_associations_request import BulkCreateAssociationsRequest
 from .bulk_document_upload_request import BulkDocumentUploadRequest
 from .bulk_document_upload_response import BulkDocumentUploadResponse
 from .bulk_document_upload_response_errors_type_0_item import (
@@ -68,7 +71,16 @@ from .create_checkout_request_resource_config import CreateCheckoutRequestResour
 from .create_closing_entry_operation import CreateClosingEntryOperation
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
+from .create_element_request import CreateElementRequest
+from .create_element_request_balance_type import CreateElementRequestBalanceType
+from .create_element_request_classification import CreateElementRequestClassification
+from .create_element_request_element_type import CreateElementRequestElementType
+from .create_element_request_period_type import CreateElementRequestPeriodType
+from .create_element_request_source import CreateElementRequestSource
 from .create_graph_request import CreateGraphRequest
+from .create_journal_entry_request import CreateJournalEntryRequest
+from .create_journal_entry_request_status import CreateJournalEntryRequestStatus
+from .create_journal_entry_request_type import CreateJournalEntryRequestType
 from .create_manual_closing_entry_request import CreateManualClosingEntryRequest
 from .create_manual_closing_entry_request_entry_type import (
   CreateManualClosingEntryRequestEntryType,
@@ -107,15 +119,21 @@ from .cypher_query_request_parameters_type_0 import CypherQueryRequestParameters
 from .database_health_response import DatabaseHealthResponse
 from .database_info_response import DatabaseInfoResponse
 from .database_storage_entry import DatabaseStorageEntry
+from .delete_association_request import DeleteAssociationRequest
+from .delete_element_request import DeleteElementRequest
 from .delete_file_response import DeleteFileResponse
+from .delete_journal_entry_request import DeleteJournalEntryRequest
 from .delete_mapping_association_operation import DeleteMappingAssociationOperation
 from .delete_portfolio_operation import DeletePortfolioOperation
 from .delete_position_operation import DeletePositionOperation
 from .delete_publish_list_operation import DeletePublishListOperation
 from .delete_report_operation import DeleteReportOperation
+from .delete_schedule_request import DeleteScheduleRequest
 from .delete_security_operation import DeleteSecurityOperation
+from .delete_structure_request import DeleteStructureRequest
 from .delete_subgraph_request import DeleteSubgraphRequest
 from .delete_subgraph_response import DeleteSubgraphResponse
+from .delete_taxonomy_request import DeleteTaxonomyRequest
 from .detailed_transactions_response import DetailedTransactionsResponse
 from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
@@ -189,6 +207,9 @@ from .invite_member_request import InviteMemberRequest
 from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
+from .journal_entry_line_item_input import JournalEntryLineItemInput
+from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
+from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
 from .list_org_graphs_response_200_item import ListOrgGraphsResponse200Item
 from .list_subgraphs_response import ListSubgraphsResponse
@@ -220,6 +241,8 @@ from .operation_costs_token_pricing import OperationCostsTokenPricing
 from .operation_envelope import OperationEnvelope
 from .operation_envelope_result_type_0 import OperationEnvelopeResultType0
 from .operation_envelope_status import OperationEnvelopeStatus
+from .operation_error import OperationError
+from .operation_error_detail_type_1 import OperationErrorDetailType1
 from .org_detail_response import OrgDetailResponse
 from .org_detail_response_graphs_item import OrgDetailResponseGraphsItem
 from .org_detail_response_limits_type_0 import OrgDetailResponseLimitsType0
@@ -262,6 +285,7 @@ from .resend_verification_email_response_resendverificationemail import (
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
+from .reverse_journal_entry_request import ReverseJournalEntryRequest
 from .schedule_metadata_request import ScheduleMetadataRequest
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
@@ -318,16 +342,32 @@ from .transaction_summary_response import TransactionSummaryResponse
 from .truncate_schedule_operation import TruncateScheduleOperation
 from .upcoming_invoice import UpcomingInvoice
 from .update_api_key_request import UpdateAPIKeyRequest
+from .update_association_request import UpdateAssociationRequest
+from .update_element_request import UpdateElementRequest
+from .update_element_request_balance_type_type_0 import (
+  UpdateElementRequestBalanceTypeType0,
+)
+from .update_element_request_classification_type_0 import (
+  UpdateElementRequestClassificationType0,
+)
+from .update_element_request_period_type_type_0 import (
+  UpdateElementRequestPeriodTypeType0,
+)
 from .update_entity_request import UpdateEntityRequest
 from .update_file_response_updatefile import UpdateFileResponseUpdatefile
+from .update_journal_entry_request import UpdateJournalEntryRequest
+from .update_journal_entry_request_type_type_0 import UpdateJournalEntryRequestTypeType0
 from .update_member_role_request import UpdateMemberRoleRequest
 from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
 from .update_portfolio_operation import UpdatePortfolioOperation
 from .update_position_operation import UpdatePositionOperation
 from .update_publish_list_operation import UpdatePublishListOperation
+from .update_schedule_request import UpdateScheduleRequest
 from .update_security_operation import UpdateSecurityOperation
 from .update_security_operation_terms_type_0 import UpdateSecurityOperationTermsType0
+from .update_structure_request import UpdateStructureRequest
+from .update_taxonomy_request import UpdateTaxonomyRequest
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
@@ -378,6 +418,9 @@ __all__ = (
   "BatchAgentRequest",
   "BatchAgentResponse",
   "BillingCustomer",
+  "BulkAssociationItem",
+  "BulkAssociationItemAssociationType",
+  "BulkCreateAssociationsRequest",
   "BulkDocumentUploadRequest",
   "BulkDocumentUploadResponse",
   "BulkDocumentUploadResponseErrorsType0Item",
@@ -400,7 +443,16 @@ __all__ = (
   "CreateClosingEntryOperation",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
+  "CreateElementRequest",
+  "CreateElementRequestBalanceType",
+  "CreateElementRequestClassification",
+  "CreateElementRequestElementType",
+  "CreateElementRequestPeriodType",
+  "CreateElementRequestSource",
   "CreateGraphRequest",
+  "CreateJournalEntryRequest",
+  "CreateJournalEntryRequestStatus",
+  "CreateJournalEntryRequestType",
   "CreateManualClosingEntryRequest",
   "CreateManualClosingEntryRequestEntryType",
   "CreateMappingAssociationOperation",
@@ -433,15 +485,21 @@ __all__ = (
   "DatabaseHealthResponse",
   "DatabaseInfoResponse",
   "DatabaseStorageEntry",
+  "DeleteAssociationRequest",
+  "DeleteElementRequest",
   "DeleteFileResponse",
+  "DeleteJournalEntryRequest",
   "DeleteMappingAssociationOperation",
   "DeletePortfolioOperation",
   "DeletePositionOperation",
   "DeletePublishListOperation",
   "DeleteReportOperation",
+  "DeleteScheduleRequest",
   "DeleteSecurityOperation",
+  "DeleteStructureRequest",
   "DeleteSubgraphRequest",
   "DeleteSubgraphResponse",
+  "DeleteTaxonomyRequest",
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
@@ -501,6 +559,9 @@ __all__ = (
   "Invoice",
   "InvoiceLineItem",
   "InvoicesResponse",
+  "JournalEntryLineItemInput",
+  "LinkEntityTaxonomyRequest",
+  "LinkEntityTaxonomyRequestBasis",
   "ListConnectionsProviderType0",
   "ListOrgGraphsResponse200Item",
   "ListSubgraphsResponse",
@@ -528,6 +589,8 @@ __all__ = (
   "OperationEnvelope",
   "OperationEnvelopeResultType0",
   "OperationEnvelopeStatus",
+  "OperationError",
+  "OperationErrorDetailType1",
   "OrgDetailResponse",
   "OrgDetailResponseGraphsItem",
   "OrgDetailResponseLimitsType0",
@@ -568,6 +631,7 @@ __all__ = (
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
   "ResponseMode",
+  "ReverseJournalEntryRequest",
   "ScheduleMetadataRequest",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
@@ -614,16 +678,26 @@ __all__ = (
   "TruncateScheduleOperation",
   "UpcomingInvoice",
   "UpdateAPIKeyRequest",
+  "UpdateAssociationRequest",
+  "UpdateElementRequest",
+  "UpdateElementRequestBalanceTypeType0",
+  "UpdateElementRequestClassificationType0",
+  "UpdateElementRequestPeriodTypeType0",
   "UpdateEntityRequest",
   "UpdateFileResponseUpdatefile",
+  "UpdateJournalEntryRequest",
+  "UpdateJournalEntryRequestTypeType0",
   "UpdateMemberRoleRequest",
   "UpdateOrgRequest",
   "UpdatePasswordRequest",
   "UpdatePortfolioOperation",
   "UpdatePositionOperation",
   "UpdatePublishListOperation",
+  "UpdateScheduleRequest",
   "UpdateSecurityOperation",
   "UpdateSecurityOperationTermsType0",
+  "UpdateStructureRequest",
+  "UpdateTaxonomyRequest",
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",

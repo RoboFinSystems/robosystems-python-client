@@ -39,7 +39,19 @@ class OperationEnvelope:
     or `"failed"` (error responses)
   - `result`: the domain-specific payload (the original Pydantic response)
     or `None` for async/failed cases
-  - `at`: ISO-8601 UTC timestamp of when the envelope was minted
+  - `at`: ISO-8601 UTC timestamp of when the envelope was minted (for sync
+    ops this is the completion time; for async/pending it's the enqueue time)
+  - `created_by`: user ID of the caller who initiated this operation, for
+    audit correlation without having to cross-reference the audit log.
+    Always populated for dispatcher-routed calls; may be `None` for legacy
+    direct `wrap_completed(...)` callers.
+  - `idempotent_replay`: `True` when the dispatcher returned this envelope
+    from the idempotency cache (the underlying command did NOT execute
+    again). `False` on every fresh execution. Clients can use this to
+    distinguish "my retry succeeded" from "the server re-ran the command"
+    without having to track their own request identity. The metrics
+    decorator also reads this attribute to suppress business-event counter
+    increments on replays so dashboards stay honest.
 
       Attributes:
           operation (str): Kebab-case operation name
@@ -47,6 +59,9 @@ class OperationEnvelope:
           status (OperationEnvelopeStatus): Operation lifecycle state
           at (str): ISO-8601 UTC timestamp
           result (list[Any] | None | OperationEnvelopeResultType0 | Unset): Command-specific result payload
+          created_by (None | str | Unset): User ID that initiated the operation (null for legacy callers)
+          idempotent_replay (bool | Unset): True when this envelope came from the idempotency cache — the underlying
+              command did not execute again. False on fresh executions. Default: False.
   """
 
   operation: str
@@ -54,6 +69,8 @@ class OperationEnvelope:
   status: OperationEnvelopeStatus
   at: str
   result: list[Any] | None | OperationEnvelopeResultType0 | Unset = UNSET
+  created_by: None | str | Unset = UNSET
+  idempotent_replay: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -78,6 +95,14 @@ class OperationEnvelope:
     else:
       result = self.result
 
+    created_by: None | str | Unset
+    if isinstance(self.created_by, Unset):
+      created_by = UNSET
+    else:
+      created_by = self.created_by
+
+    idempotent_replay = self.idempotent_replay
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -90,6 +115,10 @@ class OperationEnvelope:
     )
     if result is not UNSET:
       field_dict["result"] = result
+    if created_by is not UNSET:
+      field_dict["createdBy"] = created_by
+    if idempotent_replay is not UNSET:
+      field_dict["idempotentReplay"] = idempotent_replay
 
     return field_dict
 
@@ -133,12 +162,25 @@ class OperationEnvelope:
 
     result = _parse_result(d.pop("result", UNSET))
 
+    def _parse_created_by(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    created_by = _parse_created_by(d.pop("createdBy", UNSET))
+
+    idempotent_replay = d.pop("idempotentReplay", UNSET)
+
     operation_envelope = cls(
       operation=operation,
       operation_id=operation_id,
       status=status,
       at=at,
       result=result,
+      created_by=created_by,
+      idempotent_replay=idempotent_replay,
     )
 
     operation_envelope.additional_properties = d
