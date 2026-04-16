@@ -18,6 +18,7 @@ def _get_kwargs(
   table_name: None | str | Unset = UNSET,
   status: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
+
   params: dict[str, Any] = {}
 
   json_table_name: None | str | Unset

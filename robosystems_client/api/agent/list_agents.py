@@ -16,6 +16,7 @@ def _get_kwargs(
   *,
   capability: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
+
   params: dict[str, Any] = {}
 
   json_capability: None | str | Unset

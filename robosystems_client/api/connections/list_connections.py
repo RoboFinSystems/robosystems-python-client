@@ -19,6 +19,7 @@ def _get_kwargs(
   entity_id: None | str | Unset = UNSET,
   provider: ListConnectionsProviderType0 | None | Unset = UNSET,
 ) -> dict[str, Any]:
+
   params: dict[str, Any] = {}
 
   json_entity_id: None | str | Unset

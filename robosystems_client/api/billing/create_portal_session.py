@@ -14,6 +14,7 @@ from ...types import Response
 def _get_kwargs(
   org_id: str,
 ) -> dict[str, Any]:
+
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": "/v1/billing/customer/{org_id}/portal".format(

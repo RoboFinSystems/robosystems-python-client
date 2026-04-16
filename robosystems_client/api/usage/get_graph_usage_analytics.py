@@ -21,6 +21,7 @@ def _get_kwargs(
   include_performance: bool | Unset = False,
   include_events: bool | Unset = False,
 ) -> dict[str, Any]:
+
   params: dict[str, Any] = {}
 
   params["time_range"] = time_range

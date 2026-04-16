@@ -15,6 +15,7 @@ def _get_kwargs(
   *,
   auth_token: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
+
   cookies = {}
   if auth_token is not UNSET:
     cookies["auth-token"] = auth_token

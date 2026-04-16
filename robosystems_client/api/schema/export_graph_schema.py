@@ -17,6 +17,7 @@ def _get_kwargs(
   format_: str | Unset = "json",
   include_data_stats: bool | Unset = False,
 ) -> dict[str, Any]:
+
   params: dict[str, Any] = {}
 
   params["format"] = format_
