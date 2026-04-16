@@ -75,7 +75,7 @@ include = [
 
 [tool.basedpyright]
 include = ["robosystems_client/clients"]
-exclude = ["robosystems_client/clients/tests"]
+exclude = ["tests"]
 extraPaths = ["."]
 pythonVersion = "3.13"
 venvPath = "."

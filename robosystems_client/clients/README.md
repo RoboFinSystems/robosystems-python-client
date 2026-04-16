@@ -32,7 +32,7 @@ pip install httpx pandas  # For SSE and DataFrame support
 ### Basic Usage
 
 ```python
-from robosystems_client.extensions import create_production_clients
+from robosystems_client.clients import create_production_clients
 
 # Initialize with API key
 extensions = create_production_clients("your-api-key-here")
@@ -66,7 +66,7 @@ for transaction in extensions.stream_query("your_graph_id", query, chunk_size=10
 
 ```python
 import asyncio
-from robosystems_client.extensions import AsyncRoboSystemsClients
+from robosystems_client.clients import AsyncRoboSystemsClients
 
 async def main():
     extensions = AsyncRoboSystemsClients(config)
@@ -89,7 +89,7 @@ asyncio.run(main())
 ### API Key Authentication (Recommended)
 
 ```python
-from robosystems_client.extensions import AuthenticatedClients
+from robosystems_client.clients import AuthenticatedClients
 
 extensions = AuthenticatedClients(
     api_key="your-api-key-here",
@@ -100,7 +100,7 @@ extensions = AuthenticatedClients(
 ### Cookie Authentication
 
 ```python
-from robosystems_client.extensions import CookieAuthClients
+from robosystems_client.clients import CookieAuthClients
 
 extensions = CookieAuthClients(
     cookies={"auth-token": "your-cookie-token"},
@@ -111,7 +111,7 @@ extensions = CookieAuthClients(
 ### JWT Token Authentication
 
 ```python
-from robosystems_client.extensions import TokenClients
+from robosystems_client.clients import TokenClients
 
 extensions = TokenClients(
     token="your-jwt-token",
@@ -122,7 +122,7 @@ extensions = TokenClients(
 ### Environment-Specific Configurations
 
 ```python
-from robosystems_client.extensions import create_clients
+from robosystems_client.clients import create_clients
 
 # Production
 prod_ext = create_clients(
@@ -146,7 +146,7 @@ dev_ext = create_clients(
 Build complex Cypher queries programmatically:
 
 ```python
-from robosystems_client.extensions import QueryBuilder
+from robosystems_client.clients import QueryBuilder
 
 builder = QueryBuilder()
 query, params = (builder
@@ -169,7 +169,7 @@ print("Parameters:", params)
 ### Query Validation & Cost Estimation
 
 ```python
-from robosystems_client.extensions import validate_cypher_query, estimate_query_cost
+from robosystems_client.clients import validate_cypher_query, estimate_query_cost
 
 # Validate syntax
 validation = validate_cypher_query(query)
@@ -190,7 +190,7 @@ for rec in cost['recommendations']:
 Convert results to different formats:
 
 ```python
-from robosystems_client.extensions import ResultProcessor
+from robosystems_client.clients import ResultProcessor
 
 # Convert to JSON
 json_output = ResultProcessor.to_json(result, pretty=True)
@@ -211,7 +211,7 @@ except ImportError:
 Cache expensive queries automatically:
 
 ```python
-from robosystems_client.extensions import CacheManager
+from robosystems_client.clients import CacheManager
 
 cache = CacheManager(max_size=100, ttl_seconds=300)  # 5 minute TTL
 
@@ -232,7 +232,7 @@ print(cache.stats())
 Monitor long-running operations:
 
 ```python
-from robosystems_client.extensions import ProgressTracker
+from robosystems_client.clients import ProgressTracker
 
 def progress_handler(progress):
     print(f"Step {progress.current_step}/{progress.total_steps}: {progress.message}")
@@ -249,7 +249,7 @@ print(f"Operation completed: {result.status}")
 Direct SSE connection for real-time events:
 
 ```python
-from robosystems_client.extensions import SSEClient, SSEConfig, EventType
+from robosystems_client.clients import SSEClient, SSEConfig, EventType
 
 config = SSEConfig(base_url="https://api.robosystems.ai")
 client = SSEClient(config)
@@ -276,7 +276,7 @@ client.close()
 ### Financial Data Analysis
 
 ```python
-from robosystems_client.extensions import create_production_clients, QueryBuilder
+from robosystems_client.clients import create_production_clients, QueryBuilder
 
 extensions = create_production_clients(api_key)
 
@@ -303,7 +303,7 @@ for company in result.data:
 ### Batch Processing with Streaming
 
 ```python
-from robosystems_client.extensions import DataBatcher, format_duration
+from robosystems_client.clients import DataBatcher, format_duration
 import time
 
 # Process large transaction dataset in batches
@@ -338,7 +338,7 @@ print(f"Processed {total_processed:,} transactions total")
 ### Error Handling
 
 ```python
-from robosystems_client.extensions import QueuedQueryError
+from robosystems_client.clients import QueuedQueryError
 
 try:
     result = extensions.execute_query("graph_id", "COMPLEX LONG RUNNING QUERY")
@@ -383,7 +383,7 @@ extensions = RoboSystemsClients(config)
 Use query analysis tools:
 
 ```python
-from robosystems_client.extensions import estimate_query_cost, validate_cypher_query
+from robosystems_client.clients import estimate_query_cost, validate_cypher_query
 
 # Analyze before execution
 query = "MATCH (c:Company) WHERE c.revenue > 1000000 RETURN c"
@@ -434,20 +434,20 @@ Run the test suite:
 python run_tests.py
 
 # Or individual test suites
-python -c "from robosystems_client.extensions.tests.test_unit import run_unit_tests; run_unit_tests()"
-python -c "from robosystems_client.extensions.tests.test_integration import run_integration_tests; run_integration_tests()"
+python -c "from robosystems_client.clients.tests.test_unit import run_unit_tests; run_unit_tests()"
+python -c "from robosystems_client.clients.tests.test_integration import run_integration_tests; run_integration_tests()"
 ```
 
 ### Writing Tests
 
 ```python
-from robosystems_client.extensions import AuthenticatedClients
+from robosystems_client.clients import AuthenticatedClients
 from unittest.mock import Mock, patch
 
 def test_query_execution():
     extensions = AuthenticatedClients("test-key")
     
-    with patch('robosystems_client.extensions.auth_integration.sync_detailed') as mock_query:
+    with patch('robosystems_client.clients.auth_integration.sync_detailed') as mock_query:
         # Mock successful response
         mock_response = Mock()
         mock_response.parsed.data = [{"count": 100}]
@@ -476,7 +476,7 @@ export ROBOSYSTEMS_RETRY_DELAY="2000"
 ### Configuration Object
 
 ```python
-from robosystems_client.extensions import RoboSystemsClientConfig
+from robosystems_client.clients import RoboSystemsClientConfig
 
 config = RoboSystemsClientConfig(
     base_url="https://api.robosystems.ai",
