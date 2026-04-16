@@ -34,6 +34,16 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -48,6 +58,11 @@ def _parse_response(
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -78,36 +93,6 @@ def sync_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Select Graph
 
-   Select a specific graph as the active workspace for the user.
-
-  The selected graph becomes the default context for operations in client applications
-  and can be used to maintain user workspace preferences across sessions.
-
-  **Functionality:**
-  - Sets the specified graph as the user's currently selected graph
-  - Deselects any previously selected graph (only one can be selected at a time)
-  - Persists selection across sessions until changed
-  - Returns confirmation with the selected graph ID
-
-  **Requirements:**
-  - User must have access to the graph (as admin or member)
-  - Graph must exist and not be deleted
-  - User can only select graphs they have permission to access
-
-  **Use Cases:**
-  - Switch between multiple graphs in a multi-graph environment
-  - Set default workspace after creating a new graph
-  - Restore user's preferred workspace on login
-  - Support graph context switching in client applications
-
-  **Client Integration:**
-  Many client operations can default to the selected graph, simplifying API calls
-  by eliminating the need to specify graph_id repeatedly. Check the selected
-  graph with `GET /v1/graphs` which returns `selectedGraphId`.
-
-  **Note:**
-  Graph selection is included - no credit consumption required.
-
   Args:
       graph_id (str):
 
@@ -137,36 +122,6 @@ def sync(
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Select Graph
 
-   Select a specific graph as the active workspace for the user.
-
-  The selected graph becomes the default context for operations in client applications
-  and can be used to maintain user workspace preferences across sessions.
-
-  **Functionality:**
-  - Sets the specified graph as the user's currently selected graph
-  - Deselects any previously selected graph (only one can be selected at a time)
-  - Persists selection across sessions until changed
-  - Returns confirmation with the selected graph ID
-
-  **Requirements:**
-  - User must have access to the graph (as admin or member)
-  - Graph must exist and not be deleted
-  - User can only select graphs they have permission to access
-
-  **Use Cases:**
-  - Switch between multiple graphs in a multi-graph environment
-  - Set default workspace after creating a new graph
-  - Restore user's preferred workspace on login
-  - Support graph context switching in client applications
-
-  **Client Integration:**
-  Many client operations can default to the selected graph, simplifying API calls
-  by eliminating the need to specify graph_id repeatedly. Check the selected
-  graph with `GET /v1/graphs` which returns `selectedGraphId`.
-
-  **Note:**
-  Graph selection is included - no credit consumption required.
-
   Args:
       graph_id (str):
 
@@ -190,36 +145,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Select Graph
-
-   Select a specific graph as the active workspace for the user.
-
-  The selected graph becomes the default context for operations in client applications
-  and can be used to maintain user workspace preferences across sessions.
-
-  **Functionality:**
-  - Sets the specified graph as the user's currently selected graph
-  - Deselects any previously selected graph (only one can be selected at a time)
-  - Persists selection across sessions until changed
-  - Returns confirmation with the selected graph ID
-
-  **Requirements:**
-  - User must have access to the graph (as admin or member)
-  - Graph must exist and not be deleted
-  - User can only select graphs they have permission to access
-
-  **Use Cases:**
-  - Switch between multiple graphs in a multi-graph environment
-  - Set default workspace after creating a new graph
-  - Restore user's preferred workspace on login
-  - Support graph context switching in client applications
-
-  **Client Integration:**
-  Many client operations can default to the selected graph, simplifying API calls
-  by eliminating the need to specify graph_id repeatedly. Check the selected
-  graph with `GET /v1/graphs` which returns `selectedGraphId`.
-
-  **Note:**
-  Graph selection is included - no credit consumption required.
 
   Args:
       graph_id (str):
@@ -247,36 +172,6 @@ async def asyncio(
   client: AuthenticatedClient,
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Select Graph
-
-   Select a specific graph as the active workspace for the user.
-
-  The selected graph becomes the default context for operations in client applications
-  and can be used to maintain user workspace preferences across sessions.
-
-  **Functionality:**
-  - Sets the specified graph as the user's currently selected graph
-  - Deselects any previously selected graph (only one can be selected at a time)
-  - Persists selection across sessions until changed
-  - Returns confirmation with the selected graph ID
-
-  **Requirements:**
-  - User must have access to the graph (as admin or member)
-  - Graph must exist and not be deleted
-  - User can only select graphs they have permission to access
-
-  **Use Cases:**
-  - Switch between multiple graphs in a multi-graph environment
-  - Set default workspace after creating a new graph
-  - Restore user's preferred workspace on login
-  - Support graph context switching in client applications
-
-  **Client Integration:**
-  Many client operations can default to the selected graph, simplifying API calls
-  by eliminating the need to specify graph_id repeatedly. Check the selected
-  graph with `GET /v1/graphs` which returns `selectedGraphId`.
-
-  **Note:**
-  Graph selection is included - no credit consumption required.
 
   Args:
       graph_id (str):

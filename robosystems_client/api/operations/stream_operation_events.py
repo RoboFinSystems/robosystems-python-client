@@ -1,11 +1,12 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
@@ -48,17 +49,29 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | None:
+) -> Any | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = response.json()
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = cast(Any, None)
+    response_404 = ErrorResponse.from_dict(response.json())
+
     return response_404
 
   if response.status_code == 422:
@@ -66,8 +79,14 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -78,7 +97,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -94,56 +113,11 @@ def sync_detailed(
   from_sequence: int | Unset = 0,
   token: None | str | Unset = UNSET,
   authorization: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError]:
   """Stream Operation Events
 
-   Stream real-time events for an operation using Server-Sent Events (SSE).
-
-  This endpoint provides real-time monitoring for all non-immediate operations including:
-  - Graph creation and management
-  - Agent analysis processing
-  - Database backups and restores
-  - Data synchronization tasks
-
-  **Event Types:**
-  - `operation_started`: Operation began execution
-  - `operation_progress`: Progress update with details
-  - `operation_completed`: Operation finished successfully
-  - `operation_error`: Operation failed with error details
-  - `operation_cancelled`: Operation was cancelled
-
-  **Features:**
-  - **Event Replay**: Use `from_sequence` parameter to replay missed events
-  - **Automatic Reconnection**: Client can reconnect and resume from last seen event
-  - **Real-time Updates**: Live progress updates during execution
-  - **Timeout Handling**: 30-second keepalive messages prevent connection timeouts
-  - **Graceful Degradation**: Automatic fallback if Redis is unavailable
-
-  **Connection Limits:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic cleanup of stale connections
-  - Circuit breaker protection for Redis failures
-
-  **Client Usage:**
-  ```javascript
-  const eventSource = new EventSource('/v1/operations/abc123/stream');
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Progress:', data);
-  };
-  eventSource.onerror = (error) => {
-    // Handle connection errors or rate limits
-    console.error('SSE Error:', error);
-  };
-  ```
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Connection limit or rate limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - Clients should implement exponential backoff on errors
-
-  **No credits are consumed for SSE connections.**
+   Server-Sent Events stream for real-time operation progress. Use `from_sequence` to replay missed
+  events on reconnect. Max 5 concurrent SSE connections per user. Consumes no credits.
 
   Args:
       operation_id (str): Operation identifier from initial submission
@@ -157,7 +131,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -181,56 +155,11 @@ def sync(
   from_sequence: int | Unset = 0,
   token: None | str | Unset = UNSET,
   authorization: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | None:
+) -> Any | ErrorResponse | HTTPValidationError | None:
   """Stream Operation Events
 
-   Stream real-time events for an operation using Server-Sent Events (SSE).
-
-  This endpoint provides real-time monitoring for all non-immediate operations including:
-  - Graph creation and management
-  - Agent analysis processing
-  - Database backups and restores
-  - Data synchronization tasks
-
-  **Event Types:**
-  - `operation_started`: Operation began execution
-  - `operation_progress`: Progress update with details
-  - `operation_completed`: Operation finished successfully
-  - `operation_error`: Operation failed with error details
-  - `operation_cancelled`: Operation was cancelled
-
-  **Features:**
-  - **Event Replay**: Use `from_sequence` parameter to replay missed events
-  - **Automatic Reconnection**: Client can reconnect and resume from last seen event
-  - **Real-time Updates**: Live progress updates during execution
-  - **Timeout Handling**: 30-second keepalive messages prevent connection timeouts
-  - **Graceful Degradation**: Automatic fallback if Redis is unavailable
-
-  **Connection Limits:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic cleanup of stale connections
-  - Circuit breaker protection for Redis failures
-
-  **Client Usage:**
-  ```javascript
-  const eventSource = new EventSource('/v1/operations/abc123/stream');
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Progress:', data);
-  };
-  eventSource.onerror = (error) => {
-    // Handle connection errors or rate limits
-    console.error('SSE Error:', error);
-  };
-  ```
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Connection limit or rate limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - Clients should implement exponential backoff on errors
-
-  **No credits are consumed for SSE connections.**
+   Server-Sent Events stream for real-time operation progress. Use `from_sequence` to replay missed
+  events on reconnect. Max 5 concurrent SSE connections per user. Consumes no credits.
 
   Args:
       operation_id (str): Operation identifier from initial submission
@@ -244,7 +173,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -263,56 +192,11 @@ async def asyncio_detailed(
   from_sequence: int | Unset = 0,
   token: None | str | Unset = UNSET,
   authorization: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError]:
   """Stream Operation Events
 
-   Stream real-time events for an operation using Server-Sent Events (SSE).
-
-  This endpoint provides real-time monitoring for all non-immediate operations including:
-  - Graph creation and management
-  - Agent analysis processing
-  - Database backups and restores
-  - Data synchronization tasks
-
-  **Event Types:**
-  - `operation_started`: Operation began execution
-  - `operation_progress`: Progress update with details
-  - `operation_completed`: Operation finished successfully
-  - `operation_error`: Operation failed with error details
-  - `operation_cancelled`: Operation was cancelled
-
-  **Features:**
-  - **Event Replay**: Use `from_sequence` parameter to replay missed events
-  - **Automatic Reconnection**: Client can reconnect and resume from last seen event
-  - **Real-time Updates**: Live progress updates during execution
-  - **Timeout Handling**: 30-second keepalive messages prevent connection timeouts
-  - **Graceful Degradation**: Automatic fallback if Redis is unavailable
-
-  **Connection Limits:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic cleanup of stale connections
-  - Circuit breaker protection for Redis failures
-
-  **Client Usage:**
-  ```javascript
-  const eventSource = new EventSource('/v1/operations/abc123/stream');
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Progress:', data);
-  };
-  eventSource.onerror = (error) => {
-    // Handle connection errors or rate limits
-    console.error('SSE Error:', error);
-  };
-  ```
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Connection limit or rate limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - Clients should implement exponential backoff on errors
-
-  **No credits are consumed for SSE connections.**
+   Server-Sent Events stream for real-time operation progress. Use `from_sequence` to replay missed
+  events on reconnect. Max 5 concurrent SSE connections per user. Consumes no credits.
 
   Args:
       operation_id (str): Operation identifier from initial submission
@@ -326,7 +210,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -348,56 +232,11 @@ async def asyncio(
   from_sequence: int | Unset = 0,
   token: None | str | Unset = UNSET,
   authorization: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | None:
+) -> Any | ErrorResponse | HTTPValidationError | None:
   """Stream Operation Events
 
-   Stream real-time events for an operation using Server-Sent Events (SSE).
-
-  This endpoint provides real-time monitoring for all non-immediate operations including:
-  - Graph creation and management
-  - Agent analysis processing
-  - Database backups and restores
-  - Data synchronization tasks
-
-  **Event Types:**
-  - `operation_started`: Operation began execution
-  - `operation_progress`: Progress update with details
-  - `operation_completed`: Operation finished successfully
-  - `operation_error`: Operation failed with error details
-  - `operation_cancelled`: Operation was cancelled
-
-  **Features:**
-  - **Event Replay**: Use `from_sequence` parameter to replay missed events
-  - **Automatic Reconnection**: Client can reconnect and resume from last seen event
-  - **Real-time Updates**: Live progress updates during execution
-  - **Timeout Handling**: 30-second keepalive messages prevent connection timeouts
-  - **Graceful Degradation**: Automatic fallback if Redis is unavailable
-
-  **Connection Limits:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic cleanup of stale connections
-  - Circuit breaker protection for Redis failures
-
-  **Client Usage:**
-  ```javascript
-  const eventSource = new EventSource('/v1/operations/abc123/stream');
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Progress:', data);
-  };
-  eventSource.onerror = (error) => {
-    // Handle connection errors or rate limits
-    console.error('SSE Error:', error);
-  };
-  ```
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Connection limit or rate limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - Clients should implement exponential backoff on errors
-
-  **No credits are consumed for SSE connections.**
+   Server-Sent Events stream for real-time operation progress. Use `from_sequence` to replay missed
+  events on reconnect. Max 5 concurrent SSE connections per user. Consumes no credits.
 
   Args:
       operation_id (str): Operation identifier from initial submission
@@ -411,7 +250,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError
   """
 
   return (

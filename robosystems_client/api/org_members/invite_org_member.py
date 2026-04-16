@@ -6,6 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.invite_member_request import InviteMemberRequest
 from ...models.org_member_response import OrgMemberResponse
@@ -36,16 +37,51 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> HTTPValidationError | OrgMemberResponse | None:
+) -> ErrorResponse | HTTPValidationError | OrgMemberResponse | None:
   if response.status_code == 201:
     response_201 = OrgMemberResponse.from_dict(response.json())
 
     return response_201
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
+  if response.status_code == 501:
+    response_501 = ErrorResponse.from_dict(response.json())
+
+    return response_501
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -55,7 +91,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[HTTPValidationError | OrgMemberResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | OrgMemberResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -69,15 +105,11 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: InviteMemberRequest,
-) -> Response[HTTPValidationError | OrgMemberResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | OrgMemberResponse]:
   """Invite Member
 
-   Invite a user to join the organization. Requires admin or owner role.
-
-    **⚠️ FEATURE NOT READY**: This endpoint is disabled by default
-  (ORG_MEMBER_INVITATIONS_ENABLED=false).
-    Returns 501 NOT IMPLEMENTED when disabled. See endpoint implementation for TODO list before
-  enabling.
+   Disabled by default (ORG_MEMBER_INVITATIONS_ENABLED=false). Returns 501 when disabled. Requires
+  admin or owner role.
 
   Args:
       org_id (str):
@@ -88,7 +120,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | OrgMemberResponse]
+      Response[ErrorResponse | HTTPValidationError | OrgMemberResponse]
   """
 
   kwargs = _get_kwargs(
@@ -108,15 +140,11 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: InviteMemberRequest,
-) -> HTTPValidationError | OrgMemberResponse | None:
+) -> ErrorResponse | HTTPValidationError | OrgMemberResponse | None:
   """Invite Member
 
-   Invite a user to join the organization. Requires admin or owner role.
-
-    **⚠️ FEATURE NOT READY**: This endpoint is disabled by default
-  (ORG_MEMBER_INVITATIONS_ENABLED=false).
-    Returns 501 NOT IMPLEMENTED when disabled. See endpoint implementation for TODO list before
-  enabling.
+   Disabled by default (ORG_MEMBER_INVITATIONS_ENABLED=false). Returns 501 when disabled. Requires
+  admin or owner role.
 
   Args:
       org_id (str):
@@ -127,7 +155,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | OrgMemberResponse
+      ErrorResponse | HTTPValidationError | OrgMemberResponse
   """
 
   return sync_detailed(
@@ -142,15 +170,11 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: InviteMemberRequest,
-) -> Response[HTTPValidationError | OrgMemberResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | OrgMemberResponse]:
   """Invite Member
 
-   Invite a user to join the organization. Requires admin or owner role.
-
-    **⚠️ FEATURE NOT READY**: This endpoint is disabled by default
-  (ORG_MEMBER_INVITATIONS_ENABLED=false).
-    Returns 501 NOT IMPLEMENTED when disabled. See endpoint implementation for TODO list before
-  enabling.
+   Disabled by default (ORG_MEMBER_INVITATIONS_ENABLED=false). Returns 501 when disabled. Requires
+  admin or owner role.
 
   Args:
       org_id (str):
@@ -161,7 +185,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | OrgMemberResponse]
+      Response[ErrorResponse | HTTPValidationError | OrgMemberResponse]
   """
 
   kwargs = _get_kwargs(
@@ -179,15 +203,11 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: InviteMemberRequest,
-) -> HTTPValidationError | OrgMemberResponse | None:
+) -> ErrorResponse | HTTPValidationError | OrgMemberResponse | None:
   """Invite Member
 
-   Invite a user to join the organization. Requires admin or owner role.
-
-    **⚠️ FEATURE NOT READY**: This endpoint is disabled by default
-  (ORG_MEMBER_INVITATIONS_ENABLED=false).
-    Returns 501 NOT IMPLEMENTED when disabled. See endpoint implementation for TODO list before
-  enabling.
+   Disabled by default (ORG_MEMBER_INVITATIONS_ENABLED=false). Returns 501 when disabled. Requires
+  admin or owner role.
 
   Args:
       org_id (str):
@@ -198,7 +218,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | OrgMemberResponse
+      ErrorResponse | HTTPValidationError | OrgMemberResponse
   """
 
   return (

@@ -1,11 +1,12 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.subgraph_quota_response import SubgraphQuotaResponse
 from ...types import Response
@@ -27,22 +28,30 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | SubgraphQuotaResponse | None:
+) -> ErrorResponse | HTTPValidationError | SubgraphQuotaResponse | None:
   if response.status_code == 200:
     response_200 = SubgraphQuotaResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = cast(Any, None)
+    response_404 = ErrorResponse.from_dict(response.json())
+
     return response_404
 
   if response.status_code == 422:
@@ -50,8 +59,14 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -62,7 +77,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | SubgraphQuotaResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | SubgraphQuotaResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -75,26 +90,11 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | HTTPValidationError | SubgraphQuotaResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | SubgraphQuotaResponse]:
   """Get Subgraph Quota
 
-   Get subgraph quota and usage information for a parent graph.
-
-  **Shows:**
-  - Current subgraph count
-  - Maximum allowed subgraphs per tier
-  - Remaining capacity
-  - Total size usage across all subgraphs
-
-  **Tier Limits:**
-  - Standard: Up to 3 subgraphs (dedicated m7g.large instance)
-  - Large: Up to 10 subgraphs (dedicated r7g.large instance)
-  - XLarge: Up to 25 subgraphs (dedicated r7g.xlarge instance)
-  - Limits are defined in graph.yml deployment configuration
-
-  **Size Tracking:**
-  Provides aggregate size metrics when available.
-  Individual subgraph sizes shown in list endpoint.
+   Tier capacity: Standard 3, Large 10, XLarge 25 subgraphs. Use the list endpoint for per-subgraph
+  sizes.
 
   Args:
       graph_id (str):
@@ -104,7 +104,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | SubgraphQuotaResponse]
+      Response[ErrorResponse | HTTPValidationError | SubgraphQuotaResponse]
   """
 
   kwargs = _get_kwargs(
@@ -122,26 +122,11 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | HTTPValidationError | SubgraphQuotaResponse | None:
+) -> ErrorResponse | HTTPValidationError | SubgraphQuotaResponse | None:
   """Get Subgraph Quota
 
-   Get subgraph quota and usage information for a parent graph.
-
-  **Shows:**
-  - Current subgraph count
-  - Maximum allowed subgraphs per tier
-  - Remaining capacity
-  - Total size usage across all subgraphs
-
-  **Tier Limits:**
-  - Standard: Up to 3 subgraphs (dedicated m7g.large instance)
-  - Large: Up to 10 subgraphs (dedicated r7g.large instance)
-  - XLarge: Up to 25 subgraphs (dedicated r7g.xlarge instance)
-  - Limits are defined in graph.yml deployment configuration
-
-  **Size Tracking:**
-  Provides aggregate size metrics when available.
-  Individual subgraph sizes shown in list endpoint.
+   Tier capacity: Standard 3, Large 10, XLarge 25 subgraphs. Use the list endpoint for per-subgraph
+  sizes.
 
   Args:
       graph_id (str):
@@ -151,7 +136,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | SubgraphQuotaResponse
+      ErrorResponse | HTTPValidationError | SubgraphQuotaResponse
   """
 
   return sync_detailed(
@@ -164,26 +149,11 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | HTTPValidationError | SubgraphQuotaResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | SubgraphQuotaResponse]:
   """Get Subgraph Quota
 
-   Get subgraph quota and usage information for a parent graph.
-
-  **Shows:**
-  - Current subgraph count
-  - Maximum allowed subgraphs per tier
-  - Remaining capacity
-  - Total size usage across all subgraphs
-
-  **Tier Limits:**
-  - Standard: Up to 3 subgraphs (dedicated m7g.large instance)
-  - Large: Up to 10 subgraphs (dedicated r7g.large instance)
-  - XLarge: Up to 25 subgraphs (dedicated r7g.xlarge instance)
-  - Limits are defined in graph.yml deployment configuration
-
-  **Size Tracking:**
-  Provides aggregate size metrics when available.
-  Individual subgraph sizes shown in list endpoint.
+   Tier capacity: Standard 3, Large 10, XLarge 25 subgraphs. Use the list endpoint for per-subgraph
+  sizes.
 
   Args:
       graph_id (str):
@@ -193,7 +163,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | SubgraphQuotaResponse]
+      Response[ErrorResponse | HTTPValidationError | SubgraphQuotaResponse]
   """
 
   kwargs = _get_kwargs(
@@ -209,26 +179,11 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | HTTPValidationError | SubgraphQuotaResponse | None:
+) -> ErrorResponse | HTTPValidationError | SubgraphQuotaResponse | None:
   """Get Subgraph Quota
 
-   Get subgraph quota and usage information for a parent graph.
-
-  **Shows:**
-  - Current subgraph count
-  - Maximum allowed subgraphs per tier
-  - Remaining capacity
-  - Total size usage across all subgraphs
-
-  **Tier Limits:**
-  - Standard: Up to 3 subgraphs (dedicated m7g.large instance)
-  - Large: Up to 10 subgraphs (dedicated r7g.large instance)
-  - XLarge: Up to 25 subgraphs (dedicated r7g.xlarge instance)
-  - Limits are defined in graph.yml deployment configuration
-
-  **Size Tracking:**
-  Provides aggregate size metrics when available.
-  Individual subgraph sizes shown in list endpoint.
+   Tier capacity: Standard 3, Large 10, XLarge 25 subgraphs. Use the list endpoint for per-subgraph
+  sizes.
 
   Args:
       graph_id (str):
@@ -238,7 +193,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | SubgraphQuotaResponse
+      ErrorResponse | HTTPValidationError | SubgraphQuotaResponse
   """
 
   return (

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -50,14 +50,20 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
+) -> ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
   if response.status_code == 200:
     response_200 = ListTableFilesResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
@@ -75,6 +81,16 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -83,7 +99,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -98,40 +114,11 @@ def sync_detailed(
   client: AuthenticatedClient,
   table_name: None | str | Unset = UNSET,
   status: None | str | Unset = UNSET,
-) -> Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
   """List Files in Graph
 
-   List all files in the graph with optional filtering.
-
-  Get a complete inventory of files across all tables or filtered by table name,
-  status, or other criteria. Files are first-class resources with independent lifecycle.
-
-  **Query Parameters:**
-  - `table_name` (optional): Filter by table name
-  - `status` (optional): Filter by upload status (uploaded, pending, failed, etc.)
-
-  **Use Cases:**
-  - Monitor file upload progress across all tables
-  - Verify files are ready for ingestion
-  - Check file metadata and sizes
-  - Track storage usage per graph
-  - Identify failed or incomplete uploads
-  - Audit file provenance
-
-  **Returned Metadata:**
-  - File ID, name, and format (parquet, csv, json)
-  - Size in bytes and row count (if available)
-  - Upload status and timestamps
-  - DuckDB and graph ingestion status
-  - Table association
-
-  **File Lifecycle Tracking:**
-  Multi-layer status across S3 → DuckDB → Graph pipeline
-
-  **Important Notes:**
-  - Files are graph-scoped, not table-scoped
-  - Use table_name parameter to filter by table
-  - File listing is included - no credit consumption
+   Filter by `table_name` or upload `status`. Files are graph-scoped resources with S3 → DuckDB → Graph
+  lifecycle tracking.
 
   Args:
       graph_id (str):
@@ -143,7 +130,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]
+      Response[ErrorResponse | HTTPValidationError | ListTableFilesResponse]
   """
 
   kwargs = _get_kwargs(
@@ -165,40 +152,11 @@ def sync(
   client: AuthenticatedClient,
   table_name: None | str | Unset = UNSET,
   status: None | str | Unset = UNSET,
-) -> Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
+) -> ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
   """List Files in Graph
 
-   List all files in the graph with optional filtering.
-
-  Get a complete inventory of files across all tables or filtered by table name,
-  status, or other criteria. Files are first-class resources with independent lifecycle.
-
-  **Query Parameters:**
-  - `table_name` (optional): Filter by table name
-  - `status` (optional): Filter by upload status (uploaded, pending, failed, etc.)
-
-  **Use Cases:**
-  - Monitor file upload progress across all tables
-  - Verify files are ready for ingestion
-  - Check file metadata and sizes
-  - Track storage usage per graph
-  - Identify failed or incomplete uploads
-  - Audit file provenance
-
-  **Returned Metadata:**
-  - File ID, name, and format (parquet, csv, json)
-  - Size in bytes and row count (if available)
-  - Upload status and timestamps
-  - DuckDB and graph ingestion status
-  - Table association
-
-  **File Lifecycle Tracking:**
-  Multi-layer status across S3 → DuckDB → Graph pipeline
-
-  **Important Notes:**
-  - Files are graph-scoped, not table-scoped
-  - Use table_name parameter to filter by table
-  - File listing is included - no credit consumption
+   Filter by `table_name` or upload `status`. Files are graph-scoped resources with S3 → DuckDB → Graph
+  lifecycle tracking.
 
   Args:
       graph_id (str):
@@ -210,7 +168,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse
+      ErrorResponse | HTTPValidationError | ListTableFilesResponse
   """
 
   return sync_detailed(
@@ -227,40 +185,11 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   table_name: None | str | Unset = UNSET,
   status: None | str | Unset = UNSET,
-) -> Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | ListTableFilesResponse]:
   """List Files in Graph
 
-   List all files in the graph with optional filtering.
-
-  Get a complete inventory of files across all tables or filtered by table name,
-  status, or other criteria. Files are first-class resources with independent lifecycle.
-
-  **Query Parameters:**
-  - `table_name` (optional): Filter by table name
-  - `status` (optional): Filter by upload status (uploaded, pending, failed, etc.)
-
-  **Use Cases:**
-  - Monitor file upload progress across all tables
-  - Verify files are ready for ingestion
-  - Check file metadata and sizes
-  - Track storage usage per graph
-  - Identify failed or incomplete uploads
-  - Audit file provenance
-
-  **Returned Metadata:**
-  - File ID, name, and format (parquet, csv, json)
-  - Size in bytes and row count (if available)
-  - Upload status and timestamps
-  - DuckDB and graph ingestion status
-  - Table association
-
-  **File Lifecycle Tracking:**
-  Multi-layer status across S3 → DuckDB → Graph pipeline
-
-  **Important Notes:**
-  - Files are graph-scoped, not table-scoped
-  - Use table_name parameter to filter by table
-  - File listing is included - no credit consumption
+   Filter by `table_name` or upload `status`. Files are graph-scoped resources with S3 → DuckDB → Graph
+  lifecycle tracking.
 
   Args:
       graph_id (str):
@@ -272,7 +201,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse]
+      Response[ErrorResponse | HTTPValidationError | ListTableFilesResponse]
   """
 
   kwargs = _get_kwargs(
@@ -292,40 +221,11 @@ async def asyncio(
   client: AuthenticatedClient,
   table_name: None | str | Unset = UNSET,
   status: None | str | Unset = UNSET,
-) -> Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
+) -> ErrorResponse | HTTPValidationError | ListTableFilesResponse | None:
   """List Files in Graph
 
-   List all files in the graph with optional filtering.
-
-  Get a complete inventory of files across all tables or filtered by table name,
-  status, or other criteria. Files are first-class resources with independent lifecycle.
-
-  **Query Parameters:**
-  - `table_name` (optional): Filter by table name
-  - `status` (optional): Filter by upload status (uploaded, pending, failed, etc.)
-
-  **Use Cases:**
-  - Monitor file upload progress across all tables
-  - Verify files are ready for ingestion
-  - Check file metadata and sizes
-  - Track storage usage per graph
-  - Identify failed or incomplete uploads
-  - Audit file provenance
-
-  **Returned Metadata:**
-  - File ID, name, and format (parquet, csv, json)
-  - Size in bytes and row count (if available)
-  - Upload status and timestamps
-  - DuckDB and graph ingestion status
-  - Table association
-
-  **File Lifecycle Tracking:**
-  Multi-layer status across S3 → DuckDB → Graph pipeline
-
-  **Important Notes:**
-  - Files are graph-scoped, not table-scoped
-  - Use table_name parameter to filter by table
-  - File listing is included - no credit consumption
+   Filter by `table_name` or upload `status`. Files are graph-scoped resources with S3 → DuckDB → Graph
+  lifecycle tracking.
 
   Args:
       graph_id (str):
@@ -337,7 +237,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError | ListTableFilesResponse
+      ErrorResponse | HTTPValidationError | ListTableFilesResponse
   """
 
   return (

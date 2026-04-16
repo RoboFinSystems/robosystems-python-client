@@ -1,11 +1,12 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_graph_request import CreateGraphRequest
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...types import UNSET, Response, Unset
@@ -35,16 +36,55 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   if response.status_code == 202:
     response_202 = OperationEnvelope.from_dict(response.json())
 
     return response_202
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 402:
+    response_402 = cast(Any, None)
+    return response_402
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
+  if response.status_code == 409:
+    response_409 = ErrorResponse.from_dict(response.json())
+
+    return response_409
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -54,7 +94,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -68,70 +108,12 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateGraphRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Create New Graph Database
 
-   Create a new graph database with specified schema and an initial entity.
-
-  This endpoint starts an asynchronous graph creation operation and returns
-  connection details for monitoring progress via Server-Sent Events (SSE).
-
-  **Graph Creation Options:**
-
-  1. **Entity Graph** (`initial_entity` required, `custom_schema` omitted):
-     - Creates graph structure with entity schema extensions
-     - `initial_entity` is required — entity graphs must have an entity
-     - Set `create_entity=False` to defer entity population (e.g. file-based ingestion)
-     - Example: Creating a company graph with the company pre-populated
-
-  2. **Custom Graph** (`custom_schema` provided, no `initial_entity`):
-     - Creates a generic graph with a fully custom schema
-     - `initial_entity` is not used
-     - Example: Analytics graphs, custom data models
-
-  **Required Fields:**
-  - `metadata.graph_name`: Unique name for the graph
-  - `instance_tier`: Resource tier (ladybug-standard, ladybug-large, ladybug-xlarge)
-  - `initial_entity`: Entity data — required for entity graphs (omit only when providing
-  `custom_schema`)
-
-  **Optional Fields:**
-  - `metadata.description`: Human-readable description of the graph's purpose
-  - `metadata.schema_extensions`: List of schema extensions (roboledger, roboinvestor, etc.)
-  - `tags`: Organizational tags (max 10)
-  - `create_entity`: Whether to populate entity data on creation (default: true)
-
-  **Monitoring Progress:**
-  Use the returned `operation_id` to connect to the SSE stream:
-  ```javascript
-  const eventSource = new EventSource('/v1/operations/{operation_id}/stream');
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Progress:', data.progress_percent + '%');
-  };
-  ```
-
-  **SSE Connection Limits:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation if event system unavailable
-
-  **Events Emitted:**
-  - `operation_started`: Graph creation begins
-  - `operation_progress`: Schema loading, database setup, etc.
-  - `operation_completed`: Graph ready with connection details
-  - `operation_error`: Creation failed with error details
-
-  **Error Handling:**
-  - `429 Too Many Requests`: SSE connection limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - Clients should implement exponential backoff on errors
-
-  **Response includes:**
-  - `operation_id`: Unique identifier for monitoring
-  - `_links.stream`: SSE endpoint for real-time updates
-  - `_links.status`: Point-in-time status check endpoint
+   Creates a graph asynchronously. Returns an `OperationEnvelope` with `operation_id` for SSE progress
+  at `/v1/operations/{operation_id}/stream`. Entity graphs require `initial_entity`. Supports
+  `Idempotency-Key` header.
 
   Args:
       idempotency_key (None | str | Unset):
@@ -147,7 +129,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | OperationEnvelope]
+      Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -167,70 +149,12 @@ def sync(
   client: AuthenticatedClient,
   body: CreateGraphRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Create New Graph Database
 
-   Create a new graph database with specified schema and an initial entity.
-
-  This endpoint starts an asynchronous graph creation operation and returns
-  connection details for monitoring progress via Server-Sent Events (SSE).
-
-  **Graph Creation Options:**
-
-  1. **Entity Graph** (`initial_entity` required, `custom_schema` omitted):
-     - Creates graph structure with entity schema extensions
-     - `initial_entity` is required — entity graphs must have an entity
-     - Set `create_entity=False` to defer entity population (e.g. file-based ingestion)
-     - Example: Creating a company graph with the company pre-populated
-
-  2. **Custom Graph** (`custom_schema` provided, no `initial_entity`):
-     - Creates a generic graph with a fully custom schema
-     - `initial_entity` is not used
-     - Example: Analytics graphs, custom data models
-
-  **Required Fields:**
-  - `metadata.graph_name`: Unique name for the graph
-  - `instance_tier`: Resource tier (ladybug-standard, ladybug-large, ladybug-xlarge)
-  - `initial_entity`: Entity data — required for entity graphs (omit only when providing
-  `custom_schema`)
-
-  **Optional Fields:**
-  - `metadata.description`: Human-readable description of the graph's purpose
-  - `metadata.schema_extensions`: List of schema extensions (roboledger, roboinvestor, etc.)
-  - `tags`: Organizational tags (max 10)
-  - `create_entity`: Whether to populate entity data on creation (default: true)
-
-  **Monitoring Progress:**
-  Use the returned `operation_id` to connect to the SSE stream:
-  ```javascript
-  const eventSource = new EventSource('/v1/operations/{operation_id}/stream');
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Progress:', data.progress_percent + '%');
-  };
-  ```
-
-  **SSE Connection Limits:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation if event system unavailable
-
-  **Events Emitted:**
-  - `operation_started`: Graph creation begins
-  - `operation_progress`: Schema loading, database setup, etc.
-  - `operation_completed`: Graph ready with connection details
-  - `operation_error`: Creation failed with error details
-
-  **Error Handling:**
-  - `429 Too Many Requests`: SSE connection limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - Clients should implement exponential backoff on errors
-
-  **Response includes:**
-  - `operation_id`: Unique identifier for monitoring
-  - `_links.stream`: SSE endpoint for real-time updates
-  - `_links.status`: Point-in-time status check endpoint
+   Creates a graph asynchronously. Returns an `OperationEnvelope` with `operation_id` for SSE progress
+  at `/v1/operations/{operation_id}/stream`. Entity graphs require `initial_entity`. Supports
+  `Idempotency-Key` header.
 
   Args:
       idempotency_key (None | str | Unset):
@@ -246,7 +170,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | OperationEnvelope
+      Any | ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return sync_detailed(
@@ -261,70 +185,12 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateGraphRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Create New Graph Database
 
-   Create a new graph database with specified schema and an initial entity.
-
-  This endpoint starts an asynchronous graph creation operation and returns
-  connection details for monitoring progress via Server-Sent Events (SSE).
-
-  **Graph Creation Options:**
-
-  1. **Entity Graph** (`initial_entity` required, `custom_schema` omitted):
-     - Creates graph structure with entity schema extensions
-     - `initial_entity` is required — entity graphs must have an entity
-     - Set `create_entity=False` to defer entity population (e.g. file-based ingestion)
-     - Example: Creating a company graph with the company pre-populated
-
-  2. **Custom Graph** (`custom_schema` provided, no `initial_entity`):
-     - Creates a generic graph with a fully custom schema
-     - `initial_entity` is not used
-     - Example: Analytics graphs, custom data models
-
-  **Required Fields:**
-  - `metadata.graph_name`: Unique name for the graph
-  - `instance_tier`: Resource tier (ladybug-standard, ladybug-large, ladybug-xlarge)
-  - `initial_entity`: Entity data — required for entity graphs (omit only when providing
-  `custom_schema`)
-
-  **Optional Fields:**
-  - `metadata.description`: Human-readable description of the graph's purpose
-  - `metadata.schema_extensions`: List of schema extensions (roboledger, roboinvestor, etc.)
-  - `tags`: Organizational tags (max 10)
-  - `create_entity`: Whether to populate entity data on creation (default: true)
-
-  **Monitoring Progress:**
-  Use the returned `operation_id` to connect to the SSE stream:
-  ```javascript
-  const eventSource = new EventSource('/v1/operations/{operation_id}/stream');
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Progress:', data.progress_percent + '%');
-  };
-  ```
-
-  **SSE Connection Limits:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation if event system unavailable
-
-  **Events Emitted:**
-  - `operation_started`: Graph creation begins
-  - `operation_progress`: Schema loading, database setup, etc.
-  - `operation_completed`: Graph ready with connection details
-  - `operation_error`: Creation failed with error details
-
-  **Error Handling:**
-  - `429 Too Many Requests`: SSE connection limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - Clients should implement exponential backoff on errors
-
-  **Response includes:**
-  - `operation_id`: Unique identifier for monitoring
-  - `_links.stream`: SSE endpoint for real-time updates
-  - `_links.status`: Point-in-time status check endpoint
+   Creates a graph asynchronously. Returns an `OperationEnvelope` with `operation_id` for SSE progress
+  at `/v1/operations/{operation_id}/stream`. Entity graphs require `initial_entity`. Supports
+  `Idempotency-Key` header.
 
   Args:
       idempotency_key (None | str | Unset):
@@ -340,7 +206,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | OperationEnvelope]
+      Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -358,70 +224,12 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateGraphRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Create New Graph Database
 
-   Create a new graph database with specified schema and an initial entity.
-
-  This endpoint starts an asynchronous graph creation operation and returns
-  connection details for monitoring progress via Server-Sent Events (SSE).
-
-  **Graph Creation Options:**
-
-  1. **Entity Graph** (`initial_entity` required, `custom_schema` omitted):
-     - Creates graph structure with entity schema extensions
-     - `initial_entity` is required — entity graphs must have an entity
-     - Set `create_entity=False` to defer entity population (e.g. file-based ingestion)
-     - Example: Creating a company graph with the company pre-populated
-
-  2. **Custom Graph** (`custom_schema` provided, no `initial_entity`):
-     - Creates a generic graph with a fully custom schema
-     - `initial_entity` is not used
-     - Example: Analytics graphs, custom data models
-
-  **Required Fields:**
-  - `metadata.graph_name`: Unique name for the graph
-  - `instance_tier`: Resource tier (ladybug-standard, ladybug-large, ladybug-xlarge)
-  - `initial_entity`: Entity data — required for entity graphs (omit only when providing
-  `custom_schema`)
-
-  **Optional Fields:**
-  - `metadata.description`: Human-readable description of the graph's purpose
-  - `metadata.schema_extensions`: List of schema extensions (roboledger, roboinvestor, etc.)
-  - `tags`: Organizational tags (max 10)
-  - `create_entity`: Whether to populate entity data on creation (default: true)
-
-  **Monitoring Progress:**
-  Use the returned `operation_id` to connect to the SSE stream:
-  ```javascript
-  const eventSource = new EventSource('/v1/operations/{operation_id}/stream');
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Progress:', data.progress_percent + '%');
-  };
-  ```
-
-  **SSE Connection Limits:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation if event system unavailable
-
-  **Events Emitted:**
-  - `operation_started`: Graph creation begins
-  - `operation_progress`: Schema loading, database setup, etc.
-  - `operation_completed`: Graph ready with connection details
-  - `operation_error`: Creation failed with error details
-
-  **Error Handling:**
-  - `429 Too Many Requests`: SSE connection limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - Clients should implement exponential backoff on errors
-
-  **Response includes:**
-  - `operation_id`: Unique identifier for monitoring
-  - `_links.stream`: SSE endpoint for real-time updates
-  - `_links.status`: Point-in-time status check endpoint
+   Creates a graph asynchronously. Returns an `OperationEnvelope` with `operation_id` for SSE progress
+  at `/v1/operations/{operation_id}/stream`. Entity graphs require `initial_entity`. Supports
+  `Idempotency-Key` header.
 
   Args:
       idempotency_key (None | str | Unset):
@@ -437,7 +245,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | OperationEnvelope
+      Any | ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return (

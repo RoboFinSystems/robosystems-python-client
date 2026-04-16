@@ -5,6 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from ...types import Response
 
@@ -21,11 +22,26 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> LogoutUserResponseLogoutuser | None:
+) -> ErrorResponse | LogoutUserResponseLogoutuser | None:
   if response.status_code == 200:
     response_200 = LogoutUserResponseLogoutuser.from_dict(response.json())
 
     return response_200
+
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -35,7 +51,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[LogoutUserResponseLogoutuser]:
+) -> Response[ErrorResponse | LogoutUserResponseLogoutuser]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -47,17 +63,15 @@ def _build_response(
 def sync_detailed(
   *,
   client: AuthenticatedClient | Client,
-) -> Response[LogoutUserResponseLogoutuser]:
+) -> Response[ErrorResponse | LogoutUserResponseLogoutuser]:
   """User Logout
-
-   Logout user and invalidate session.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[LogoutUserResponseLogoutuser]
+      Response[ErrorResponse | LogoutUserResponseLogoutuser]
   """
 
   kwargs = _get_kwargs()
@@ -72,17 +86,15 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient | Client,
-) -> LogoutUserResponseLogoutuser | None:
+) -> ErrorResponse | LogoutUserResponseLogoutuser | None:
   """User Logout
-
-   Logout user and invalidate session.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      LogoutUserResponseLogoutuser
+      ErrorResponse | LogoutUserResponseLogoutuser
   """
 
   return sync_detailed(
@@ -93,17 +105,15 @@ def sync(
 async def asyncio_detailed(
   *,
   client: AuthenticatedClient | Client,
-) -> Response[LogoutUserResponseLogoutuser]:
+) -> Response[ErrorResponse | LogoutUserResponseLogoutuser]:
   """User Logout
-
-   Logout user and invalidate session.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[LogoutUserResponseLogoutuser]
+      Response[ErrorResponse | LogoutUserResponseLogoutuser]
   """
 
   kwargs = _get_kwargs()
@@ -116,17 +126,15 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient | Client,
-) -> LogoutUserResponseLogoutuser | None:
+) -> ErrorResponse | LogoutUserResponseLogoutuser | None:
   """User Logout
-
-   Logout user and invalidate session.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      LogoutUserResponseLogoutuser
+      ErrorResponse | LogoutUserResponseLogoutuser
   """
 
   return (

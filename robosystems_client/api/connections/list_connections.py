@@ -64,15 +64,35 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
 
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -104,21 +124,6 @@ def sync_detailed(
   provider: ListConnectionsProviderType0 | None | Unset = UNSET,
 ) -> Response[ErrorResponse | HTTPValidationError | list[ConnectionResponse]]:
   """List Connections
-
-   List all data connections in the graph.
-
-  Returns active and inactive connections with their current status.
-  Connections can be filtered by:
-  - **Entity**: Show connections for a specific entity
-  - **Provider**: Filter by connection type (sec, quickbooks)
-
-  Each connection shows:
-  - Current sync status and health
-  - Last successful sync timestamp
-  - Configuration metadata
-  - Error messages if any
-
-  No credits are consumed for listing connections.
 
   Args:
       graph_id (str):
@@ -155,21 +160,6 @@ def sync(
 ) -> ErrorResponse | HTTPValidationError | list[ConnectionResponse] | None:
   """List Connections
 
-   List all data connections in the graph.
-
-  Returns active and inactive connections with their current status.
-  Connections can be filtered by:
-  - **Entity**: Show connections for a specific entity
-  - **Provider**: Filter by connection type (sec, quickbooks)
-
-  Each connection shows:
-  - Current sync status and health
-  - Last successful sync timestamp
-  - Configuration metadata
-  - Error messages if any
-
-  No credits are consumed for listing connections.
-
   Args:
       graph_id (str):
       entity_id (None | str | Unset): Filter by entity ID
@@ -199,21 +189,6 @@ async def asyncio_detailed(
   provider: ListConnectionsProviderType0 | None | Unset = UNSET,
 ) -> Response[ErrorResponse | HTTPValidationError | list[ConnectionResponse]]:
   """List Connections
-
-   List all data connections in the graph.
-
-  Returns active and inactive connections with their current status.
-  Connections can be filtered by:
-  - **Entity**: Show connections for a specific entity
-  - **Provider**: Filter by connection type (sec, quickbooks)
-
-  Each connection shows:
-  - Current sync status and health
-  - Last successful sync timestamp
-  - Configuration metadata
-  - Error messages if any
-
-  No credits are consumed for listing connections.
 
   Args:
       graph_id (str):
@@ -247,21 +222,6 @@ async def asyncio(
   provider: ListConnectionsProviderType0 | None | Unset = UNSET,
 ) -> ErrorResponse | HTTPValidationError | list[ConnectionResponse] | None:
   """List Connections
-
-   List all data connections in the graph.
-
-  Returns active and inactive connections with their current status.
-  Connections can be filtered by:
-  - **Entity**: Show connections for a specific entity
-  - **Provider**: Filter by connection type (sec, quickbooks)
-
-  Each connection shows:
-  - Current sync status and health
-  - Last successful sync timestamp
-  - Configuration metadata
-  - Error messages if any
-
-  No credits are consumed for listing connections.
 
   Args:
       graph_id (str):

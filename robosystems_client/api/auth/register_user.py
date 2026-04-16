@@ -54,6 +54,16 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if response.status_code == 503:
     response_503 = ErrorResponse.from_dict(response.json())
 
@@ -83,15 +93,8 @@ def sync_detailed(
 ) -> Response[AuthResponse | ErrorResponse | HTTPValidationError]:
   """Register New User
 
-   Register a new user account with email and password.
-
-  **Organization Creation**: RoboSystems is an org-centric platform. When you register, a personal
-  organization is automatically created for you. All resources (graphs, subscriptions, billing) belong
-  to organizations, not individual users. You can later upgrade your personal org to a team or
-  enterprise organization.
-
-  **Security Controls**: CAPTCHA and email verification are disabled in development for API testing,
-  but required in production.
+   Creates the user and a personal organization. CAPTCHA required in production. Sends verification
+  email when email verification is enabled.
 
   Args:
       body (RegisterRequest): Registration request model.
@@ -122,15 +125,8 @@ def sync(
 ) -> AuthResponse | ErrorResponse | HTTPValidationError | None:
   """Register New User
 
-   Register a new user account with email and password.
-
-  **Organization Creation**: RoboSystems is an org-centric platform. When you register, a personal
-  organization is automatically created for you. All resources (graphs, subscriptions, billing) belong
-  to organizations, not individual users. You can later upgrade your personal org to a team or
-  enterprise organization.
-
-  **Security Controls**: CAPTCHA and email verification are disabled in development for API testing,
-  but required in production.
+   Creates the user and a personal organization. CAPTCHA required in production. Sends verification
+  email when email verification is enabled.
 
   Args:
       body (RegisterRequest): Registration request model.
@@ -156,15 +152,8 @@ async def asyncio_detailed(
 ) -> Response[AuthResponse | ErrorResponse | HTTPValidationError]:
   """Register New User
 
-   Register a new user account with email and password.
-
-  **Organization Creation**: RoboSystems is an org-centric platform. When you register, a personal
-  organization is automatically created for you. All resources (graphs, subscriptions, billing) belong
-  to organizations, not individual users. You can later upgrade your personal org to a team or
-  enterprise organization.
-
-  **Security Controls**: CAPTCHA and email verification are disabled in development for API testing,
-  but required in production.
+   Creates the user and a personal organization. CAPTCHA required in production. Sends verification
+  email when email verification is enabled.
 
   Args:
       body (RegisterRequest): Registration request model.
@@ -193,15 +182,8 @@ async def asyncio(
 ) -> AuthResponse | ErrorResponse | HTTPValidationError | None:
   """Register New User
 
-   Register a new user account with email and password.
-
-  **Organization Creation**: RoboSystems is an org-centric platform. When you register, a personal
-  organization is automatically created for you. All resources (graphs, subscriptions, billing) belong
-  to organizations, not individual users. You can later upgrade your personal org to a team or
-  enterprise organization.
-
-  **Security Controls**: CAPTCHA and email verification are disabled in development for API testing,
-  but required in production.
+   Creates the user and a personal organization. CAPTCHA required in production. Sends verification
+  email when email verification is enabled.
 
   Args:
       body (RegisterRequest): Registration request model.

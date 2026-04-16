@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -7,6 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.database_info_response import DatabaseInfoResponse
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
 
@@ -27,18 +28,30 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | DatabaseInfoResponse | HTTPValidationError | None:
+) -> DatabaseInfoResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = DatabaseInfoResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = cast(Any, None)
+    response_404 = ErrorResponse.from_dict(response.json())
+
     return response_404
 
   if response.status_code == 422:
@@ -46,8 +59,14 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -58,7 +77,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | DatabaseInfoResponse | HTTPValidationError]:
+) -> Response[DatabaseInfoResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -71,34 +90,8 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | DatabaseInfoResponse | HTTPValidationError]:
+) -> Response[DatabaseInfoResponse | ErrorResponse | HTTPValidationError]:
   """Database Information
-
-   Get comprehensive database information and statistics.
-
-  Returns detailed database metrics including:
-  - **Database Metadata**: Name, path, size, and timestamps
-  - **Schema Information**: Node labels, relationship types, and counts
-  - **Storage Statistics**: Database size and usage metrics
-  - **Data Composition**: Node and relationship counts
-  - **Backup Information**: Available backups and last backup date
-  - **Configuration**: Read-only status and schema version
-
-  Database statistics:
-  - **Size**: Storage usage in bytes and MB
-  - **Content**: Node and relationship counts
-  - **Schema**: Available labels and relationship types
-  - **Backup Status**: Backup availability and recency
-  - **Timestamps**: Creation and modification dates
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Returned metrics are specific to the requested graph/subgraph. Subgraphs have
-  independent size, node/relationship counts, and backup status.
-
-  This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
       graph_id (str):
@@ -108,7 +101,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | DatabaseInfoResponse | HTTPValidationError]
+      Response[DatabaseInfoResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -126,34 +119,8 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | DatabaseInfoResponse | HTTPValidationError | None:
+) -> DatabaseInfoResponse | ErrorResponse | HTTPValidationError | None:
   """Database Information
-
-   Get comprehensive database information and statistics.
-
-  Returns detailed database metrics including:
-  - **Database Metadata**: Name, path, size, and timestamps
-  - **Schema Information**: Node labels, relationship types, and counts
-  - **Storage Statistics**: Database size and usage metrics
-  - **Data Composition**: Node and relationship counts
-  - **Backup Information**: Available backups and last backup date
-  - **Configuration**: Read-only status and schema version
-
-  Database statistics:
-  - **Size**: Storage usage in bytes and MB
-  - **Content**: Node and relationship counts
-  - **Schema**: Available labels and relationship types
-  - **Backup Status**: Backup availability and recency
-  - **Timestamps**: Creation and modification dates
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Returned metrics are specific to the requested graph/subgraph. Subgraphs have
-  independent size, node/relationship counts, and backup status.
-
-  This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
       graph_id (str):
@@ -163,7 +130,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | DatabaseInfoResponse | HTTPValidationError
+      DatabaseInfoResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -176,34 +143,8 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | DatabaseInfoResponse | HTTPValidationError]:
+) -> Response[DatabaseInfoResponse | ErrorResponse | HTTPValidationError]:
   """Database Information
-
-   Get comprehensive database information and statistics.
-
-  Returns detailed database metrics including:
-  - **Database Metadata**: Name, path, size, and timestamps
-  - **Schema Information**: Node labels, relationship types, and counts
-  - **Storage Statistics**: Database size and usage metrics
-  - **Data Composition**: Node and relationship counts
-  - **Backup Information**: Available backups and last backup date
-  - **Configuration**: Read-only status and schema version
-
-  Database statistics:
-  - **Size**: Storage usage in bytes and MB
-  - **Content**: Node and relationship counts
-  - **Schema**: Available labels and relationship types
-  - **Backup Status**: Backup availability and recency
-  - **Timestamps**: Creation and modification dates
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Returned metrics are specific to the requested graph/subgraph. Subgraphs have
-  independent size, node/relationship counts, and backup status.
-
-  This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
       graph_id (str):
@@ -213,7 +154,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | DatabaseInfoResponse | HTTPValidationError]
+      Response[DatabaseInfoResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -229,34 +170,8 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | DatabaseInfoResponse | HTTPValidationError | None:
+) -> DatabaseInfoResponse | ErrorResponse | HTTPValidationError | None:
   """Database Information
-
-   Get comprehensive database information and statistics.
-
-  Returns detailed database metrics including:
-  - **Database Metadata**: Name, path, size, and timestamps
-  - **Schema Information**: Node labels, relationship types, and counts
-  - **Storage Statistics**: Database size and usage metrics
-  - **Data Composition**: Node and relationship counts
-  - **Backup Information**: Available backups and last backup date
-  - **Configuration**: Read-only status and schema version
-
-  Database statistics:
-  - **Size**: Storage usage in bytes and MB
-  - **Content**: Node and relationship counts
-  - **Schema**: Available labels and relationship types
-  - **Backup Status**: Backup availability and recency
-  - **Timestamps**: Creation and modification dates
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Returned metrics are specific to the requested graph/subgraph. Subgraphs have
-  independent size, node/relationship counts, and backup status.
-
-  This endpoint provides essential database information for capacity planning and monitoring.
 
   Args:
       graph_id (str):
@@ -266,7 +181,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | DatabaseInfoResponse | HTTPValidationError
+      DatabaseInfoResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

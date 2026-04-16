@@ -49,6 +49,16 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -73,7 +83,7 @@ def sync_detailed(
 ) -> Response[AuthResponse | ErrorResponse | HTTPValidationError]:
   """Reset Password
 
-   Reset password with token from email. Returns JWT for auto-login.
+   Reset password with token from email. Invalidates all existing sessions. Returns JWT for auto-login.
 
   Args:
       body (ResetPasswordRequest): Reset password request model.
@@ -104,7 +114,7 @@ def sync(
 ) -> AuthResponse | ErrorResponse | HTTPValidationError | None:
   """Reset Password
 
-   Reset password with token from email. Returns JWT for auto-login.
+   Reset password with token from email. Invalidates all existing sessions. Returns JWT for auto-login.
 
   Args:
       body (ResetPasswordRequest): Reset password request model.
@@ -130,7 +140,7 @@ async def asyncio_detailed(
 ) -> Response[AuthResponse | ErrorResponse | HTTPValidationError]:
   """Reset Password
 
-   Reset password with token from email. Returns JWT for auto-login.
+   Reset password with token from email. Invalidates all existing sessions. Returns JWT for auto-login.
 
   Args:
       body (ResetPasswordRequest): Reset password request model.
@@ -159,7 +169,7 @@ async def asyncio(
 ) -> AuthResponse | ErrorResponse | HTTPValidationError | None:
   """Reset Password
 
-   Reset password with token from email. Returns JWT for auto-login.
+   Reset password with token from email. Invalidates all existing sessions. Returns JWT for auto-login.
 
   Args:
       body (ResetPasswordRequest): Reset password request model.

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -39,7 +39,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
+) -> ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
   if response.status_code == 200:
     response_200 = UpdateFileResponseUpdatefile.from_dict(response.json())
 
@@ -51,7 +51,8 @@ def _parse_response(
     return response_400
 
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
@@ -69,6 +70,16 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -77,7 +88,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
+) -> Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -92,35 +103,12 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: FileStatusUpdate,
-) -> Response[Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
+) -> Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
   """Update File Status
 
-   Update file status and trigger processing.
-
-  Update file status after upload completion. Setting status='uploaded' triggers
-  immediate DuckDB staging and optional graph ingestion.
-
-  **Request Body:**
-  - `status`: New status (uploaded, disabled, failed)
-  - `ingest_to_graph` (optional): If true, auto-ingest to graph after DuckDB staging
-
-  **What Happens (status='uploaded'):**
-  1. File validated in S3
-  2. Row count calculated
-  3. DuckDB staging triggered immediately (background task)
-  4. If ingest_to_graph=true, graph ingestion queued
-  5. File queryable in DuckDB within seconds
-
-  **Use Cases:**
-  - Signal upload completion
-  - Trigger immediate DuckDB staging
-  - Enable/disable files
-  - Mark failed uploads
-
-  **Important:**
-  - Files must exist in S3 before marking uploaded
-  - DuckDB staging happens asynchronously
-  - Graph ingestion is optional (ingest_to_graph flag)
+   Setting `status=uploaded` validates the file in S3, calculates row count, and triggers DuckDB
+  staging. Small files use direct staging; large files use a background Dagster job with an
+  `operation_id` for SSE monitoring. Set `ingest_to_graph=true` to auto-chain graph materialization.
 
   Args:
       graph_id (str):
@@ -132,7 +120,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]
+      Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]
   """
 
   kwargs = _get_kwargs(
@@ -154,35 +142,12 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: FileStatusUpdate,
-) -> Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
+) -> ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
   """Update File Status
 
-   Update file status and trigger processing.
-
-  Update file status after upload completion. Setting status='uploaded' triggers
-  immediate DuckDB staging and optional graph ingestion.
-
-  **Request Body:**
-  - `status`: New status (uploaded, disabled, failed)
-  - `ingest_to_graph` (optional): If true, auto-ingest to graph after DuckDB staging
-
-  **What Happens (status='uploaded'):**
-  1. File validated in S3
-  2. Row count calculated
-  3. DuckDB staging triggered immediately (background task)
-  4. If ingest_to_graph=true, graph ingestion queued
-  5. File queryable in DuckDB within seconds
-
-  **Use Cases:**
-  - Signal upload completion
-  - Trigger immediate DuckDB staging
-  - Enable/disable files
-  - Mark failed uploads
-
-  **Important:**
-  - Files must exist in S3 before marking uploaded
-  - DuckDB staging happens asynchronously
-  - Graph ingestion is optional (ingest_to_graph flag)
+   Setting `status=uploaded` validates the file in S3, calculates row count, and triggers DuckDB
+  staging. Small files use direct staging; large files use a background Dagster job with an
+  `operation_id` for SSE monitoring. Set `ingest_to_graph=true` to auto-chain graph materialization.
 
   Args:
       graph_id (str):
@@ -194,7 +159,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile
+      ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile
   """
 
   return sync_detailed(
@@ -211,35 +176,12 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: FileStatusUpdate,
-) -> Response[Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
+) -> Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
   """Update File Status
 
-   Update file status and trigger processing.
-
-  Update file status after upload completion. Setting status='uploaded' triggers
-  immediate DuckDB staging and optional graph ingestion.
-
-  **Request Body:**
-  - `status`: New status (uploaded, disabled, failed)
-  - `ingest_to_graph` (optional): If true, auto-ingest to graph after DuckDB staging
-
-  **What Happens (status='uploaded'):**
-  1. File validated in S3
-  2. Row count calculated
-  3. DuckDB staging triggered immediately (background task)
-  4. If ingest_to_graph=true, graph ingestion queued
-  5. File queryable in DuckDB within seconds
-
-  **Use Cases:**
-  - Signal upload completion
-  - Trigger immediate DuckDB staging
-  - Enable/disable files
-  - Mark failed uploads
-
-  **Important:**
-  - Files must exist in S3 before marking uploaded
-  - DuckDB staging happens asynchronously
-  - Graph ingestion is optional (ingest_to_graph flag)
+   Setting `status=uploaded` validates the file in S3, calculates row count, and triggers DuckDB
+  staging. Small files use direct staging; large files use a background Dagster job with an
+  `operation_id` for SSE monitoring. Set `ingest_to_graph=true` to auto-chain graph materialization.
 
   Args:
       graph_id (str):
@@ -251,7 +193,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]
+      Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]
   """
 
   kwargs = _get_kwargs(
@@ -271,35 +213,12 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: FileStatusUpdate,
-) -> Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
+) -> ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
   """Update File Status
 
-   Update file status and trigger processing.
-
-  Update file status after upload completion. Setting status='uploaded' triggers
-  immediate DuckDB staging and optional graph ingestion.
-
-  **Request Body:**
-  - `status`: New status (uploaded, disabled, failed)
-  - `ingest_to_graph` (optional): If true, auto-ingest to graph after DuckDB staging
-
-  **What Happens (status='uploaded'):**
-  1. File validated in S3
-  2. Row count calculated
-  3. DuckDB staging triggered immediately (background task)
-  4. If ingest_to_graph=true, graph ingestion queued
-  5. File queryable in DuckDB within seconds
-
-  **Use Cases:**
-  - Signal upload completion
-  - Trigger immediate DuckDB staging
-  - Enable/disable files
-  - Mark failed uploads
-
-  **Important:**
-  - Files must exist in S3 before marking uploaded
-  - DuckDB staging happens asynchronously
-  - Graph ingestion is optional (ingest_to_graph flag)
+   Setting `status=uploaded` validates the file in S3, calculates row count, and triggers DuckDB
+  staging. Small files use direct staging; large files use a background Dagster job with an
+  `operation_id` for SSE monitoring. Set `ingest_to_graph=true` to auto-chain graph materialization.
 
   Args:
       graph_id (str):
@@ -311,7 +230,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile
+      ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile
   """
 
   return (

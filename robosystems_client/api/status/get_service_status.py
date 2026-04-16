@@ -50,7 +50,7 @@ def sync_detailed(
 ) -> Response[HealthStatus]:
   """Health Check
 
-   Service health check endpoint for monitoring and load balancers
+   Unprotected — used by load balancers and monitoring. No authentication required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -75,7 +75,7 @@ def sync(
 ) -> HealthStatus | None:
   """Health Check
 
-   Service health check endpoint for monitoring and load balancers
+   Unprotected — used by load balancers and monitoring. No authentication required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -96,7 +96,7 @@ async def asyncio_detailed(
 ) -> Response[HealthStatus]:
   """Health Check
 
-   Service health check endpoint for monitoring and load balancers
+   Unprotected — used by load balancers and monitoring. No authentication required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -119,7 +119,7 @@ async def asyncio(
 ) -> HealthStatus | None:
   """Health Check
 
-   Service health check endpoint for monitoring and load balancers
+   Unprotected — used by load balancers and monitoring. No authentication required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

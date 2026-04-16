@@ -1,11 +1,12 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.get_operation_status_response_getoperationstatus import (
   GetOperationStatusResponseGetoperationstatus,
 )
@@ -29,7 +30,12 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError | None:
+) -> (
+  ErrorResponse
+  | GetOperationStatusResponseGetoperationstatus
+  | HTTPValidationError
+  | None
+):
   if response.status_code == 200:
     response_200 = GetOperationStatusResponseGetoperationstatus.from_dict(
       response.json()
@@ -37,12 +43,24 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = cast(Any, None)
+    response_404 = ErrorResponse.from_dict(response.json())
+
     return response_404
 
   if response.status_code == 422:
@@ -50,8 +68,14 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -62,7 +86,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError]:
+) -> Response[
+  ErrorResponse | GetOperationStatusResponseGetoperationstatus | HTTPValidationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -75,22 +101,12 @@ def sync_detailed(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError]:
+) -> Response[
+  ErrorResponse | GetOperationStatusResponseGetoperationstatus | HTTPValidationError
+]:
   """Get Operation Status
 
-   Get current status and metadata for an operation.
-
-  Returns detailed information including:
-  - Current status (pending, running, completed, failed, cancelled)
-  - Creation and update timestamps
-  - Operation type and associated graph
-  - Result data (for completed operations)
-  - Error details (for failed operations)
-
-  This endpoint provides a point-in-time status check, while the `/stream` endpoint
-  provides real-time updates. Use this for polling or initial status checks.
-
-  **No credits are consumed for status checks.**
+   Point-in-time status check. Use `/stream` for real-time updates. Consumes no credits.
 
   Args:
       operation_id (str): Operation identifier
@@ -100,7 +116,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError]
+      Response[ErrorResponse | GetOperationStatusResponseGetoperationstatus | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -118,22 +134,15 @@ def sync(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError | None:
+) -> (
+  ErrorResponse
+  | GetOperationStatusResponseGetoperationstatus
+  | HTTPValidationError
+  | None
+):
   """Get Operation Status
 
-   Get current status and metadata for an operation.
-
-  Returns detailed information including:
-  - Current status (pending, running, completed, failed, cancelled)
-  - Creation and update timestamps
-  - Operation type and associated graph
-  - Result data (for completed operations)
-  - Error details (for failed operations)
-
-  This endpoint provides a point-in-time status check, while the `/stream` endpoint
-  provides real-time updates. Use this for polling or initial status checks.
-
-  **No credits are consumed for status checks.**
+   Point-in-time status check. Use `/stream` for real-time updates. Consumes no credits.
 
   Args:
       operation_id (str): Operation identifier
@@ -143,7 +152,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError
+      ErrorResponse | GetOperationStatusResponseGetoperationstatus | HTTPValidationError
   """
 
   return sync_detailed(
@@ -156,22 +165,12 @@ async def asyncio_detailed(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError]:
+) -> Response[
+  ErrorResponse | GetOperationStatusResponseGetoperationstatus | HTTPValidationError
+]:
   """Get Operation Status
 
-   Get current status and metadata for an operation.
-
-  Returns detailed information including:
-  - Current status (pending, running, completed, failed, cancelled)
-  - Creation and update timestamps
-  - Operation type and associated graph
-  - Result data (for completed operations)
-  - Error details (for failed operations)
-
-  This endpoint provides a point-in-time status check, while the `/stream` endpoint
-  provides real-time updates. Use this for polling or initial status checks.
-
-  **No credits are consumed for status checks.**
+   Point-in-time status check. Use `/stream` for real-time updates. Consumes no credits.
 
   Args:
       operation_id (str): Operation identifier
@@ -181,7 +180,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError]
+      Response[ErrorResponse | GetOperationStatusResponseGetoperationstatus | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -197,22 +196,15 @@ async def asyncio(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError | None:
+) -> (
+  ErrorResponse
+  | GetOperationStatusResponseGetoperationstatus
+  | HTTPValidationError
+  | None
+):
   """Get Operation Status
 
-   Get current status and metadata for an operation.
-
-  Returns detailed information including:
-  - Current status (pending, running, completed, failed, cancelled)
-  - Creation and update timestamps
-  - Operation type and associated graph
-  - Result data (for completed operations)
-  - Error details (for failed operations)
-
-  This endpoint provides a point-in-time status check, while the `/stream` endpoint
-  provides real-time updates. Use this for polling or initial status checks.
-
-  **No credits are consumed for status checks.**
+   Point-in-time status check. Use `/stream` for real-time updates. Consumes no credits.
 
   Args:
       operation_id (str): Operation identifier
@@ -222,7 +214,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | GetOperationStatusResponseGetoperationstatus | HTTPValidationError
+      ErrorResponse | GetOperationStatusResponseGetoperationstatus | HTTPValidationError
   """
 
   return (

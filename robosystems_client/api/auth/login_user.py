@@ -54,6 +54,16 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -78,7 +88,7 @@ def sync_detailed(
 ) -> Response[AuthResponse | ErrorResponse | HTTPValidationError]:
   """User Login
 
-   Authenticate user with email and password.
+   Returns a JWT token on success. IP-based progressive delays apply after repeated failures.
 
   Args:
       body (LoginRequest): Login request model.
@@ -109,7 +119,7 @@ def sync(
 ) -> AuthResponse | ErrorResponse | HTTPValidationError | None:
   """User Login
 
-   Authenticate user with email and password.
+   Returns a JWT token on success. IP-based progressive delays apply after repeated failures.
 
   Args:
       body (LoginRequest): Login request model.
@@ -135,7 +145,7 @@ async def asyncio_detailed(
 ) -> Response[AuthResponse | ErrorResponse | HTTPValidationError]:
   """User Login
 
-   Authenticate user with email and password.
+   Returns a JWT token on success. IP-based progressive delays apply after repeated failures.
 
   Args:
       body (LoginRequest): Login request model.
@@ -164,7 +174,7 @@ async def asyncio(
 ) -> AuthResponse | ErrorResponse | HTTPValidationError | None:
   """User Login
 
-   Authenticate user with email and password.
+   Returns a JWT token on success. IP-based progressive delays apply after repeated failures.
 
   Args:
       body (LoginRequest): Login request model.

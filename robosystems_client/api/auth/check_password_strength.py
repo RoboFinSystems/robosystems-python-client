@@ -5,6 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.password_check_request import PasswordCheckRequest
 from ...models.password_check_response import PasswordCheckResponse
@@ -32,16 +33,31 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> HTTPValidationError | PasswordCheckResponse | None:
+) -> ErrorResponse | HTTPValidationError | PasswordCheckResponse | None:
   if response.status_code == 200:
     response_200 = PasswordCheckResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -51,7 +67,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[HTTPValidationError | PasswordCheckResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | PasswordCheckResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -64,10 +80,8 @@ def sync_detailed(
   *,
   client: AuthenticatedClient | Client,
   body: PasswordCheckRequest,
-) -> Response[HTTPValidationError | PasswordCheckResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | PasswordCheckResponse]:
   """Check Password Strength
-
-   Check password strength and get validation feedback
 
   Args:
       body (PasswordCheckRequest): Password strength check request model.
@@ -77,7 +91,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | PasswordCheckResponse]
+      Response[ErrorResponse | HTTPValidationError | PasswordCheckResponse]
   """
 
   kwargs = _get_kwargs(
@@ -95,10 +109,8 @@ def sync(
   *,
   client: AuthenticatedClient | Client,
   body: PasswordCheckRequest,
-) -> HTTPValidationError | PasswordCheckResponse | None:
+) -> ErrorResponse | HTTPValidationError | PasswordCheckResponse | None:
   """Check Password Strength
-
-   Check password strength and get validation feedback
 
   Args:
       body (PasswordCheckRequest): Password strength check request model.
@@ -108,7 +120,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | PasswordCheckResponse
+      ErrorResponse | HTTPValidationError | PasswordCheckResponse
   """
 
   return sync_detailed(
@@ -121,10 +133,8 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient | Client,
   body: PasswordCheckRequest,
-) -> Response[HTTPValidationError | PasswordCheckResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | PasswordCheckResponse]:
   """Check Password Strength
-
-   Check password strength and get validation feedback
 
   Args:
       body (PasswordCheckRequest): Password strength check request model.
@@ -134,7 +144,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | PasswordCheckResponse]
+      Response[ErrorResponse | HTTPValidationError | PasswordCheckResponse]
   """
 
   kwargs = _get_kwargs(
@@ -150,10 +160,8 @@ async def asyncio(
   *,
   client: AuthenticatedClient | Client,
   body: PasswordCheckRequest,
-) -> HTTPValidationError | PasswordCheckResponse | None:
+) -> ErrorResponse | HTTPValidationError | PasswordCheckResponse | None:
   """Check Password Strength
-
-   Check password strength and get validation feedback
 
   Args:
       body (PasswordCheckRequest): Password strength check request model.
@@ -163,7 +171,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | PasswordCheckResponse
+      ErrorResponse | HTTPValidationError | PasswordCheckResponse
   """
 
   return (

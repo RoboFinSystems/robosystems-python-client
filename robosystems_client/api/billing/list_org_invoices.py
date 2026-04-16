@@ -6,6 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.invoices_response import InvoicesResponse
 from ...types import UNSET, Response, Unset
@@ -36,16 +37,46 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> HTTPValidationError | InvoicesResponse | None:
+) -> ErrorResponse | HTTPValidationError | InvoicesResponse | None:
   if response.status_code == 200:
     response_200 = InvoicesResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -55,7 +86,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[HTTPValidationError | InvoicesResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | InvoicesResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -69,16 +100,10 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   limit: int | Unset = 10,
-) -> Response[HTTPValidationError | InvoicesResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | InvoicesResponse]:
   """List Organization Invoices
 
-   List payment history and invoices for an organization.
-
-  Returns past invoices with payment status, amounts, and line items.
-
-  **Requirements:**
-  - User must be a member of the organization
-  - Full invoice details are only visible to owners and admins
+   Requires admin or owner role.
 
   Args:
       org_id (str):
@@ -89,7 +114,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | InvoicesResponse]
+      Response[ErrorResponse | HTTPValidationError | InvoicesResponse]
   """
 
   kwargs = _get_kwargs(
@@ -109,16 +134,10 @@ def sync(
   *,
   client: AuthenticatedClient,
   limit: int | Unset = 10,
-) -> HTTPValidationError | InvoicesResponse | None:
+) -> ErrorResponse | HTTPValidationError | InvoicesResponse | None:
   """List Organization Invoices
 
-   List payment history and invoices for an organization.
-
-  Returns past invoices with payment status, amounts, and line items.
-
-  **Requirements:**
-  - User must be a member of the organization
-  - Full invoice details are only visible to owners and admins
+   Requires admin or owner role.
 
   Args:
       org_id (str):
@@ -129,7 +148,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | InvoicesResponse
+      ErrorResponse | HTTPValidationError | InvoicesResponse
   """
 
   return sync_detailed(
@@ -144,16 +163,10 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   limit: int | Unset = 10,
-) -> Response[HTTPValidationError | InvoicesResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | InvoicesResponse]:
   """List Organization Invoices
 
-   List payment history and invoices for an organization.
-
-  Returns past invoices with payment status, amounts, and line items.
-
-  **Requirements:**
-  - User must be a member of the organization
-  - Full invoice details are only visible to owners and admins
+   Requires admin or owner role.
 
   Args:
       org_id (str):
@@ -164,7 +177,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | InvoicesResponse]
+      Response[ErrorResponse | HTTPValidationError | InvoicesResponse]
   """
 
   kwargs = _get_kwargs(
@@ -182,16 +195,10 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   limit: int | Unset = 10,
-) -> HTTPValidationError | InvoicesResponse | None:
+) -> ErrorResponse | HTTPValidationError | InvoicesResponse | None:
   """List Organization Invoices
 
-   List payment history and invoices for an organization.
-
-  Returns past invoices with payment status, amounts, and line items.
-
-  **Requirements:**
-  - User must be a member of the organization
-  - Full invoice details are only visible to owners and admins
+   Requires admin or owner role.
 
   Args:
       org_id (str):
@@ -202,7 +209,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | InvoicesResponse
+      ErrorResponse | HTTPValidationError | InvoicesResponse
   """
 
   return (

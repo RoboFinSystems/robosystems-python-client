@@ -83,15 +83,30 @@ def _parse_response(
 
     return response_400
 
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
 
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -127,22 +142,6 @@ def sync_detailed(
   offset: int | Unset = 0,
 ) -> Response[DetailedTransactionsResponse | ErrorResponse | HTTPValidationError]:
   """List Credit Transactions
-
-   Retrieve detailed credit transaction history for the specified graph.
-
-  This enhanced endpoint provides:
-  - Detailed transaction records with idempotency information
-  - Summary by operation type to identify high-consumption operations
-  - Date range filtering for analysis
-  - Metadata search capabilities
-
-  Transaction types include:
-  - ALLOCATION: Monthly credit allocations
-  - CONSUMPTION: Credit usage for operations
-  - BONUS: Bonus credits added by admins
-  - REFUND: Credit refunds
-
-  No credits are consumed for viewing transaction history.
 
   Args:
       graph_id (str): Graph database identifier
@@ -193,22 +192,6 @@ def sync(
 ) -> DetailedTransactionsResponse | ErrorResponse | HTTPValidationError | None:
   """List Credit Transactions
 
-   Retrieve detailed credit transaction history for the specified graph.
-
-  This enhanced endpoint provides:
-  - Detailed transaction records with idempotency information
-  - Summary by operation type to identify high-consumption operations
-  - Date range filtering for analysis
-  - Metadata search capabilities
-
-  Transaction types include:
-  - ALLOCATION: Monthly credit allocations
-  - CONSUMPTION: Credit usage for operations
-  - BONUS: Bonus credits added by admins
-  - REFUND: Credit refunds
-
-  No credits are consumed for viewing transaction history.
-
   Args:
       graph_id (str): Graph database identifier
       transaction_type (None | str | Unset): Filter by transaction type (allocation,
@@ -252,22 +235,6 @@ async def asyncio_detailed(
   offset: int | Unset = 0,
 ) -> Response[DetailedTransactionsResponse | ErrorResponse | HTTPValidationError]:
   """List Credit Transactions
-
-   Retrieve detailed credit transaction history for the specified graph.
-
-  This enhanced endpoint provides:
-  - Detailed transaction records with idempotency information
-  - Summary by operation type to identify high-consumption operations
-  - Date range filtering for analysis
-  - Metadata search capabilities
-
-  Transaction types include:
-  - ALLOCATION: Monthly credit allocations
-  - CONSUMPTION: Credit usage for operations
-  - BONUS: Bonus credits added by admins
-  - REFUND: Credit refunds
-
-  No credits are consumed for viewing transaction history.
 
   Args:
       graph_id (str): Graph database identifier
@@ -315,22 +282,6 @@ async def asyncio(
   offset: int | Unset = 0,
 ) -> DetailedTransactionsResponse | ErrorResponse | HTTPValidationError | None:
   """List Credit Transactions
-
-   Retrieve detailed credit transaction history for the specified graph.
-
-  This enhanced endpoint provides:
-  - Detailed transaction records with idempotency information
-  - Summary by operation type to identify high-consumption operations
-  - Date range filtering for analysis
-  - Metadata search capabilities
-
-  Transaction types include:
-  - ALLOCATION: Monthly credit allocations
-  - CONSUMPTION: Credit usage for operations
-  - BONUS: Bonus credits added by admins
-  - REFUND: Credit refunds
-
-  No credits are consumed for viewing transaction history.
 
   Args:
       graph_id (str): Graph database identifier

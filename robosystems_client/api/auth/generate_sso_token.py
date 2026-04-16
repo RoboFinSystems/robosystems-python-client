@@ -37,15 +37,25 @@ def _parse_response(
 
     return response_200
 
-  if response.status_code == 401:
-    response_401 = ErrorResponse.from_dict(response.json())
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
 
-    return response_401
+    return response_400
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -71,7 +81,8 @@ def sync_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]:
   """Generate SSO Token
 
-   Generate a temporary SSO token for cross-app authentication.
+   Step 1 of 3 in the cross-app SSO flow. Issues a single-use token (60s TTL) for handoff to a target
+  application.
 
   Args:
       auth_token (None | str | Unset):
@@ -102,7 +113,8 @@ def sync(
 ) -> ErrorResponse | HTTPValidationError | SSOTokenResponse | None:
   """Generate SSO Token
 
-   Generate a temporary SSO token for cross-app authentication.
+   Step 1 of 3 in the cross-app SSO flow. Issues a single-use token (60s TTL) for handoff to a target
+  application.
 
   Args:
       auth_token (None | str | Unset):
@@ -128,7 +140,8 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]:
   """Generate SSO Token
 
-   Generate a temporary SSO token for cross-app authentication.
+   Step 1 of 3 in the cross-app SSO flow. Issues a single-use token (60s TTL) for handoff to a target
+  application.
 
   Args:
       auth_token (None | str | Unset):
@@ -157,7 +170,8 @@ async def asyncio(
 ) -> ErrorResponse | HTTPValidationError | SSOTokenResponse | None:
   """Generate SSO Token
 
-   Generate a temporary SSO token for cross-app authentication.
+   Step 1 of 3 in the cross-app SSO flow. Issues a single-use token (60s TTL) for handoff to a target
+  application.
 
   Args:
       auth_token (None | str | Unset):

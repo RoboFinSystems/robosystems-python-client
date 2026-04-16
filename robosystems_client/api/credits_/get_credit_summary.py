@@ -34,6 +34,16 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -48,6 +58,11 @@ def _parse_response(
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -78,16 +93,6 @@ def sync_detailed(
 ) -> Response[CreditSummaryResponse | ErrorResponse | HTTPValidationError]:
   """Get Credit Summary
 
-   Retrieve comprehensive credit usage summary for the specified graph.
-
-  This endpoint provides:
-  - Current credit balance and monthly allocation
-  - Credit consumption metrics for the current month
-  - Graph tier and credit multiplier information
-  - Usage percentage to help monitor credit consumption
-
-  No credits are consumed for checking credit status.
-
   Args:
       graph_id (str): Graph database identifier
 
@@ -117,16 +122,6 @@ def sync(
 ) -> CreditSummaryResponse | ErrorResponse | HTTPValidationError | None:
   """Get Credit Summary
 
-   Retrieve comprehensive credit usage summary for the specified graph.
-
-  This endpoint provides:
-  - Current credit balance and monthly allocation
-  - Credit consumption metrics for the current month
-  - Graph tier and credit multiplier information
-  - Usage percentage to help monitor credit consumption
-
-  No credits are consumed for checking credit status.
-
   Args:
       graph_id (str): Graph database identifier
 
@@ -150,16 +145,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
 ) -> Response[CreditSummaryResponse | ErrorResponse | HTTPValidationError]:
   """Get Credit Summary
-
-   Retrieve comprehensive credit usage summary for the specified graph.
-
-  This endpoint provides:
-  - Current credit balance and monthly allocation
-  - Credit consumption metrics for the current month
-  - Graph tier and credit multiplier information
-  - Usage percentage to help monitor credit consumption
-
-  No credits are consumed for checking credit status.
 
   Args:
       graph_id (str): Graph database identifier
@@ -187,16 +172,6 @@ async def asyncio(
   client: AuthenticatedClient,
 ) -> CreditSummaryResponse | ErrorResponse | HTTPValidationError | None:
   """Get Credit Summary
-
-   Retrieve comprehensive credit usage summary for the specified graph.
-
-  This endpoint provides:
-  - Current credit balance and monthly allocation
-  - Credit consumption metrics for the current month
-  - Graph tier and credit multiplier information
-  - Usage percentage to help monitor credit consumption
-
-  No credits are consumed for checking credit status.
 
   Args:
       graph_id (str): Graph database identifier

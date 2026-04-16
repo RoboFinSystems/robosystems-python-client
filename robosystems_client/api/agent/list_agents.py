@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -7,6 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.agent_list_response import AgentListResponse
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import UNSET, Response, Unset
 
@@ -41,20 +42,46 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AgentListResponse | Any | HTTPValidationError | None:
+) -> AgentListResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = AgentListResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -64,7 +91,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AgentListResponse | Any | HTTPValidationError]:
+) -> Response[AgentListResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -78,18 +105,10 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   capability: None | str | Unset = UNSET,
-) -> Response[AgentListResponse | Any | HTTPValidationError]:
-  """List available agents
+) -> Response[AgentListResponse | ErrorResponse | HTTPValidationError]:
+  """List Available Agents
 
-   Get a comprehensive list of all available agents with their metadata.
-
-  **Returns:**
-  - Agent types and names
-  - Capabilities and supported modes
-  - Version information
-  - Credit requirements
-
-  Use the optional `capability` filter to find agents with specific capabilities.
+   Filter by capability using the `capability` query param (e.g., `financial_analysis`, `rag_search`).
 
   Args:
       graph_id (str):
@@ -101,7 +120,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentListResponse | Any | HTTPValidationError]
+      Response[AgentListResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -121,18 +140,10 @@ def sync(
   *,
   client: AuthenticatedClient,
   capability: None | str | Unset = UNSET,
-) -> AgentListResponse | Any | HTTPValidationError | None:
-  """List available agents
+) -> AgentListResponse | ErrorResponse | HTTPValidationError | None:
+  """List Available Agents
 
-   Get a comprehensive list of all available agents with their metadata.
-
-  **Returns:**
-  - Agent types and names
-  - Capabilities and supported modes
-  - Version information
-  - Credit requirements
-
-  Use the optional `capability` filter to find agents with specific capabilities.
+   Filter by capability using the `capability` query param (e.g., `financial_analysis`, `rag_search`).
 
   Args:
       graph_id (str):
@@ -144,7 +155,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentListResponse | Any | HTTPValidationError
+      AgentListResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -159,18 +170,10 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   capability: None | str | Unset = UNSET,
-) -> Response[AgentListResponse | Any | HTTPValidationError]:
-  """List available agents
+) -> Response[AgentListResponse | ErrorResponse | HTTPValidationError]:
+  """List Available Agents
 
-   Get a comprehensive list of all available agents with their metadata.
-
-  **Returns:**
-  - Agent types and names
-  - Capabilities and supported modes
-  - Version information
-  - Credit requirements
-
-  Use the optional `capability` filter to find agents with specific capabilities.
+   Filter by capability using the `capability` query param (e.g., `financial_analysis`, `rag_search`).
 
   Args:
       graph_id (str):
@@ -182,7 +185,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentListResponse | Any | HTTPValidationError]
+      Response[AgentListResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -200,18 +203,10 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   capability: None | str | Unset = UNSET,
-) -> AgentListResponse | Any | HTTPValidationError | None:
-  """List available agents
+) -> AgentListResponse | ErrorResponse | HTTPValidationError | None:
+  """List Available Agents
 
-   Get a comprehensive list of all available agents with their metadata.
-
-  **Returns:**
-  - Agent types and names
-  - Capabilities and supported modes
-  - Version information
-  - Credit requirements
-
-  Use the optional `capability` filter to find agents with specific capabilities.
+   Filter by capability using the `capability` query param (e.g., `financial_analysis`, `rag_search`).
 
   Args:
       graph_id (str):
@@ -223,7 +218,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentListResponse | Any | HTTPValidationError
+      AgentListResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

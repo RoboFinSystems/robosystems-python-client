@@ -1,11 +1,12 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.graph_limits_response import GraphLimitsResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
@@ -27,18 +28,30 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | GraphLimitsResponse | HTTPValidationError | None:
+) -> ErrorResponse | GraphLimitsResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = GraphLimitsResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = cast(Any, None)
+    response_404 = ErrorResponse.from_dict(response.json())
+
     return response_404
 
   if response.status_code == 422:
@@ -46,8 +59,14 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -58,7 +77,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | GraphLimitsResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | GraphLimitsResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -71,22 +90,11 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | GraphLimitsResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | GraphLimitsResponse | HTTPValidationError]:
   """Get Graph Operational Limits
 
-   Get comprehensive operational limits for the graph database.
-
-  Returns all operational limits that apply to this graph including:
-  - **Storage Limits**: Maximum storage size and current usage
-  - **Query Limits**: Timeouts, complexity, row limits
-  - **Copy/Ingestion Limits**: File sizes, timeouts, concurrent operations
-  - **Backup Limits**: Frequency, retention, size limits
-  - **Rate Limits**: Requests per minute/hour based on tier
-  - **Credit Limits**: AI operation credits (if applicable)
-  - **Content Limits**: Per-operation materialization limits (if applicable)
-  - **Instance Usage**: Aggregate storage across parent + subgraphs (user graphs only)
-
-  **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
+   Limits vary by subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge). Includes
+  storage, query, backup, rate, credit, and instance usage limits.
 
   Args:
       graph_id (str):
@@ -96,7 +104,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | GraphLimitsResponse | HTTPValidationError]
+      Response[ErrorResponse | GraphLimitsResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -114,22 +122,11 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | GraphLimitsResponse | HTTPValidationError | None:
+) -> ErrorResponse | GraphLimitsResponse | HTTPValidationError | None:
   """Get Graph Operational Limits
 
-   Get comprehensive operational limits for the graph database.
-
-  Returns all operational limits that apply to this graph including:
-  - **Storage Limits**: Maximum storage size and current usage
-  - **Query Limits**: Timeouts, complexity, row limits
-  - **Copy/Ingestion Limits**: File sizes, timeouts, concurrent operations
-  - **Backup Limits**: Frequency, retention, size limits
-  - **Rate Limits**: Requests per minute/hour based on tier
-  - **Credit Limits**: AI operation credits (if applicable)
-  - **Content Limits**: Per-operation materialization limits (if applicable)
-  - **Instance Usage**: Aggregate storage across parent + subgraphs (user graphs only)
-
-  **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
+   Limits vary by subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge). Includes
+  storage, query, backup, rate, credit, and instance usage limits.
 
   Args:
       graph_id (str):
@@ -139,7 +136,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | GraphLimitsResponse | HTTPValidationError
+      ErrorResponse | GraphLimitsResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -152,22 +149,11 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | GraphLimitsResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | GraphLimitsResponse | HTTPValidationError]:
   """Get Graph Operational Limits
 
-   Get comprehensive operational limits for the graph database.
-
-  Returns all operational limits that apply to this graph including:
-  - **Storage Limits**: Maximum storage size and current usage
-  - **Query Limits**: Timeouts, complexity, row limits
-  - **Copy/Ingestion Limits**: File sizes, timeouts, concurrent operations
-  - **Backup Limits**: Frequency, retention, size limits
-  - **Rate Limits**: Requests per minute/hour based on tier
-  - **Credit Limits**: AI operation credits (if applicable)
-  - **Content Limits**: Per-operation materialization limits (if applicable)
-  - **Instance Usage**: Aggregate storage across parent + subgraphs (user graphs only)
-
-  **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
+   Limits vary by subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge). Includes
+  storage, query, backup, rate, credit, and instance usage limits.
 
   Args:
       graph_id (str):
@@ -177,7 +163,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | GraphLimitsResponse | HTTPValidationError]
+      Response[ErrorResponse | GraphLimitsResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -193,22 +179,11 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | GraphLimitsResponse | HTTPValidationError | None:
+) -> ErrorResponse | GraphLimitsResponse | HTTPValidationError | None:
   """Get Graph Operational Limits
 
-   Get comprehensive operational limits for the graph database.
-
-  Returns all operational limits that apply to this graph including:
-  - **Storage Limits**: Maximum storage size and current usage
-  - **Query Limits**: Timeouts, complexity, row limits
-  - **Copy/Ingestion Limits**: File sizes, timeouts, concurrent operations
-  - **Backup Limits**: Frequency, retention, size limits
-  - **Rate Limits**: Requests per minute/hour based on tier
-  - **Credit Limits**: AI operation credits (if applicable)
-  - **Content Limits**: Per-operation materialization limits (if applicable)
-  - **Instance Usage**: Aggregate storage across parent + subgraphs (user graphs only)
-
-  **Note**: Limits vary based on subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge).
+   Limits vary by subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge). Includes
+  storage, query, backup, rate, credit, and instance usage limits.
 
   Args:
       graph_id (str):
@@ -218,7 +193,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | GraphLimitsResponse | HTTPValidationError
+      ErrorResponse | GraphLimitsResponse | HTTPValidationError
   """
 
   return (

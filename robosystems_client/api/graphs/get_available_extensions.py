@@ -1,11 +1,12 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.available_extensions_response import AvailableExtensionsResponse
+from ...models.error_response import ErrorResponse
 from ...types import Response
 
 
@@ -21,14 +22,35 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | AvailableExtensionsResponse | None:
+) -> AvailableExtensionsResponse | ErrorResponse | None:
   if response.status_code == 200:
     response_200 = AvailableExtensionsResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -39,7 +61,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | AvailableExtensionsResponse]:
+) -> Response[AvailableExtensionsResponse | ErrorResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -51,46 +73,15 @@ def _build_response(
 def sync_detailed(
   *,
   client: AuthenticatedClient,
-) -> Response[Any | AvailableExtensionsResponse]:
+) -> Response[AvailableExtensionsResponse | ErrorResponse]:
   """Get Available Schema Extensions
-
-   List all available schema extensions for graph creation.
-
-  Schema extensions provide pre-built industry-specific data models that extend
-  the base graph schema with specialized nodes, relationships, and properties.
-
-  **Available Extensions:**
-  - **RoboLedger**: Complete accounting system with XBRL reporting, general ledger, and financial
-  statements
-  - **RoboInvestor**: Investment portfolio management with securities tracking, trade execution, and
-  risk analysis
-  - **RoboSCM**: Supply chain management and logistics
-  - **RoboFO**: Front office operations and CRM
-  - **RoboHRM**: Human resources management
-  - **RoboEPM**: Enterprise performance management
-  - **RoboReport**: Business intelligence and reporting
-
-  **Extension Information:**
-  Each extension includes:
-  - Display name and description
-  - Node and relationship counts
-  - Context-aware capabilities (e.g., SEC repositories get different features than entity graphs)
-
-  **Use Cases:**
-  - Browse available extensions before creating a graph
-  - Understand extension capabilities and data models
-  - Plan graph schema based on business requirements
-  - Combine multiple extensions for comprehensive data modeling
-
-  **Note:**
-  Extension listing is included - no credit consumption required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | AvailableExtensionsResponse]
+      Response[AvailableExtensionsResponse | ErrorResponse]
   """
 
   kwargs = _get_kwargs()
@@ -105,46 +96,15 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient,
-) -> Any | AvailableExtensionsResponse | None:
+) -> AvailableExtensionsResponse | ErrorResponse | None:
   """Get Available Schema Extensions
-
-   List all available schema extensions for graph creation.
-
-  Schema extensions provide pre-built industry-specific data models that extend
-  the base graph schema with specialized nodes, relationships, and properties.
-
-  **Available Extensions:**
-  - **RoboLedger**: Complete accounting system with XBRL reporting, general ledger, and financial
-  statements
-  - **RoboInvestor**: Investment portfolio management with securities tracking, trade execution, and
-  risk analysis
-  - **RoboSCM**: Supply chain management and logistics
-  - **RoboFO**: Front office operations and CRM
-  - **RoboHRM**: Human resources management
-  - **RoboEPM**: Enterprise performance management
-  - **RoboReport**: Business intelligence and reporting
-
-  **Extension Information:**
-  Each extension includes:
-  - Display name and description
-  - Node and relationship counts
-  - Context-aware capabilities (e.g., SEC repositories get different features than entity graphs)
-
-  **Use Cases:**
-  - Browse available extensions before creating a graph
-  - Understand extension capabilities and data models
-  - Plan graph schema based on business requirements
-  - Combine multiple extensions for comprehensive data modeling
-
-  **Note:**
-  Extension listing is included - no credit consumption required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | AvailableExtensionsResponse
+      AvailableExtensionsResponse | ErrorResponse
   """
 
   return sync_detailed(
@@ -155,46 +115,15 @@ def sync(
 async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
-) -> Response[Any | AvailableExtensionsResponse]:
+) -> Response[AvailableExtensionsResponse | ErrorResponse]:
   """Get Available Schema Extensions
-
-   List all available schema extensions for graph creation.
-
-  Schema extensions provide pre-built industry-specific data models that extend
-  the base graph schema with specialized nodes, relationships, and properties.
-
-  **Available Extensions:**
-  - **RoboLedger**: Complete accounting system with XBRL reporting, general ledger, and financial
-  statements
-  - **RoboInvestor**: Investment portfolio management with securities tracking, trade execution, and
-  risk analysis
-  - **RoboSCM**: Supply chain management and logistics
-  - **RoboFO**: Front office operations and CRM
-  - **RoboHRM**: Human resources management
-  - **RoboEPM**: Enterprise performance management
-  - **RoboReport**: Business intelligence and reporting
-
-  **Extension Information:**
-  Each extension includes:
-  - Display name and description
-  - Node and relationship counts
-  - Context-aware capabilities (e.g., SEC repositories get different features than entity graphs)
-
-  **Use Cases:**
-  - Browse available extensions before creating a graph
-  - Understand extension capabilities and data models
-  - Plan graph schema based on business requirements
-  - Combine multiple extensions for comprehensive data modeling
-
-  **Note:**
-  Extension listing is included - no credit consumption required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | AvailableExtensionsResponse]
+      Response[AvailableExtensionsResponse | ErrorResponse]
   """
 
   kwargs = _get_kwargs()
@@ -207,46 +136,15 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient,
-) -> Any | AvailableExtensionsResponse | None:
+) -> AvailableExtensionsResponse | ErrorResponse | None:
   """Get Available Schema Extensions
-
-   List all available schema extensions for graph creation.
-
-  Schema extensions provide pre-built industry-specific data models that extend
-  the base graph schema with specialized nodes, relationships, and properties.
-
-  **Available Extensions:**
-  - **RoboLedger**: Complete accounting system with XBRL reporting, general ledger, and financial
-  statements
-  - **RoboInvestor**: Investment portfolio management with securities tracking, trade execution, and
-  risk analysis
-  - **RoboSCM**: Supply chain management and logistics
-  - **RoboFO**: Front office operations and CRM
-  - **RoboHRM**: Human resources management
-  - **RoboEPM**: Enterprise performance management
-  - **RoboReport**: Business intelligence and reporting
-
-  **Extension Information:**
-  Each extension includes:
-  - Display name and description
-  - Node and relationship counts
-  - Context-aware capabilities (e.g., SEC repositories get different features than entity graphs)
-
-  **Use Cases:**
-  - Browse available extensions before creating a graph
-  - Understand extension capabilities and data models
-  - Plan graph schema based on business requirements
-  - Combine multiple extensions for comprehensive data modeling
-
-  **Note:**
-  Extension listing is included - no credit consumption required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | AvailableExtensionsResponse
+      AvailableExtensionsResponse | ErrorResponse
   """
 
   return (
