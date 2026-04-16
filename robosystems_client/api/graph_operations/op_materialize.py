@@ -7,6 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
+from ...models.materialize_op import MaterializeOp
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
@@ -15,46 +16,23 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  force: bool | Unset = False,
-  rebuild: bool | Unset = False,
-  ignore_errors: bool | Unset = True,
-  dry_run: bool | Unset = False,
-  source: None | str | Unset = UNSET,
-  materialize_embeddings: bool | Unset = False,
+  body: MaterializeOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
   if not isinstance(idempotency_key, Unset):
     headers["Idempotency-Key"] = idempotency_key
 
-  params: dict[str, Any] = {}
-
-  params["force"] = force
-
-  params["rebuild"] = rebuild
-
-  params["ignore_errors"] = ignore_errors
-
-  params["dry_run"] = dry_run
-
-  json_source: None | str | Unset
-  if isinstance(source, Unset):
-    json_source = UNSET
-  else:
-    json_source = source
-  params["source"] = json_source
-
-  params["materialize_embeddings"] = materialize_embeddings
-
-  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": "/v1/graphs/{graph_id}/operations/materialize".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
-    "params": params,
   }
+
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
 
   _kwargs["headers"] = headers
   return _kwargs
@@ -125,33 +103,20 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  force: bool | Unset = False,
-  rebuild: bool | Unset = False,
-  ignore_errors: bool | Unset = True,
-  dry_run: bool | Unset = False,
-  source: None | str | Unset = UNSET,
-  materialize_embeddings: bool | Unset = False,
+  body: MaterializeOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Materialize Graph
 
    Materialize graph from staging tables or extensions OLTP.
 
-  Delegates to the existing materialize_graph handler which handles
-  distributed locking, source routing, and Dagster/direct dispatch.
-
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      force (bool | Unset):  Default: False.
-      rebuild (bool | Unset):  Default: False.
-      ignore_errors (bool | Unset):  Default: True.
-      dry_run (bool | Unset):  Default: False.
-      source (None | str | Unset):
-      materialize_embeddings (bool | Unset):  Default: False.
       idempotency_key (None | str | Unset):
+      body (MaterializeOp): Body for the materialize operation.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -163,12 +128,7 @@ def sync_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    force=force,
-    rebuild=rebuild,
-    ignore_errors=ignore_errors,
-    dry_run=dry_run,
-    source=source,
-    materialize_embeddings=materialize_embeddings,
+    body=body,
     idempotency_key=idempotency_key,
   )
 
@@ -183,33 +143,20 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  force: bool | Unset = False,
-  rebuild: bool | Unset = False,
-  ignore_errors: bool | Unset = True,
-  dry_run: bool | Unset = False,
-  source: None | str | Unset = UNSET,
-  materialize_embeddings: bool | Unset = False,
+  body: MaterializeOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Materialize Graph
 
    Materialize graph from staging tables or extensions OLTP.
 
-  Delegates to the existing materialize_graph handler which handles
-  distributed locking, source routing, and Dagster/direct dispatch.
-
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      force (bool | Unset):  Default: False.
-      rebuild (bool | Unset):  Default: False.
-      ignore_errors (bool | Unset):  Default: True.
-      dry_run (bool | Unset):  Default: False.
-      source (None | str | Unset):
-      materialize_embeddings (bool | Unset):  Default: False.
       idempotency_key (None | str | Unset):
+      body (MaterializeOp): Body for the materialize operation.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -222,12 +169,7 @@ def sync(
   return sync_detailed(
     graph_id=graph_id,
     client=client,
-    force=force,
-    rebuild=rebuild,
-    ignore_errors=ignore_errors,
-    dry_run=dry_run,
-    source=source,
-    materialize_embeddings=materialize_embeddings,
+    body=body,
     idempotency_key=idempotency_key,
   ).parsed
 
@@ -236,33 +178,20 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  force: bool | Unset = False,
-  rebuild: bool | Unset = False,
-  ignore_errors: bool | Unset = True,
-  dry_run: bool | Unset = False,
-  source: None | str | Unset = UNSET,
-  materialize_embeddings: bool | Unset = False,
+  body: MaterializeOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Materialize Graph
 
    Materialize graph from staging tables or extensions OLTP.
 
-  Delegates to the existing materialize_graph handler which handles
-  distributed locking, source routing, and Dagster/direct dispatch.
-
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      force (bool | Unset):  Default: False.
-      rebuild (bool | Unset):  Default: False.
-      ignore_errors (bool | Unset):  Default: True.
-      dry_run (bool | Unset):  Default: False.
-      source (None | str | Unset):
-      materialize_embeddings (bool | Unset):  Default: False.
       idempotency_key (None | str | Unset):
+      body (MaterializeOp): Body for the materialize operation.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -274,12 +203,7 @@ async def asyncio_detailed(
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    force=force,
-    rebuild=rebuild,
-    ignore_errors=ignore_errors,
-    dry_run=dry_run,
-    source=source,
-    materialize_embeddings=materialize_embeddings,
+    body=body,
     idempotency_key=idempotency_key,
   )
 
@@ -292,33 +216,20 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  force: bool | Unset = False,
-  rebuild: bool | Unset = False,
-  ignore_errors: bool | Unset = True,
-  dry_run: bool | Unset = False,
-  source: None | str | Unset = UNSET,
-  materialize_embeddings: bool | Unset = False,
+  body: MaterializeOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Materialize Graph
 
    Materialize graph from staging tables or extensions OLTP.
 
-  Delegates to the existing materialize_graph handler which handles
-  distributed locking, source routing, and Dagster/direct dispatch.
-
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      force (bool | Unset):  Default: False.
-      rebuild (bool | Unset):  Default: False.
-      ignore_errors (bool | Unset):  Default: True.
-      dry_run (bool | Unset):  Default: False.
-      source (None | str | Unset):
-      materialize_embeddings (bool | Unset):  Default: False.
       idempotency_key (None | str | Unset):
+      body (MaterializeOp): Body for the materialize operation.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -332,12 +243,7 @@ async def asyncio(
     await asyncio_detailed(
       graph_id=graph_id,
       client=client,
-      force=force,
-      rebuild=rebuild,
-      ignore_errors=ignore_errors,
-      dry_run=dry_run,
-      source=source,
-      materialize_embeddings=materialize_embeddings,
+      body=body,
       idempotency_key=idempotency_key,
     )
   ).parsed
