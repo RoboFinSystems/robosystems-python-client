@@ -17,6 +17,7 @@ def _get_kwargs(
   *,
   expires_in: int | Unset = 3600,
 ) -> dict[str, Any]:
+
   params: dict[str, Any] = {}
 
   params["expires_in"] = expires_in

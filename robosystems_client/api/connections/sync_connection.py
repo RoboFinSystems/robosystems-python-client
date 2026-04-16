@@ -8,11 +8,9 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.operation_envelope import OperationEnvelope
 from ...models.sync_connection_request import SyncConnectionRequest
-from ...models.sync_connection_response_syncconnection import (
-  SyncConnectionResponseSyncconnection,
-)
-from ...types import Response
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
@@ -20,8 +18,11 @@ def _get_kwargs(
   connection_id: str,
   *,
   body: SyncConnectionRequest,
+  idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
+  if not isinstance(idempotency_key, Unset):
+    headers["Idempotency-Key"] = idempotency_key
 
   _kwargs: dict[str, Any] = {
     "method": "post",
@@ -41,11 +42,11 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection | None:
-  if response.status_code == 200:
-    response_200 = SyncConnectionResponseSyncconnection.from_dict(response.json())
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+  if response.status_code == 202:
+    response_202 = OperationEnvelope.from_dict(response.json())
 
-    return response_200
+    return response_202
 
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
@@ -57,6 +58,11 @@ def _parse_response(
 
     return response_404
 
+  if response.status_code == 409:
+    response_409 = ErrorResponse.from_dict(response.json())
+
+    return response_409
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
@@ -67,6 +73,11 @@ def _parse_response(
 
     return response_500
 
+  if response.status_code == 504:
+    response_504 = ErrorResponse.from_dict(response.json())
+
+    return response_504
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -75,9 +86,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[
-  ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection
-]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -92,9 +101,8 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
-) -> Response[
-  ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection
-]:
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Sync Connection
 
    Trigger a data synchronization for the connection.
@@ -115,11 +123,13 @@ def sync_detailed(
   Note:
   This operation is included - no credit consumption required.
 
-  Returns a task ID for monitoring sync progress.
+  Returns an `OperationEnvelope` with an `operationId` for tracking sync progress.
+  Supports `Idempotency-Key` header to safely retry without triggering duplicate syncs.
 
   Args:
       graph_id (str):
       connection_id (str): Connection identifier
+      idempotency_key (None | str | Unset):
       body (SyncConnectionRequest): Request to sync a connection.
 
   Raises:
@@ -127,13 +137,14 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     connection_id=connection_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = client.get_httpx_client().request(
@@ -149,7 +160,8 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
-) -> ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection | None:
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Sync Connection
 
    Trigger a data synchronization for the connection.
@@ -170,11 +182,13 @@ def sync(
   Note:
   This operation is included - no credit consumption required.
 
-  Returns a task ID for monitoring sync progress.
+  Returns an `OperationEnvelope` with an `operationId` for tracking sync progress.
+  Supports `Idempotency-Key` header to safely retry without triggering duplicate syncs.
 
   Args:
       graph_id (str):
       connection_id (str): Connection identifier
+      idempotency_key (None | str | Unset):
       body (SyncConnectionRequest): Request to sync a connection.
 
   Raises:
@@ -182,7 +196,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection
+      ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return sync_detailed(
@@ -190,6 +204,7 @@ def sync(
     connection_id=connection_id,
     client=client,
     body=body,
+    idempotency_key=idempotency_key,
   ).parsed
 
 
@@ -199,9 +214,8 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
-) -> Response[
-  ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection
-]:
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Sync Connection
 
    Trigger a data synchronization for the connection.
@@ -222,11 +236,13 @@ async def asyncio_detailed(
   Note:
   This operation is included - no credit consumption required.
 
-  Returns a task ID for monitoring sync progress.
+  Returns an `OperationEnvelope` with an `operationId` for tracking sync progress.
+  Supports `Idempotency-Key` header to safely retry without triggering duplicate syncs.
 
   Args:
       graph_id (str):
       connection_id (str): Connection identifier
+      idempotency_key (None | str | Unset):
       body (SyncConnectionRequest): Request to sync a connection.
 
   Raises:
@@ -234,13 +250,14 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     connection_id=connection_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -254,7 +271,8 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
-) -> ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection | None:
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Sync Connection
 
    Trigger a data synchronization for the connection.
@@ -275,11 +293,13 @@ async def asyncio(
   Note:
   This operation is included - no credit consumption required.
 
-  Returns a task ID for monitoring sync progress.
+  Returns an `OperationEnvelope` with an `operationId` for tracking sync progress.
+  Supports `Idempotency-Key` header to safely retry without triggering duplicate syncs.
 
   Args:
       graph_id (str):
       connection_id (str): Connection identifier
+      idempotency_key (None | str | Unset):
       body (SyncConnectionRequest): Request to sync a connection.
 
   Raises:
@@ -287,7 +307,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | SyncConnectionResponseSyncconnection
+      ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return (
@@ -296,5 +316,6 @@ async def asyncio(
       connection_id=connection_id,
       client=client,
       body=body,
+      idempotency_key=idempotency_key,
     )
   ).parsed

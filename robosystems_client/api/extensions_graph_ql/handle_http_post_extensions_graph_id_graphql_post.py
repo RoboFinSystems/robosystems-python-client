@@ -13,6 +13,7 @@ from ...types import Response
 def _get_kwargs(
   graph_id: str,
 ) -> dict[str, Any]:
+
   _kwargs: dict[str, Any] = {
     "method": "post",
     "url": "/extensions/{graph_id}/graphql".format(

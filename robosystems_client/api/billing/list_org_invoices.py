@@ -16,6 +16,7 @@ def _get_kwargs(
   *,
   limit: int | Unset = 10,
 ) -> dict[str, Any]:
+
   params: dict[str, Any] = {}
 
   params["limit"] = limit

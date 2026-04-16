@@ -15,6 +15,7 @@ def _get_kwargs(
   graph_id: str,
   agent_type: str,
 ) -> dict[str, Any]:
+
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": "/v1/graphs/{graph_id}/agent/{agent_type}".format(

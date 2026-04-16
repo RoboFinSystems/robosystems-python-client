@@ -325,9 +325,6 @@ from .sync_connection_request import SyncConnectionRequest
 from .sync_connection_request_sync_options_type_0 import (
   SyncConnectionRequestSyncOptionsType0,
 )
-from .sync_connection_response_syncconnection import (
-  SyncConnectionResponseSyncconnection,
-)
 from .table_info import TableInfo
 from .table_list_response import TableListResponse
 from .table_query_request import TableQueryRequest
@@ -661,7 +658,6 @@ __all__ = (
   "SuccessResponseDataType0",
   "SyncConnectionRequest",
   "SyncConnectionRequestSyncOptionsType0",
-  "SyncConnectionResponseSyncconnection",
   "TableInfo",
   "TableListResponse",
   "TableQueryRequest",

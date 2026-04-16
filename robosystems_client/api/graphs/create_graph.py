@@ -7,14 +7,18 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_graph_request import CreateGraphRequest
 from ...models.http_validation_error import HTTPValidationError
-from ...types import Response
+from ...models.operation_envelope import OperationEnvelope
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   *,
   body: CreateGraphRequest,
+  idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
+  if not isinstance(idempotency_key, Unset):
+    headers["Idempotency-Key"] = idempotency_key
 
   _kwargs: dict[str, Any] = {
     "method": "post",
@@ -31,9 +35,10 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | None:
+) -> HTTPValidationError | OperationEnvelope | None:
   if response.status_code == 202:
-    response_202 = response.json()
+    response_202 = OperationEnvelope.from_dict(response.json())
+
     return response_202
 
   if response.status_code == 422:
@@ -49,7 +54,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError]:
+) -> Response[HTTPValidationError | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -62,7 +67,8 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateGraphRequest,
-) -> Response[Any | HTTPValidationError]:
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[HTTPValidationError | OperationEnvelope]:
   """Create New Graph Database
 
    Create a new graph database with specified schema and optionally an initial entity.
@@ -133,6 +139,7 @@ def sync_detailed(
   - `_links.status`: Point-in-time status check endpoint
 
   Args:
+      idempotency_key (None | str | Unset):
       body (CreateGraphRequest): Request model for creating a new graph.
 
           Use this to create either:
@@ -144,11 +151,12 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError]
+      Response[HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = client.get_httpx_client().request(
@@ -162,7 +170,8 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: CreateGraphRequest,
-) -> Any | HTTPValidationError | None:
+  idempotency_key: None | str | Unset = UNSET,
+) -> HTTPValidationError | OperationEnvelope | None:
   """Create New Graph Database
 
    Create a new graph database with specified schema and optionally an initial entity.
@@ -233,6 +242,7 @@ def sync(
   - `_links.status`: Point-in-time status check endpoint
 
   Args:
+      idempotency_key (None | str | Unset):
       body (CreateGraphRequest): Request model for creating a new graph.
 
           Use this to create either:
@@ -244,12 +254,13 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError
+      HTTPValidationError | OperationEnvelope
   """
 
   return sync_detailed(
     client=client,
     body=body,
+    idempotency_key=idempotency_key,
   ).parsed
 
 
@@ -257,7 +268,8 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateGraphRequest,
-) -> Response[Any | HTTPValidationError]:
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[HTTPValidationError | OperationEnvelope]:
   """Create New Graph Database
 
    Create a new graph database with specified schema and optionally an initial entity.
@@ -328,6 +340,7 @@ async def asyncio_detailed(
   - `_links.status`: Point-in-time status check endpoint
 
   Args:
+      idempotency_key (None | str | Unset):
       body (CreateGraphRequest): Request model for creating a new graph.
 
           Use this to create either:
@@ -339,11 +352,12 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError]
+      Response[HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -355,7 +369,8 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: CreateGraphRequest,
-) -> Any | HTTPValidationError | None:
+  idempotency_key: None | str | Unset = UNSET,
+) -> HTTPValidationError | OperationEnvelope | None:
   """Create New Graph Database
 
    Create a new graph database with specified schema and optionally an initial entity.
@@ -426,6 +441,7 @@ async def asyncio(
   - `_links.status`: Point-in-time status check endpoint
 
   Args:
+      idempotency_key (None | str | Unset):
       body (CreateGraphRequest): Request model for creating a new graph.
 
           Use this to create either:
@@ -437,12 +453,13 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError
+      HTTPValidationError | OperationEnvelope
   """
 
   return (
     await asyncio_detailed(
       client=client,
       body=body,
+      idempotency_key=idempotency_key,
     )
   ).parsed

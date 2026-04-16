@@ -15,6 +15,7 @@ def _get_kwargs(
   org_id: str,
   subscription_id: str,
 ) -> dict[str, Any]:
+
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": "/v1/billing/subscriptions/{org_id}/subscription/{subscription_id}".format(

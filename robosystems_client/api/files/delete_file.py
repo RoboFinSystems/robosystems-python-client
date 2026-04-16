@@ -18,6 +18,7 @@ def _get_kwargs(
   *,
   cascade: bool | Unset = False,
 ) -> dict[str, Any]:
+
   params: dict[str, Any] = {}
 
   params["cascade"] = cascade

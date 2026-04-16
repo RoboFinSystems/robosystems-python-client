@@ -16,6 +16,7 @@ def _get_kwargs(
   graph_id: str,
   connection_id: str,
 ) -> dict[str, Any]:
+
   _kwargs: dict[str, Any] = {
     "method": "get",
     "url": "/v1/graphs/{graph_id}/connections/{connection_id}".format(
