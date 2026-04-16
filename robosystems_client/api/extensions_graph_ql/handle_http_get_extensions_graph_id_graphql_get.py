@@ -30,6 +30,14 @@ def _parse_response(
     response_200 = response.json()
     return response_200
 
+  if response.status_code == 401:
+    response_401 = cast(Any, None)
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = cast(Any, None)
+    return response_403
+
   if response.status_code == 404:
     response_404 = cast(Any, None)
     return response_404
@@ -38,6 +46,10 @@ def _parse_response(
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = cast(Any, None)
+    return response_429
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -62,6 +74,15 @@ def sync_detailed(
   client: AuthenticatedClient,
 ) -> Response[Any | HTTPValidationError]:
   """Handle Http Get
+
+
+
+  **Auth**: pass `X-API-Key` (or a JWT `Authorization: Bearer` header). Unauthenticated introspection
+  queries are deliberately allowed for SDK codegen; data queries require credentials and raise
+  `UNAUTHENTICATED`.
+
+  **Error codes**: `LEDGER_NOT_INITIALIZED`, `INVESTOR_NOT_INITIALIZED`, and `UNAUTHENTICATED` surface
+  in the GraphQL `errors[].extensions.code` field — see `graphql/README.md` for the full vocabulary.
 
   Args:
       graph_id (str):
@@ -92,6 +113,15 @@ def sync(
 ) -> Any | HTTPValidationError | None:
   """Handle Http Get
 
+
+
+  **Auth**: pass `X-API-Key` (or a JWT `Authorization: Bearer` header). Unauthenticated introspection
+  queries are deliberately allowed for SDK codegen; data queries require credentials and raise
+  `UNAUTHENTICATED`.
+
+  **Error codes**: `LEDGER_NOT_INITIALIZED`, `INVESTOR_NOT_INITIALIZED`, and `UNAUTHENTICATED` surface
+  in the GraphQL `errors[].extensions.code` field — see `graphql/README.md` for the full vocabulary.
+
   Args:
       graph_id (str):
 
@@ -115,6 +145,15 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
 ) -> Response[Any | HTTPValidationError]:
   """Handle Http Get
+
+
+
+  **Auth**: pass `X-API-Key` (or a JWT `Authorization: Bearer` header). Unauthenticated introspection
+  queries are deliberately allowed for SDK codegen; data queries require credentials and raise
+  `UNAUTHENTICATED`.
+
+  **Error codes**: `LEDGER_NOT_INITIALIZED`, `INVESTOR_NOT_INITIALIZED`, and `UNAUTHENTICATED` surface
+  in the GraphQL `errors[].extensions.code` field — see `graphql/README.md` for the full vocabulary.
 
   Args:
       graph_id (str):
@@ -142,6 +181,15 @@ async def asyncio(
   client: AuthenticatedClient,
 ) -> Any | HTTPValidationError | None:
   """Handle Http Get
+
+
+
+  **Auth**: pass `X-API-Key` (or a JWT `Authorization: Bearer` header). Unauthenticated introspection
+  queries are deliberately allowed for SDK codegen; data queries require credentials and raise
+  `UNAUTHENTICATED`.
+
+  **Error codes**: `LEDGER_NOT_INITIALIZED`, `INVESTOR_NOT_INITIALIZED`, and `UNAUTHENTICATED` surface
+  in the GraphQL `errors[].extensions.code` field — see `graphql/README.md` for the full vocabulary.
 
   Args:
       graph_id (str):

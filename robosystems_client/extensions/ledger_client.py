@@ -68,8 +68,56 @@ from ..api.extensions_robo_ledger.op_set_close_target import (
 from ..api.extensions_robo_ledger.op_truncate_schedule import (
   sync_detailed as op_truncate_schedule,
 )
+from ..api.extensions_robo_ledger.op_update_association import (
+  sync_detailed as op_update_association,
+)
+from ..api.extensions_robo_ledger.op_update_element import (
+  sync_detailed as op_update_element,
+)
 from ..api.extensions_robo_ledger.op_update_entity import (
   sync_detailed as op_update_entity,
+)
+from ..api.extensions_robo_ledger.op_update_schedule import (
+  sync_detailed as op_update_schedule,
+)
+from ..api.extensions_robo_ledger.op_update_structure import (
+  sync_detailed as op_update_structure,
+)
+from ..api.extensions_robo_ledger.op_update_taxonomy import (
+  sync_detailed as op_update_taxonomy,
+)
+from ..api.extensions_robo_ledger.op_create_associations import (
+  sync_detailed as op_create_associations,
+)
+from ..api.extensions_robo_ledger.op_create_element import (
+  sync_detailed as op_create_element,
+)
+from ..api.extensions_robo_ledger.op_create_journal_entry import (
+  sync_detailed as op_create_journal_entry,
+)
+from ..api.extensions_robo_ledger.op_delete_association import (
+  sync_detailed as op_delete_association,
+)
+from ..api.extensions_robo_ledger.op_delete_element import (
+  sync_detailed as op_delete_element,
+)
+from ..api.extensions_robo_ledger.op_delete_journal_entry import (
+  sync_detailed as op_delete_journal_entry,
+)
+from ..api.extensions_robo_ledger.op_delete_schedule import (
+  sync_detailed as op_delete_schedule,
+)
+from ..api.extensions_robo_ledger.op_delete_structure import (
+  sync_detailed as op_delete_structure,
+)
+from ..api.extensions_robo_ledger.op_delete_taxonomy import (
+  sync_detailed as op_delete_taxonomy,
+)
+from ..api.extensions_robo_ledger.op_reverse_journal_entry import (
+  sync_detailed as op_reverse_journal_entry,
+)
+from ..api.extensions_robo_ledger.op_update_journal_entry import (
+  sync_detailed as op_update_journal_entry,
 )
 from ..client import AuthenticatedClient
 from ..graphql.client import GraphQLClient, strip_none_vars
@@ -124,6 +172,23 @@ from ..graphql.queries.ledger import (
   parse_unmapped_elements,
 )
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
+from ..models.bulk_association_item import BulkAssociationItem
+from ..models.bulk_create_associations_request import BulkCreateAssociationsRequest
+from ..models.create_element_request import CreateElementRequest
+from ..models.create_journal_entry_request import CreateJournalEntryRequest
+from ..models.delete_association_request import DeleteAssociationRequest
+from ..models.delete_element_request import DeleteElementRequest
+from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
+from ..models.delete_schedule_request import DeleteScheduleRequest
+from ..models.delete_structure_request import DeleteStructureRequest
+from ..models.delete_taxonomy_request import DeleteTaxonomyRequest
+from ..models.reverse_journal_entry_request import ReverseJournalEntryRequest
+from ..models.update_association_request import UpdateAssociationRequest
+from ..models.update_element_request import UpdateElementRequest
+from ..models.update_journal_entry_request import UpdateJournalEntryRequest
+from ..models.update_schedule_request import UpdateScheduleRequest
+from ..models.update_structure_request import UpdateStructureRequest
+from ..models.update_taxonomy_request import UpdateTaxonomyRequest
 from ..models.close_period_operation import ClosePeriodOperation
 from ..models.create_closing_entry_operation import CreateClosingEntryOperation
 from ..models.create_view_request import CreateViewRequest
@@ -234,6 +299,11 @@ class LedgerClient:
     envelope = response.parsed
     if not isinstance(envelope, OperationEnvelope):
       raise RuntimeError(f"{label} failed: unexpected response shape: {envelope!r}")
+    # Normalize result to a plain dict — the generated SDK sometimes
+    # wraps it in an OperationEnvelopeResultType0 attrs class instead
+    # of a dict, depending on the response shape.
+    if envelope.result is not None and hasattr(envelope.result, "to_dict"):
+      envelope.result = envelope.result.to_dict()
     return envelope
 
   # ── Entity ──────────────────────────────────────────────────────────
@@ -398,6 +468,56 @@ class LedgerClient:
     envelope = self._call_op("Create taxonomy", response)
     return envelope.result or {}
 
+  def update_taxonomy(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Update mutable fields on a taxonomy. taxonomy_type is immutable."""
+    request = UpdateTaxonomyRequest.from_dict(body)
+    response = op_update_taxonomy(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update taxonomy", response)
+    return envelope.result or {}
+
+  def delete_taxonomy(self, graph_id: str, taxonomy_id: str) -> dict[str, Any]:
+    """Soft-delete a taxonomy (is_active=false)."""
+    body = DeleteTaxonomyRequest(taxonomy_id=taxonomy_id)
+    response = op_delete_taxonomy(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Delete taxonomy", response)
+    return envelope.result or {}
+
+  def link_entity_taxonomy(
+    self,
+    graph_id: str,
+    taxonomy_id: str,
+    basis: str = "chart_of_accounts",
+    is_primary: bool = True,
+  ) -> dict[str, Any]:
+    """Link the graph's entity to a taxonomy (ENTITY_HAS_TAXONOMY edge).
+
+    Idempotent — returns existing linkage if already present.
+    Uses httpx directly until the SDK is regenerated with the
+    auto-generated op function.
+    """
+    import httpx
+
+    resp = httpx.post(
+      f"{self.base_url}/extensions/roboledger/{graph_id}/operations/link-entity-taxonomy",
+      headers={"X-API-Key": self.token, "Content-Type": "application/json"},
+      json={
+        "taxonomy_id": taxonomy_id,
+        "basis": basis,
+        "is_primary": is_primary,
+      },
+      timeout=self.timeout,
+    )
+    if resp.status_code not in (200, 202):
+      raise RuntimeError(
+        f"Link entity taxonomy failed: {resp.status_code}: {resp.text}"
+      )
+    envelope = resp.json()
+    return envelope.get("result") or {}
+
   def list_elements(
     self,
     graph_id: str,
@@ -432,6 +552,33 @@ class LedgerClient:
     )
     return parse_unmapped_elements(data)
 
+  def create_element(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Create a new element within a taxonomy (native CoA account, etc.)."""
+    request = CreateElementRequest.from_dict(body)
+    response = op_create_element(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Create element", response)
+    return envelope.result or {}
+
+  def update_element(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Update mutable fields on an element. taxonomy_id and source are immutable."""
+    request = UpdateElementRequest.from_dict(body)
+    response = op_update_element(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update element", response)
+    return envelope.result or {}
+
+  def delete_element(self, graph_id: str, element_id: str) -> dict[str, Any]:
+    """Soft-delete an element (is_active=false)."""
+    body = DeleteElementRequest(element_id=element_id)
+    response = op_delete_element(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Delete element", response)
+    return envelope.result or {}
+
   # ── Structures / mappings ──────────────────────────────────────────
 
   def list_structures(
@@ -455,6 +602,24 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Create structure", response)
+    return envelope.result or {}
+
+  def update_structure(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Update mutable fields on a structure. structure_type is immutable."""
+    request = UpdateStructureRequest.from_dict(body)
+    response = op_update_structure(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update structure", response)
+    return envelope.result or {}
+
+  def delete_structure(self, graph_id: str, structure_id: str) -> dict[str, Any]:
+    """Soft-delete a structure (is_active=false)."""
+    body = DeleteStructureRequest(structure_id=structure_id)
+    response = op_delete_structure(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Delete structure", response)
     return envelope.result or {}
 
   def create_mapping_structure(
@@ -536,6 +701,39 @@ class LedgerClient:
     )
     envelope = self._call_op("Auto-map elements", response)
     return {"operation_id": envelope.operation_id, "status": envelope.status}
+
+  def create_associations(
+    self,
+    graph_id: str,
+    structure_id: str,
+    associations: list[dict[str, Any]],
+  ) -> dict[str, Any]:
+    """Bulk create associations within a single structure, atomically."""
+    items = [BulkAssociationItem.from_dict(a) for a in associations]
+    body = BulkCreateAssociationsRequest(structure_id=structure_id, associations=items)
+    response = op_create_associations(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Create associations", response)
+    return envelope.result or {}
+
+  def update_association(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Update mutable fields on an association (order, weight, confidence)."""
+    request = UpdateAssociationRequest.from_dict(body)
+    response = op_update_association(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update association", response)
+    return envelope.result or {}
+
+  def delete_association(self, graph_id: str, association_id: str) -> dict[str, Any]:
+    """Hard-delete an association (any type: presentation, calculation, mapping)."""
+    body = DeleteAssociationRequest(association_id=association_id)
+    response = op_delete_association(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Delete association", response)
+    return envelope.result if envelope.result is not None else {"deleted": True}
 
   # ── Schedules ──────────────────────────────────────────────────────
 
@@ -644,6 +842,24 @@ class LedgerClient:
     envelope = self._call_op("Truncate schedule", response)
     return envelope.result or {}
 
+  def update_schedule(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Update mutable fields on a schedule (name, entry_template, metadata)."""
+    request = UpdateScheduleRequest.from_dict(body)
+    response = op_update_schedule(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update schedule", response)
+    return envelope.result or {}
+
+  def delete_schedule(self, graph_id: str, structure_id: str) -> dict[str, Any]:
+    """Permanently delete a schedule (cascades through facts + associations)."""
+    body = DeleteScheduleRequest(structure_id=structure_id)
+    response = op_delete_schedule(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Delete schedule", response)
+    return envelope.result if envelope.result is not None else {"deleted": True}
+
   # ── Period close ────────────────────────────────────────────────────
 
   def get_period_close_status(
@@ -723,6 +939,80 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Create manual closing entry", response)
+    return envelope.result or {}
+
+  # ── Journal entries (native accounting writes) ──────────────────────
+
+  def create_journal_entry(
+    self,
+    graph_id: str,
+    *,
+    posting_date: str,
+    memo: str,
+    line_items: list[dict[str, Any]],
+    type: str = "standard",  # noqa: A002
+    status: str = "draft",
+    transaction_id: str | None = None,
+  ) -> dict[str, Any]:
+    """Create a journal entry with balanced line items (DR=CR enforced).
+
+    Defaults to ``status='draft'`` for ongoing writes. Pass
+    ``status='posted'`` for historical data import where entries
+    represent already-happened business events.
+    """
+    body_dict: dict[str, Any] = {
+      "posting_date": posting_date,
+      "memo": memo,
+      "line_items": line_items,
+      "type": type,
+      "status": status,
+    }
+    if transaction_id is not None:
+      body_dict["transaction_id"] = transaction_id
+    body = CreateJournalEntryRequest.from_dict(body_dict)
+    response = op_create_journal_entry(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Create journal entry", response)
+    return envelope.result or {}
+
+  def update_journal_entry(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Update a draft journal entry. Posted entries are immutable."""
+    request = UpdateJournalEntryRequest.from_dict(body)
+    response = op_update_journal_entry(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update journal entry", response)
+    return envelope.result or {}
+
+  def delete_journal_entry(self, graph_id: str, entry_id: str) -> dict[str, Any]:
+    """Hard-delete a draft journal entry. Posted entries must be reversed."""
+    body = DeleteJournalEntryRequest(entry_id=entry_id)
+    response = op_delete_journal_entry(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Delete journal entry", response)
+    return envelope.result if envelope.result is not None else {"deleted": True}
+
+  def reverse_journal_entry(
+    self,
+    graph_id: str,
+    entry_id: str,
+    posting_date: str | None = None,
+    memo: str | None = None,
+  ) -> dict[str, Any]:
+    """Reverse a posted journal entry (creates offsetting entry, marks original as reversed)."""
+    body = ReverseJournalEntryRequest(
+      entry_id=entry_id,
+      posting_date=(
+        datetime.date.fromisoformat(posting_date) if posting_date else UNSET
+      ),
+      memo=memo if memo is not None else UNSET,
+    )
+    response = op_reverse_journal_entry(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Reverse journal entry", response)
     return envelope.result or {}
 
   # ── Fact grid (graph-backed analytical query) ─────────────────────
