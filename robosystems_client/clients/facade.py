@@ -11,7 +11,6 @@ from .agent_client import AgentClient
 from .operation_client import OperationClient
 from .file_client import FileClient
 from .document_client import DocumentClient
-from .materialization_client import MaterializationClient
 from .table_client import TableClient
 from .graph_client import GraphClient
 from .investor_client import InvestorClient
@@ -70,7 +69,6 @@ class RoboSystemsClients:
     self.agent = AgentClient(self.config)
     self.operations = OperationClient(self.config)
     self.files = FileClient(self.config)
-    self.materialization = MaterializationClient(self.config)
     self.tables = TableClient(self.config)
     self.documents = DocumentClient(self.config)
     self.graphs = GraphClient(self.config)
@@ -108,8 +106,6 @@ class RoboSystemsClients:
     self.operations.close_all()
     if hasattr(self.files, "close"):
       self.files.close()
-    if hasattr(self.materialization, "close"):
-      self.materialization.close()
     if hasattr(self.tables, "close"):
       self.tables.close()
     if hasattr(self.documents, "close"):

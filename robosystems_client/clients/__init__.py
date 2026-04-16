@@ -34,12 +34,6 @@ from .file_client import (
   FileUploadResult,
   FileInfo,
 )
-from .materialization_client import (
-  MaterializationClient,
-  MaterializationOptions,
-  MaterializationResult,
-  MaterializationStatus,
-)
 from .table_client import (
   TableClient,
   TableInfo,
@@ -47,6 +41,8 @@ from .table_client import (
 )
 from .graph_client import (
   GraphClient,
+  MaterializationOptions,
+  MaterializationResult,
   GraphMetadata,
   InitialEntityData,
   GraphInfo,
@@ -156,11 +152,6 @@ __all__ = [
   "FileUploadOptions",
   "FileUploadResult",
   "FileInfo",
-  # Materialization Client
-  "MaterializationClient",
-  "MaterializationOptions",
-  "MaterializationResult",
-  "MaterializationStatus",
   # Table Client
   "TableClient",
   "TableInfo",
@@ -170,6 +161,8 @@ __all__ = [
   "GraphMetadata",
   "InitialEntityData",
   "GraphInfo",
+  "MaterializationOptions",
+  "MaterializationResult",
   # Ledger Client
   "LedgerClient",
   # Investor Client

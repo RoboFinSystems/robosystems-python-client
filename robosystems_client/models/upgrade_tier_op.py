@@ -6,28 +6,44 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="MaterializeResponseLimitCheckType0")
+T = TypeVar("T", bound="UpgradeTierOp")
 
 
 @_attrs_define
-class MaterializeResponseLimitCheckType0:
-  """ """
+class UpgradeTierOp:
+  """Body for the upgrade-tier operation.
 
+  Attributes:
+      new_tier (str): Target tier: ladybug-standard, ladybug-large, ladybug-xlarge
+  """
+
+  new_tier: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    new_tier = self.new_tier
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "new_tier": new_tier,
+      }
+    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    materialize_response_limit_check_type_0 = cls()
+    new_tier = d.pop("new_tier")
 
-    materialize_response_limit_check_type_0.additional_properties = d
-    return materialize_response_limit_check_type_0
+    upgrade_tier_op = cls(
+      new_tier=new_tier,
+    )
+
+    upgrade_tier_op.additional_properties = d
+    return upgrade_tier_op
 
   @property
   def additional_keys(self) -> list[str]:
