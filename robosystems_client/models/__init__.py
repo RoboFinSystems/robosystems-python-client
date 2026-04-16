@@ -36,7 +36,6 @@ from .backup_download_url_response import BackupDownloadUrlResponse
 from .backup_limits import BackupLimits
 from .backup_list_response import BackupListResponse
 from .backup_response import BackupResponse
-from .backup_restore_request import BackupRestoreRequest
 from .backup_stats_response import BackupStatsResponse
 from .backup_stats_response_backup_formats import BackupStatsResponseBackupFormats
 from .batch_agent_request import BatchAgentRequest
@@ -131,8 +130,7 @@ from .delete_report_operation import DeleteReportOperation
 from .delete_schedule_request import DeleteScheduleRequest
 from .delete_security_operation import DeleteSecurityOperation
 from .delete_structure_request import DeleteStructureRequest
-from .delete_subgraph_request import DeleteSubgraphRequest
-from .delete_subgraph_response import DeleteSubgraphResponse
+from .delete_subgraph_op import DeleteSubgraphOp
 from .delete_taxonomy_request import DeleteTaxonomyRequest
 from .detailed_transactions_response import DetailedTransactionsResponse
 from .detailed_transactions_response_date_range import (
@@ -217,10 +215,6 @@ from .list_table_files_response import ListTableFilesResponse
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .manual_line_item_request import ManualLineItemRequest
-from .materialize_request import MaterializeRequest
-from .materialize_response import MaterializeResponse
-from .materialize_response_limit_check_type_0 import MaterializeResponseLimitCheckType0
-from .materialize_status_response import MaterializeStatusResponse
 from .mcp_tool_call import MCPToolCall
 from .mcp_tool_call_arguments import MCPToolCallArguments
 from .mcp_tools_response import MCPToolsResponse
@@ -285,6 +279,7 @@ from .resend_verification_email_response_resendverificationemail import (
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
+from .restore_backup_op import RestoreBackupOp
 from .reverse_journal_entry_request import ReverseJournalEntryRequest
 from .schedule_metadata_request import ScheduleMetadataRequest
 from .schema_export_response import SchemaExportResponse
@@ -370,6 +365,7 @@ from .update_structure_request import UpdateStructureRequest
 from .update_taxonomy_request import UpdateTaxonomyRequest
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
+from .upgrade_tier_op import UpgradeTierOp
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
 from .validation_error import ValidationError
@@ -412,7 +408,6 @@ __all__ = (
   "BackupLimits",
   "BackupListResponse",
   "BackupResponse",
-  "BackupRestoreRequest",
   "BackupStatsResponse",
   "BackupStatsResponseBackupFormats",
   "BatchAgentRequest",
@@ -497,8 +492,7 @@ __all__ = (
   "DeleteScheduleRequest",
   "DeleteSecurityOperation",
   "DeleteStructureRequest",
-  "DeleteSubgraphRequest",
-  "DeleteSubgraphResponse",
+  "DeleteSubgraphOp",
   "DeleteTaxonomyRequest",
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
@@ -569,10 +563,6 @@ __all__ = (
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "ManualLineItemRequest",
-  "MaterializeRequest",
-  "MaterializeResponse",
-  "MaterializeResponseLimitCheckType0",
-  "MaterializeStatusResponse",
   "MCPToolCall",
   "MCPToolCallArguments",
   "MCPToolsResponse",
@@ -631,6 +621,7 @@ __all__ = (
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
   "ResponseMode",
+  "RestoreBackupOp",
   "ReverseJournalEntryRequest",
   "ScheduleMetadataRequest",
   "SchemaExportResponse",
@@ -700,6 +691,7 @@ __all__ = (
   "UpdateTaxonomyRequest",
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
+  "UpgradeTierOp",
   "UserGraphsResponse",
   "UserResponse",
   "ValidationError",

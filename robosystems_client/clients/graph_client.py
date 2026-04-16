@@ -1,7 +1,13 @@
 """Graph Management Client
 
-Provides high-level graph management operations with automatic operation monitoring.
-Supports both SSE (Server-Sent Events) for real-time updates and polling fallback.
+Provides high-level graph management and lifecycle operations with
+automatic operation monitoring. Supports both SSE (Server-Sent Events)
+for real-time updates and polling fallback.
+
+Graph lifecycle operations (create-subgraph, delete-subgraph, create-backup,
+restore-backup, upgrade-tier, materialize) all go through the operations
+surface at ``POST /v1/graphs/{graph_id}/operations/{op_name}`` and return
+an ``OperationEnvelope``.
 """
 
 from dataclasses import dataclass
@@ -12,7 +18,14 @@ import logging
 
 import httpx
 
+from .operation_client import OperationClient, OperationProgress, MonitorOptions
+
 logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Data classes
+# ---------------------------------------------------------------------------
 
 
 @dataclass
@@ -49,14 +62,72 @@ class GraphInfo:
   status: Optional[str] = None
 
 
+@dataclass
+class MaterializationOptions:
+  """Options for graph materialization operations"""
+
+  ignore_errors: bool = True
+  rebuild: bool = False
+  force: bool = False
+  materialize_embeddings: bool = False
+  on_progress: Optional[Callable[[str], None]] = None
+  timeout: Optional[int] = 600  # 10 minute default timeout
+
+
+@dataclass
+class MaterializationResult:
+  """Result from materialization operation"""
+
+  status: str
+  was_stale: bool
+  stale_reason: Optional[str]
+  tables_materialized: list[str]
+  total_rows: int
+  execution_time_ms: float
+  message: str
+  success: bool = True
+  error: Optional[str] = None
+
+
 class GraphClient:
-  """Client for graph management operations"""
+  """Client for graph management and lifecycle operations.
+
+  Covers graph creation, info retrieval, and all graph lifecycle
+  operations (materialize, subgraphs, backups, tier changes).
+  """
 
   def __init__(self, config: Dict[str, Any]):
     self.config = config
     self.base_url = config["base_url"]
     self.headers = config.get("headers", {})
     self.token = config.get("token")
+    self._operation_client = None
+
+  @property
+  def operation_client(self) -> OperationClient:
+    """Get or create the operation client for SSE monitoring."""
+    if self._operation_client is None:
+      self._operation_client = OperationClient(self.config)
+    return self._operation_client
+
+  def _get_authenticated_client(self):
+    """Build an AuthenticatedClient for API calls."""
+    from ..client import AuthenticatedClient
+
+    if not self.token:
+      raise ValueError("No API key provided. Set X-API-Key in headers.")
+
+    return AuthenticatedClient(
+      base_url=self.base_url,
+      token=self.token,
+      prefix="",
+      auth_header_name="X-API-Key",
+      headers=self.headers,
+    )
+
+  # ---------------------------------------------------------------------------
+  # Graph creation
+  # ---------------------------------------------------------------------------
 
   def create_graph_and_wait(
     self,
@@ -78,36 +149,20 @@ class GraphClient:
         metadata: Graph metadata
         initial_entity: Optional initial entity data
         create_entity: Whether to create the entity node and upload initial data.
-            Only applies when initial_entity is provided. Set to False to create
-            graph without populating entity data (useful for file-based ingestion).
         timeout: Maximum time to wait in seconds
         poll_interval: Time between status checks in seconds (for polling fallback)
         on_progress: Callback for progress updates
-        use_sse: Whether to try SSE first (default True). Falls back to polling on failure.
+        use_sse: Whether to try SSE first (default True).
 
     Returns:
         graph_id when creation completes
-
-    Raises:
-        Exception: If creation fails or times out
     """
-    from ..client import AuthenticatedClient
     from ..api.graphs.create_graph import sync_detailed as create_graph
     from ..models.create_graph_request import CreateGraphRequest
     from ..models.graph_metadata import GraphMetadata as APIGraphMetadata
 
-    if not self.token:
-      raise ValueError("No API key provided. Set X-API-Key in headers.")
+    client = self._get_authenticated_client()
 
-    client = AuthenticatedClient(
-      base_url=self.base_url,
-      token=self.token,
-      prefix="",
-      auth_header_name="X-API-Key",
-      headers=self.headers,
-    )
-
-    # Build API metadata
     api_metadata = APIGraphMetadata(
       graph_name=metadata.graph_name,
       description=metadata.description,
@@ -115,7 +170,6 @@ class GraphClient:
       tags=metadata.tags or [],
     )
 
-    # Build initial entity if provided
     initial_entity_dict = None
     if initial_entity:
       initial_entity_dict = {
@@ -129,7 +183,6 @@ class GraphClient:
       if initial_entity.sic_description:
         initial_entity_dict["sic_description"] = initial_entity.sic_description
 
-    # Create graph request
     graph_create = CreateGraphRequest(
       metadata=api_metadata,
       initial_entity=initial_entity_dict,
@@ -139,13 +192,11 @@ class GraphClient:
     if on_progress:
       on_progress(f"Creating graph: {metadata.graph_name}")
 
-    # Execute create request
     response = create_graph(client=client, body=graph_create)
 
     if not response.parsed:
       raise RuntimeError(f"Failed to create graph: {response.status_code}")
 
-    # Extract graph_id or operation_id
     if isinstance(response.parsed, dict):
       graph_id = response.parsed.get("graph_id")
       operation_id = response.parsed.get("operation_id")
@@ -153,20 +204,17 @@ class GraphClient:
       graph_id = getattr(response.parsed, "graph_id", None)
       operation_id = getattr(response.parsed, "operation_id", None)
 
-    # If graph_id returned immediately, we're done
     if graph_id:
       if on_progress:
         on_progress(f"Graph created: {graph_id}")
       return graph_id
 
-    # Otherwise, wait for operation to complete
     if not operation_id:
       raise RuntimeError("No graph_id or operation_id in response")
 
     if on_progress:
       on_progress(f"Graph creation queued (operation: {operation_id})")
 
-    # Try SSE first, fall back to polling
     if use_sse:
       try:
         return self._wait_with_sse(operation_id, timeout, on_progress)
@@ -175,10 +223,223 @@ class GraphClient:
         if on_progress:
           on_progress("SSE unavailable, using polling...")
 
-    # Fallback to polling
     return self._wait_with_polling(
       operation_id, timeout, poll_interval, on_progress, client
     )
+
+  # ---------------------------------------------------------------------------
+  # Graph info
+  # ---------------------------------------------------------------------------
+
+  def get_graph_info(self, graph_id: str) -> GraphInfo:
+    """
+    Get information about a graph.
+
+    Args:
+        graph_id: The graph ID
+
+    Returns:
+        GraphInfo with graph details
+    """
+    from ..api.graphs.get_graphs import sync_detailed as get_graphs
+
+    client = self._get_authenticated_client()
+    response = get_graphs(client=client)
+
+    if not response.parsed:
+      raise RuntimeError(f"Failed to get graphs: {response.status_code}")
+
+    data = response.parsed
+    graphs = None
+
+    if isinstance(data, dict):
+      graphs = data.get("graphs", [])
+    elif hasattr(data, "additional_properties"):
+      graphs = data.additional_properties.get("graphs", [])
+    elif hasattr(data, "graphs"):
+      graphs = data.graphs
+    else:
+      raise RuntimeError("Unexpected response format from get_graphs")
+
+    graph_data = None
+    for graph in graphs:
+      if isinstance(graph, dict):
+        if graph.get("graph_id") == graph_id or graph.get("id") == graph_id:
+          graph_data = graph
+          break
+      elif hasattr(graph, "graph_id"):
+        if graph.graph_id == graph_id or getattr(graph, "id", None) == graph_id:
+          graph_data = graph
+          break
+
+    if not graph_data:
+      raise ValueError(f"Graph not found: {graph_id}")
+
+    if isinstance(graph_data, dict):
+      return GraphInfo(
+        graph_id=graph_data.get("graph_id") or graph_data.get("id", graph_id),
+        graph_name=graph_data.get("graph_name") or graph_data.get("name", ""),
+        description=graph_data.get("description"),
+        schema_extensions=graph_data.get("schema_extensions"),
+        tags=graph_data.get("tags"),
+        created_at=graph_data.get("created_at"),
+        status=graph_data.get("status"),
+      )
+    else:
+      return GraphInfo(
+        graph_id=getattr(graph_data, "graph_id", None)
+        or getattr(graph_data, "id", graph_id),
+        graph_name=getattr(graph_data, "graph_name", None)
+        or getattr(graph_data, "name", ""),
+        description=getattr(graph_data, "description", None),
+        schema_extensions=getattr(graph_data, "schema_extensions", None),
+        tags=getattr(graph_data, "tags", None),
+        created_at=getattr(graph_data, "created_at", None),
+        status=getattr(graph_data, "status", None),
+      )
+
+  # ---------------------------------------------------------------------------
+  # Materialize
+  # ---------------------------------------------------------------------------
+
+  def materialize(
+    self,
+    graph_id: str,
+    options: Optional[MaterializationOptions] = None,
+  ) -> MaterializationResult:
+    """
+    Materialize graph from staging tables or extensions OLTP.
+
+    Submits a materialization job and monitors progress via SSE.
+    The operation runs asynchronously on the server but this method waits
+    for completion and returns the final result.
+
+    Args:
+        graph_id: Graph database identifier
+        options: Materialization options (ignore_errors, rebuild, force, timeout)
+
+    Returns:
+        MaterializationResult with detailed execution information
+    """
+    from ..api.graph_operations.op_materialize import (
+      sync_detailed as materialize_graph,
+    )
+
+    options = options or MaterializationOptions()
+
+    try:
+      if options.on_progress:
+        options.on_progress("Submitting materialization job...")
+
+      client = self._get_authenticated_client()
+
+      response = materialize_graph(
+        graph_id=graph_id,
+        client=client,
+        ignore_errors=options.ignore_errors,
+        rebuild=options.rebuild,
+        force=options.force,
+        materialize_embeddings=options.materialize_embeddings,
+      )
+
+      # Handle non-success status codes
+      if response.status_code not in (200, 202) or not response.parsed:
+        error_msg = f"Materialization failed: {response.status_code}"
+        if hasattr(response, "content"):
+          try:
+            error_data = json.loads(response.content)
+            error_msg = error_data.get("detail", error_msg)
+          except Exception:
+            pass
+
+        return MaterializationResult(
+          status="failed",
+          was_stale=False,
+          stale_reason=None,
+          tables_materialized=[],
+          total_rows=0,
+          execution_time_ms=0,
+          message=error_msg,
+          success=False,
+          error=error_msg,
+        )
+
+      # Get the operation_id from the envelope
+      result_data = response.parsed
+      operation_id = getattr(result_data, "operation_id", None)
+
+      if options.on_progress:
+        options.on_progress(f"Materialization queued (operation: {operation_id})")
+
+      # Monitor the operation via SSE until completion
+      def on_sse_progress(progress: OperationProgress):
+        if options.on_progress:
+          msg = progress.message
+          if progress.percentage is not None:
+            msg += f" ({progress.percentage:.0f}%)"
+          options.on_progress(msg)
+
+      monitor_options = MonitorOptions(
+        on_progress=on_sse_progress,
+        timeout=options.timeout,
+      )
+
+      op_result = self.operation_client.monitor_operation(operation_id, monitor_options)
+
+      if op_result.status.value == "completed":
+        sse_result = op_result.result or {}
+
+        if options.on_progress:
+          tables = sse_result.get("tables_materialized", [])
+          rows = sse_result.get("total_rows", 0)
+          time_ms = sse_result.get("execution_time_ms", 0)
+          options.on_progress(
+            f"Materialization complete: {len(tables)} tables, "
+            f"{rows:,} rows in {time_ms:.2f}ms"
+          )
+
+        return MaterializationResult(
+          status="success",
+          was_stale=sse_result.get("was_stale", False),
+          stale_reason=sse_result.get("stale_reason"),
+          tables_materialized=sse_result.get("tables_materialized", []),
+          total_rows=sse_result.get("total_rows", 0),
+          execution_time_ms=sse_result.get(
+            "execution_time_ms", op_result.execution_time_ms or 0
+          ),
+          message=sse_result.get("message", "Graph materialized successfully"),
+          success=True,
+        )
+      else:
+        return MaterializationResult(
+          status=op_result.status.value,
+          was_stale=False,
+          stale_reason=None,
+          tables_materialized=[],
+          total_rows=0,
+          execution_time_ms=op_result.execution_time_ms or 0,
+          message=op_result.error or f"Operation {op_result.status.value}",
+          success=False,
+          error=op_result.error,
+        )
+
+    except Exception as e:
+      logger.error(f"Materialization failed: {e}")
+      return MaterializationResult(
+        status="failed",
+        was_stale=False,
+        stale_reason=None,
+        tables_materialized=[],
+        total_rows=0,
+        execution_time_ms=0,
+        message=str(e),
+        success=False,
+        error=str(e),
+      )
+
+  # ---------------------------------------------------------------------------
+  # SSE / polling helpers (used by create_graph_and_wait)
+  # ---------------------------------------------------------------------------
 
   def _wait_with_sse(
     self,
@@ -186,21 +447,7 @@ class GraphClient:
     timeout: int,
     on_progress: Optional[Callable[[str], None]],
   ) -> str:
-    """
-    Wait for operation completion using SSE stream.
-
-    Args:
-        operation_id: Operation ID to monitor
-        timeout: Maximum time to wait in seconds
-        on_progress: Callback for progress updates
-
-    Returns:
-        graph_id when operation completes
-
-    Raises:
-        RuntimeError: If operation fails
-        TimeoutError: If operation times out
-    """
+    """Wait for operation completion using SSE stream."""
     stream_url = f"{self.base_url}/v1/operations/{operation_id}/stream"
     headers = {"X-API-Key": self.token, "Accept": "text/event-stream"}
 
@@ -214,14 +461,12 @@ class GraphClient:
         event_data = ""
 
         for line in response.iter_lines():
-          # Check timeout
           if time.time() - start_time > timeout:
             raise TimeoutError(f"Graph creation timed out after {timeout}s")
 
           line = line.strip()
 
           if not line:
-            # Empty line = end of event, process it
             if event_type and event_data:
               result = self._process_sse_event(event_type, event_data, on_progress)
               if result is not None:
@@ -234,7 +479,6 @@ class GraphClient:
             event_type = line[6:].strip()
           elif line.startswith("data:"):
             event_data = line[5:].strip()
-          # Ignore other lines (comments, id, retry, etc.)
 
     raise TimeoutError(f"SSE stream ended without completion after {timeout}s")
 
@@ -244,15 +488,7 @@ class GraphClient:
     event_data: str,
     on_progress: Optional[Callable[[str], None]],
   ) -> Optional[str]:
-    """
-    Process a single SSE event.
-
-    Returns:
-        graph_id if operation completed, None to continue waiting
-
-    Raises:
-        RuntimeError: If operation failed
-    """
+    """Process a single SSE event. Returns graph_id if completed."""
     try:
       data = json.loads(event_data)
     except json.JSONDecodeError:
@@ -288,7 +524,6 @@ class GraphClient:
       reason = data.get("reason", "Operation was cancelled")
       raise RuntimeError(f"Graph creation cancelled: {reason}")
 
-    # Ignore other event types (keepalive, etc.)
     return None
 
   def _wait_with_polling(
@@ -299,23 +534,7 @@ class GraphClient:
     on_progress: Optional[Callable[[str], None]],
     client: Any,
   ) -> str:
-    """
-    Wait for operation completion using polling.
-
-    Args:
-        operation_id: Operation ID to monitor
-        timeout: Maximum time to wait in seconds
-        poll_interval: Time between status checks
-        on_progress: Callback for progress updates
-        client: Authenticated HTTP client
-
-    Returns:
-        graph_id when operation completes
-
-    Raises:
-        RuntimeError: If operation fails
-        TimeoutError: If operation times out
-    """
+    """Wait for operation completion using polling."""
     from ..api.operations.get_operation_status import sync_detailed as get_status
 
     max_attempts = timeout // poll_interval
@@ -327,12 +546,10 @@ class GraphClient:
       if not status_response.parsed:
         continue
 
-      # Handle both dict and object responses
       status_data = status_response.parsed
       if isinstance(status_data, dict):
         status = status_data.get("status")
       else:
-        # Check for additional_properties first (common in generated clients)
         if hasattr(status_data, "additional_properties"):
           status = status_data.additional_properties.get("status")
         else:
@@ -342,7 +559,6 @@ class GraphClient:
         on_progress(f"Status: {status} (attempt {attempt + 1}/{max_attempts})")
 
       if status == "completed":
-        # Extract graph_id from result
         if isinstance(status_data, dict):
           result = status_data.get("result", {})
         elif hasattr(status_data, "additional_properties"):
@@ -363,7 +579,6 @@ class GraphClient:
           raise RuntimeError("Operation completed but no graph_id in result")
 
       elif status == "failed":
-        # Extract error message
         if isinstance(status_data, dict):
           error = (
             status_data.get("error") or status_data.get("message") or "Unknown error"
@@ -377,104 +592,12 @@ class GraphClient:
 
     raise TimeoutError(f"Graph creation timed out after {timeout}s")
 
-  def get_graph_info(self, graph_id: str) -> GraphInfo:
-    """
-    Get information about a graph.
-
-    Args:
-        graph_id: The graph ID
-
-    Returns:
-        GraphInfo with graph details
-
-    Raises:
-        ValueError: If graph not found
-    """
-    from ..client import AuthenticatedClient
-    from ..api.graphs.get_graphs import sync_detailed as get_graphs
-
-    if not self.token:
-      raise ValueError("No API key provided. Set X-API-Key in headers.")
-
-    client = AuthenticatedClient(
-      base_url=self.base_url,
-      token=self.token,
-      prefix="",
-      auth_header_name="X-API-Key",
-      headers=self.headers,
-    )
-
-    # Use get_graphs and filter for the specific graph
-    response = get_graphs(client=client)
-
-    if not response.parsed:
-      raise RuntimeError(f"Failed to get graphs: {response.status_code}")
-
-    data = response.parsed
-    graphs = None
-
-    # Extract graphs list from response
-    if isinstance(data, dict):
-      graphs = data.get("graphs", [])
-    elif hasattr(data, "additional_properties"):
-      graphs = data.additional_properties.get("graphs", [])
-    elif hasattr(data, "graphs"):
-      graphs = data.graphs
-    else:
-      raise RuntimeError("Unexpected response format from get_graphs")
-
-    # Find the specific graph by ID
-    graph_data = None
-    for graph in graphs:
-      if isinstance(graph, dict):
-        if graph.get("graph_id") == graph_id or graph.get("id") == graph_id:
-          graph_data = graph
-          break
-      elif hasattr(graph, "graph_id"):
-        if graph.graph_id == graph_id or getattr(graph, "id", None) == graph_id:
-          graph_data = graph
-          break
-
-    if not graph_data:
-      raise ValueError(f"Graph not found: {graph_id}")
-
-    # Build GraphInfo from the found graph
-    if isinstance(graph_data, dict):
-      return GraphInfo(
-        graph_id=graph_data.get("graph_id") or graph_data.get("id", graph_id),
-        graph_name=graph_data.get("graph_name") or graph_data.get("name", ""),
-        description=graph_data.get("description"),
-        schema_extensions=graph_data.get("schema_extensions"),
-        tags=graph_data.get("tags"),
-        created_at=graph_data.get("created_at"),
-        status=graph_data.get("status"),
-      )
-    else:
-      return GraphInfo(
-        graph_id=getattr(graph_data, "graph_id", None)
-        or getattr(graph_data, "id", graph_id),
-        graph_name=getattr(graph_data, "graph_name", None)
-        or getattr(graph_data, "name", ""),
-        description=getattr(graph_data, "description", None),
-        schema_extensions=getattr(graph_data, "schema_extensions", None),
-        tags=getattr(graph_data, "tags", None),
-        created_at=getattr(graph_data, "created_at", None),
-        status=getattr(graph_data, "status", None),
-      )
-
   def delete_graph(self, graph_id: str) -> None:
     """
     Delete a graph.
 
     Note: This method is not yet available as the delete_graph endpoint
-    is not included in the generated SDK. This will be implemented when
-    the endpoint is added to the API specification.
-
-    Args:
-        graph_id: The graph ID to delete
-
-    Raises:
-        NotImplementedError: This feature is not yet available
+    is not included in the generated SDK.
     """
     raise NotImplementedError(
       "Graph deletion is not yet available. "
@@ -482,5 +605,5 @@ class GraphClient:
     )
 
   def close(self):
-    """Clean up resources (placeholder for consistency)"""
+    """Clean up resources."""
     pass

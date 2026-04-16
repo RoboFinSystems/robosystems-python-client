@@ -1,78 +1,69 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="DeleteSubgraphRequest")
+T = TypeVar("T", bound="DeleteSubgraphOp")
 
 
 @_attrs_define
-class DeleteSubgraphRequest:
-  """Request model for deleting a subgraph.
+class DeleteSubgraphOp:
+  """Body for the delete-subgraph operation.
 
   Attributes:
-      force (bool | Unset): Force deletion even if subgraph contains data Default: False.
-      backup_first (bool | Unset): Create a backup before deletion Default: True.
-      backup_location (None | str | Unset): S3 location for backup (uses default if not specified)
+      subgraph_name (str): Subgraph name to delete (e.g., 'dev', 'staging')
+      force (bool | Unset): Delete even if subgraph contains data Default: False.
+      backup_first (bool | Unset): Create a backup before deleting Default: True.
   """
 
+  subgraph_name: str
   force: bool | Unset = False
   backup_first: bool | Unset = True
-  backup_location: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    subgraph_name = self.subgraph_name
+
     force = self.force
 
     backup_first = self.backup_first
 
-    backup_location: None | str | Unset
-    if isinstance(self.backup_location, Unset):
-      backup_location = UNSET
-    else:
-      backup_location = self.backup_location
-
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update({})
+    field_dict.update(
+      {
+        "subgraph_name": subgraph_name,
+      }
+    )
     if force is not UNSET:
       field_dict["force"] = force
     if backup_first is not UNSET:
       field_dict["backup_first"] = backup_first
-    if backup_location is not UNSET:
-      field_dict["backup_location"] = backup_location
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
+    subgraph_name = d.pop("subgraph_name")
+
     force = d.pop("force", UNSET)
 
     backup_first = d.pop("backup_first", UNSET)
 
-    def _parse_backup_location(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    backup_location = _parse_backup_location(d.pop("backup_location", UNSET))
-
-    delete_subgraph_request = cls(
+    delete_subgraph_op = cls(
+      subgraph_name=subgraph_name,
       force=force,
       backup_first=backup_first,
-      backup_location=backup_location,
     )
 
-    delete_subgraph_request.additional_properties = d
-    return delete_subgraph_request
+    delete_subgraph_op.additional_properties = d
+    return delete_subgraph_op
 
   @property
   def additional_keys(self) -> list[str]:

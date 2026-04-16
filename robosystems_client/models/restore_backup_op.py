@@ -8,30 +8,38 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="BackupRestoreRequest")
+T = TypeVar("T", bound="RestoreBackupOp")
 
 
 @_attrs_define
-class BackupRestoreRequest:
-  """Request model for restoring from a backup.
+class RestoreBackupOp:
+  """Body for the restore-backup operation.
 
   Attributes:
+      backup_id (str): Backup identifier to restore from
       create_system_backup (bool | Unset): Create a system backup of existing database before restore Default: True.
       verify_after_restore (bool | Unset): Verify database integrity after restore Default: True.
   """
 
+  backup_id: str
   create_system_backup: bool | Unset = True
   verify_after_restore: bool | Unset = True
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    backup_id = self.backup_id
+
     create_system_backup = self.create_system_backup
 
     verify_after_restore = self.verify_after_restore
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update({})
+    field_dict.update(
+      {
+        "backup_id": backup_id,
+      }
+    )
     if create_system_backup is not UNSET:
       field_dict["create_system_backup"] = create_system_backup
     if verify_after_restore is not UNSET:
@@ -42,17 +50,20 @@ class BackupRestoreRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
+    backup_id = d.pop("backup_id")
+
     create_system_backup = d.pop("create_system_backup", UNSET)
 
     verify_after_restore = d.pop("verify_after_restore", UNSET)
 
-    backup_restore_request = cls(
+    restore_backup_op = cls(
+      backup_id=backup_id,
       create_system_backup=create_system_backup,
       verify_after_restore=verify_after_restore,
     )
 
-    backup_restore_request.additional_properties = d
-    return backup_restore_request
+    restore_backup_op.additional_properties = d
+    return restore_backup_op
 
   @property
   def additional_keys(self) -> list[str]:

@@ -16,8 +16,8 @@ schedules, and period close.
   `envelope.result` and returns either a dict or, for async dispatches
   (e.g. auto-map, create-report), a small ack dict.
 
-Reports + publish lists + statements live on `ReportClient` — they
-belong to the same backend surface but deserve their own facade.
+Reports, statements, and publish lists are included on this client —
+same backend surface as the ledger operations.
 """
 
 from __future__ import annotations
@@ -85,6 +85,33 @@ from ..api.extensions_robo_ledger.op_update_structure import (
 )
 from ..api.extensions_robo_ledger.op_update_taxonomy import (
   sync_detailed as op_update_taxonomy,
+)
+from ..api.extensions_robo_ledger.op_add_publish_list_members import (
+  sync_detailed as op_add_publish_list_members,
+)
+from ..api.extensions_robo_ledger.op_create_publish_list import (
+  sync_detailed as op_create_publish_list,
+)
+from ..api.extensions_robo_ledger.op_create_report import (
+  sync_detailed as op_create_report,
+)
+from ..api.extensions_robo_ledger.op_delete_publish_list import (
+  sync_detailed as op_delete_publish_list,
+)
+from ..api.extensions_robo_ledger.op_delete_report import (
+  sync_detailed as op_delete_report,
+)
+from ..api.extensions_robo_ledger.op_regenerate_report import (
+  sync_detailed as op_regenerate_report,
+)
+from ..api.extensions_robo_ledger.op_remove_publish_list_member import (
+  sync_detailed as op_remove_publish_list_member,
+)
+from ..api.extensions_robo_ledger.op_share_report import (
+  sync_detailed as op_share_report,
+)
+from ..api.extensions_robo_ledger.op_update_publish_list import (
+  sync_detailed as op_update_publish_list,
 )
 from ..api.extensions_robo_ledger.op_create_associations import (
   sync_detailed as op_create_associations,
@@ -174,6 +201,19 @@ from ..graphql.queries.ledger import (
   parse_trial_balance,
   parse_unmapped_elements,
 )
+from ..graphql.queries.ledger import (
+  GET_PUBLISH_LIST_QUERY,
+  GET_REPORT_QUERY,
+  GET_STATEMENT_QUERY,
+  LIST_PUBLISH_LISTS_QUERY,
+  LIST_REPORTS_QUERY,
+  parse_publish_list,
+  parse_publish_lists,
+  parse_report,
+  parse_reports,
+  parse_statement,
+)
+from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
 from ..models.bulk_association_item import BulkAssociationItem
 from ..models.bulk_create_associations_request import BulkCreateAssociationsRequest
@@ -214,7 +254,17 @@ from ..models.delete_mapping_association_operation import (
 )
 from ..models.initialize_ledger_request import InitializeLedgerRequest
 from ..models.manual_line_item_request import ManualLineItemRequest
+from ..models.create_publish_list_request import CreatePublishListRequest
+from ..models.create_report_request import CreateReportRequest
+from ..models.delete_publish_list_operation import DeletePublishListOperation
+from ..models.delete_report_operation import DeleteReportOperation
 from ..models.operation_envelope import OperationEnvelope
+from ..models.regenerate_report_operation import RegenerateReportOperation
+from ..models.remove_publish_list_member_operation import (
+  RemovePublishListMemberOperation,
+)
+from ..models.share_report_operation import ShareReportOperation
+from ..models.update_publish_list_operation import UpdatePublishListOperation
 from ..models.reopen_period_operation import ReopenPeriodOperation
 from ..models.set_close_target_operation import SetCloseTargetOperation
 from ..models.truncate_schedule_operation import TruncateScheduleOperation
@@ -1142,3 +1192,175 @@ class LedgerClient:
     response = op_reopen_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Reopen period", response)
     return envelope.result or {}
+
+  # ── Reports ─────────────────────────────────────────────────────────
+
+  def create_report(
+    self,
+    graph_id: str,
+    name: str,
+    mapping_id: str,
+    period_start: str,
+    period_end: str,
+    taxonomy_id: str = "tax_usgaap_reporting",
+    period_type: str = "quarterly",
+    comparative: bool = True,
+  ) -> dict[str, Any]:
+    """Kick off report creation (async). Returns an operation ack."""
+    body = CreateReportRequest(
+      name=name,
+      mapping_id=mapping_id,
+      period_start=period_start,
+      period_end=period_end,
+      taxonomy_id=taxonomy_id,
+      period_type=period_type,
+      comparative=comparative,
+    )
+    response = op_create_report(graph_id=graph_id, body=body, client=self._get_client())
+    envelope = self._call_op("Create report", response)
+    return {"operation_id": envelope.operation_id, "status": envelope.status}
+
+  def list_reports(self, graph_id: str) -> list[dict[str, Any]]:
+    """List all reports for a graph (includes received shared reports)."""
+    data = self._query(graph_id, LIST_REPORTS_QUERY)
+    return parse_reports(data)
+
+  def get_report(self, graph_id: str, report_id: str) -> dict[str, Any] | None:
+    """Get a single report with its period list + available structures."""
+    data = self._query(graph_id, GET_REPORT_QUERY, {"reportId": report_id})
+    return parse_report(data)
+
+  def get_statement(
+    self, graph_id: str, report_id: str, structure_type: str
+  ) -> dict[str, Any] | None:
+    """Render a financial statement — facts viewed through a structure.
+
+    `structure_type`: income_statement, balance_sheet, cash_flow_statement, ...
+    """
+    data = self._query(
+      graph_id,
+      GET_STATEMENT_QUERY,
+      {"reportId": report_id, "structureType": structure_type},
+    )
+    return parse_statement(data)
+
+  def regenerate_report(
+    self,
+    graph_id: str,
+    report_id: str,
+    period_start: str | None = None,
+    period_end: str | None = None,
+  ) -> dict[str, Any]:
+    """Regenerate an existing report (async). Returns an operation ack."""
+    body = RegenerateReportOperation(
+      report_id=report_id,
+      period_start=period_start if period_start is not None else UNSET,
+      period_end=period_end if period_end is not None else UNSET,
+    )
+    response = op_regenerate_report(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Regenerate report", response)
+    return {"operation_id": envelope.operation_id, "status": envelope.status}
+
+  def delete_report(self, graph_id: str, report_id: str) -> None:
+    """Delete a report and its generated facts."""
+    body = DeleteReportOperation(report_id=report_id)
+    response = op_delete_report(graph_id=graph_id, body=body, client=self._get_client())
+    self._call_op("Delete report", response)
+
+  def share_report(
+    self, graph_id: str, report_id: str, publish_list_id: str
+  ) -> dict[str, Any]:
+    """Share a published report to every member of a publish list (async)."""
+    body = ShareReportOperation(report_id=report_id, publish_list_id=publish_list_id)
+    response = op_share_report(graph_id=graph_id, body=body, client=self._get_client())
+    envelope = self._call_op("Share report", response)
+    return {"operation_id": envelope.operation_id, "status": envelope.status}
+
+  def is_shared_report(self, report: dict[str, Any] | Any) -> bool:
+    """Check if a report was received via sharing (vs locally created)."""
+    if isinstance(report, dict):
+      return report.get("source_graph_id") is not None
+    return getattr(report, "source_graph_id", None) is not None
+
+  # ── Publish Lists ────────────────────────────────────────────────────
+
+  def list_publish_lists(
+    self, graph_id: str, limit: int = 100, offset: int = 0
+  ) -> dict[str, Any] | None:
+    """List publish lists with pagination."""
+    data = self._query(
+      graph_id, LIST_PUBLISH_LISTS_QUERY, {"limit": limit, "offset": offset}
+    )
+    return parse_publish_lists(data)
+
+  def get_publish_list(self, graph_id: str, list_id: str) -> dict[str, Any] | None:
+    """Get a single publish list with its full member list."""
+    data = self._query(graph_id, GET_PUBLISH_LIST_QUERY, {"listId": list_id})
+    return parse_publish_list(data)
+
+  def create_publish_list(
+    self, graph_id: str, name: str, description: str | None = None
+  ) -> dict[str, Any]:
+    """Create a new publish list."""
+    body = CreatePublishListRequest(
+      name=name,
+      description=description if description is not None else UNSET,
+    )
+    response = op_create_publish_list(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Create publish list", response)
+    return envelope.result or {}
+
+  def update_publish_list(
+    self,
+    graph_id: str,
+    list_id: str,
+    name: str | None = None,
+    description: str | None = None,
+  ) -> dict[str, Any]:
+    """Update a publish list's name or description."""
+    body = UpdatePublishListOperation(
+      list_id=list_id,
+      name=name if name is not None else UNSET,
+      description=description if description is not None else UNSET,
+    )
+    response = op_update_publish_list(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Update publish list", response)
+    return envelope.result or {}
+
+  def delete_publish_list(self, graph_id: str, list_id: str) -> None:
+    """Delete a publish list."""
+    body = DeletePublishListOperation(list_id=list_id)
+    response = op_delete_publish_list(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    self._call_op("Delete publish list", response)
+
+  def add_publish_list_members(
+    self, graph_id: str, list_id: str, target_graph_ids: list[str]
+  ) -> dict[str, Any]:
+    """Add target graphs as members of a publish list."""
+    body = AddPublishListMembersOperation(
+      list_id=list_id, target_graph_ids=target_graph_ids
+    )
+    response = op_add_publish_list_members(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Add publish list members", response)
+    return envelope.result or {}
+
+  def remove_publish_list_member(
+    self, graph_id: str, list_id: str, member_id: str
+  ) -> dict[str, Any]:
+    """Remove a single member from a publish list."""
+    body = RemovePublishListMemberOperation(list_id=list_id, member_id=member_id)
+    response = op_remove_publish_list_member(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Remove publish list member", response)
+    return envelope.result if envelope.result is not None else {"deleted": True}

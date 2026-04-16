@@ -5,7 +5,6 @@ from robosystems_client.clients import (
   RoboSystemsClients,
   RoboSystemsClientConfig,
   FileClient,
-  MaterializationClient,
   TableClient,
   QueryClient,
   OperationClient,
@@ -25,7 +24,6 @@ class TestRoboSystemsClients:
     assert isinstance(extensions.query, QueryClient)
     assert isinstance(extensions.operations, OperationClient)
     assert isinstance(extensions.files, FileClient)
-    assert isinstance(extensions.materialization, MaterializationClient)
     assert isinstance(extensions.tables, TableClient)
     assert isinstance(extensions.graphs, GraphClient)
 
@@ -121,7 +119,7 @@ class TestRoboSystemsClients:
     extensions.close()
 
   def test_materialization_client_receives_config(self):
-    """Test that MaterializationClient receives proper config."""
+    """Test that GraphClient (which handles materialization) receives proper config."""
     config = RoboSystemsClientConfig(
       base_url="https://api.robosystems.ai",
       headers={"X-API-Key": "test-token"},
@@ -129,8 +127,8 @@ class TestRoboSystemsClients:
 
     extensions = RoboSystemsClients(config)
 
-    assert extensions.materialization.base_url == "https://api.robosystems.ai"
-    assert "X-API-Key" in extensions.materialization.headers
+    assert extensions.graphs.base_url == "https://api.robosystems.ai"
+    assert "X-API-Key" in extensions.graphs.headers
 
     extensions.close()
 

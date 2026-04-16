@@ -11,12 +11,10 @@ from .agent_client import AgentClient
 from .operation_client import OperationClient
 from .file_client import FileClient
 from .document_client import DocumentClient
-from .materialization_client import MaterializationClient
 from .table_client import TableClient
 from .graph_client import GraphClient
 from .investor_client import InvestorClient
 from .ledger_client import LedgerClient
-from .report_client import ReportClient
 from .sse_client import SSEClient
 
 
@@ -70,13 +68,12 @@ class RoboSystemsClients:
     self.agent = AgentClient(self.config)
     self.operations = OperationClient(self.config)
     self.files = FileClient(self.config)
-    self.materialization = MaterializationClient(self.config)
     self.tables = TableClient(self.config)
     self.documents = DocumentClient(self.config)
     self.graphs = GraphClient(self.config)
     self.ledger = LedgerClient(self.config)
     self.investor = InvestorClient(self.config)
-    self.reports = ReportClient(self.config)
+    self.reports = self.ledger  # backward compat alias
 
   def monitor_operation(
     self, operation_id: str, on_progress: Optional[Callable] = None
@@ -108,8 +105,6 @@ class RoboSystemsClients:
     self.operations.close_all()
     if hasattr(self.files, "close"):
       self.files.close()
-    if hasattr(self.materialization, "close"):
-      self.materialization.close()
     if hasattr(self.tables, "close"):
       self.tables.close()
     if hasattr(self.documents, "close"):
