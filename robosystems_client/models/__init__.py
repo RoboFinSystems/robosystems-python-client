@@ -102,6 +102,8 @@ from .create_subgraph_request import CreateSubgraphRequest
 from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
 from .create_taxonomy_request import CreateTaxonomyRequest
 from .create_taxonomy_request_taxonomy_type import CreateTaxonomyRequestTaxonomyType
+from .create_transaction_request import CreateTransactionRequest
+from .create_transaction_request_status import CreateTransactionRequestStatus
 from .create_view_request import CreateViewRequest
 from .credit_limits import CreditLimits
 from .credit_summary import CreditSummary
@@ -465,6 +467,8 @@ __all__ = (
   "CreateSubgraphRequestMetadataType0",
   "CreateTaxonomyRequest",
   "CreateTaxonomyRequestTaxonomyType",
+  "CreateTransactionRequest",
+  "CreateTransactionRequestStatus",
   "CreateViewRequest",
   "CreditLimits",
   "CreditSummary",

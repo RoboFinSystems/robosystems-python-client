@@ -122,6 +122,9 @@ from ..api.extensions_robo_ledger.op_create_element import (
 from ..api.extensions_robo_ledger.op_create_journal_entry import (
   sync_detailed as op_create_journal_entry,
 )
+from ..api.extensions_robo_ledger.op_create_transaction import (
+  sync_detailed as op_create_transaction,
+)
 from ..api.extensions_robo_ledger.op_link_entity_taxonomy import (
   sync_detailed as op_link_entity_taxonomy,
 )
@@ -219,6 +222,7 @@ from ..models.bulk_association_item import BulkAssociationItem
 from ..models.bulk_create_associations_request import BulkCreateAssociationsRequest
 from ..models.create_element_request import CreateElementRequest
 from ..models.create_journal_entry_request import CreateJournalEntryRequest
+from ..models.create_transaction_request import CreateTransactionRequest
 from ..models.delete_association_request import DeleteAssociationRequest
 from ..models.delete_element_request import DeleteElementRequest
 from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
@@ -435,6 +439,63 @@ class LedgerClient:
     return parse_account_rollups(data)
 
   # ── Transactions ────────────────────────────────────────────────────
+
+  def create_transaction(
+    self,
+    graph_id: str,
+    *,
+    type: str,  # noqa: A002
+    date: str,
+    amount: int,
+    currency: str = "USD",
+    description: str | None = None,
+    merchant_name: str | None = None,
+    reference_number: str | None = None,
+    number: str | None = None,
+    category: str | None = None,
+    due_date: str | None = None,
+    status: str = "pending",
+    idempotency_key: str | None = None,
+  ) -> dict[str, Any]:
+    """Create a standalone business-event Transaction without entries.
+
+    Returns a ``transaction_id`` that can be passed to
+    ``create_journal_entry`` to attach one or more journal entries to
+    this event. Useful when a single event (invoice, payment, deposit)
+    produces multiple entries over its lifecycle.
+
+    ``amount`` is in minor currency units (cents).
+    ``type`` is free-form: invoice, payment, bill, expense, deposit,
+    transfer, journal_entry, etc.
+    """
+    body_dict: dict[str, Any] = {
+      "type": type,
+      "date": date,
+      "amount": amount,
+      "currency": currency,
+      "status": status,
+    }
+    if description is not None:
+      body_dict["description"] = description
+    if merchant_name is not None:
+      body_dict["merchant_name"] = merchant_name
+    if reference_number is not None:
+      body_dict["reference_number"] = reference_number
+    if number is not None:
+      body_dict["number"] = number
+    if category is not None:
+      body_dict["category"] = category
+    if due_date is not None:
+      body_dict["due_date"] = due_date
+    body = CreateTransactionRequest.from_dict(body_dict)
+    response = op_create_transaction(
+      graph_id=graph_id,
+      body=body,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Create transaction", response)
+    return envelope.result or {}
 
   def list_transactions(
     self,
