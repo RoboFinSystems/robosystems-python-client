@@ -36,6 +36,16 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -50,6 +60,11 @@ def _parse_response(
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -81,18 +96,8 @@ def sync_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Delete Connection
 
-   Delete a data connection and clean up related resources.
-
-  This operation:
-  - Removes the connection configuration
-  - Preserves any imported data in the graph
-  - Performs provider-specific cleanup
-  - Revokes stored credentials
-
-  Note:
-  This operation is included - no credit consumption required.
-
-  Only users with admin role can delete connections.
+   Removes the connection and revokes credentials. Imported data is preserved in the graph. Requires
+  admin role.
 
   Args:
       graph_id (str):
@@ -126,18 +131,8 @@ def sync(
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Delete Connection
 
-   Delete a data connection and clean up related resources.
-
-  This operation:
-  - Removes the connection configuration
-  - Preserves any imported data in the graph
-  - Performs provider-specific cleanup
-  - Revokes stored credentials
-
-  Note:
-  This operation is included - no credit consumption required.
-
-  Only users with admin role can delete connections.
+   Removes the connection and revokes credentials. Imported data is preserved in the graph. Requires
+  admin role.
 
   Args:
       graph_id (str):
@@ -166,18 +161,8 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Delete Connection
 
-   Delete a data connection and clean up related resources.
-
-  This operation:
-  - Removes the connection configuration
-  - Preserves any imported data in the graph
-  - Performs provider-specific cleanup
-  - Revokes stored credentials
-
-  Note:
-  This operation is included - no credit consumption required.
-
-  Only users with admin role can delete connections.
+   Removes the connection and revokes credentials. Imported data is preserved in the graph. Requires
+  admin role.
 
   Args:
       graph_id (str):
@@ -209,18 +194,8 @@ async def asyncio(
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Delete Connection
 
-   Delete a data connection and clean up related resources.
-
-  This operation:
-  - Removes the connection configuration
-  - Preserves any imported data in the graph
-  - Performs provider-specific cleanup
-  - Revokes stored credentials
-
-  Note:
-  This operation is included - no credit consumption required.
-
-  Only users with admin role can delete connections.
+   Removes the connection and revokes credentials. Imported data is preserved in the graph. Requires
+  admin role.
 
   Args:
       graph_id (str):

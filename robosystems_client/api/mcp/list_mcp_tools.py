@@ -34,15 +34,35 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
 
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -73,27 +93,8 @@ def sync_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | MCPToolsResponse]:
   """List MCP Tools
 
-   Get available Model Context Protocol tools for graph analysis.
-
-  This endpoint returns a comprehensive list of MCP tools optimized for AI agents:
-  - Tool schemas with detailed parameter documentation
-  - Context-aware descriptions based on graph type
-  - Capability indicators for streaming and progress
-
-  The tool list is customized based on:
-  - Graph type (shared repository vs user graph)
-  - User permissions and subscription tier
-  - Available graph capabilities for the selected graph
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  The returned tool list is identical for parent graphs and subgraphs, as all
-  MCP tools work uniformly across graph boundaries.
-
-  **Note:**
-  MCP tool listing is included - no credit consumption required.
+   Returns tool schemas with capability hints (streaming, caching, timeouts) per tool. Tool list is
+  context-aware by graph type; identical for parent graphs and subgraphs.
 
   Args:
       graph_id (str):
@@ -124,27 +125,8 @@ def sync(
 ) -> ErrorResponse | HTTPValidationError | MCPToolsResponse | None:
   """List MCP Tools
 
-   Get available Model Context Protocol tools for graph analysis.
-
-  This endpoint returns a comprehensive list of MCP tools optimized for AI agents:
-  - Tool schemas with detailed parameter documentation
-  - Context-aware descriptions based on graph type
-  - Capability indicators for streaming and progress
-
-  The tool list is customized based on:
-  - Graph type (shared repository vs user graph)
-  - User permissions and subscription tier
-  - Available graph capabilities for the selected graph
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  The returned tool list is identical for parent graphs and subgraphs, as all
-  MCP tools work uniformly across graph boundaries.
-
-  **Note:**
-  MCP tool listing is included - no credit consumption required.
+   Returns tool schemas with capability hints (streaming, caching, timeouts) per tool. Tool list is
+  context-aware by graph type; identical for parent graphs and subgraphs.
 
   Args:
       graph_id (str):
@@ -170,27 +152,8 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | MCPToolsResponse]:
   """List MCP Tools
 
-   Get available Model Context Protocol tools for graph analysis.
-
-  This endpoint returns a comprehensive list of MCP tools optimized for AI agents:
-  - Tool schemas with detailed parameter documentation
-  - Context-aware descriptions based on graph type
-  - Capability indicators for streaming and progress
-
-  The tool list is customized based on:
-  - Graph type (shared repository vs user graph)
-  - User permissions and subscription tier
-  - Available graph capabilities for the selected graph
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  The returned tool list is identical for parent graphs and subgraphs, as all
-  MCP tools work uniformly across graph boundaries.
-
-  **Note:**
-  MCP tool listing is included - no credit consumption required.
+   Returns tool schemas with capability hints (streaming, caching, timeouts) per tool. Tool list is
+  context-aware by graph type; identical for parent graphs and subgraphs.
 
   Args:
       graph_id (str):
@@ -219,27 +182,8 @@ async def asyncio(
 ) -> ErrorResponse | HTTPValidationError | MCPToolsResponse | None:
   """List MCP Tools
 
-   Get available Model Context Protocol tools for graph analysis.
-
-  This endpoint returns a comprehensive list of MCP tools optimized for AI agents:
-  - Tool schemas with detailed parameter documentation
-  - Context-aware descriptions based on graph type
-  - Capability indicators for streaming and progress
-
-  The tool list is customized based on:
-  - Graph type (shared repository vs user graph)
-  - User permissions and subscription tier
-  - Available graph capabilities for the selected graph
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  The returned tool list is identical for parent graphs and subgraphs, as all
-  MCP tools work uniformly across graph boundaries.
-
-  **Note:**
-  MCP tool listing is included - no credit consumption required.
+   Returns tool schemas with capability hints (streaming, caching, timeouts) per tool. Tool list is
+  context-aware by graph type; identical for parent graphs and subgraphs.
 
   Args:
       graph_id (str):

@@ -48,6 +48,11 @@ def _parse_response(
 
     return response_400
 
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -62,6 +67,11 @@ def _parse_response(
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -94,25 +104,9 @@ def sync_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError]:
   """OAuth Callback
 
-   Handle OAuth callback from provider after user authorization.
-
-  This endpoint completes the OAuth flow:
-  1. Validates the OAuth state parameter
-  2. Exchanges authorization code for access tokens
-  3. Stores tokens securely
-  4. Updates connection status
-  5. Optionally triggers initial sync
-
-  Supported providers:
-  - **QuickBooks**: Accounting data integration
-
-  Security measures:
-  - State validation prevents session hijacking
-  - User context is verified
-  - Tokens are encrypted before storage
-  - Full audit trail is maintained
-
-  No credits are consumed for OAuth callbacks.
+   Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
+  tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
+  directly.
 
   Args:
       graph_id (str):
@@ -149,25 +143,9 @@ def sync(
 ) -> Any | ErrorResponse | HTTPValidationError | None:
   """OAuth Callback
 
-   Handle OAuth callback from provider after user authorization.
-
-  This endpoint completes the OAuth flow:
-  1. Validates the OAuth state parameter
-  2. Exchanges authorization code for access tokens
-  3. Stores tokens securely
-  4. Updates connection status
-  5. Optionally triggers initial sync
-
-  Supported providers:
-  - **QuickBooks**: Accounting data integration
-
-  Security measures:
-  - State validation prevents session hijacking
-  - User context is verified
-  - Tokens are encrypted before storage
-  - Full audit trail is maintained
-
-  No credits are consumed for OAuth callbacks.
+   Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
+  tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
+  directly.
 
   Args:
       graph_id (str):
@@ -199,25 +177,9 @@ async def asyncio_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError]:
   """OAuth Callback
 
-   Handle OAuth callback from provider after user authorization.
-
-  This endpoint completes the OAuth flow:
-  1. Validates the OAuth state parameter
-  2. Exchanges authorization code for access tokens
-  3. Stores tokens securely
-  4. Updates connection status
-  5. Optionally triggers initial sync
-
-  Supported providers:
-  - **QuickBooks**: Accounting data integration
-
-  Security measures:
-  - State validation prevents session hijacking
-  - User context is verified
-  - Tokens are encrypted before storage
-  - Full audit trail is maintained
-
-  No credits are consumed for OAuth callbacks.
+   Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
+  tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
+  directly.
 
   Args:
       graph_id (str):
@@ -252,25 +214,9 @@ async def asyncio(
 ) -> Any | ErrorResponse | HTTPValidationError | None:
   """OAuth Callback
 
-   Handle OAuth callback from provider after user authorization.
-
-  This endpoint completes the OAuth flow:
-  1. Validates the OAuth state parameter
-  2. Exchanges authorization code for access tokens
-  3. Stores tokens securely
-  4. Updates connection status
-  5. Optionally triggers initial sync
-
-  Supported providers:
-  - **QuickBooks**: Accounting data integration
-
-  Security measures:
-  - State validation prevents session hijacking
-  - User context is verified
-  - Tokens are encrypted before storage
-  - Full audit trail is maintained
-
-  No credits are consumed for OAuth callbacks.
+   Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
+  tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
+  directly.
 
   Args:
       graph_id (str):

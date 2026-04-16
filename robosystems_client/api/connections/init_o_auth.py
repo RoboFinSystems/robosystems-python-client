@@ -6,6 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.o_auth_init_request import OAuthInitRequest
 from ...models.o_auth_init_response import OAuthInitResponse
@@ -36,16 +37,46 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> HTTPValidationError | OAuthInitResponse | None:
+) -> ErrorResponse | HTTPValidationError | OAuthInitResponse | None:
   if response.status_code == 200:
     response_200 = OAuthInitResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -55,7 +86,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[HTTPValidationError | OAuthInitResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | OAuthInitResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -69,13 +100,8 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-) -> Response[HTTPValidationError | OAuthInitResponse]:
-  """Init Oauth
-
-   Initialize OAuth flow for a connection.
-
-  This generates an authorization URL that the frontend should redirect the user to.
-  Currently supports: QuickBooks
+) -> Response[ErrorResponse | HTTPValidationError | OAuthInitResponse]:
+  """Initialize OAuth Flow
 
   Args:
       graph_id (str):
@@ -86,7 +112,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | OAuthInitResponse]
+      Response[ErrorResponse | HTTPValidationError | OAuthInitResponse]
   """
 
   kwargs = _get_kwargs(
@@ -106,13 +132,8 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-) -> HTTPValidationError | OAuthInitResponse | None:
-  """Init Oauth
-
-   Initialize OAuth flow for a connection.
-
-  This generates an authorization URL that the frontend should redirect the user to.
-  Currently supports: QuickBooks
+) -> ErrorResponse | HTTPValidationError | OAuthInitResponse | None:
+  """Initialize OAuth Flow
 
   Args:
       graph_id (str):
@@ -123,7 +144,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | OAuthInitResponse
+      ErrorResponse | HTTPValidationError | OAuthInitResponse
   """
 
   return sync_detailed(
@@ -138,13 +159,8 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-) -> Response[HTTPValidationError | OAuthInitResponse]:
-  """Init Oauth
-
-   Initialize OAuth flow for a connection.
-
-  This generates an authorization URL that the frontend should redirect the user to.
-  Currently supports: QuickBooks
+) -> Response[ErrorResponse | HTTPValidationError | OAuthInitResponse]:
+  """Initialize OAuth Flow
 
   Args:
       graph_id (str):
@@ -155,7 +171,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | OAuthInitResponse]
+      Response[ErrorResponse | HTTPValidationError | OAuthInitResponse]
   """
 
   kwargs = _get_kwargs(
@@ -173,13 +189,8 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: OAuthInitRequest,
-) -> HTTPValidationError | OAuthInitResponse | None:
-  """Init Oauth
-
-   Initialize OAuth flow for a connection.
-
-  This generates an authorization URL that the frontend should redirect the user to.
-  Currently supports: QuickBooks
+) -> ErrorResponse | HTTPValidationError | OAuthInitResponse | None:
+  """Initialize OAuth Flow
 
   Args:
       graph_id (str):
@@ -190,7 +201,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | OAuthInitResponse
+      ErrorResponse | HTTPValidationError | OAuthInitResponse
   """
 
   return (

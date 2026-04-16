@@ -1,11 +1,12 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.schema_export_response import SchemaExportResponse
 from ...types import UNSET, Response, Unset
@@ -39,18 +40,30 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | SchemaExportResponse | None:
+) -> ErrorResponse | HTTPValidationError | SchemaExportResponse | None:
   if response.status_code == 200:
     response_200 = SchemaExportResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = cast(Any, None)
+    response_404 = ErrorResponse.from_dict(response.json())
+
     return response_404
 
   if response.status_code == 422:
@@ -58,8 +71,14 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -70,7 +89,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | SchemaExportResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | SchemaExportResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -85,56 +104,12 @@ def sync_detailed(
   client: AuthenticatedClient,
   format_: str | Unset = "json",
   include_data_stats: bool | Unset = False,
-) -> Response[Any | HTTPValidationError | SchemaExportResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | SchemaExportResponse]:
   """Export Declared Graph Schema
 
-   Export the declared schema definition of an existing graph.
-
-  ## What This Returns
-
-  This endpoint returns the **original schema definition** that was used to create the graph:
-  - The schema as it was **declared** during graph creation
-  - Complete node and relationship definitions
-  - Property types and constraints
-  - Schema metadata (name, version, type)
-
-  ## Runtime vs Declared Schema
-
-  **Use this endpoint** (`/schema/export`) when you need:
-  - The original schema definition used to create the graph
-  - Schema in a specific format (JSON, YAML, Cypher DDL)
-  - Schema for documentation or version control
-  - Schema to replicate in another graph
-
-  **Use `/schema` instead** when you need:
-  - What data is ACTUALLY in the database right now
-  - What properties exist on real nodes (discovered from data)
-  - Current runtime database structure for querying
-
-  ## Export Formats
-
-  ### JSON Format (`format=json`)
-  Returns structured JSON with nodes, relationships, and properties.
-  Best for programmatic access and API integration.
-
-  ### YAML Format (`format=yaml`)
-  Returns human-readable YAML with comments.
-  Best for documentation and configuration management.
-
-  ### Cypher DDL Format (`format=cypher`)
-  Returns Cypher CREATE statements for recreating the schema.
-  Best for database migration and replication.
-
-  ## Data Statistics
-
-  Set `include_data_stats=true` to include:
-  - Node counts by label
-  - Relationship counts by type
-  - Total nodes and relationships
-
-  This combines declared schema with runtime statistics.
-
-  This operation is included - no credit consumption required.
+   Returns the original schema definition from graph creation, not the runtime state. Set
+  `include_data_stats=true` to add live node/relationship counts. Use `/schema` to inspect what's
+  actually in the database.
 
   Args:
       graph_id (str):
@@ -147,7 +122,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | SchemaExportResponse]
+      Response[ErrorResponse | HTTPValidationError | SchemaExportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -169,56 +144,12 @@ def sync(
   client: AuthenticatedClient,
   format_: str | Unset = "json",
   include_data_stats: bool | Unset = False,
-) -> Any | HTTPValidationError | SchemaExportResponse | None:
+) -> ErrorResponse | HTTPValidationError | SchemaExportResponse | None:
   """Export Declared Graph Schema
 
-   Export the declared schema definition of an existing graph.
-
-  ## What This Returns
-
-  This endpoint returns the **original schema definition** that was used to create the graph:
-  - The schema as it was **declared** during graph creation
-  - Complete node and relationship definitions
-  - Property types and constraints
-  - Schema metadata (name, version, type)
-
-  ## Runtime vs Declared Schema
-
-  **Use this endpoint** (`/schema/export`) when you need:
-  - The original schema definition used to create the graph
-  - Schema in a specific format (JSON, YAML, Cypher DDL)
-  - Schema for documentation or version control
-  - Schema to replicate in another graph
-
-  **Use `/schema` instead** when you need:
-  - What data is ACTUALLY in the database right now
-  - What properties exist on real nodes (discovered from data)
-  - Current runtime database structure for querying
-
-  ## Export Formats
-
-  ### JSON Format (`format=json`)
-  Returns structured JSON with nodes, relationships, and properties.
-  Best for programmatic access and API integration.
-
-  ### YAML Format (`format=yaml`)
-  Returns human-readable YAML with comments.
-  Best for documentation and configuration management.
-
-  ### Cypher DDL Format (`format=cypher`)
-  Returns Cypher CREATE statements for recreating the schema.
-  Best for database migration and replication.
-
-  ## Data Statistics
-
-  Set `include_data_stats=true` to include:
-  - Node counts by label
-  - Relationship counts by type
-  - Total nodes and relationships
-
-  This combines declared schema with runtime statistics.
-
-  This operation is included - no credit consumption required.
+   Returns the original schema definition from graph creation, not the runtime state. Set
+  `include_data_stats=true` to add live node/relationship counts. Use `/schema` to inspect what's
+  actually in the database.
 
   Args:
       graph_id (str):
@@ -231,7 +162,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | SchemaExportResponse
+      ErrorResponse | HTTPValidationError | SchemaExportResponse
   """
 
   return sync_detailed(
@@ -248,56 +179,12 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   format_: str | Unset = "json",
   include_data_stats: bool | Unset = False,
-) -> Response[Any | HTTPValidationError | SchemaExportResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | SchemaExportResponse]:
   """Export Declared Graph Schema
 
-   Export the declared schema definition of an existing graph.
-
-  ## What This Returns
-
-  This endpoint returns the **original schema definition** that was used to create the graph:
-  - The schema as it was **declared** during graph creation
-  - Complete node and relationship definitions
-  - Property types and constraints
-  - Schema metadata (name, version, type)
-
-  ## Runtime vs Declared Schema
-
-  **Use this endpoint** (`/schema/export`) when you need:
-  - The original schema definition used to create the graph
-  - Schema in a specific format (JSON, YAML, Cypher DDL)
-  - Schema for documentation or version control
-  - Schema to replicate in another graph
-
-  **Use `/schema` instead** when you need:
-  - What data is ACTUALLY in the database right now
-  - What properties exist on real nodes (discovered from data)
-  - Current runtime database structure for querying
-
-  ## Export Formats
-
-  ### JSON Format (`format=json`)
-  Returns structured JSON with nodes, relationships, and properties.
-  Best for programmatic access and API integration.
-
-  ### YAML Format (`format=yaml`)
-  Returns human-readable YAML with comments.
-  Best for documentation and configuration management.
-
-  ### Cypher DDL Format (`format=cypher`)
-  Returns Cypher CREATE statements for recreating the schema.
-  Best for database migration and replication.
-
-  ## Data Statistics
-
-  Set `include_data_stats=true` to include:
-  - Node counts by label
-  - Relationship counts by type
-  - Total nodes and relationships
-
-  This combines declared schema with runtime statistics.
-
-  This operation is included - no credit consumption required.
+   Returns the original schema definition from graph creation, not the runtime state. Set
+  `include_data_stats=true` to add live node/relationship counts. Use `/schema` to inspect what's
+  actually in the database.
 
   Args:
       graph_id (str):
@@ -310,7 +197,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | SchemaExportResponse]
+      Response[ErrorResponse | HTTPValidationError | SchemaExportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -330,56 +217,12 @@ async def asyncio(
   client: AuthenticatedClient,
   format_: str | Unset = "json",
   include_data_stats: bool | Unset = False,
-) -> Any | HTTPValidationError | SchemaExportResponse | None:
+) -> ErrorResponse | HTTPValidationError | SchemaExportResponse | None:
   """Export Declared Graph Schema
 
-   Export the declared schema definition of an existing graph.
-
-  ## What This Returns
-
-  This endpoint returns the **original schema definition** that was used to create the graph:
-  - The schema as it was **declared** during graph creation
-  - Complete node and relationship definitions
-  - Property types and constraints
-  - Schema metadata (name, version, type)
-
-  ## Runtime vs Declared Schema
-
-  **Use this endpoint** (`/schema/export`) when you need:
-  - The original schema definition used to create the graph
-  - Schema in a specific format (JSON, YAML, Cypher DDL)
-  - Schema for documentation or version control
-  - Schema to replicate in another graph
-
-  **Use `/schema` instead** when you need:
-  - What data is ACTUALLY in the database right now
-  - What properties exist on real nodes (discovered from data)
-  - Current runtime database structure for querying
-
-  ## Export Formats
-
-  ### JSON Format (`format=json`)
-  Returns structured JSON with nodes, relationships, and properties.
-  Best for programmatic access and API integration.
-
-  ### YAML Format (`format=yaml`)
-  Returns human-readable YAML with comments.
-  Best for documentation and configuration management.
-
-  ### Cypher DDL Format (`format=cypher`)
-  Returns Cypher CREATE statements for recreating the schema.
-  Best for database migration and replication.
-
-  ## Data Statistics
-
-  Set `include_data_stats=true` to include:
-  - Node counts by label
-  - Relationship counts by type
-  - Total nodes and relationships
-
-  This combines declared schema with runtime statistics.
-
-  This operation is included - no credit consumption required.
+   Returns the original schema definition from graph creation, not the runtime state. Set
+  `include_data_stats=true` to add live node/relationship counts. Use `/schema` to inspect what's
+  actually in the database.
 
   Args:
       graph_id (str):
@@ -392,7 +235,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | SchemaExportResponse
+      ErrorResponse | HTTPValidationError | SchemaExportResponse
   """
 
   return (

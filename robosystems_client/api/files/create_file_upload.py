@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -37,7 +37,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | ErrorResponse | FileUploadResponse | HTTPValidationError | None:
+) -> ErrorResponse | FileUploadResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = FileUploadResponse.from_dict(response.json())
 
@@ -49,7 +49,8 @@ def _parse_response(
     return response_400
 
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
@@ -67,6 +68,16 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -75,7 +86,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | ErrorResponse | FileUploadResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | FileUploadResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -89,36 +100,12 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
-) -> Response[Any | ErrorResponse | FileUploadResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | FileUploadResponse | HTTPValidationError]:
   """Create File Upload
 
-   Generate presigned S3 URL for file upload.
-
-  Initiate file upload by generating a secure, time-limited presigned S3 URL.
-  Files are first-class resources uploaded directly to S3.
-
-  **Request Body:**
-  - `file_name`: Name of the file (1-255 characters)
-  - `file_format`: Format (parquet, csv, json)
-  - `table_name`: Table to associate file with
-
-  **Upload Workflow:**
-  1. Call this endpoint to get presigned URL
-  2. PUT file directly to S3 URL
-  3. Call PATCH /files/{file_id} with status='uploaded'
-  4. Backend validates and stages in DuckDB immediately
-  5. Background task ingests to graph
-
-  **Supported Formats:**
-  - Parquet, CSV, JSON
-
-  **Auto-Table Creation:**
-  Tables are automatically created if they don't exist.
-
-  **Important Notes:**
-  - Presigned URLs expire (default: 1 hour)
-  - Files are graph-scoped, independent resources
-  - Upload URL generation is included - no credit consumption
+   Returns a presigned S3 URL for direct upload. After uploading, call `PATCH /files/{file_id}` with
+  `status=uploaded` to trigger DuckDB staging. Tables are auto-created if missing. Not allowed on
+  entity graphs or shared repositories.
 
   Args:
       graph_id (str):
@@ -129,7 +116,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | FileUploadResponse | HTTPValidationError]
+      Response[ErrorResponse | FileUploadResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -149,36 +136,12 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
-) -> Any | ErrorResponse | FileUploadResponse | HTTPValidationError | None:
+) -> ErrorResponse | FileUploadResponse | HTTPValidationError | None:
   """Create File Upload
 
-   Generate presigned S3 URL for file upload.
-
-  Initiate file upload by generating a secure, time-limited presigned S3 URL.
-  Files are first-class resources uploaded directly to S3.
-
-  **Request Body:**
-  - `file_name`: Name of the file (1-255 characters)
-  - `file_format`: Format (parquet, csv, json)
-  - `table_name`: Table to associate file with
-
-  **Upload Workflow:**
-  1. Call this endpoint to get presigned URL
-  2. PUT file directly to S3 URL
-  3. Call PATCH /files/{file_id} with status='uploaded'
-  4. Backend validates and stages in DuckDB immediately
-  5. Background task ingests to graph
-
-  **Supported Formats:**
-  - Parquet, CSV, JSON
-
-  **Auto-Table Creation:**
-  Tables are automatically created if they don't exist.
-
-  **Important Notes:**
-  - Presigned URLs expire (default: 1 hour)
-  - Files are graph-scoped, independent resources
-  - Upload URL generation is included - no credit consumption
+   Returns a presigned S3 URL for direct upload. After uploading, call `PATCH /files/{file_id}` with
+  `status=uploaded` to trigger DuckDB staging. Tables are auto-created if missing. Not allowed on
+  entity graphs or shared repositories.
 
   Args:
       graph_id (str):
@@ -189,7 +152,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | FileUploadResponse | HTTPValidationError
+      ErrorResponse | FileUploadResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -204,36 +167,12 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
-) -> Response[Any | ErrorResponse | FileUploadResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | FileUploadResponse | HTTPValidationError]:
   """Create File Upload
 
-   Generate presigned S3 URL for file upload.
-
-  Initiate file upload by generating a secure, time-limited presigned S3 URL.
-  Files are first-class resources uploaded directly to S3.
-
-  **Request Body:**
-  - `file_name`: Name of the file (1-255 characters)
-  - `file_format`: Format (parquet, csv, json)
-  - `table_name`: Table to associate file with
-
-  **Upload Workflow:**
-  1. Call this endpoint to get presigned URL
-  2. PUT file directly to S3 URL
-  3. Call PATCH /files/{file_id} with status='uploaded'
-  4. Backend validates and stages in DuckDB immediately
-  5. Background task ingests to graph
-
-  **Supported Formats:**
-  - Parquet, CSV, JSON
-
-  **Auto-Table Creation:**
-  Tables are automatically created if they don't exist.
-
-  **Important Notes:**
-  - Presigned URLs expire (default: 1 hour)
-  - Files are graph-scoped, independent resources
-  - Upload URL generation is included - no credit consumption
+   Returns a presigned S3 URL for direct upload. After uploading, call `PATCH /files/{file_id}` with
+  `status=uploaded` to trigger DuckDB staging. Tables are auto-created if missing. Not allowed on
+  entity graphs or shared repositories.
 
   Args:
       graph_id (str):
@@ -244,7 +183,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | FileUploadResponse | HTTPValidationError]
+      Response[ErrorResponse | FileUploadResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -262,36 +201,12 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
-) -> Any | ErrorResponse | FileUploadResponse | HTTPValidationError | None:
+) -> ErrorResponse | FileUploadResponse | HTTPValidationError | None:
   """Create File Upload
 
-   Generate presigned S3 URL for file upload.
-
-  Initiate file upload by generating a secure, time-limited presigned S3 URL.
-  Files are first-class resources uploaded directly to S3.
-
-  **Request Body:**
-  - `file_name`: Name of the file (1-255 characters)
-  - `file_format`: Format (parquet, csv, json)
-  - `table_name`: Table to associate file with
-
-  **Upload Workflow:**
-  1. Call this endpoint to get presigned URL
-  2. PUT file directly to S3 URL
-  3. Call PATCH /files/{file_id} with status='uploaded'
-  4. Backend validates and stages in DuckDB immediately
-  5. Background task ingests to graph
-
-  **Supported Formats:**
-  - Parquet, CSV, JSON
-
-  **Auto-Table Creation:**
-  Tables are automatically created if they don't exist.
-
-  **Important Notes:**
-  - Presigned URLs expire (default: 1 hour)
-  - Files are graph-scoped, independent resources
-  - Upload URL generation is included - no credit consumption
+   Returns a presigned S3 URL for direct upload. After uploading, call `PATCH /files/{file_id}` with
+  `status=uploaded` to trigger DuckDB staging. Tables are auto-created if missing. Not allowed on
+  entity graphs or shared repositories.
 
   Args:
       graph_id (str):
@@ -302,7 +217,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | FileUploadResponse | HTTPValidationError
+      ErrorResponse | FileUploadResponse | HTTPValidationError
   """
 
   return (

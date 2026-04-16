@@ -66,19 +66,23 @@ def _parse_response(
 
     return response_400
 
-  if response.status_code == 402:
-    response_402 = ErrorResponse.from_dict(response.json())
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
 
-    return response_402
+    return response_401
 
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
 
-  if response.status_code == 408:
-    response_408 = ErrorResponse.from_dict(response.json())
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
 
+    return response_404
+
+  if response.status_code == 408:
+    response_408 = cast(Any, None)
     return response_408
 
   if response.status_code == 422:
@@ -97,8 +101,7 @@ def _parse_response(
     return response_500
 
   if response.status_code == 503:
-    response_503 = ErrorResponse.from_dict(response.json())
-
+    response_503 = cast(Any, None)
     return response_503
 
   if client.raise_on_unexpected_status:
@@ -128,50 +131,9 @@ def sync_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError]:
   """Execute MCP Tool
 
-   Execute an MCP tool with intelligent response optimization.
-
-  This endpoint automatically selects the best execution strategy based on:
-  - Tool type and estimated complexity
-  - Client capabilities (AI agent detection)
-  - System load and queue status
-  - Graph type (shared repository vs user graph)
-
-  **Response Formats:**
-  - **JSON**: Direct response for small/fast operations
-  - **SSE**: Server-Sent Events for progress monitoring
-  - **NDJSON**: Newline-delimited JSON for streaming
-  - **Queued**: Asynchronous execution with status monitoring
-
-  **SSE Streaming Support:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation to direct response if SSE unavailable
-  - Progress events for long-running operations
-
-  **AI Agent Optimization:**
-  The Node.js MCP client transparently handles all response formats,
-  presenting a unified interface to AI agents. Streaming responses are
-  automatically aggregated for seamless consumption.
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Connection limit or rate limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - `408 Request Timeout`: Tool execution exceeded timeout
-  - Clients should implement exponential backoff on errors
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  MCP tools operate on the specified graph/subgraph independently. Each subgraph
-  has its own schema, data, and can be queried separately via MCP.
-
-  **Credit Model:**
-  MCP tool execution is included - no credit consumption required. Database
-  operations (queries, schema inspection, analytics) are completely free.
-  Only AI operations that invoke Claude or other LLM APIs consume credits,
-  which happens at the AI agent layer, not the MCP tool layer.
+   Strategy auto-selected by tool type and load: JSON for fast tools, SSE for long queries, NDJSON for
+  large results. Database operations (Cypher, schema, info) consume no credits — only AI LLM calls
+  cost credits.
 
   Args:
       graph_id (str):
@@ -211,50 +173,9 @@ def sync(
 ) -> Any | ErrorResponse | HTTPValidationError | None:
   """Execute MCP Tool
 
-   Execute an MCP tool with intelligent response optimization.
-
-  This endpoint automatically selects the best execution strategy based on:
-  - Tool type and estimated complexity
-  - Client capabilities (AI agent detection)
-  - System load and queue status
-  - Graph type (shared repository vs user graph)
-
-  **Response Formats:**
-  - **JSON**: Direct response for small/fast operations
-  - **SSE**: Server-Sent Events for progress monitoring
-  - **NDJSON**: Newline-delimited JSON for streaming
-  - **Queued**: Asynchronous execution with status monitoring
-
-  **SSE Streaming Support:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation to direct response if SSE unavailable
-  - Progress events for long-running operations
-
-  **AI Agent Optimization:**
-  The Node.js MCP client transparently handles all response formats,
-  presenting a unified interface to AI agents. Streaming responses are
-  automatically aggregated for seamless consumption.
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Connection limit or rate limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - `408 Request Timeout`: Tool execution exceeded timeout
-  - Clients should implement exponential backoff on errors
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  MCP tools operate on the specified graph/subgraph independently. Each subgraph
-  has its own schema, data, and can be queried separately via MCP.
-
-  **Credit Model:**
-  MCP tool execution is included - no credit consumption required. Database
-  operations (queries, schema inspection, analytics) are completely free.
-  Only AI operations that invoke Claude or other LLM APIs consume credits,
-  which happens at the AI agent layer, not the MCP tool layer.
+   Strategy auto-selected by tool type and load: JSON for fast tools, SSE for long queries, NDJSON for
+  large results. Database operations (Cypher, schema, info) consume no credits — only AI LLM calls
+  cost credits.
 
   Args:
       graph_id (str):
@@ -289,50 +210,9 @@ async def asyncio_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError]:
   """Execute MCP Tool
 
-   Execute an MCP tool with intelligent response optimization.
-
-  This endpoint automatically selects the best execution strategy based on:
-  - Tool type and estimated complexity
-  - Client capabilities (AI agent detection)
-  - System load and queue status
-  - Graph type (shared repository vs user graph)
-
-  **Response Formats:**
-  - **JSON**: Direct response for small/fast operations
-  - **SSE**: Server-Sent Events for progress monitoring
-  - **NDJSON**: Newline-delimited JSON for streaming
-  - **Queued**: Asynchronous execution with status monitoring
-
-  **SSE Streaming Support:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation to direct response if SSE unavailable
-  - Progress events for long-running operations
-
-  **AI Agent Optimization:**
-  The Node.js MCP client transparently handles all response formats,
-  presenting a unified interface to AI agents. Streaming responses are
-  automatically aggregated for seamless consumption.
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Connection limit or rate limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - `408 Request Timeout`: Tool execution exceeded timeout
-  - Clients should implement exponential backoff on errors
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  MCP tools operate on the specified graph/subgraph independently. Each subgraph
-  has its own schema, data, and can be queried separately via MCP.
-
-  **Credit Model:**
-  MCP tool execution is included - no credit consumption required. Database
-  operations (queries, schema inspection, analytics) are completely free.
-  Only AI operations that invoke Claude or other LLM APIs consume credits,
-  which happens at the AI agent layer, not the MCP tool layer.
+   Strategy auto-selected by tool type and load: JSON for fast tools, SSE for long queries, NDJSON for
+  large results. Database operations (Cypher, schema, info) consume no credits — only AI LLM calls
+  cost credits.
 
   Args:
       graph_id (str):
@@ -370,50 +250,9 @@ async def asyncio(
 ) -> Any | ErrorResponse | HTTPValidationError | None:
   """Execute MCP Tool
 
-   Execute an MCP tool with intelligent response optimization.
-
-  This endpoint automatically selects the best execution strategy based on:
-  - Tool type and estimated complexity
-  - Client capabilities (AI agent detection)
-  - System load and queue status
-  - Graph type (shared repository vs user graph)
-
-  **Response Formats:**
-  - **JSON**: Direct response for small/fast operations
-  - **SSE**: Server-Sent Events for progress monitoring
-  - **NDJSON**: Newline-delimited JSON for streaming
-  - **Queued**: Asynchronous execution with status monitoring
-
-  **SSE Streaming Support:**
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation to direct response if SSE unavailable
-  - Progress events for long-running operations
-
-  **AI Agent Optimization:**
-  The Node.js MCP client transparently handles all response formats,
-  presenting a unified interface to AI agents. Streaming responses are
-  automatically aggregated for seamless consumption.
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Connection limit or rate limit exceeded
-  - `503 Service Unavailable`: SSE system temporarily disabled
-  - `408 Request Timeout`: Tool execution exceeded timeout
-  - Clients should implement exponential backoff on errors
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  MCP tools operate on the specified graph/subgraph independently. Each subgraph
-  has its own schema, data, and can be queried separately via MCP.
-
-  **Credit Model:**
-  MCP tool execution is included - no credit consumption required. Database
-  operations (queries, schema inspection, analytics) are completely free.
-  Only AI operations that invoke Claude or other LLM APIs consume credits,
-  which happens at the AI agent layer, not the MCP tool layer.
+   Strategy auto-selected by tool type and load: JSON for fast tools, SSE for long queries, NDJSON for
+  large results. Database operations (Cypher, schema, info) consume no credits — only AI LLM calls
+  cost credits.
 
   Args:
       graph_id (str):

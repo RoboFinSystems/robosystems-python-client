@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -7,9 +7,9 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_view_request import CreateViewRequest
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
-from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
 
 
@@ -40,32 +40,34 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   if response.status_code == 200:
     response_200 = OperationEnvelope.from_dict(response.json())
 
     return response_200
 
   if response.status_code == 400:
-    response_400 = OperationError.from_dict(response.json())
+    response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
 
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = OperationError.from_dict(response.json())
+    response_404 = ErrorResponse.from_dict(response.json())
 
     return response_404
 
   if response.status_code == 409:
-    response_409 = OperationError.from_dict(response.json())
+    response_409 = ErrorResponse.from_dict(response.json())
 
     return response_409
 
@@ -75,11 +77,13 @@ def _parse_response(
     return response_422
 
   if response.status_code == 429:
-    response_429 = cast(Any, None)
+    response_429 = ErrorResponse.from_dict(response.json())
+
     return response_429
 
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -90,7 +94,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -105,20 +109,12 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateViewRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Build Fact Grid
 
-   Build a multi-dimensional fact grid against the graph schema.
-
-  Queries `Fact` nodes by element qnames or canonical concepts with
-  optional filters for periods, entities, filing form, fiscal context,
-  and period type. Returns a deduplicated pivot table plus optional
-  summary statistics.
-
-  This is a graph-database read — the query runs against LadybugDB,
-  not the extensions OLTP database. The same operation works for
-  roboledger tenant graphs (post-materialization) and the SEC shared
-  repository (which uses the same XBRL hypercube schema).
+   Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
+  entities, form, and fiscal context. Returns a deduplicated pivot table. Works on both roboledger
+  tenant graphs (post-materialization) and the SEC shared repository.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -133,7 +129,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -155,20 +151,12 @@ def sync(
   client: AuthenticatedClient,
   body: CreateViewRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Build Fact Grid
 
-   Build a multi-dimensional fact grid against the graph schema.
-
-  Queries `Fact` nodes by element qnames or canonical concepts with
-  optional filters for periods, entities, filing form, fiscal context,
-  and period type. Returns a deduplicated pivot table plus optional
-  summary statistics.
-
-  This is a graph-database read — the query runs against LadybugDB,
-  not the extensions OLTP database. The same operation works for
-  roboledger tenant graphs (post-materialization) and the SEC shared
-  repository (which uses the same XBRL hypercube schema).
+   Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
+  entities, form, and fiscal context. Returns a deduplicated pivot table. Works on both roboledger
+  tenant graphs (post-materialization) and the SEC shared repository.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -183,7 +171,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return sync_detailed(
@@ -200,20 +188,12 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateViewRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Build Fact Grid
 
-   Build a multi-dimensional fact grid against the graph schema.
-
-  Queries `Fact` nodes by element qnames or canonical concepts with
-  optional filters for periods, entities, filing form, fiscal context,
-  and period type. Returns a deduplicated pivot table plus optional
-  summary statistics.
-
-  This is a graph-database read — the query runs against LadybugDB,
-  not the extensions OLTP database. The same operation works for
-  roboledger tenant graphs (post-materialization) and the SEC shared
-  repository (which uses the same XBRL hypercube schema).
+   Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
+  entities, form, and fiscal context. Returns a deduplicated pivot table. Works on both roboledger
+  tenant graphs (post-materialization) and the SEC shared repository.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -228,7 +208,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -248,20 +228,12 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateViewRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Build Fact Grid
 
-   Build a multi-dimensional fact grid against the graph schema.
-
-  Queries `Fact` nodes by element qnames or canonical concepts with
-  optional filters for periods, entities, filing form, fiscal context,
-  and period type. Returns a deduplicated pivot table plus optional
-  summary statistics.
-
-  This is a graph-database read — the query runs against LadybugDB,
-  not the extensions OLTP database. The same operation works for
-  roboledger tenant graphs (post-materialization) and the SEC shared
-  repository (which uses the same XBRL hypercube schema).
+   Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
+  entities, form, and fiscal context. Returns a deduplicated pivot table. Works on both roboledger
+  tenant graphs (post-materialization) and the SEC shared repository.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -276,7 +248,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return (

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 from urllib.parse import quote
 
 import httpx
@@ -42,11 +42,21 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   if response.status_code == 202:
     response_202 = OperationEnvelope.from_dict(response.json())
 
     return response_202
+
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
 
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
@@ -68,14 +78,18 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
 
     return response_500
 
   if response.status_code == 504:
-    response_504 = ErrorResponse.from_dict(response.json())
-
+    response_504 = cast(Any, None)
     return response_504
 
   if client.raise_on_unexpected_status:
@@ -86,7 +100,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -102,29 +116,12 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Sync Connection
 
-   Trigger a data synchronization for the connection.
-
-  Initiates data sync based on provider type:
-
-  **SEC Sync**:
-  - Downloads latest filings from EDGAR
-  - Parses XBRL data and updates graph
-  - Typically completes in 5-10 minutes
-
-  **QuickBooks Sync**:
-  - Fetches latest transactions and balances
-  - Updates chart of accounts
-  - Generates fresh trial balance
-  - Duration depends on data volume
-
-  Note:
-  This operation is included - no credit consumption required.
-
-  Returns an `OperationEnvelope` with an `operationId` for tracking sync progress.
-  Supports `Idempotency-Key` header to safely retry without triggering duplicate syncs.
+   SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
+  chart of accounts. Returns an `OperationEnvelope` — monitor progress via SSE at
+  `/v1/operations/{operation_id}/stream`. Supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -137,7 +134,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -161,29 +158,12 @@ def sync(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Sync Connection
 
-   Trigger a data synchronization for the connection.
-
-  Initiates data sync based on provider type:
-
-  **SEC Sync**:
-  - Downloads latest filings from EDGAR
-  - Parses XBRL data and updates graph
-  - Typically completes in 5-10 minutes
-
-  **QuickBooks Sync**:
-  - Fetches latest transactions and balances
-  - Updates chart of accounts
-  - Generates fresh trial balance
-  - Duration depends on data volume
-
-  Note:
-  This operation is included - no credit consumption required.
-
-  Returns an `OperationEnvelope` with an `operationId` for tracking sync progress.
-  Supports `Idempotency-Key` header to safely retry without triggering duplicate syncs.
+   SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
+  chart of accounts. Returns an `OperationEnvelope` — monitor progress via SSE at
+  `/v1/operations/{operation_id}/stream`. Supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -196,7 +176,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      Any | ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return sync_detailed(
@@ -215,29 +195,12 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Sync Connection
 
-   Trigger a data synchronization for the connection.
-
-  Initiates data sync based on provider type:
-
-  **SEC Sync**:
-  - Downloads latest filings from EDGAR
-  - Parses XBRL data and updates graph
-  - Typically completes in 5-10 minutes
-
-  **QuickBooks Sync**:
-  - Fetches latest transactions and balances
-  - Updates chart of accounts
-  - Generates fresh trial balance
-  - Duration depends on data volume
-
-  Note:
-  This operation is included - no credit consumption required.
-
-  Returns an `OperationEnvelope` with an `operationId` for tracking sync progress.
-  Supports `Idempotency-Key` header to safely retry without triggering duplicate syncs.
+   SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
+  chart of accounts. Returns an `OperationEnvelope` — monitor progress via SSE at
+  `/v1/operations/{operation_id}/stream`. Supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -250,7 +213,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -272,29 +235,12 @@ async def asyncio(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Sync Connection
 
-   Trigger a data synchronization for the connection.
-
-  Initiates data sync based on provider type:
-
-  **SEC Sync**:
-  - Downloads latest filings from EDGAR
-  - Parses XBRL data and updates graph
-  - Typically completes in 5-10 minutes
-
-  **QuickBooks Sync**:
-  - Fetches latest transactions and balances
-  - Updates chart of accounts
-  - Generates fresh trial balance
-  - Duration depends on data volume
-
-  Note:
-  This operation is included - no credit consumption required.
-
-  Returns an `OperationEnvelope` with an `operationId` for tracking sync progress.
-  Supports `Idempotency-Key` header to safely retry without triggering duplicate syncs.
+   SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
+  chart of accounts. Returns an `OperationEnvelope` — monitor progress via SSE at
+  `/v1/operations/{operation_id}/stream`. Supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -307,7 +253,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      Any | ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return (

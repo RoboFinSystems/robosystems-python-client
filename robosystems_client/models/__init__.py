@@ -158,10 +158,6 @@ from .enhanced_file_status_layers import EnhancedFileStatusLayers
 from .entry_template_request import EntryTemplateRequest
 from .entry_template_request_entry_type import EntryTemplateRequestEntryType
 from .error_response import ErrorResponse
-from .execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
-from .execute_cypher_query_response_200_data_item import (
-  ExecuteCypherQueryResponse200DataItem,
-)
 from .file_info import FileInfo
 from .file_layer_status import FileLayerStatus
 from .file_status_update import FileStatusUpdate
@@ -517,8 +513,6 @@ __all__ = (
   "EntryTemplateRequest",
   "EntryTemplateRequestEntryType",
   "ErrorResponse",
-  "ExecuteCypherQueryResponse200",
-  "ExecuteCypherQueryResponse200DataItem",
   "FileInfo",
   "FileLayerStatus",
   "FileStatusUpdate",

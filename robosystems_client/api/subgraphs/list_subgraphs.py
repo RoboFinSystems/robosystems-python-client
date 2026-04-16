@@ -6,6 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.list_subgraphs_response import ListSubgraphsResponse
 from ...types import Response
@@ -27,16 +28,46 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> HTTPValidationError | ListSubgraphsResponse | None:
+) -> ErrorResponse | HTTPValidationError | ListSubgraphsResponse | None:
   if response.status_code == 200:
     response_200 = ListSubgraphsResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -46,7 +77,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[HTTPValidationError | ListSubgraphsResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | ListSubgraphsResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -59,19 +90,8 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[HTTPValidationError | ListSubgraphsResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | ListSubgraphsResponse]:
   """List Subgraphs
-
-   List all subgraphs for a parent graph.
-
-  **Requirements:**
-  - Valid authentication
-  - Parent graph must exist and be accessible to the user
-  - User must have at least 'read' permission on the parent graph
-
-  **Returns:**
-  - List of all subgraphs for the parent graph
-  - Each subgraph includes its ID, name, description, type, status, and creation date
 
   Args:
       graph_id (str):
@@ -81,7 +101,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | ListSubgraphsResponse]
+      Response[ErrorResponse | HTTPValidationError | ListSubgraphsResponse]
   """
 
   kwargs = _get_kwargs(
@@ -99,19 +119,8 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> HTTPValidationError | ListSubgraphsResponse | None:
+) -> ErrorResponse | HTTPValidationError | ListSubgraphsResponse | None:
   """List Subgraphs
-
-   List all subgraphs for a parent graph.
-
-  **Requirements:**
-  - Valid authentication
-  - Parent graph must exist and be accessible to the user
-  - User must have at least 'read' permission on the parent graph
-
-  **Returns:**
-  - List of all subgraphs for the parent graph
-  - Each subgraph includes its ID, name, description, type, status, and creation date
 
   Args:
       graph_id (str):
@@ -121,7 +130,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | ListSubgraphsResponse
+      ErrorResponse | HTTPValidationError | ListSubgraphsResponse
   """
 
   return sync_detailed(
@@ -134,19 +143,8 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[HTTPValidationError | ListSubgraphsResponse]:
+) -> Response[ErrorResponse | HTTPValidationError | ListSubgraphsResponse]:
   """List Subgraphs
-
-   List all subgraphs for a parent graph.
-
-  **Requirements:**
-  - Valid authentication
-  - Parent graph must exist and be accessible to the user
-  - User must have at least 'read' permission on the parent graph
-
-  **Returns:**
-  - List of all subgraphs for the parent graph
-  - Each subgraph includes its ID, name, description, type, status, and creation date
 
   Args:
       graph_id (str):
@@ -156,7 +154,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[HTTPValidationError | ListSubgraphsResponse]
+      Response[ErrorResponse | HTTPValidationError | ListSubgraphsResponse]
   """
 
   kwargs = _get_kwargs(
@@ -172,19 +170,8 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> HTTPValidationError | ListSubgraphsResponse | None:
+) -> ErrorResponse | HTTPValidationError | ListSubgraphsResponse | None:
   """List Subgraphs
-
-   List all subgraphs for a parent graph.
-
-  **Requirements:**
-  - Valid authentication
-  - Parent graph must exist and be accessible to the user
-  - User must have at least 'read' permission on the parent graph
-
-  **Returns:**
-  - List of all subgraphs for the parent graph
-  - Each subgraph includes its ID, name, description, type, status, and creation date
 
   Args:
       graph_id (str):
@@ -194,7 +181,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      HTTPValidationError | ListSubgraphsResponse
+      ErrorResponse | HTTPValidationError | ListSubgraphsResponse
   """
 
   return (

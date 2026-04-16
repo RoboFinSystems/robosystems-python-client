@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 from urllib.parse import quote
 
 import httpx
@@ -36,7 +36,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | SchemaValidationResponse | None:
+) -> Any | ErrorResponse | SchemaValidationResponse | None:
   if response.status_code == 200:
     response_200 = SchemaValidationResponse.from_dict(response.json())
 
@@ -47,20 +47,38 @@ def _parse_response(
 
     return response_400
 
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
 
-  if response.status_code == 422:
-    response_422 = ErrorResponse.from_dict(response.json())
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
 
+    return response_404
+
+  if response.status_code == 422:
+    response_422 = cast(Any, None)
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
 
     return response_500
+
+  if response.status_code == 504:
+    response_504 = cast(Any, None)
+    return response_504
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -70,7 +88,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | SchemaValidationResponse]:
+) -> Response[Any | ErrorResponse | SchemaValidationResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -84,38 +102,12 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
-) -> Response[ErrorResponse | SchemaValidationResponse]:
+) -> Response[Any | ErrorResponse | SchemaValidationResponse]:
   """Validate Schema
 
-   Validate a custom schema definition before deployment.
-
-  This endpoint performs comprehensive validation including:
-  - **Structure Validation**: Ensures proper JSON/YAML format
-  - **Type Checking**: Validates data types (STRING, INT, DOUBLE, etc.)
-  - **Constraint Verification**: Checks primary keys and unique constraints
-  - **Relationship Integrity**: Validates node references in relationships
-  - **Naming Conventions**: Ensures valid identifiers
-  - **Compatibility**: Checks against existing extensions if specified
-
-  Supported formats:
-  - JSON schema definitions
-  - YAML schema definitions
-  - Direct dictionary format
-
-  Validation helps prevent:
-  - Schema deployment failures
-  - Data integrity issues
-  - Performance problems
-  - Naming conflicts
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Schema validation is performed against the specified graph/subgraph's current
-  schema and data structure.
-
-  This operation is included - no credit consumption required.
+   Validates a custom schema definition before deployment — checks structure, types, constraints, and
+  relationship references. Returns errors and warnings without applying changes. Supports JSON, YAML,
+  and dict formats.
 
   Args:
       graph_id (str):
@@ -126,7 +118,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | SchemaValidationResponse]
+      Response[Any | ErrorResponse | SchemaValidationResponse]
   """
 
   kwargs = _get_kwargs(
@@ -146,38 +138,12 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
-) -> ErrorResponse | SchemaValidationResponse | None:
+) -> Any | ErrorResponse | SchemaValidationResponse | None:
   """Validate Schema
 
-   Validate a custom schema definition before deployment.
-
-  This endpoint performs comprehensive validation including:
-  - **Structure Validation**: Ensures proper JSON/YAML format
-  - **Type Checking**: Validates data types (STRING, INT, DOUBLE, etc.)
-  - **Constraint Verification**: Checks primary keys and unique constraints
-  - **Relationship Integrity**: Validates node references in relationships
-  - **Naming Conventions**: Ensures valid identifiers
-  - **Compatibility**: Checks against existing extensions if specified
-
-  Supported formats:
-  - JSON schema definitions
-  - YAML schema definitions
-  - Direct dictionary format
-
-  Validation helps prevent:
-  - Schema deployment failures
-  - Data integrity issues
-  - Performance problems
-  - Naming conflicts
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Schema validation is performed against the specified graph/subgraph's current
-  schema and data structure.
-
-  This operation is included - no credit consumption required.
+   Validates a custom schema definition before deployment — checks structure, types, constraints, and
+  relationship references. Returns errors and warnings without applying changes. Supports JSON, YAML,
+  and dict formats.
 
   Args:
       graph_id (str):
@@ -188,7 +154,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | SchemaValidationResponse
+      Any | ErrorResponse | SchemaValidationResponse
   """
 
   return sync_detailed(
@@ -203,38 +169,12 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
-) -> Response[ErrorResponse | SchemaValidationResponse]:
+) -> Response[Any | ErrorResponse | SchemaValidationResponse]:
   """Validate Schema
 
-   Validate a custom schema definition before deployment.
-
-  This endpoint performs comprehensive validation including:
-  - **Structure Validation**: Ensures proper JSON/YAML format
-  - **Type Checking**: Validates data types (STRING, INT, DOUBLE, etc.)
-  - **Constraint Verification**: Checks primary keys and unique constraints
-  - **Relationship Integrity**: Validates node references in relationships
-  - **Naming Conventions**: Ensures valid identifiers
-  - **Compatibility**: Checks against existing extensions if specified
-
-  Supported formats:
-  - JSON schema definitions
-  - YAML schema definitions
-  - Direct dictionary format
-
-  Validation helps prevent:
-  - Schema deployment failures
-  - Data integrity issues
-  - Performance problems
-  - Naming conflicts
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Schema validation is performed against the specified graph/subgraph's current
-  schema and data structure.
-
-  This operation is included - no credit consumption required.
+   Validates a custom schema definition before deployment — checks structure, types, constraints, and
+  relationship references. Returns errors and warnings without applying changes. Supports JSON, YAML,
+  and dict formats.
 
   Args:
       graph_id (str):
@@ -245,7 +185,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | SchemaValidationResponse]
+      Response[Any | ErrorResponse | SchemaValidationResponse]
   """
 
   kwargs = _get_kwargs(
@@ -263,38 +203,12 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
-) -> ErrorResponse | SchemaValidationResponse | None:
+) -> Any | ErrorResponse | SchemaValidationResponse | None:
   """Validate Schema
 
-   Validate a custom schema definition before deployment.
-
-  This endpoint performs comprehensive validation including:
-  - **Structure Validation**: Ensures proper JSON/YAML format
-  - **Type Checking**: Validates data types (STRING, INT, DOUBLE, etc.)
-  - **Constraint Verification**: Checks primary keys and unique constraints
-  - **Relationship Integrity**: Validates node references in relationships
-  - **Naming Conventions**: Ensures valid identifiers
-  - **Compatibility**: Checks against existing extensions if specified
-
-  Supported formats:
-  - JSON schema definitions
-  - YAML schema definitions
-  - Direct dictionary format
-
-  Validation helps prevent:
-  - Schema deployment failures
-  - Data integrity issues
-  - Performance problems
-  - Naming conflicts
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Schema validation is performed against the specified graph/subgraph's current
-  schema and data structure.
-
-  This operation is included - no credit consumption required.
+   Validates a custom schema definition before deployment — checks structure, types, constraints, and
+  relationship references. Returns errors and warnings without applying changes. Supports JSON, YAML,
+  and dict formats.
 
   Args:
       graph_id (str):
@@ -305,7 +219,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | SchemaValidationResponse
+      Any | ErrorResponse | SchemaValidationResponse
   """
 
   return (

@@ -55,15 +55,35 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
 
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -99,35 +119,8 @@ def sync_detailed(
 ) -> Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]:
   """Get Graph Usage Analytics
 
-   Get comprehensive usage analytics tracked by the GraphUsage model.
-
-  Provides temporal usage patterns including:
-  - **Storage Analytics**: GB-hours for billing, breakdown by type (files, tables, graphs, subgraphs)
-  - **Credit Analytics**: Consumption patterns, operation breakdown, cached vs billable
-  - **Performance Insights**: Operation stats, slow queries, performance scoring
-  - **Recent Events**: Latest usage events with full details
-
-  Time ranges available:
-  - `24h` - Last 24 hours (hourly breakdown)
-  - `7d` - Last 7 days (daily breakdown)
-  - `30d` - Last 30 days (daily breakdown)
-  - `current_month` - Current billing month
-  - `last_month` - Previous billing month
-
-  Include options:
-  - `storage` - Storage usage summary (GB-hours, averages, peaks)
-  - `credits` - Credit consumption analytics
-  - `performance` - Performance insights and optimization opportunities
-  - `events` - Recent usage events (last 50)
-
-  Useful for:
-  - Billing and cost analysis
-  - Capacity planning
-  - Performance optimization
-  - Usage trend analysis
-
-  Note:
-  This operation is included - no credit consumption required.
+   Time ranges: 24h, 7d, 30d, current_month, last_month. Toggle storage, credits, performance, and
+  events sections via query params.
 
   Args:
       graph_id (str):
@@ -175,35 +168,8 @@ def sync(
 ) -> ErrorResponse | GraphUsageResponse | HTTPValidationError | None:
   """Get Graph Usage Analytics
 
-   Get comprehensive usage analytics tracked by the GraphUsage model.
-
-  Provides temporal usage patterns including:
-  - **Storage Analytics**: GB-hours for billing, breakdown by type (files, tables, graphs, subgraphs)
-  - **Credit Analytics**: Consumption patterns, operation breakdown, cached vs billable
-  - **Performance Insights**: Operation stats, slow queries, performance scoring
-  - **Recent Events**: Latest usage events with full details
-
-  Time ranges available:
-  - `24h` - Last 24 hours (hourly breakdown)
-  - `7d` - Last 7 days (daily breakdown)
-  - `30d` - Last 30 days (daily breakdown)
-  - `current_month` - Current billing month
-  - `last_month` - Previous billing month
-
-  Include options:
-  - `storage` - Storage usage summary (GB-hours, averages, peaks)
-  - `credits` - Credit consumption analytics
-  - `performance` - Performance insights and optimization opportunities
-  - `events` - Recent usage events (last 50)
-
-  Useful for:
-  - Billing and cost analysis
-  - Capacity planning
-  - Performance optimization
-  - Usage trend analysis
-
-  Note:
-  This operation is included - no credit consumption required.
+   Time ranges: 24h, 7d, 30d, current_month, last_month. Toggle storage, credits, performance, and
+  events sections via query params.
 
   Args:
       graph_id (str):
@@ -246,35 +212,8 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]:
   """Get Graph Usage Analytics
 
-   Get comprehensive usage analytics tracked by the GraphUsage model.
-
-  Provides temporal usage patterns including:
-  - **Storage Analytics**: GB-hours for billing, breakdown by type (files, tables, graphs, subgraphs)
-  - **Credit Analytics**: Consumption patterns, operation breakdown, cached vs billable
-  - **Performance Insights**: Operation stats, slow queries, performance scoring
-  - **Recent Events**: Latest usage events with full details
-
-  Time ranges available:
-  - `24h` - Last 24 hours (hourly breakdown)
-  - `7d` - Last 7 days (daily breakdown)
-  - `30d` - Last 30 days (daily breakdown)
-  - `current_month` - Current billing month
-  - `last_month` - Previous billing month
-
-  Include options:
-  - `storage` - Storage usage summary (GB-hours, averages, peaks)
-  - `credits` - Credit consumption analytics
-  - `performance` - Performance insights and optimization opportunities
-  - `events` - Recent usage events (last 50)
-
-  Useful for:
-  - Billing and cost analysis
-  - Capacity planning
-  - Performance optimization
-  - Usage trend analysis
-
-  Note:
-  This operation is included - no credit consumption required.
+   Time ranges: 24h, 7d, 30d, current_month, last_month. Toggle storage, credits, performance, and
+  events sections via query params.
 
   Args:
       graph_id (str):
@@ -320,35 +259,8 @@ async def asyncio(
 ) -> ErrorResponse | GraphUsageResponse | HTTPValidationError | None:
   """Get Graph Usage Analytics
 
-   Get comprehensive usage analytics tracked by the GraphUsage model.
-
-  Provides temporal usage patterns including:
-  - **Storage Analytics**: GB-hours for billing, breakdown by type (files, tables, graphs, subgraphs)
-  - **Credit Analytics**: Consumption patterns, operation breakdown, cached vs billable
-  - **Performance Insights**: Operation stats, slow queries, performance scoring
-  - **Recent Events**: Latest usage events with full details
-
-  Time ranges available:
-  - `24h` - Last 24 hours (hourly breakdown)
-  - `7d` - Last 7 days (daily breakdown)
-  - `30d` - Last 30 days (daily breakdown)
-  - `current_month` - Current billing month
-  - `last_month` - Previous billing month
-
-  Include options:
-  - `storage` - Storage usage summary (GB-hours, averages, peaks)
-  - `credits` - Credit consumption analytics
-  - `performance` - Performance insights and optimization opportunities
-  - `events` - Recent usage events (last 50)
-
-  Useful for:
-  - Billing and cost analysis
-  - Capacity planning
-  - Performance optimization
-  - Usage trend analysis
-
-  Note:
-  This operation is included - no credit consumption required.
+   Time ranges: 24h, 7d, 30d, current_month, last_month. Toggle storage, credits, performance, and
+  events sections via query params.
 
   Args:
       graph_id (str):

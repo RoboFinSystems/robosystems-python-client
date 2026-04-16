@@ -32,10 +32,20 @@ def _parse_response(
 
     return response_200
 
-  if response.status_code == 401:
-    response_401 = ErrorResponse.from_dict(response.json())
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
 
-    return response_401
+    return response_400
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -60,8 +70,6 @@ def sync_detailed(
 ) -> Response[ErrorResponse | GetCurrentAuthUserResponseGetcurrentauthuser]:
   """Get Current User
 
-   Get the currently authenticated user.
-
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -85,8 +93,6 @@ def sync(
 ) -> ErrorResponse | GetCurrentAuthUserResponseGetcurrentauthuser | None:
   """Get Current User
 
-   Get the currently authenticated user.
-
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -105,8 +111,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient | Client,
 ) -> Response[ErrorResponse | GetCurrentAuthUserResponseGetcurrentauthuser]:
   """Get Current User
-
-   Get the currently authenticated user.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -128,8 +132,6 @@ async def asyncio(
   client: AuthenticatedClient | Client,
 ) -> ErrorResponse | GetCurrentAuthUserResponseGetcurrentauthuser | None:
   """Get Current User
-
-   Get the currently authenticated user.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

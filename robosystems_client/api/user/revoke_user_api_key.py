@@ -34,6 +34,21 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
   if response.status_code == 404:
     response_404 = ErrorResponse.from_dict(response.json())
 
@@ -43,6 +58,11 @@ def _parse_response(
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -73,7 +93,7 @@ def sync_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Revoke API Key
 
-   Revoke (deactivate) an API key.
+   Deactivates the key immediately. Requests using the revoked key will fail with 401.
 
   Args:
       api_key_id (str):
@@ -104,7 +124,7 @@ def sync(
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Revoke API Key
 
-   Revoke (deactivate) an API key.
+   Deactivates the key immediately. Requests using the revoked key will fail with 401.
 
   Args:
       api_key_id (str):
@@ -130,7 +150,7 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Revoke API Key
 
-   Revoke (deactivate) an API key.
+   Deactivates the key immediately. Requests using the revoked key will fail with 401.
 
   Args:
       api_key_id (str):
@@ -159,7 +179,7 @@ async def asyncio(
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Revoke API Key
 
-   Revoke (deactivate) an API key.
+   Deactivates the key immediately. Requests using the revoked key will fail with 401.
 
   Args:
       api_key_id (str):

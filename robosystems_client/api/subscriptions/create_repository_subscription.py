@@ -9,6 +9,7 @@ from ...client import AuthenticatedClient, Client
 from ...models.create_repository_subscription_request import (
   CreateRepositorySubscriptionRequest,
 )
+from ...models.error_response import ErrorResponse
 from ...models.graph_subscription_response import GraphSubscriptionResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
@@ -38,15 +39,35 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
+) -> Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError | None:
   if response.status_code == 201:
     response_201 = GraphSubscriptionResponse.from_dict(response.json())
 
     return response_201
 
   if response.status_code == 400:
-    response_400 = cast(Any, None)
+    response_400 = ErrorResponse.from_dict(response.json())
+
     return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 402:
+    response_402 = cast(Any, None)
+    return response_402
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
 
   if response.status_code == 409:
     response_409 = cast(Any, None)
@@ -57,6 +78,16 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -65,7 +96,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -79,15 +110,11 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateRepositorySubscriptionRequest,
-) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]:
   """Create Repository Subscription
 
-   Create a new subscription to a shared repository.
-
-  This endpoint is ONLY for shared repositories (sec, industry, economic).
-  User graph subscriptions are created automatically when the graph is provisioned.
-
-  The subscription will be created in ACTIVE status immediately and credits will be allocated.
+   For shared repositories only (sec, industry, etc.). User graph subscriptions are created
+  automatically during provisioning.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -98,7 +125,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | GraphSubscriptionResponse | HTTPValidationError]
+      Response[Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -118,15 +145,11 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: CreateRepositorySubscriptionRequest,
-) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
+) -> Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError | None:
   """Create Repository Subscription
 
-   Create a new subscription to a shared repository.
-
-  This endpoint is ONLY for shared repositories (sec, industry, economic).
-  User graph subscriptions are created automatically when the graph is provisioned.
-
-  The subscription will be created in ACTIVE status immediately and credits will be allocated.
+   For shared repositories only (sec, industry, etc.). User graph subscriptions are created
+  automatically during provisioning.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -137,7 +160,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | GraphSubscriptionResponse | HTTPValidationError
+      Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -152,15 +175,11 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateRepositorySubscriptionRequest,
-) -> Response[Any | GraphSubscriptionResponse | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]:
   """Create Repository Subscription
 
-   Create a new subscription to a shared repository.
-
-  This endpoint is ONLY for shared repositories (sec, industry, economic).
-  User graph subscriptions are created automatically when the graph is provisioned.
-
-  The subscription will be created in ACTIVE status immediately and credits will be allocated.
+   For shared repositories only (sec, industry, etc.). User graph subscriptions are created
+  automatically during provisioning.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -171,7 +190,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | GraphSubscriptionResponse | HTTPValidationError]
+      Response[Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -189,15 +208,11 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: CreateRepositorySubscriptionRequest,
-) -> Any | GraphSubscriptionResponse | HTTPValidationError | None:
+) -> Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError | None:
   """Create Repository Subscription
 
-   Create a new subscription to a shared repository.
-
-  This endpoint is ONLY for shared repositories (sec, industry, economic).
-  User graph subscriptions are created automatically when the graph is provisioned.
-
-  The subscription will be created in ACTIVE status immediately and credits will be allocated.
+   For shared repositories only (sec, industry, etc.). User graph subscriptions are created
+  automatically during provisioning.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -208,7 +223,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | GraphSubscriptionResponse | HTTPValidationError
+      Any | ErrorResponse | GraphSubscriptionResponse | HTTPValidationError
   """
 
   return (

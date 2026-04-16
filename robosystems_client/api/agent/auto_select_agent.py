@@ -64,12 +64,28 @@ def _parse_response(
     return response_202
 
   if response.status_code == 400:
-    response_400 = cast(Any, None)
+    response_400 = ErrorResponse.from_dict(response.json())
+
     return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
 
   if response.status_code == 402:
     response_402 = cast(Any, None)
     return response_402
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
@@ -77,7 +93,8 @@ def _parse_response(
     return response_422
 
   if response.status_code == 429:
-    response_429 = cast(Any, None)
+    response_429 = ErrorResponse.from_dict(response.json())
+
     return response_429
 
   if response.status_code == 500:
@@ -109,66 +126,12 @@ def sync_detailed(
   body: AgentRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]:
-  r"""Auto-select agent for query
+  """Auto-select Agent for Query
 
-   Automatically select the best agent for your query with intelligent execution strategy.
-
-  **Agent Selection Process:**
-
-  The orchestrator intelligently routes your query by:
-  1. Analyzing query intent and complexity
-  2. Enriching context with RAG if enabled
-  3. Evaluating all available agents against selection criteria
-  4. Selecting the best match based on confidence scores
-  5. Choosing execution strategy (sync/SSE/async) based on expected time
-  6. Executing the query with the selected agent
-
-  **Available Agent Types:**
-  - `financial`: Financial analysis, SEC filings, company metrics
-  - `research`: General research, data exploration, trend analysis
-  - `rag`: Knowledge base search using RAG enrichment
-
-  **Execution Modes:**
-  - `quick`: Fast responses (~2-5s), suitable for simple queries
-  - `standard`: Balanced approach (~5-15s), default mode
-  - `extended`: Comprehensive analysis (~15-60s), deep research
-  - `streaming`: Real-time response streaming
-
-  **Execution Strategies (automatic):**
-  - Fast operations (<5s): Immediate synchronous response
-  - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Background queue with operation tracking
-
-  **Response Mode Override:**
-  Use query parameter `?mode=sync|async` to override automatic strategy selection.
-
-  **Confidence Score Interpretation:**
-  - `0.9-1.0`: High confidence, agent is ideal match
-  - `0.7-0.9`: Good confidence, agent is suitable
-  - `0.5-0.7`: Moderate confidence, agent can handle but may not be optimal
-  - `0.3-0.5`: Low confidence, fallback agent used
-  - `<0.3`: Very low confidence, consider using specific agent endpoint
-
-  **Credit Costs:**
-  - Quick mode: 5-10 credits per query
-  - Standard mode: 15-25 credits per query
-  - Extended mode: 30-75 credits per query
-  - RAG enrichment: +5-15 credits (if enabled)
-
-  **Use Cases:**
-  - Ask questions without specifying agent type
-  - Get intelligent routing for complex multi-domain queries
-  - Leverage conversation history for contextual understanding
-  - Enable RAG for knowledge base enrichment
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Agents operate on the specified graph/subgraph's data independently. RAG enrichment
-  and knowledge base search are scoped to the specific graph/subgraph.
-
-  See request/response examples in the \"Examples\" dropdown below.
+   Routes to the best agent for your query. Agents: `financial` (SEC, accounting), `research` (deep
+  analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
+  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+  `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -203,66 +166,12 @@ def sync(
   body: AgentRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> AgentResponse | Any | ErrorResponse | HTTPValidationError | None:
-  r"""Auto-select agent for query
+  """Auto-select Agent for Query
 
-   Automatically select the best agent for your query with intelligent execution strategy.
-
-  **Agent Selection Process:**
-
-  The orchestrator intelligently routes your query by:
-  1. Analyzing query intent and complexity
-  2. Enriching context with RAG if enabled
-  3. Evaluating all available agents against selection criteria
-  4. Selecting the best match based on confidence scores
-  5. Choosing execution strategy (sync/SSE/async) based on expected time
-  6. Executing the query with the selected agent
-
-  **Available Agent Types:**
-  - `financial`: Financial analysis, SEC filings, company metrics
-  - `research`: General research, data exploration, trend analysis
-  - `rag`: Knowledge base search using RAG enrichment
-
-  **Execution Modes:**
-  - `quick`: Fast responses (~2-5s), suitable for simple queries
-  - `standard`: Balanced approach (~5-15s), default mode
-  - `extended`: Comprehensive analysis (~15-60s), deep research
-  - `streaming`: Real-time response streaming
-
-  **Execution Strategies (automatic):**
-  - Fast operations (<5s): Immediate synchronous response
-  - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Background queue with operation tracking
-
-  **Response Mode Override:**
-  Use query parameter `?mode=sync|async` to override automatic strategy selection.
-
-  **Confidence Score Interpretation:**
-  - `0.9-1.0`: High confidence, agent is ideal match
-  - `0.7-0.9`: Good confidence, agent is suitable
-  - `0.5-0.7`: Moderate confidence, agent can handle but may not be optimal
-  - `0.3-0.5`: Low confidence, fallback agent used
-  - `<0.3`: Very low confidence, consider using specific agent endpoint
-
-  **Credit Costs:**
-  - Quick mode: 5-10 credits per query
-  - Standard mode: 15-25 credits per query
-  - Extended mode: 30-75 credits per query
-  - RAG enrichment: +5-15 credits (if enabled)
-
-  **Use Cases:**
-  - Ask questions without specifying agent type
-  - Get intelligent routing for complex multi-domain queries
-  - Leverage conversation history for contextual understanding
-  - Enable RAG for knowledge base enrichment
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Agents operate on the specified graph/subgraph's data independently. RAG enrichment
-  and knowledge base search are scoped to the specific graph/subgraph.
-
-  See request/response examples in the \"Examples\" dropdown below.
+   Routes to the best agent for your query. Agents: `financial` (SEC, accounting), `research` (deep
+  analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
+  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+  `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -292,66 +201,12 @@ async def asyncio_detailed(
   body: AgentRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]:
-  r"""Auto-select agent for query
+  """Auto-select Agent for Query
 
-   Automatically select the best agent for your query with intelligent execution strategy.
-
-  **Agent Selection Process:**
-
-  The orchestrator intelligently routes your query by:
-  1. Analyzing query intent and complexity
-  2. Enriching context with RAG if enabled
-  3. Evaluating all available agents against selection criteria
-  4. Selecting the best match based on confidence scores
-  5. Choosing execution strategy (sync/SSE/async) based on expected time
-  6. Executing the query with the selected agent
-
-  **Available Agent Types:**
-  - `financial`: Financial analysis, SEC filings, company metrics
-  - `research`: General research, data exploration, trend analysis
-  - `rag`: Knowledge base search using RAG enrichment
-
-  **Execution Modes:**
-  - `quick`: Fast responses (~2-5s), suitable for simple queries
-  - `standard`: Balanced approach (~5-15s), default mode
-  - `extended`: Comprehensive analysis (~15-60s), deep research
-  - `streaming`: Real-time response streaming
-
-  **Execution Strategies (automatic):**
-  - Fast operations (<5s): Immediate synchronous response
-  - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Background queue with operation tracking
-
-  **Response Mode Override:**
-  Use query parameter `?mode=sync|async` to override automatic strategy selection.
-
-  **Confidence Score Interpretation:**
-  - `0.9-1.0`: High confidence, agent is ideal match
-  - `0.7-0.9`: Good confidence, agent is suitable
-  - `0.5-0.7`: Moderate confidence, agent can handle but may not be optimal
-  - `0.3-0.5`: Low confidence, fallback agent used
-  - `<0.3`: Very low confidence, consider using specific agent endpoint
-
-  **Credit Costs:**
-  - Quick mode: 5-10 credits per query
-  - Standard mode: 15-25 credits per query
-  - Extended mode: 30-75 credits per query
-  - RAG enrichment: +5-15 credits (if enabled)
-
-  **Use Cases:**
-  - Ask questions without specifying agent type
-  - Get intelligent routing for complex multi-domain queries
-  - Leverage conversation history for contextual understanding
-  - Enable RAG for knowledge base enrichment
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Agents operate on the specified graph/subgraph's data independently. RAG enrichment
-  and knowledge base search are scoped to the specific graph/subgraph.
-
-  See request/response examples in the \"Examples\" dropdown below.
+   Routes to the best agent for your query. Agents: `financial` (SEC, accounting), `research` (deep
+  analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
+  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+  `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -384,66 +239,12 @@ async def asyncio(
   body: AgentRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> AgentResponse | Any | ErrorResponse | HTTPValidationError | None:
-  r"""Auto-select agent for query
+  """Auto-select Agent for Query
 
-   Automatically select the best agent for your query with intelligent execution strategy.
-
-  **Agent Selection Process:**
-
-  The orchestrator intelligently routes your query by:
-  1. Analyzing query intent and complexity
-  2. Enriching context with RAG if enabled
-  3. Evaluating all available agents against selection criteria
-  4. Selecting the best match based on confidence scores
-  5. Choosing execution strategy (sync/SSE/async) based on expected time
-  6. Executing the query with the selected agent
-
-  **Available Agent Types:**
-  - `financial`: Financial analysis, SEC filings, company metrics
-  - `research`: General research, data exploration, trend analysis
-  - `rag`: Knowledge base search using RAG enrichment
-
-  **Execution Modes:**
-  - `quick`: Fast responses (~2-5s), suitable for simple queries
-  - `standard`: Balanced approach (~5-15s), default mode
-  - `extended`: Comprehensive analysis (~15-60s), deep research
-  - `streaming`: Real-time response streaming
-
-  **Execution Strategies (automatic):**
-  - Fast operations (<5s): Immediate synchronous response
-  - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Background queue with operation tracking
-
-  **Response Mode Override:**
-  Use query parameter `?mode=sync|async` to override automatic strategy selection.
-
-  **Confidence Score Interpretation:**
-  - `0.9-1.0`: High confidence, agent is ideal match
-  - `0.7-0.9`: Good confidence, agent is suitable
-  - `0.5-0.7`: Moderate confidence, agent can handle but may not be optimal
-  - `0.3-0.5`: Low confidence, fallback agent used
-  - `<0.3`: Very low confidence, consider using specific agent endpoint
-
-  **Credit Costs:**
-  - Quick mode: 5-10 credits per query
-  - Standard mode: 15-25 credits per query
-  - Extended mode: 30-75 credits per query
-  - RAG enrichment: +5-15 credits (if enabled)
-
-  **Use Cases:**
-  - Ask questions without specifying agent type
-  - Get intelligent routing for complex multi-domain queries
-  - Leverage conversation history for contextual understanding
-  - Enable RAG for knowledge base enrichment
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Agents operate on the specified graph/subgraph's data independently. RAG enrichment
-  and knowledge base search are scoped to the specific graph/subgraph.
-
-  See request/response examples in the \"Examples\" dropdown below.
+   Routes to the best agent for your query. Agents: `financial` (SEC, accounting), `research` (deep
+  analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
+  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+  `?mode=sync|async`.
 
   Args:
       graph_id (str):

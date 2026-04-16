@@ -9,6 +9,7 @@ from ...client import AuthenticatedClient, Client
 from ...models.cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
 
@@ -29,18 +30,36 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | CancelOperationResponseCanceloperation | HTTPValidationError | None:
+) -> (
+  Any
+  | CancelOperationResponseCanceloperation
+  | ErrorResponse
+  | HTTPValidationError
+  | None
+):
   if response.status_code == 200:
     response_200 = CancelOperationResponseCanceloperation.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = cast(Any, None)
+    response_404 = ErrorResponse.from_dict(response.json())
+
     return response_404
 
   if response.status_code == 409:
@@ -52,8 +71,14 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -64,7 +89,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | CancelOperationResponseCanceloperation | HTTPValidationError]:
+) -> Response[
+  Any | CancelOperationResponseCanceloperation | ErrorResponse | HTTPValidationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -77,18 +104,13 @@ def sync_detailed(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | CancelOperationResponseCanceloperation | HTTPValidationError]:
+) -> Response[
+  Any | CancelOperationResponseCanceloperation | ErrorResponse | HTTPValidationError
+]:
   """Cancel Operation
 
-   Cancel a pending or running operation.
-
-  Cancels the specified operation if it's still in progress. Once cancelled,
-  the operation cannot be resumed and will emit a cancellation event to any
-  active SSE connections.
-
-  **Note**: Completed or already failed operations cannot be cancelled.
-
-  **No credits are consumed for cancellation requests.**
+   Cancels a pending or running operation. Emits a cancellation event to any active SSE connections.
+  Cannot cancel completed or failed operations.
 
   Args:
       operation_id (str): Operation identifier
@@ -98,7 +120,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | CancelOperationResponseCanceloperation | HTTPValidationError]
+      Response[Any | CancelOperationResponseCanceloperation | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -116,18 +138,17 @@ def sync(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | CancelOperationResponseCanceloperation | HTTPValidationError | None:
+) -> (
+  Any
+  | CancelOperationResponseCanceloperation
+  | ErrorResponse
+  | HTTPValidationError
+  | None
+):
   """Cancel Operation
 
-   Cancel a pending or running operation.
-
-  Cancels the specified operation if it's still in progress. Once cancelled,
-  the operation cannot be resumed and will emit a cancellation event to any
-  active SSE connections.
-
-  **Note**: Completed or already failed operations cannot be cancelled.
-
-  **No credits are consumed for cancellation requests.**
+   Cancels a pending or running operation. Emits a cancellation event to any active SSE connections.
+  Cannot cancel completed or failed operations.
 
   Args:
       operation_id (str): Operation identifier
@@ -137,7 +158,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | CancelOperationResponseCanceloperation | HTTPValidationError
+      Any | CancelOperationResponseCanceloperation | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -150,18 +171,13 @@ async def asyncio_detailed(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | CancelOperationResponseCanceloperation | HTTPValidationError]:
+) -> Response[
+  Any | CancelOperationResponseCanceloperation | ErrorResponse | HTTPValidationError
+]:
   """Cancel Operation
 
-   Cancel a pending or running operation.
-
-  Cancels the specified operation if it's still in progress. Once cancelled,
-  the operation cannot be resumed and will emit a cancellation event to any
-  active SSE connections.
-
-  **Note**: Completed or already failed operations cannot be cancelled.
-
-  **No credits are consumed for cancellation requests.**
+   Cancels a pending or running operation. Emits a cancellation event to any active SSE connections.
+  Cannot cancel completed or failed operations.
 
   Args:
       operation_id (str): Operation identifier
@@ -171,7 +187,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | CancelOperationResponseCanceloperation | HTTPValidationError]
+      Response[Any | CancelOperationResponseCanceloperation | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -187,18 +203,17 @@ async def asyncio(
   operation_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | CancelOperationResponseCanceloperation | HTTPValidationError | None:
+) -> (
+  Any
+  | CancelOperationResponseCanceloperation
+  | ErrorResponse
+  | HTTPValidationError
+  | None
+):
   """Cancel Operation
 
-   Cancel a pending or running operation.
-
-  Cancels the specified operation if it's still in progress. Once cancelled,
-  the operation cannot be resumed and will emit a cancellation event to any
-  active SSE connections.
-
-  **Note**: Completed or already failed operations cannot be cancelled.
-
-  **No credits are consumed for cancellation requests.**
+   Cancels a pending or running operation. Emits a cancellation event to any active SSE connections.
+  Cannot cancel completed or failed operations.
 
   Args:
       operation_id (str): Operation identifier
@@ -208,7 +223,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | CancelOperationResponseCanceloperation | HTTPValidationError
+      Any | CancelOperationResponseCanceloperation | ErrorResponse | HTTPValidationError
   """
 
   return (

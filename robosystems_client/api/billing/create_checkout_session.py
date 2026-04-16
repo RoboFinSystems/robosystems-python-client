@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 
 import httpx
 
@@ -7,6 +7,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.checkout_response import CheckoutResponse
 from ...models.create_checkout_request import CreateCheckoutRequest
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
 
@@ -32,16 +33,45 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> CheckoutResponse | HTTPValidationError | None:
+) -> Any | CheckoutResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 201:
     response_201 = CheckoutResponse.from_dict(response.json())
 
     return response_201
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 402:
+    response_402 = cast(Any, None)
+    return response_402
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -51,7 +81,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[CheckoutResponse | HTTPValidationError]:
+) -> Response[Any | CheckoutResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -64,26 +94,12 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateCheckoutRequest,
-) -> Response[CheckoutResponse | HTTPValidationError]:
+) -> Response[Any | CheckoutResponse | ErrorResponse | HTTPValidationError]:
   """Create Payment Checkout Session
 
-   Create a Stripe checkout session for collecting payment method.
-
-  This endpoint is used when an organization owner needs to add a payment method before
-  provisioning resources. It creates a pending subscription and redirects
-  to Stripe Checkout to collect payment details.
-
-  **Flow:**
-  1. Owner tries to create a graph but org has no payment method
-  2. Frontend calls this endpoint with graph configuration
-  3. Backend creates a subscription in PENDING_PAYMENT status for the user's org
-  4. Returns Stripe Checkout URL
-  5. User completes payment on Stripe
-  6. Webhook activates subscription and provisions resource
-
-  **Requirements:**
-  - User must be an OWNER of their organization
-  - Enterprise customers (with invoice_billing_enabled) should not call this endpoint.
+   Initiates a Stripe checkout session for payment collection. Creates a pending subscription; the
+  webhook activates it and provisions the resource after payment completes. Returns
+  billing_disabled=true with no URL when billing is off. Requires org owner role.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -93,7 +109,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[CheckoutResponse | HTTPValidationError]
+      Response[Any | CheckoutResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -111,26 +127,12 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: CreateCheckoutRequest,
-) -> CheckoutResponse | HTTPValidationError | None:
+) -> Any | CheckoutResponse | ErrorResponse | HTTPValidationError | None:
   """Create Payment Checkout Session
 
-   Create a Stripe checkout session for collecting payment method.
-
-  This endpoint is used when an organization owner needs to add a payment method before
-  provisioning resources. It creates a pending subscription and redirects
-  to Stripe Checkout to collect payment details.
-
-  **Flow:**
-  1. Owner tries to create a graph but org has no payment method
-  2. Frontend calls this endpoint with graph configuration
-  3. Backend creates a subscription in PENDING_PAYMENT status for the user's org
-  4. Returns Stripe Checkout URL
-  5. User completes payment on Stripe
-  6. Webhook activates subscription and provisions resource
-
-  **Requirements:**
-  - User must be an OWNER of their organization
-  - Enterprise customers (with invoice_billing_enabled) should not call this endpoint.
+   Initiates a Stripe checkout session for payment collection. Creates a pending subscription; the
+  webhook activates it and provisions the resource after payment completes. Returns
+  billing_disabled=true with no URL when billing is off. Requires org owner role.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -140,7 +142,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      CheckoutResponse | HTTPValidationError
+      Any | CheckoutResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -153,26 +155,12 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateCheckoutRequest,
-) -> Response[CheckoutResponse | HTTPValidationError]:
+) -> Response[Any | CheckoutResponse | ErrorResponse | HTTPValidationError]:
   """Create Payment Checkout Session
 
-   Create a Stripe checkout session for collecting payment method.
-
-  This endpoint is used when an organization owner needs to add a payment method before
-  provisioning resources. It creates a pending subscription and redirects
-  to Stripe Checkout to collect payment details.
-
-  **Flow:**
-  1. Owner tries to create a graph but org has no payment method
-  2. Frontend calls this endpoint with graph configuration
-  3. Backend creates a subscription in PENDING_PAYMENT status for the user's org
-  4. Returns Stripe Checkout URL
-  5. User completes payment on Stripe
-  6. Webhook activates subscription and provisions resource
-
-  **Requirements:**
-  - User must be an OWNER of their organization
-  - Enterprise customers (with invoice_billing_enabled) should not call this endpoint.
+   Initiates a Stripe checkout session for payment collection. Creates a pending subscription; the
+  webhook activates it and provisions the resource after payment completes. Returns
+  billing_disabled=true with no URL when billing is off. Requires org owner role.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -182,7 +170,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[CheckoutResponse | HTTPValidationError]
+      Response[Any | CheckoutResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -198,26 +186,12 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: CreateCheckoutRequest,
-) -> CheckoutResponse | HTTPValidationError | None:
+) -> Any | CheckoutResponse | ErrorResponse | HTTPValidationError | None:
   """Create Payment Checkout Session
 
-   Create a Stripe checkout session for collecting payment method.
-
-  This endpoint is used when an organization owner needs to add a payment method before
-  provisioning resources. It creates a pending subscription and redirects
-  to Stripe Checkout to collect payment details.
-
-  **Flow:**
-  1. Owner tries to create a graph but org has no payment method
-  2. Frontend calls this endpoint with graph configuration
-  3. Backend creates a subscription in PENDING_PAYMENT status for the user's org
-  4. Returns Stripe Checkout URL
-  5. User completes payment on Stripe
-  6. Webhook activates subscription and provisions resource
-
-  **Requirements:**
-  - User must be an OWNER of their organization
-  - Enterprise customers (with invoice_billing_enabled) should not call this endpoint.
+   Initiates a Stripe checkout session for payment collection. Creates a pending subscription; the
+  webhook activates it and provisions the resource after payment completes. Returns
+  billing_disabled=true with no URL when billing is off. Requires org owner role.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -227,7 +201,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      CheckoutResponse | HTTPValidationError
+      Any | CheckoutResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

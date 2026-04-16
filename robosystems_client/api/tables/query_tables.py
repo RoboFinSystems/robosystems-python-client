@@ -49,7 +49,8 @@ def _parse_response(
     return response_400
 
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
@@ -71,8 +72,14 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -98,69 +105,11 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: TableQueryRequest,
 ) -> Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]:
-  r"""Query Staging Tables with SQL
+  """Query Staging Tables with SQL
 
-   Execute SQL queries on DuckDB staging tables for data inspection and validation.
-
-  Query raw staging data directly with SQL before ingestion into the graph database.
-  Useful for data quality checks, validation, and exploratory analysis.
-
-  **Security Best Practice - Use Parameterized Queries:**
-  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
-  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
-  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
-  into SQL string
-
-  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
-  array.
-
-  **Use Cases:**
-  - Validate data quality before graph ingestion
-  - Inspect row-level data for debugging
-  - Run analytics on staging tables
-  - Check for duplicates, nulls, or data issues
-  - Preview data transformations
-
-  **Workflow:**
-  1. Upload data files via `POST /tables/{table_name}/files`
-  2. Query staging tables to validate: `POST /tables/query`
-  3. Fix any data issues by re-uploading
-  4. Ingest validated data: `POST /tables/ingest`
-
-  **Supported SQL:**
-  - Full DuckDB SQL syntax
-  - SELECT, JOIN, WHERE, GROUP BY, ORDER BY
-  - Aggregations, window functions, CTEs
-  - Multiple table joins across staging area
-
-  **Common Operations:**
-  - Count rows: `SELECT COUNT(*) FROM Entity`
-  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
-  [\"Company\", 100]`
-  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
-  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
-  COUNT(*) > 1`
-  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
-  [1000, \"2024-01-01\"]`
-
-  **Limits:**
-  - Query timeout: 30 seconds
-  - Result limit: 10,000 rows (use LIMIT clause)
-  - Read-only: No INSERT, UPDATE, DELETE
-  - User's tables only: Cannot query other users' data
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Each subgraph has its own independent staging tables.
-
-  **Shared Repositories:**
-  Shared repositories (SEC, etc.) do not allow direct SQL queries.
-  Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
-
-  **Note:**
-  Staging table queries are included - no credit consumption
+   Execute SQL against DuckDB staging tables for pre-ingestion validation. Use `?` placeholders with
+  the `parameters` array to prevent injection. Read-only (SELECT only), 30s timeout, 10K row limit.
+  Not allowed on shared repositories.
 
   Args:
       graph_id (str):
@@ -192,69 +141,11 @@ def sync(
   client: AuthenticatedClient,
   body: TableQueryRequest,
 ) -> Any | ErrorResponse | HTTPValidationError | TableQueryResponse | None:
-  r"""Query Staging Tables with SQL
+  """Query Staging Tables with SQL
 
-   Execute SQL queries on DuckDB staging tables for data inspection and validation.
-
-  Query raw staging data directly with SQL before ingestion into the graph database.
-  Useful for data quality checks, validation, and exploratory analysis.
-
-  **Security Best Practice - Use Parameterized Queries:**
-  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
-  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
-  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
-  into SQL string
-
-  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
-  array.
-
-  **Use Cases:**
-  - Validate data quality before graph ingestion
-  - Inspect row-level data for debugging
-  - Run analytics on staging tables
-  - Check for duplicates, nulls, or data issues
-  - Preview data transformations
-
-  **Workflow:**
-  1. Upload data files via `POST /tables/{table_name}/files`
-  2. Query staging tables to validate: `POST /tables/query`
-  3. Fix any data issues by re-uploading
-  4. Ingest validated data: `POST /tables/ingest`
-
-  **Supported SQL:**
-  - Full DuckDB SQL syntax
-  - SELECT, JOIN, WHERE, GROUP BY, ORDER BY
-  - Aggregations, window functions, CTEs
-  - Multiple table joins across staging area
-
-  **Common Operations:**
-  - Count rows: `SELECT COUNT(*) FROM Entity`
-  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
-  [\"Company\", 100]`
-  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
-  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
-  COUNT(*) > 1`
-  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
-  [1000, \"2024-01-01\"]`
-
-  **Limits:**
-  - Query timeout: 30 seconds
-  - Result limit: 10,000 rows (use LIMIT clause)
-  - Read-only: No INSERT, UPDATE, DELETE
-  - User's tables only: Cannot query other users' data
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Each subgraph has its own independent staging tables.
-
-  **Shared Repositories:**
-  Shared repositories (SEC, etc.) do not allow direct SQL queries.
-  Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
-
-  **Note:**
-  Staging table queries are included - no credit consumption
+   Execute SQL against DuckDB staging tables for pre-ingestion validation. Use `?` placeholders with
+  the `parameters` array to prevent injection. Read-only (SELECT only), 30s timeout, 10K row limit.
+  Not allowed on shared repositories.
 
   Args:
       graph_id (str):
@@ -281,69 +172,11 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: TableQueryRequest,
 ) -> Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]:
-  r"""Query Staging Tables with SQL
+  """Query Staging Tables with SQL
 
-   Execute SQL queries on DuckDB staging tables for data inspection and validation.
-
-  Query raw staging data directly with SQL before ingestion into the graph database.
-  Useful for data quality checks, validation, and exploratory analysis.
-
-  **Security Best Practice - Use Parameterized Queries:**
-  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
-  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
-  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
-  into SQL string
-
-  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
-  array.
-
-  **Use Cases:**
-  - Validate data quality before graph ingestion
-  - Inspect row-level data for debugging
-  - Run analytics on staging tables
-  - Check for duplicates, nulls, or data issues
-  - Preview data transformations
-
-  **Workflow:**
-  1. Upload data files via `POST /tables/{table_name}/files`
-  2. Query staging tables to validate: `POST /tables/query`
-  3. Fix any data issues by re-uploading
-  4. Ingest validated data: `POST /tables/ingest`
-
-  **Supported SQL:**
-  - Full DuckDB SQL syntax
-  - SELECT, JOIN, WHERE, GROUP BY, ORDER BY
-  - Aggregations, window functions, CTEs
-  - Multiple table joins across staging area
-
-  **Common Operations:**
-  - Count rows: `SELECT COUNT(*) FROM Entity`
-  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
-  [\"Company\", 100]`
-  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
-  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
-  COUNT(*) > 1`
-  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
-  [1000, \"2024-01-01\"]`
-
-  **Limits:**
-  - Query timeout: 30 seconds
-  - Result limit: 10,000 rows (use LIMIT clause)
-  - Read-only: No INSERT, UPDATE, DELETE
-  - User's tables only: Cannot query other users' data
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Each subgraph has its own independent staging tables.
-
-  **Shared Repositories:**
-  Shared repositories (SEC, etc.) do not allow direct SQL queries.
-  Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
-
-  **Note:**
-  Staging table queries are included - no credit consumption
+   Execute SQL against DuckDB staging tables for pre-ingestion validation. Use `?` placeholders with
+  the `parameters` array to prevent injection. Read-only (SELECT only), 30s timeout, 10K row limit.
+  Not allowed on shared repositories.
 
   Args:
       graph_id (str):
@@ -373,69 +206,11 @@ async def asyncio(
   client: AuthenticatedClient,
   body: TableQueryRequest,
 ) -> Any | ErrorResponse | HTTPValidationError | TableQueryResponse | None:
-  r"""Query Staging Tables with SQL
+  """Query Staging Tables with SQL
 
-   Execute SQL queries on DuckDB staging tables for data inspection and validation.
-
-  Query raw staging data directly with SQL before ingestion into the graph database.
-  Useful for data quality checks, validation, and exploratory analysis.
-
-  **Security Best Practice - Use Parameterized Queries:**
-  ALWAYS use query parameters instead of string concatenation to prevent SQL injection:
-  - ✅ SAFE: `SELECT * FROM Entity WHERE type = ? LIMIT ?` with `parameters: [\"Company\", 100]`
-  - ❌ UNSAFE: `SELECT * FROM Entity WHERE type = 'Company' LIMIT 100` with user input concatenated
-  into SQL string
-
-  Query parameters provide automatic escaping and type safety. Use `?` placeholders with parameters
-  array.
-
-  **Use Cases:**
-  - Validate data quality before graph ingestion
-  - Inspect row-level data for debugging
-  - Run analytics on staging tables
-  - Check for duplicates, nulls, or data issues
-  - Preview data transformations
-
-  **Workflow:**
-  1. Upload data files via `POST /tables/{table_name}/files`
-  2. Query staging tables to validate: `POST /tables/query`
-  3. Fix any data issues by re-uploading
-  4. Ingest validated data: `POST /tables/ingest`
-
-  **Supported SQL:**
-  - Full DuckDB SQL syntax
-  - SELECT, JOIN, WHERE, GROUP BY, ORDER BY
-  - Aggregations, window functions, CTEs
-  - Multiple table joins across staging area
-
-  **Common Operations:**
-  - Count rows: `SELECT COUNT(*) FROM Entity`
-  - Filter by type: `SELECT * FROM Entity WHERE entity_type = ? LIMIT ?` with `parameters:
-  [\"Company\", 100]`
-  - Check for nulls: `SELECT * FROM Entity WHERE name IS NULL LIMIT 10`
-  - Find duplicates: `SELECT identifier, COUNT(*) as cnt FROM Entity GROUP BY identifier HAVING
-  COUNT(*) > 1`
-  - Filter amounts: `SELECT * FROM Transaction WHERE amount > ? AND date >= ?` with `parameters:
-  [1000, \"2024-01-01\"]`
-
-  **Limits:**
-  - Query timeout: 30 seconds
-  - Result limit: 10,000 rows (use LIMIT clause)
-  - Read-only: No INSERT, UPDATE, DELETE
-  - User's tables only: Cannot query other users' data
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Each subgraph has its own independent staging tables.
-
-  **Shared Repositories:**
-  Shared repositories (SEC, etc.) do not allow direct SQL queries.
-  Use the graph query endpoint instead: `POST /v1/graphs/{graph_id}/query`
-
-  **Note:**
-  Staging table queries are included - no credit consumption
+   Execute SQL against DuckDB staging tables for pre-ingestion validation. Use `?` placeholders with
+  the `parameters` array to prevent injection. Read-only (SELECT only), 30s timeout, 10K row limit.
+  Not allowed on shared repositories.
 
   Args:
       graph_id (str):

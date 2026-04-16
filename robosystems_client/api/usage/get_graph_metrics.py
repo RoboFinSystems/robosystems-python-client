@@ -34,6 +34,16 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
@@ -48,6 +58,11 @@ def _parse_response(
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -78,24 +93,6 @@ def sync_detailed(
 ) -> Response[ErrorResponse | GraphMetricsResponse | HTTPValidationError]:
   """Get Graph Metrics
 
-   Get comprehensive metrics for the graph database.
-
-  Provides detailed analytics including:
-  - **Node Statistics**: Counts by type (Entity, Report, Account, Transaction)
-  - **Relationship Metrics**: Connection counts and patterns
-  - **Data Quality**: Completeness scores and validation results
-  - **Performance Metrics**: Query response times and database health
-  - **Storage Analytics**: Database size and growth trends
-
-  This data helps with:
-  - Monitoring data completeness
-  - Identifying data quality issues
-  - Capacity planning
-  - Performance optimization
-
-  Note:
-  This operation is included - no credit consumption required.
-
   Args:
       graph_id (str):
 
@@ -125,24 +122,6 @@ def sync(
 ) -> ErrorResponse | GraphMetricsResponse | HTTPValidationError | None:
   """Get Graph Metrics
 
-   Get comprehensive metrics for the graph database.
-
-  Provides detailed analytics including:
-  - **Node Statistics**: Counts by type (Entity, Report, Account, Transaction)
-  - **Relationship Metrics**: Connection counts and patterns
-  - **Data Quality**: Completeness scores and validation results
-  - **Performance Metrics**: Query response times and database health
-  - **Storage Analytics**: Database size and growth trends
-
-  This data helps with:
-  - Monitoring data completeness
-  - Identifying data quality issues
-  - Capacity planning
-  - Performance optimization
-
-  Note:
-  This operation is included - no credit consumption required.
-
   Args:
       graph_id (str):
 
@@ -166,24 +145,6 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
 ) -> Response[ErrorResponse | GraphMetricsResponse | HTTPValidationError]:
   """Get Graph Metrics
-
-   Get comprehensive metrics for the graph database.
-
-  Provides detailed analytics including:
-  - **Node Statistics**: Counts by type (Entity, Report, Account, Transaction)
-  - **Relationship Metrics**: Connection counts and patterns
-  - **Data Quality**: Completeness scores and validation results
-  - **Performance Metrics**: Query response times and database health
-  - **Storage Analytics**: Database size and growth trends
-
-  This data helps with:
-  - Monitoring data completeness
-  - Identifying data quality issues
-  - Capacity planning
-  - Performance optimization
-
-  Note:
-  This operation is included - no credit consumption required.
 
   Args:
       graph_id (str):
@@ -211,24 +172,6 @@ async def asyncio(
   client: AuthenticatedClient,
 ) -> ErrorResponse | GraphMetricsResponse | HTTPValidationError | None:
   """Get Graph Metrics
-
-   Get comprehensive metrics for the graph database.
-
-  Provides detailed analytics including:
-  - **Node Statistics**: Counts by type (Entity, Report, Account, Transaction)
-  - **Relationship Metrics**: Connection counts and patterns
-  - **Data Quality**: Completeness scores and validation results
-  - **Performance Metrics**: Query response times and database health
-  - **Storage Analytics**: Database size and growth trends
-
-  This data helps with:
-  - Monitoring data completeness
-  - Identifying data quality issues
-  - Capacity planning
-  - Performance optimization
-
-  Note:
-  This operation is included - no credit consumption required.
 
   Args:
       graph_id (str):

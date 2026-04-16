@@ -28,6 +28,16 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
 
@@ -56,28 +66,8 @@ def sync_detailed(
 ) -> Response[ErrorResponse | ServiceOfferingsResponse]:
   """Get Service Offerings
 
-   Get comprehensive information about all subscription offerings.
-
-  This endpoint provides complete information about both graph database subscriptions
-  and shared repository subscriptions. This is the primary endpoint for frontend
-  applications to display subscription options.
-
-  **Pricing Model:**
-  - Graph subscriptions are **per-graph** with infrastructure-based pricing
-  - Each graph you create has its own monthly subscription
-  - Organizations can have multiple graphs with different infrastructure tiers
-  - Credits are allocated per-graph, not shared across organization
-
-  Includes:
-  - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
-  - Shared repository subscriptions - org-level
-  - Operation costs and credit information
-  - Features and capabilities for each tier
-  - Enabled/disabled status for repositories
-
-  All data comes from the config-based systems to ensure accuracy with backend behavior.
-
-  No authentication required - this is public service information.
+   Returns all subscription tiers, shared repository plans, and AI credit costs. No authentication
+  required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -102,28 +92,8 @@ def sync(
 ) -> ErrorResponse | ServiceOfferingsResponse | None:
   """Get Service Offerings
 
-   Get comprehensive information about all subscription offerings.
-
-  This endpoint provides complete information about both graph database subscriptions
-  and shared repository subscriptions. This is the primary endpoint for frontend
-  applications to display subscription options.
-
-  **Pricing Model:**
-  - Graph subscriptions are **per-graph** with infrastructure-based pricing
-  - Each graph you create has its own monthly subscription
-  - Organizations can have multiple graphs with different infrastructure tiers
-  - Credits are allocated per-graph, not shared across organization
-
-  Includes:
-  - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
-  - Shared repository subscriptions - org-level
-  - Operation costs and credit information
-  - Features and capabilities for each tier
-  - Enabled/disabled status for repositories
-
-  All data comes from the config-based systems to ensure accuracy with backend behavior.
-
-  No authentication required - this is public service information.
+   Returns all subscription tiers, shared repository plans, and AI credit costs. No authentication
+  required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -144,28 +114,8 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | ServiceOfferingsResponse]:
   """Get Service Offerings
 
-   Get comprehensive information about all subscription offerings.
-
-  This endpoint provides complete information about both graph database subscriptions
-  and shared repository subscriptions. This is the primary endpoint for frontend
-  applications to display subscription options.
-
-  **Pricing Model:**
-  - Graph subscriptions are **per-graph** with infrastructure-based pricing
-  - Each graph you create has its own monthly subscription
-  - Organizations can have multiple graphs with different infrastructure tiers
-  - Credits are allocated per-graph, not shared across organization
-
-  Includes:
-  - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
-  - Shared repository subscriptions - org-level
-  - Operation costs and credit information
-  - Features and capabilities for each tier
-  - Enabled/disabled status for repositories
-
-  All data comes from the config-based systems to ensure accuracy with backend behavior.
-
-  No authentication required - this is public service information.
+   Returns all subscription tiers, shared repository plans, and AI credit costs. No authentication
+  required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -188,28 +138,8 @@ async def asyncio(
 ) -> ErrorResponse | ServiceOfferingsResponse | None:
   """Get Service Offerings
 
-   Get comprehensive information about all subscription offerings.
-
-  This endpoint provides complete information about both graph database subscriptions
-  and shared repository subscriptions. This is the primary endpoint for frontend
-  applications to display subscription options.
-
-  **Pricing Model:**
-  - Graph subscriptions are **per-graph** with infrastructure-based pricing
-  - Each graph you create has its own monthly subscription
-  - Organizations can have multiple graphs with different infrastructure tiers
-  - Credits are allocated per-graph, not shared across organization
-
-  Includes:
-  - Graph infrastructure tiers (ladybug-standard, ladybug-large, ladybug-xlarge) - per-graph pricing
-  - Shared repository subscriptions - org-level
-  - Operation costs and credit information
-  - Features and capabilities for each tier
-  - Enabled/disabled status for repositories
-
-  All data comes from the config-based systems to ensure accuracy with backend behavior.
-
-  No authentication required - this is public service information.
+   Returns all subscription tiers, shared repository plans, and AI credit costs. No authentication
+  required.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

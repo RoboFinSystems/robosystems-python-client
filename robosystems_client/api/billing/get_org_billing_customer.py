@@ -7,6 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.billing_customer import BillingCustomer
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
 
@@ -27,16 +28,46 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> BillingCustomer | HTTPValidationError | None:
+) -> BillingCustomer | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = BillingCustomer.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -46,7 +77,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[BillingCustomer | HTTPValidationError]:
+) -> Response[BillingCustomer | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -59,16 +90,10 @@ def sync_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[BillingCustomer | HTTPValidationError]:
+) -> Response[BillingCustomer | ErrorResponse | HTTPValidationError]:
   """Get Organization Customer Info
 
-   Get billing customer information for an organization including payment methods on file.
-
-  Returns customer details, payment methods, and whether invoice billing is enabled.
-
-  **Requirements:**
-  - User must be a member of the organization
-  - Sensitive payment details are only visible to owners
+   Payment method details are only visible to org owners.
 
   Args:
       org_id (str):
@@ -78,7 +103,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[BillingCustomer | HTTPValidationError]
+      Response[BillingCustomer | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -96,16 +121,10 @@ def sync(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> BillingCustomer | HTTPValidationError | None:
+) -> BillingCustomer | ErrorResponse | HTTPValidationError | None:
   """Get Organization Customer Info
 
-   Get billing customer information for an organization including payment methods on file.
-
-  Returns customer details, payment methods, and whether invoice billing is enabled.
-
-  **Requirements:**
-  - User must be a member of the organization
-  - Sensitive payment details are only visible to owners
+   Payment method details are only visible to org owners.
 
   Args:
       org_id (str):
@@ -115,7 +134,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      BillingCustomer | HTTPValidationError
+      BillingCustomer | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -128,16 +147,10 @@ async def asyncio_detailed(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[BillingCustomer | HTTPValidationError]:
+) -> Response[BillingCustomer | ErrorResponse | HTTPValidationError]:
   """Get Organization Customer Info
 
-   Get billing customer information for an organization including payment methods on file.
-
-  Returns customer details, payment methods, and whether invoice billing is enabled.
-
-  **Requirements:**
-  - User must be a member of the organization
-  - Sensitive payment details are only visible to owners
+   Payment method details are only visible to org owners.
 
   Args:
       org_id (str):
@@ -147,7 +160,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[BillingCustomer | HTTPValidationError]
+      Response[BillingCustomer | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -163,16 +176,10 @@ async def asyncio(
   org_id: str,
   *,
   client: AuthenticatedClient,
-) -> BillingCustomer | HTTPValidationError | None:
+) -> BillingCustomer | ErrorResponse | HTTPValidationError | None:
   """Get Organization Customer Info
 
-   Get billing customer information for an organization including payment methods on file.
-
-  Returns customer details, payment methods, and whether invoice billing is enabled.
-
-  **Requirements:**
-  - User must be a member of the organization
-  - Sensitive payment details are only visible to owners
+   Payment method details are only visible to org owners.
 
   Args:
       org_id (str):
@@ -182,7 +189,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      BillingCustomer | HTTPValidationError
+      BillingCustomer | ErrorResponse | HTTPValidationError
   """
 
   return (

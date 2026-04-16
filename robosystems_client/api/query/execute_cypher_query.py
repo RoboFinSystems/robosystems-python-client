@@ -7,7 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.cypher_query_request import CypherQueryRequest
-from ...models.execute_cypher_query_response_200 import ExecuteCypherQueryResponse200
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.response_mode import ResponseMode
 from ...types import UNSET, Response, Unset
@@ -63,16 +63,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | ExecuteCypherQueryResponse200 | HTTPValidationError | None:
+) -> Any | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
-    content_type = response.headers.get("content-type", "")
-    if (
-      "application/x-ndjson" in content_type
-      or response.headers.get("x-stream-format") == "ndjson"
-    ):
-      return None
-    response_200 = ExecuteCypherQueryResponse200.from_dict(response.json())
-
+    response_200 = response.json()
     return response_200
 
   if response.status_code == 202:
@@ -80,12 +73,24 @@ def _parse_response(
     return response_202
 
   if response.status_code == 400:
-    response_400 = cast(Any, None)
+    response_400 = ErrorResponse.from_dict(response.json())
+
     return response_400
 
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
 
   if response.status_code == 408:
     response_408 = cast(Any, None)
@@ -97,11 +102,13 @@ def _parse_response(
     return response_422
 
   if response.status_code == 429:
-    response_429 = cast(Any, None)
+    response_429 = ErrorResponse.from_dict(response.json())
+
     return response_429
 
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if response.status_code == 503:
@@ -116,7 +123,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -133,81 +140,13 @@ def sync_detailed(
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
-) -> Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError]:
   r"""Execute Cypher Query
 
-   Execute a Cypher query with intelligent response optimization.
-
-  **IMPORTANT: Write operations depend on graph type:**
-  - **Main Graphs**: READ-ONLY. Write operations (CREATE, MERGE, SET, DELETE) are not allowed.
-  - **Subgraphs**: WRITE-ENABLED. Full Cypher write operations are supported for development and
-  report creation.
-
-  To load data into main graphs, use the staging pipeline:
-  1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
-  2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
-
-  **Security Best Practice - Use Parameterized Queries:**
-  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
-  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
-  \"Company\"}`
-  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
-  string
-
-  Query parameters provide automatic escaping and type safety. All examples in this API use
-  parameterized queries.
-
-  This endpoint automatically selects the best execution strategy based on:
-  - Query characteristics (size, complexity)
-  - Client capabilities (SSE, NDJSON, JSON)
-  - System load (queue status, concurrent queries)
-  - User preferences (mode parameter, headers)
-
-  **Response Modes:**
-  - `auto` (default): Intelligent automatic selection
-  - `sync`: Force synchronous JSON response (best for testing)
-  - `async`: Force queued response with SSE monitoring endpoints (no polling needed)
-  - `stream`: Force streaming response (SSE or NDJSON)
-
-  **Client Detection:**
-  - Automatically detects testing tools (Postman, Swagger UI)
-  - Adjusts behavior for better interactive experience
-  - Respects Accept and Prefer headers for capabilities
-
-  **Streaming Support (SSE):**
-  - Real-time events with progress updates
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation if event system unavailable
-  - 30-second keepalive to prevent timeouts
-
-  **Streaming Support (NDJSON):**
-  - Efficient line-delimited JSON for large results
-  - Automatic chunking (configurable 10-10000 rows)
-  - No connection limits (stateless streaming)
-
-  **Queue Management:**
-  - Automatic queuing under high load
-  - Real-time monitoring via SSE events (no polling needed)
-  - Priority based on subscription tier
-  - Queue position and progress updates pushed via SSE
-  - Connect to returned `/v1/operations/{id}/stream` endpoint for updates
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Rate limit or connection limit exceeded
-  - `503 Service Unavailable`: Circuit breaker open or SSE disabled
-  - Clients should implement exponential backoff
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Subgraphs share the same instance as their parent graph and have independent data.
-
-  **Note:**
-  Query operations are included - no credit consumption required.
-  Queue position is based on subscription tier for priority.
+   Main graphs are **read-only** — use the staging pipeline to ingest data. Subgraphs support full
+  writes. Always use parameterized queries (`parameters: {\"key\": \"val\"}`) to prevent injection.
+  Response modes: `auto` (default), `sync`, `async`, `stream`. Under load, queries are queued and emit
+  an `operation_id` for SSE monitoring at `/v1/operations/{id}/stream`.
 
   Args:
       graph_id (str):
@@ -221,7 +160,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -247,81 +186,13 @@ def sync(
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
-) -> Any | ExecuteCypherQueryResponse200 | HTTPValidationError | None:
+) -> Any | ErrorResponse | HTTPValidationError | None:
   r"""Execute Cypher Query
 
-   Execute a Cypher query with intelligent response optimization.
-
-  **IMPORTANT: Write operations depend on graph type:**
-  - **Main Graphs**: READ-ONLY. Write operations (CREATE, MERGE, SET, DELETE) are not allowed.
-  - **Subgraphs**: WRITE-ENABLED. Full Cypher write operations are supported for development and
-  report creation.
-
-  To load data into main graphs, use the staging pipeline:
-  1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
-  2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
-
-  **Security Best Practice - Use Parameterized Queries:**
-  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
-  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
-  \"Company\"}`
-  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
-  string
-
-  Query parameters provide automatic escaping and type safety. All examples in this API use
-  parameterized queries.
-
-  This endpoint automatically selects the best execution strategy based on:
-  - Query characteristics (size, complexity)
-  - Client capabilities (SSE, NDJSON, JSON)
-  - System load (queue status, concurrent queries)
-  - User preferences (mode parameter, headers)
-
-  **Response Modes:**
-  - `auto` (default): Intelligent automatic selection
-  - `sync`: Force synchronous JSON response (best for testing)
-  - `async`: Force queued response with SSE monitoring endpoints (no polling needed)
-  - `stream`: Force streaming response (SSE or NDJSON)
-
-  **Client Detection:**
-  - Automatically detects testing tools (Postman, Swagger UI)
-  - Adjusts behavior for better interactive experience
-  - Respects Accept and Prefer headers for capabilities
-
-  **Streaming Support (SSE):**
-  - Real-time events with progress updates
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation if event system unavailable
-  - 30-second keepalive to prevent timeouts
-
-  **Streaming Support (NDJSON):**
-  - Efficient line-delimited JSON for large results
-  - Automatic chunking (configurable 10-10000 rows)
-  - No connection limits (stateless streaming)
-
-  **Queue Management:**
-  - Automatic queuing under high load
-  - Real-time monitoring via SSE events (no polling needed)
-  - Priority based on subscription tier
-  - Queue position and progress updates pushed via SSE
-  - Connect to returned `/v1/operations/{id}/stream` endpoint for updates
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Rate limit or connection limit exceeded
-  - `503 Service Unavailable`: Circuit breaker open or SSE disabled
-  - Clients should implement exponential backoff
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Subgraphs share the same instance as their parent graph and have independent data.
-
-  **Note:**
-  Query operations are included - no credit consumption required.
-  Queue position is based on subscription tier for priority.
+   Main graphs are **read-only** — use the staging pipeline to ingest data. Subgraphs support full
+  writes. Always use parameterized queries (`parameters: {\"key\": \"val\"}`) to prevent injection.
+  Response modes: `auto` (default), `sync`, `async`, `stream`. Under load, queries are queued and emit
+  an `operation_id` for SSE monitoring at `/v1/operations/{id}/stream`.
 
   Args:
       graph_id (str):
@@ -335,7 +206,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ExecuteCypherQueryResponse200 | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -356,81 +227,13 @@ async def asyncio_detailed(
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
-) -> Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError]:
   r"""Execute Cypher Query
 
-   Execute a Cypher query with intelligent response optimization.
-
-  **IMPORTANT: Write operations depend on graph type:**
-  - **Main Graphs**: READ-ONLY. Write operations (CREATE, MERGE, SET, DELETE) are not allowed.
-  - **Subgraphs**: WRITE-ENABLED. Full Cypher write operations are supported for development and
-  report creation.
-
-  To load data into main graphs, use the staging pipeline:
-  1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
-  2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
-
-  **Security Best Practice - Use Parameterized Queries:**
-  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
-  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
-  \"Company\"}`
-  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
-  string
-
-  Query parameters provide automatic escaping and type safety. All examples in this API use
-  parameterized queries.
-
-  This endpoint automatically selects the best execution strategy based on:
-  - Query characteristics (size, complexity)
-  - Client capabilities (SSE, NDJSON, JSON)
-  - System load (queue status, concurrent queries)
-  - User preferences (mode parameter, headers)
-
-  **Response Modes:**
-  - `auto` (default): Intelligent automatic selection
-  - `sync`: Force synchronous JSON response (best for testing)
-  - `async`: Force queued response with SSE monitoring endpoints (no polling needed)
-  - `stream`: Force streaming response (SSE or NDJSON)
-
-  **Client Detection:**
-  - Automatically detects testing tools (Postman, Swagger UI)
-  - Adjusts behavior for better interactive experience
-  - Respects Accept and Prefer headers for capabilities
-
-  **Streaming Support (SSE):**
-  - Real-time events with progress updates
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation if event system unavailable
-  - 30-second keepalive to prevent timeouts
-
-  **Streaming Support (NDJSON):**
-  - Efficient line-delimited JSON for large results
-  - Automatic chunking (configurable 10-10000 rows)
-  - No connection limits (stateless streaming)
-
-  **Queue Management:**
-  - Automatic queuing under high load
-  - Real-time monitoring via SSE events (no polling needed)
-  - Priority based on subscription tier
-  - Queue position and progress updates pushed via SSE
-  - Connect to returned `/v1/operations/{id}/stream` endpoint for updates
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Rate limit or connection limit exceeded
-  - `503 Service Unavailable`: Circuit breaker open or SSE disabled
-  - Clients should implement exponential backoff
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Subgraphs share the same instance as their parent graph and have independent data.
-
-  **Note:**
-  Query operations are included - no credit consumption required.
-  Queue position is based on subscription tier for priority.
+   Main graphs are **read-only** — use the staging pipeline to ingest data. Subgraphs support full
+  writes. Always use parameterized queries (`parameters: {\"key\": \"val\"}`) to prevent injection.
+  Response modes: `auto` (default), `sync`, `async`, `stream`. Under load, queries are queued and emit
+  an `operation_id` for SSE monitoring at `/v1/operations/{id}/stream`.
 
   Args:
       graph_id (str):
@@ -444,7 +247,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ExecuteCypherQueryResponse200 | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -468,81 +271,13 @@ async def asyncio(
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
-) -> Any | ExecuteCypherQueryResponse200 | HTTPValidationError | None:
+) -> Any | ErrorResponse | HTTPValidationError | None:
   r"""Execute Cypher Query
 
-   Execute a Cypher query with intelligent response optimization.
-
-  **IMPORTANT: Write operations depend on graph type:**
-  - **Main Graphs**: READ-ONLY. Write operations (CREATE, MERGE, SET, DELETE) are not allowed.
-  - **Subgraphs**: WRITE-ENABLED. Full Cypher write operations are supported for development and
-  report creation.
-
-  To load data into main graphs, use the staging pipeline:
-  1. Create file upload: `POST /v1/graphs/{graph_id}/tables/{table_name}/files`
-  2. Ingest to graph: `POST /v1/graphs/{graph_id}/tables/ingest`
-
-  **Security Best Practice - Use Parameterized Queries:**
-  ALWAYS use query parameters instead of string interpolation to prevent injection attacks:
-  - ✅ SAFE: `MATCH (n:Entity {type: $entity_type}) RETURN n` with `parameters: {\"entity_type\":
-  \"Company\"}`
-  - ❌ UNSAFE: `MATCH (n:Entity {type: \"Company\"}) RETURN n` with user input concatenated into query
-  string
-
-  Query parameters provide automatic escaping and type safety. All examples in this API use
-  parameterized queries.
-
-  This endpoint automatically selects the best execution strategy based on:
-  - Query characteristics (size, complexity)
-  - Client capabilities (SSE, NDJSON, JSON)
-  - System load (queue status, concurrent queries)
-  - User preferences (mode parameter, headers)
-
-  **Response Modes:**
-  - `auto` (default): Intelligent automatic selection
-  - `sync`: Force synchronous JSON response (best for testing)
-  - `async`: Force queued response with SSE monitoring endpoints (no polling needed)
-  - `stream`: Force streaming response (SSE or NDJSON)
-
-  **Client Detection:**
-  - Automatically detects testing tools (Postman, Swagger UI)
-  - Adjusts behavior for better interactive experience
-  - Respects Accept and Prefer headers for capabilities
-
-  **Streaming Support (SSE):**
-  - Real-time events with progress updates
-  - Maximum 5 concurrent SSE connections per user
-  - Rate limited to 10 new connections per minute
-  - Automatic circuit breaker for Redis failures
-  - Graceful degradation if event system unavailable
-  - 30-second keepalive to prevent timeouts
-
-  **Streaming Support (NDJSON):**
-  - Efficient line-delimited JSON for large results
-  - Automatic chunking (configurable 10-10000 rows)
-  - No connection limits (stateless streaming)
-
-  **Queue Management:**
-  - Automatic queuing under high load
-  - Real-time monitoring via SSE events (no polling needed)
-  - Priority based on subscription tier
-  - Queue position and progress updates pushed via SSE
-  - Connect to returned `/v1/operations/{id}/stream` endpoint for updates
-
-  **Error Handling:**
-  - `429 Too Many Requests`: Rate limit or connection limit exceeded
-  - `503 Service Unavailable`: Circuit breaker open or SSE disabled
-  - Clients should implement exponential backoff
-
-  **Subgraph Support:**
-  This endpoint accepts both parent graph IDs and subgraph IDs.
-  - Parent graph: Use `graph_id` like `kg0123456789abcdef`
-  - Subgraph: Use full subgraph ID like `kg0123456789abcdef_dev`
-  Subgraphs share the same instance as their parent graph and have independent data.
-
-  **Note:**
-  Query operations are included - no credit consumption required.
-  Queue position is based on subscription tier for priority.
+   Main graphs are **read-only** — use the staging pipeline to ingest data. Subgraphs support full
+  writes. Always use parameterized queries (`parameters: {\"key\": \"val\"}`) to prevent injection.
+  Response modes: `auto` (default), `sync`, `async`, `stream`. Under load, queries are queued and emit
+  an `operation_id` for SSE monitoring at `/v1/operations/{id}/stream`.
 
   Args:
       graph_id (str):
@@ -556,7 +291,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ExecuteCypherQueryResponse200 | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError
   """
 
   return (

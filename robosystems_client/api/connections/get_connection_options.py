@@ -34,15 +34,35 @@ def _parse_response(
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
 
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -73,21 +93,8 @@ def sync_detailed(
 ) -> Response[ConnectionOptionsResponse | ErrorResponse | HTTPValidationError]:
   """List Connection Options
 
-   Get metadata about all available data connection providers.
-
-  This endpoint returns comprehensive information about each supported provider:
-
-  **SEC EDGAR**: Public entity financial filings
-  - No authentication required (public data)
-  - 10-K, 10-Q, 8-K reports with XBRL data
-  - Historical and real-time filing access
-
-  **QuickBooks Online**: Full accounting system integration
-  - OAuth 2.0 authentication
-  - Chart of accounts, transactions, trial balance
-  - Real-time sync capabilities
-
-  No credits are consumed for viewing connection options.
+   Returns available providers and their requirements. Only enabled providers are included (gated by
+  feature flags). SEC requires no auth; QuickBooks requires OAuth 2.0.
 
   Args:
       graph_id (str):
@@ -118,21 +125,8 @@ def sync(
 ) -> ConnectionOptionsResponse | ErrorResponse | HTTPValidationError | None:
   """List Connection Options
 
-   Get metadata about all available data connection providers.
-
-  This endpoint returns comprehensive information about each supported provider:
-
-  **SEC EDGAR**: Public entity financial filings
-  - No authentication required (public data)
-  - 10-K, 10-Q, 8-K reports with XBRL data
-  - Historical and real-time filing access
-
-  **QuickBooks Online**: Full accounting system integration
-  - OAuth 2.0 authentication
-  - Chart of accounts, transactions, trial balance
-  - Real-time sync capabilities
-
-  No credits are consumed for viewing connection options.
+   Returns available providers and their requirements. Only enabled providers are included (gated by
+  feature flags). SEC requires no auth; QuickBooks requires OAuth 2.0.
 
   Args:
       graph_id (str):
@@ -158,21 +152,8 @@ async def asyncio_detailed(
 ) -> Response[ConnectionOptionsResponse | ErrorResponse | HTTPValidationError]:
   """List Connection Options
 
-   Get metadata about all available data connection providers.
-
-  This endpoint returns comprehensive information about each supported provider:
-
-  **SEC EDGAR**: Public entity financial filings
-  - No authentication required (public data)
-  - 10-K, 10-Q, 8-K reports with XBRL data
-  - Historical and real-time filing access
-
-  **QuickBooks Online**: Full accounting system integration
-  - OAuth 2.0 authentication
-  - Chart of accounts, transactions, trial balance
-  - Real-time sync capabilities
-
-  No credits are consumed for viewing connection options.
+   Returns available providers and their requirements. Only enabled providers are included (gated by
+  feature flags). SEC requires no auth; QuickBooks requires OAuth 2.0.
 
   Args:
       graph_id (str):
@@ -201,21 +182,8 @@ async def asyncio(
 ) -> ConnectionOptionsResponse | ErrorResponse | HTTPValidationError | None:
   """List Connection Options
 
-   Get metadata about all available data connection providers.
-
-  This endpoint returns comprehensive information about each supported provider:
-
-  **SEC EDGAR**: Public entity financial filings
-  - No authentication required (public data)
-  - 10-K, 10-Q, 8-K reports with XBRL data
-  - Historical and real-time filing access
-
-  **QuickBooks Online**: Full accounting system integration
-  - OAuth 2.0 authentication
-  - Chart of accounts, transactions, trial balance
-  - Real-time sync capabilities
-
-  No credits are consumed for viewing connection options.
+   Returns available providers and their requirements. Only enabled providers are included (gated by
+  feature flags). SEC requires no auth; QuickBooks requires OAuth 2.0.
 
   Args:
       graph_id (str):

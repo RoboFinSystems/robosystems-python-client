@@ -1,10 +1,11 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.graph_capacity_response import GraphCapacityResponse
 from ...types import Response
 
@@ -21,14 +22,35 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | GraphCapacityResponse | None:
+) -> ErrorResponse | GraphCapacityResponse | None:
   if response.status_code == 200:
     response_200 = GraphCapacityResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -39,7 +61,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | GraphCapacityResponse]:
+) -> Response[ErrorResponse | GraphCapacityResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -51,36 +73,18 @@ def _build_response(
 def sync_detailed(
   *,
   client: AuthenticatedClient,
-) -> Response[Any | GraphCapacityResponse]:
+) -> Response[ErrorResponse | GraphCapacityResponse]:
   """Get Graph Tier Capacity
 
-   Check current infrastructure capacity for each graph database tier.
-
-  Returns a status per tier indicating whether instances are immediately available,
-  can be provisioned on demand, or are at capacity.
-
-  **Status Values:**
-  - `ready` — An instance slot is available; graph creation will succeed immediately
-  - `scalable` — No slots right now, but a new instance can be provisioned (3-5 min)
-  - `at_capacity` — Tier is full and cannot auto-scale; contact support
-
-  **Use Cases:**
-  - Pre-flight check before entering the graph creation wizard
-  - Show availability badges on tier selection cards
-  - Gate tier selection and show contact form for at-capacity tiers
-
-  **Caching:**
-  Results are cached for 60 seconds to avoid excessive infrastructure queries.
-
-  **Note:**
-  No credit consumption required. Does not expose instance counts or IPs.
+   Status per tier: `ready` (slot available), `scalable` (can provision, 3-5 min), `at_capacity`
+  (contact support). Cached 60s.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | GraphCapacityResponse]
+      Response[ErrorResponse | GraphCapacityResponse]
   """
 
   kwargs = _get_kwargs()
@@ -95,36 +99,18 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient,
-) -> Any | GraphCapacityResponse | None:
+) -> ErrorResponse | GraphCapacityResponse | None:
   """Get Graph Tier Capacity
 
-   Check current infrastructure capacity for each graph database tier.
-
-  Returns a status per tier indicating whether instances are immediately available,
-  can be provisioned on demand, or are at capacity.
-
-  **Status Values:**
-  - `ready` — An instance slot is available; graph creation will succeed immediately
-  - `scalable` — No slots right now, but a new instance can be provisioned (3-5 min)
-  - `at_capacity` — Tier is full and cannot auto-scale; contact support
-
-  **Use Cases:**
-  - Pre-flight check before entering the graph creation wizard
-  - Show availability badges on tier selection cards
-  - Gate tier selection and show contact form for at-capacity tiers
-
-  **Caching:**
-  Results are cached for 60 seconds to avoid excessive infrastructure queries.
-
-  **Note:**
-  No credit consumption required. Does not expose instance counts or IPs.
+   Status per tier: `ready` (slot available), `scalable` (can provision, 3-5 min), `at_capacity`
+  (contact support). Cached 60s.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | GraphCapacityResponse
+      ErrorResponse | GraphCapacityResponse
   """
 
   return sync_detailed(
@@ -135,36 +121,18 @@ def sync(
 async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
-) -> Response[Any | GraphCapacityResponse]:
+) -> Response[ErrorResponse | GraphCapacityResponse]:
   """Get Graph Tier Capacity
 
-   Check current infrastructure capacity for each graph database tier.
-
-  Returns a status per tier indicating whether instances are immediately available,
-  can be provisioned on demand, or are at capacity.
-
-  **Status Values:**
-  - `ready` — An instance slot is available; graph creation will succeed immediately
-  - `scalable` — No slots right now, but a new instance can be provisioned (3-5 min)
-  - `at_capacity` — Tier is full and cannot auto-scale; contact support
-
-  **Use Cases:**
-  - Pre-flight check before entering the graph creation wizard
-  - Show availability badges on tier selection cards
-  - Gate tier selection and show contact form for at-capacity tiers
-
-  **Caching:**
-  Results are cached for 60 seconds to avoid excessive infrastructure queries.
-
-  **Note:**
-  No credit consumption required. Does not expose instance counts or IPs.
+   Status per tier: `ready` (slot available), `scalable` (can provision, 3-5 min), `at_capacity`
+  (contact support). Cached 60s.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | GraphCapacityResponse]
+      Response[ErrorResponse | GraphCapacityResponse]
   """
 
   kwargs = _get_kwargs()
@@ -177,36 +145,18 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient,
-) -> Any | GraphCapacityResponse | None:
+) -> ErrorResponse | GraphCapacityResponse | None:
   """Get Graph Tier Capacity
 
-   Check current infrastructure capacity for each graph database tier.
-
-  Returns a status per tier indicating whether instances are immediately available,
-  can be provisioned on demand, or are at capacity.
-
-  **Status Values:**
-  - `ready` — An instance slot is available; graph creation will succeed immediately
-  - `scalable` — No slots right now, but a new instance can be provisioned (3-5 min)
-  - `at_capacity` — Tier is full and cannot auto-scale; contact support
-
-  **Use Cases:**
-  - Pre-flight check before entering the graph creation wizard
-  - Show availability badges on tier selection cards
-  - Gate tier selection and show contact form for at-capacity tiers
-
-  **Caching:**
-  Results are cached for 60 seconds to avoid excessive infrastructure queries.
-
-  **Note:**
-  No credit consumption required. Does not expose instance counts or IPs.
+   Status per tier: `ready` (slot available), `scalable` (can provision, 3-5 min), `at_capacity`
+  (contact support). Cached 60s.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | GraphCapacityResponse
+      ErrorResponse | GraphCapacityResponse
   """
 
   return (

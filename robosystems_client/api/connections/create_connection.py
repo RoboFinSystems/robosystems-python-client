@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 from urllib.parse import quote
 
 import httpx
@@ -37,7 +37,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
+) -> Any | ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 201:
     response_201 = ConnectionResponse.from_dict(response.json())
 
@@ -48,20 +48,34 @@ def _parse_response(
 
     return response_400
 
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
 
-  if response.status_code == 409:
-    response_409 = ErrorResponse.from_dict(response.json())
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
 
+    return response_404
+
+  if response.status_code == 409:
+    response_409 = cast(Any, None)
     return response_409
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
 
   if response.status_code == 500:
     response_500 = ErrorResponse.from_dict(response.json())
@@ -76,7 +90,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -90,25 +104,11 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateConnectionRequest,
-) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Create Connection
 
-   Create a new data connection for external system integration.
-
-  This endpoint initiates connections to external data sources:
-
-  **SEC Connections**:
-  - Provide entity CIK for automatic filing retrieval
-  - No authentication needed
-  - Begins immediate data sync
-
-  **QuickBooks Connections**:
-  - Returns OAuth URL for authorization
-  - Requires admin permissions in QuickBooks
-  - Complete with OAuth callback
-
-  Note:
-  This operation is included - no credit consumption required.
+   SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
+  activate. One connection allowed per provider per graph.
 
   Args:
       graph_id (str):
@@ -119,7 +119,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ConnectionResponse | ErrorResponse | HTTPValidationError]
+      Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -139,25 +139,11 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: CreateConnectionRequest,
-) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
+) -> Any | ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Create Connection
 
-   Create a new data connection for external system integration.
-
-  This endpoint initiates connections to external data sources:
-
-  **SEC Connections**:
-  - Provide entity CIK for automatic filing retrieval
-  - No authentication needed
-  - Begins immediate data sync
-
-  **QuickBooks Connections**:
-  - Returns OAuth URL for authorization
-  - Requires admin permissions in QuickBooks
-  - Complete with OAuth callback
-
-  Note:
-  This operation is included - no credit consumption required.
+   SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
+  activate. One connection allowed per provider per graph.
 
   Args:
       graph_id (str):
@@ -168,7 +154,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ConnectionResponse | ErrorResponse | HTTPValidationError
+      Any | ConnectionResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -183,25 +169,11 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: CreateConnectionRequest,
-) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Create Connection
 
-   Create a new data connection for external system integration.
-
-  This endpoint initiates connections to external data sources:
-
-  **SEC Connections**:
-  - Provide entity CIK for automatic filing retrieval
-  - No authentication needed
-  - Begins immediate data sync
-
-  **QuickBooks Connections**:
-  - Returns OAuth URL for authorization
-  - Requires admin permissions in QuickBooks
-  - Complete with OAuth callback
-
-  Note:
-  This operation is included - no credit consumption required.
+   SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
+  activate. One connection allowed per provider per graph.
 
   Args:
       graph_id (str):
@@ -212,7 +184,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ConnectionResponse | ErrorResponse | HTTPValidationError]
+      Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -230,25 +202,11 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: CreateConnectionRequest,
-) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
+) -> Any | ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Create Connection
 
-   Create a new data connection for external system integration.
-
-  This endpoint initiates connections to external data sources:
-
-  **SEC Connections**:
-  - Provide entity CIK for automatic filing retrieval
-  - No authentication needed
-  - Begins immediate data sync
-
-  **QuickBooks Connections**:
-  - Returns OAuth URL for authorization
-  - Requires admin permissions in QuickBooks
-  - Complete with OAuth callback
-
-  Note:
-  This operation is included - no credit consumption required.
+   SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
+  activate. One connection allowed per provider per graph.
 
   Args:
       graph_id (str):
@@ -259,7 +217,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ConnectionResponse | ErrorResponse | HTTPValidationError
+      Any | ConnectionResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

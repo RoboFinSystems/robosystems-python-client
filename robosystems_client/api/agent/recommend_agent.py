@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -8,6 +8,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.agent_recommendation_request import AgentRecommendationRequest
 from ...models.agent_recommendation_response import AgentRecommendationResponse
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...types import Response
 
@@ -36,20 +37,46 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AgentRecommendationResponse | Any | HTTPValidationError | None:
+) -> AgentRecommendationResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = AgentRecommendationResponse.from_dict(response.json())
 
     return response_200
 
   if response.status_code == 400:
-    response_400 = cast(Any, None)
+    response_400 = ErrorResponse.from_dict(response.json())
+
     return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
 
     return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
 
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
@@ -59,7 +86,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AgentRecommendationResponse | Any | HTTPValidationError]:
+) -> Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -73,23 +100,11 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
-) -> Response[AgentRecommendationResponse | Any | HTTPValidationError]:
-  """Get agent recommendations
+) -> Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]:
+  """Get Agent Recommendations
 
-   Get intelligent agent recommendations for a specific query.
-
-  **How it works:**
-  1. Analyzes query content and structure
-  2. Evaluates agent capabilities
-  3. Calculates confidence scores
-  4. Returns ranked recommendations
-
-  **Use this when:**
-  - Unsure which agent to use
-  - Need to understand agent suitability
-  - Want confidence scores for decision making
-
-  Returns top agents ranked by confidence with explanations.
+   Returns agents ranked by confidence score for a query, with explanations. Use before execution when
+  unsure which agent to pick.
 
   Args:
       graph_id (str):
@@ -100,7 +115,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentRecommendationResponse | Any | HTTPValidationError]
+      Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -120,23 +135,11 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
-) -> AgentRecommendationResponse | Any | HTTPValidationError | None:
-  """Get agent recommendations
+) -> AgentRecommendationResponse | ErrorResponse | HTTPValidationError | None:
+  """Get Agent Recommendations
 
-   Get intelligent agent recommendations for a specific query.
-
-  **How it works:**
-  1. Analyzes query content and structure
-  2. Evaluates agent capabilities
-  3. Calculates confidence scores
-  4. Returns ranked recommendations
-
-  **Use this when:**
-  - Unsure which agent to use
-  - Need to understand agent suitability
-  - Want confidence scores for decision making
-
-  Returns top agents ranked by confidence with explanations.
+   Returns agents ranked by confidence score for a query, with explanations. Use before execution when
+  unsure which agent to pick.
 
   Args:
       graph_id (str):
@@ -147,7 +150,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentRecommendationResponse | Any | HTTPValidationError
+      AgentRecommendationResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -162,23 +165,11 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
-) -> Response[AgentRecommendationResponse | Any | HTTPValidationError]:
-  """Get agent recommendations
+) -> Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]:
+  """Get Agent Recommendations
 
-   Get intelligent agent recommendations for a specific query.
-
-  **How it works:**
-  1. Analyzes query content and structure
-  2. Evaluates agent capabilities
-  3. Calculates confidence scores
-  4. Returns ranked recommendations
-
-  **Use this when:**
-  - Unsure which agent to use
-  - Need to understand agent suitability
-  - Want confidence scores for decision making
-
-  Returns top agents ranked by confidence with explanations.
+   Returns agents ranked by confidence score for a query, with explanations. Use before execution when
+  unsure which agent to pick.
 
   Args:
       graph_id (str):
@@ -189,7 +180,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentRecommendationResponse | Any | HTTPValidationError]
+      Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -207,23 +198,11 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: AgentRecommendationRequest,
-) -> AgentRecommendationResponse | Any | HTTPValidationError | None:
-  """Get agent recommendations
+) -> AgentRecommendationResponse | ErrorResponse | HTTPValidationError | None:
+  """Get Agent Recommendations
 
-   Get intelligent agent recommendations for a specific query.
-
-  **How it works:**
-  1. Analyzes query content and structure
-  2. Evaluates agent capabilities
-  3. Calculates confidence scores
-  4. Returns ranked recommendations
-
-  **Use this when:**
-  - Unsure which agent to use
-  - Need to understand agent suitability
-  - Want confidence scores for decision making
-
-  Returns top agents ranked by confidence with explanations.
+   Returns agents ranked by confidence score for a query, with explanations. Use before execution when
+  unsure which agent to pick.
 
   Args:
       graph_id (str):
@@ -234,7 +213,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentRecommendationResponse | Any | HTTPValidationError
+      AgentRecommendationResponse | ErrorResponse | HTTPValidationError
   """
 
   return (

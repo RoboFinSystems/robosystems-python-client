@@ -1,10 +1,11 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.user_graphs_response import UserGraphsResponse
 from ...types import Response
 
@@ -21,14 +22,35 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | UserGraphsResponse | None:
+) -> ErrorResponse | UserGraphsResponse | None:
   if response.status_code == 200:
     response_200 = UserGraphsResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -39,7 +61,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | UserGraphsResponse]:
+) -> Response[ErrorResponse | UserGraphsResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -51,57 +73,15 @@ def _build_response(
 def sync_detailed(
   *,
   client: AuthenticatedClient,
-) -> Response[Any | UserGraphsResponse]:
-  r"""Get User Graphs and Repositories
-
-   List all graph databases and shared repositories accessible to the current user.
-
-  Returns a unified list of both user-created graphs and shared repositories (like SEC data)
-  that the user has access to, including their role/access level and selection status.
-
-  **Returned Information:**
-  - Graph/Repository ID and display name
-  - User's role/access level (admin/member for graphs, read/write/admin for repositories)
-  - Selection status (only user graphs can be selected)
-  - Creation timestamp
-  - Repository type indicator (isRepository: true for shared repositories)
-
-  **User Graphs (isRepository: false):**
-  - Collaborative workspaces that can be shared with other users
-  - Roles: `admin` (full access, can invite users) or `member` (read/write access)
-  - Can be selected as active workspace
-  - Graphs you create or have been invited to
-
-  **Shared Repositories (isRepository: true):**
-  - Read-only data repositories (e.g., SEC filings)
-  - Access levels: `read`, `write` (for data contributions), `admin`
-  - Cannot be selected (each has separate subscription)
-  - Require separate subscriptions (personal, cannot be shared)
-
-  **Selected Graph Concept:**
-  The \"selected\" graph is the user's currently active workspace (user graphs only).
-  Many API operations default to the selected graph if no graph_id is provided.
-  Users can change their selected graph via `POST /v1/graphs/{graph_id}/select`.
-
-  **Use Cases:**
-  - Display unified graph/repository selector in UI
-  - Show all accessible data sources (both owned graphs and subscribed repositories)
-  - Identify currently active workspace
-  - Filter by type (user graphs vs repositories)
-
-  **Empty Response:**
-  New users receive an empty list with `selectedGraphId: null`. Users should create
-  a graph or subscribe to a repository.
-
-  **Note:**
-  Graph listing is included - no credit consumption required.
+) -> Response[ErrorResponse | UserGraphsResponse]:
+  """List User Graphs and Repositories
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | UserGraphsResponse]
+      Response[ErrorResponse | UserGraphsResponse]
   """
 
   kwargs = _get_kwargs()
@@ -116,57 +96,15 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient,
-) -> Any | UserGraphsResponse | None:
-  r"""Get User Graphs and Repositories
-
-   List all graph databases and shared repositories accessible to the current user.
-
-  Returns a unified list of both user-created graphs and shared repositories (like SEC data)
-  that the user has access to, including their role/access level and selection status.
-
-  **Returned Information:**
-  - Graph/Repository ID and display name
-  - User's role/access level (admin/member for graphs, read/write/admin for repositories)
-  - Selection status (only user graphs can be selected)
-  - Creation timestamp
-  - Repository type indicator (isRepository: true for shared repositories)
-
-  **User Graphs (isRepository: false):**
-  - Collaborative workspaces that can be shared with other users
-  - Roles: `admin` (full access, can invite users) or `member` (read/write access)
-  - Can be selected as active workspace
-  - Graphs you create or have been invited to
-
-  **Shared Repositories (isRepository: true):**
-  - Read-only data repositories (e.g., SEC filings)
-  - Access levels: `read`, `write` (for data contributions), `admin`
-  - Cannot be selected (each has separate subscription)
-  - Require separate subscriptions (personal, cannot be shared)
-
-  **Selected Graph Concept:**
-  The \"selected\" graph is the user's currently active workspace (user graphs only).
-  Many API operations default to the selected graph if no graph_id is provided.
-  Users can change their selected graph via `POST /v1/graphs/{graph_id}/select`.
-
-  **Use Cases:**
-  - Display unified graph/repository selector in UI
-  - Show all accessible data sources (both owned graphs and subscribed repositories)
-  - Identify currently active workspace
-  - Filter by type (user graphs vs repositories)
-
-  **Empty Response:**
-  New users receive an empty list with `selectedGraphId: null`. Users should create
-  a graph or subscribe to a repository.
-
-  **Note:**
-  Graph listing is included - no credit consumption required.
+) -> ErrorResponse | UserGraphsResponse | None:
+  """List User Graphs and Repositories
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | UserGraphsResponse
+      ErrorResponse | UserGraphsResponse
   """
 
   return sync_detailed(
@@ -177,57 +115,15 @@ def sync(
 async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
-) -> Response[Any | UserGraphsResponse]:
-  r"""Get User Graphs and Repositories
-
-   List all graph databases and shared repositories accessible to the current user.
-
-  Returns a unified list of both user-created graphs and shared repositories (like SEC data)
-  that the user has access to, including their role/access level and selection status.
-
-  **Returned Information:**
-  - Graph/Repository ID and display name
-  - User's role/access level (admin/member for graphs, read/write/admin for repositories)
-  - Selection status (only user graphs can be selected)
-  - Creation timestamp
-  - Repository type indicator (isRepository: true for shared repositories)
-
-  **User Graphs (isRepository: false):**
-  - Collaborative workspaces that can be shared with other users
-  - Roles: `admin` (full access, can invite users) or `member` (read/write access)
-  - Can be selected as active workspace
-  - Graphs you create or have been invited to
-
-  **Shared Repositories (isRepository: true):**
-  - Read-only data repositories (e.g., SEC filings)
-  - Access levels: `read`, `write` (for data contributions), `admin`
-  - Cannot be selected (each has separate subscription)
-  - Require separate subscriptions (personal, cannot be shared)
-
-  **Selected Graph Concept:**
-  The \"selected\" graph is the user's currently active workspace (user graphs only).
-  Many API operations default to the selected graph if no graph_id is provided.
-  Users can change their selected graph via `POST /v1/graphs/{graph_id}/select`.
-
-  **Use Cases:**
-  - Display unified graph/repository selector in UI
-  - Show all accessible data sources (both owned graphs and subscribed repositories)
-  - Identify currently active workspace
-  - Filter by type (user graphs vs repositories)
-
-  **Empty Response:**
-  New users receive an empty list with `selectedGraphId: null`. Users should create
-  a graph or subscribe to a repository.
-
-  **Note:**
-  Graph listing is included - no credit consumption required.
+) -> Response[ErrorResponse | UserGraphsResponse]:
+  """List User Graphs and Repositories
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | UserGraphsResponse]
+      Response[ErrorResponse | UserGraphsResponse]
   """
 
   kwargs = _get_kwargs()
@@ -240,57 +136,15 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient,
-) -> Any | UserGraphsResponse | None:
-  r"""Get User Graphs and Repositories
-
-   List all graph databases and shared repositories accessible to the current user.
-
-  Returns a unified list of both user-created graphs and shared repositories (like SEC data)
-  that the user has access to, including their role/access level and selection status.
-
-  **Returned Information:**
-  - Graph/Repository ID and display name
-  - User's role/access level (admin/member for graphs, read/write/admin for repositories)
-  - Selection status (only user graphs can be selected)
-  - Creation timestamp
-  - Repository type indicator (isRepository: true for shared repositories)
-
-  **User Graphs (isRepository: false):**
-  - Collaborative workspaces that can be shared with other users
-  - Roles: `admin` (full access, can invite users) or `member` (read/write access)
-  - Can be selected as active workspace
-  - Graphs you create or have been invited to
-
-  **Shared Repositories (isRepository: true):**
-  - Read-only data repositories (e.g., SEC filings)
-  - Access levels: `read`, `write` (for data contributions), `admin`
-  - Cannot be selected (each has separate subscription)
-  - Require separate subscriptions (personal, cannot be shared)
-
-  **Selected Graph Concept:**
-  The \"selected\" graph is the user's currently active workspace (user graphs only).
-  Many API operations default to the selected graph if no graph_id is provided.
-  Users can change their selected graph via `POST /v1/graphs/{graph_id}/select`.
-
-  **Use Cases:**
-  - Display unified graph/repository selector in UI
-  - Show all accessible data sources (both owned graphs and subscribed repositories)
-  - Identify currently active workspace
-  - Filter by type (user graphs vs repositories)
-
-  **Empty Response:**
-  New users receive an empty list with `selectedGraphId: null`. Users should create
-  a graph or subscribe to a repository.
-
-  **Note:**
-  Graph listing is included - no credit consumption required.
+) -> ErrorResponse | UserGraphsResponse | None:
+  """List User Graphs and Repositories
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | UserGraphsResponse
+      ErrorResponse | UserGraphsResponse
   """
 
   return (

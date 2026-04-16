@@ -66,15 +66,27 @@ def _parse_response(
     return response_202
 
   if response.status_code == 400:
-    response_400 = cast(Any, None)
+    response_400 = ErrorResponse.from_dict(response.json())
+
     return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
 
   if response.status_code == 402:
     response_402 = cast(Any, None)
     return response_402
 
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
   if response.status_code == 404:
-    response_404 = cast(Any, None)
+    response_404 = ErrorResponse.from_dict(response.json())
+
     return response_404
 
   if response.status_code == 422:
@@ -83,7 +95,8 @@ def _parse_response(
     return response_422
 
   if response.status_code == 429:
-    response_429 = cast(Any, None)
+    response_429 = ErrorResponse.from_dict(response.json())
+
     return response_429
 
   if response.status_code == 500:
@@ -116,24 +129,10 @@ def sync_detailed(
   body: AgentRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]:
-  """Execute specific agent
+  """Execute Specific Agent
 
-   Execute a specific agent type directly with intelligent execution strategy.
-
-  Available agents:
-  - **financial**: Financial analysis, SEC filings, accounting data
-  - **research**: Deep research and comprehensive analysis
-  - **rag**: Fast retrieval without AI (no credits required)
-
-  **Execution Strategies (automatic):**
-  - Fast operations (<5s): Immediate synchronous response
-  - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Background queue with operation tracking
-
-  **Response Mode Override:**
-  Use query parameter `?mode=sync|async` to override automatic strategy selection.
-
-  Use this endpoint when you know which agent you want to use.
+   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
+  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -171,24 +170,10 @@ def sync(
   body: AgentRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> AgentResponse | Any | ErrorResponse | HTTPValidationError | None:
-  """Execute specific agent
+  """Execute Specific Agent
 
-   Execute a specific agent type directly with intelligent execution strategy.
-
-  Available agents:
-  - **financial**: Financial analysis, SEC filings, accounting data
-  - **research**: Deep research and comprehensive analysis
-  - **rag**: Fast retrieval without AI (no credits required)
-
-  **Execution Strategies (automatic):**
-  - Fast operations (<5s): Immediate synchronous response
-  - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Background queue with operation tracking
-
-  **Response Mode Override:**
-  Use query parameter `?mode=sync|async` to override automatic strategy selection.
-
-  Use this endpoint when you know which agent you want to use.
+   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
+  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -221,24 +206,10 @@ async def asyncio_detailed(
   body: AgentRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]:
-  """Execute specific agent
+  """Execute Specific Agent
 
-   Execute a specific agent type directly with intelligent execution strategy.
-
-  Available agents:
-  - **financial**: Financial analysis, SEC filings, accounting data
-  - **research**: Deep research and comprehensive analysis
-  - **rag**: Fast retrieval without AI (no credits required)
-
-  **Execution Strategies (automatic):**
-  - Fast operations (<5s): Immediate synchronous response
-  - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Background queue with operation tracking
-
-  **Response Mode Override:**
-  Use query parameter `?mode=sync|async` to override automatic strategy selection.
-
-  Use this endpoint when you know which agent you want to use.
+   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
+  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -274,24 +245,10 @@ async def asyncio(
   body: AgentRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> AgentResponse | Any | ErrorResponse | HTTPValidationError | None:
-  """Execute specific agent
+  """Execute Specific Agent
 
-   Execute a specific agent type directly with intelligent execution strategy.
-
-  Available agents:
-  - **financial**: Financial analysis, SEC filings, accounting data
-  - **research**: Deep research and comprehensive analysis
-  - **rag**: Fast retrieval without AI (no credits required)
-
-  **Execution Strategies (automatic):**
-  - Fast operations (<5s): Immediate synchronous response
-  - Medium operations (5-30s): SSE streaming with progress updates
-  - Long operations (>30s): Background queue with operation tracking
-
-  **Response Mode Override:**
-  Use query parameter `?mode=sync|async` to override automatic strategy selection.
-
-  Use this endpoint when you know which agent you want to use.
+   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
+  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
 
   Args:
       graph_id (str):

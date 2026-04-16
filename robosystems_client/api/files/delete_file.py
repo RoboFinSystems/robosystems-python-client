@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -39,14 +39,20 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
+) -> DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
     response_200 = DeleteFileResponse.from_dict(response.json())
 
     return response_200
 
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
@@ -64,6 +70,16 @@ def _parse_response(
 
     return response_422
 
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -72,7 +88,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -87,44 +103,11 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   cascade: bool | Unset = False,
-) -> Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]:
   """Delete File
 
-   Delete file from all layers.
-
-  Remove file from S3, database tracking, and optionally from DuckDB and graph.
-  Files are deleted by file_id, independent of table context.
-
-  **Query Parameters:**
-  - `cascade` (optional, default=false): Delete from all layers including DuckDB
-
-  **What Happens (cascade=false):**
-  1. File deleted from S3
-  2. Database record removed
-  3. Table statistics updated
-
-  **What Happens (cascade=true):**
-  1. File data deleted from all DuckDB tables (by file_id)
-  2. Graph marked as stale
-  3. File deleted from S3
-  4. Database record removed
-  5. Table statistics updated
-
-  **Use Cases:**
-  - Remove incorrect or duplicate files
-  - Clean up failed uploads
-  - Delete files before graph ingestion
-  - Surgical data removal with cascade
-
-  **Security:**
-  - Write access required
-  - Shared repositories block deletions
-  - Full audit trail
-
-  **Important:**
-  - Use cascade=true for immediate DuckDB cleanup
-  - Graph rebuild recommended after cascade deletion
-  - File deletion is included - no credit consumption
+   Removes from S3 and database. `cascade=true` also deletes data from DuckDB tables and marks the
+  graph stale (rebuild recommended). Not allowed on shared repositories.
 
   Args:
       graph_id (str):
@@ -137,7 +120,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]
+      Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -159,44 +142,11 @@ def sync(
   *,
   client: AuthenticatedClient,
   cascade: bool | Unset = False,
-) -> Any | DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
+) -> DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
   """Delete File
 
-   Delete file from all layers.
-
-  Remove file from S3, database tracking, and optionally from DuckDB and graph.
-  Files are deleted by file_id, independent of table context.
-
-  **Query Parameters:**
-  - `cascade` (optional, default=false): Delete from all layers including DuckDB
-
-  **What Happens (cascade=false):**
-  1. File deleted from S3
-  2. Database record removed
-  3. Table statistics updated
-
-  **What Happens (cascade=true):**
-  1. File data deleted from all DuckDB tables (by file_id)
-  2. Graph marked as stale
-  3. File deleted from S3
-  4. Database record removed
-  5. Table statistics updated
-
-  **Use Cases:**
-  - Remove incorrect or duplicate files
-  - Clean up failed uploads
-  - Delete files before graph ingestion
-  - Surgical data removal with cascade
-
-  **Security:**
-  - Write access required
-  - Shared repositories block deletions
-  - Full audit trail
-
-  **Important:**
-  - Use cascade=true for immediate DuckDB cleanup
-  - Graph rebuild recommended after cascade deletion
-  - File deletion is included - no credit consumption
+   Removes from S3 and database. `cascade=true` also deletes data from DuckDB tables and marks the
+  graph stale (rebuild recommended). Not allowed on shared repositories.
 
   Args:
       graph_id (str):
@@ -209,7 +159,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | DeleteFileResponse | ErrorResponse | HTTPValidationError
+      DeleteFileResponse | ErrorResponse | HTTPValidationError
   """
 
   return sync_detailed(
@@ -226,44 +176,11 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   cascade: bool | Unset = False,
-) -> Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]:
   """Delete File
 
-   Delete file from all layers.
-
-  Remove file from S3, database tracking, and optionally from DuckDB and graph.
-  Files are deleted by file_id, independent of table context.
-
-  **Query Parameters:**
-  - `cascade` (optional, default=false): Delete from all layers including DuckDB
-
-  **What Happens (cascade=false):**
-  1. File deleted from S3
-  2. Database record removed
-  3. Table statistics updated
-
-  **What Happens (cascade=true):**
-  1. File data deleted from all DuckDB tables (by file_id)
-  2. Graph marked as stale
-  3. File deleted from S3
-  4. Database record removed
-  5. Table statistics updated
-
-  **Use Cases:**
-  - Remove incorrect or duplicate files
-  - Clean up failed uploads
-  - Delete files before graph ingestion
-  - Surgical data removal with cascade
-
-  **Security:**
-  - Write access required
-  - Shared repositories block deletions
-  - Full audit trail
-
-  **Important:**
-  - Use cascade=true for immediate DuckDB cleanup
-  - Graph rebuild recommended after cascade deletion
-  - File deletion is included - no credit consumption
+   Removes from S3 and database. `cascade=true` also deletes data from DuckDB tables and marks the
+  graph stale (rebuild recommended). Not allowed on shared repositories.
 
   Args:
       graph_id (str):
@@ -276,7 +193,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | DeleteFileResponse | ErrorResponse | HTTPValidationError]
+      Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]
   """
 
   kwargs = _get_kwargs(
@@ -296,44 +213,11 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   cascade: bool | Unset = False,
-) -> Any | DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
+) -> DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
   """Delete File
 
-   Delete file from all layers.
-
-  Remove file from S3, database tracking, and optionally from DuckDB and graph.
-  Files are deleted by file_id, independent of table context.
-
-  **Query Parameters:**
-  - `cascade` (optional, default=false): Delete from all layers including DuckDB
-
-  **What Happens (cascade=false):**
-  1. File deleted from S3
-  2. Database record removed
-  3. Table statistics updated
-
-  **What Happens (cascade=true):**
-  1. File data deleted from all DuckDB tables (by file_id)
-  2. Graph marked as stale
-  3. File deleted from S3
-  4. Database record removed
-  5. Table statistics updated
-
-  **Use Cases:**
-  - Remove incorrect or duplicate files
-  - Clean up failed uploads
-  - Delete files before graph ingestion
-  - Surgical data removal with cascade
-
-  **Security:**
-  - Write access required
-  - Shared repositories block deletions
-  - Full audit trail
-
-  **Important:**
-  - Use cascade=true for immediate DuckDB cleanup
-  - Graph rebuild recommended after cascade deletion
-  - File deletion is included - no credit consumption
+   Removes from S3 and database. `cascade=true` also deletes data from DuckDB tables and marks the
+  graph stale (rebuild recommended). Not allowed on shared repositories.
 
   Args:
       graph_id (str):
@@ -346,7 +230,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | DeleteFileResponse | ErrorResponse | HTTPValidationError
+      DeleteFileResponse | ErrorResponse | HTTPValidationError
   """
 
   return (
