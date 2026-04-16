@@ -95,6 +95,9 @@ from ..api.extensions_robo_ledger.op_create_element import (
 from ..api.extensions_robo_ledger.op_create_journal_entry import (
   sync_detailed as op_create_journal_entry,
 )
+from ..api.extensions_robo_ledger.op_link_entity_taxonomy import (
+  sync_detailed as op_link_entity_taxonomy,
+)
 from ..api.extensions_robo_ledger.op_delete_association import (
   sync_detailed as op_delete_association,
 )
@@ -182,6 +185,7 @@ from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
 from ..models.delete_schedule_request import DeleteScheduleRequest
 from ..models.delete_structure_request import DeleteStructureRequest
 from ..models.delete_taxonomy_request import DeleteTaxonomyRequest
+from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from ..models.reverse_journal_entry_request import ReverseJournalEntryRequest
 from ..models.update_association_request import UpdateAssociationRequest
 from ..models.update_element_request import UpdateElementRequest
@@ -492,31 +496,25 @@ class LedgerClient:
     taxonomy_id: str,
     basis: str = "chart_of_accounts",
     is_primary: bool = True,
+    adoption_context: str | None = "voluntary",
   ) -> dict[str, Any]:
     """Link the graph's entity to a taxonomy (ENTITY_HAS_TAXONOMY edge).
 
     Idempotent — returns existing linkage if already present.
-    Uses httpx directly until the SDK is regenerated with the
-    auto-generated op function.
     """
-    import httpx
-
-    resp = httpx.post(
-      f"{self.base_url}/extensions/roboledger/{graph_id}/operations/link-entity-taxonomy",
-      headers={"X-API-Key": self.token, "Content-Type": "application/json"},
-      json={
+    body = LinkEntityTaxonomyRequest.from_dict(
+      {
         "taxonomy_id": taxonomy_id,
         "basis": basis,
         "is_primary": is_primary,
-      },
-      timeout=self.timeout,
+        "adoption_context": adoption_context,
+      }
     )
-    if resp.status_code not in (200, 202):
-      raise RuntimeError(
-        f"Link entity taxonomy failed: {resp.status_code}: {resp.text}"
-      )
-    envelope = resp.json()
-    return envelope.get("result") or {}
+    response = op_link_entity_taxonomy(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Link entity taxonomy", response)
+    return envelope.result or {}
 
   def list_elements(
     self,
@@ -953,12 +951,17 @@ class LedgerClient:
     type: str = "standard",  # noqa: A002
     status: str = "draft",
     transaction_id: str | None = None,
+    idempotency_key: str | None = None,
   ) -> dict[str, Any]:
     """Create a journal entry with balanced line items (DR=CR enforced).
 
     Defaults to ``status='draft'`` for ongoing writes. Pass
     ``status='posted'`` for historical data import where entries
     represent already-happened business events.
+
+    Supply ``idempotency_key`` to make the call safe to retry — replays
+    within 24 hours return the same envelope. Reusing the key with a
+    different body returns HTTP 409.
     """
     body_dict: dict[str, Any] = {
       "posting_date": posting_date,
@@ -971,7 +974,10 @@ class LedgerClient:
       body_dict["transaction_id"] = transaction_id
     body = CreateJournalEntryRequest.from_dict(body_dict)
     response = op_create_journal_entry(
-      graph_id=graph_id, body=body, client=self._get_client()
+      graph_id=graph_id,
+      body=body,
+      client=self._get_client(),
+      idempotency_key=idempotency_key,
     )
     envelope = self._call_op("Create journal entry", response)
     return envelope.result or {}

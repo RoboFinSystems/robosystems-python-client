@@ -8,6 +8,7 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
+from ..models.create_journal_entry_request_status import CreateJournalEntryRequestStatus
 from ..models.create_journal_entry_request_type import CreateJournalEntryRequestType
 from ..types import UNSET, Unset
 
@@ -22,10 +23,10 @@ T = TypeVar("T", bound="CreateJournalEntryRequest")
 class CreateJournalEntryRequest:
   """Create a new journal entry with balanced line items.
 
-  The entry is always created as `status='draft'`. Posting a draft
-  happens via `close-period` (for batch month-end posting) or — in
-  the future — an individual `post-journal-entry` op. This matches
-  the existing `create-manual-closing-entry` behavior.
+  Defaults to `status='draft'` for ongoing native writes (the normal
+  workflow: draft → review → post via close-period). Pass
+  `status='posted'` for historical data import where entries represent
+  already-happened business events that don't need review.
 
   Total debit amount must equal total credit amount or the request
   is rejected with 422. `line_items` must contain at least two rows
@@ -36,6 +37,7 @@ class CreateJournalEntryRequest:
           memo (str):
           line_items (list[JournalEntryLineItemInput]):
           type_ (CreateJournalEntryRequestType | Unset):  Default: CreateJournalEntryRequestType.STANDARD.
+          status (CreateJournalEntryRequestStatus | Unset):  Default: CreateJournalEntryRequestStatus.DRAFT.
           transaction_id (None | str | Unset):
   """
 
@@ -43,6 +45,9 @@ class CreateJournalEntryRequest:
   memo: str
   line_items: list[JournalEntryLineItemInput]
   type_: CreateJournalEntryRequestType | Unset = CreateJournalEntryRequestType.STANDARD
+  status: CreateJournalEntryRequestStatus | Unset = (
+    CreateJournalEntryRequestStatus.DRAFT
+  )
   transaction_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -59,6 +64,10 @@ class CreateJournalEntryRequest:
     type_: str | Unset = UNSET
     if not isinstance(self.type_, Unset):
       type_ = self.type_.value
+
+    status: str | Unset = UNSET
+    if not isinstance(self.status, Unset):
+      status = self.status.value
 
     transaction_id: None | str | Unset
     if isinstance(self.transaction_id, Unset):
@@ -77,6 +86,8 @@ class CreateJournalEntryRequest:
     )
     if type_ is not UNSET:
       field_dict["type"] = type_
+    if status is not UNSET:
+      field_dict["status"] = status
     if transaction_id is not UNSET:
       field_dict["transaction_id"] = transaction_id
 
@@ -105,6 +116,13 @@ class CreateJournalEntryRequest:
     else:
       type_ = CreateJournalEntryRequestType(_type_)
 
+    _status = d.pop("status", UNSET)
+    status: CreateJournalEntryRequestStatus | Unset
+    if isinstance(_status, Unset):
+      status = UNSET
+    else:
+      status = CreateJournalEntryRequestStatus(_status)
+
     def _parse_transaction_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -119,6 +137,7 @@ class CreateJournalEntryRequest:
       memo=memo,
       line_items=line_items,
       type_=type_,
+      status=status,
       transaction_id=transaction_id,
     )
 

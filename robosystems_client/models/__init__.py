@@ -79,6 +79,7 @@ from .create_element_request_period_type import CreateElementRequestPeriodType
 from .create_element_request_source import CreateElementRequestSource
 from .create_graph_request import CreateGraphRequest
 from .create_journal_entry_request import CreateJournalEntryRequest
+from .create_journal_entry_request_status import CreateJournalEntryRequestStatus
 from .create_journal_entry_request_type import CreateJournalEntryRequestType
 from .create_manual_closing_entry_request import CreateManualClosingEntryRequest
 from .create_manual_closing_entry_request_entry_type import (
@@ -207,6 +208,8 @@ from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
 from .journal_entry_line_item_input import JournalEntryLineItemInput
+from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
+from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
 from .list_org_graphs_response_200_item import ListOrgGraphsResponse200Item
 from .list_subgraphs_response import ListSubgraphsResponse
@@ -448,6 +451,7 @@ __all__ = (
   "CreateElementRequestSource",
   "CreateGraphRequest",
   "CreateJournalEntryRequest",
+  "CreateJournalEntryRequestStatus",
   "CreateJournalEntryRequestType",
   "CreateManualClosingEntryRequest",
   "CreateManualClosingEntryRequestEntryType",
@@ -556,6 +560,8 @@ __all__ = (
   "InvoiceLineItem",
   "InvoicesResponse",
   "JournalEntryLineItemInput",
+  "LinkEntityTaxonomyRequest",
+  "LinkEntityTaxonomyRequestBasis",
   "ListConnectionsProviderType0",
   "ListOrgGraphsResponse200Item",
   "ListSubgraphsResponse",
