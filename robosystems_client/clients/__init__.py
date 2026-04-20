@@ -49,6 +49,7 @@ from .graph_client import (
 )
 from .investor_client import InvestorClient
 from .ledger_client import LedgerClient
+from .library_client import LIBRARY_GRAPH_ID, LibraryClient
 from .facade import (
   RoboSystemsClients,
   RoboSystemsClientConfig,
@@ -166,7 +167,9 @@ __all__ = [
   "LedgerClient",
   # Investor Client
   "InvestorClient",
-  # Report Client
+  # Library Client
+  "LibraryClient",
+  "LIBRARY_GRAPH_ID",
   # Utilities
   "QueryBuilder",
   "ResultProcessor",

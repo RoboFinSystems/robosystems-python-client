@@ -1,14 +1,14 @@
 [project]
 name = "robosystems-client"
 version = "0.3.8"
-description = "Python Client for RoboSystems financial graph database API"
+description = "Python client library for RoboSystems Financial Knowledge Graph API"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
     {name = "RFS LLC"},
 ]
 license = {text = "MIT"}
-keywords = ["client", "robosystems", "financial", "graph", "api", "sdk"]
+keywords = ["client", "robosystems", "financial", "graph", "api", "sdk", "knowledge-graph"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Framework :: AsyncIO",
@@ -50,6 +50,11 @@ dev = [
     "build>=1.0.0",
     "twine>=5.0.0",
 ]
+
+[project.urls]
+Repository = "https://github.com/RoboFinSystems/robosystems-python-client"
+Homepage = "https://github.com/RoboFinSystems/robosystems-python-client#readme"
+"Bug Tracker" = "https://github.com/RoboFinSystems/robosystems-python-client/issues"
 
 [build-system]
 requires = ["hatchling"]
