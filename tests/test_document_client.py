@@ -335,42 +335,6 @@ class TestDocumentSection:
 
 
 @pytest.mark.unit
-class TestDocumentBulkUpload:
-  """Test suite for DocumentClient.upload_bulk method."""
-
-  @patch("robosystems_client.clients.document_client.upload_documents_bulk")
-  def test_upload_bulk(self, mock_bulk, mock_config, graph_id):
-    """Test bulk uploading documents."""
-    mock_resp = Mock()
-    mock_resp.status_code = HTTPStatus.OK
-    mock_resp.parsed = Mock(total=2, succeeded=2, failed=0, results=[Mock(), Mock()])
-    mock_bulk.return_value = mock_resp
-
-    client = DocumentClient(mock_config)
-    docs = [
-      {"title": "Doc 1", "content": "Content 1"},
-      {"title": "Doc 2", "content": "Content 2", "tags": ["tag1"]},
-    ]
-    result = client.upload_bulk(graph_id=graph_id, documents=docs)
-
-    assert result.total == 2
-    assert result.succeeded == 2
-
-  @patch("robosystems_client.clients.document_client.upload_documents_bulk")
-  def test_upload_bulk_failure(self, mock_bulk, mock_config, graph_id):
-    """Test bulk upload failure raises exception."""
-    mock_resp = Mock()
-    mock_resp.status_code = HTTPStatus.BAD_REQUEST
-    mock_resp.content = b"Bulk upload error"
-    mock_bulk.return_value = mock_resp
-
-    client = DocumentClient(mock_config)
-
-    with pytest.raises(Exception, match="Bulk upload failed"):
-      client.upload_bulk(graph_id=graph_id, documents=[{"title": "x", "content": "y"}])
-
-
-@pytest.mark.unit
 class TestDocumentUploadFile:
   """Test suite for DocumentClient.upload_file method."""
 

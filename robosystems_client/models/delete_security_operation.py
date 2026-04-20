@@ -11,9 +11,10 @@ T = TypeVar("T", bound="DeleteSecurityOperation")
 
 @_attrs_define
 class DeleteSecurityOperation:
-  """
+  """CQRS body for `POST /operations/delete-security` (soft delete).
+
   Attributes:
-      security_id (str):
+      security_id (str): Target security ID.
   """
 
   security_id: str

@@ -14,7 +14,6 @@ from ..api.documents.get_document import sync_detailed as get_document
 from ..api.documents.list_documents import sync_detailed as list_documents
 from ..api.documents.update_document import sync_detailed as update_document
 from ..api.documents.upload_document import sync_detailed as upload_document
-from ..api.documents.upload_documents_bulk import sync_detailed as upload_documents_bulk
 from ..api.search.get_document_section import sync_detailed as get_document_section
 from ..api.search.search_documents import sync_detailed as search_documents
 from ..client import AuthenticatedClient
@@ -22,8 +21,6 @@ from ..models.document_detail_response import DocumentDetailResponse
 from ..models.document_list_response import DocumentListResponse
 from ..models.document_section import DocumentSection
 from ..models.document_update_request import DocumentUpdateRequest
-from ..models.bulk_document_upload_request import BulkDocumentUploadRequest
-from ..models.bulk_document_upload_response import BulkDocumentUploadResponse
 from ..models.document_upload_request import DocumentUploadRequest
 from ..models.document_upload_response import DocumentUploadResponse
 from ..models.search_request import SearchRequest
@@ -228,42 +225,6 @@ class DocumentClient:
       results.append(result)
 
     return results
-
-  def upload_bulk(
-    self,
-    graph_id: str,
-    documents: List[Dict[str, Any]],
-  ) -> BulkDocumentUploadResponse:
-    """Upload multiple markdown documents (max 50 per request).
-
-    Args:
-        graph_id: Target graph ID.
-        documents: List of dicts with keys: title, content, and
-            optionally tags, folder, external_id.
-
-    Returns:
-        BulkDocumentUploadResponse with per-document results.
-    """
-    items = []
-    for doc in documents:
-      items.append(
-        DocumentUploadRequest(
-          title=doc["title"],
-          content=doc["content"],
-          tags=doc.get("tags", UNSET),
-          folder=doc.get("folder", UNSET),
-          external_id=doc.get("external_id", UNSET),
-        )
-      )
-
-    body = BulkDocumentUploadRequest(documents=items)
-    client = self._get_client()
-    response = upload_documents_bulk(graph_id=graph_id, client=client, body=body)
-    if response.status_code != HTTPStatus.OK:
-      raise Exception(
-        f"Bulk upload failed ({response.status_code}): {response.content.decode()}"
-      )
-    return response.parsed
 
   def search(
     self,

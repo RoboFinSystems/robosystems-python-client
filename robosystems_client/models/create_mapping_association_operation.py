@@ -16,17 +16,21 @@ T = TypeVar("T", bound="CreateMappingAssociationOperation")
 
 @_attrs_define
 class CreateMappingAssociationOperation:
-  """
-  Attributes:
-      from_element_id (str):
-      to_element_id (str):
-      mapping_id (str):
-      association_type (CreateMappingAssociationOperationAssociationType | Unset):  Default:
-          CreateMappingAssociationOperationAssociationType.MAPPING.
-      order_value (float | None | Unset):
-      weight (float | None | Unset):
-      confidence (float | None | Unset):
-      suggested_by (None | str | Unset):
+  """CQRS-shaped body for `POST /operations/create-mapping-association`.
+
+  Bundles the target mapping structure's `mapping_id` with the association
+  payload so REST + MCP share a single body type via the registrar.
+
+      Attributes:
+          from_element_id (str):
+          to_element_id (str):
+          mapping_id (str): Target mapping structure ID.
+          association_type (CreateMappingAssociationOperationAssociationType | Unset):  Default:
+              CreateMappingAssociationOperationAssociationType.MAPPING.
+          order_value (float | None | Unset):
+          weight (float | None | Unset):
+          confidence (float | None | Unset):
+          suggested_by (None | str | Unset):
   """
 
   from_element_id: str

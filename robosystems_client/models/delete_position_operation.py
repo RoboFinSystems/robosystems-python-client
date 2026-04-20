@@ -11,9 +11,10 @@ T = TypeVar("T", bound="DeletePositionOperation")
 
 @_attrs_define
 class DeletePositionOperation:
-  """
+  """CQRS body for `POST /operations/delete-position` (soft delete).
+
   Attributes:
-      position_id (str):
+      position_id (str): Target position ID.
   """
 
   position_id: str

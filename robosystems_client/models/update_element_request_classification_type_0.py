@@ -3,10 +3,11 @@ from enum import Enum
 
 class UpdateElementRequestClassificationType0(str, Enum):
   ASSET = "asset"
+  CASHFLOW = "cashflow"
   EQUITY = "equity"
-  EXPENSE = "expense"
+  INFLOW = "inflow"
   LIABILITY = "liability"
-  REVENUE = "revenue"
+  OUTFLOW = "outflow"
 
   def __str__(self) -> str:
     return str(self.value)

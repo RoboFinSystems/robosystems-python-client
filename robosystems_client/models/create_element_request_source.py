@@ -2,11 +2,13 @@ from enum import Enum
 
 
 class CreateElementRequestSource(str, Enum):
+  FAC = "fac"
   IFRS = "ifrs"
   IMPORT = "import"
   NATIVE = "native"
   PLAID = "plaid"
   QUICKBOOKS = "quickbooks"
+  RS_GAAP = "rs-gaap"
   SFAC6 = "sfac6"
   US_GAAP = "us-gaap"
   XERO = "xero"

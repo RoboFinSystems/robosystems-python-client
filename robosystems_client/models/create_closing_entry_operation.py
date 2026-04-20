@@ -15,13 +15,17 @@ T = TypeVar("T", bound="CreateClosingEntryOperation")
 
 @_attrs_define
 class CreateClosingEntryOperation:
-  """
-  Attributes:
-      posting_date (datetime.date): Posting date for the entry
-      period_start (datetime.date): Period start
-      period_end (datetime.date): Period end
-      structure_id (str):
-      memo (None | str | Unset): Override memo
+  """CQRS-shaped body for `POST /operations/create-closing-entry`.
+
+  `structure_id` moves into the body so REST + MCP share a single body
+  type via the registrar.
+
+      Attributes:
+          posting_date (datetime.date): Posting date for the entry
+          period_start (datetime.date): Period start
+          period_end (datetime.date): Period end
+          structure_id (str): Schedule structure the closing entry is derived from.
+          memo (None | str | Unset): Override memo
   """
 
   posting_date: datetime.date

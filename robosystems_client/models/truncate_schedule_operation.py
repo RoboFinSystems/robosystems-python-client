@@ -13,12 +13,18 @@ T = TypeVar("T", bound="TruncateScheduleOperation")
 
 @_attrs_define
 class TruncateScheduleOperation:
-  """
-  Attributes:
-      new_end_date (datetime.date): New last-covered date for the schedule. Facts with period_start > this date are
-          deleted (along with any stale draft entries they produced). Historical facts (already posted) are preserved.
-      reason (str): Required reason for the truncation (captured in audit log).
-      structure_id (str):
+  """CQRS-shaped body for `POST /operations/truncate-schedule`.
+
+  Bundles the target schedule's `structure_id` with the update payload so
+  the single-body signature matches the registrar/MCP contract. The REST
+  handler, GraphQL resolver, and MCP tool all resolve to the same
+  `cmd_truncate_schedule(session, body, created_by=...)`.
+
+      Attributes:
+          new_end_date (datetime.date): New last-covered date for the schedule. Facts with period_start > this date are
+              deleted (along with any stale draft entries they produced). Historical facts (already posted) are preserved.
+          reason (str): Required reason for the truncation (captured in audit log).
+          structure_id (str): Target schedule structure ID.
   """
 
   new_end_date: datetime.date

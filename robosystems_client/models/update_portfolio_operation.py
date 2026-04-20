@@ -15,14 +15,18 @@ T = TypeVar("T", bound="UpdatePortfolioOperation")
 
 @_attrs_define
 class UpdatePortfolioOperation:
-  """
-  Attributes:
-      portfolio_id (str):
-      name (None | str | Unset):
-      description (None | str | Unset):
-      strategy (None | str | Unset):
-      inception_date (datetime.date | None | Unset):
-      base_currency (None | str | Unset):
+  """CQRS body for `POST /operations/update-portfolio`.
+
+  Folds `portfolio_id` into the payload so REST + MCP share one body
+  type via the registrar. Unset fields are ignored (partial update).
+
+      Attributes:
+          portfolio_id (str): Target portfolio ID.
+          name (None | str | Unset):
+          description (None | str | Unset):
+          strategy (None | str | Unset):
+          inception_date (datetime.date | None | Unset):
+          base_currency (None | str | Unset):
   """
 
   portfolio_id: str
