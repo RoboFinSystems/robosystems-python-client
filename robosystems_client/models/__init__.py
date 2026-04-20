@@ -337,9 +337,6 @@ from .update_element_request import UpdateElementRequest
 from .update_element_request_balance_type_type_0 import (
   UpdateElementRequestBalanceTypeType0,
 )
-from .update_element_request_classification_type_0 import (
-  UpdateElementRequestClassificationType0,
-)
 from .update_element_request_period_type_type_0 import (
   UpdateElementRequestPeriodTypeType0,
 )
@@ -667,7 +664,6 @@ __all__ = (
   "UpdateAssociationRequest",
   "UpdateElementRequest",
   "UpdateElementRequestBalanceTypeType0",
-  "UpdateElementRequestClassificationType0",
   "UpdateElementRequestPeriodTypeType0",
   "UpdateEntityRequest",
   "UpdateFileResponseUpdatefile",

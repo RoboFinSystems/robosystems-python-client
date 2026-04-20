@@ -9,9 +9,6 @@ from attrs import field as _attrs_field
 from ..models.update_element_request_balance_type_type_0 import (
   UpdateElementRequestBalanceTypeType0,
 )
-from ..models.update_element_request_classification_type_0 import (
-  UpdateElementRequestClassificationType0,
-)
 from ..models.update_element_request_period_type_type_0 import (
   UpdateElementRequestPeriodTypeType0,
 )
@@ -32,8 +29,6 @@ class UpdateElementRequest:
           code (None | str | Unset):
           name (None | str | Unset):
           description (None | str | Unset):
-          classification (None | Unset | UpdateElementRequestClassificationType0):
-          sub_classification (None | str | Unset):
           balance_type (None | Unset | UpdateElementRequestBalanceTypeType0):
           period_type (None | Unset | UpdateElementRequestPeriodTypeType0):
           parent_id (None | str | Unset):
@@ -44,8 +39,6 @@ class UpdateElementRequest:
   code: None | str | Unset = UNSET
   name: None | str | Unset = UNSET
   description: None | str | Unset = UNSET
-  classification: None | Unset | UpdateElementRequestClassificationType0 = UNSET
-  sub_classification: None | str | Unset = UNSET
   balance_type: None | Unset | UpdateElementRequestBalanceTypeType0 = UNSET
   period_type: None | Unset | UpdateElementRequestPeriodTypeType0 = UNSET
   parent_id: None | str | Unset = UNSET
@@ -72,20 +65,6 @@ class UpdateElementRequest:
       description = UNSET
     else:
       description = self.description
-
-    classification: None | str | Unset
-    if isinstance(self.classification, Unset):
-      classification = UNSET
-    elif isinstance(self.classification, UpdateElementRequestClassificationType0):
-      classification = self.classification.value
-    else:
-      classification = self.classification
-
-    sub_classification: None | str | Unset
-    if isinstance(self.sub_classification, Unset):
-      sub_classification = UNSET
-    else:
-      sub_classification = self.sub_classification
 
     balance_type: None | str | Unset
     if isinstance(self.balance_type, Unset):
@@ -128,10 +107,6 @@ class UpdateElementRequest:
       field_dict["name"] = name
     if description is not UNSET:
       field_dict["description"] = description
-    if classification is not UNSET:
-      field_dict["classification"] = classification
-    if sub_classification is not UNSET:
-      field_dict["sub_classification"] = sub_classification
     if balance_type is not UNSET:
       field_dict["balance_type"] = balance_type
     if period_type is not UNSET:
@@ -174,34 +149,6 @@ class UpdateElementRequest:
       return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
-
-    def _parse_classification(
-      data: object,
-    ) -> None | Unset | UpdateElementRequestClassificationType0:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, str):
-          raise TypeError()
-        classification_type_0 = UpdateElementRequestClassificationType0(data)
-
-        return classification_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(None | Unset | UpdateElementRequestClassificationType0, data)
-
-    classification = _parse_classification(d.pop("classification", UNSET))
-
-    def _parse_sub_classification(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    sub_classification = _parse_sub_classification(d.pop("sub_classification", UNSET))
 
     def _parse_balance_type(
       data: object,
@@ -264,8 +211,6 @@ class UpdateElementRequest:
       code=code,
       name=name,
       description=description,
-      classification=classification,
-      sub_classification=sub_classification,
       balance_type=balance_type,
       period_type=period_type,
       parent_id=parent_id,

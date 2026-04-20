@@ -9,7 +9,6 @@ class CreateElementRequestSource(str, Enum):
   PLAID = "plaid"
   QUICKBOOKS = "quickbooks"
   RS_GAAP = "rs-gaap"
-  SFAC6 = "sfac6"
   US_GAAP = "us-gaap"
   XERO = "xero"
 
