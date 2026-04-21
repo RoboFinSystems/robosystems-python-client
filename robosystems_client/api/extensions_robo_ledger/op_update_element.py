@@ -123,6 +123,13 @@ def sync_detailed(
           omit the field to leave unchanged, pass `null` to clear the parent
           (make root).
 
+          ``classification`` updates the element's primary FASB
+          elementsOfFinancialStatements assignment (in ``element_classifications``,
+          not a direct column on ``elements``). Omit to leave unchanged. Passing a
+          value replaces the current primary EFS assignment; there is no
+          set-to-null semantics (use the UI/admin path for full classification
+          teardown — here we only support correction of a misclassified account).
+
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -168,6 +175,13 @@ def sync(
           omit the field to leave unchanged, pass `null` to clear the parent
           (make root).
 
+          ``classification`` updates the element's primary FASB
+          elementsOfFinancialStatements assignment (in ``element_classifications``,
+          not a direct column on ``elements``). Omit to leave unchanged. Passing a
+          value replaces the current primary EFS assignment; there is no
+          set-to-null semantics (use the UI/admin path for full classification
+          teardown — here we only support correction of a misclassified account).
+
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -207,6 +221,13 @@ async def asyncio_detailed(
           immutable. `parent_id` honors `model_dump(exclude_unset=True)` semantics:
           omit the field to leave unchanged, pass `null` to clear the parent
           (make root).
+
+          ``classification`` updates the element's primary FASB
+          elementsOfFinancialStatements assignment (in ``element_classifications``,
+          not a direct column on ``elements``). Omit to leave unchanged. Passing a
+          value replaces the current primary EFS assignment; there is no
+          set-to-null semantics (use the UI/admin path for full classification
+          teardown — here we only support correction of a misclassified account).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -250,6 +271,13 @@ async def asyncio(
           immutable. `parent_id` honors `model_dump(exclude_unset=True)` semantics:
           omit the field to leave unchanged, pass `null` to clear the parent
           (make root).
+
+          ``classification`` updates the element's primary FASB
+          elementsOfFinancialStatements assignment (in ``element_classifications``,
+          not a direct column on ``elements``). Omit to leave unchanged. Passing a
+          value replaces the current primary EFS assignment; there is no
+          set-to-null semantics (use the UI/admin path for full classification
+          teardown — here we only support correction of a misclassified account).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
