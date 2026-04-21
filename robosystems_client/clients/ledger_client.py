@@ -165,16 +165,16 @@ from ..graphql.queries.ledger import (
   GET_MAPPING_QUERY,
   GET_PERIOD_CLOSE_STATUS_QUERY,
   GET_PERIOD_DRAFTS_QUERY,
+  GET_INFORMATION_BLOCK_QUERY,
   GET_REPORTING_TAXONOMY_QUERY,
-  GET_SCHEDULE_FACTS_QUERY,
   GET_SUMMARY_QUERY,
   GET_TRANSACTION_QUERY,
   GET_TRIAL_BALANCE_QUERY,
   LIST_ACCOUNTS_QUERY,
   LIST_ELEMENTS_QUERY,
   LIST_ENTITIES_QUERY,
+  LIST_INFORMATION_BLOCKS_QUERY,
   LIST_MAPPINGS_QUERY,
-  LIST_SCHEDULES_QUERY,
   LIST_STRUCTURES_QUERY,
   LIST_TAXONOMIES_QUERY,
   LIST_TRANSACTIONS_QUERY,
@@ -187,6 +187,8 @@ from ..graphql.queries.ledger import (
   parse_entities,
   parse_entity,
   parse_fiscal_calendar,
+  parse_information_block,
+  parse_information_blocks,
   parse_mapped_trial_balance,
   parse_mapping,
   parse_mapping_coverage,
@@ -194,8 +196,6 @@ from ..graphql.queries.ledger import (
   parse_period_close_status,
   parse_period_drafts,
   parse_reporting_taxonomy,
-  parse_schedule_facts,
-  parse_schedules,
   parse_structures,
   parse_summary,
   parse_taxonomies,
@@ -844,34 +844,52 @@ class LedgerClient:
     envelope = self._call_op("Delete association", response)
     return envelope.result if envelope.result is not None else {"deleted": True}
 
-  # ── Schedules ──────────────────────────────────────────────────────
+  # ── Information Blocks ─────────────────────────────────────────────
 
-  def list_schedules(self, graph_id: str) -> list[dict[str, Any]]:
-    """List all schedule structures with metadata."""
-    data = self._query(graph_id, LIST_SCHEDULES_QUERY)
-    return parse_schedules(data)
-
-  def get_schedule_facts(
+  def get_information_block(
     self,
     graph_id: str,
-    structure_id: str,
-    period_start: str | None = None,
-    period_end: str | None = None,
-  ) -> list[dict[str, Any]]:
-    """Schedule facts optionally filtered by period window."""
+    block_id: str,
+  ) -> dict[str, Any] | None:
+    """Fetch an Information Block envelope by id — the cross-block-type read.
+
+    Returns ``None`` when the block doesn't exist or its type isn't
+    registered. See ``information-block.md`` for the envelope contract.
+    """
     data = self._query(
       graph_id,
-      GET_SCHEDULE_FACTS_QUERY,
+      GET_INFORMATION_BLOCK_QUERY,
+      {"id": block_id},
+    )
+    return parse_information_block(data)
+
+  def list_information_blocks(
+    self,
+    graph_id: str,
+    *,
+    block_type: str | None = None,
+    category: str | None = None,
+    limit: int | None = None,
+    offset: int | None = None,
+  ) -> list[dict[str, Any]]:
+    """List Information Block envelopes, optionally filtered.
+
+    Replaces the old ``list_schedules`` method — use
+    ``block_type='schedule'`` for the same set of blocks.
+    """
+    data = self._query(
+      graph_id,
+      LIST_INFORMATION_BLOCKS_QUERY,
       {
-        "structureId": structure_id,
-        "periodStart": period_start,
-        "periodEnd": period_end,
+        "blockType": block_type,
+        "category": category,
+        "limit": limit,
+        "offset": offset,
       },
     )
-    parsed = parse_schedule_facts(data)
-    if parsed is None:
-      return []
-    return parsed.get("facts", [])
+    return parse_information_blocks(data)
+
+  # ── Schedules ──────────────────────────────────────────────────────
 
   def create_schedule(
     self,

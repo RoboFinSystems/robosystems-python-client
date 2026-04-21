@@ -74,6 +74,10 @@ from .create_element_request_element_type import CreateElementRequestElementType
 from .create_element_request_period_type import CreateElementRequestPeriodType
 from .create_element_request_source import CreateElementRequestSource
 from .create_graph_request import CreateGraphRequest
+from .create_information_block_request import CreateInformationBlockRequest
+from .create_information_block_request_payload import (
+  CreateInformationBlockRequestPayload,
+)
 from .create_journal_entry_request import CreateJournalEntryRequest
 from .create_journal_entry_request_status import CreateJournalEntryRequestStatus
 from .create_journal_entry_request_type import CreateJournalEntryRequestType
@@ -120,6 +124,10 @@ from .database_storage_entry import DatabaseStorageEntry
 from .delete_association_request import DeleteAssociationRequest
 from .delete_element_request import DeleteElementRequest
 from .delete_file_response import DeleteFileResponse
+from .delete_information_block_request import DeleteInformationBlockRequest
+from .delete_information_block_request_payload import (
+  DeleteInformationBlockRequestPayload,
+)
 from .delete_journal_entry_request import DeleteJournalEntryRequest
 from .delete_mapping_association_operation import DeleteMappingAssociationOperation
 from .delete_portfolio_operation import DeletePortfolioOperation
@@ -345,6 +353,10 @@ from .update_element_request_period_type_type_0 import (
 )
 from .update_entity_request import UpdateEntityRequest
 from .update_file_response_updatefile import UpdateFileResponseUpdatefile
+from .update_information_block_request import UpdateInformationBlockRequest
+from .update_information_block_request_payload import (
+  UpdateInformationBlockRequestPayload,
+)
 from .update_journal_entry_request import UpdateJournalEntryRequest
 from .update_journal_entry_request_type_type_0 import UpdateJournalEntryRequestTypeType0
 from .update_member_role_request import UpdateMemberRoleRequest
@@ -438,6 +450,8 @@ __all__ = (
   "CreateElementRequestPeriodType",
   "CreateElementRequestSource",
   "CreateGraphRequest",
+  "CreateInformationBlockRequest",
+  "CreateInformationBlockRequestPayload",
   "CreateJournalEntryRequest",
   "CreateJournalEntryRequestStatus",
   "CreateJournalEntryRequestType",
@@ -478,6 +492,8 @@ __all__ = (
   "DeleteAssociationRequest",
   "DeleteElementRequest",
   "DeleteFileResponse",
+  "DeleteInformationBlockRequest",
+  "DeleteInformationBlockRequestPayload",
   "DeleteJournalEntryRequest",
   "DeleteMappingAssociationOperation",
   "DeletePortfolioOperation",
@@ -671,6 +687,8 @@ __all__ = (
   "UpdateElementRequestPeriodTypeType0",
   "UpdateEntityRequest",
   "UpdateFileResponseUpdatefile",
+  "UpdateInformationBlockRequest",
+  "UpdateInformationBlockRequestPayload",
   "UpdateJournalEntryRequest",
   "UpdateJournalEntryRequestTypeType0",
   "UpdateMemberRoleRequest",

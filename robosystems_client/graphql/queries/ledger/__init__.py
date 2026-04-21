@@ -494,46 +494,74 @@ def parse_mapping_coverage(data: dict[str, Any]) -> dict[str, Any] | None:
   return keys_to_snake(c) if c is not None else None
 
 
-# ── Schedules ──────────────────────────────────────────────────────────
+# ── Information Blocks ─────────────────────────────────────────────────
 
-LIST_SCHEDULES_QUERY = """
-query ListLedgerSchedules {
-  schedules {
-    schedules {
-      structureId name taxonomyName entryTemplate scheduleMetadata
-      totalPeriods periodsWithEntries
+GET_INFORMATION_BLOCK_QUERY = """
+query GetInformationBlock($id: ID!) {
+  informationBlock(id: $id) {
+    id blockType name displayName category
+    taxonomyId taxonomyName
+    informationModel { conceptArrangement memberArrangement }
+    artifact { topic parentheticalNote template mechanics }
+    elements {
+      id qname name code elementType
+      isAbstract isMonetary balanceType periodType
+    }
+    connections {
+      id fromElementId toElementId associationType
+      arcrole orderValue weight
+    }
+    facts {
+      id elementId value periodStart periodEnd
+      periodType unit factScope factSetId
     }
   }
 }
 """.strip()
 
 
-def parse_schedules(data: dict[str, Any]) -> list[dict[str, Any]]:
-  s = data.get("schedules") or {}
-  return [keys_to_snake(x) for x in s.get("schedules", [])]
+def parse_information_block(data: dict[str, Any]) -> dict[str, Any] | None:
+  block = data.get("informationBlock")
+  return keys_to_snake(block) if block is not None else None
 
 
-GET_SCHEDULE_FACTS_QUERY = """
-query GetLedgerScheduleFacts(
-  $structureId: String!
-  $periodStart: Date
-  $periodEnd: Date
+LIST_INFORMATION_BLOCKS_QUERY = """
+query ListInformationBlocks(
+  $blockType: String
+  $category: String
+  $limit: Int
+  $offset: Int
 ) {
-  scheduleFacts(
-    structureId: $structureId
-    periodStart: $periodStart
-    periodEnd: $periodEnd
+  informationBlocks(
+    blockType: $blockType
+    category: $category
+    limit: $limit
+    offset: $offset
   ) {
-    structureId
-    facts { elementId elementName value periodStart periodEnd }
+    id blockType name displayName category
+    taxonomyId taxonomyName
+    informationModel { conceptArrangement memberArrangement }
+    artifact { topic parentheticalNote template mechanics }
+    elements {
+      id qname name code elementType
+      isAbstract isMonetary balanceType periodType
+    }
+    connections {
+      id fromElementId toElementId associationType
+      arcrole orderValue weight
+    }
+    facts {
+      id elementId value periodStart periodEnd
+      periodType unit factScope factSetId
+    }
   }
 }
 """.strip()
 
 
-def parse_schedule_facts(data: dict[str, Any]) -> dict[str, Any] | None:
-  f = data.get("scheduleFacts")
-  return keys_to_snake(f) if f is not None else None
+def parse_information_blocks(data: dict[str, Any]) -> list[dict[str, Any]]:
+  blocks = data.get("informationBlocks") or []
+  return [keys_to_snake(b) for b in blocks]
 
 
 # ── Period close ───────────────────────────────────────────────────────
