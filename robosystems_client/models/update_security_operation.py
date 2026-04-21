@@ -19,9 +19,10 @@ T = TypeVar("T", bound="UpdateSecurityOperation")
 
 @_attrs_define
 class UpdateSecurityOperation:
-  """
+  """CQRS body for `POST /operations/update-security`.
+
   Attributes:
-      security_id (str):
+      security_id (str): Target security ID.
       entity_id (None | str | Unset):
       source_graph_id (None | str | Unset):
       name (None | str | Unset):

@@ -29,7 +29,6 @@ class CreateElementRequest:
           classification (CreateElementRequestClassification):
           code (None | str | Unset):
           description (None | str | Unset):
-          sub_classification (None | str | Unset):
           balance_type (CreateElementRequestBalanceType | Unset):  Default: CreateElementRequestBalanceType.DEBIT.
           period_type (CreateElementRequestPeriodType | Unset):  Default: CreateElementRequestPeriodType.DURATION.
           element_type (CreateElementRequestElementType | Unset):  Default: CreateElementRequestElementType.CONCEPT.
@@ -49,7 +48,6 @@ class CreateElementRequest:
   classification: CreateElementRequestClassification
   code: None | str | Unset = UNSET
   description: None | str | Unset = UNSET
-  sub_classification: None | str | Unset = UNSET
   balance_type: CreateElementRequestBalanceType | Unset = (
     CreateElementRequestBalanceType.DEBIT
   )
@@ -88,12 +86,6 @@ class CreateElementRequest:
       description = UNSET
     else:
       description = self.description
-
-    sub_classification: None | str | Unset
-    if isinstance(self.sub_classification, Unset):
-      sub_classification = UNSET
-    else:
-      sub_classification = self.sub_classification
 
     balance_type: str | Unset = UNSET
     if not isinstance(self.balance_type, Unset):
@@ -160,8 +152,6 @@ class CreateElementRequest:
       field_dict["code"] = code
     if description is not UNSET:
       field_dict["description"] = description
-    if sub_classification is not UNSET:
-      field_dict["sub_classification"] = sub_classification
     if balance_type is not UNSET:
       field_dict["balance_type"] = balance_type
     if period_type is not UNSET:
@@ -215,15 +205,6 @@ class CreateElementRequest:
       return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
-
-    def _parse_sub_classification(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    sub_classification = _parse_sub_classification(d.pop("sub_classification", UNSET))
 
     _balance_type = d.pop("balance_type", UNSET)
     balance_type: CreateElementRequestBalanceType | Unset
@@ -310,7 +291,6 @@ class CreateElementRequest:
       classification=classification,
       code=code,
       description=description,
-      sub_classification=sub_classification,
       balance_type=balance_type,
       period_type=period_type,
       element_type=element_type,

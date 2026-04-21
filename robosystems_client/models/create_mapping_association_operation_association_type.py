@@ -3,6 +3,7 @@ from enum import Enum
 
 class CreateMappingAssociationOperationAssociationType(str, Enum):
   CALCULATION = "calculation"
+  EQUIVALENCE = "equivalence"
   MAPPING = "mapping"
   PRESENTATION = "presentation"
 

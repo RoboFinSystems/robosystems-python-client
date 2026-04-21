@@ -54,8 +54,12 @@ def patch_ndjson_handling() -> bool:
             return None
 """
 
-  # Find the location to insert the patch (raw generated code uses 4 spaces)
-  search_pattern = "    if response.status_code == 200:\n        response_200 = ExecuteCypherQueryResponse200.from_dict(response.json())\n\n        return response_200"
+  # Find the location to insert the patch (raw generated code uses 4 spaces).
+  # The /v1/graphs/{graph_id}/query endpoint declares `response_model=None`
+  # (it returns JSONResponse | StreamingResponse | EventSourceResponse depending
+  # on mode), so the generator emits `response.json()` directly with no typed
+  # Response200 model.
+  search_pattern = "    if response.status_code == 200:\n        response_200 = response.json()\n        return response_200"
 
   if search_pattern not in content:
     print(f"❌ Could not find expected pattern in {file_path}")
@@ -63,7 +67,7 @@ def patch_ndjson_handling() -> bool:
     return False
 
   # Replace the pattern with the patched version
-  replacement = f"    if response.status_code == 200:\n{ndjson_check}        response_200 = ExecuteCypherQueryResponse200.from_dict(response.json())\n\n        return response_200"
+  replacement = f"    if response.status_code == 200:\n{ndjson_check}        response_200 = response.json()\n        return response_200"
   patched_content = content.replace(search_pattern, replacement)
 
   # Write the patched content back

@@ -11,9 +11,10 @@ T = TypeVar("T", bound="DeletePortfolioOperation")
 
 @_attrs_define
 class DeletePortfolioOperation:
-  """
+  """CQRS body for `POST /operations/delete-portfolio`.
+
   Attributes:
-      portfolio_id (str):
+      portfolio_id (str): Target portfolio ID.
   """
 
   portfolio_id: str

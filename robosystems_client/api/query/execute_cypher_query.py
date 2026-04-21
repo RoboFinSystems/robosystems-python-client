@@ -65,6 +65,12 @@ def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> Any | ErrorResponse | HTTPValidationError | None:
   if response.status_code == 200:
+    content_type = response.headers.get("content-type", "")
+    if (
+      "application/x-ndjson" in content_type
+      or response.headers.get("x-stream-format") == "ndjson"
+    ):
+      return None
     response_200 = response.json()
     return response_200
 

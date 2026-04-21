@@ -44,11 +44,6 @@ from .billing_customer import BillingCustomer
 from .bulk_association_item import BulkAssociationItem
 from .bulk_association_item_association_type import BulkAssociationItemAssociationType
 from .bulk_create_associations_request import BulkCreateAssociationsRequest
-from .bulk_document_upload_request import BulkDocumentUploadRequest
-from .bulk_document_upload_response import BulkDocumentUploadResponse
-from .bulk_document_upload_response_errors_type_0_item import (
-  BulkDocumentUploadResponseErrorsType0Item,
-)
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -163,6 +158,7 @@ from .file_layer_status import FileLayerStatus
 from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
 from .file_upload_response import FileUploadResponse
+from .financial_statement_analysis_request import FinancialStatementAnalysisRequest
 from .forgot_password_request import ForgotPasswordRequest
 from .forgot_password_response_forgotpassword import (
   ForgotPasswordResponseForgotpassword,
@@ -212,6 +208,7 @@ from .list_connections_provider_type_0 import ListConnectionsProviderType0
 from .list_org_graphs_response_200_item import ListOrgGraphsResponse200Item
 from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
+from .live_financial_statement_request import LiveFinancialStatementRequest
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .manual_line_item_request import ManualLineItemRequest
@@ -413,9 +410,6 @@ __all__ = (
   "BulkAssociationItem",
   "BulkAssociationItemAssociationType",
   "BulkCreateAssociationsRequest",
-  "BulkDocumentUploadRequest",
-  "BulkDocumentUploadResponse",
-  "BulkDocumentUploadResponseErrorsType0Item",
   "CancelOperationResponseCanceloperation",
   "ChangeTierOp",
   "ChangeTierOpNewTier",
@@ -518,6 +512,7 @@ __all__ = (
   "FileStatusUpdate",
   "FileUploadRequest",
   "FileUploadResponse",
+  "FinancialStatementAnalysisRequest",
   "ForgotPasswordRequest",
   "ForgotPasswordResponseForgotpassword",
   "GetCurrentAuthUserResponseGetcurrentauthuser",
@@ -559,6 +554,7 @@ __all__ = (
   "ListOrgGraphsResponse200Item",
   "ListSubgraphsResponse",
   "ListTableFilesResponse",
+  "LiveFinancialStatementRequest",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "ManualLineItemRequest",

@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 from urllib.parse import quote
 
 import httpx
@@ -9,9 +9,9 @@ from ...client import AuthenticatedClient, Client
 from ...models.create_mapping_association_operation import (
   CreateMappingAssociationOperation,
 )
-from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
 
 
@@ -42,34 +42,32 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   if response.status_code == 200:
     response_200 = OperationEnvelope.from_dict(response.json())
 
     return response_200
 
   if response.status_code == 400:
-    response_400 = ErrorResponse.from_dict(response.json())
+    response_400 = OperationError.from_dict(response.json())
 
     return response_400
 
   if response.status_code == 401:
-    response_401 = ErrorResponse.from_dict(response.json())
-
+    response_401 = cast(Any, None)
     return response_401
 
   if response.status_code == 403:
-    response_403 = ErrorResponse.from_dict(response.json())
-
+    response_403 = cast(Any, None)
     return response_403
 
   if response.status_code == 404:
-    response_404 = ErrorResponse.from_dict(response.json())
+    response_404 = OperationError.from_dict(response.json())
 
     return response_404
 
   if response.status_code == 409:
-    response_409 = ErrorResponse.from_dict(response.json())
+    response_409 = OperationError.from_dict(response.json())
 
     return response_409
 
@@ -79,13 +77,11 @@ def _parse_response(
     return response_422
 
   if response.status_code == 429:
-    response_429 = ErrorResponse.from_dict(response.json())
-
+    response_429 = cast(Any, None)
     return response_429
 
   if response.status_code == 500:
-    response_500 = ErrorResponse.from_dict(response.json())
-
+    response_500 = cast(Any, None)
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -96,7 +92,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -111,10 +107,11 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateMappingAssociationOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Create Mapping Association
 
-   Links a chart-of-accounts element to a reporting concept (CoA element → US GAAP concept).
+   Link a chart-of-accounts element to a US GAAP reporting concept. For bulk associations
+  (presentation/calculation linkbases, 50+ arcs at once) use `create-associations` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -122,14 +119,18 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation):
+      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
+          mapping-association`.
+
+          Bundles the target mapping structure's `mapping_id` with the association
+          payload so REST + MCP share a single body type via the registrar.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -151,10 +152,11 @@ def sync(
   client: AuthenticatedClient,
   body: CreateMappingAssociationOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Create Mapping Association
 
-   Links a chart-of-accounts element to a reporting concept (CoA element → US GAAP concept).
+   Link a chart-of-accounts element to a US GAAP reporting concept. For bulk associations
+  (presentation/calculation linkbases, 50+ arcs at once) use `create-associations` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -162,14 +164,18 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation):
+      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
+          mapping-association`.
+
+          Bundles the target mapping structure's `mapping_id` with the association
+          payload so REST + MCP share a single body type via the registrar.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      Any | HTTPValidationError | OperationEnvelope | OperationError
   """
 
   return sync_detailed(
@@ -186,10 +192,11 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateMappingAssociationOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Create Mapping Association
 
-   Links a chart-of-accounts element to a reporting concept (CoA element → US GAAP concept).
+   Link a chart-of-accounts element to a US GAAP reporting concept. For bulk associations
+  (presentation/calculation linkbases, 50+ arcs at once) use `create-associations` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -197,14 +204,18 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation):
+      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
+          mapping-association`.
+
+          Bundles the target mapping structure's `mapping_id` with the association
+          payload so REST + MCP share a single body type via the registrar.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -224,10 +235,11 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateMappingAssociationOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Create Mapping Association
 
-   Links a chart-of-accounts element to a reporting concept (CoA element → US GAAP concept).
+   Link a chart-of-accounts element to a US GAAP reporting concept. For bulk associations
+  (presentation/calculation linkbases, 50+ arcs at once) use `create-associations` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -235,14 +247,18 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation):
+      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
+          mapping-association`.
+
+          Bundles the target mapping structure's `mapping_id` with the association
+          payload so REST + MCP share a single body type via the registrar.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      Any | HTTPValidationError | OperationEnvelope | OperationError
   """
 
   return (

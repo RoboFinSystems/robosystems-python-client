@@ -15,9 +15,10 @@ T = TypeVar("T", bound="UpdatePositionOperation")
 
 @_attrs_define
 class UpdatePositionOperation:
-  """
+  """CQRS body for `POST /operations/update-position`.
+
   Attributes:
-      position_id (str):
+      position_id (str): Target position ID.
       quantity (float | None | Unset):
       quantity_type (None | str | Unset):
       cost_basis (int | None | Unset):

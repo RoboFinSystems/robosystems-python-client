@@ -1,22 +1,22 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.live_financial_statement_request import LiveFinancialStatementRequest
 from ...models.operation_envelope import OperationEnvelope
-from ...models.operation_error import OperationError
-from ...models.truncate_schedule_operation import TruncateScheduleOperation
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: TruncateScheduleOperation,
+  body: LiveFinancialStatementRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/truncate-schedule".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/live-financial-statement".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -40,32 +40,34 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   if response.status_code == 200:
     response_200 = OperationEnvelope.from_dict(response.json())
 
     return response_200
 
   if response.status_code == 400:
-    response_400 = OperationError.from_dict(response.json())
+    response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
 
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = OperationError.from_dict(response.json())
+    response_404 = ErrorResponse.from_dict(response.json())
 
     return response_404
 
   if response.status_code == 409:
-    response_409 = OperationError.from_dict(response.json())
+    response_409 = ErrorResponse.from_dict(response.json())
 
     return response_409
 
@@ -75,11 +77,13 @@ def _parse_response(
     return response_422
 
   if response.status_code == 429:
-    response_429 = cast(Any, None)
+    response_429 = ErrorResponse.from_dict(response.json())
+
     return response_429
 
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -90,7 +94,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -103,14 +107,15 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TruncateScheduleOperation,
+  body: LiveFinancialStatementRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Truncate Schedule (End Early)
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+  """Live Financial Statement
 
-   End a schedule early by deleting forward facts and any stale draft closing entries past the cutoff.
-  Historical facts and posted entries are preserved. Use this when a business event (asset disposal,
-  contract cancellation) shortens the schedule's lifespan.
+   Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
+  CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
+  materialization required. Rejected on shared-repository graphs; those should use `financial-
+  statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,20 +123,15 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (TruncateScheduleOperation): CQRS-shaped body for `POST /operations/truncate-
-          schedule`.
-
-          Bundles the target schedule's `structure_id` with the update payload so
-          the single-body signature matches the registrar/MCP contract. The REST
-          handler, GraphQL resolver, and MCP tool all resolve to the same
-          `cmd_truncate_schedule(session, body, created_by=...)`.
+      body (LiveFinancialStatementRequest): Request for live-financial-statement (OLTP, entity
+          graphs only).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -151,14 +151,15 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TruncateScheduleOperation,
+  body: LiveFinancialStatementRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Truncate Schedule (End Early)
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+  """Live Financial Statement
 
-   End a schedule early by deleting forward facts and any stale draft closing entries past the cutoff.
-  Historical facts and posted entries are preserved. Use this when a business event (asset disposal,
-  contract cancellation) shortens the schedule's lifespan.
+   Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
+  CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
+  materialization required. Rejected on shared-repository graphs; those should use `financial-
+  statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -166,20 +167,15 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (TruncateScheduleOperation): CQRS-shaped body for `POST /operations/truncate-
-          schedule`.
-
-          Bundles the target schedule's `structure_id` with the update payload so
-          the single-body signature matches the registrar/MCP contract. The REST
-          handler, GraphQL resolver, and MCP tool all resolve to the same
-          `cmd_truncate_schedule(session, body, created_by=...)`.
+      body (LiveFinancialStatementRequest): Request for live-financial-statement (OLTP, entity
+          graphs only).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return sync_detailed(
@@ -194,14 +190,15 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TruncateScheduleOperation,
+  body: LiveFinancialStatementRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Truncate Schedule (End Early)
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+  """Live Financial Statement
 
-   End a schedule early by deleting forward facts and any stale draft closing entries past the cutoff.
-  Historical facts and posted entries are preserved. Use this when a business event (asset disposal,
-  contract cancellation) shortens the schedule's lifespan.
+   Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
+  CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
+  materialization required. Rejected on shared-repository graphs; those should use `financial-
+  statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -209,20 +206,15 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (TruncateScheduleOperation): CQRS-shaped body for `POST /operations/truncate-
-          schedule`.
-
-          Bundles the target schedule's `structure_id` with the update payload so
-          the single-body signature matches the registrar/MCP contract. The REST
-          handler, GraphQL resolver, and MCP tool all resolve to the same
-          `cmd_truncate_schedule(session, body, created_by=...)`.
+      body (LiveFinancialStatementRequest): Request for live-financial-statement (OLTP, entity
+          graphs only).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -240,14 +232,15 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TruncateScheduleOperation,
+  body: LiveFinancialStatementRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Truncate Schedule (End Early)
+) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+  """Live Financial Statement
 
-   End a schedule early by deleting forward facts and any stale draft closing entries past the cutoff.
-  Historical facts and posted entries are preserved. Use this when a business event (asset disposal,
-  contract cancellation) shortens the schedule's lifespan.
+   Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
+  CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
+  materialization required. Rejected on shared-repository graphs; those should use `financial-
+  statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -255,20 +248,15 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (TruncateScheduleOperation): CQRS-shaped body for `POST /operations/truncate-
-          schedule`.
-
-          Bundles the target schedule's `structure_id` with the update payload so
-          the single-body signature matches the registrar/MCP contract. The REST
-          handler, GraphQL resolver, and MCP tool all resolve to the same
-          `cmd_truncate_schedule(session, body, created_by=...)`.
+      body (LiveFinancialStatementRequest): Request for live-financial-statement (OLTP, entity
+          graphs only).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      ErrorResponse | HTTPValidationError | OperationEnvelope
   """
 
   return (

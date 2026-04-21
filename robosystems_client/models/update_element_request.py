@@ -27,29 +27,34 @@ class UpdateElementRequest:
   omit the field to leave unchanged, pass `null` to clear the parent
   (make root).
 
+  ``classification`` updates the element's primary FASB
+  elementsOfFinancialStatements assignment (in ``element_classifications``,
+  not a direct column on ``elements``). Omit to leave unchanged. Passing a
+  value replaces the current primary EFS assignment; there is no
+  set-to-null semantics (use the UI/admin path for full classification
+  teardown — here we only support correction of a misclassified account).
+
       Attributes:
           element_id (str):
           code (None | str | Unset):
           name (None | str | Unset):
           description (None | str | Unset):
-          classification (None | Unset | UpdateElementRequestClassificationType0):
-          sub_classification (None | str | Unset):
           balance_type (None | Unset | UpdateElementRequestBalanceTypeType0):
           period_type (None | Unset | UpdateElementRequestPeriodTypeType0):
           parent_id (None | str | Unset):
           currency (None | str | Unset):
+          classification (None | Unset | UpdateElementRequestClassificationType0):
   """
 
   element_id: str
   code: None | str | Unset = UNSET
   name: None | str | Unset = UNSET
   description: None | str | Unset = UNSET
-  classification: None | Unset | UpdateElementRequestClassificationType0 = UNSET
-  sub_classification: None | str | Unset = UNSET
   balance_type: None | Unset | UpdateElementRequestBalanceTypeType0 = UNSET
   period_type: None | Unset | UpdateElementRequestPeriodTypeType0 = UNSET
   parent_id: None | str | Unset = UNSET
   currency: None | str | Unset = UNSET
+  classification: None | Unset | UpdateElementRequestClassificationType0 = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -72,20 +77,6 @@ class UpdateElementRequest:
       description = UNSET
     else:
       description = self.description
-
-    classification: None | str | Unset
-    if isinstance(self.classification, Unset):
-      classification = UNSET
-    elif isinstance(self.classification, UpdateElementRequestClassificationType0):
-      classification = self.classification.value
-    else:
-      classification = self.classification
-
-    sub_classification: None | str | Unset
-    if isinstance(self.sub_classification, Unset):
-      sub_classification = UNSET
-    else:
-      sub_classification = self.sub_classification
 
     balance_type: None | str | Unset
     if isinstance(self.balance_type, Unset):
@@ -115,6 +106,14 @@ class UpdateElementRequest:
     else:
       currency = self.currency
 
+    classification: None | str | Unset
+    if isinstance(self.classification, Unset):
+      classification = UNSET
+    elif isinstance(self.classification, UpdateElementRequestClassificationType0):
+      classification = self.classification.value
+    else:
+      classification = self.classification
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -128,10 +127,6 @@ class UpdateElementRequest:
       field_dict["name"] = name
     if description is not UNSET:
       field_dict["description"] = description
-    if classification is not UNSET:
-      field_dict["classification"] = classification
-    if sub_classification is not UNSET:
-      field_dict["sub_classification"] = sub_classification
     if balance_type is not UNSET:
       field_dict["balance_type"] = balance_type
     if period_type is not UNSET:
@@ -140,6 +135,8 @@ class UpdateElementRequest:
       field_dict["parent_id"] = parent_id
     if currency is not UNSET:
       field_dict["currency"] = currency
+    if classification is not UNSET:
+      field_dict["classification"] = classification
 
     return field_dict
 
@@ -174,34 +171,6 @@ class UpdateElementRequest:
       return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
-
-    def _parse_classification(
-      data: object,
-    ) -> None | Unset | UpdateElementRequestClassificationType0:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, str):
-          raise TypeError()
-        classification_type_0 = UpdateElementRequestClassificationType0(data)
-
-        return classification_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(None | Unset | UpdateElementRequestClassificationType0, data)
-
-    classification = _parse_classification(d.pop("classification", UNSET))
-
-    def _parse_sub_classification(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    sub_classification = _parse_sub_classification(d.pop("sub_classification", UNSET))
 
     def _parse_balance_type(
       data: object,
@@ -259,17 +228,35 @@ class UpdateElementRequest:
 
     currency = _parse_currency(d.pop("currency", UNSET))
 
+    def _parse_classification(
+      data: object,
+    ) -> None | Unset | UpdateElementRequestClassificationType0:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        classification_type_0 = UpdateElementRequestClassificationType0(data)
+
+        return classification_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | Unset | UpdateElementRequestClassificationType0, data)
+
+    classification = _parse_classification(d.pop("classification", UNSET))
+
     update_element_request = cls(
       element_id=element_id,
       code=code,
       name=name,
       description=description,
-      classification=classification,
-      sub_classification=sub_classification,
       balance_type=balance_type,
       period_type=period_type,
       parent_id=parent_id,
       currency=currency,
+      classification=classification,
     )
 
     update_element_request.additional_properties = d
