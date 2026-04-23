@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_schedule_request import CreateScheduleRequest
+from ...models.evaluate_rules_request import EvaluateRulesRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateScheduleRequest,
+  body: EvaluateRulesRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/create-schedule".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/evaluate-rules".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,13 +103,15 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateScheduleRequest,
+  body: EvaluateRulesRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Schedule
+  """Evaluate Rules for an Information Block
 
-   Create a schedule and pre-generate monthly amortization facts spanning the period range.
-  `entry_template` defines the debit/credit elements used by `create-closing-entry` each period.
+   Runs every rule targeting the given structure (plus element- and association-scoped rules for the
+  structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
+  VerificationResult row per rule, and returns the results plus a status-keyed summary. Phase delta.3
+  — decoding mode, 5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -117,7 +119,17 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateScheduleRequest):
+      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation (Phase
+          delta.3).
+
+          Runs every rule scoped to ``structure_id`` (plus element/association-
+          scoped rules for the structure's atoms), binds ``$Variable`` references
+          to facts via qname lookup, and writes one
+          :class:`VerificationResult` row per rule.
+
+          Optional ``period_start`` / ``period_end`` narrow the fact-binding
+          window; without them the engine uses the most recent ``in_scope`` fact
+          for each element regardless of period.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -144,13 +156,15 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateScheduleRequest,
+  body: EvaluateRulesRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Schedule
+  """Evaluate Rules for an Information Block
 
-   Create a schedule and pre-generate monthly amortization facts spanning the period range.
-  `entry_template` defines the debit/credit elements used by `create-closing-entry` each period.
+   Runs every rule targeting the given structure (plus element- and association-scoped rules for the
+  structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
+  VerificationResult row per rule, and returns the results plus a status-keyed summary. Phase delta.3
+  — decoding mode, 5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -158,7 +172,17 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateScheduleRequest):
+      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation (Phase
+          delta.3).
+
+          Runs every rule scoped to ``structure_id`` (plus element/association-
+          scoped rules for the structure's atoms), binds ``$Variable`` references
+          to facts via qname lookup, and writes one
+          :class:`VerificationResult` row per rule.
+
+          Optional ``period_start`` / ``period_end`` narrow the fact-binding
+          window; without them the engine uses the most recent ``in_scope`` fact
+          for each element regardless of period.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -180,13 +204,15 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateScheduleRequest,
+  body: EvaluateRulesRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Schedule
+  """Evaluate Rules for an Information Block
 
-   Create a schedule and pre-generate monthly amortization facts spanning the period range.
-  `entry_template` defines the debit/credit elements used by `create-closing-entry` each period.
+   Runs every rule targeting the given structure (plus element- and association-scoped rules for the
+  structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
+  VerificationResult row per rule, and returns the results plus a status-keyed summary. Phase delta.3
+  — decoding mode, 5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -194,7 +220,17 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateScheduleRequest):
+      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation (Phase
+          delta.3).
+
+          Runs every rule scoped to ``structure_id`` (plus element/association-
+          scoped rules for the structure's atoms), binds ``$Variable`` references
+          to facts via qname lookup, and writes one
+          :class:`VerificationResult` row per rule.
+
+          Optional ``period_start`` / ``period_end`` narrow the fact-binding
+          window; without them the engine uses the most recent ``in_scope`` fact
+          for each element regardless of period.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -219,13 +255,15 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateScheduleRequest,
+  body: EvaluateRulesRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Schedule
+  """Evaluate Rules for an Information Block
 
-   Create a schedule and pre-generate monthly amortization facts spanning the period range.
-  `entry_template` defines the debit/credit elements used by `create-closing-entry` each period.
+   Runs every rule targeting the given structure (plus element- and association-scoped rules for the
+  structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
+  VerificationResult row per rule, and returns the results plus a status-keyed summary. Phase delta.3
+  — decoding mode, 5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -233,7 +271,17 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateScheduleRequest):
+      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation (Phase
+          delta.3).
+
+          Runs every rule scoped to ``structure_id`` (plus element/association-
+          scoped rules for the structure's atoms), binds ``$Variable`` references
+          to facts via qname lookup, and writes one
+          :class:`VerificationResult` row per rule.
+
+          Optional ``period_start`` / ``period_end`` narrow the fact-binding
+          window; without them the engine uses the most recent ``in_scope`` fact
+          for each element regardless of period.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

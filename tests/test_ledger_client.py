@@ -306,10 +306,10 @@ class TestLedgerWrites:
     assert body.period == "2026-03"
     assert body.allow_stale_sync is True
 
-  @patch("robosystems_client.clients.ledger_client.op_create_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_create_information_block")
   def test_create_schedule(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "create-schedule",
+      "create-information-block",
       {
         "structure_id": "str_1",
         "name": "Depreciation",
@@ -331,6 +331,8 @@ class TestLedgerWrites:
       credit_element_id="elem_accum_depr",
     )
     assert result["total_periods"] == 36
+    body = mock_op.call_args.kwargs["body"]
+    assert body.block_type == "schedule"
 
   @patch("robosystems_client.clients.ledger_client.op_auto_map_elements")
   def test_auto_map_elements_returns_ack(self, mock_op, mock_config, graph_id):
@@ -1406,35 +1408,37 @@ class TestAssociationOps:
 
 @pytest.mark.unit
 class TestScheduleAdditionalOps:
-  @patch("robosystems_client.clients.ledger_client.op_update_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_update_information_block")
   def test_update_schedule(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "update-schedule",
+      "update-information-block",
       {"structure_id": "str_sched_1", "name": "Renamed Schedule"},
     )
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
     result = client.update_schedule(
-      graph_id, {"structure_id": "str_sched_1", "name": "Renamed Schedule"}
+      graph_id, "str_sched_1", {"name": "Renamed Schedule"}
     )
     assert result["name"] == "Renamed Schedule"
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
+    body = mock_op.call_args.kwargs["body"]
+    assert body.block_type == "schedule"
 
-  @patch("robosystems_client.clients.ledger_client.op_delete_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_delete_information_block")
   def test_delete_schedule_returns_sentinel(self, mock_op, mock_config, graph_id):
-    envelope = _envelope("delete-schedule", None)
+    envelope = _envelope("delete-information-block", None)
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
     result = client.delete_schedule(graph_id, "str_sched_1")
     assert result == {"deleted": True}
     body = mock_op.call_args.kwargs["body"]
-    assert body.structure_id == "str_sched_1"
+    assert body.block_type == "schedule"
 
-  @patch("robosystems_client.clients.ledger_client.op_delete_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_delete_information_block")
   def test_delete_schedule_returns_result_when_present(
     self, mock_op, mock_config, graph_id
   ):
-    envelope = _envelope("delete-schedule", {"structure_id": "str_sched_1"})
+    envelope = _envelope("delete-information-block", {"structure_id": "str_sched_1"})
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
     result = client.delete_schedule(graph_id, "str_sched_1")
