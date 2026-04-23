@@ -6,17 +6,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.delete_schedule_request import DeleteScheduleRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
+from ...models.update_information_block_request import UpdateInformationBlockRequest
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: DeleteScheduleRequest,
+  body: UpdateInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/delete-schedule".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/update-information-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,13 +103,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteScheduleRequest,
+  body: UpdateInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Delete Schedule
+  """Update Information Block
 
-   Permanently delete a schedule, cascading through facts and associations. For ending a schedule early
-  without removing history, use truncate-schedule instead.
+   Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
+  handler. Block types whose Structures are library-seeded and immutable (statement family) surface
+  501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -117,12 +118,13 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteScheduleRequest): Delete a schedule — cascades through facts and associations.
+      body (UpdateInformationBlockRequest): Generic update request — mirrors
+          :class:`CreateInformationBlockRequest`.
 
-          Hard deletes the Structure, all Facts tied to it, and all
-          Associations tied to it. This is a permanent, irreversible
-          operation. For ending a schedule early without removing history,
-          use truncate-schedule instead.
+          Validated against the registry entry's ``update_request_model``.
+          Block types that don't support updates (e.g. the statement family,
+          whose Structures are library-seeded) surface ``NotImplementedError``
+          from their dispatch handler, which the registrar maps to HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -149,13 +151,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteScheduleRequest,
+  body: UpdateInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Delete Schedule
+  """Update Information Block
 
-   Permanently delete a schedule, cascading through facts and associations. For ending a schedule early
-  without removing history, use truncate-schedule instead.
+   Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
+  handler. Block types whose Structures are library-seeded and immutable (statement family) surface
+  501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -163,12 +166,13 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteScheduleRequest): Delete a schedule — cascades through facts and associations.
+      body (UpdateInformationBlockRequest): Generic update request — mirrors
+          :class:`CreateInformationBlockRequest`.
 
-          Hard deletes the Structure, all Facts tied to it, and all
-          Associations tied to it. This is a permanent, irreversible
-          operation. For ending a schedule early without removing history,
-          use truncate-schedule instead.
+          Validated against the registry entry's ``update_request_model``.
+          Block types that don't support updates (e.g. the statement family,
+          whose Structures are library-seeded) surface ``NotImplementedError``
+          from their dispatch handler, which the registrar maps to HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -190,13 +194,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteScheduleRequest,
+  body: UpdateInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Delete Schedule
+  """Update Information Block
 
-   Permanently delete a schedule, cascading through facts and associations. For ending a schedule early
-  without removing history, use truncate-schedule instead.
+   Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
+  handler. Block types whose Structures are library-seeded and immutable (statement family) surface
+  501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -204,12 +209,13 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteScheduleRequest): Delete a schedule — cascades through facts and associations.
+      body (UpdateInformationBlockRequest): Generic update request — mirrors
+          :class:`CreateInformationBlockRequest`.
 
-          Hard deletes the Structure, all Facts tied to it, and all
-          Associations tied to it. This is a permanent, irreversible
-          operation. For ending a schedule early without removing history,
-          use truncate-schedule instead.
+          Validated against the registry entry's ``update_request_model``.
+          Block types that don't support updates (e.g. the statement family,
+          whose Structures are library-seeded) surface ``NotImplementedError``
+          from their dispatch handler, which the registrar maps to HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -234,13 +240,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteScheduleRequest,
+  body: UpdateInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Delete Schedule
+  """Update Information Block
 
-   Permanently delete a schedule, cascading through facts and associations. For ending a schedule early
-  without removing history, use truncate-schedule instead.
+   Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
+  handler. Block types whose Structures are library-seeded and immutable (statement family) surface
+  501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -248,12 +255,13 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteScheduleRequest): Delete a schedule — cascades through facts and associations.
+      body (UpdateInformationBlockRequest): Generic update request — mirrors
+          :class:`CreateInformationBlockRequest`.
 
-          Hard deletes the Structure, all Facts tied to it, and all
-          Associations tied to it. This is a permanent, irreversible
-          operation. For ending a schedule early without removing history,
-          use truncate-schedule instead.
+          Validated against the registry entry's ``update_request_model``.
+          Block types that don't support updates (e.g. the statement family,
+          whose Structures are library-seeded) surface ``NotImplementedError``
+          from their dispatch handler, which the registrar maps to HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

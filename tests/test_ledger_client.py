@@ -306,10 +306,10 @@ class TestLedgerWrites:
     assert body.period == "2026-03"
     assert body.allow_stale_sync is True
 
-  @patch("robosystems_client.clients.ledger_client.op_create_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_create_information_block")
   def test_create_schedule(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "create-schedule",
+      "create-information-block",
       {
         "structure_id": "str_1",
         "name": "Depreciation",
@@ -331,6 +331,8 @@ class TestLedgerWrites:
       credit_element_id="elem_accum_depr",
     )
     assert result["total_periods"] == 36
+    body = mock_op.call_args.kwargs["body"]
+    assert body.block_type == "schedule"
 
   @patch("robosystems_client.clients.ledger_client.op_auto_map_elements")
   def test_auto_map_elements_returns_ack(self, mock_op, mock_config, graph_id):
@@ -974,61 +976,99 @@ class TestLedgerReadsAdditional:
     assert variables["mappingId"] == "map_1"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
-  def test_list_schedules(self, mock_execute, mock_config, graph_id):
+  def test_list_information_blocks(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
-      "schedules": {
-        "schedules": [
-          {
-            "structureId": "str_sched_1",
-            "name": "Depreciation",
-            "taxonomyName": "My CoA",
-            "entryTemplate": {},
-            "scheduleMetadata": {},
-            "totalPeriods": 36,
-            "periodsWithEntries": 3,
-          }
-        ]
-      }
+      "informationBlocks": [
+        {
+          "id": "str_sched_1",
+          "blockType": "schedule",
+          "name": "Depreciation",
+          "displayName": "Schedule",
+          "category": "Close",
+          "taxonomyId": "tax_01",
+          "taxonomyName": "My CoA",
+          "informationModel": {
+            "conceptArrangement": "roll_forward",
+            "memberArrangement": None,
+          },
+          "artifact": {
+            "topic": None,
+            "parentheticalNote": None,
+            "template": None,
+            "mechanics": {
+              "kind": "closing_entry_generator",
+              "entryTemplate": {},
+              "scheduleMetadata": {},
+              "periodsWithEntries": 3,
+            },
+          },
+          "elements": [],
+          "connections": [],
+          "facts": [],
+        }
+      ]
     }
     client = LedgerClient(mock_config)
-    result = client.list_schedules(graph_id)
+    result = client.list_information_blocks(graph_id, block_type="schedule")
     assert len(result) == 1
-    assert result[0]["structure_id"] == "str_sched_1"
-    assert result[0]["total_periods"] == 36
+    assert result[0]["id"] == "str_sched_1"
+    assert result[0]["block_type"] == "schedule"
+    assert result[0]["taxonomy_name"] == "My CoA"
+    variables = mock_execute.call_args[0][2]
+    assert variables["blockType"] == "schedule"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
-  def test_get_schedule_facts(self, mock_execute, mock_config, graph_id):
+  def test_get_information_block(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
-      "scheduleFacts": {
-        "structureId": "str_sched_1",
+      "informationBlock": {
+        "id": "struct_sched_1",
+        "blockType": "schedule",
+        "name": "Depreciation",
+        "displayName": "Schedule",
+        "category": "Close",
+        "informationModel": {
+          "conceptArrangement": "roll_forward",
+          "memberArrangement": None,
+        },
+        "artifact": {
+          "topic": None,
+          "parentheticalNote": None,
+          "template": None,
+          "mechanics": {"kind": "closing_entry_generator"},
+        },
+        "elements": [],
+        "connections": [],
         "facts": [
           {
+            "id": "fact_1",
             "elementId": "elem_depr",
-            "elementName": "Depreciation Expense",
             "value": 100000,
             "periodStart": "2026-01-01",
             "periodEnd": "2026-01-31",
+            "periodType": "duration",
+            "unit": "USD",
+            "factScope": "in_scope",
+            "factSetId": None,
           }
         ],
       }
     }
     client = LedgerClient(mock_config)
-    result = client.get_schedule_facts(
-      graph_id, "str_sched_1", period_start="2026-01-01", period_end="2026-03-31"
-    )
-    assert len(result) == 1
-    assert result[0]["value"] == 100000
+    block = client.get_information_block(graph_id, "struct_sched_1")
+    assert block is not None
+    assert block["id"] == "struct_sched_1"
+    assert block["block_type"] == "schedule"
+    assert block["facts"][0]["value"] == 100000
     variables = mock_execute.call_args[0][2]
-    assert variables["structureId"] == "str_sched_1"
-    assert variables["periodStart"] == "2026-01-01"
+    assert variables["id"] == "struct_sched_1"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
-  def test_get_schedule_facts_returns_empty_list_when_none(
+  def test_get_information_block_returns_none_when_missing(
     self, mock_execute, mock_config, graph_id
   ):
-    mock_execute.return_value = {"scheduleFacts": None}
+    mock_execute.return_value = {"informationBlock": None}
     client = LedgerClient(mock_config)
-    assert client.get_schedule_facts(graph_id, "str_1") == []
+    assert client.get_information_block(graph_id, "struct_missing") is None
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_period_close_status(self, mock_execute, mock_config, graph_id):
@@ -1368,35 +1408,37 @@ class TestAssociationOps:
 
 @pytest.mark.unit
 class TestScheduleAdditionalOps:
-  @patch("robosystems_client.clients.ledger_client.op_update_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_update_information_block")
   def test_update_schedule(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "update-schedule",
+      "update-information-block",
       {"structure_id": "str_sched_1", "name": "Renamed Schedule"},
     )
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
     result = client.update_schedule(
-      graph_id, {"structure_id": "str_sched_1", "name": "Renamed Schedule"}
+      graph_id, "str_sched_1", {"name": "Renamed Schedule"}
     )
     assert result["name"] == "Renamed Schedule"
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
+    body = mock_op.call_args.kwargs["body"]
+    assert body.block_type == "schedule"
 
-  @patch("robosystems_client.clients.ledger_client.op_delete_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_delete_information_block")
   def test_delete_schedule_returns_sentinel(self, mock_op, mock_config, graph_id):
-    envelope = _envelope("delete-schedule", None)
+    envelope = _envelope("delete-information-block", None)
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
     result = client.delete_schedule(graph_id, "str_sched_1")
     assert result == {"deleted": True}
     body = mock_op.call_args.kwargs["body"]
-    assert body.structure_id == "str_sched_1"
+    assert body.block_type == "schedule"
 
-  @patch("robosystems_client.clients.ledger_client.op_delete_schedule")
+  @patch("robosystems_client.clients.ledger_client.op_delete_information_block")
   def test_delete_schedule_returns_result_when_present(
     self, mock_op, mock_config, graph_id
   ):
-    envelope = _envelope("delete-schedule", {"structure_id": "str_sched_1"})
+    envelope = _envelope("delete-information-block", {"structure_id": "str_sched_1"})
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
     result = client.delete_schedule(graph_id, "str_sched_1")

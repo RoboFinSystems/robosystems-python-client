@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_schedule_request import CreateScheduleRequest
+from ...models.delete_information_block_request import DeleteInformationBlockRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateScheduleRequest,
+  body: DeleteInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/create-schedule".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/delete-information-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,13 +103,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateScheduleRequest,
+  body: DeleteInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Schedule
+  """Delete Information Block
 
-   Create a schedule and pre-generate monthly amortization facts spanning the period range.
-  `entry_template` defines the debit/credit elements used by `create-closing-entry` each period.
+   Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
+  block_type / name). Block types whose Structures are library-seeded cannot be deleted per tenant and
+  surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -117,7 +118,11 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateScheduleRequest):
+      body (DeleteInformationBlockRequest): Generic delete request — mirrors
+          :class:`CreateInformationBlockRequest`.
+
+          Validated against the registry entry's ``delete_request_model``.
+          Block types that don't support deletion raise ``NotImplementedError``.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -144,13 +149,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateScheduleRequest,
+  body: DeleteInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Schedule
+  """Delete Information Block
 
-   Create a schedule and pre-generate monthly amortization facts spanning the period range.
-  `entry_template` defines the debit/credit elements used by `create-closing-entry` each period.
+   Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
+  block_type / name). Block types whose Structures are library-seeded cannot be deleted per tenant and
+  surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -158,7 +164,11 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateScheduleRequest):
+      body (DeleteInformationBlockRequest): Generic delete request — mirrors
+          :class:`CreateInformationBlockRequest`.
+
+          Validated against the registry entry's ``delete_request_model``.
+          Block types that don't support deletion raise ``NotImplementedError``.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -180,13 +190,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateScheduleRequest,
+  body: DeleteInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Schedule
+  """Delete Information Block
 
-   Create a schedule and pre-generate monthly amortization facts spanning the period range.
-  `entry_template` defines the debit/credit elements used by `create-closing-entry` each period.
+   Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
+  block_type / name). Block types whose Structures are library-seeded cannot be deleted per tenant and
+  surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -194,7 +205,11 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateScheduleRequest):
+      body (DeleteInformationBlockRequest): Generic delete request — mirrors
+          :class:`CreateInformationBlockRequest`.
+
+          Validated against the registry entry's ``delete_request_model``.
+          Block types that don't support deletion raise ``NotImplementedError``.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -219,13 +234,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateScheduleRequest,
+  body: DeleteInformationBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Schedule
+  """Delete Information Block
 
-   Create a schedule and pre-generate monthly amortization facts spanning the period range.
-  `entry_template` defines the debit/credit elements used by `create-closing-entry` each period.
+   Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
+  block_type / name). Block types whose Structures are library-seeded cannot be deleted per tenant and
+  surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -233,7 +249,11 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateScheduleRequest):
+      body (DeleteInformationBlockRequest): Generic delete request — mirrors
+          :class:`CreateInformationBlockRequest`.
+
+          Validated against the registry entry's ``delete_request_model``.
+          Block types that don't support deletion raise ``NotImplementedError``.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

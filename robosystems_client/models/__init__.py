@@ -74,6 +74,10 @@ from .create_element_request_element_type import CreateElementRequestElementType
 from .create_element_request_period_type import CreateElementRequestPeriodType
 from .create_element_request_source import CreateElementRequestSource
 from .create_graph_request import CreateGraphRequest
+from .create_information_block_request import CreateInformationBlockRequest
+from .create_information_block_request_payload import (
+  CreateInformationBlockRequestPayload,
+)
 from .create_journal_entry_request import CreateJournalEntryRequest
 from .create_journal_entry_request_status import CreateJournalEntryRequestStatus
 from .create_journal_entry_request_type import CreateJournalEntryRequestType
@@ -90,7 +94,6 @@ from .create_position_request import CreatePositionRequest
 from .create_publish_list_request import CreatePublishListRequest
 from .create_report_request import CreateReportRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
-from .create_schedule_request import CreateScheduleRequest
 from .create_security_request import CreateSecurityRequest
 from .create_security_request_terms import CreateSecurityRequestTerms
 from .create_structure_request import CreateStructureRequest
@@ -120,13 +123,16 @@ from .database_storage_entry import DatabaseStorageEntry
 from .delete_association_request import DeleteAssociationRequest
 from .delete_element_request import DeleteElementRequest
 from .delete_file_response import DeleteFileResponse
+from .delete_information_block_request import DeleteInformationBlockRequest
+from .delete_information_block_request_payload import (
+  DeleteInformationBlockRequestPayload,
+)
 from .delete_journal_entry_request import DeleteJournalEntryRequest
 from .delete_mapping_association_operation import DeleteMappingAssociationOperation
 from .delete_portfolio_operation import DeletePortfolioOperation
 from .delete_position_operation import DeletePositionOperation
 from .delete_publish_list_operation import DeletePublishListOperation
 from .delete_report_operation import DeleteReportOperation
-from .delete_schedule_request import DeleteScheduleRequest
 from .delete_security_operation import DeleteSecurityOperation
 from .delete_structure_request import DeleteStructureRequest
 from .delete_subgraph_op import DeleteSubgraphOp
@@ -150,9 +156,8 @@ from .enhanced_credit_transaction_response_metadata import (
   EnhancedCreditTransactionResponseMetadata,
 )
 from .enhanced_file_status_layers import EnhancedFileStatusLayers
-from .entry_template_request import EntryTemplateRequest
-from .entry_template_request_entry_type import EntryTemplateRequestEntryType
 from .error_response import ErrorResponse
+from .evaluate_rules_request import EvaluateRulesRequest
 from .file_info import FileInfo
 from .file_layer_status import FileLayerStatus
 from .file_status_update import FileStatusUpdate
@@ -279,7 +284,6 @@ from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
 from .restore_backup_op import RestoreBackupOp
 from .reverse_journal_entry_request import ReverseJournalEntryRequest
-from .schedule_metadata_request import ScheduleMetadataRequest
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
 from .schema_export_response_schema_definition_type_0 import (
@@ -345,6 +349,10 @@ from .update_element_request_period_type_type_0 import (
 )
 from .update_entity_request import UpdateEntityRequest
 from .update_file_response_updatefile import UpdateFileResponseUpdatefile
+from .update_information_block_request import UpdateInformationBlockRequest
+from .update_information_block_request_payload import (
+  UpdateInformationBlockRequestPayload,
+)
 from .update_journal_entry_request import UpdateJournalEntryRequest
 from .update_journal_entry_request_type_type_0 import UpdateJournalEntryRequestTypeType0
 from .update_member_role_request import UpdateMemberRoleRequest
@@ -353,7 +361,6 @@ from .update_password_request import UpdatePasswordRequest
 from .update_portfolio_operation import UpdatePortfolioOperation
 from .update_position_operation import UpdatePositionOperation
 from .update_publish_list_operation import UpdatePublishListOperation
-from .update_schedule_request import UpdateScheduleRequest
 from .update_security_operation import UpdateSecurityOperation
 from .update_security_operation_terms_type_0 import UpdateSecurityOperationTermsType0
 from .update_structure_request import UpdateStructureRequest
@@ -438,6 +445,8 @@ __all__ = (
   "CreateElementRequestPeriodType",
   "CreateElementRequestSource",
   "CreateGraphRequest",
+  "CreateInformationBlockRequest",
+  "CreateInformationBlockRequestPayload",
   "CreateJournalEntryRequest",
   "CreateJournalEntryRequestStatus",
   "CreateJournalEntryRequestType",
@@ -450,7 +459,6 @@ __all__ = (
   "CreatePublishListRequest",
   "CreateReportRequest",
   "CreateRepositorySubscriptionRequest",
-  "CreateScheduleRequest",
   "CreateSecurityRequest",
   "CreateSecurityRequestTerms",
   "CreateStructureRequest",
@@ -478,13 +486,14 @@ __all__ = (
   "DeleteAssociationRequest",
   "DeleteElementRequest",
   "DeleteFileResponse",
+  "DeleteInformationBlockRequest",
+  "DeleteInformationBlockRequestPayload",
   "DeleteJournalEntryRequest",
   "DeleteMappingAssociationOperation",
   "DeletePortfolioOperation",
   "DeletePositionOperation",
   "DeletePublishListOperation",
   "DeleteReportOperation",
-  "DeleteScheduleRequest",
   "DeleteSecurityOperation",
   "DeleteStructureRequest",
   "DeleteSubgraphOp",
@@ -504,9 +513,8 @@ __all__ = (
   "EnhancedCreditTransactionResponse",
   "EnhancedCreditTransactionResponseMetadata",
   "EnhancedFileStatusLayers",
-  "EntryTemplateRequest",
-  "EntryTemplateRequestEntryType",
   "ErrorResponse",
+  "EvaluateRulesRequest",
   "FileInfo",
   "FileLayerStatus",
   "FileStatusUpdate",
@@ -619,7 +627,6 @@ __all__ = (
   "ResponseMode",
   "RestoreBackupOp",
   "ReverseJournalEntryRequest",
-  "ScheduleMetadataRequest",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",
@@ -671,6 +678,8 @@ __all__ = (
   "UpdateElementRequestPeriodTypeType0",
   "UpdateEntityRequest",
   "UpdateFileResponseUpdatefile",
+  "UpdateInformationBlockRequest",
+  "UpdateInformationBlockRequestPayload",
   "UpdateJournalEntryRequest",
   "UpdateJournalEntryRequestTypeType0",
   "UpdateMemberRoleRequest",
@@ -679,7 +688,6 @@ __all__ = (
   "UpdatePortfolioOperation",
   "UpdatePositionOperation",
   "UpdatePublishListOperation",
-  "UpdateScheduleRequest",
   "UpdateSecurityOperation",
   "UpdateSecurityOperationTermsType0",
   "UpdateStructureRequest",

@@ -6,49 +6,32 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DeleteScheduleRequest")
+T = TypeVar("T", bound="UpdateInformationBlockRequestPayload")
 
 
 @_attrs_define
-class DeleteScheduleRequest:
-  """Delete a schedule — cascades through facts and associations.
+class UpdateInformationBlockRequestPayload:
+  """Block-type-specific update payload. Typically carries the structure_id plus whichever fields are editable for this
+  block type. Shape-validated against the registry entry's `update_request_model` at dispatch time.
 
-  Hard deletes the Structure, all Facts tied to it, and all
-  Associations tied to it. This is a permanent, irreversible
-  operation. For ending a schedule early without removing history,
-  use truncate-schedule instead.
-
-      Attributes:
-          structure_id (str):
   """
 
-  structure_id: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    structure_id = self.structure_id
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update(
-      {
-        "structure_id": structure_id,
-      }
-    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    structure_id = d.pop("structure_id")
+    update_information_block_request_payload = cls()
 
-    delete_schedule_request = cls(
-      structure_id=structure_id,
-    )
-
-    delete_schedule_request.additional_properties = d
-    return delete_schedule_request
+    update_information_block_request_payload.additional_properties = d
+    return update_information_block_request_payload
 
   @property
   def additional_keys(self) -> list[str]:
