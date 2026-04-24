@@ -6,9 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_mapping_association_operation import (
-  CreateMappingAssociationOperation,
-)
+from ...models.create_taxonomy_block_request import CreateTaxonomyBlockRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
@@ -18,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateMappingAssociationOperation,
+  body: CreateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -27,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/create-mapping-association".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/create-taxonomy-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -105,12 +103,15 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateMappingAssociationOperation,
+  body: CreateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Mapping Association
+  """Create Taxonomy Block
 
-   Link a chart-of-accounts element to a US GAAP reporting concept.
+   Create a taxonomy block atomically: one envelope carrying the taxonomy row plus its structures,
+  elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
+  tenant CoA) is live; `reporting_extension` / `custom_ontology` / `reporting_standard` land in later
+  sub-phases.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,11 +119,17 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
-          mapping-association`.
+      body (CreateTaxonomyBlockRequest): Request body for the ``create-taxonomy-block``
+          operation.
 
-          Bundles the target mapping structure's `mapping_id` with the association
-          payload so REST + MCP share a single body type via the registrar.
+          One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+          which block-type handler the command dispatcher routes to.
+          ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+          extends a library taxonomy) and ignored otherwise.
+
+          The library path (seeding ``reporting_standard`` rows) does NOT flow
+          through this envelope — it uses a dedicated library writer that bypasses
+          these caps and tenant scoping.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -149,12 +156,15 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateMappingAssociationOperation,
+  body: CreateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Mapping Association
+  """Create Taxonomy Block
 
-   Link a chart-of-accounts element to a US GAAP reporting concept.
+   Create a taxonomy block atomically: one envelope carrying the taxonomy row plus its structures,
+  elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
+  tenant CoA) is live; `reporting_extension` / `custom_ontology` / `reporting_standard` land in later
+  sub-phases.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -162,11 +172,17 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
-          mapping-association`.
+      body (CreateTaxonomyBlockRequest): Request body for the ``create-taxonomy-block``
+          operation.
 
-          Bundles the target mapping structure's `mapping_id` with the association
-          payload so REST + MCP share a single body type via the registrar.
+          One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+          which block-type handler the command dispatcher routes to.
+          ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+          extends a library taxonomy) and ignored otherwise.
+
+          The library path (seeding ``reporting_standard`` rows) does NOT flow
+          through this envelope — it uses a dedicated library writer that bypasses
+          these caps and tenant scoping.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -188,12 +204,15 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateMappingAssociationOperation,
+  body: CreateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Mapping Association
+  """Create Taxonomy Block
 
-   Link a chart-of-accounts element to a US GAAP reporting concept.
+   Create a taxonomy block atomically: one envelope carrying the taxonomy row plus its structures,
+  elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
+  tenant CoA) is live; `reporting_extension` / `custom_ontology` / `reporting_standard` land in later
+  sub-phases.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -201,11 +220,17 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
-          mapping-association`.
+      body (CreateTaxonomyBlockRequest): Request body for the ``create-taxonomy-block``
+          operation.
 
-          Bundles the target mapping structure's `mapping_id` with the association
-          payload so REST + MCP share a single body type via the registrar.
+          One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+          which block-type handler the command dispatcher routes to.
+          ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+          extends a library taxonomy) and ignored otherwise.
+
+          The library path (seeding ``reporting_standard`` rows) does NOT flow
+          through this envelope — it uses a dedicated library writer that bypasses
+          these caps and tenant scoping.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -230,12 +255,15 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateMappingAssociationOperation,
+  body: CreateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Mapping Association
+  """Create Taxonomy Block
 
-   Link a chart-of-accounts element to a US GAAP reporting concept.
+   Create a taxonomy block atomically: one envelope carrying the taxonomy row plus its structures,
+  elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
+  tenant CoA) is live; `reporting_extension` / `custom_ontology` / `reporting_standard` land in later
+  sub-phases.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -243,11 +271,17 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
-          mapping-association`.
+      body (CreateTaxonomyBlockRequest): Request body for the ``create-taxonomy-block``
+          operation.
 
-          Bundles the target mapping structure's `mapping_id` with the association
-          payload so REST + MCP share a single body type via the registrar.
+          One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+          which block-type handler the command dispatcher routes to.
+          ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+          extends a library taxonomy) and ignored otherwise.
+
+          The library path (seeding ``reporting_standard`` rows) does NOT flow
+          through this envelope — it uses a dedicated library writer that bypasses
+          these caps and tenant scoping.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

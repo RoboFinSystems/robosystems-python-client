@@ -108,9 +108,9 @@ def sync_detailed(
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Link Entity to Taxonomy
 
-   Link the graph's entity to a taxonomy (creates the ENTITY_HAS_TAXONOMY edge). Idempotent — returns
-  existing linkage if it already exists. Required after creating a CoA taxonomy so the platform knows
-  which chart of accounts the entity reports under.
+   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
+  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
+  extension / custom ontology explicitly.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -155,9 +155,9 @@ def sync(
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Link Entity to Taxonomy
 
-   Link the graph's entity to a taxonomy (creates the ENTITY_HAS_TAXONOMY edge). Idempotent — returns
-  existing linkage if it already exists. Required after creating a CoA taxonomy so the platform knows
-  which chart of accounts the entity reports under.
+   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
+  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
+  extension / custom ontology explicitly.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -197,9 +197,9 @@ async def asyncio_detailed(
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Link Entity to Taxonomy
 
-   Link the graph's entity to a taxonomy (creates the ENTITY_HAS_TAXONOMY edge). Idempotent — returns
-  existing linkage if it already exists. Required after creating a CoA taxonomy so the platform knows
-  which chart of accounts the entity reports under.
+   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
+  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
+  extension / custom ontology explicitly.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -242,9 +242,9 @@ async def asyncio(
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Link Entity to Taxonomy
 
-   Link the graph's entity to a taxonomy (creates the ENTITY_HAS_TAXONOMY edge). Idempotent — returns
-  existing linkage if it already exists. Required after creating a CoA taxonomy so the platform knows
-  which chart of accounts the entity reports under.
+   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
+  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
+  extension / custom ontology explicitly.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
