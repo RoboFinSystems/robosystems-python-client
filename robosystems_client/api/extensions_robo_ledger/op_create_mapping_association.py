@@ -110,8 +110,7 @@ def sync_detailed(
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Create Mapping Association
 
-   Link a chart-of-accounts element to a US GAAP reporting concept. For bulk associations
-  (presentation/calculation linkbases, 50+ arcs at once) use `create-associations` instead.
+   Link a chart-of-accounts element to a US GAAP reporting concept.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -155,8 +154,7 @@ def sync(
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Create Mapping Association
 
-   Link a chart-of-accounts element to a US GAAP reporting concept. For bulk associations
-  (presentation/calculation linkbases, 50+ arcs at once) use `create-associations` instead.
+   Link a chart-of-accounts element to a US GAAP reporting concept.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -195,8 +193,7 @@ async def asyncio_detailed(
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Create Mapping Association
 
-   Link a chart-of-accounts element to a US GAAP reporting concept. For bulk associations
-  (presentation/calculation linkbases, 50+ arcs at once) use `create-associations` instead.
+   Link a chart-of-accounts element to a US GAAP reporting concept.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -238,8 +235,7 @@ async def asyncio(
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Create Mapping Association
 
-   Link a chart-of-accounts element to a US GAAP reporting concept. For bulk associations
-  (presentation/calculation linkbases, 50+ arcs at once) use `create-associations` instead.
+   Link a chart-of-accounts element to a US GAAP reporting concept.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

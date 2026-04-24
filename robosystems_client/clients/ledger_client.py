@@ -47,12 +47,6 @@ from ..api.extensions_robo_ledger.op_create_mapping_association import (
 from ..api.extensions_robo_ledger.op_create_information_block import (
   sync_detailed as op_create_information_block,
 )
-from ..api.extensions_robo_ledger.op_create_structure import (
-  sync_detailed as op_create_structure,
-)
-from ..api.extensions_robo_ledger.op_create_taxonomy import (
-  sync_detailed as op_create_taxonomy,
-)
 from ..api.extensions_robo_ledger.op_delete_mapping_association import (
   sync_detailed as op_delete_mapping_association,
 )
@@ -68,23 +62,11 @@ from ..api.extensions_robo_ledger.op_set_close_target import (
 from ..api.extensions_robo_ledger.op_truncate_schedule import (
   sync_detailed as op_truncate_schedule,
 )
-from ..api.extensions_robo_ledger.op_update_association import (
-  sync_detailed as op_update_association,
-)
-from ..api.extensions_robo_ledger.op_update_element import (
-  sync_detailed as op_update_element,
-)
 from ..api.extensions_robo_ledger.op_update_entity import (
   sync_detailed as op_update_entity,
 )
 from ..api.extensions_robo_ledger.op_update_information_block import (
   sync_detailed as op_update_information_block,
-)
-from ..api.extensions_robo_ledger.op_update_structure import (
-  sync_detailed as op_update_structure,
-)
-from ..api.extensions_robo_ledger.op_update_taxonomy import (
-  sync_detailed as op_update_taxonomy,
 )
 from ..api.extensions_robo_ledger.op_add_publish_list_members import (
   sync_detailed as op_add_publish_list_members,
@@ -113,12 +95,6 @@ from ..api.extensions_robo_ledger.op_share_report import (
 from ..api.extensions_robo_ledger.op_update_publish_list import (
   sync_detailed as op_update_publish_list,
 )
-from ..api.extensions_robo_ledger.op_create_associations import (
-  sync_detailed as op_create_associations,
-)
-from ..api.extensions_robo_ledger.op_create_element import (
-  sync_detailed as op_create_element,
-)
 from ..api.extensions_robo_ledger.op_create_journal_entry import (
   sync_detailed as op_create_journal_entry,
 )
@@ -128,23 +104,11 @@ from ..api.extensions_robo_ledger.op_create_transaction import (
 from ..api.extensions_robo_ledger.op_link_entity_taxonomy import (
   sync_detailed as op_link_entity_taxonomy,
 )
-from ..api.extensions_robo_ledger.op_delete_association import (
-  sync_detailed as op_delete_association,
-)
-from ..api.extensions_robo_ledger.op_delete_element import (
-  sync_detailed as op_delete_element,
-)
 from ..api.extensions_robo_ledger.op_delete_journal_entry import (
   sync_detailed as op_delete_journal_entry,
 )
 from ..api.extensions_robo_ledger.op_delete_information_block import (
   sync_detailed as op_delete_information_block,
-)
-from ..api.extensions_robo_ledger.op_delete_structure import (
-  sync_detailed as op_delete_structure,
-)
-from ..api.extensions_robo_ledger.op_delete_taxonomy import (
-  sync_detailed as op_delete_taxonomy,
 )
 from ..api.extensions_robo_ledger.op_reverse_journal_entry import (
   sync_detailed as op_reverse_journal_entry,
@@ -218,31 +182,20 @@ from ..graphql.queries.ledger import (
 )
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
-from ..models.bulk_association_item import BulkAssociationItem
-from ..models.bulk_create_associations_request import BulkCreateAssociationsRequest
-from ..models.create_element_request import CreateElementRequest
 from ..models.create_journal_entry_request import CreateJournalEntryRequest
 from ..models.create_transaction_request import CreateTransactionRequest
-from ..models.delete_association_request import DeleteAssociationRequest
-from ..models.delete_element_request import DeleteElementRequest
 from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
 from ..models.delete_information_block_request import DeleteInformationBlockRequest
 from ..models.delete_information_block_request_payload import (
   DeleteInformationBlockRequestPayload,
 )
-from ..models.delete_structure_request import DeleteStructureRequest
-from ..models.delete_taxonomy_request import DeleteTaxonomyRequest
 from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from ..models.reverse_journal_entry_request import ReverseJournalEntryRequest
-from ..models.update_association_request import UpdateAssociationRequest
-from ..models.update_element_request import UpdateElementRequest
 from ..models.update_journal_entry_request import UpdateJournalEntryRequest
 from ..models.update_information_block_request import UpdateInformationBlockRequest
 from ..models.update_information_block_request_payload import (
   UpdateInformationBlockRequestPayload,
 )
-from ..models.update_structure_request import UpdateStructureRequest
-from ..models.update_taxonomy_request import UpdateTaxonomyRequest
 from ..models.close_period_operation import ClosePeriodOperation
 from ..models.create_closing_entry_operation import CreateClosingEntryOperation
 from ..models.create_view_request import CreateViewRequest
@@ -257,11 +210,6 @@ from ..models.create_information_block_request import CreateInformationBlockRequ
 from ..models.create_information_block_request_payload import (
   CreateInformationBlockRequestPayload,
 )
-from ..models.create_structure_request import CreateStructureRequest
-from ..models.create_structure_request_structure_type import (
-  CreateStructureRequestStructureType,
-)
-from ..models.create_taxonomy_request import CreateTaxonomyRequest
 from ..models.delete_mapping_association_operation import (
   DeleteMappingAssociationOperation,
 )
@@ -583,32 +531,26 @@ class LedgerClient:
     data = self._query(graph_id, LIST_TAXONOMIES_QUERY, {"taxonomyType": taxonomy_type})
     return parse_taxonomies(data)
 
-  def create_taxonomy(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Create a new taxonomy (used for CoA + mapping taxonomies)."""
-    request = CreateTaxonomyRequest.from_dict(body)
-    response = op_create_taxonomy(
-      graph_id=graph_id, body=request, client=self._get_client()
-    )
-    envelope = self._call_op("Create taxonomy", response)
-    return envelope.result or {}
+  def create_taxonomy_block(
+    self, graph_id: str, body: dict[str, Any]
+  ) -> dict[str, Any]:
+    """Create a taxonomy block atomically (taxonomy + structures +
+    elements + associations + rules in one envelope).
 
-  def update_taxonomy(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Update mutable fields on a taxonomy. taxonomy_type is immutable."""
-    request = UpdateTaxonomyRequest.from_dict(body)
-    response = op_update_taxonomy(
-      graph_id=graph_id, body=request, client=self._get_client()
-    )
-    envelope = self._call_op("Update taxonomy", response)
-    return envelope.result or {}
-
-  def delete_taxonomy(self, graph_id: str, taxonomy_id: str) -> dict[str, Any]:
-    """Soft-delete a taxonomy (is_active=false)."""
-    body = DeleteTaxonomyRequest(taxonomy_id=taxonomy_id)
-    response = op_delete_taxonomy(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Delete taxonomy", response)
-    return envelope.result or {}
+    Until the SDK is regenerated with a typed ``op_create_taxonomy_block``,
+    this facade method POSTs the body directly via the shared httpx
+    client. Returns the unwrapped ``TaxonomyBlockEnvelope`` dict.
+    """
+    path = f"/extensions/roboledger/{graph_id}/operations/create-taxonomy-block"
+    client = self._get_client()
+    httpx_client = client.get_httpx_client()
+    response = httpx_client.post(path, json=body)
+    if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
+      raise RuntimeError(
+        f"Create taxonomy block failed: {response.status_code}: {response.text}"
+      )
+    payload = response.json()
+    return payload.get("result") or payload
 
   def link_entity_taxonomy(
     self,
@@ -670,33 +612,6 @@ class LedgerClient:
     )
     return parse_unmapped_elements(data)
 
-  def create_element(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Create a new element within a taxonomy (native CoA account, etc.)."""
-    request = CreateElementRequest.from_dict(body)
-    response = op_create_element(
-      graph_id=graph_id, body=request, client=self._get_client()
-    )
-    envelope = self._call_op("Create element", response)
-    return envelope.result or {}
-
-  def update_element(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Update mutable fields on an element. taxonomy_id and source are immutable."""
-    request = UpdateElementRequest.from_dict(body)
-    response = op_update_element(
-      graph_id=graph_id, body=request, client=self._get_client()
-    )
-    envelope = self._call_op("Update element", response)
-    return envelope.result or {}
-
-  def delete_element(self, graph_id: str, element_id: str) -> dict[str, Any]:
-    """Soft-delete an element (is_active=false)."""
-    body = DeleteElementRequest(element_id=element_id)
-    response = op_delete_element(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Delete element", response)
-    return envelope.result or {}
-
   # ── Structures / mappings ──────────────────────────────────────────
 
   def list_structures(
@@ -712,53 +627,6 @@ class LedgerClient:
       {"taxonomyId": taxonomy_id, "structureType": structure_type},
     )
     return parse_structures(data)
-
-  def create_structure(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Create a new structure (mapping, statement, schedule)."""
-    request = CreateStructureRequest.from_dict(body)
-    response = op_create_structure(
-      graph_id=graph_id, body=request, client=self._get_client()
-    )
-    envelope = self._call_op("Create structure", response)
-    return envelope.result or {}
-
-  def update_structure(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Update mutable fields on a structure. structure_type is immutable."""
-    request = UpdateStructureRequest.from_dict(body)
-    response = op_update_structure(
-      graph_id=graph_id, body=request, client=self._get_client()
-    )
-    envelope = self._call_op("Update structure", response)
-    return envelope.result or {}
-
-  def delete_structure(self, graph_id: str, structure_id: str) -> dict[str, Any]:
-    """Soft-delete a structure (is_active=false)."""
-    body = DeleteStructureRequest(structure_id=structure_id)
-    response = op_delete_structure(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Delete structure", response)
-    return envelope.result or {}
-
-  def create_mapping_structure(
-    self,
-    graph_id: str,
-    name: str = "CoA to Reporting",
-    description: str | None = "Map Chart of Accounts to US GAAP reporting concepts",
-    taxonomy_id: str = "tax_usgaap_reporting",
-  ) -> dict[str, Any]:
-    """Convenience wrapper — create a CoA→GAAP mapping structure."""
-    body = CreateStructureRequest(
-      name=name,
-      structure_type=CreateStructureRequestStructureType.COA_MAPPING,
-      taxonomy_id=taxonomy_id,
-      description=description if description is not None else UNSET,
-    )
-    response = op_create_structure(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Create mapping structure", response)
-    return envelope.result or {}
 
   def list_mappings(self, graph_id: str) -> list[dict[str, Any]]:
     """List active CoA→reporting mapping structures."""
@@ -819,39 +687,6 @@ class LedgerClient:
     )
     envelope = self._call_op("Auto-map elements", response)
     return {"operation_id": envelope.operation_id, "status": envelope.status}
-
-  def create_associations(
-    self,
-    graph_id: str,
-    structure_id: str,
-    associations: list[dict[str, Any]],
-  ) -> dict[str, Any]:
-    """Bulk create associations within a single structure, atomically."""
-    items = [BulkAssociationItem.from_dict(a) for a in associations]
-    body = BulkCreateAssociationsRequest(structure_id=structure_id, associations=items)
-    response = op_create_associations(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Create associations", response)
-    return envelope.result or {}
-
-  def update_association(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Update mutable fields on an association (order, weight, confidence)."""
-    request = UpdateAssociationRequest.from_dict(body)
-    response = op_update_association(
-      graph_id=graph_id, body=request, client=self._get_client()
-    )
-    envelope = self._call_op("Update association", response)
-    return envelope.result or {}
-
-  def delete_association(self, graph_id: str, association_id: str) -> dict[str, Any]:
-    """Hard-delete an association (any type: presentation, calculation, mapping)."""
-    body = DeleteAssociationRequest(association_id=association_id)
-    response = op_delete_association(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Delete association", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
 
   # ── Information Blocks ─────────────────────────────────────────────
 
