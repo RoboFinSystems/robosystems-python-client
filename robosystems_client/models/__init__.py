@@ -89,6 +89,11 @@ from .create_security_request import CreateSecurityRequest
 from .create_security_request_terms import CreateSecurityRequestTerms
 from .create_subgraph_request import CreateSubgraphRequest
 from .create_subgraph_request_metadata_type_0 import CreateSubgraphRequestMetadataType0
+from .create_taxonomy_block_request import CreateTaxonomyBlockRequest
+from .create_taxonomy_block_request_metadata import CreateTaxonomyBlockRequestMetadata
+from .create_taxonomy_block_request_taxonomy_type import (
+  CreateTaxonomyBlockRequestTaxonomyType,
+)
 from .create_transaction_request import CreateTransactionRequest
 from .create_transaction_request_status import CreateTransactionRequestStatus
 from .create_view_request import CreateViewRequest
@@ -120,6 +125,7 @@ from .delete_publish_list_operation import DeletePublishListOperation
 from .delete_report_operation import DeleteReportOperation
 from .delete_security_operation import DeleteSecurityOperation
 from .delete_subgraph_op import DeleteSubgraphOp
+from .delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
 from .detailed_transactions_response import DetailedTransactionsResponse
 from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
@@ -134,6 +140,8 @@ from .document_update_request import DocumentUpdateRequest
 from .document_upload_request import DocumentUploadRequest
 from .document_upload_response import DocumentUploadResponse
 from .download_quota import DownloadQuota
+from .element_update_patch import ElementUpdatePatch
+from .element_update_patch_metadata_type_0 import ElementUpdatePatchMetadataType0
 from .email_verification_request import EmailVerificationRequest
 from .enhanced_credit_transaction_response import EnhancedCreditTransactionResponse
 from .enhanced_credit_transaction_response_metadata import (
@@ -299,6 +307,8 @@ from .sso_exchange_response import SSOExchangeResponse
 from .sso_token_response import SSOTokenResponse
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
+from .structure_update_patch import StructureUpdatePatch
+from .structure_update_patch_metadata_type_0 import StructureUpdatePatchMetadataType0
 from .subgraph_quota_response import SubgraphQuotaResponse
 from .subgraph_response import SubgraphResponse
 from .subgraph_response_metadata_type_0 import SubgraphResponseMetadataType0
@@ -314,6 +324,34 @@ from .table_info import TableInfo
 from .table_list_response import TableListResponse
 from .table_query_request import TableQueryRequest
 from .table_query_response import TableQueryResponse
+from .taxonomy_block_association_request import TaxonomyBlockAssociationRequest
+from .taxonomy_block_association_request_association_type import (
+  TaxonomyBlockAssociationRequestAssociationType,
+)
+from .taxonomy_block_association_request_metadata import (
+  TaxonomyBlockAssociationRequestMetadata,
+)
+from .taxonomy_block_element_request import TaxonomyBlockElementRequest
+from .taxonomy_block_element_request_metadata import TaxonomyBlockElementRequestMetadata
+from .taxonomy_block_rule_request import TaxonomyBlockRuleRequest
+from .taxonomy_block_rule_request_metadata import TaxonomyBlockRuleRequestMetadata
+from .taxonomy_block_rule_request_rule_category import (
+  TaxonomyBlockRuleRequestRuleCategory,
+)
+from .taxonomy_block_rule_request_rule_pattern import (
+  TaxonomyBlockRuleRequestRulePattern,
+)
+from .taxonomy_block_rule_request_severity import TaxonomyBlockRuleRequestSeverity
+from .taxonomy_block_rule_request_variables_item import (
+  TaxonomyBlockRuleRequestVariablesItem,
+)
+from .taxonomy_block_structure_request import TaxonomyBlockStructureRequest
+from .taxonomy_block_structure_request_metadata import (
+  TaxonomyBlockStructureRequestMetadata,
+)
+from .taxonomy_block_structure_request_structure_type import (
+  TaxonomyBlockStructureRequestStructureType,
+)
 from .tier_capacity import TierCapacity
 from .token_pricing import TokenPricing
 from .transaction_summary_response import TransactionSummaryResponse
@@ -336,6 +374,7 @@ from .update_position_operation import UpdatePositionOperation
 from .update_publish_list_operation import UpdatePublishListOperation
 from .update_security_operation import UpdateSecurityOperation
 from .update_security_operation_terms_type_0 import UpdateSecurityOperationTermsType0
+from .update_taxonomy_block_request import UpdateTaxonomyBlockRequest
 from .update_user_request import UpdateUserRequest
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
@@ -425,6 +464,9 @@ __all__ = (
   "CreateSecurityRequestTerms",
   "CreateSubgraphRequest",
   "CreateSubgraphRequestMetadataType0",
+  "CreateTaxonomyBlockRequest",
+  "CreateTaxonomyBlockRequestMetadata",
+  "CreateTaxonomyBlockRequestTaxonomyType",
   "CreateTransactionRequest",
   "CreateTransactionRequestStatus",
   "CreateViewRequest",
@@ -452,6 +494,7 @@ __all__ = (
   "DeleteReportOperation",
   "DeleteSecurityOperation",
   "DeleteSubgraphOp",
+  "DeleteTaxonomyBlockRequest",
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
@@ -464,6 +507,8 @@ __all__ = (
   "DocumentUploadRequest",
   "DocumentUploadResponse",
   "DownloadQuota",
+  "ElementUpdatePatch",
+  "ElementUpdatePatchMetadataType0",
   "EmailVerificationRequest",
   "EnhancedCreditTransactionResponse",
   "EnhancedCreditTransactionResponseMetadata",
@@ -607,6 +652,8 @@ __all__ = (
   "SSOTokenResponse",
   "StorageLimits",
   "StorageSummary",
+  "StructureUpdatePatch",
+  "StructureUpdatePatchMetadataType0",
   "SubgraphQuotaResponse",
   "SubgraphResponse",
   "SubgraphResponseMetadataType0",
@@ -620,6 +667,20 @@ __all__ = (
   "TableListResponse",
   "TableQueryRequest",
   "TableQueryResponse",
+  "TaxonomyBlockAssociationRequest",
+  "TaxonomyBlockAssociationRequestAssociationType",
+  "TaxonomyBlockAssociationRequestMetadata",
+  "TaxonomyBlockElementRequest",
+  "TaxonomyBlockElementRequestMetadata",
+  "TaxonomyBlockRuleRequest",
+  "TaxonomyBlockRuleRequestMetadata",
+  "TaxonomyBlockRuleRequestRuleCategory",
+  "TaxonomyBlockRuleRequestRulePattern",
+  "TaxonomyBlockRuleRequestSeverity",
+  "TaxonomyBlockRuleRequestVariablesItem",
+  "TaxonomyBlockStructureRequest",
+  "TaxonomyBlockStructureRequestMetadata",
+  "TaxonomyBlockStructureRequestStructureType",
   "TierCapacity",
   "TokenPricing",
   "TransactionSummaryResponse",
@@ -640,6 +701,7 @@ __all__ = (
   "UpdatePublishListOperation",
   "UpdateSecurityOperation",
   "UpdateSecurityOperationTermsType0",
+  "UpdateTaxonomyBlockRequest",
   "UpdateUserRequest",
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",

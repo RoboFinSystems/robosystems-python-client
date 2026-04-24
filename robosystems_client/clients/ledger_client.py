@@ -62,6 +62,21 @@ from ..api.extensions_robo_ledger.op_set_close_target import (
 from ..api.extensions_robo_ledger.op_truncate_schedule import (
   sync_detailed as op_truncate_schedule,
 )
+from ..api.extensions_robo_ledger.op_create_taxonomy_block import (
+  sync_detailed as op_create_taxonomy_block,
+)
+from ..api.extensions_robo_ledger.op_update_taxonomy_block import (
+  sync_detailed as op_update_taxonomy_block,
+)
+from ..api.extensions_robo_ledger.op_delete_taxonomy_block import (
+  sync_detailed as op_delete_taxonomy_block,
+)
+from ..api.extensions_robo_ledger.op_dispose_schedule import (
+  sync_detailed as op_dispose_schedule,
+)
+from ..api.extensions_robo_ledger.op_evaluate_rules import (
+  sync_detailed as op_evaluate_rules,
+)
 from ..api.extensions_robo_ledger.op_update_entity import (
   sync_detailed as op_update_entity,
 )
@@ -229,6 +244,11 @@ from ..models.update_publish_list_operation import UpdatePublishListOperation
 from ..models.reopen_period_operation import ReopenPeriodOperation
 from ..models.set_close_target_operation import SetCloseTargetOperation
 from ..models.truncate_schedule_operation import TruncateScheduleOperation
+from ..models.create_taxonomy_block_request import CreateTaxonomyBlockRequest
+from ..models.update_taxonomy_block_request import UpdateTaxonomyBlockRequest
+from ..models.delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
+from ..models.dispose_schedule_request import DisposeScheduleRequest
+from ..models.evaluate_rules_request import EvaluateRulesRequest
 from ..models.update_entity_request import UpdateEntityRequest
 from ..types import UNSET
 
@@ -532,25 +552,44 @@ class LedgerClient:
     return parse_taxonomies(data)
 
   def create_taxonomy_block(
-    self, graph_id: str, body: dict[str, Any]
+    self, graph_id: str, body: dict[str, Any], idempotency_key: str | None = None
   ) -> dict[str, Any]:
     """Create a taxonomy block atomically (taxonomy + structures +
     elements + associations + rules in one envelope).
-
-    Until the SDK is regenerated with a typed ``op_create_taxonomy_block``,
-    this facade method POSTs the body directly via the shared httpx
-    client. Returns the unwrapped ``TaxonomyBlockEnvelope`` dict.
     """
-    path = f"/extensions/roboledger/{graph_id}/operations/create-taxonomy-block"
-    client = self._get_client()
-    httpx_client = client.get_httpx_client()
-    response = httpx_client.post(path, json=body)
-    if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
-      raise RuntimeError(
-        f"Create taxonomy block failed: {response.status_code}: {response.text}"
-      )
-    payload = response.json()
-    return payload.get("result") or payload
+    request = CreateTaxonomyBlockRequest.from_dict(body)
+    response = op_create_taxonomy_block(
+      graph_id=graph_id,
+      body=request,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Create taxonomy block", response)
+    return envelope.result or {}
+
+  def update_taxonomy_block(
+    self, graph_id: str, body: dict[str, Any]
+  ) -> dict[str, Any]:
+    """Update a taxonomy block — add/update/remove elements, structures, associations, or rules."""
+    request = UpdateTaxonomyBlockRequest.from_dict(body)
+    response = op_update_taxonomy_block(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update taxonomy block", response)
+    return envelope.result or {}
+
+  def delete_taxonomy_block(
+    self, graph_id: str, taxonomy_id: str, reason: str, cascade_facts: bool = False
+  ) -> dict[str, Any]:
+    """Delete a taxonomy block. Cascades through elements, structures, and associations."""
+    request = DeleteTaxonomyBlockRequest.from_dict(
+      {"taxonomy_id": taxonomy_id, "reason": reason, "cascade_facts": cascade_facts}
+    )
+    response = op_delete_taxonomy_block(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Delete taxonomy block", response)
+    return envelope.result if envelope.result is not None else {"deleted": True}
 
   def link_entity_taxonomy(
     self,
@@ -812,6 +851,60 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Truncate schedule", response)
+    return envelope.result or {}
+
+  def dispose_schedule(
+    self,
+    graph_id: str,
+    structure_id: str,
+    disposal_date: str,
+    memo: str,
+    reason: str,
+    sale_proceeds: int | None = None,
+    proceeds_element_id: str | None = None,
+    gain_loss_element_id: str | None = None,
+  ) -> dict[str, Any]:
+    """Dispose of a schedule asset — post a disposal entry and delete forward facts."""
+    body_dict: dict[str, Any] = {
+      "structure_id": structure_id,
+      "disposal_date": disposal_date,
+      "memo": memo,
+      "reason": reason,
+    }
+    if sale_proceeds is not None:
+      body_dict["sale_proceeds"] = sale_proceeds
+    if proceeds_element_id is not None:
+      body_dict["proceeds_element_id"] = proceeds_element_id
+    if gain_loss_element_id is not None:
+      body_dict["gain_loss_element_id"] = gain_loss_element_id
+    request = DisposeScheduleRequest.from_dict(body_dict)
+    response = op_dispose_schedule(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Dispose schedule", response)
+    return envelope.result or {}
+
+  def evaluate_rules(
+    self,
+    graph_id: str,
+    structure_id: str,
+    fact_set_id: str | None = None,
+    period_start: str | None = None,
+    period_end: str | None = None,
+  ) -> dict[str, Any]:
+    """Evaluate taxonomy rules against facts in a structure."""
+    body_dict: dict[str, Any] = {"structure_id": structure_id}
+    if fact_set_id is not None:
+      body_dict["fact_set_id"] = fact_set_id
+    if period_start is not None:
+      body_dict["period_start"] = period_start
+    if period_end is not None:
+      body_dict["period_end"] = period_end
+    request = EvaluateRulesRequest.from_dict(body_dict)
+    response = op_evaluate_rules(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Evaluate rules", response)
     return envelope.result or {}
 
   def update_schedule(

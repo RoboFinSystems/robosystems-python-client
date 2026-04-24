@@ -6,8 +6,8 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
 from ...models.http_validation_error import HTTPValidationError
-from ...models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: LinkEntityTaxonomyRequest,
+  body: DeleteTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/link-entity-taxonomy".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/delete-taxonomy-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,14 +103,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: LinkEntityTaxonomyRequest,
+  body: DeleteTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Link Entity to Taxonomy
+  """Delete Taxonomy Block
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Delete a taxonomy block and return a thin confirmation. `cascade_facts=True` also deletes Fact rows
+  that reference the taxonomy's elements; default False fails the delete if such facts exist. Library-
+  origin block types surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,12 +118,13 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
-          ENTITY_HAS_TAXONOMY edge).
+      body (DeleteTaxonomyBlockRequest): Request body for the ``delete-taxonomy-block``
+          operation.
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For chart_of_accounts taxonomies, this tells the platform which CoA the
-          entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+          ``cascade_facts=False`` (default) fails the delete if any Fact rows
+          reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+          referencing facts alongside the taxonomy; the response reports
+          ``facts_deleted``.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -150,14 +151,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: LinkEntityTaxonomyRequest,
+  body: DeleteTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Link Entity to Taxonomy
+  """Delete Taxonomy Block
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Delete a taxonomy block and return a thin confirmation. `cascade_facts=True` also deletes Fact rows
+  that reference the taxonomy's elements; default False fails the delete if such facts exist. Library-
+  origin block types surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -165,12 +166,13 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
-          ENTITY_HAS_TAXONOMY edge).
+      body (DeleteTaxonomyBlockRequest): Request body for the ``delete-taxonomy-block``
+          operation.
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For chart_of_accounts taxonomies, this tells the platform which CoA the
-          entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+          ``cascade_facts=False`` (default) fails the delete if any Fact rows
+          reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+          referencing facts alongside the taxonomy; the response reports
+          ``facts_deleted``.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -192,14 +194,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: LinkEntityTaxonomyRequest,
+  body: DeleteTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Link Entity to Taxonomy
+  """Delete Taxonomy Block
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Delete a taxonomy block and return a thin confirmation. `cascade_facts=True` also deletes Fact rows
+  that reference the taxonomy's elements; default False fails the delete if such facts exist. Library-
+  origin block types surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -207,12 +209,13 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
-          ENTITY_HAS_TAXONOMY edge).
+      body (DeleteTaxonomyBlockRequest): Request body for the ``delete-taxonomy-block``
+          operation.
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For chart_of_accounts taxonomies, this tells the platform which CoA the
-          entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+          ``cascade_facts=False`` (default) fails the delete if any Fact rows
+          reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+          referencing facts alongside the taxonomy; the response reports
+          ``facts_deleted``.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -237,14 +240,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: LinkEntityTaxonomyRequest,
+  body: DeleteTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Link Entity to Taxonomy
+  """Delete Taxonomy Block
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Delete a taxonomy block and return a thin confirmation. `cascade_facts=True` also deletes Fact rows
+  that reference the taxonomy's elements; default False fails the delete if such facts exist. Library-
+  origin block types surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -252,12 +255,13 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
-          ENTITY_HAS_TAXONOMY edge).
+      body (DeleteTaxonomyBlockRequest): Request body for the ``delete-taxonomy-block``
+          operation.
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For chart_of_accounts taxonomies, this tells the platform which CoA the
-          entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+          ``cascade_facts=False`` (default) fails the delete if any Fact rows
+          reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+          referencing facts alongside the taxonomy; the response reports
+          ``facts_deleted``.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

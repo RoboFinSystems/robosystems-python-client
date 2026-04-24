@@ -7,16 +7,16 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
-from ...models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
+from ...models.update_taxonomy_block_request import UpdateTaxonomyBlockRequest
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: LinkEntityTaxonomyRequest,
+  body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/link-entity-taxonomy".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/update-taxonomy-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,14 +103,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: LinkEntityTaxonomyRequest,
+  body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Link Entity to Taxonomy
+  """Update Taxonomy Block
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
+  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
+  block types (`reporting_standard`) surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,12 +118,13 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
-          ENTITY_HAS_TAXONOMY edge).
+      body (UpdateTaxonomyBlockRequest): Request body for the ``update-taxonomy-block``
+          operation.
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For chart_of_accounts taxonomies, this tells the platform which CoA the
-          entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+          Top-level fields (name / description / version) apply to the taxonomy
+          row itself. The delta lists mutate atoms incrementally — the validator
+          (Phase 2.3) re-runs the seven-phase check across the projected post-
+          update state before anything commits.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -150,14 +151,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: LinkEntityTaxonomyRequest,
+  body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Link Entity to Taxonomy
+  """Update Taxonomy Block
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
+  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
+  block types (`reporting_standard`) surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -165,12 +166,13 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
-          ENTITY_HAS_TAXONOMY edge).
+      body (UpdateTaxonomyBlockRequest): Request body for the ``update-taxonomy-block``
+          operation.
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For chart_of_accounts taxonomies, this tells the platform which CoA the
-          entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+          Top-level fields (name / description / version) apply to the taxonomy
+          row itself. The delta lists mutate atoms incrementally — the validator
+          (Phase 2.3) re-runs the seven-phase check across the projected post-
+          update state before anything commits.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -192,14 +194,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: LinkEntityTaxonomyRequest,
+  body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Link Entity to Taxonomy
+  """Update Taxonomy Block
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
+  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
+  block types (`reporting_standard`) surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -207,12 +209,13 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
-          ENTITY_HAS_TAXONOMY edge).
+      body (UpdateTaxonomyBlockRequest): Request body for the ``update-taxonomy-block``
+          operation.
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For chart_of_accounts taxonomies, this tells the platform which CoA the
-          entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+          Top-level fields (name / description / version) apply to the taxonomy
+          row itself. The delta lists mutate atoms incrementally — the validator
+          (Phase 2.3) re-runs the seven-phase check across the projected post-
+          update state before anything commits.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -237,14 +240,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: LinkEntityTaxonomyRequest,
+  body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Link Entity to Taxonomy
+  """Update Taxonomy Block
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
+  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
+  block types (`reporting_standard`) surface 501.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -252,12 +255,13 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
-          ENTITY_HAS_TAXONOMY edge).
+      body (UpdateTaxonomyBlockRequest): Request body for the ``update-taxonomy-block``
+          operation.
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For chart_of_accounts taxonomies, this tells the platform which CoA the
-          entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+          Top-level fields (name / description / version) apply to the taxonomy
+          row itself. The delta lists mutate atoms incrementally — the validator
+          (Phase 2.3) re-runs the seven-phase check across the projected post-
+          update state before anything commits.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
