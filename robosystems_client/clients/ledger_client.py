@@ -35,11 +35,32 @@ from ..api.extensions_robo_ledger.op_build_fact_grid import (
 from ..api.extensions_robo_ledger.op_close_period import (
   sync_detailed as op_close_period,
 )
-from ..api.extensions_robo_ledger.op_create_closing_entry import (
-  sync_detailed as op_create_closing_entry,
+from ..api.extensions_robo_ledger.op_create_agent import (
+  sync_detailed as op_create_agent,
 )
-from ..api.extensions_robo_ledger.op_create_manual_closing_entry import (
-  sync_detailed as op_create_manual_closing_entry,
+from ..api.extensions_robo_ledger.op_create_event_block import (
+  sync_detailed as op_create_event_block,
+)
+from ..api.extensions_robo_ledger.op_create_event_handler import (
+  sync_detailed as op_create_event_handler,
+)
+from ..api.extensions_robo_ledger.op_financial_statement_analysis import (
+  sync_detailed as op_financial_statement_analysis,
+)
+from ..api.extensions_robo_ledger.op_live_financial_statement import (
+  sync_detailed as op_live_financial_statement,
+)
+from ..api.extensions_robo_ledger.op_preview_event_block import (
+  sync_detailed as op_preview_event_block,
+)
+from ..api.extensions_robo_ledger.op_update_agent import (
+  sync_detailed as op_update_agent,
+)
+from ..api.extensions_robo_ledger.op_update_event_block import (
+  sync_detailed as op_update_event_block,
+)
+from ..api.extensions_robo_ledger.op_update_event_handler import (
+  sync_detailed as op_update_event_handler,
 )
 from ..api.extensions_robo_ledger.op_create_mapping_association import (
   sync_detailed as op_create_mapping_association,
@@ -59,9 +80,6 @@ from ..api.extensions_robo_ledger.op_reopen_period import (
 from ..api.extensions_robo_ledger.op_set_close_target import (
   sync_detailed as op_set_close_target,
 )
-from ..api.extensions_robo_ledger.op_truncate_schedule import (
-  sync_detailed as op_truncate_schedule,
-)
 from ..api.extensions_robo_ledger.op_create_taxonomy_block import (
   sync_detailed as op_create_taxonomy_block,
 )
@@ -70,9 +88,6 @@ from ..api.extensions_robo_ledger.op_update_taxonomy_block import (
 )
 from ..api.extensions_robo_ledger.op_delete_taxonomy_block import (
   sync_detailed as op_delete_taxonomy_block,
-)
-from ..api.extensions_robo_ledger.op_dispose_schedule import (
-  sync_detailed as op_dispose_schedule,
 )
 from ..api.extensions_robo_ledger.op_evaluate_rules import (
   sync_detailed as op_evaluate_rules,
@@ -110,12 +125,6 @@ from ..api.extensions_robo_ledger.op_share_report import (
 from ..api.extensions_robo_ledger.op_update_publish_list import (
   sync_detailed as op_update_publish_list,
 )
-from ..api.extensions_robo_ledger.op_create_journal_entry import (
-  sync_detailed as op_create_journal_entry,
-)
-from ..api.extensions_robo_ledger.op_create_transaction import (
-  sync_detailed as op_create_transaction,
-)
 from ..api.extensions_robo_ledger.op_link_entity_taxonomy import (
   sync_detailed as op_link_entity_taxonomy,
 )
@@ -124,9 +133,6 @@ from ..api.extensions_robo_ledger.op_delete_journal_entry import (
 )
 from ..api.extensions_robo_ledger.op_delete_information_block import (
   sync_detailed as op_delete_information_block,
-)
-from ..api.extensions_robo_ledger.op_reverse_journal_entry import (
-  sync_detailed as op_reverse_journal_entry,
 )
 from ..api.extensions_robo_ledger.op_update_journal_entry import (
   sync_detailed as op_update_journal_entry,
@@ -197,27 +203,35 @@ from ..graphql.queries.ledger import (
 )
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
-from ..models.create_journal_entry_request import CreateJournalEntryRequest
-from ..models.create_transaction_request import CreateTransactionRequest
+from ..models.create_agent_request import CreateAgentRequest
+from ..models.create_event_block_request import CreateEventBlockRequest
+from ..models.create_event_block_request_event_category import (
+  CreateEventBlockRequestEventCategory,
+)
+from ..models.create_event_block_request_metadata import (
+  CreateEventBlockRequestMetadata,
+)
+from ..models.create_event_handler_request import CreateEventHandlerRequest
+from ..models.financial_statement_analysis_request import (
+  FinancialStatementAnalysisRequest,
+)
+from ..models.live_financial_statement_request import LiveFinancialStatementRequest
+from ..models.update_agent_request import UpdateAgentRequest
+from ..models.update_event_block_request import UpdateEventBlockRequest
+from ..models.update_event_handler_request import UpdateEventHandlerRequest
 from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
 from ..models.delete_information_block_request import DeleteInformationBlockRequest
 from ..models.delete_information_block_request_payload import (
   DeleteInformationBlockRequestPayload,
 )
 from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
-from ..models.reverse_journal_entry_request import ReverseJournalEntryRequest
 from ..models.update_journal_entry_request import UpdateJournalEntryRequest
 from ..models.update_information_block_request import UpdateInformationBlockRequest
 from ..models.update_information_block_request_payload import (
   UpdateInformationBlockRequestPayload,
 )
 from ..models.close_period_operation import ClosePeriodOperation
-from ..models.create_closing_entry_operation import CreateClosingEntryOperation
 from ..models.create_view_request import CreateViewRequest
-from ..models.create_manual_closing_entry_request import CreateManualClosingEntryRequest
-from ..models.create_manual_closing_entry_request_entry_type import (
-  CreateManualClosingEntryRequestEntryType,
-)
 from ..models.create_mapping_association_operation import (
   CreateMappingAssociationOperation,
 )
@@ -229,7 +243,6 @@ from ..models.delete_mapping_association_operation import (
   DeleteMappingAssociationOperation,
 )
 from ..models.initialize_ledger_request import InitializeLedgerRequest
-from ..models.manual_line_item_request import ManualLineItemRequest
 from ..models.create_publish_list_request import CreatePublishListRequest
 from ..models.create_report_request import CreateReportRequest
 from ..models.delete_publish_list_operation import DeletePublishListOperation
@@ -243,11 +256,9 @@ from ..models.share_report_operation import ShareReportOperation
 from ..models.update_publish_list_operation import UpdatePublishListOperation
 from ..models.reopen_period_operation import ReopenPeriodOperation
 from ..models.set_close_target_operation import SetCloseTargetOperation
-from ..models.truncate_schedule_operation import TruncateScheduleOperation
 from ..models.create_taxonomy_block_request import CreateTaxonomyBlockRequest
 from ..models.update_taxonomy_block_request import UpdateTaxonomyBlockRequest
 from ..models.delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
-from ..models.dispose_schedule_request import DisposeScheduleRequest
 from ..models.evaluate_rules_request import EvaluateRulesRequest
 from ..models.update_entity_request import UpdateEntityRequest
 from ..types import UNSET
@@ -341,6 +352,33 @@ class LedgerClient:
       envelope.result = envelope.result.to_dict()
     return envelope
 
+  def _build_event_block_request(
+    self,
+    *,
+    event_type: str,
+    event_category: str,
+    occurred_at: str,
+    metadata: dict[str, Any],
+    source: str = "native",
+  ) -> CreateEventBlockRequest:
+    """Build a ``CreateEventBlockRequest`` for one of the registered handlers.
+
+    ``occurred_at`` accepts either a date string (``YYYY-MM-DD``) — which
+    is normalized to midnight UTC — or a full ISO-8601 timestamp.
+    """
+    if "T" not in occurred_at:
+      occurred_dt = datetime.datetime.fromisoformat(f"{occurred_at}T00:00:00+00:00")
+    else:
+      occurred_dt = datetime.datetime.fromisoformat(occurred_at.replace("Z", "+00:00"))
+    return CreateEventBlockRequest(
+      event_type=event_type,
+      event_category=CreateEventBlockRequestEventCategory(event_category),
+      source=source,
+      occurred_at=occurred_dt,
+      apply_handlers=True,
+      metadata=CreateEventBlockRequestMetadata.from_dict(metadata),
+    )
+
   # ── Entity ──────────────────────────────────────────────────────────
 
   def get_entity(self, graph_id: str) -> dict[str, Any] | None:
@@ -416,63 +454,6 @@ class LedgerClient:
     return parse_account_rollups(data)
 
   # ── Transactions ────────────────────────────────────────────────────
-
-  def create_transaction(
-    self,
-    graph_id: str,
-    *,
-    type: str,  # noqa: A002
-    date: str,
-    amount: int,
-    currency: str = "USD",
-    description: str | None = None,
-    merchant_name: str | None = None,
-    reference_number: str | None = None,
-    number: str | None = None,
-    category: str | None = None,
-    due_date: str | None = None,
-    status: str = "pending",
-    idempotency_key: str | None = None,
-  ) -> dict[str, Any]:
-    """Create a standalone business-event Transaction without entries.
-
-    Returns a ``transaction_id`` that can be passed to
-    ``create_journal_entry`` to attach one or more journal entries to
-    this event. Useful when a single event (invoice, payment, deposit)
-    produces multiple entries over its lifecycle.
-
-    ``amount`` is in minor currency units (cents).
-    ``type`` is free-form: invoice, payment, bill, expense, deposit,
-    transfer, journal_entry, etc.
-    """
-    body_dict: dict[str, Any] = {
-      "type": type,
-      "date": date,
-      "amount": amount,
-      "currency": currency,
-      "status": status,
-    }
-    if description is not None:
-      body_dict["description"] = description
-    if merchant_name is not None:
-      body_dict["merchant_name"] = merchant_name
-    if reference_number is not None:
-      body_dict["reference_number"] = reference_number
-    if number is not None:
-      body_dict["number"] = number
-    if category is not None:
-      body_dict["category"] = category
-    if due_date is not None:
-      body_dict["due_date"] = due_date
-    body = CreateTransactionRequest.from_dict(body_dict)
-    response = op_create_transaction(
-      graph_id=graph_id,
-      body=body,
-      client=self._get_client(),
-      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
-    )
-    envelope = self._call_op("Create transaction", response)
-    return envelope.result or {}
 
   def list_transactions(
     self,
@@ -834,25 +815,6 @@ class LedgerClient:
     envelope = self._call_op("Create schedule", response)
     return envelope.result or {}
 
-  def truncate_schedule(
-    self,
-    graph_id: str,
-    structure_id: str,
-    new_end_date: str,
-    reason: str,
-  ) -> dict[str, Any]:
-    """Truncate a schedule — end it early at `new_end_date`."""
-    body = TruncateScheduleOperation(
-      structure_id=structure_id,
-      new_end_date=datetime.date.fromisoformat(new_end_date),
-      reason=reason,
-    )
-    response = op_truncate_schedule(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Truncate schedule", response)
-    return envelope.result or {}
-
   def dispose_schedule(
     self,
     graph_id: str,
@@ -864,22 +826,31 @@ class LedgerClient:
     proceeds_element_id: str | None = None,
     gain_loss_element_id: str | None = None,
   ) -> dict[str, Any]:
-    """Dispose of a schedule asset — post a disposal entry and delete forward facts."""
-    body_dict: dict[str, Any] = {
-      "structure_id": structure_id,
-      "disposal_date": disposal_date,
+    """Dispose of a schedule asset — atomically truncates forward facts,
+    drops the SumEquals rule, and posts a balanced disposal entry.
+
+    Routes through ``create-event-block`` with
+    ``event_type='asset_disposed'``.
+    """
+    metadata: dict[str, Any] = {
+      "schedule_id": structure_id,
       "memo": memo,
       "reason": reason,
     }
     if sale_proceeds is not None:
-      body_dict["sale_proceeds"] = sale_proceeds
+      metadata["proceeds"] = sale_proceeds
     if proceeds_element_id is not None:
-      body_dict["proceeds_element_id"] = proceeds_element_id
+      metadata["proceeds_element_id"] = proceeds_element_id
     if gain_loss_element_id is not None:
-      body_dict["gain_loss_element_id"] = gain_loss_element_id
-    request = DisposeScheduleRequest.from_dict(body_dict)
-    response = op_dispose_schedule(
-      graph_id=graph_id, body=request, client=self._get_client()
+      metadata["gain_loss_element_id"] = gain_loss_element_id
+    body = self._build_event_block_request(
+      event_type="asset_disposed",
+      event_category="adjustment",
+      occurred_at=disposal_date,
+      metadata=metadata,
+    )
+    response = op_create_event_block(
+      graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Dispose schedule", response)
     return envelope.result or {}
@@ -963,55 +934,32 @@ class LedgerClient:
     period_end: str,
     memo: str | None = None,
   ) -> dict[str, Any]:
-    """Idempotently create (or refresh) a draft closing entry from a schedule."""
-    body = CreateClosingEntryOperation(
-      structure_id=structure_id,
-      posting_date=datetime.date.fromisoformat(posting_date),
-      period_start=datetime.date.fromisoformat(period_start),
-      period_end=datetime.date.fromisoformat(period_end),
-      memo=memo if memo is not None else UNSET,
+    """Idempotently create (or refresh) a draft closing entry from a schedule.
+
+    Routes through ``create-event-block`` with
+    ``event_type='schedule_entry_due'`` — the underlying handler dispatches
+    one of created / unchanged / regenerated / removed / skipped internally.
+    Returns the EventBlockEnvelope.
+    """
+    metadata: dict[str, Any] = {
+      "schedule_id": structure_id,
+      "posting_date": posting_date,
+      "period_start": period_start,
+      "period_end": period_end,
+    }
+    if memo is not None:
+      metadata["memo"] = memo
+    body = self._build_event_block_request(
+      event_type="schedule_entry_due",
+      event_category="recognition",
+      occurred_at=posting_date,
+      source="scheduled",
+      metadata=metadata,
     )
-    response = op_create_closing_entry(
+    response = op_create_event_block(
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Create closing entry", response)
-    return envelope.result or {}
-
-  def create_manual_closing_entry(
-    self,
-    graph_id: str,
-    *,
-    posting_date: str,
-    memo: str,
-    line_items: list[dict[str, Any]],
-    entry_type: str | None = None,
-  ) -> dict[str, Any]:
-    """Create a manual balanced closing entry (not tied to a schedule)."""
-    items = [
-      ManualLineItemRequest(
-        element_id=li["element_id"],
-        debit_amount=li.get("debit_amount", 0),
-        credit_amount=li.get("credit_amount", 0),
-        description=(
-          li.get("description") if li.get("description") is not None else UNSET
-        ),
-      )
-      for li in line_items
-    ]
-    body = CreateManualClosingEntryRequest(
-      posting_date=datetime.date.fromisoformat(posting_date),
-      memo=memo,
-      line_items=items,
-      entry_type=(
-        CreateManualClosingEntryRequestEntryType(entry_type)
-        if entry_type is not None
-        else UNSET
-      ),
-    )
-    response = op_create_manual_closing_entry(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Create manual closing entry", response)
     return envelope.result or {}
 
   # ── Journal entries (native accounting writes) ──────────────────────
@@ -1030,6 +978,10 @@ class LedgerClient:
   ) -> dict[str, Any]:
     """Create a journal entry with balanced line items (DR=CR enforced).
 
+    Routes through ``create-event-block`` with
+    ``event_type='journal_entry_recorded'`` — the Python handler forwards
+    to the internal journal-entry command.
+
     Defaults to ``status='draft'`` for ongoing writes. Pass
     ``status='posted'`` for historical data import where entries
     represent already-happened business events.
@@ -1037,8 +989,10 @@ class LedgerClient:
     Supply ``idempotency_key`` to make the call safe to retry — replays
     within 24 hours return the same envelope. Reusing the key with a
     different body returns HTTP 409.
+
+    Returns the EventBlockEnvelope (event row fields).
     """
-    body_dict: dict[str, Any] = {
+    metadata: dict[str, Any] = {
       "posting_date": posting_date,
       "memo": memo,
       "line_items": line_items,
@@ -1046,9 +1000,14 @@ class LedgerClient:
       "status": status,
     }
     if transaction_id is not None:
-      body_dict["transaction_id"] = transaction_id
-    body = CreateJournalEntryRequest.from_dict(body_dict)
-    response = op_create_journal_entry(
+      metadata["transaction_id"] = transaction_id
+    body = self._build_event_block_request(
+      event_type="journal_entry_recorded",
+      event_category="adjustment",
+      occurred_at=posting_date,
+      metadata=metadata,
+    )
+    response = op_create_event_block(
       graph_id=graph_id,
       body=body,
       client=self._get_client(),
@@ -1081,19 +1040,180 @@ class LedgerClient:
     entry_id: str,
     posting_date: str | None = None,
     memo: str | None = None,
+    reason: str | None = None,
   ) -> dict[str, Any]:
-    """Reverse a posted journal entry (creates offsetting entry, marks original as reversed)."""
-    body = ReverseJournalEntryRequest(
-      entry_id=entry_id,
-      posting_date=(
-        datetime.date.fromisoformat(posting_date) if posting_date else UNSET
-      ),
-      memo=memo if memo is not None else UNSET,
+    """Reverse a posted journal entry (creates offsetting entry, marks original as reversed).
+
+    Routes through ``create-event-block`` with
+    ``event_type='journal_entry_reversed'``. Returns the EventBlockEnvelope.
+    """
+    metadata: dict[str, Any] = {"entry_id": entry_id}
+    if posting_date is not None:
+      metadata["posting_date"] = posting_date
+    if memo is not None:
+      metadata["memo"] = memo
+    if reason is not None:
+      metadata["reason"] = reason
+    occurred_at = posting_date or datetime.date.today().isoformat()
+    body = self._build_event_block_request(
+      event_type="journal_entry_reversed",
+      event_category="adjustment",
+      occurred_at=occurred_at,
+      metadata=metadata,
     )
-    response = op_reverse_journal_entry(
+    response = op_create_event_block(
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Reverse journal entry", response)
+    return envelope.result or {}
+
+  # ── Event blocks (generic preview + status transitions) ──────────────
+
+  def preview_event_block(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Dry-run an event block — resolve handler, evaluate metadata, return
+    the planned GL rows without writing anything.
+
+    Companion to ``create_journal_entry`` / ``reverse_journal_entry`` /
+    ``create_closing_entry`` / ``dispose_schedule``: pass the same body
+    those methods would build (a ``CreateEventBlockRequest`` shape) and
+    inspect what the handler would do.
+    """
+    request = CreateEventBlockRequest.from_dict(body)
+    response = op_preview_event_block(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Preview event block", response)
+    return envelope.result or {}
+
+  def update_event_block(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Apply a status transition and/or field corrections to an event block.
+
+    Use for posting drafts (``classified`` → ``committed`` → ``fulfilled``),
+    voiding, superseding (correction chains), or patching ``description``,
+    ``effective_at``, or ``metadata``.
+    """
+    request = UpdateEventBlockRequest.from_dict(body)
+    response = op_update_event_block(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update event block", response)
+    return envelope.result or {}
+
+  # ── Agents (REA counterparties) ───────────────────────────────────────
+
+  def create_agent(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+    idempotency_key: str | None = None,
+  ) -> dict[str, Any]:
+    """Create an agent — REA counterparty (customer, vendor, employee, etc.)
+    referenced by event blocks via ``agent_id``.
+
+    ``(source, external_id)`` is unique when ``external_id`` is provided,
+    so external-source ingestion is idempotent at the DB level.
+    """
+    request = CreateAgentRequest.from_dict(body)
+    response = op_create_agent(
+      graph_id=graph_id,
+      body=request,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Create agent", response)
+    return envelope.result or {}
+
+  def update_agent(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Update an agent. ``metadata_patch`` is a partial merge into existing
+    metadata; all other fields replace.
+    """
+    request = UpdateAgentRequest.from_dict(body)
+    response = op_update_agent(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update agent", response)
+    return envelope.result or {}
+
+  # ── Event handlers (DSL handler registry) ────────────────────────────
+
+  def create_event_handler(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Register a tenant-configurable event handler — DSL row in the
+    ``event_handlers`` table that drives ``create-event-block`` for event
+    types not covered by a Python handler.
+    """
+    request = CreateEventHandlerRequest.from_dict(body)
+    response = op_create_event_handler(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Create event handler", response)
+    return envelope.result or {}
+
+  def update_event_handler(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Update a registered event handler. Pass ``approve=True`` in the body
+    to flip an AI-suggested handler from unapproved to active.
+    """
+    request = UpdateEventHandlerRequest.from_dict(body)
+    response = op_update_event_handler(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update event handler", response)
+    return envelope.result or {}
+
+  # ── Financial statements (graph-backed) ──────────────────────────────
+
+  def live_financial_statement(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Live financial statement — pulls facts directly from the graph for
+    an explicit period window (or fiscal year) and returns the statement
+    shape without a persisted Report row. Useful for ad-hoc previews and
+    dashboards.
+    """
+    request = LiveFinancialStatementRequest.from_dict(body)
+    response = op_live_financial_statement(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Live financial statement", response)
+    return envelope.result or {}
+
+  def financial_statement_analysis(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Run a financial statement analysis against an existing report.
+
+    On shared-repo graphs (e.g. SEC), ``ticker`` is required; on tenant
+    graphs it's ignored. Either pass an explicit ``report_id`` or let the
+    server auto-resolve via ``fiscal_year`` + ``period_type``.
+    """
+    request = FinancialStatementAnalysisRequest.from_dict(body)
+    response = op_financial_statement_analysis(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Financial statement analysis", response)
     return envelope.result or {}
 
   # ── Fact grid (graph-backed analytical query) ─────────────────────

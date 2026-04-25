@@ -6,17 +6,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.dispose_schedule_request import DisposeScheduleRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
+from ...models.update_agent_request import UpdateAgentRequest
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: DisposeScheduleRequest,
+  body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/dispose-schedule".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/update-agent".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,16 +103,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DisposeScheduleRequest,
+  body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Dispose Schedule (Sale or Abandonment)
+  """Update Agent
 
-   Atomically truncate a schedule past the disposal date and create a balanced disposal closing entry.
-  Computes accumulated depreciation from the schedule's own facts, derives net book value and
-  gain/loss, removes forward facts, and books the disposal entry in one call. Use when an asset is
-  sold or abandoned before the schedule runs to completion. For abandonment with no proceeds, omit
-  `sale_proceeds` and `proceeds_element_id`.
+   Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
+  (agents are never deleted — they are reference data referenced by events and transactions).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -120,12 +117,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DisposeScheduleRequest): Dispose a schedule early — combines truncation with a
-          disposal closing entry.
-
-          Computes net book value from the schedule's own facts, truncates forward
-          periods, and creates a balanced disposal entry in one atomic operation.
-          Use when an asset is sold or abandoned before the schedule runs to completion.
+      body (UpdateAgentRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -152,16 +144,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DisposeScheduleRequest,
+  body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Dispose Schedule (Sale or Abandonment)
+  """Update Agent
 
-   Atomically truncate a schedule past the disposal date and create a balanced disposal closing entry.
-  Computes accumulated depreciation from the schedule's own facts, derives net book value and
-  gain/loss, removes forward facts, and books the disposal entry in one call. Use when an asset is
-  sold or abandoned before the schedule runs to completion. For abandonment with no proceeds, omit
-  `sale_proceeds` and `proceeds_element_id`.
+   Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
+  (agents are never deleted — they are reference data referenced by events and transactions).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -169,12 +158,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DisposeScheduleRequest): Dispose a schedule early — combines truncation with a
-          disposal closing entry.
-
-          Computes net book value from the schedule's own facts, truncates forward
-          periods, and creates a balanced disposal entry in one atomic operation.
-          Use when an asset is sold or abandoned before the schedule runs to completion.
+      body (UpdateAgentRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -196,16 +180,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DisposeScheduleRequest,
+  body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Dispose Schedule (Sale or Abandonment)
+  """Update Agent
 
-   Atomically truncate a schedule past the disposal date and create a balanced disposal closing entry.
-  Computes accumulated depreciation from the schedule's own facts, derives net book value and
-  gain/loss, removes forward facts, and books the disposal entry in one call. Use when an asset is
-  sold or abandoned before the schedule runs to completion. For abandonment with no proceeds, omit
-  `sale_proceeds` and `proceeds_element_id`.
+   Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
+  (agents are never deleted — they are reference data referenced by events and transactions).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -213,12 +194,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DisposeScheduleRequest): Dispose a schedule early — combines truncation with a
-          disposal closing entry.
-
-          Computes net book value from the schedule's own facts, truncates forward
-          periods, and creates a balanced disposal entry in one atomic operation.
-          Use when an asset is sold or abandoned before the schedule runs to completion.
+      body (UpdateAgentRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -243,16 +219,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DisposeScheduleRequest,
+  body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Dispose Schedule (Sale or Abandonment)
+  """Update Agent
 
-   Atomically truncate a schedule past the disposal date and create a balanced disposal closing entry.
-  Computes accumulated depreciation from the schedule's own facts, derives net book value and
-  gain/loss, removes forward facts, and books the disposal entry in one call. Use when an asset is
-  sold or abandoned before the schedule runs to completion. For abandonment with no proceeds, omit
-  `sale_proceeds` and `proceeds_element_id`.
+   Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
+  (agents are never deleted — they are reference data referenced by events and transactions).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -260,12 +233,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DisposeScheduleRequest): Dispose a schedule early — combines truncation with a
-          disposal closing entry.
-
-          Computes net book value from the schedule's own facts, truncates forward
-          periods, and creates a balanced disposal entry in one atomic operation.
-          Use when an asset is sold or abandoned before the schedule runs to completion.
+      body (UpdateAgentRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

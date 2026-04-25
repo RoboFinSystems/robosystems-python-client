@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_journal_entry_request import CreateJournalEntryRequest
+from ...models.create_event_block_request import CreateEventBlockRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateJournalEntryRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/create-journal-entry".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/preview-event-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,14 +103,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateJournalEntryRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Journal Entry
+  """Preview Event Block
 
-   Create a new draft journal entry with balanced line items. Enforces DR=CR at the validation layer.
-  Entries are always created as drafts; posting happens via close-period or a future per-entry post
-  op.
+   Dry-run: resolve the matching handler and evaluate the transaction template without writing any
+  rows. Returns the matched handler + planned debit/credit lines + any validation errors. Use this
+  before create-event-block(apply_handlers=True) to confirm the GL plan.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,16 +118,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateJournalEntryRequest): Create a new journal entry with balanced line items.
-
-          Defaults to `status='draft'` for ongoing native writes (the normal
-          workflow: draft → review → post via close-period). Pass
-          `status='posted'` for historical data import where entries represent
-          already-happened business events that don't need review.
-
-          Total debit amount must equal total credit amount or the request
-          is rejected with 422. `line_items` must contain at least two rows
-          (at least one debit, at least one credit).
+      body (CreateEventBlockRequest): Write surface for a single business event.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -154,14 +145,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateJournalEntryRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Journal Entry
+  """Preview Event Block
 
-   Create a new draft journal entry with balanced line items. Enforces DR=CR at the validation layer.
-  Entries are always created as drafts; posting happens via close-period or a future per-entry post
-  op.
+   Dry-run: resolve the matching handler and evaluate the transaction template without writing any
+  rows. Returns the matched handler + planned debit/credit lines + any validation errors. Use this
+  before create-event-block(apply_handlers=True) to confirm the GL plan.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -169,16 +160,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateJournalEntryRequest): Create a new journal entry with balanced line items.
-
-          Defaults to `status='draft'` for ongoing native writes (the normal
-          workflow: draft → review → post via close-period). Pass
-          `status='posted'` for historical data import where entries represent
-          already-happened business events that don't need review.
-
-          Total debit amount must equal total credit amount or the request
-          is rejected with 422. `line_items` must contain at least two rows
-          (at least one debit, at least one credit).
+      body (CreateEventBlockRequest): Write surface for a single business event.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -200,14 +182,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateJournalEntryRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Journal Entry
+  """Preview Event Block
 
-   Create a new draft journal entry with balanced line items. Enforces DR=CR at the validation layer.
-  Entries are always created as drafts; posting happens via close-period or a future per-entry post
-  op.
+   Dry-run: resolve the matching handler and evaluate the transaction template without writing any
+  rows. Returns the matched handler + planned debit/credit lines + any validation errors. Use this
+  before create-event-block(apply_handlers=True) to confirm the GL plan.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -215,16 +197,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateJournalEntryRequest): Create a new journal entry with balanced line items.
-
-          Defaults to `status='draft'` for ongoing native writes (the normal
-          workflow: draft → review → post via close-period). Pass
-          `status='posted'` for historical data import where entries represent
-          already-happened business events that don't need review.
-
-          Total debit amount must equal total credit amount or the request
-          is rejected with 422. `line_items` must contain at least two rows
-          (at least one debit, at least one credit).
+      body (CreateEventBlockRequest): Write surface for a single business event.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -249,14 +222,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateJournalEntryRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Journal Entry
+  """Preview Event Block
 
-   Create a new draft journal entry with balanced line items. Enforces DR=CR at the validation layer.
-  Entries are always created as drafts; posting happens via close-period or a future per-entry post
-  op.
+   Dry-run: resolve the matching handler and evaluate the transaction template without writing any
+  rows. Returns the matched handler + planned debit/credit lines + any validation errors. Use this
+  before create-event-block(apply_handlers=True) to confirm the GL plan.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -264,16 +237,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateJournalEntryRequest): Create a new journal entry with balanced line items.
-
-          Defaults to `status='draft'` for ongoing native writes (the normal
-          workflow: draft → review → post via close-period). Pass
-          `status='posted'` for historical data import where entries represent
-          already-happened business events that don't need review.
-
-          Total debit amount must equal total credit amount or the request
-          is rejected with 422. `line_items` must contain at least two rows
-          (at least one debit, at least one credit).
+      body (CreateEventBlockRequest): Write surface for a single business event.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

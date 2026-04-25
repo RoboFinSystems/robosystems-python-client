@@ -9,14 +9,14 @@ from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
-from ...models.reverse_journal_entry_request import ReverseJournalEntryRequest
+from ...models.update_event_block_request import UpdateEventBlockRequest
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: ReverseJournalEntryRequest,
+  body: UpdateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/reverse-journal-entry".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/update-event-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,14 +103,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: ReverseJournalEntryRequest,
+  body: UpdateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Reverse Journal Entry
+  """Update Event Block
 
-   Reverse a posted journal entry by creating a new offsetting entry (debits ↔ credits) and marking the
-  original as status='reversed'. Both entries stay in the ledger — the audit trail shows original +
-  reversal side by side.
+   Apply a status transition (captured → committed | voided) and/or field corrections (description,
+  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,16 +117,10 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ReverseJournalEntryRequest): Reverse a posted journal entry.
+      body (UpdateEventBlockRequest): Status transitions and field corrections for an event
+          block.
 
-          Creates a new entry whose line items flip the originals
-          (debits → credits, credits → debits), sets `reversal_of` on the new
-          entry to the original's id, marks the original as
-          `status='reversed'`, and posts the reversing entry immediately.
-
-          This is how accountants correct posted entries — the original stays
-          in the audit trail, the reversal cancels its effect, and a
-          corrected entry can be created separately.
+          All fields except event_id are optional — only supplied fields are updated.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -154,14 +147,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: ReverseJournalEntryRequest,
+  body: UpdateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Reverse Journal Entry
+  """Update Event Block
 
-   Reverse a posted journal entry by creating a new offsetting entry (debits ↔ credits) and marking the
-  original as status='reversed'. Both entries stay in the ledger — the audit trail shows original +
-  reversal side by side.
+   Apply a status transition (captured → committed | voided) and/or field corrections (description,
+  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -169,16 +161,10 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ReverseJournalEntryRequest): Reverse a posted journal entry.
+      body (UpdateEventBlockRequest): Status transitions and field corrections for an event
+          block.
 
-          Creates a new entry whose line items flip the originals
-          (debits → credits, credits → debits), sets `reversal_of` on the new
-          entry to the original's id, marks the original as
-          `status='reversed'`, and posts the reversing entry immediately.
-
-          This is how accountants correct posted entries — the original stays
-          in the audit trail, the reversal cancels its effect, and a
-          corrected entry can be created separately.
+          All fields except event_id are optional — only supplied fields are updated.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -200,14 +186,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: ReverseJournalEntryRequest,
+  body: UpdateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Reverse Journal Entry
+  """Update Event Block
 
-   Reverse a posted journal entry by creating a new offsetting entry (debits ↔ credits) and marking the
-  original as status='reversed'. Both entries stay in the ledger — the audit trail shows original +
-  reversal side by side.
+   Apply a status transition (captured → committed | voided) and/or field corrections (description,
+  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -215,16 +200,10 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ReverseJournalEntryRequest): Reverse a posted journal entry.
+      body (UpdateEventBlockRequest): Status transitions and field corrections for an event
+          block.
 
-          Creates a new entry whose line items flip the originals
-          (debits → credits, credits → debits), sets `reversal_of` on the new
-          entry to the original's id, marks the original as
-          `status='reversed'`, and posts the reversing entry immediately.
-
-          This is how accountants correct posted entries — the original stays
-          in the audit trail, the reversal cancels its effect, and a
-          corrected entry can be created separately.
+          All fields except event_id are optional — only supplied fields are updated.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -249,14 +228,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: ReverseJournalEntryRequest,
+  body: UpdateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Reverse Journal Entry
+  """Update Event Block
 
-   Reverse a posted journal entry by creating a new offsetting entry (debits ↔ credits) and marking the
-  original as status='reversed'. Both entries stay in the ledger — the audit trail shows original +
-  reversal side by side.
+   Apply a status transition (captured → committed | voided) and/or field corrections (description,
+  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -264,16 +242,10 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ReverseJournalEntryRequest): Reverse a posted journal entry.
+      body (UpdateEventBlockRequest): Status transitions and field corrections for an event
+          block.
 
-          Creates a new entry whose line items flip the originals
-          (debits → credits, credits → debits), sets `reversal_of` on the new
-          entry to the original's id, marks the original as
-          `status='reversed'`, and posts the reversing entry immediately.
-
-          This is how accountants correct posted entries — the original stays
-          in the audit trail, the reversal cancels its effect, and a
-          corrected entry can be created separately.
+          All fields except event_id are optional — only supplied fields are updated.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
