@@ -35,8 +35,32 @@ from ..api.extensions_robo_ledger.op_build_fact_grid import (
 from ..api.extensions_robo_ledger.op_close_period import (
   sync_detailed as op_close_period,
 )
+from ..api.extensions_robo_ledger.op_create_agent import (
+  sync_detailed as op_create_agent,
+)
 from ..api.extensions_robo_ledger.op_create_event_block import (
   sync_detailed as op_create_event_block,
+)
+from ..api.extensions_robo_ledger.op_create_event_handler import (
+  sync_detailed as op_create_event_handler,
+)
+from ..api.extensions_robo_ledger.op_financial_statement_analysis import (
+  sync_detailed as op_financial_statement_analysis,
+)
+from ..api.extensions_robo_ledger.op_live_financial_statement import (
+  sync_detailed as op_live_financial_statement,
+)
+from ..api.extensions_robo_ledger.op_preview_event_block import (
+  sync_detailed as op_preview_event_block,
+)
+from ..api.extensions_robo_ledger.op_update_agent import (
+  sync_detailed as op_update_agent,
+)
+from ..api.extensions_robo_ledger.op_update_event_block import (
+  sync_detailed as op_update_event_block,
+)
+from ..api.extensions_robo_ledger.op_update_event_handler import (
+  sync_detailed as op_update_event_handler,
 )
 from ..api.extensions_robo_ledger.op_create_mapping_association import (
   sync_detailed as op_create_mapping_association,
@@ -179,6 +203,7 @@ from ..graphql.queries.ledger import (
 )
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
+from ..models.create_agent_request import CreateAgentRequest
 from ..models.create_event_block_request import CreateEventBlockRequest
 from ..models.create_event_block_request_event_category import (
   CreateEventBlockRequestEventCategory,
@@ -186,6 +211,14 @@ from ..models.create_event_block_request_event_category import (
 from ..models.create_event_block_request_metadata import (
   CreateEventBlockRequestMetadata,
 )
+from ..models.create_event_handler_request import CreateEventHandlerRequest
+from ..models.financial_statement_analysis_request import (
+  FinancialStatementAnalysisRequest,
+)
+from ..models.live_financial_statement_request import LiveFinancialStatementRequest
+from ..models.update_agent_request import UpdateAgentRequest
+from ..models.update_event_block_request import UpdateEventBlockRequest
+from ..models.update_event_handler_request import UpdateEventHandlerRequest
 from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
 from ..models.delete_information_block_request import DeleteInformationBlockRequest
 from ..models.delete_information_block_request_payload import (
@@ -1032,6 +1065,155 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Reverse journal entry", response)
+    return envelope.result or {}
+
+  # ── Event blocks (generic preview + status transitions) ──────────────
+
+  def preview_event_block(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Dry-run an event block — resolve handler, evaluate metadata, return
+    the planned GL rows without writing anything.
+
+    Companion to ``create_journal_entry`` / ``reverse_journal_entry`` /
+    ``create_closing_entry`` / ``dispose_schedule``: pass the same body
+    those methods would build (a ``CreateEventBlockRequest`` shape) and
+    inspect what the handler would do.
+    """
+    request = CreateEventBlockRequest.from_dict(body)
+    response = op_preview_event_block(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Preview event block", response)
+    return envelope.result or {}
+
+  def update_event_block(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Apply a status transition and/or field corrections to an event block.
+
+    Use for posting drafts (``classified`` → ``committed`` → ``fulfilled``),
+    voiding, superseding (correction chains), or patching ``description``,
+    ``effective_at``, or ``metadata``.
+    """
+    request = UpdateEventBlockRequest.from_dict(body)
+    response = op_update_event_block(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update event block", response)
+    return envelope.result or {}
+
+  # ── Agents (REA counterparties) ───────────────────────────────────────
+
+  def create_agent(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+    idempotency_key: str | None = None,
+  ) -> dict[str, Any]:
+    """Create an agent — REA counterparty (customer, vendor, employee, etc.)
+    referenced by event blocks via ``agent_id``.
+
+    ``(source, external_id)`` is unique when ``external_id`` is provided,
+    so external-source ingestion is idempotent at the DB level.
+    """
+    request = CreateAgentRequest.from_dict(body)
+    response = op_create_agent(
+      graph_id=graph_id,
+      body=request,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Create agent", response)
+    return envelope.result or {}
+
+  def update_agent(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Update an agent. ``metadata_patch`` is a partial merge into existing
+    metadata; all other fields replace.
+    """
+    request = UpdateAgentRequest.from_dict(body)
+    response = op_update_agent(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update agent", response)
+    return envelope.result or {}
+
+  # ── Event handlers (DSL handler registry) ────────────────────────────
+
+  def create_event_handler(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Register a tenant-configurable event handler — DSL row in the
+    ``event_handlers`` table that drives ``create-event-block`` for event
+    types not covered by a Python handler.
+    """
+    request = CreateEventHandlerRequest.from_dict(body)
+    response = op_create_event_handler(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Create event handler", response)
+    return envelope.result or {}
+
+  def update_event_handler(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Update a registered event handler. Pass ``approve=True`` in the body
+    to flip an AI-suggested handler from unapproved to active.
+    """
+    request = UpdateEventHandlerRequest.from_dict(body)
+    response = op_update_event_handler(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update event handler", response)
+    return envelope.result or {}
+
+  # ── Financial statements (graph-backed) ──────────────────────────────
+
+  def live_financial_statement(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Live financial statement — pulls facts directly from the graph for
+    an explicit period window (or fiscal year) and returns the statement
+    shape without a persisted Report row. Useful for ad-hoc previews and
+    dashboards.
+    """
+    request = LiveFinancialStatementRequest.from_dict(body)
+    response = op_live_financial_statement(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Live financial statement", response)
+    return envelope.result or {}
+
+  def financial_statement_analysis(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> dict[str, Any]:
+    """Run a financial statement analysis against an existing report.
+
+    On shared-repo graphs (e.g. SEC), ``ticker`` is required; on tenant
+    graphs it's ignored. Either pass an explicit ``report_id`` or let the
+    server auto-resolve via ``fiscal_year`` + ``period_type``.
+    """
+    request = FinancialStatementAnalysisRequest.from_dict(body)
+    response = op_financial_statement_analysis(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Financial statement analysis", response)
     return envelope.result or {}
 
   # ── Fact grid (graph-backed analytical query) ─────────────────────
