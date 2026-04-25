@@ -108,9 +108,9 @@ def sync_detailed(
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Update Journal Entry
 
-   Update a draft journal entry. Posted entries are immutable and must be corrected via reverse-
-  journal-entry. If line_items is provided, existing line items are replaced atomically and the new
-  set must balance.
+   Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
+  block(event_type='journal_entry_reversed')`. If line_items is provided, existing line items are
+  replaced atomically and the new set must balance.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -157,9 +157,9 @@ def sync(
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Update Journal Entry
 
-   Update a draft journal entry. Posted entries are immutable and must be corrected via reverse-
-  journal-entry. If line_items is provided, existing line items are replaced atomically and the new
-  set must balance.
+   Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
+  block(event_type='journal_entry_reversed')`. If line_items is provided, existing line items are
+  replaced atomically and the new set must balance.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -201,9 +201,9 @@ async def asyncio_detailed(
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
   """Update Journal Entry
 
-   Update a draft journal entry. Posted entries are immutable and must be corrected via reverse-
-  journal-entry. If line_items is provided, existing line items are replaced atomically and the new
-  set must balance.
+   Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
+  block(event_type='journal_entry_reversed')`. If line_items is provided, existing line items are
+  replaced atomically and the new set must balance.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -248,9 +248,9 @@ async def asyncio(
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
   """Update Journal Entry
 
-   Update a draft journal entry. Posted entries are immutable and must be corrected via reverse-
-  journal-entry. If line_items is provided, existing line items are replaced atomically and the new
-  set must balance.
+   Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
+  block(event_type='journal_entry_reversed')`. If line_items is provided, existing line items are
+  replaced atomically and the new set must balance.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

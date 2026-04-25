@@ -6,17 +6,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.create_agent_request import CreateAgentRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
-from ...models.truncate_schedule_operation import TruncateScheduleOperation
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: TruncateScheduleOperation,
+  body: CreateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/truncate-schedule".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/create-agent".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,14 +103,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TruncateScheduleOperation,
+  body: CreateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Truncate Schedule (End Early)
+  """Create Agent
 
-   End a schedule early by deleting forward facts and any stale draft closing entries past the cutoff.
-  Historical facts and posted entries are preserved. Use this when a business event (asset disposal,
-  contract cancellation) shortens the schedule's lifespan.
+   Create a counterparty record (customer, vendor, employee, etc.). The (source, external_id) pair is a
+  dedup key — a second insert with the same pair returns 409. Use update-agent to patch fields.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,13 +117,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (TruncateScheduleOperation): CQRS-shaped body for `POST /operations/truncate-
-          schedule`.
-
-          Bundles the target schedule's `structure_id` with the update payload so
-          the single-body signature matches the registrar/MCP contract. The REST
-          handler, GraphQL resolver, and MCP tool all resolve to the same
-          `cmd_truncate_schedule(session, body, created_by=...)`.
+      body (CreateAgentRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -151,14 +144,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TruncateScheduleOperation,
+  body: CreateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Truncate Schedule (End Early)
+  """Create Agent
 
-   End a schedule early by deleting forward facts and any stale draft closing entries past the cutoff.
-  Historical facts and posted entries are preserved. Use this when a business event (asset disposal,
-  contract cancellation) shortens the schedule's lifespan.
+   Create a counterparty record (customer, vendor, employee, etc.). The (source, external_id) pair is a
+  dedup key — a second insert with the same pair returns 409. Use update-agent to patch fields.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -166,13 +158,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (TruncateScheduleOperation): CQRS-shaped body for `POST /operations/truncate-
-          schedule`.
-
-          Bundles the target schedule's `structure_id` with the update payload so
-          the single-body signature matches the registrar/MCP contract. The REST
-          handler, GraphQL resolver, and MCP tool all resolve to the same
-          `cmd_truncate_schedule(session, body, created_by=...)`.
+      body (CreateAgentRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -194,14 +180,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TruncateScheduleOperation,
+  body: CreateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Truncate Schedule (End Early)
+  """Create Agent
 
-   End a schedule early by deleting forward facts and any stale draft closing entries past the cutoff.
-  Historical facts and posted entries are preserved. Use this when a business event (asset disposal,
-  contract cancellation) shortens the schedule's lifespan.
+   Create a counterparty record (customer, vendor, employee, etc.). The (source, external_id) pair is a
+  dedup key — a second insert with the same pair returns 409. Use update-agent to patch fields.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -209,13 +194,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (TruncateScheduleOperation): CQRS-shaped body for `POST /operations/truncate-
-          schedule`.
-
-          Bundles the target schedule's `structure_id` with the update payload so
-          the single-body signature matches the registrar/MCP contract. The REST
-          handler, GraphQL resolver, and MCP tool all resolve to the same
-          `cmd_truncate_schedule(session, body, created_by=...)`.
+      body (CreateAgentRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -240,14 +219,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TruncateScheduleOperation,
+  body: CreateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Truncate Schedule (End Early)
+  """Create Agent
 
-   End a schedule early by deleting forward facts and any stale draft closing entries past the cutoff.
-  Historical facts and posted entries are preserved. Use this when a business event (asset disposal,
-  contract cancellation) shortens the schedule's lifespan.
+   Create a counterparty record (customer, vendor, employee, etc.). The (source, external_id) pair is a
+  dedup key — a second insert with the same pair returns 409. Use update-agent to patch fields.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -255,13 +233,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (TruncateScheduleOperation): CQRS-shaped body for `POST /operations/truncate-
-          schedule`.
-
-          Bundles the target schedule's `structure_id` with the update payload so
-          the single-body signature matches the registrar/MCP contract. The REST
-          handler, GraphQL resolver, and MCP tool all resolve to the same
-          `cmd_truncate_schedule(session, body, created_by=...)`.
+      body (CreateAgentRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

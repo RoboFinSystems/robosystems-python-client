@@ -345,15 +345,14 @@ class TestLedgerWrites:
     assert ack["operation_id"].startswith("op_")
     assert ack["status"] == OperationEnvelopeStatus.PENDING
 
-  @patch("robosystems_client.clients.ledger_client.op_create_closing_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
   def test_create_closing_entry(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "create-closing-entry",
+      "create-event-block",
       {
-        "outcome": "created",
-        "entry_id": "entry_1",
-        "status": "draft",
-        "amount": 100000,
+        "id": "evt_1",
+        "event_type": "schedule_entry_due",
+        "status": "classified",
       },
     )
     mock_op.return_value = _mock_response(envelope)
@@ -361,27 +360,18 @@ class TestLedgerWrites:
     result = client.create_closing_entry(
       graph_id, "str_1", "2026-03-31", "2026-03-01", "2026-03-31", memo="Depr"
     )
-    assert result["outcome"] == "created"
+    assert result["event_type"] == "schedule_entry_due"
     body = mock_op.call_args.kwargs["body"]
-    assert body.memo == "Depr"
-
-  @patch("robosystems_client.clients.ledger_client.op_truncate_schedule")
-  def test_truncate_schedule(self, mock_op, mock_config, graph_id):
-    envelope = _envelope(
-      "truncate-schedule",
-      {
-        "structure_id": "str_1",
-        "new_end_date": "2026-06-30",
-        "facts_deleted": 6,
-        "reason": "asset disposed",
-      },
-    )
-    mock_op.return_value = _mock_response(envelope)
-    client = LedgerClient(mock_config)
-    result = client.truncate_schedule(
-      graph_id, "str_1", new_end_date="2026-06-30", reason="asset disposed"
-    )
-    assert result["facts_deleted"] == 6
+    assert body.event_type == "schedule_entry_due"
+    assert body.event_category.value == "recognition"
+    assert body.source == "scheduled"
+    assert body.apply_handlers is True
+    metadata = body.metadata.to_dict()
+    assert metadata["schedule_id"] == "str_1"
+    assert metadata["period_start"] == "2026-03-01"
+    assert metadata["period_end"] == "2026-03-31"
+    assert metadata["posting_date"] == "2026-03-31"
+    assert metadata["memo"] == "Depr"
 
   @patch("robosystems_client.clients.ledger_client.op_build_fact_grid")
   def test_build_fact_grid_dispatches_via_operations(
@@ -427,11 +417,15 @@ class TestJournalEntries:
     {"element_id": "elem_revenue", "debit_amount": 0, "credit_amount": 50000},
   ]
 
-  @patch("robosystems_client.clients.ledger_client.op_create_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
   def test_create_journal_entry_basic(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "create-journal-entry",
-      {"entry_id": "je_1", "status": "draft", "memo": "Q1 revenue"},
+      "create-event-block",
+      {
+        "id": "evt_1",
+        "event_type": "journal_entry_recorded",
+        "status": "classified",
+      },
     )
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
@@ -441,22 +435,29 @@ class TestJournalEntries:
       memo="Q1 revenue",
       line_items=self._LINE_ITEMS,
     )
-    assert result["entry_id"] == "je_1"
-    assert result["status"] == "draft"
+    assert result["event_type"] == "journal_entry_recorded"
     call_kwargs = mock_op.call_args.kwargs
     assert call_kwargs["graph_id"] == graph_id
     assert call_kwargs["idempotency_key"] is UNSET
     body = call_kwargs["body"]
-    assert body.memo == "Q1 revenue"
-    assert len(body.line_items) == 2
+    assert body.event_type == "journal_entry_recorded"
+    assert body.event_category.value == "adjustment"
+    assert body.source == "native"
+    assert body.apply_handlers is True
+    metadata = body.metadata.to_dict()
+    assert metadata["memo"] == "Q1 revenue"
+    assert metadata["posting_date"] == "2026-03-31"
+    assert len(metadata["line_items"]) == 2
+    assert metadata["type"] == "standard"
+    assert metadata["status"] == "draft"
 
-  @patch("robosystems_client.clients.ledger_client.op_create_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
   def test_create_journal_entry_idempotency_key_forwarded(
     self, mock_op, mock_config, graph_id
   ):
     envelope = _envelope(
-      "create-journal-entry",
-      {"entry_id": "je_2", "status": "draft", "memo": "retry-safe write"},
+      "create-event-block",
+      {"id": "evt_2", "event_type": "journal_entry_recorded"},
     )
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
@@ -469,11 +470,11 @@ class TestJournalEntries:
     )
     assert mock_op.call_args.kwargs["idempotency_key"] == "idem-key-abc123"
 
-  @patch("robosystems_client.clients.ledger_client.op_create_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
   def test_create_journal_entry_posted_status(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "create-journal-entry",
-      {"entry_id": "je_3", "status": "posted"},
+      "create-event-block",
+      {"id": "evt_3", "event_type": "journal_entry_recorded", "status": "fulfilled"},
     )
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
@@ -484,8 +485,8 @@ class TestJournalEntries:
       line_items=self._LINE_ITEMS,
       status="posted",
     )
-    body = mock_op.call_args.kwargs["body"]
-    assert body.status.value == "posted"
+    metadata = mock_op.call_args.kwargs["body"].metadata.to_dict()
+    assert metadata["status"] == "posted"
 
   @patch("robosystems_client.clients.ledger_client.op_update_journal_entry")
   def test_update_journal_entry(self, mock_op, mock_config, graph_id):
@@ -523,14 +524,14 @@ class TestJournalEntries:
     result = client.delete_journal_entry(graph_id, "je_1")
     assert result["entry_id"] == "je_1"
 
-  @patch("robosystems_client.clients.ledger_client.op_reverse_journal_entry")
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
   def test_reverse_journal_entry(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "reverse-journal-entry",
+      "create-event-block",
       {
-        "original_entry_id": "je_1",
-        "reversal_entry_id": "je_2",
-        "posting_date": "2026-04-01",
+        "id": "evt_1",
+        "event_type": "journal_entry_reversed",
+        "status": "fulfilled",
       },
     )
     mock_op.return_value = _mock_response(envelope)
@@ -538,10 +539,14 @@ class TestJournalEntries:
     result = client.reverse_journal_entry(
       graph_id, "je_1", posting_date="2026-04-01", memo="Reversal of Q1 entry"
     )
-    assert result["reversal_entry_id"] == "je_2"
+    assert result["event_type"] == "journal_entry_reversed"
     body = mock_op.call_args.kwargs["body"]
-    assert body.entry_id == "je_1"
-    assert body.memo == "Reversal of Q1 entry"
+    assert body.event_type == "journal_entry_reversed"
+    assert body.event_category.value == "adjustment"
+    metadata = body.metadata.to_dict()
+    assert metadata["entry_id"] == "je_1"
+    assert metadata["memo"] == "Reversal of Q1 entry"
+    assert metadata["posting_date"] == "2026-04-01"
 
 
 # ── Taxonomy / entity linking ───────────────────────────────────────────
@@ -1261,15 +1266,21 @@ class TestPeriodCloseAdditionalOps:
     assert body.reason == "Correction required"
     assert body.note == "Found error in entry"
 
-  @patch("robosystems_client.clients.ledger_client.op_create_manual_closing_entry")
-  def test_create_manual_closing_entry(self, mock_op, mock_config, graph_id):
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
+  def test_create_journal_entry_with_adjusting_type(
+    self, mock_op, mock_config, graph_id
+  ):
+    """create_manual_closing_entry was retired — create_journal_entry covers
+    the same shape (free-form line items + entry type) via the event-block
+    surface.
+    """
     envelope = _envelope(
-      "create-manual-closing-entry",
-      {"entry_id": "je_manual_1", "status": "draft", "total_amount": 25000},
+      "create-event-block",
+      {"id": "evt_manual_1", "event_type": "journal_entry_recorded"},
     )
     mock_op.return_value = _mock_response(envelope)
     client = LedgerClient(mock_config)
-    result = client.create_manual_closing_entry(
+    result = client.create_journal_entry(
       graph_id,
       posting_date="2026-03-31",
       memo="Manual accrual",
@@ -1277,15 +1288,16 @@ class TestPeriodCloseAdditionalOps:
         {"element_id": "elem_exp", "debit_amount": 25000, "credit_amount": 0},
         {"element_id": "elem_accrued", "debit_amount": 0, "credit_amount": 25000},
       ],
-      entry_type="adjusting",
+      type="adjusting",
     )
-    assert result["entry_id"] == "je_manual_1"
+    assert result["event_type"] == "journal_entry_recorded"
     body = mock_op.call_args.kwargs["body"]
-    assert body.memo == "Manual accrual"
-    assert len(body.line_items) == 2
-    assert body.line_items[0].element_id == "elem_exp"
-    assert body.line_items[0].debit_amount == 25000
-    assert body.entry_type.value == "adjusting"
+    metadata = body.metadata.to_dict()
+    assert metadata["memo"] == "Manual accrual"
+    assert len(metadata["line_items"]) == 2
+    assert metadata["line_items"][0]["element_id"] == "elem_exp"
+    assert metadata["line_items"][0]["debit_amount"] == 25000
+    assert metadata["type"] == "adjusting"
 
 
 # ── Variable-stripping behaviour in _query ────────────────────────────

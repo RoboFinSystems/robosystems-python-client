@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_transaction_request import CreateTransactionRequest
+from ...models.create_event_block_request import CreateEventBlockRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateTransactionRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/create-transaction".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/create-event-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,14 +103,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateTransactionRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Transaction
+  """Create Event Block
 
-   Create a standalone business-event Transaction without entries. Returns a transaction_id that can be
-  passed to create-journal-entry to attach one or more journal entries to this event. Use this when a
-  single event (invoice, payment, deposit) produces multiple entries over its lifecycle.
+   Persist a real-world business event. apply_handlers=False (default): capture-only,
+  status='captured'. apply_handlers=True: resolves an event_handler, fires the template, creates GL
+  entries atomically, status='classified'. Use preview-event-block to dry-run before committing.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,15 +118,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateTransactionRequest): Create a standalone business-event Transaction.
-
-          Use this when you want to record a real-world event (invoice, payment,
-          deposit, expense) first and then attach one or more journal entries to
-          it via `create-journal-entry` with the returned `transaction_id`.
-
-          `amount` is in minor currency units (cents). `type` is free-form but
-          common values are: invoice, payment, bill, expense, deposit, transfer,
-          journal_entry.
+      body (CreateEventBlockRequest): Write surface for a single business event.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -153,14 +145,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateTransactionRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Transaction
+  """Create Event Block
 
-   Create a standalone business-event Transaction without entries. Returns a transaction_id that can be
-  passed to create-journal-entry to attach one or more journal entries to this event. Use this when a
-  single event (invoice, payment, deposit) produces multiple entries over its lifecycle.
+   Persist a real-world business event. apply_handlers=False (default): capture-only,
+  status='captured'. apply_handlers=True: resolves an event_handler, fires the template, creates GL
+  entries atomically, status='classified'. Use preview-event-block to dry-run before committing.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -168,15 +160,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateTransactionRequest): Create a standalone business-event Transaction.
-
-          Use this when you want to record a real-world event (invoice, payment,
-          deposit, expense) first and then attach one or more journal entries to
-          it via `create-journal-entry` with the returned `transaction_id`.
-
-          `amount` is in minor currency units (cents). `type` is free-form but
-          common values are: invoice, payment, bill, expense, deposit, transfer,
-          journal_entry.
+      body (CreateEventBlockRequest): Write surface for a single business event.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -198,14 +182,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateTransactionRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Transaction
+  """Create Event Block
 
-   Create a standalone business-event Transaction without entries. Returns a transaction_id that can be
-  passed to create-journal-entry to attach one or more journal entries to this event. Use this when a
-  single event (invoice, payment, deposit) produces multiple entries over its lifecycle.
+   Persist a real-world business event. apply_handlers=False (default): capture-only,
+  status='captured'. apply_handlers=True: resolves an event_handler, fires the template, creates GL
+  entries atomically, status='classified'. Use preview-event-block to dry-run before committing.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -213,15 +197,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateTransactionRequest): Create a standalone business-event Transaction.
-
-          Use this when you want to record a real-world event (invoice, payment,
-          deposit, expense) first and then attach one or more journal entries to
-          it via `create-journal-entry` with the returned `transaction_id`.
-
-          `amount` is in minor currency units (cents). `type` is free-form but
-          common values are: invoice, payment, bill, expense, deposit, transfer,
-          journal_entry.
+      body (CreateEventBlockRequest): Write surface for a single business event.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -246,14 +222,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateTransactionRequest,
+  body: CreateEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Transaction
+  """Create Event Block
 
-   Create a standalone business-event Transaction without entries. Returns a transaction_id that can be
-  passed to create-journal-entry to attach one or more journal entries to this event. Use this when a
-  single event (invoice, payment, deposit) produces multiple entries over its lifecycle.
+   Persist a real-world business event. apply_handlers=False (default): capture-only,
+  status='captured'. apply_handlers=True: resolves an event_handler, fires the template, creates GL
+  entries atomically, status='classified'. Use preview-event-block to dry-run before committing.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -261,15 +237,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateTransactionRequest): Create a standalone business-event Transaction.
-
-          Use this when you want to record a real-world event (invoice, payment,
-          deposit, expense) first and then attach one or more journal entries to
-          it via `create-journal-entry` with the returned `transaction_id`.
-
-          `amount` is in minor currency units (cents). `type` is free-form but
-          common values are: invoice, payment, bill, expense, deposit, transfer,
-          journal_entry.
+      body (CreateEventBlockRequest): Write surface for a single business event.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

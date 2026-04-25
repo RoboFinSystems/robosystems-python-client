@@ -57,24 +57,33 @@ from .connection_response import ConnectionResponse
 from .connection_response_metadata import ConnectionResponseMetadata
 from .content_limits import ContentLimits
 from .copy_operation_limits import CopyOperationLimits
+from .create_agent_request import CreateAgentRequest
+from .create_agent_request_address_type_0 import CreateAgentRequestAddressType0
+from .create_agent_request_metadata import CreateAgentRequestMetadata
 from .create_api_key_request import CreateAPIKeyRequest
 from .create_api_key_response import CreateAPIKeyResponse
 from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
-from .create_closing_entry_operation import CreateClosingEntryOperation
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
+from .create_event_block_request import CreateEventBlockRequest
+from .create_event_block_request_event_category import (
+  CreateEventBlockRequestEventCategory,
+)
+from .create_event_block_request_metadata import CreateEventBlockRequestMetadata
+from .create_event_block_request_resource_type_type_0 import (
+  CreateEventBlockRequestResourceTypeType0,
+)
+from .create_event_handler_request import CreateEventHandlerRequest
+from .create_event_handler_request_match_metadata_expression_type_0 import (
+  CreateEventHandlerRequestMatchMetadataExpressionType0,
+)
+from .create_event_handler_request_metadata import CreateEventHandlerRequestMetadata
+from .create_event_handler_request_origin import CreateEventHandlerRequestOrigin
 from .create_graph_request import CreateGraphRequest
 from .create_information_block_request import CreateInformationBlockRequest
 from .create_information_block_request_payload import (
   CreateInformationBlockRequestPayload,
-)
-from .create_journal_entry_request import CreateJournalEntryRequest
-from .create_journal_entry_request_status import CreateJournalEntryRequestStatus
-from .create_journal_entry_request_type import CreateJournalEntryRequestType
-from .create_manual_closing_entry_request import CreateManualClosingEntryRequest
-from .create_manual_closing_entry_request_entry_type import (
-  CreateManualClosingEntryRequestEntryType,
 )
 from .create_mapping_association_operation import CreateMappingAssociationOperation
 from .create_mapping_association_operation_association_type import (
@@ -94,8 +103,6 @@ from .create_taxonomy_block_request_metadata import CreateTaxonomyBlockRequestMe
 from .create_taxonomy_block_request_taxonomy_type import (
   CreateTaxonomyBlockRequestTaxonomyType,
 )
-from .create_transaction_request import CreateTransactionRequest
-from .create_transaction_request_status import CreateTransactionRequestStatus
 from .create_view_request import CreateViewRequest
 from .credit_limits import CreditLimits
 from .credit_summary import CreditSummary
@@ -131,7 +138,6 @@ from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
 )
 from .detailed_transactions_response_summary import DetailedTransactionsResponseSummary
-from .dispose_schedule_request import DisposeScheduleRequest
 from .document_detail_response import DocumentDetailResponse
 from .document_list_item import DocumentListItem
 from .document_list_response import DocumentListResponse
@@ -208,7 +214,6 @@ from .list_table_files_response import ListTableFilesResponse
 from .live_financial_statement_request import LiveFinancialStatementRequest
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
-from .manual_line_item_request import ManualLineItemRequest
 from .materialize_op import MaterializeOp
 from .mcp_tool_call import MCPToolCall
 from .mcp_tool_call_arguments import MCPToolCallArguments
@@ -275,7 +280,6 @@ from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
 from .restore_backup_op import RestoreBackupOp
-from .reverse_journal_entry_request import ReverseJournalEntryRequest
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
 from .schema_export_response_schema_definition_type_0 import (
@@ -355,10 +359,30 @@ from .taxonomy_block_structure_request_structure_type import (
 from .tier_capacity import TierCapacity
 from .token_pricing import TokenPricing
 from .transaction_summary_response import TransactionSummaryResponse
-from .truncate_schedule_operation import TruncateScheduleOperation
+from .transaction_template import TransactionTemplate
+from .transaction_template_entry import TransactionTemplateEntry
+from .transaction_template_item import TransactionTemplateItem
+from .transaction_template_leg import TransactionTemplateLeg
 from .upcoming_invoice import UpcomingInvoice
+from .update_agent_request import UpdateAgentRequest
+from .update_agent_request_address_type_0 import UpdateAgentRequestAddressType0
+from .update_agent_request_metadata_patch import UpdateAgentRequestMetadataPatch
 from .update_api_key_request import UpdateAPIKeyRequest
 from .update_entity_request import UpdateEntityRequest
+from .update_event_block_request import UpdateEventBlockRequest
+from .update_event_block_request_metadata_patch import (
+  UpdateEventBlockRequestMetadataPatch,
+)
+from .update_event_block_request_transition_to_type_0 import (
+  UpdateEventBlockRequestTransitionToType0,
+)
+from .update_event_handler_request import UpdateEventHandlerRequest
+from .update_event_handler_request_match_metadata_expression_type_0 import (
+  UpdateEventHandlerRequestMatchMetadataExpressionType0,
+)
+from .update_event_handler_request_metadata_patch import (
+  UpdateEventHandlerRequestMetadataPatch,
+)
 from .update_file_response_updatefile import UpdateFileResponseUpdatefile
 from .update_information_block_request import UpdateInformationBlockRequest
 from .update_information_block_request_payload import (
@@ -438,21 +462,26 @@ __all__ = (
   "ConnectionResponseMetadata",
   "ContentLimits",
   "CopyOperationLimits",
+  "CreateAgentRequest",
+  "CreateAgentRequestAddressType0",
+  "CreateAgentRequestMetadata",
   "CreateAPIKeyRequest",
   "CreateAPIKeyResponse",
   "CreateCheckoutRequest",
   "CreateCheckoutRequestResourceConfig",
-  "CreateClosingEntryOperation",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
+  "CreateEventBlockRequest",
+  "CreateEventBlockRequestEventCategory",
+  "CreateEventBlockRequestMetadata",
+  "CreateEventBlockRequestResourceTypeType0",
+  "CreateEventHandlerRequest",
+  "CreateEventHandlerRequestMatchMetadataExpressionType0",
+  "CreateEventHandlerRequestMetadata",
+  "CreateEventHandlerRequestOrigin",
   "CreateGraphRequest",
   "CreateInformationBlockRequest",
   "CreateInformationBlockRequestPayload",
-  "CreateJournalEntryRequest",
-  "CreateJournalEntryRequestStatus",
-  "CreateJournalEntryRequestType",
-  "CreateManualClosingEntryRequest",
-  "CreateManualClosingEntryRequestEntryType",
   "CreateMappingAssociationOperation",
   "CreateMappingAssociationOperationAssociationType",
   "CreatePortfolioRequest",
@@ -467,8 +496,6 @@ __all__ = (
   "CreateTaxonomyBlockRequest",
   "CreateTaxonomyBlockRequestMetadata",
   "CreateTaxonomyBlockRequestTaxonomyType",
-  "CreateTransactionRequest",
-  "CreateTransactionRequestStatus",
   "CreateViewRequest",
   "CreditLimits",
   "CreditSummary",
@@ -498,7 +525,6 @@ __all__ = (
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
-  "DisposeScheduleRequest",
   "DocumentDetailResponse",
   "DocumentListItem",
   "DocumentListResponse",
@@ -565,7 +591,6 @@ __all__ = (
   "LiveFinancialStatementRequest",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
-  "ManualLineItemRequest",
   "MaterializeOp",
   "MCPToolCall",
   "MCPToolCallArguments",
@@ -626,7 +651,6 @@ __all__ = (
   "ResetPasswordValidateResponse",
   "ResponseMode",
   "RestoreBackupOp",
-  "ReverseJournalEntryRequest",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",
@@ -684,10 +708,22 @@ __all__ = (
   "TierCapacity",
   "TokenPricing",
   "TransactionSummaryResponse",
-  "TruncateScheduleOperation",
+  "TransactionTemplate",
+  "TransactionTemplateEntry",
+  "TransactionTemplateItem",
+  "TransactionTemplateLeg",
   "UpcomingInvoice",
+  "UpdateAgentRequest",
+  "UpdateAgentRequestAddressType0",
+  "UpdateAgentRequestMetadataPatch",
   "UpdateAPIKeyRequest",
   "UpdateEntityRequest",
+  "UpdateEventBlockRequest",
+  "UpdateEventBlockRequestMetadataPatch",
+  "UpdateEventBlockRequestTransitionToType0",
+  "UpdateEventHandlerRequest",
+  "UpdateEventHandlerRequestMatchMetadataExpressionType0",
+  "UpdateEventHandlerRequestMetadataPatch",
   "UpdateFileResponseUpdatefile",
   "UpdateInformationBlockRequest",
   "UpdateInformationBlockRequestPayload",

@@ -6,19 +6,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_manual_closing_entry_request import (
-  CreateManualClosingEntryRequest,
-)
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
+from ...models.update_event_handler_request import UpdateEventHandlerRequest
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateManualClosingEntryRequest,
+  body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -27,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/create-manual-closing-entry".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/update-event-handler".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -105,14 +103,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateManualClosingEntryRequest,
+  body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Manual Closing Entry
+  """Update Event Handler
 
-   Create a draft closing entry with manually specified line items — not tied to a schedule. Use for
-  one-off business events (asset disposal, correcting entry, impairment). Total debits must equal
-  total credits.
+   Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
+  approve an AI-suggested handler; approve=false to revoke approval. Only supplied fields are updated.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -120,7 +117,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateManualClosingEntryRequest):
+      body (UpdateEventHandlerRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -147,14 +144,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateManualClosingEntryRequest,
+  body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Manual Closing Entry
+  """Update Event Handler
 
-   Create a draft closing entry with manually specified line items — not tied to a schedule. Use for
-  one-off business events (asset disposal, correcting entry, impairment). Total debits must equal
-  total credits.
+   Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
+  approve an AI-suggested handler; approve=false to revoke approval. Only supplied fields are updated.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -162,7 +158,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateManualClosingEntryRequest):
+      body (UpdateEventHandlerRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -184,14 +180,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateManualClosingEntryRequest,
+  body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Manual Closing Entry
+  """Update Event Handler
 
-   Create a draft closing entry with manually specified line items — not tied to a schedule. Use for
-  one-off business events (asset disposal, correcting entry, impairment). Total debits must equal
-  total credits.
+   Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
+  approve an AI-suggested handler; approve=false to revoke approval. Only supplied fields are updated.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -199,7 +194,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateManualClosingEntryRequest):
+      body (UpdateEventHandlerRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -224,14 +219,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateManualClosingEntryRequest,
+  body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Manual Closing Entry
+  """Update Event Handler
 
-   Create a draft closing entry with manually specified line items — not tied to a schedule. Use for
-  one-off business events (asset disposal, correcting entry, impairment). Total debits must equal
-  total credits.
+   Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
+  approve an AI-suggested handler; approve=false to revoke approval. Only supplied fields are updated.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -239,7 +233,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateManualClosingEntryRequest):
+      body (UpdateEventHandlerRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

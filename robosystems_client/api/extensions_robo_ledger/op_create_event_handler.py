@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_closing_entry_operation import CreateClosingEntryOperation
+from ...models.create_event_handler_request import CreateEventHandlerRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateClosingEntryOperation,
+  body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/create-closing-entry".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/create-event-handler".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,14 +103,16 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateClosingEntryOperation,
+  body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Closing Entry
+  """Create Event Handler
 
-   Create a draft closing entry pre-populated from a schedule's facts for the given period. Idempotent
-  — safe to call repeatedly; the `outcome` field describes what happened (`created`, `unchanged`,
-  `regenerated`, `removed`, `skipped`).
+   Define a rule that fires GL transactions when a matching event block is created with
+  apply_handlers=True. Match criteria (event_type, event_category, match_source, match_agent_type,
+  etc.) act as AND-joined filters — null fields match anything. The highest-priority matching handler
+  wins. AI-suggested handlers (suggested_by='ai') require approval before they are eligible for
+  matching.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,11 +120,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateClosingEntryOperation): CQRS-shaped body for `POST /operations/create-closing-
-          entry`.
-
-          `structure_id` moves into the body so REST + MCP share a single body
-          type via the registrar.
+      body (CreateEventHandlerRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -149,14 +147,16 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateClosingEntryOperation,
+  body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Closing Entry
+  """Create Event Handler
 
-   Create a draft closing entry pre-populated from a schedule's facts for the given period. Idempotent
-  — safe to call repeatedly; the `outcome` field describes what happened (`created`, `unchanged`,
-  `regenerated`, `removed`, `skipped`).
+   Define a rule that fires GL transactions when a matching event block is created with
+  apply_handlers=True. Match criteria (event_type, event_category, match_source, match_agent_type,
+  etc.) act as AND-joined filters — null fields match anything. The highest-priority matching handler
+  wins. AI-suggested handlers (suggested_by='ai') require approval before they are eligible for
+  matching.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -164,11 +164,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateClosingEntryOperation): CQRS-shaped body for `POST /operations/create-closing-
-          entry`.
-
-          `structure_id` moves into the body so REST + MCP share a single body
-          type via the registrar.
+      body (CreateEventHandlerRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -190,14 +186,16 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateClosingEntryOperation,
+  body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Closing Entry
+  """Create Event Handler
 
-   Create a draft closing entry pre-populated from a schedule's facts for the given period. Idempotent
-  — safe to call repeatedly; the `outcome` field describes what happened (`created`, `unchanged`,
-  `regenerated`, `removed`, `skipped`).
+   Define a rule that fires GL transactions when a matching event block is created with
+  apply_handlers=True. Match criteria (event_type, event_category, match_source, match_agent_type,
+  etc.) act as AND-joined filters — null fields match anything. The highest-priority matching handler
+  wins. AI-suggested handlers (suggested_by='ai') require approval before they are eligible for
+  matching.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -205,11 +203,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateClosingEntryOperation): CQRS-shaped body for `POST /operations/create-closing-
-          entry`.
-
-          `structure_id` moves into the body so REST + MCP share a single body
-          type via the registrar.
+      body (CreateEventHandlerRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -234,14 +228,16 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateClosingEntryOperation,
+  body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Closing Entry
+  """Create Event Handler
 
-   Create a draft closing entry pre-populated from a schedule's facts for the given period. Idempotent
-  — safe to call repeatedly; the `outcome` field describes what happened (`created`, `unchanged`,
-  `regenerated`, `removed`, `skipped`).
+   Define a rule that fires GL transactions when a matching event block is created with
+  apply_handlers=True. Match criteria (event_type, event_category, match_source, match_agent_type,
+  etc.) act as AND-joined filters — null fields match anything. The highest-priority matching handler
+  wins. AI-suggested handlers (suggested_by='ai') require approval before they are eligible for
+  matching.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -249,11 +245,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateClosingEntryOperation): CQRS-shaped body for `POST /operations/create-closing-
-          entry`.
-
-          `structure_id` moves into the body so REST + MCP share a single body
-          type via the registrar.
+      body (CreateEventHandlerRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
