@@ -71,9 +71,14 @@ class OperationClient:
   def __init__(self, config: Dict[str, Any]):
     self.config = config
     self.base_url = config["base_url"]
-    self.headers = config.get("headers", {})
+    self.headers = dict(config.get("headers") or {})
     # Get token from config if passed by parent
     self.token = config.get("token")
+    # Propagate the API key into SSE headers — SSE requests bypass the
+    # AuthenticatedClient used by the generated REST methods, so the token
+    # must be injected explicitly or the /stream endpoint returns 401.
+    if self.token and "X-API-Key" not in self.headers:
+      self.headers["X-API-Key"] = self.token
     self.active_operations: Dict[str, SSEClient] = {}
     # Thread safety for operations tracking
     import threading
@@ -146,6 +151,14 @@ class OperationClient:
       result.completed_at = datetime.now()
       completed = True
 
+    def on_connection_error(err):
+      nonlocal completed, error
+      result.status = OperationStatus.FAILED
+      result.error = str(err)
+      result.completed_at = datetime.now()
+      error = err if isinstance(err, Exception) else Exception(str(err))
+      completed = True
+
     # Register event handlers
     sse_client.on(EventType.OPERATION_STARTED.value, on_operation_started)
     sse_client.on(EventType.OPERATION_PROGRESS.value, on_operation_progress)
@@ -153,6 +166,10 @@ class OperationClient:
     sse_client.on(EventType.OPERATION_COMPLETED.value, on_operation_completed)
     sse_client.on(EventType.OPERATION_ERROR.value, on_operation_error)
     sse_client.on(EventType.OPERATION_CANCELLED.value, on_operation_cancelled)
+    # Surface transport-level errors (bad status, dropped connection,
+    # max retries exceeded) so the wait loop terminates instead of hanging.
+    sse_client.on("error", on_connection_error)
+    sse_client.on("max_retries_exceeded", on_connection_error)
 
     # Connect and monitor
     try:
@@ -271,8 +288,10 @@ class AsyncOperationClient:
   def __init__(self, config: Dict[str, Any]):
     self.config = config
     self.base_url = config["base_url"]
-    self.headers = config.get("headers", {})
+    self.headers = dict(config.get("headers") or {})
     self.token = config.get("token")
+    if self.token and "X-API-Key" not in self.headers:
+      self.headers["X-API-Key"] = self.token
     self.active_operations: Dict[str, AsyncSSEClient] = {}
 
   async def monitor_operation(
@@ -335,6 +354,14 @@ class AsyncOperationClient:
       result.completed_at = datetime.now()
       completed = True
 
+    def on_connection_error(err):
+      nonlocal completed, error
+      result.status = OperationStatus.FAILED
+      result.error = str(err)
+      result.completed_at = datetime.now()
+      error = err if isinstance(err, Exception) else Exception(str(err))
+      completed = True
+
     # Register event handlers
     sse_client.on(EventType.OPERATION_STARTED.value, on_operation_started)
     sse_client.on(EventType.OPERATION_PROGRESS.value, on_operation_progress)
@@ -342,6 +369,10 @@ class AsyncOperationClient:
     sse_client.on(EventType.OPERATION_COMPLETED.value, on_operation_completed)
     sse_client.on(EventType.OPERATION_ERROR.value, on_operation_error)
     sse_client.on(EventType.OPERATION_CANCELLED.value, on_operation_cancelled)
+    # Surface transport-level errors (bad status, dropped connection,
+    # max retries exceeded) so the wait loop terminates instead of hanging.
+    sse_client.on("error", on_connection_error)
+    sse_client.on("max_retries_exceeded", on_connection_error)
 
     # Connect and monitor
     try:
