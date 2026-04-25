@@ -108,7 +108,7 @@ query ListLibraryElements(
     qname
     namespace
     name
-    classification
+    trait
     statementContext
     derivationRole
     balanceType
@@ -146,7 +146,7 @@ query SearchLibraryElements($query: String!, $source: String, $limit: Int! = 50)
     qname
     namespace
     name
-    classification
+    trait
     statementContext
     derivationRole
     balanceType
@@ -184,7 +184,7 @@ query GetLibraryElement($id: ID, $qname: String) {
     qname
     namespace
     name
-    classification
+    trait
     statementContext
     derivationRole
     balanceType
@@ -272,7 +272,7 @@ query GetLibraryElementArcs($id: ID!) {
       id
       qname
       name
-      classification
+      trait
       statementContext
       derivationRole
       source
@@ -294,7 +294,7 @@ query GetLibraryElementEquivalents($id: ID!) {
       id
       qname
       name
-      classification
+      trait
       statementContext
       derivationRole
       source
@@ -303,7 +303,7 @@ query GetLibraryElementEquivalents($id: ID!) {
       id
       qname
       name
-      classification
+      trait
       statementContext
       derivationRole
       source
