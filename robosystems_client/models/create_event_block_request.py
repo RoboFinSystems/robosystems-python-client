@@ -11,6 +11,9 @@ from dateutil.parser import isoparse
 from ..models.create_event_block_request_event_category import (
   CreateEventBlockRequestEventCategory,
 )
+from ..models.create_event_block_request_event_class import (
+  CreateEventBlockRequestEventClass,
+)
 from ..models.create_event_block_request_resource_type_type_0 import (
   CreateEventBlockRequestResourceTypeType0,
 )
@@ -31,10 +34,15 @@ class CreateEventBlockRequest:
 
   Attributes:
       event_type (str): Open vocabulary: 'invoice_issued' | 'contract_signed' | 'bank_transaction' | ...
-      event_category (CreateEventBlockRequestEventCategory): REA economic classification. One of: sales, purchase,
-          financing, payroll, treasury, adjustment, recognition, other.
+      event_category (CreateEventBlockRequestEventCategory): REA classification. Economic categories (sales, purchase,
+          financing, payroll, treasury, adjustment, recognition, other) require event_class='economic'. Support categories
+          (control, approval, reconciliation, inquiry) require event_class='support'. The DB CHECK rejects mismatched
+          pairings.
       occurred_at (datetime.datetime): When the event happened in the real world
       source (str): 'quickbooks' | 'xero' | 'plaid' | 'native' | 'scheduled' | ...
+      event_class (CreateEventBlockRequestEventClass | Unset): REA event class. 'economic' events change resources and
+          drive GL postings; 'support' events are audit-trail / value-chain primitives (typically captured with
+          apply_handlers=False). Default: CreateEventBlockRequestEventClass.ECONOMIC.
       agent_id (None | str | Unset): Counterparty agent id
       resource_type (CreateEventBlockRequestResourceTypeType0 | None | Unset): REA resource kind. One of: goods,
           services, money, right, obligation, information, labor.
@@ -48,6 +56,10 @@ class CreateEventBlockRequest:
       description (None | str | Unset):
       metadata (CreateEventBlockRequestMetadata | Unset): Event-type-specific payload
       dimension_ids (list[str] | Unset):
+      obligated_by_event_id (None | str | Unset): Forward-materialization link: the event that scheduled or obligated
+          this one (e.g. depreciation entries point at the asset_acquired event).
+      discharges_event_id (None | str | Unset): Settlement link: the obligation this event discharges (e.g.
+          cash_received pointing at the originating sale_invoiced).
       apply_handlers (bool | Unset): When True, resolves the event_type to a handler (Python registry first, then DSL)
           and fires it atomically with event creation. Default: False.
   """
@@ -56,6 +68,9 @@ class CreateEventBlockRequest:
   event_category: CreateEventBlockRequestEventCategory
   occurred_at: datetime.datetime
   source: str
+  event_class: CreateEventBlockRequestEventClass | Unset = (
+    CreateEventBlockRequestEventClass.ECONOMIC
+  )
   agent_id: None | str | Unset = UNSET
   resource_type: CreateEventBlockRequestResourceTypeType0 | None | Unset = UNSET
   resource_element_id: None | str | Unset = UNSET
@@ -67,6 +82,8 @@ class CreateEventBlockRequest:
   description: None | str | Unset = UNSET
   metadata: CreateEventBlockRequestMetadata | Unset = UNSET
   dimension_ids: list[str] | Unset = UNSET
+  obligated_by_event_id: None | str | Unset = UNSET
+  discharges_event_id: None | str | Unset = UNSET
   apply_handlers: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -78,6 +95,10 @@ class CreateEventBlockRequest:
     occurred_at = self.occurred_at.isoformat()
 
     source = self.source
+
+    event_class: str | Unset = UNSET
+    if not isinstance(self.event_class, Unset):
+      event_class = self.event_class.value
 
     agent_id: None | str | Unset
     if isinstance(self.agent_id, Unset):
@@ -141,6 +162,18 @@ class CreateEventBlockRequest:
     if not isinstance(self.dimension_ids, Unset):
       dimension_ids = self.dimension_ids
 
+    obligated_by_event_id: None | str | Unset
+    if isinstance(self.obligated_by_event_id, Unset):
+      obligated_by_event_id = UNSET
+    else:
+      obligated_by_event_id = self.obligated_by_event_id
+
+    discharges_event_id: None | str | Unset
+    if isinstance(self.discharges_event_id, Unset):
+      discharges_event_id = UNSET
+    else:
+      discharges_event_id = self.discharges_event_id
+
     apply_handlers = self.apply_handlers
 
     field_dict: dict[str, Any] = {}
@@ -153,6 +186,8 @@ class CreateEventBlockRequest:
         "source": source,
       }
     )
+    if event_class is not UNSET:
+      field_dict["event_class"] = event_class
     if agent_id is not UNSET:
       field_dict["agent_id"] = agent_id
     if resource_type is not UNSET:
@@ -175,6 +210,10 @@ class CreateEventBlockRequest:
       field_dict["metadata"] = metadata
     if dimension_ids is not UNSET:
       field_dict["dimension_ids"] = dimension_ids
+    if obligated_by_event_id is not UNSET:
+      field_dict["obligated_by_event_id"] = obligated_by_event_id
+    if discharges_event_id is not UNSET:
+      field_dict["discharges_event_id"] = discharges_event_id
     if apply_handlers is not UNSET:
       field_dict["apply_handlers"] = apply_handlers
 
@@ -194,6 +233,13 @@ class CreateEventBlockRequest:
     occurred_at = isoparse(d.pop("occurred_at"))
 
     source = d.pop("source")
+
+    _event_class = d.pop("event_class", UNSET)
+    event_class: CreateEventBlockRequestEventClass | Unset
+    if isinstance(_event_class, Unset):
+      event_class = UNSET
+    else:
+      event_class = CreateEventBlockRequestEventClass(_event_class)
 
     def _parse_agent_id(data: object) -> None | str | Unset:
       if data is None:
@@ -298,6 +344,28 @@ class CreateEventBlockRequest:
 
     dimension_ids = cast(list[str], d.pop("dimension_ids", UNSET))
 
+    def _parse_obligated_by_event_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    obligated_by_event_id = _parse_obligated_by_event_id(
+      d.pop("obligated_by_event_id", UNSET)
+    )
+
+    def _parse_discharges_event_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    discharges_event_id = _parse_discharges_event_id(
+      d.pop("discharges_event_id", UNSET)
+    )
+
     apply_handlers = d.pop("apply_handlers", UNSET)
 
     create_event_block_request = cls(
@@ -305,6 +373,7 @@ class CreateEventBlockRequest:
       event_category=event_category,
       occurred_at=occurred_at,
       source=source,
+      event_class=event_class,
       agent_id=agent_id,
       resource_type=resource_type,
       resource_element_id=resource_element_id,
@@ -316,6 +385,8 @@ class CreateEventBlockRequest:
       description=description,
       metadata=metadata,
       dimension_ids=dimension_ids,
+      obligated_by_event_id=obligated_by_event_id,
+      discharges_event_id=discharges_event_id,
       apply_handlers=apply_handlers,
     )
 

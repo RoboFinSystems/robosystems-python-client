@@ -31,16 +31,18 @@ class UpdateEventBlockRequest:
       Attributes:
           event_id (str):
           transition_to (None | Unset | UpdateEventBlockRequestTransitionToType0): Status transition. Valid moves depend
-              on current status: captured → committed | voided; classified → committed | pending | fulfilled | voided;
-              committed → pending | fulfilled | voided; pending → fulfilled | voided. Terminal states (fulfilled, voided,
-              superseded) accept no further transitions. Note: classified and fulfilled are usually set by handlers, not by
-              callers, but the transition is allowed for corrections.
+              on current status: captured → committed | voided | superseded; classified → committed | pending | fulfilled |
+              voided | superseded; committed → pending | fulfilled | voided | superseded; pending → fulfilled | voided |
+              superseded. Terminal states (fulfilled, voided, superseded) accept no further transitions. Note: classified and
+              fulfilled are usually set by handlers, not by callers, but the transition is allowed for corrections.
           superseded_by_id (None | str | Unset): New event id that replaces this one. Required when
               transition_to='superseded'.
           description (None | str | Unset):
           effective_at (datetime.datetime | None | Unset):
           metadata_patch (UpdateEventBlockRequestMetadataPatch | Unset): Key-value pairs merged into existing metadata
               (additive patch, not replace).
+          obligated_by_event_id (None | str | Unset): Set/update the forward-materialization link.
+          discharges_event_id (None | str | Unset): Set/update the settlement link.
   """
 
   event_id: str
@@ -49,6 +51,8 @@ class UpdateEventBlockRequest:
   description: None | str | Unset = UNSET
   effective_at: datetime.datetime | None | Unset = UNSET
   metadata_patch: UpdateEventBlockRequestMetadataPatch | Unset = UNSET
+  obligated_by_event_id: None | str | Unset = UNSET
+  discharges_event_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -86,6 +90,18 @@ class UpdateEventBlockRequest:
     if not isinstance(self.metadata_patch, Unset):
       metadata_patch = self.metadata_patch.to_dict()
 
+    obligated_by_event_id: None | str | Unset
+    if isinstance(self.obligated_by_event_id, Unset):
+      obligated_by_event_id = UNSET
+    else:
+      obligated_by_event_id = self.obligated_by_event_id
+
+    discharges_event_id: None | str | Unset
+    if isinstance(self.discharges_event_id, Unset):
+      discharges_event_id = UNSET
+    else:
+      discharges_event_id = self.discharges_event_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -103,6 +119,10 @@ class UpdateEventBlockRequest:
       field_dict["effective_at"] = effective_at
     if metadata_patch is not UNSET:
       field_dict["metadata_patch"] = metadata_patch
+    if obligated_by_event_id is not UNSET:
+      field_dict["obligated_by_event_id"] = obligated_by_event_id
+    if discharges_event_id is not UNSET:
+      field_dict["discharges_event_id"] = discharges_event_id
 
     return field_dict
 
@@ -176,6 +196,28 @@ class UpdateEventBlockRequest:
     else:
       metadata_patch = UpdateEventBlockRequestMetadataPatch.from_dict(_metadata_patch)
 
+    def _parse_obligated_by_event_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    obligated_by_event_id = _parse_obligated_by_event_id(
+      d.pop("obligated_by_event_id", UNSET)
+    )
+
+    def _parse_discharges_event_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    discharges_event_id = _parse_discharges_event_id(
+      d.pop("discharges_event_id", UNSET)
+    )
+
     update_event_block_request = cls(
       event_id=event_id,
       transition_to=transition_to,
@@ -183,6 +225,8 @@ class UpdateEventBlockRequest:
       description=description,
       effective_at=effective_at,
       metadata_patch=metadata_patch,
+      obligated_by_event_id=obligated_by_event_id,
+      discharges_event_id=discharges_event_id,
     )
 
     update_event_block_request.additional_properties = d

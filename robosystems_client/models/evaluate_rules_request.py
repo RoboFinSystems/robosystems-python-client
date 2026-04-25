@@ -15,7 +15,7 @@ T = TypeVar("T", bound="EvaluateRulesRequest")
 
 @_attrs_define
 class EvaluateRulesRequest:
-  """Request body for the ``evaluate-rules`` operation (Phase delta.3).
+  """Request body for the ``evaluate-rules`` operation.
 
   Runs every rule scoped to ``structure_id`` (plus element/association-
   scoped rules for the structure's atoms), binds ``$Variable`` references
@@ -29,7 +29,7 @@ class EvaluateRulesRequest:
       Attributes:
           structure_id (str):
           fact_set_id (None | str | Unset): Optional FactSet id to stamp on each VerificationResult row. Allows results to
-              be scoped to a specific period run when the FactSet table is populated (Phase zeta expand pass).
+              be scoped to a specific period run once write paths populate the FactSet table on every run.
           period_start (datetime.date | None | Unset): Lower bound on the fact period window (inclusive).
           period_end (datetime.date | None | Unset): Upper bound on the fact period window (inclusive).
   """

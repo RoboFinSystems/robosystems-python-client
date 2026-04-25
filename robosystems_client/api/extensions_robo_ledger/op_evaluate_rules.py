@@ -119,8 +119,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation (Phase
-          delta.3).
+      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
 
           Runs every rule scoped to ``structure_id`` (plus element/association-
           scoped rules for the structure's atoms), binds ``$Variable`` references
@@ -172,8 +171,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation (Phase
-          delta.3).
+      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
 
           Runs every rule scoped to ``structure_id`` (plus element/association-
           scoped rules for the structure's atoms), binds ``$Variable`` references
@@ -220,8 +218,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation (Phase
-          delta.3).
+      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
 
           Runs every rule scoped to ``structure_id`` (plus element/association-
           scoped rules for the structure's atoms), binds ``$Variable`` references
@@ -271,8 +268,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation (Phase
-          delta.3).
+      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
 
           Runs every rule scoped to ``structure_id`` (plus element/association-
           scoped rules for the structure's atoms), binds ``$Variable`` references
