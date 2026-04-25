@@ -25,7 +25,7 @@ class ElementUpdatePatch:
       qname (str): qname identifier of the element to update.
       name (None | str | Unset):
       description (None | str | Unset):
-      classification (None | str | Unset):
+      trait (None | str | Unset):
       balance_type (None | str | Unset):
       period_type (None | str | Unset):
       is_monetary (bool | None | Unset):
@@ -37,7 +37,7 @@ class ElementUpdatePatch:
   qname: str
   name: None | str | Unset = UNSET
   description: None | str | Unset = UNSET
-  classification: None | str | Unset = UNSET
+  trait: None | str | Unset = UNSET
   balance_type: None | str | Unset = UNSET
   period_type: None | str | Unset = UNSET
   is_monetary: bool | None | Unset = UNSET
@@ -65,11 +65,11 @@ class ElementUpdatePatch:
     else:
       description = self.description
 
-    classification: None | str | Unset
-    if isinstance(self.classification, Unset):
-      classification = UNSET
+    trait: None | str | Unset
+    if isinstance(self.trait, Unset):
+      trait = UNSET
     else:
-      classification = self.classification
+      trait = self.trait
 
     balance_type: None | str | Unset
     if isinstance(self.balance_type, Unset):
@@ -120,8 +120,8 @@ class ElementUpdatePatch:
       field_dict["name"] = name
     if description is not UNSET:
       field_dict["description"] = description
-    if classification is not UNSET:
-      field_dict["classification"] = classification
+    if trait is not UNSET:
+      field_dict["trait"] = trait
     if balance_type is not UNSET:
       field_dict["balance_type"] = balance_type
     if period_type is not UNSET:
@@ -164,14 +164,14 @@ class ElementUpdatePatch:
 
     description = _parse_description(d.pop("description", UNSET))
 
-    def _parse_classification(data: object) -> None | str | Unset:
+    def _parse_trait(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
       return cast(None | str | Unset, data)
 
-    classification = _parse_classification(d.pop("classification", UNSET))
+    trait = _parse_trait(d.pop("trait", UNSET))
 
     def _parse_balance_type(data: object) -> None | str | Unset:
       if data is None:
@@ -239,7 +239,7 @@ class ElementUpdatePatch:
       qname=qname,
       name=name,
       description=description,
-      classification=classification,
+      trait=trait,
       balance_type=balance_type,
       period_type=period_type,
       is_monetary=is_monetary,

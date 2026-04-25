@@ -31,8 +31,8 @@ class TaxonomyBlockElementRequest:
           qname (str): Envelope-local element identifier. Must be unique within the envelope's ``elements`` list. Used as
               the reference token for associations, rules, and update patches.
           name (str): Human-readable element name (e.g. 'Total Assets').
-          classification (None | str | Unset): FASB metamodel trait for the element. Required for ``chart_of_accounts``
-              blocks; optional for ``custom_ontology``.
+          trait (None | str | Unset): FASB metamodel trait for the element. Required for ``chart_of_accounts`` blocks;
+              optional for ``custom_ontology``.
           balance_type (None | str | Unset): 'debit' | 'credit' | null for non-monetary concepts.
           element_type (str | Unset): 'concept' | 'abstract' | 'axis' | 'member' | 'hypercube'. Default: 'concept'.
           period_type (None | str | Unset): 'instant' | 'duration' | null (null = derive from classification during
@@ -49,7 +49,7 @@ class TaxonomyBlockElementRequest:
 
   qname: str
   name: str
-  classification: None | str | Unset = UNSET
+  trait: None | str | Unset = UNSET
   balance_type: None | str | Unset = UNSET
   element_type: str | Unset = "concept"
   period_type: None | str | Unset = UNSET
@@ -66,11 +66,11 @@ class TaxonomyBlockElementRequest:
 
     name = self.name
 
-    classification: None | str | Unset
-    if isinstance(self.classification, Unset):
-      classification = UNSET
+    trait: None | str | Unset
+    if isinstance(self.trait, Unset):
+      trait = UNSET
     else:
-      classification = self.classification
+      trait = self.trait
 
     balance_type: None | str | Unset
     if isinstance(self.balance_type, Unset):
@@ -124,8 +124,8 @@ class TaxonomyBlockElementRequest:
         "name": name,
       }
     )
-    if classification is not UNSET:
-      field_dict["classification"] = classification
+    if trait is not UNSET:
+      field_dict["trait"] = trait
     if balance_type is not UNSET:
       field_dict["balance_type"] = balance_type
     if element_type is not UNSET:
@@ -158,14 +158,14 @@ class TaxonomyBlockElementRequest:
 
     name = d.pop("name")
 
-    def _parse_classification(data: object) -> None | str | Unset:
+    def _parse_trait(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
       return cast(None | str | Unset, data)
 
-    classification = _parse_classification(d.pop("classification", UNSET))
+    trait = _parse_trait(d.pop("trait", UNSET))
 
     def _parse_balance_type(data: object) -> None | str | Unset:
       if data is None:
@@ -235,7 +235,7 @@ class TaxonomyBlockElementRequest:
     taxonomy_block_element_request = cls(
       qname=qname,
       name=name,
-      classification=classification,
+      trait=trait,
       balance_type=balance_type,
       element_type=element_type,
       period_type=period_type,

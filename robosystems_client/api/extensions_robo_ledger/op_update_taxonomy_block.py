@@ -123,8 +123,8 @@ def sync_detailed(
 
           Top-level fields (name / description / version) apply to the taxonomy
           row itself. The delta lists mutate atoms incrementally — the validator
-          (Phase 2.3) re-runs the seven-phase check across the projected post-
-          update state before anything commits.
+          re-runs every create-time check across the projected post-update
+          state before anything commits.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,8 +171,8 @@ def sync(
 
           Top-level fields (name / description / version) apply to the taxonomy
           row itself. The delta lists mutate atoms incrementally — the validator
-          (Phase 2.3) re-runs the seven-phase check across the projected post-
-          update state before anything commits.
+          re-runs every create-time check across the projected post-update
+          state before anything commits.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -214,8 +214,8 @@ async def asyncio_detailed(
 
           Top-level fields (name / description / version) apply to the taxonomy
           row itself. The delta lists mutate atoms incrementally — the validator
-          (Phase 2.3) re-runs the seven-phase check across the projected post-
-          update state before anything commits.
+          re-runs every create-time check across the projected post-update
+          state before anything commits.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -260,8 +260,8 @@ async def asyncio(
 
           Top-level fields (name / description / version) apply to the taxonomy
           row itself. The delta lists mutate atoms incrementally — the validator
-          (Phase 2.3) re-runs the seven-phase check across the projected post-
-          update state before anything commits.
+          re-runs every create-time check across the projected post-update
+          state before anything commits.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

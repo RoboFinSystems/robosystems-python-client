@@ -70,6 +70,7 @@ from .create_event_block_request import CreateEventBlockRequest
 from .create_event_block_request_event_category import (
   CreateEventBlockRequestEventCategory,
 )
+from .create_event_block_request_event_class import CreateEventBlockRequestEventClass
 from .create_event_block_request_metadata import CreateEventBlockRequestMetadata
 from .create_event_block_request_resource_type_type_0 import (
   CreateEventBlockRequestResourceTypeType0,
@@ -473,6 +474,7 @@ __all__ = (
   "CreateConnectionRequestProvider",
   "CreateEventBlockRequest",
   "CreateEventBlockRequestEventCategory",
+  "CreateEventBlockRequestEventClass",
   "CreateEventBlockRequestMetadata",
   "CreateEventBlockRequestResourceTypeType0",
   "CreateEventHandlerRequest",

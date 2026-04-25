@@ -28,8 +28,8 @@ class UpdateTaxonomyBlockRequest:
 
   Top-level fields (name / description / version) apply to the taxonomy
   row itself. The delta lists mutate atoms incrementally — the validator
-  (Phase 2.3) re-runs the seven-phase check across the projected post-
-  update state before anything commits.
+  re-runs every create-time check across the projected post-update
+  state before anything commits.
 
       Attributes:
           taxonomy_id (str):

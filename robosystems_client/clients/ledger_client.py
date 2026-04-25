@@ -208,6 +208,9 @@ from ..models.create_event_block_request import CreateEventBlockRequest
 from ..models.create_event_block_request_event_category import (
   CreateEventBlockRequestEventCategory,
 )
+from ..models.create_event_block_request_event_class import (
+  CreateEventBlockRequestEventClass,
+)
 from ..models.create_event_block_request_metadata import (
   CreateEventBlockRequestMetadata,
 )
@@ -360,6 +363,9 @@ class LedgerClient:
     occurred_at: str,
     metadata: dict[str, Any],
     source: str = "native",
+    event_class: str = "economic",
+    obligated_by_event_id: str | None = None,
+    discharges_event_id: str | None = None,
   ) -> CreateEventBlockRequest:
     """Build a ``CreateEventBlockRequest`` for one of the registered handlers.
 
@@ -377,6 +383,13 @@ class LedgerClient:
       occurred_at=occurred_dt,
       apply_handlers=True,
       metadata=CreateEventBlockRequestMetadata.from_dict(metadata),
+      event_class=CreateEventBlockRequestEventClass(event_class),
+      obligated_by_event_id=obligated_by_event_id
+      if obligated_by_event_id is not None
+      else UNSET,
+      discharges_event_id=discharges_event_id
+      if discharges_event_id is not None
+      else UNSET,
     )
 
   # ── Entity ──────────────────────────────────────────────────────────
@@ -1069,6 +1082,30 @@ class LedgerClient:
 
   # ── Event blocks (generic preview + status transitions) ──────────────
 
+  def create_event_block(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+    idempotency_key: str | None = None,
+  ) -> dict[str, Any]:
+    """Create an event block directly from a dict.
+
+    Use for support-class events (``event_class='support'``) with categories
+    ``approval``, ``control``, ``reconciliation``, or ``inquiry``, which
+    are not covered by the specialized helpers. Economic events should
+    generally go through ``create_journal_entry``, ``create_closing_entry``,
+    etc., but this method works for those too.
+    """
+    request = CreateEventBlockRequest.from_dict(body)
+    response = op_create_event_block(
+      graph_id=graph_id,
+      body=request,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Create event block", response)
+    return envelope.result or {}
+
   def preview_event_block(
     self,
     graph_id: str,
@@ -1098,7 +1135,8 @@ class LedgerClient:
 
     Use for posting drafts (``classified`` → ``committed`` → ``fulfilled``),
     voiding, superseding (correction chains), or patching ``description``,
-    ``effective_at``, or ``metadata``.
+    ``effective_at``, ``metadata``, ``obligated_by_event_id``, or
+    ``discharges_event_id``.
     """
     request = UpdateEventBlockRequest.from_dict(body)
     response = op_update_event_block(
