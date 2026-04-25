@@ -109,6 +109,19 @@ class SSEClient:
       )
       self._response = self._context_manager.__enter__()
 
+      if self._response.status_code != 200:
+        status = self._response.status_code
+        body = self._response.read().decode("utf-8", errors="replace")[:500]
+        self._context_manager.__exit__(None, None, None)
+        self._context_manager = None
+        self._response = None
+        self.closed = True
+        self.emit(
+          "error",
+          RuntimeError(f"SSE connection failed: HTTP {status} {body}".strip()),
+        )
+        return
+
       self.reconnect_attempts = 0
       self.emit("connected", None)
 
@@ -335,6 +348,19 @@ class AsyncSSEClient:
         "GET", url, params=params, headers=headers
       )
       self._response = await self._context_manager.__aenter__()
+
+      if self._response.status_code != 200:
+        status = self._response.status_code
+        body = (await self._response.aread()).decode("utf-8", errors="replace")[:500]
+        await self._context_manager.__aexit__(None, None, None)
+        self._context_manager = None
+        self._response = None
+        self.closed = True
+        self.emit(
+          "error",
+          RuntimeError(f"SSE connection failed: HTTP {status} {body}".strip()),
+        )
+        return
 
       self.reconnect_attempts = 0
       self.emit("connected", None)

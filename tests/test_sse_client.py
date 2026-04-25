@@ -382,6 +382,7 @@ class TestConnect:
     mock_http_client = MagicMock()
     mock_context = MagicMock()
     mock_response = MagicMock()
+    mock_response.status_code = 200
     mock_response.iter_lines.return_value = iter(
       [
         "event: operation_completed",
@@ -401,6 +402,40 @@ class TestConnect:
 
     assert len(connected_events) == 1
     assert client.reconnect_attempts == 0
+
+  @patch("robosystems_client.clients.sse_client.httpx")
+  def test_connect_non_200_emits_error_without_retry(self, mock_httpx, sse_config):
+    """A non-200 status must emit an error and not enter the event loop.
+
+    Regression test: before this check, a 401 would cause connect() to fall
+    through to iter_lines() on an empty body, return silently, and leave any
+    caller spinning in a wait-for-completion loop forever.
+    """
+    mock_http_client = MagicMock()
+    mock_context = MagicMock()
+    mock_response = MagicMock()
+    mock_response.status_code = 401
+    mock_response.read.return_value = b'{"detail": "Not authenticated"}'
+    mock_context.__enter__ = Mock(return_value=mock_response)
+    mock_http_client.stream.return_value = mock_context
+    mock_httpx.Client.return_value = mock_http_client
+
+    client = SSEClient(sse_config)
+    errors: list = []
+    connected: list = []
+    client.on("error", lambda e: errors.append(e))
+    client.on("connected", lambda d: connected.append(d))
+
+    client.connect("op-123")
+
+    # Never entered the event loop / never emitted connected.
+    assert connected == []
+    # Error event surfaced with status and body.
+    assert len(errors) == 1
+    assert "HTTP 401" in str(errors[0])
+    # iter_lines was never called — we bailed before the read loop.
+    mock_response.iter_lines.assert_not_called()
+    assert client.closed is True
 
   @patch("robosystems_client.clients.sse_client.httpx")
   def test_connect_error_triggers_retry(self, mock_httpx, sse_config):

@@ -46,7 +46,7 @@ class CreateEventHandlerRequest:
       match_agent_type (None | str | Unset):
       match_resource_type (None | str | Unset):
       match_metadata_expression (CreateEventHandlerRequestMatchMetadataExpressionType0 | None | Unset): JSONPath-style
-          equality map, e.g. {"metadata.category": "payroll"}
+          equality map against event.metadata, e.g. {"category": "payroll"} or {"metadata.category": "payroll"}
       priority (int | Unset):  Default: 0.
       is_active (bool | Unset):  Default: True.
       origin (CreateEventHandlerRequestOrigin | Unset):  Default: CreateEventHandlerRequestOrigin.TENANT.
