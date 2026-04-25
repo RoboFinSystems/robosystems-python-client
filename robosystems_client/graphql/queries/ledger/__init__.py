@@ -137,7 +137,7 @@ query ListLedgerAccounts(
       code
       name
       description
-      classification
+      trait
       subClassification
       balanceType
       parentId
@@ -165,13 +165,13 @@ query GetLedgerAccountTree {
   accountTree {
     totalAccounts
     roots {
-      id code name classification accountType balanceType depth isActive
+      id code name trait accountType balanceType depth isActive
       children {
-        id code name classification accountType balanceType depth isActive
+        id code name trait accountType balanceType depth isActive
         children {
-          id code name classification accountType balanceType depth isActive
+          id code name trait accountType balanceType depth isActive
           children {
-            id code name classification accountType balanceType depth isActive
+            id code name trait accountType balanceType depth isActive
           }
         }
       }
@@ -205,7 +205,7 @@ query GetLedgerAccountRollups(
       reportingElementId
       reportingName
       reportingQname
-      classification
+      trait
       balanceType
       total
       accounts {
@@ -238,7 +238,7 @@ query GetLedgerTrialBalance($startDate: Date, $endDate: Date) {
       accountId
       accountCode
       accountName
-      classification
+      trait
       accountType
       totalDebits
       totalCredits
@@ -270,7 +270,7 @@ query GetLedgerMappedTrialBalance(
       reportingElementId
       qname
       reportingName
-      classification
+      trait
       balanceType
       totalDebits
       totalCredits
@@ -395,7 +395,7 @@ query ListLedgerElements(
   ) {
     elements {
       id code name description qname namespace
-      classification subClassification balanceType periodType
+      trait subClassification balanceType periodType
       isAbstract elementType source taxonomyId parentId depth
       isActive externalId externalSource
     }
@@ -413,7 +413,7 @@ def parse_elements(data: dict[str, Any]) -> dict[str, Any] | None:
 LIST_UNMAPPED_ELEMENTS_QUERY = """
 query ListLedgerUnmappedElements($mappingId: String) {
   unmappedElements(mappingId: $mappingId) {
-    id code name classification balanceType externalSource
+    id code name trait balanceType externalSource
     suggestedTargets { elementId qname name confidence }
   }
 }
@@ -697,7 +697,7 @@ query GetLedgerStatement($reportId: String!, $structureType: String!) {
     reportId structureId structureName structureType unmappedCount
     periods { start end label }
     rows {
-      elementId elementQname elementName classification
+      elementId elementQname elementName trait
       values isSubtotal depth
     }
     validation { passed checks failures warnings }
