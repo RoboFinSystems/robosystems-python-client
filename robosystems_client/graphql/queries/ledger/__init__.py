@@ -678,6 +678,7 @@ query GetLedgerReport($reportId: String!) {
     id name taxonomyId generationStatus periodType
     periodStart periodEnd comparative mappingId aiGenerated
     createdAt lastGenerated entityName
+    filingStatus filedAt filedBy supersedesId supersededById
     sourceGraphId sourceReportId sharedAt
     periods { start end label }
     structures { id name structureType }
@@ -689,6 +690,74 @@ query GetLedgerReport($reportId: String!) {
 def parse_report(data: dict[str, Any]) -> dict[str, Any] | None:
   r = data.get("report")
   return keys_to_snake(r) if r is not None else None
+
+
+# Report rehydrated as a package — Report metadata + N rendered
+# `InformationBlock` envelopes (one per attached FactSet). Drives the
+# `/reports/[id]` package viewer and replaces the per-statement
+# `getStatement(reportId, structureType)` round-trip flow.
+GET_REPORT_PACKAGE_QUERY = """
+query GetLedgerReportPackage($reportId: String!) {
+  reportPackage(reportId: $reportId) {
+    id name description taxonomyId
+    periodType periodStart periodEnd
+    generationStatus lastGenerated
+    filingStatus filedAt filedBy
+    supersedesId supersededById
+    sourceGraphId sourceReportId sharedAt
+    entityName aiGenerated createdAt createdBy
+    items {
+      factSetId structureId displayOrder
+      block {
+        id blockType name displayName category
+        taxonomyId taxonomyName
+        informationModel { conceptArrangement memberArrangement }
+        artifact { topic parentheticalNote template mechanics }
+        elements {
+          id qname name code elementType
+          isAbstract isMonetary balanceType periodType
+        }
+        connections {
+          id fromElementId toElementId associationType
+          arcrole orderValue weight
+        }
+        facts {
+          id elementId value periodStart periodEnd
+          periodType unit factScope factSetId
+        }
+        rules {
+          id ruleCategory rulePattern ruleExpression
+          ruleMessage ruleSeverity ruleOrigin
+        }
+        factSet {
+          id structureId periodStart periodEnd
+          factsetType entityId reportId
+        }
+        verificationResults {
+          id ruleId structureId factSetId status message
+          periodStart periodEnd evaluatedAt
+        }
+        view {
+          rendering {
+            rows {
+              elementId elementQname elementName classification
+              balanceType values isSubtotal depth
+            }
+            periods { start end label }
+            validation { passed checks failures warnings }
+            unmappedCount
+          }
+        }
+      }
+    }
+  }
+}
+""".strip()
+
+
+def parse_report_package(data: dict[str, Any]) -> dict[str, Any] | None:
+  pkg = data.get("reportPackage")
+  return keys_to_snake(pkg) if pkg is not None else None
 
 
 GET_STATEMENT_QUERY = """

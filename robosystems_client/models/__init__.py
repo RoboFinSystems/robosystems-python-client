@@ -159,6 +159,7 @@ from .error_response import ErrorResponse
 from .evaluate_rules_request import EvaluateRulesRequest
 from .file_info import FileInfo
 from .file_layer_status import FileLayerStatus
+from .file_report_request import FileReportRequest
 from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
 from .file_upload_response import FileUploadResponse
@@ -364,6 +365,7 @@ from .transaction_template import TransactionTemplate
 from .transaction_template_entry import TransactionTemplateEntry
 from .transaction_template_item import TransactionTemplateItem
 from .transaction_template_leg import TransactionTemplateLeg
+from .transition_filing_status_request import TransitionFilingStatusRequest
 from .upcoming_invoice import UpcomingInvoice
 from .update_agent_request import UpdateAgentRequest
 from .update_agent_request_address_type_0 import UpdateAgentRequestAddressType0
@@ -545,6 +547,7 @@ __all__ = (
   "EvaluateRulesRequest",
   "FileInfo",
   "FileLayerStatus",
+  "FileReportRequest",
   "FileStatusUpdate",
   "FileUploadRequest",
   "FileUploadResponse",
@@ -714,6 +717,7 @@ __all__ = (
   "TransactionTemplateEntry",
   "TransactionTemplateItem",
   "TransactionTemplateLeg",
+  "TransitionFilingStatusRequest",
   "UpcomingInvoice",
   "UpdateAgentRequest",
   "UpdateAgentRequestAddressType0",
