@@ -6,17 +6,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.delete_position_operation import DeletePositionOperation
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
+from ...models.update_portfolio_block_operation import UpdatePortfolioBlockOperation
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: DeletePositionOperation,
+  body: UpdatePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboinvestor/{graph_id}/operations/delete-position".format(
+    "url": "/extensions/roboinvestor/{graph_id}/operations/update-portfolio-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,13 +103,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeletePositionOperation,
+  body: UpdatePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Delete Position
+  """Update Portfolio Block
 
-   Soft-delete the position (`status='disposed'`). Historical holding records referencing it remain
-  valid.
+   Patch portfolio fields and apply position deltas (`add` / `update` / `dispose`) atomically. Partial
+  failures roll back.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -117,8 +117,12 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeletePositionOperation): CQRS body for `POST /operations/delete-position` (soft
-          delete).
+      body (UpdatePortfolioBlockOperation): CQRS body for `POST /operations/update-portfolio-
+          block`.
+
+          Carries an optional patch to portfolio fields and three position
+          delta lists (`add` / `update` / `dispose`). All apply atomically
+          with the portfolio patch — partial failures roll back.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -145,13 +149,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeletePositionOperation,
+  body: UpdatePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Delete Position
+  """Update Portfolio Block
 
-   Soft-delete the position (`status='disposed'`). Historical holding records referencing it remain
-  valid.
+   Patch portfolio fields and apply position deltas (`add` / `update` / `dispose`) atomically. Partial
+  failures roll back.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -159,8 +163,12 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeletePositionOperation): CQRS body for `POST /operations/delete-position` (soft
-          delete).
+      body (UpdatePortfolioBlockOperation): CQRS body for `POST /operations/update-portfolio-
+          block`.
+
+          Carries an optional patch to portfolio fields and three position
+          delta lists (`add` / `update` / `dispose`). All apply atomically
+          with the portfolio patch — partial failures roll back.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -182,13 +190,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeletePositionOperation,
+  body: UpdatePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Delete Position
+  """Update Portfolio Block
 
-   Soft-delete the position (`status='disposed'`). Historical holding records referencing it remain
-  valid.
+   Patch portfolio fields and apply position deltas (`add` / `update` / `dispose`) atomically. Partial
+  failures roll back.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -196,8 +204,12 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeletePositionOperation): CQRS body for `POST /operations/delete-position` (soft
-          delete).
+      body (UpdatePortfolioBlockOperation): CQRS body for `POST /operations/update-portfolio-
+          block`.
+
+          Carries an optional patch to portfolio fields and three position
+          delta lists (`add` / `update` / `dispose`). All apply atomically
+          with the portfolio patch — partial failures roll back.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -222,13 +234,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeletePositionOperation,
+  body: UpdatePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Delete Position
+  """Update Portfolio Block
 
-   Soft-delete the position (`status='disposed'`). Historical holding records referencing it remain
-  valid.
+   Patch portfolio fields and apply position deltas (`add` / `update` / `dispose`) atomically. Partial
+  failures roll back.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -236,8 +248,12 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeletePositionOperation): CQRS body for `POST /operations/delete-position` (soft
-          delete).
+      body (UpdatePortfolioBlockOperation): CQRS body for `POST /operations/update-portfolio-
+          block`.
+
+          Carries an optional patch to portfolio fields and three position
+          delta lists (`add` / `update` / `dispose`). All apply atomically
+          with the portfolio patch — partial failures roll back.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

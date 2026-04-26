@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_position_request import CreatePositionRequest
+from ...models.create_portfolio_block_request import CreatePortfolioBlockRequest
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreatePositionRequest,
+  body: CreatePortfolioBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboinvestor/{graph_id}/operations/create-position".format(
+    "url": "/extensions/roboinvestor/{graph_id}/operations/create-portfolio-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,14 +103,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreatePositionRequest,
+  body: CreatePortfolioBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Position
+  """Create Portfolio Block
 
-   Open a position in a security within a portfolio. One active position per (portfolio, security) pair
-  — creating a second active position returns 409. Dispose an existing position via `delete-position`
-  before opening a new one.
+   Create a portfolio with optional initial positions in a single atomic envelope. Each position
+  references an existing security; this operation never mints securities (use `create-security`).
+  Whole envelope validates before any write.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,7 +118,12 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreatePositionRequest):
+      body (CreatePortfolioBlockRequest): CQRS body for `POST /operations/create-portfolio-
+          block`.
+
+          Whole envelope validated before any DB write; the portfolio + initial
+          positions land in one transaction. Each `position` references an
+          existing `security_id` — the operation does not mint securities.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -145,14 +150,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreatePositionRequest,
+  body: CreatePortfolioBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Position
+  """Create Portfolio Block
 
-   Open a position in a security within a portfolio. One active position per (portfolio, security) pair
-  — creating a second active position returns 409. Dispose an existing position via `delete-position`
-  before opening a new one.
+   Create a portfolio with optional initial positions in a single atomic envelope. Each position
+  references an existing security; this operation never mints securities (use `create-security`).
+  Whole envelope validates before any write.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -160,7 +165,12 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreatePositionRequest):
+      body (CreatePortfolioBlockRequest): CQRS body for `POST /operations/create-portfolio-
+          block`.
+
+          Whole envelope validated before any DB write; the portfolio + initial
+          positions land in one transaction. Each `position` references an
+          existing `security_id` — the operation does not mint securities.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -182,14 +192,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreatePositionRequest,
+  body: CreatePortfolioBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Create Position
+  """Create Portfolio Block
 
-   Open a position in a security within a portfolio. One active position per (portfolio, security) pair
-  — creating a second active position returns 409. Dispose an existing position via `delete-position`
-  before opening a new one.
+   Create a portfolio with optional initial positions in a single atomic envelope. Each position
+  references an existing security; this operation never mints securities (use `create-security`).
+  Whole envelope validates before any write.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -197,7 +207,12 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreatePositionRequest):
+      body (CreatePortfolioBlockRequest): CQRS body for `POST /operations/create-portfolio-
+          block`.
+
+          Whole envelope validated before any DB write; the portfolio + initial
+          positions land in one transaction. Each `position` references an
+          existing `security_id` — the operation does not mint securities.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -222,14 +237,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreatePositionRequest,
+  body: CreatePortfolioBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Create Position
+  """Create Portfolio Block
 
-   Open a position in a security within a portfolio. One active position per (portfolio, security) pair
-  — creating a second active position returns 409. Dispose an existing position via `delete-position`
-  before opening a new one.
+   Create a portfolio with optional initial positions in a single atomic envelope. Each position
+  references an existing security; this operation never mints securities (use `create-security`).
+  Whole envelope validates before any write.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -237,7 +252,12 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreatePositionRequest):
+      body (CreatePortfolioBlockRequest): CQRS body for `POST /operations/create-portfolio-
+          block`.
+
+          Whole envelope validated before any DB write; the portfolio + initial
+          positions land in one transaction. Each `position` references an
+          existing `security_id` — the operation does not mint securities.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -1,8 +1,12 @@
 """Investor-domain GraphQL queries and parsers.
 
-All 7 investor reads from the `/extensions/{graph_id}/graphql` endpoint
+All investor reads from the `/extensions/{graph_id}/graphql` endpoint
 live here. Same pattern as the ledger queries: one constant + one
 `parse_*` helper per query, returning camelCase → snake_case dicts.
+
+Portfolio reads go through the `portfolioBlock` molecule envelope —
+the singular `portfolio(id)` field has been retired in favor of the
+block. List portfolios remains for collection scans.
 """
 
 from __future__ import annotations
@@ -33,20 +37,37 @@ def parse_portfolios(data: dict[str, Any]) -> dict[str, Any] | None:
   return keys_to_snake(p) if p is not None else None
 
 
-GET_PORTFOLIO_QUERY = """
-query GetInvestorPortfolio($portfolioId: String!) {
-  portfolio(portfolioId: $portfolioId) {
+# ── Portfolio Block (molecule envelope) ────────────────────────────────
+
+GET_PORTFOLIO_BLOCK_QUERY = """
+query GetInvestorPortfolioBlock($portfolioId: String!) {
+  portfolioBlock(portfolioId: $portfolioId) {
     id name description strategy
     inceptionDate baseCurrency
+    owner { id name sourceGraphId }
+    positions {
+      id quantity quantityType
+      costBasisDollars currentValueDollars
+      valuationDate valuationSource
+      acquisitionDate
+      status notes
+      security {
+        id name securityType securitySubtype
+        isActive sourceGraphId
+        issuer { id name sourceGraphId }
+      }
+    }
+    totalCostBasisDollars totalCurrentValueDollars
+    activePositionCount
     createdAt updatedAt
   }
 }
 """.strip()
 
 
-def parse_portfolio(data: dict[str, Any]) -> dict[str, Any] | None:
-  p = data.get("portfolio")
-  return keys_to_snake(p) if p is not None else None
+def parse_portfolio_block(data: dict[str, Any]) -> dict[str, Any] | None:
+  block = data.get("portfolioBlock")
+  return keys_to_snake(block) if block is not None else None
 
 
 # ── Securities ─────────────────────────────────────────────────────────

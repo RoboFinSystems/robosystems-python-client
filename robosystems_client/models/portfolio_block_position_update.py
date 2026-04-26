@@ -10,28 +10,28 @@ from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="UpdatePositionOperation")
+T = TypeVar("T", bound="PortfolioBlockPositionUpdate")
 
 
 @_attrs_define
-class UpdatePositionOperation:
-  """CQRS body for `POST /operations/update-position`.
+class PortfolioBlockPositionUpdate:
+  """Patch-by-id for an existing position in `update-portfolio-block`.
 
-  Attributes:
-      position_id (str): Target position ID.
-      quantity (float | None | Unset):
-      quantity_type (None | str | Unset):
-      cost_basis (int | None | Unset):
-      current_value (int | None | Unset):
-      valuation_date (datetime.date | None | Unset):
-      valuation_source (None | str | Unset):
-      acquisition_date (datetime.date | None | Unset):
-      disposition_date (datetime.date | None | Unset):
-      status (None | str | Unset):
-      notes (None | str | Unset):
+  Unset fields are ignored; `id` is the only required field.
+
+      Attributes:
+          id (str):
+          quantity (float | None | Unset):
+          quantity_type (None | str | Unset):
+          cost_basis (int | None | Unset):
+          current_value (int | None | Unset):
+          valuation_date (datetime.date | None | Unset):
+          valuation_source (None | str | Unset):
+          acquisition_date (datetime.date | None | Unset):
+          notes (None | str | Unset):
   """
 
-  position_id: str
+  id: str
   quantity: float | None | Unset = UNSET
   quantity_type: None | str | Unset = UNSET
   cost_basis: int | None | Unset = UNSET
@@ -39,13 +39,11 @@ class UpdatePositionOperation:
   valuation_date: datetime.date | None | Unset = UNSET
   valuation_source: None | str | Unset = UNSET
   acquisition_date: datetime.date | None | Unset = UNSET
-  disposition_date: datetime.date | None | Unset = UNSET
-  status: None | str | Unset = UNSET
   notes: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    position_id = self.position_id
+    id = self.id
 
     quantity: float | None | Unset
     if isinstance(self.quantity, Unset):
@@ -93,20 +91,6 @@ class UpdatePositionOperation:
     else:
       acquisition_date = self.acquisition_date
 
-    disposition_date: None | str | Unset
-    if isinstance(self.disposition_date, Unset):
-      disposition_date = UNSET
-    elif isinstance(self.disposition_date, datetime.date):
-      disposition_date = self.disposition_date.isoformat()
-    else:
-      disposition_date = self.disposition_date
-
-    status: None | str | Unset
-    if isinstance(self.status, Unset):
-      status = UNSET
-    else:
-      status = self.status
-
     notes: None | str | Unset
     if isinstance(self.notes, Unset):
       notes = UNSET
@@ -117,7 +101,7 @@ class UpdatePositionOperation:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "position_id": position_id,
+        "id": id,
       }
     )
     if quantity is not UNSET:
@@ -134,10 +118,6 @@ class UpdatePositionOperation:
       field_dict["valuation_source"] = valuation_source
     if acquisition_date is not UNSET:
       field_dict["acquisition_date"] = acquisition_date
-    if disposition_date is not UNSET:
-      field_dict["disposition_date"] = disposition_date
-    if status is not UNSET:
-      field_dict["status"] = status
     if notes is not UNSET:
       field_dict["notes"] = notes
 
@@ -146,7 +126,7 @@ class UpdatePositionOperation:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    position_id = d.pop("position_id")
+    id = d.pop("id")
 
     def _parse_quantity(data: object) -> float | None | Unset:
       if data is None:
@@ -227,32 +207,6 @@ class UpdatePositionOperation:
 
     acquisition_date = _parse_acquisition_date(d.pop("acquisition_date", UNSET))
 
-    def _parse_disposition_date(data: object) -> datetime.date | None | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, str):
-          raise TypeError()
-        disposition_date_type_0 = isoparse(data).date()
-
-        return disposition_date_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(datetime.date | None | Unset, data)
-
-    disposition_date = _parse_disposition_date(d.pop("disposition_date", UNSET))
-
-    def _parse_status(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    status = _parse_status(d.pop("status", UNSET))
-
     def _parse_notes(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -262,8 +216,8 @@ class UpdatePositionOperation:
 
     notes = _parse_notes(d.pop("notes", UNSET))
 
-    update_position_operation = cls(
-      position_id=position_id,
+    portfolio_block_position_update = cls(
+      id=id,
       quantity=quantity,
       quantity_type=quantity_type,
       cost_basis=cost_basis,
@@ -271,13 +225,11 @@ class UpdatePositionOperation:
       valuation_date=valuation_date,
       valuation_source=valuation_source,
       acquisition_date=acquisition_date,
-      disposition_date=disposition_date,
-      status=status,
       notes=notes,
     )
 
-    update_position_operation.additional_properties = d
-    return update_position_operation
+    portfolio_block_position_update.additional_properties = d
+    return portfolio_block_position_update
 
   @property
   def additional_keys(self) -> list[str]:

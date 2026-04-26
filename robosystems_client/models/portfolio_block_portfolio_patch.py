@@ -10,36 +10,31 @@ from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="UpdatePortfolioOperation")
+T = TypeVar("T", bound="PortfolioBlockPortfolioPatch")
 
 
 @_attrs_define
-class UpdatePortfolioOperation:
-  """CQRS body for `POST /operations/update-portfolio`.
+class PortfolioBlockPortfolioPatch:
+  """Patchable portfolio fields on `update-portfolio-block`. Unset fields ignored.
 
-  Folds `portfolio_id` into the payload so REST + MCP share one body
-  type via the registrar. Unset fields are ignored (partial update).
-
-      Attributes:
-          portfolio_id (str): Target portfolio ID.
-          name (None | str | Unset):
-          description (None | str | Unset):
-          strategy (None | str | Unset):
-          inception_date (datetime.date | None | Unset):
-          base_currency (None | str | Unset):
+  Attributes:
+      name (None | str | Unset):
+      description (None | str | Unset):
+      strategy (None | str | Unset):
+      inception_date (datetime.date | None | Unset):
+      base_currency (None | str | Unset):
+      entity_id (None | str | Unset):
   """
 
-  portfolio_id: str
   name: None | str | Unset = UNSET
   description: None | str | Unset = UNSET
   strategy: None | str | Unset = UNSET
   inception_date: datetime.date | None | Unset = UNSET
   base_currency: None | str | Unset = UNSET
+  entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    portfolio_id = self.portfolio_id
-
     name: None | str | Unset
     if isinstance(self.name, Unset):
       name = UNSET
@@ -72,13 +67,15 @@ class UpdatePortfolioOperation:
     else:
       base_currency = self.base_currency
 
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update(
-      {
-        "portfolio_id": portfolio_id,
-      }
-    )
+    field_dict.update({})
     if name is not UNSET:
       field_dict["name"] = name
     if description is not UNSET:
@@ -89,13 +86,14 @@ class UpdatePortfolioOperation:
       field_dict["inception_date"] = inception_date
     if base_currency is not UNSET:
       field_dict["base_currency"] = base_currency
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    portfolio_id = d.pop("portfolio_id")
 
     def _parse_name(data: object) -> None | str | Unset:
       if data is None:
@@ -150,17 +148,26 @@ class UpdatePortfolioOperation:
 
     base_currency = _parse_base_currency(d.pop("base_currency", UNSET))
 
-    update_portfolio_operation = cls(
-      portfolio_id=portfolio_id,
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
+    portfolio_block_portfolio_patch = cls(
       name=name,
       description=description,
       strategy=strategy,
       inception_date=inception_date,
       base_currency=base_currency,
+      entity_id=entity_id,
     )
 
-    update_portfolio_operation.additional_properties = d
-    return update_portfolio_operation
+    portfolio_block_portfolio_patch.additional_properties = d
+    return portfolio_block_portfolio_patch
 
   @property
   def additional_keys(self) -> list[str]:

@@ -10,27 +10,29 @@ from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="CreatePositionRequest")
+T = TypeVar("T", bound="PortfolioBlockPositionAdd")
 
 
 @_attrs_define
-class CreatePositionRequest:
-  """
-  Attributes:
-      portfolio_id (str):
-      security_id (str):
-      quantity (float):
-      quantity_type (str | Unset):  Default: 'shares'.
-      cost_basis (int | Unset):  Default: 0.
-      currency (str | Unset):  Default: 'USD'.
-      current_value (int | None | Unset):
-      valuation_date (datetime.date | None | Unset):
-      valuation_source (None | str | Unset):
-      acquisition_date (datetime.date | None | Unset):
-      notes (None | str | Unset):
+class PortfolioBlockPositionAdd:
+  """A single new position to mint inside a portfolio-block create/update.
+
+  References an existing security; this surface never creates securities
+  (Master Data CRUD owns that lifecycle).
+
+      Attributes:
+          security_id (str):
+          quantity (float):
+          quantity_type (str | Unset):  Default: 'shares'.
+          cost_basis (int | Unset):  Default: 0.
+          currency (str | Unset):  Default: 'USD'.
+          current_value (int | None | Unset):
+          valuation_date (datetime.date | None | Unset):
+          valuation_source (None | str | Unset):
+          acquisition_date (datetime.date | None | Unset):
+          notes (None | str | Unset):
   """
 
-  portfolio_id: str
   security_id: str
   quantity: float
   quantity_type: str | Unset = "shares"
@@ -44,8 +46,6 @@ class CreatePositionRequest:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    portfolio_id = self.portfolio_id
-
     security_id = self.security_id
 
     quantity = self.quantity
@@ -94,7 +94,6 @@ class CreatePositionRequest:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "portfolio_id": portfolio_id,
         "security_id": security_id,
         "quantity": quantity,
       }
@@ -121,8 +120,6 @@ class CreatePositionRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    portfolio_id = d.pop("portfolio_id")
-
     security_id = d.pop("security_id")
 
     quantity = d.pop("quantity")
@@ -194,8 +191,7 @@ class CreatePositionRequest:
 
     notes = _parse_notes(d.pop("notes", UNSET))
 
-    create_position_request = cls(
-      portfolio_id=portfolio_id,
+    portfolio_block_position_add = cls(
       security_id=security_id,
       quantity=quantity,
       quantity_type=quantity_type,
@@ -208,8 +204,8 @@ class CreatePositionRequest:
       notes=notes,
     )
 
-    create_position_request.additional_properties = d
-    return create_position_request
+    portfolio_block_position_add.additional_properties = d
+    return portfolio_block_position_add
 
   @property
   def additional_keys(self) -> list[str]:
