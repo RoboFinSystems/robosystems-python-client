@@ -90,8 +90,7 @@ from .create_mapping_association_operation import CreateMappingAssociationOperat
 from .create_mapping_association_operation_association_type import (
   CreateMappingAssociationOperationAssociationType,
 )
-from .create_portfolio_request import CreatePortfolioRequest
-from .create_position_request import CreatePositionRequest
+from .create_portfolio_block_request import CreatePortfolioBlockRequest
 from .create_publish_list_request import CreatePublishListRequest
 from .create_report_request import CreateReportRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
@@ -127,8 +126,7 @@ from .delete_information_block_request_payload import (
 )
 from .delete_journal_entry_request import DeleteJournalEntryRequest
 from .delete_mapping_association_operation import DeleteMappingAssociationOperation
-from .delete_portfolio_operation import DeletePortfolioOperation
-from .delete_position_operation import DeletePositionOperation
+from .delete_portfolio_block_operation import DeletePortfolioBlockOperation
 from .delete_publish_list_operation import DeletePublishListOperation
 from .delete_report_operation import DeleteReportOperation
 from .delete_security_operation import DeleteSecurityOperation
@@ -266,6 +264,12 @@ from .performance_insights_operation_stats import PerformanceInsightsOperationSt
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
 from .period_spec import PeriodSpec
 from .portal_session_response import PortalSessionResponse
+from .portfolio_block_portfolio_fields import PortfolioBlockPortfolioFields
+from .portfolio_block_portfolio_patch import PortfolioBlockPortfolioPatch
+from .portfolio_block_position_add import PortfolioBlockPositionAdd
+from .portfolio_block_position_dispose import PortfolioBlockPositionDispose
+from .portfolio_block_position_update import PortfolioBlockPositionUpdate
+from .portfolio_block_positions import PortfolioBlockPositions
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
@@ -396,8 +400,7 @@ from .update_journal_entry_request_type_type_0 import UpdateJournalEntryRequestT
 from .update_member_role_request import UpdateMemberRoleRequest
 from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
-from .update_portfolio_operation import UpdatePortfolioOperation
-from .update_position_operation import UpdatePositionOperation
+from .update_portfolio_block_operation import UpdatePortfolioBlockOperation
 from .update_publish_list_operation import UpdatePublishListOperation
 from .update_security_operation import UpdateSecurityOperation
 from .update_security_operation_terms_type_0 import UpdateSecurityOperationTermsType0
@@ -488,8 +491,7 @@ __all__ = (
   "CreateInformationBlockRequestPayload",
   "CreateMappingAssociationOperation",
   "CreateMappingAssociationOperationAssociationType",
-  "CreatePortfolioRequest",
-  "CreatePositionRequest",
+  "CreatePortfolioBlockRequest",
   "CreatePublishListRequest",
   "CreateReportRequest",
   "CreateRepositorySubscriptionRequest",
@@ -519,8 +521,7 @@ __all__ = (
   "DeleteInformationBlockRequestPayload",
   "DeleteJournalEntryRequest",
   "DeleteMappingAssociationOperation",
-  "DeletePortfolioOperation",
-  "DeletePositionOperation",
+  "DeletePortfolioBlockOperation",
   "DeletePublishListOperation",
   "DeleteReportOperation",
   "DeleteSecurityOperation",
@@ -642,6 +643,12 @@ __all__ = (
   "PerformanceInsightsSlowQueriesItem",
   "PeriodSpec",
   "PortalSessionResponse",
+  "PortfolioBlockPortfolioFields",
+  "PortfolioBlockPortfolioPatch",
+  "PortfolioBlockPositionAdd",
+  "PortfolioBlockPositionDispose",
+  "PortfolioBlockPositions",
+  "PortfolioBlockPositionUpdate",
   "QueryLimits",
   "QuickBooksConnectionConfig",
   "RateLimits",
@@ -738,8 +745,7 @@ __all__ = (
   "UpdateMemberRoleRequest",
   "UpdateOrgRequest",
   "UpdatePasswordRequest",
-  "UpdatePortfolioOperation",
-  "UpdatePositionOperation",
+  "UpdatePortfolioBlockOperation",
   "UpdatePublishListOperation",
   "UpdateSecurityOperation",
   "UpdateSecurityOperationTermsType0",

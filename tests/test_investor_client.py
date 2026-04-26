@@ -41,6 +41,45 @@ def _mock_response(
   return resp
 
 
+_SAMPLE_BLOCK_RESULT = {
+  "id": "port_new",
+  "name": "New Fund",
+  "description": None,
+  "strategy": "growth",
+  "inception_date": "2026-01-01",
+  "base_currency": "USD",
+  "owner": {"id": "ent_owner", "name": "Family Office", "source_graph_id": None},
+  "positions": [
+    {
+      "id": "pos_new",
+      "quantity": 100,
+      "quantity_type": "shares",
+      "cost_basis_dollars": 1000,
+      "current_value_dollars": None,
+      "valuation_date": None,
+      "valuation_source": None,
+      "acquisition_date": "2026-01-01",
+      "status": "active",
+      "notes": None,
+      "security": {
+        "id": "sec_1",
+        "name": "Series A Preferred",
+        "security_type": "common_stock",
+        "security_subtype": None,
+        "is_active": True,
+        "issuer": {"id": "ent_issuer", "name": "ACME", "source_graph_id": "kg_acme"},
+        "source_graph_id": "kg_acme",
+      },
+    }
+  ],
+  "total_cost_basis_dollars": 1000,
+  "total_current_value_dollars": None,
+  "active_position_count": 1,
+  "created_at": "2026-04-14T00:00:00Z",
+  "updated_at": "2026-04-14T00:00:00Z",
+}
+
+
 @pytest.mark.unit
 class TestInvestorClientInit:
   def test_initialization(self, mock_config):
@@ -87,81 +126,107 @@ class TestPortfolioReads:
     assert result["portfolios"][0]["base_currency"] == "USD"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
-  def test_get_portfolio_missing(self, mock_execute, mock_config, graph_id):
-    mock_execute.return_value = {"portfolio": None}
+  def test_get_portfolio_block_missing(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {"portfolioBlock": None}
     client = InvestorClient(mock_config)
-    assert client.get_portfolio(graph_id, "port_x") is None
+    assert client.get_portfolio_block(graph_id, "port_x") is None
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_portfolio_block_found(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "portfolioBlock": {
+        "id": "port_1",
+        "name": "Seed Fund I",
+        "description": None,
+        "strategy": "early-stage",
+        "inceptionDate": "2024-01-01",
+        "baseCurrency": "USD",
+        "owner": {"id": "ent_owner", "name": "FO", "sourceGraphId": None},
+        "positions": [],
+        "totalCostBasisDollars": 0,
+        "totalCurrentValueDollars": None,
+        "activePositionCount": 0,
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-01-01T00:00:00Z",
+      }
+    }
+    client = InvestorClient(mock_config)
+    result = client.get_portfolio_block(graph_id, "port_1")
+    assert result is not None
+    assert result["id"] == "port_1"
+    assert result["owner"]["name"] == "FO"
+    assert result["positions"] == []
 
 
-# ── Portfolio writes ───────────────────────────────────────────────────
+# ── Portfolio block writes ─────────────────────────────────────────────
 
 
 @pytest.mark.unit
-class TestPortfolioWrites:
-  @patch("robosystems_client.clients.investor_client.op_create_portfolio")
-  def test_create_portfolio(self, mock_op, mock_config, graph_id):
-    envelope = _envelope(
-      "create-portfolio",
-      {"id": "port_new", "name": "New Fund", "base_currency": "USD"},
-    )
+class TestPortfolioBlockWrites:
+  @patch("robosystems_client.clients.investor_client.op_create_portfolio_block")
+  def test_create_portfolio_block(self, mock_op, mock_config, graph_id):
+    envelope = _envelope("create-portfolio-block", _SAMPLE_BLOCK_RESULT)
     mock_op.return_value = _mock_response(envelope)
     client = InvestorClient(mock_config)
-    result = client.create_portfolio(graph_id, {"name": "New Fund"})
+    result = client.create_portfolio_block(
+      graph_id,
+      {
+        "portfolio": {"name": "New Fund", "strategy": "growth"},
+        "positions": [{"security_id": "sec_1", "quantity": 100, "cost_basis": 100000}],
+      },
+    )
     assert result["id"] == "port_new"
+    assert result["owner"]["name"] == "Family Office"
+    assert len(result["positions"]) == 1
 
-  @patch("robosystems_client.clients.investor_client.op_update_portfolio")
-  def test_update_portfolio_merges_id_into_body(self, mock_op, mock_config, graph_id):
+  @patch("robosystems_client.clients.investor_client.op_update_portfolio_block")
+  def test_update_portfolio_block_merges_id(self, mock_op, mock_config, graph_id):
     envelope = _envelope(
-      "update-portfolio",
-      {"id": "port_1", "name": "Renamed"},
+      "update-portfolio-block", {**_SAMPLE_BLOCK_RESULT, "name": "Renamed Fund"}
     )
     mock_op.return_value = _mock_response(envelope)
     client = InvestorClient(mock_config)
-    result = client.update_portfolio(graph_id, "port_1", {"name": "Renamed"})
-    assert result["name"] == "Renamed"
+    result = client.update_portfolio_block(
+      graph_id,
+      "port_1",
+      {
+        "portfolio": {"name": "Renamed Fund"},
+        "positions": {"dispose": [{"id": "pos_old"}]},
+      },
+    )
+    assert result["name"] == "Renamed Fund"
     body = mock_op.call_args.kwargs["body"]
     assert body.portfolio_id == "port_1"
-    assert body.name == "Renamed"
 
-  @patch("robosystems_client.clients.investor_client.op_delete_portfolio")
-  def test_delete_portfolio(self, mock_op, mock_config, graph_id):
-    envelope = _envelope("delete-portfolio", {"deleted": True})
+  @patch("robosystems_client.clients.investor_client.op_delete_portfolio_block")
+  def test_delete_portfolio_block_default_no_confirm(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope("delete-portfolio-block", {"deleted": True})
     mock_op.return_value = _mock_response(envelope)
     client = InvestorClient(mock_config)
-    result = client.delete_portfolio(graph_id, "port_1")
+    result = client.delete_portfolio_block(graph_id, "port_1")
     assert result["deleted"] is True
+    body = mock_op.call_args.kwargs["body"]
+    assert body.confirm_active_positions is False
 
-  @patch("robosystems_client.clients.investor_client.op_delete_portfolio")
-  def test_delete_portfolio_returns_server_response_when_present(
-    self, mock_op, mock_config, graph_id
-  ):
-    """The facade must not overwrite a non-empty server response with the stub.
-
-    Before the ``is not None`` fix, an empty ``{}`` from the server would
-    trip the ``or {...}`` fallback — but so would any falsy value. This
-    exercises the happy path: a real response with fields carries through.
-    """
-    envelope = _envelope(
-      "delete-portfolio",
-      {"id": "port_1", "deleted_at": "2026-04-14T12:00:00Z"},
-    )
+  @patch("robosystems_client.clients.investor_client.op_delete_portfolio_block")
+  def test_delete_portfolio_block_confirm_flag(self, mock_op, mock_config, graph_id):
+    envelope = _envelope("delete-portfolio-block", {"deleted": True})
     mock_op.return_value = _mock_response(envelope)
     client = InvestorClient(mock_config)
-    result = client.delete_portfolio(graph_id, "port_1")
-    assert result["id"] == "port_1"
-    assert result["deleted_at"] == "2026-04-14T12:00:00Z"
-    assert "deleted" not in result  # stub didn't fire
+    client.delete_portfolio_block(graph_id, "port_1", confirm_active_positions=True)
+    body = mock_op.call_args.kwargs["body"]
+    assert body.confirm_active_positions is True
 
-  @patch("robosystems_client.clients.investor_client.op_delete_portfolio")
-  def test_delete_portfolio_stubs_when_result_is_none(
+  @patch("robosystems_client.clients.investor_client.op_delete_portfolio_block")
+  def test_delete_portfolio_block_stubs_when_result_is_none(
     self, mock_op, mock_config, graph_id
   ):
-    """When the server returns an envelope with ``result: null`` the facade
-    substitutes a ``{"deleted": True}`` stub so callers get a dict."""
-    envelope = _envelope("delete-portfolio", None)
+    envelope = _envelope("delete-portfolio-block", None)
     mock_op.return_value = _mock_response(envelope)
     client = InvestorClient(mock_config)
-    result = client.delete_portfolio(graph_id, "port_1")
+    result = client.delete_portfolio_block(graph_id, "port_1")
     assert result == {"deleted": True}
 
 
@@ -228,7 +293,7 @@ class TestSecurities:
     assert result["id"] == "sec_new"
 
 
-# ── Positions ──────────────────────────────────────────────────────────
+# ── Positions (read-only) ──────────────────────────────────────────────
 
 
 @pytest.mark.unit
@@ -269,20 +334,6 @@ class TestPositions:
     assert result is not None
     assert len(result["positions"]) == 1
     assert result["positions"][0]["cost_basis_dollars"] == 1000
-
-  @patch("robosystems_client.clients.investor_client.op_create_position")
-  def test_create_position(self, mock_op, mock_config, graph_id):
-    envelope = _envelope(
-      "create-position",
-      {"id": "pos_new", "portfolio_id": "port_1", "security_id": "sec_1"},
-    )
-    mock_op.return_value = _mock_response(envelope)
-    client = InvestorClient(mock_config)
-    result = client.create_position(
-      graph_id,
-      {"portfolio_id": "port_1", "security_id": "sec_1", "quantity": 100},
-    )
-    assert result["id"] == "pos_new"
 
 
 # ── Holdings ───────────────────────────────────────────────────────────

@@ -17,29 +17,20 @@ from __future__ import annotations
 from http import HTTPStatus
 from typing import Any
 
-from ..api.extensions_robo_investor.op_create_portfolio import (
-  sync_detailed as op_create_portfolio,
-)
-from ..api.extensions_robo_investor.op_create_position import (
-  sync_detailed as op_create_position,
+from ..api.extensions_robo_investor.op_create_portfolio_block import (
+  sync_detailed as op_create_portfolio_block,
 )
 from ..api.extensions_robo_investor.op_create_security import (
   sync_detailed as op_create_security,
 )
-from ..api.extensions_robo_investor.op_delete_portfolio import (
-  sync_detailed as op_delete_portfolio,
-)
-from ..api.extensions_robo_investor.op_delete_position import (
-  sync_detailed as op_delete_position,
+from ..api.extensions_robo_investor.op_delete_portfolio_block import (
+  sync_detailed as op_delete_portfolio_block,
 )
 from ..api.extensions_robo_investor.op_delete_security import (
   sync_detailed as op_delete_security,
 )
-from ..api.extensions_robo_investor.op_update_portfolio import (
-  sync_detailed as op_update_portfolio,
-)
-from ..api.extensions_robo_investor.op_update_position import (
-  sync_detailed as op_update_position,
+from ..api.extensions_robo_investor.op_update_portfolio_block import (
+  sync_detailed as op_update_portfolio_block,
 )
 from ..api.extensions_robo_investor.op_update_security import (
   sync_detailed as op_update_security,
@@ -48,29 +39,26 @@ from ..client import AuthenticatedClient
 from ..graphql.client import GraphQLClient, strip_none_vars
 from ..graphql.queries.investor import (
   GET_HOLDINGS_QUERY,
-  GET_PORTFOLIO_QUERY,
+  GET_PORTFOLIO_BLOCK_QUERY,
   GET_POSITION_QUERY,
   GET_SECURITY_QUERY,
   LIST_PORTFOLIOS_QUERY,
   LIST_POSITIONS_QUERY,
   LIST_SECURITIES_QUERY,
   parse_holdings,
-  parse_portfolio,
+  parse_portfolio_block,
   parse_portfolios,
   parse_position,
   parse_positions,
   parse_securities,
   parse_security,
 )
-from ..models.create_portfolio_request import CreatePortfolioRequest
-from ..models.create_position_request import CreatePositionRequest
+from ..models.create_portfolio_block_request import CreatePortfolioBlockRequest
 from ..models.create_security_request import CreateSecurityRequest
-from ..models.delete_portfolio_operation import DeletePortfolioOperation
-from ..models.delete_position_operation import DeletePositionOperation
+from ..models.delete_portfolio_block_operation import DeletePortfolioBlockOperation
 from ..models.delete_security_operation import DeleteSecurityOperation
 from ..models.operation_envelope import OperationEnvelope
-from ..models.update_portfolio_operation import UpdatePortfolioOperation
-from ..models.update_position_operation import UpdatePositionOperation
+from ..models.update_portfolio_block_operation import UpdatePortfolioBlockOperation
 from ..models.update_security_operation import UpdateSecurityOperation
 
 
@@ -140,42 +128,56 @@ class InvestorClient:
     )
     return parse_portfolios(data)
 
-  def get_portfolio(self, graph_id: str, portfolio_id: str) -> dict[str, Any] | None:
-    """Get a single portfolio by id. Returns None if it doesn't exist."""
-    data = self._query(graph_id, GET_PORTFOLIO_QUERY, {"portfolioId": portfolio_id})
-    return parse_portfolio(data)
+  def get_portfolio_block(
+    self, graph_id: str, portfolio_id: str
+  ) -> dict[str, Any] | None:
+    """Get the full portfolio block (portfolio + positions + securities). Returns None if not found."""
+    data = self._query(
+      graph_id, GET_PORTFOLIO_BLOCK_QUERY, {"portfolioId": portfolio_id}
+    )
+    return parse_portfolio_block(data)
 
-  def create_portfolio(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Create a new portfolio. Returns the created portfolio."""
-    request = CreatePortfolioRequest.from_dict(body)
-    response = op_create_portfolio(
+  def create_portfolio_block(
+    self, graph_id: str, body: dict[str, Any]
+  ) -> dict[str, Any]:
+    """Create a portfolio with optional initial positions in one atomic operation."""
+    request = CreatePortfolioBlockRequest.from_dict(body)
+    response = op_create_portfolio_block(
       graph_id=graph_id, body=request, client=self._get_client()
     )
-    envelope = self._call_op("Create portfolio", response)
+    envelope = self._call_op("Create portfolio block", response)
     return envelope.result or {}
 
-  def update_portfolio(
+  def update_portfolio_block(
     self,
     graph_id: str,
     portfolio_id: str,
     updates: dict[str, Any],
   ) -> dict[str, Any]:
-    """Update a portfolio's metadata. Only provided fields are applied."""
+    """Update portfolio metadata and/or apply position deltas (add/update/dispose)."""
     body_dict = {**updates, "portfolio_id": portfolio_id}
-    body = UpdatePortfolioOperation.from_dict(body_dict)
-    response = op_update_portfolio(
+    body = UpdatePortfolioBlockOperation.from_dict(body_dict)
+    response = op_update_portfolio_block(
       graph_id=graph_id, body=body, client=self._get_client()
     )
-    envelope = self._call_op("Update portfolio", response)
+    envelope = self._call_op("Update portfolio block", response)
     return envelope.result or {}
 
-  def delete_portfolio(self, graph_id: str, portfolio_id: str) -> dict[str, Any]:
-    """Delete a portfolio. Fails with 409 if it still has active positions."""
-    body = DeletePortfolioOperation(portfolio_id=portfolio_id)
-    response = op_delete_portfolio(
+  def delete_portfolio_block(
+    self,
+    graph_id: str,
+    portfolio_id: str,
+    confirm_active_positions: bool = False,
+  ) -> dict[str, Any]:
+    """Delete a portfolio and all its positions. Requires `confirm_active_positions=True` when active positions exist."""
+    body = DeletePortfolioBlockOperation(
+      portfolio_id=portfolio_id,
+      confirm_active_positions=confirm_active_positions,
+    )
+    response = op_delete_portfolio_block(
       graph_id=graph_id, body=body, client=self._get_client()
     )
-    envelope = self._call_op("Delete portfolio", response)
+    envelope = self._call_op("Delete portfolio block", response)
     return envelope.result if envelope.result is not None else {"deleted": True}
 
   # ── Securities ──────────────────────────────────────────────────────
@@ -241,7 +243,7 @@ class InvestorClient:
     envelope = self._call_op("Delete security", response)
     return envelope.result if envelope.result is not None else {"deleted": True}
 
-  # ── Positions ───────────────────────────────────────────────────────
+  # ── Positions (read-only — writes go through portfolio block) ────────
 
   def list_positions(
     self,
@@ -270,39 +272,6 @@ class InvestorClient:
     """Get a single position by id. Returns None if it doesn't exist."""
     data = self._query(graph_id, GET_POSITION_QUERY, {"positionId": position_id})
     return parse_position(data)
-
-  def create_position(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
-    """Create a new position."""
-    request = CreatePositionRequest.from_dict(body)
-    response = op_create_position(
-      graph_id=graph_id, body=request, client=self._get_client()
-    )
-    envelope = self._call_op("Create position", response)
-    return envelope.result or {}
-
-  def update_position(
-    self,
-    graph_id: str,
-    position_id: str,
-    updates: dict[str, Any],
-  ) -> dict[str, Any]:
-    """Update a position. Only provided fields are applied."""
-    body_dict = {**updates, "position_id": position_id}
-    body = UpdatePositionOperation.from_dict(body_dict)
-    response = op_update_position(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Update position", response)
-    return envelope.result or {}
-
-  def delete_position(self, graph_id: str, position_id: str) -> dict[str, Any]:
-    """Delete (dispose) a position."""
-    body = DeletePositionOperation(position_id=position_id)
-    response = op_delete_position(
-      graph_id=graph_id, body=body, client=self._get_client()
-    )
-    envelope = self._call_op("Delete position", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
 
   # ── Holdings (aggregation) ─────────────────────────────────────────
 

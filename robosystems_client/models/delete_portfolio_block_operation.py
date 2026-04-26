@@ -6,22 +6,33 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DeletePortfolioOperation")
+from ..types import UNSET, Unset
+
+T = TypeVar("T", bound="DeletePortfolioBlockOperation")
 
 
 @_attrs_define
-class DeletePortfolioOperation:
-  """CQRS body for `POST /operations/delete-portfolio`.
+class DeletePortfolioBlockOperation:
+  """CQRS body for `POST /operations/delete-portfolio-block`.
 
-  Attributes:
-      portfolio_id (str): Target portfolio ID.
+  Cascade-deletes the portfolio plus all of its positions. When the
+  portfolio still has active positions, the operation is rejected
+  unless `confirm_active_positions=true` is set — safety belt to
+  prevent accidental cascade.
+
+      Attributes:
+          portfolio_id (str): Target portfolio ID.
+          confirm_active_positions (bool | Unset):  Default: False.
   """
 
   portfolio_id: str
+  confirm_active_positions: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     portfolio_id = self.portfolio_id
+
+    confirm_active_positions = self.confirm_active_positions
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -30,6 +41,8 @@ class DeletePortfolioOperation:
         "portfolio_id": portfolio_id,
       }
     )
+    if confirm_active_positions is not UNSET:
+      field_dict["confirm_active_positions"] = confirm_active_positions
 
     return field_dict
 
@@ -38,12 +51,15 @@ class DeletePortfolioOperation:
     d = dict(src_dict)
     portfolio_id = d.pop("portfolio_id")
 
-    delete_portfolio_operation = cls(
+    confirm_active_positions = d.pop("confirm_active_positions", UNSET)
+
+    delete_portfolio_block_operation = cls(
       portfolio_id=portfolio_id,
+      confirm_active_positions=confirm_active_positions,
     )
 
-    delete_portfolio_operation.additional_properties = d
-    return delete_portfolio_operation
+    delete_portfolio_block_operation.additional_properties = d
+    return delete_portfolio_block_operation
 
   @property
   def additional_keys(self) -> list[str]:

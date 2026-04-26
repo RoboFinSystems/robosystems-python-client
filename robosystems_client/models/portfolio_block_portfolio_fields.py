@@ -10,18 +10,20 @@ from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="CreatePortfolioRequest")
+T = TypeVar("T", bound="PortfolioBlockPortfolioFields")
 
 
 @_attrs_define
-class CreatePortfolioRequest:
-  """
+class PortfolioBlockPortfolioFields:
+  """Fields settable on the portfolio core when creating a block.
+
   Attributes:
       name (str):
       description (None | str | Unset):
       strategy (None | str | Unset):
       inception_date (datetime.date | None | Unset):
       base_currency (str | Unset):  Default: 'USD'.
+      entity_id (None | str | Unset):
   """
 
   name: str
@@ -29,6 +31,7 @@ class CreatePortfolioRequest:
   strategy: None | str | Unset = UNSET
   inception_date: datetime.date | None | Unset = UNSET
   base_currency: str | Unset = "USD"
+  entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -56,6 +59,12 @@ class CreatePortfolioRequest:
 
     base_currency = self.base_currency
 
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -71,6 +80,8 @@ class CreatePortfolioRequest:
       field_dict["inception_date"] = inception_date
     if base_currency is not UNSET:
       field_dict["base_currency"] = base_currency
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
 
     return field_dict
 
@@ -116,16 +127,26 @@ class CreatePortfolioRequest:
 
     base_currency = d.pop("base_currency", UNSET)
 
-    create_portfolio_request = cls(
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
+    portfolio_block_portfolio_fields = cls(
       name=name,
       description=description,
       strategy=strategy,
       inception_date=inception_date,
       base_currency=base_currency,
+      entity_id=entity_id,
     )
 
-    create_portfolio_request.additional_properties = d
-    return create_portfolio_request
+    portfolio_block_portfolio_fields.additional_properties = d
+    return portfolio_block_portfolio_fields
 
   @property
   def additional_keys(self) -> list[str]:

@@ -6,17 +6,17 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.delete_portfolio_block_operation import DeletePortfolioBlockOperation
 from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.operation_error import OperationError
-from ...models.update_position_operation import UpdatePositionOperation
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: UpdatePositionOperation,
+  body: DeletePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -25,7 +25,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboinvestor/{graph_id}/operations/update-position".format(
+    "url": "/extensions/roboinvestor/{graph_id}/operations/delete-portfolio-block".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -103,13 +103,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePositionOperation,
+  body: DeletePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Update Position
+  """Delete Portfolio Block
 
-   Update mutable fields on a position (quantity, cost basis, valuation, notes, status). Use `delete-
-  position` for soft disposal instead of setting `status` manually.
+   Cascade-delete the portfolio plus all of its positions. When active positions exist, the request
+  must include `confirm_active_positions: true` — safety belt to prevent accidental cascade. Disposed-
+  only portfolios delete without the flag.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -117,7 +118,13 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdatePositionOperation): CQRS body for `POST /operations/update-position`.
+      body (DeletePortfolioBlockOperation): CQRS body for `POST /operations/delete-portfolio-
+          block`.
+
+          Cascade-deletes the portfolio plus all of its positions. When the
+          portfolio still has active positions, the operation is rejected
+          unless `confirm_active_positions=true` is set — safety belt to
+          prevent accidental cascade.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -144,13 +151,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePositionOperation,
+  body: DeletePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Update Position
+  """Delete Portfolio Block
 
-   Update mutable fields on a position (quantity, cost basis, valuation, notes, status). Use `delete-
-  position` for soft disposal instead of setting `status` manually.
+   Cascade-delete the portfolio plus all of its positions. When active positions exist, the request
+  must include `confirm_active_positions: true` — safety belt to prevent accidental cascade. Disposed-
+  only portfolios delete without the flag.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -158,7 +166,13 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdatePositionOperation): CQRS body for `POST /operations/update-position`.
+      body (DeletePortfolioBlockOperation): CQRS body for `POST /operations/delete-portfolio-
+          block`.
+
+          Cascade-deletes the portfolio plus all of its positions. When the
+          portfolio still has active positions, the operation is rejected
+          unless `confirm_active_positions=true` is set — safety belt to
+          prevent accidental cascade.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -180,13 +194,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePositionOperation,
+  body: DeletePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
-  """Update Position
+  """Delete Portfolio Block
 
-   Update mutable fields on a position (quantity, cost basis, valuation, notes, status). Use `delete-
-  position` for soft disposal instead of setting `status` manually.
+   Cascade-delete the portfolio plus all of its positions. When active positions exist, the request
+  must include `confirm_active_positions: true` — safety belt to prevent accidental cascade. Disposed-
+  only portfolios delete without the flag.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -194,7 +209,13 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdatePositionOperation): CQRS body for `POST /operations/update-position`.
+      body (DeletePortfolioBlockOperation): CQRS body for `POST /operations/delete-portfolio-
+          block`.
+
+          Cascade-deletes the portfolio plus all of its positions. When the
+          portfolio still has active positions, the operation is rejected
+          unless `confirm_active_positions=true` is set — safety belt to
+          prevent accidental cascade.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -219,13 +240,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdatePositionOperation,
+  body: DeletePortfolioBlockOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
-  """Update Position
+  """Delete Portfolio Block
 
-   Update mutable fields on a position (quantity, cost basis, valuation, notes, status). Use `delete-
-  position` for soft disposal instead of setting `status` manually.
+   Cascade-delete the portfolio plus all of its positions. When active positions exist, the request
+  must include `confirm_active_positions: true` — safety belt to prevent accidental cascade. Disposed-
+  only portfolios delete without the flag.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -233,7 +255,13 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdatePositionOperation): CQRS body for `POST /operations/update-position`.
+      body (DeletePortfolioBlockOperation): CQRS body for `POST /operations/delete-portfolio-
+          block`.
+
+          Cascade-deletes the portfolio plus all of its positions. When the
+          portfolio still has active positions, the operation is rejected
+          unless `confirm_active_positions=true` is set — safety belt to
+          prevent accidental cascade.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
