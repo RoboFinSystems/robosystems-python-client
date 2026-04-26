@@ -113,6 +113,9 @@ from ..api.extensions_robo_ledger.op_delete_publish_list import (
 from ..api.extensions_robo_ledger.op_delete_report import (
   sync_detailed as op_delete_report,
 )
+from ..api.extensions_robo_ledger.op_file_report import (
+  sync_detailed as op_file_report,
+)
 from ..api.extensions_robo_ledger.op_regenerate_report import (
   sync_detailed as op_regenerate_report,
 )
@@ -121,6 +124,9 @@ from ..api.extensions_robo_ledger.op_remove_publish_list_member import (
 )
 from ..api.extensions_robo_ledger.op_share_report import (
   sync_detailed as op_share_report,
+)
+from ..api.extensions_robo_ledger.op_transition_filing_status import (
+  sync_detailed as op_transition_filing_status,
 )
 from ..api.extensions_robo_ledger.op_update_publish_list import (
   sync_detailed as op_update_publish_list,
@@ -191,6 +197,7 @@ from ..graphql.queries.ledger import (
 )
 from ..graphql.queries.ledger import (
   GET_PUBLISH_LIST_QUERY,
+  GET_REPORT_PACKAGE_QUERY,
   GET_REPORT_QUERY,
   GET_STATEMENT_QUERY,
   LIST_PUBLISH_LISTS_QUERY,
@@ -198,6 +205,7 @@ from ..graphql.queries.ledger import (
   parse_publish_list,
   parse_publish_lists,
   parse_report,
+  parse_report_package,
   parse_reports,
   parse_statement,
 )
@@ -250,8 +258,10 @@ from ..models.create_publish_list_request import CreatePublishListRequest
 from ..models.create_report_request import CreateReportRequest
 from ..models.delete_publish_list_operation import DeletePublishListOperation
 from ..models.delete_report_operation import DeleteReportOperation
+from ..models.file_report_request import FileReportRequest
 from ..models.operation_envelope import OperationEnvelope
 from ..models.regenerate_report_operation import RegenerateReportOperation
+from ..models.transition_filing_status_request import TransitionFilingStatusRequest
 from ..models.remove_publish_list_member_operation import (
   RemovePublishListMemberOperation,
 )
@@ -1413,6 +1423,18 @@ class LedgerClient:
     data = self._query(graph_id, GET_REPORT_QUERY, {"reportId": report_id})
     return parse_report(data)
 
+  def get_report_package(self, graph_id: str, report_id: str) -> dict[str, Any] | None:
+    """Rehydrate a Report as a package — Report metadata + N rendered
+    `InformationBlock` envelopes (one per attached FactSet).
+
+    Single round trip: returns everything needed to render BS + IS (and any
+    other statements the Report generated) without per-section fetches.
+    Each item's ``block`` is a fully-rehydrated ``InformationBlock`` envelope
+    pinned to its specific FactSet snapshot.
+    """
+    data = self._query(graph_id, GET_REPORT_PACKAGE_QUERY, {"reportId": report_id})
+    return parse_report_package(data)
+
   def get_statement(
     self, graph_id: str, report_id: str, structure_type: str
   ) -> dict[str, Any] | None:
@@ -1459,6 +1481,35 @@ class LedgerClient:
     body = ShareReportOperation(report_id=report_id, publish_list_id=publish_list_id)
     response = op_share_report(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Share report", response)
+    return {"operation_id": envelope.operation_id, "status": envelope.status}
+
+  def file_report(self, graph_id: str, report_id: str) -> dict[str, Any]:
+    """Transition a Report's filing_status to 'filed' — locks the package.
+
+    Allowed from 'draft' or 'under_review'. Stamps filed_at + filed_by from
+    the auth context + server clock.
+    """
+    body = FileReportRequest(report_id=report_id)
+    response = op_file_report(graph_id=graph_id, body=body, client=self._get_client())
+    envelope = self._call_op("File report", response)
+    return {"operation_id": envelope.operation_id, "status": envelope.status}
+
+  def transition_filing_status(
+    self, graph_id: str, report_id: str, target_status: str
+  ) -> dict[str, Any]:
+    """Move a Report along the non-file legs of the filing lifecycle.
+
+    Use ``file_report()`` to reach 'filed' so audit fields land cleanly.
+    Other transitions (draft ↔ under_review, filed → archived) go through
+    here so the legal-transition graph stays in one place.
+    """
+    body = TransitionFilingStatusRequest(
+      report_id=report_id, target_status=target_status
+    )
+    response = op_transition_filing_status(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Transition filing status", response)
     return {"operation_id": envelope.operation_id, "status": envelope.status}
 
   def is_shared_report(self, report: dict[str, Any] | Any) -> bool:
