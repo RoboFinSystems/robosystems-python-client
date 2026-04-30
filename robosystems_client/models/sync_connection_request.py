@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -22,11 +24,16 @@ class SyncConnectionRequest:
   """Request to sync a connection.
 
   Attributes:
-      full_sync (bool | Unset): Perform full sync vs incremental Default: False.
-      sync_options (None | SyncConnectionRequestSyncOptionsType0 | Unset): Provider-specific sync options
+      full_rebuild (bool | Unset): Pull complete history from the provider, ignoring lookback window. Takes precedence
+          over since_date. Default: False.
+      since_date (datetime.date | None | Unset): Sync data from this date forward (ISO 8601). Ignored if
+          full_rebuild=True. If neither set, provider default applies (e.g., QuickBooks: 60 days).
+      sync_options (None | SyncConnectionRequestSyncOptionsType0 | Unset): Provider-specific sync options (escape
+          hatch for fields not exposed at the top level).
   """
 
-  full_sync: bool | Unset = False
+  full_rebuild: bool | Unset = False
+  since_date: datetime.date | None | Unset = UNSET
   sync_options: None | SyncConnectionRequestSyncOptionsType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -35,7 +42,15 @@ class SyncConnectionRequest:
       SyncConnectionRequestSyncOptionsType0,
     )
 
-    full_sync = self.full_sync
+    full_rebuild = self.full_rebuild
+
+    since_date: None | str | Unset
+    if isinstance(self.since_date, Unset):
+      since_date = UNSET
+    elif isinstance(self.since_date, datetime.date):
+      since_date = self.since_date.isoformat()
+    else:
+      since_date = self.since_date
 
     sync_options: dict[str, Any] | None | Unset
     if isinstance(self.sync_options, Unset):
@@ -48,8 +63,10 @@ class SyncConnectionRequest:
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
-    if full_sync is not UNSET:
-      field_dict["full_sync"] = full_sync
+    if full_rebuild is not UNSET:
+      field_dict["full_rebuild"] = full_rebuild
+    if since_date is not UNSET:
+      field_dict["since_date"] = since_date
     if sync_options is not UNSET:
       field_dict["sync_options"] = sync_options
 
@@ -62,7 +79,24 @@ class SyncConnectionRequest:
     )
 
     d = dict(src_dict)
-    full_sync = d.pop("full_sync", UNSET)
+    full_rebuild = d.pop("full_rebuild", UNSET)
+
+    def _parse_since_date(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        since_date_type_0 = isoparse(data).date()
+
+        return since_date_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    since_date = _parse_since_date(d.pop("since_date", UNSET))
 
     def _parse_sync_options(
       data: object,
@@ -84,7 +118,8 @@ class SyncConnectionRequest:
     sync_options = _parse_sync_options(d.pop("sync_options", UNSET))
 
     sync_connection_request = cls(
-      full_sync=full_sync,
+      full_rebuild=full_rebuild,
+      since_date=since_date,
       sync_options=sync_options,
     )
 

@@ -109,7 +109,11 @@ def sync_detailed(
   """Update Event Block
 
    Apply a status transition (captured → committed | voided) and/or field corrections (description,
-  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated.
+  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated. When the
+  transition is captured/classified → committed, the registered Python handler fires against the
+  captured metadata to produce the GL rows; errors from the handler (validation, element resolution,
+  closed period, unbalanced lines) surface as 422 here so the inbox UI can display the failure reason
+  without retry.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -153,7 +157,11 @@ def sync(
   """Update Event Block
 
    Apply a status transition (captured → committed | voided) and/or field corrections (description,
-  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated.
+  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated. When the
+  transition is captured/classified → committed, the registered Python handler fires against the
+  captured metadata to produce the GL rows; errors from the handler (validation, element resolution,
+  closed period, unbalanced lines) surface as 422 here so the inbox UI can display the failure reason
+  without retry.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -192,7 +200,11 @@ async def asyncio_detailed(
   """Update Event Block
 
    Apply a status transition (captured → committed | voided) and/or field corrections (description,
-  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated.
+  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated. When the
+  transition is captured/classified → committed, the registered Python handler fires against the
+  captured metadata to produce the GL rows; errors from the handler (validation, element resolution,
+  closed period, unbalanced lines) surface as 422 here so the inbox UI can display the failure reason
+  without retry.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -234,7 +246,11 @@ async def asyncio(
   """Update Event Block
 
    Apply a status transition (captured → committed | voided) and/or field corrections (description,
-  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated.
+  effective_at, metadata_patch) to an existing event block. Only supplied fields are updated. When the
+  transition is captured/classified → committed, the registered Python handler fires against the
+  captured metadata to produce the GL rows; errors from the handler (validation, element resolution,
+  closed period, unbalanced lines) surface as 422 here so the inbox UI can display the failure reason
+  without retry.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
