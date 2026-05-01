@@ -340,6 +340,106 @@ def parse_transaction(data: dict[str, Any]) -> dict[str, Any] | None:
   return keys_to_snake(tx) if tx is not None else None
 
 
+# ── Event blocks (inbox) ───────────────────────────────────────────────
+
+LIST_EVENT_BLOCKS_QUERY = """
+query ListLedgerEventBlocks(
+  $eventType: String
+  $eventCategory: String
+  $status: String
+  $agentId: String
+  $source: String
+  $limit: Int! = 50
+  $offset: Int! = 0
+) {
+  eventBlocks(
+    eventType: $eventType
+    eventCategory: $eventCategory
+    status: $status
+    agentId: $agentId
+    source: $source
+    limit: $limit
+    offset: $offset
+  ) {
+    id eventType eventCategory eventClass status occurredAt effectiveAt
+    source externalId externalUrl amount currency description metadata
+    dimensionIds agentId resourceType resourceElementId
+    replacedByEventId replacesEventId obligatedByEventId dischargesEventId
+    createdAt createdBy
+  }
+}
+""".strip()
+
+
+def parse_event_blocks(data: dict[str, Any]) -> list[dict[str, Any]]:
+  events = data.get("eventBlocks") or []
+  return [keys_to_snake(e) for e in events]
+
+
+GET_EVENT_BLOCK_QUERY = """
+query GetLedgerEventBlock($id: String!) {
+  eventBlock(id: $id) {
+    id eventType eventCategory eventClass status occurredAt effectiveAt
+    source externalId externalUrl amount currency description metadata
+    dimensionIds agentId resourceType resourceElementId
+    replacedByEventId replacesEventId obligatedByEventId dischargesEventId
+    createdAt createdBy
+  }
+}
+""".strip()
+
+
+def parse_event_block(data: dict[str, Any]) -> dict[str, Any] | None:
+  e = data.get("eventBlock")
+  return keys_to_snake(e) if e is not None else None
+
+
+# ── Agents (REA counterparties) ────────────────────────────────────────
+
+LIST_AGENTS_QUERY = """
+query ListLedgerAgents(
+  $agentType: String
+  $source: String
+  $isActive: Boolean = true
+  $limit: Int! = 50
+  $offset: Int! = 0
+) {
+  agents(
+    agentType: $agentType
+    source: $source
+    isActive: $isActive
+    limit: $limit
+    offset: $offset
+  ) {
+    id agentType name legalName taxId registrationNumber duns lei
+    email phone address source externalId
+    isActive is1099Recipient createdAt updatedAt createdBy
+  }
+}
+""".strip()
+
+
+def parse_agents(data: dict[str, Any]) -> list[dict[str, Any]]:
+  agents = data.get("agents") or []
+  return [keys_to_snake(a) for a in agents]
+
+
+GET_AGENT_QUERY = """
+query GetLedgerAgent($id: String!) {
+  agent(id: $id) {
+    id agentType name legalName taxId registrationNumber duns lei
+    email phone address source externalId
+    isActive is1099Recipient createdAt updatedAt createdBy
+  }
+}
+""".strip()
+
+
+def parse_agent(data: dict[str, Any]) -> dict[str, Any] | None:
+  a = data.get("agent")
+  return keys_to_snake(a) if a is not None else None
+
+
 # ── Taxonomy ───────────────────────────────────────────────────────────
 
 GET_REPORTING_TAXONOMY_QUERY = """

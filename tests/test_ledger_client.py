@@ -746,6 +746,159 @@ class TestLedgerReadsAdditional:
     assert variables["transactionId"] == "tx_1"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_event_blocks(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "eventBlocks": [
+        {
+          "id": "evt_1",
+          "eventType": "invoice_issued",
+          "eventCategory": "sales",
+          "eventClass": "economic",
+          "status": "captured",
+          "occurredAt": "2026-03-15T00:00:00Z",
+          "effectiveAt": None,
+          "source": "quickbooks",
+          "externalId": "Invoice_9",
+          "externalUrl": None,
+          "amount": 10800,
+          "currency": "USD",
+          "description": None,
+          "metadata": {"qb_txn_type": "Invoice"},
+          "dimensionIds": [],
+          "agentId": "agt_1",
+          "resourceType": None,
+          "resourceElementId": None,
+          "replacedByEventId": None,
+          "replacesEventId": None,
+          "obligatedByEventId": None,
+          "dischargesEventId": None,
+          "createdAt": "2026-03-15T12:00:00Z",
+          "createdBy": "user_1",
+        }
+      ]
+    }
+    client = LedgerClient(mock_config)
+    result = client.list_event_blocks(
+      graph_id, event_type="invoice_issued", status="captured"
+    )
+    assert len(result) == 1
+    assert result[0]["id"] == "evt_1"
+    assert result[0]["agent_id"] == "agt_1"
+    variables = mock_execute.call_args[0][2]
+    assert variables["eventType"] == "invoice_issued"
+    assert variables["status"] == "captured"
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_event_block(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "eventBlock": {
+        "id": "evt_1",
+        "eventType": "invoice_issued",
+        "eventCategory": "sales",
+        "eventClass": "economic",
+        "status": "captured",
+        "occurredAt": "2026-03-15T00:00:00Z",
+        "effectiveAt": None,
+        "source": "quickbooks",
+        "externalId": "Invoice_9",
+        "externalUrl": None,
+        "amount": 10800,
+        "currency": "USD",
+        "description": None,
+        "metadata": {},
+        "dimensionIds": [],
+        "agentId": "agt_1",
+        "resourceType": None,
+        "resourceElementId": None,
+        "replacedByEventId": None,
+        "replacesEventId": None,
+        "obligatedByEventId": None,
+        "dischargesEventId": None,
+        "createdAt": "2026-03-15T12:00:00Z",
+        "createdBy": "user_1",
+      }
+    }
+    client = LedgerClient(mock_config)
+    result = client.get_event_block(graph_id, "evt_1")
+    assert result is not None
+    assert result["id"] == "evt_1"
+    variables = mock_execute.call_args[0][2]
+    assert variables["id"] == "evt_1"
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_event_block_returns_none_when_missing(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"eventBlock": None}
+    client = LedgerClient(mock_config)
+    assert client.get_event_block(graph_id, "evt_missing") is None
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_agents(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "agents": [
+        {
+          "id": "agt_1",
+          "agentType": "customer",
+          "name": "Amy's Bird Sanctuary",
+          "legalName": None,
+          "taxId": None,
+          "registrationNumber": None,
+          "duns": None,
+          "lei": None,
+          "email": "birds@intuit.com",
+          "phone": "(650) 555-3311",
+          "address": None,
+          "source": "quickbooks",
+          "externalId": "1",
+          "isActive": True,
+          "is1099Recipient": False,
+          "createdAt": "2026-03-15T12:00:00Z",
+          "updatedAt": "2026-03-15T12:00:00Z",
+          "createdBy": "user_1",
+        }
+      ]
+    }
+    client = LedgerClient(mock_config)
+    result = client.list_agents(graph_id, agent_type="customer")
+    assert len(result) == 1
+    assert result[0]["agent_type"] == "customer"
+    variables = mock_execute.call_args[0][2]
+    assert variables["agentType"] == "customer"
+    assert variables["isActive"] is True
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_agent(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "agent": {
+        "id": "agt_1",
+        "agentType": "customer",
+        "name": "Amy's Bird Sanctuary",
+        "legalName": None,
+        "taxId": None,
+        "registrationNumber": None,
+        "duns": None,
+        "lei": None,
+        "email": None,
+        "phone": None,
+        "address": None,
+        "source": "quickbooks",
+        "externalId": "1",
+        "isActive": True,
+        "is1099Recipient": False,
+        "createdAt": "2026-03-15T12:00:00Z",
+        "updatedAt": "2026-03-15T12:00:00Z",
+        "createdBy": "user_1",
+      }
+    }
+    client = LedgerClient(mock_config)
+    result = client.get_agent(graph_id, "agt_1")
+    assert result is not None
+    assert result["id"] == "agt_1"
+    variables = mock_execute.call_args[0][2]
+    assert variables["id"] == "agt_1"
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_mapped_trial_balance(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
       "mappedTrialBalance": {
