@@ -148,8 +148,10 @@ from ..graphql.client import GraphQLClient, strip_none_vars
 from ..graphql.queries.ledger import (
   GET_ACCOUNT_ROLLUPS_QUERY,
   GET_ACCOUNT_TREE_QUERY,
+  GET_AGENT_QUERY,
   GET_CLOSING_BOOK_STRUCTURES_QUERY,
   GET_ENTITY_QUERY,
+  GET_EVENT_BLOCK_QUERY,
   GET_FISCAL_CALENDAR_QUERY,
   GET_MAPPED_TRIAL_BALANCE_QUERY,
   GET_MAPPING_COVERAGE_QUERY,
@@ -162,8 +164,10 @@ from ..graphql.queries.ledger import (
   GET_TRANSACTION_QUERY,
   GET_TRIAL_BALANCE_QUERY,
   LIST_ACCOUNTS_QUERY,
+  LIST_AGENTS_QUERY,
   LIST_ELEMENTS_QUERY,
   LIST_ENTITIES_QUERY,
+  LIST_EVENT_BLOCKS_QUERY,
   LIST_INFORMATION_BLOCKS_QUERY,
   LIST_MAPPINGS_QUERY,
   LIST_STRUCTURES_QUERY,
@@ -173,10 +177,14 @@ from ..graphql.queries.ledger import (
   parse_account_rollups,
   parse_account_tree,
   parse_accounts,
+  parse_agent,
+  parse_agents,
   parse_closing_book_structures,
   parse_elements,
   parse_entities,
   parse_entity,
+  parse_event_block,
+  parse_event_blocks,
   parse_fiscal_calendar,
   parse_information_block,
   parse_information_blocks,
@@ -509,6 +517,70 @@ class LedgerClient:
       graph_id, GET_TRANSACTION_QUERY, {"transactionId": transaction_id}
     )
     return parse_transaction(data)
+
+  # ── Event blocks (inbox surface) ───────────────────────────────────
+
+  def list_event_blocks(
+    self,
+    graph_id: str,
+    event_type: str | None = None,
+    event_category: str | None = None,
+    status: str | None = None,
+    agent_id: str | None = None,
+    source: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
+  ) -> list[dict[str, Any]]:
+    """List captured event blocks (inbox surface)."""
+    data = self._query(
+      graph_id,
+      LIST_EVENT_BLOCKS_QUERY,
+      {
+        "eventType": event_type,
+        "eventCategory": event_category,
+        "status": status,
+        "agentId": agent_id,
+        "source": source,
+        "limit": limit,
+        "offset": offset,
+      },
+    )
+    return parse_event_blocks(data)
+
+  def get_event_block(self, graph_id: str, event_id: str) -> dict[str, Any] | None:
+    """Get event block detail by id."""
+    data = self._query(graph_id, GET_EVENT_BLOCK_QUERY, {"id": event_id})
+    return parse_event_block(data)
+
+  # ── Agents (REA counterparties) ────────────────────────────────────
+
+  def list_agents(
+    self,
+    graph_id: str,
+    agent_type: str | None = None,
+    source: str | None = None,
+    is_active: bool | None = True,
+    limit: int = 50,
+    offset: int = 0,
+  ) -> list[dict[str, Any]]:
+    """List agents (customers, vendors, employees)."""
+    data = self._query(
+      graph_id,
+      LIST_AGENTS_QUERY,
+      {
+        "agentType": agent_type,
+        "source": source,
+        "isActive": is_active,
+        "limit": limit,
+        "offset": offset,
+      },
+    )
+    return parse_agents(data)
+
+  def get_agent(self, graph_id: str, agent_id: str) -> dict[str, Any] | None:
+    """Get agent detail by id."""
+    data = self._query(graph_id, GET_AGENT_QUERY, {"id": agent_id})
+    return parse_agent(data)
 
   # ── Trial balance ──────────────────────────────────────────────────
 
