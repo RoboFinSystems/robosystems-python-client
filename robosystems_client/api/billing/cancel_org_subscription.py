@@ -6,16 +6,20 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.cancel_subscription_request import CancelSubscriptionRequest
 from ...models.error_response import ErrorResponse
 from ...models.graph_subscription_response import GraphSubscriptionResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...types import Response
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   org_id: str,
   subscription_id: str,
+  *,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
@@ -25,6 +29,12 @@ def _get_kwargs(
     ),
   }
 
+  if not isinstance(body, Unset):
+    _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
+
+  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -93,15 +103,23 @@ def sync_detailed(
   subscription_id: str,
   *,
   client: AuthenticatedClient,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> Response[ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]:
   """Cancel Organization Subscription
 
-   Cancels at period end — subscription remains active through the current billing cycle. Requires org
-  owner role.
+   Cancels a subscription. Default behavior cancels at period end (subscription stays active through
+  the current cycle). Pass `immediate=true` with `confirm=<resource_id>` to terminate now and trigger
+  fast-path deprovisioning of the underlying resource. Requires org owner role.
 
   Args:
       org_id (str):
       subscription_id (str):
+      body (CancelSubscriptionRequest | Unset): Request to cancel a subscription.
+
+          Default behavior cancels at period end (soft cancel). Pass `immediate=True`
+          to terminate the subscription right away — this requires `confirm` to equal
+          the subscription's `resource_id` (e.g. the graph_id) as a guard against
+          accidental destructive calls.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -114,6 +132,7 @@ def sync_detailed(
   kwargs = _get_kwargs(
     org_id=org_id,
     subscription_id=subscription_id,
+    body=body,
   )
 
   response = client.get_httpx_client().request(
@@ -128,15 +147,23 @@ def sync(
   subscription_id: str,
   *,
   client: AuthenticatedClient,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> ErrorResponse | GraphSubscriptionResponse | HTTPValidationError | None:
   """Cancel Organization Subscription
 
-   Cancels at period end — subscription remains active through the current billing cycle. Requires org
-  owner role.
+   Cancels a subscription. Default behavior cancels at period end (subscription stays active through
+  the current cycle). Pass `immediate=true` with `confirm=<resource_id>` to terminate now and trigger
+  fast-path deprovisioning of the underlying resource. Requires org owner role.
 
   Args:
       org_id (str):
       subscription_id (str):
+      body (CancelSubscriptionRequest | Unset): Request to cancel a subscription.
+
+          Default behavior cancels at period end (soft cancel). Pass `immediate=True`
+          to terminate the subscription right away — this requires `confirm` to equal
+          the subscription's `resource_id` (e.g. the graph_id) as a guard against
+          accidental destructive calls.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -150,6 +177,7 @@ def sync(
     org_id=org_id,
     subscription_id=subscription_id,
     client=client,
+    body=body,
   ).parsed
 
 
@@ -158,15 +186,23 @@ async def asyncio_detailed(
   subscription_id: str,
   *,
   client: AuthenticatedClient,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> Response[ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]:
   """Cancel Organization Subscription
 
-   Cancels at period end — subscription remains active through the current billing cycle. Requires org
-  owner role.
+   Cancels a subscription. Default behavior cancels at period end (subscription stays active through
+  the current cycle). Pass `immediate=true` with `confirm=<resource_id>` to terminate now and trigger
+  fast-path deprovisioning of the underlying resource. Requires org owner role.
 
   Args:
       org_id (str):
       subscription_id (str):
+      body (CancelSubscriptionRequest | Unset): Request to cancel a subscription.
+
+          Default behavior cancels at period end (soft cancel). Pass `immediate=True`
+          to terminate the subscription right away — this requires `confirm` to equal
+          the subscription's `resource_id` (e.g. the graph_id) as a guard against
+          accidental destructive calls.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -179,6 +215,7 @@ async def asyncio_detailed(
   kwargs = _get_kwargs(
     org_id=org_id,
     subscription_id=subscription_id,
+    body=body,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -191,15 +228,23 @@ async def asyncio(
   subscription_id: str,
   *,
   client: AuthenticatedClient,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> ErrorResponse | GraphSubscriptionResponse | HTTPValidationError | None:
   """Cancel Organization Subscription
 
-   Cancels at period end — subscription remains active through the current billing cycle. Requires org
-  owner role.
+   Cancels a subscription. Default behavior cancels at period end (subscription stays active through
+  the current cycle). Pass `immediate=true` with `confirm=<resource_id>` to terminate now and trigger
+  fast-path deprovisioning of the underlying resource. Requires org owner role.
 
   Args:
       org_id (str):
       subscription_id (str):
+      body (CancelSubscriptionRequest | Unset): Request to cancel a subscription.
+
+          Default behavior cancels at period end (soft cancel). Pass `immediate=True`
+          to terminate the subscription right away — this requires `confirm` to equal
+          the subscription's `resource_id` (e.g. the graph_id) as a guard against
+          accidental destructive calls.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -214,5 +259,6 @@ async def asyncio(
       org_id=org_id,
       subscription_id=subscription_id,
       client=client,
+      body=body,
     )
   ).parsed
