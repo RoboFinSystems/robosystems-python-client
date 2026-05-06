@@ -110,6 +110,66 @@ class TestGraphClient:
     # Should not raise any exceptions
     client.close()
 
+  @patch("robosystems_client.api.graph_operations.op_delete_graph.sync_detailed")
+  def test_delete_graph_immediate(self, mock_op, mock_config):
+    """delete_graph (default mode) submits immediate cancellation."""
+    envelope = MagicMock()
+    envelope.result = {
+      "graph_id": "kg_x",
+      "subscription_id": "sub_1",
+      "status": "deprovisioning_queued",
+      "message": "ok",
+    }
+    response = MagicMock()
+    response.status_code = 202
+    response.parsed = envelope
+    mock_op.return_value = response
+
+    client = GraphClient(mock_config)
+    result = client.delete_graph("kg_x")
+
+    assert result["status"] == "deprovisioning_queued"
+    body = mock_op.call_args.kwargs["body"]
+    assert body.confirm == "kg_x"
+    assert body.at_period_end is False
+
+  @patch("robosystems_client.api.graph_operations.op_delete_graph.sync_detailed")
+  def test_delete_graph_at_period_end(self, mock_op, mock_config):
+    """delete_graph(at_period_end=True) defers cancellation to period end."""
+    envelope = MagicMock()
+    envelope.result = {
+      "graph_id": "kg_x",
+      "subscription_id": "sub_1",
+      "status": "scheduled_for_deprovision",
+      "ends_at": "2026-06-01T00:00:00+00:00",
+      "message": "ok",
+    }
+    response = MagicMock()
+    response.status_code = 202
+    response.parsed = envelope
+    mock_op.return_value = response
+
+    client = GraphClient(mock_config)
+    result = client.delete_graph("kg_x", at_period_end=True)
+
+    assert result["status"] == "scheduled_for_deprovision"
+    assert result["ends_at"] == "2026-06-01T00:00:00+00:00"
+    body = mock_op.call_args.kwargs["body"]
+    assert body.at_period_end is True
+
+  @patch("robosystems_client.api.graph_operations.op_delete_graph.sync_detailed")
+  def test_delete_graph_raises_on_failure(self, mock_op, mock_config):
+    """Non-2xx response raises RuntimeError with the API error detail."""
+    response = MagicMock()
+    response.status_code = 400
+    response.parsed = None
+    response.content = b'{"detail":"`confirm` must equal the graph_id"}'
+    mock_op.return_value = response
+
+    client = GraphClient(mock_config)
+    with pytest.raises(RuntimeError, match="confirm"):
+      client.delete_graph("kg_x")
+
 
 @pytest.mark.unit
 class TestProcessSSEEvent:
