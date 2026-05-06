@@ -676,17 +676,79 @@ class GraphClient:
 
     raise TimeoutError(f"Graph creation timed out after {timeout}s")
 
-  def delete_graph(self, graph_id: str) -> None:
+  def delete_graph(
+    self,
+    graph_id: str,
+    at_period_end: bool = False,
+    on_progress: Optional[Callable[[str], None]] = None,
+  ) -> Dict[str, Any]:
     """
-    Delete a graph.
+    Permanently delete a graph by canceling its subscription and triggering
+    deprovisioning.
 
-    Note: This method is not yet available as the delete_graph endpoint
-    is not included in the generated SDK.
+    Two modes:
+
+    - **Immediate** (default, ``at_period_end=False``): subscription canceled
+      now and fast-path deprovisioning fires within ~10 minutes.
+    - **At period end** (``at_period_end=True``): graph stays usable through
+      the current billing period; suspend → deprovision pipeline tears it
+      down at the period boundary.
+
+    Args:
+        graph_id: Graph database identifier (must be a user graph — shared
+            repositories cannot be deleted)
+        at_period_end: If True, defer cancellation and teardown to the end
+            of the current billing period.
+        on_progress: Optional callback for progress updates.
+
+    Returns:
+        The ``result`` field of the operation envelope. For immediate:
+        ``{"graph_id", "subscription_id", "status": "deprovisioning_queued",
+        "message"}``. For period-end: includes ``ends_at`` instead.
+
+    Raises:
+        RuntimeError: If the deletion request fails.
     """
-    raise NotImplementedError(
-      "Graph deletion is not yet available. "
-      "The delete_graph endpoint needs to be added to the API specification."
+    from ..api.graph_operations.op_delete_graph import (
+      sync_detailed as op_delete_graph,
     )
+    from ..models.delete_graph_op import DeleteGraphOp
+
+    client = self._get_authenticated_client()
+
+    if on_progress:
+      mode = "at period end" if at_period_end else "immediately"
+      on_progress(f"Deleting graph {graph_id} ({mode})...")
+
+    response = op_delete_graph(
+      graph_id=graph_id,
+      client=client,
+      body=DeleteGraphOp(confirm=graph_id, at_period_end=at_period_end),
+    )
+
+    if response.status_code not in (200, 202) or not response.parsed:
+      error_msg = f"Graph deletion failed: HTTP {response.status_code}"
+      if hasattr(response, "content"):
+        try:
+          error_data = json.loads(response.content)
+          error_msg = error_data.get("detail", error_msg)
+        except Exception:
+          pass
+      raise RuntimeError(error_msg)
+
+    envelope = response.parsed
+    result = getattr(envelope, "result", None)
+    if isinstance(result, dict):
+      result_dict = result
+    elif hasattr(result, "additional_properties"):
+      result_dict = dict(result.additional_properties)
+    else:
+      result_dict = {}
+
+    if on_progress:
+      on_progress(result_dict.get("message", "Graph deletion submitted."))
+
+    return result_dict
 
   def close(self):
     """Clean up resources."""

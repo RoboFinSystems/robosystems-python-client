@@ -112,11 +112,11 @@ def sync_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Delete Graph
 
-   Permanently destroys a user graph: cancels its subscription immediately and queues fast-path
-  deprovisioning (LadybugDB database removed, DynamoDB slot freed, PG records cleaned). Requires
-  `confirm` to equal the URL `graph_id`. Caller must be admin on the graph. Not allowed on shared
-  repositories. Deprovisioning typically completes within ~10 minutes; poll the graph status to
-  verify.
+   Permanently destroys a user graph and cancels its subscription. Two modes via the `at_period_end`
+  body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
+  graph usable through the current billing period and tear it down at the period boundary via the
+  existing suspend → deprovision pipeline. Requires `confirm` to equal the URL `graph_id`. Caller must
+  be admin on the graph. Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -126,10 +126,18 @@ def sync_detailed(
       idempotency_key (None | str | Unset):
       body (DeleteGraphOp): Body for the delete-graph operation.
 
-          Permanently destroys the graph: cancels its subscription immediately, then
-          triggers fast-path deprovisioning (LadybugDB database removed, DynamoDB slot
-          freed, PG records cleaned). Requires `confirm` to equal the URL `graph_id`
-          as a guard against accidental destructive calls.
+          Permanently destroys the graph and cancels its subscription. Two modes:
+
+          - **Immediate** (default): subscription canceled now (`ends_at = now`) and
+            fast-path deprovisioning fires within ~10 minutes. Use when you want
+            the data gone and the slot freed right away.
+          - **At period end** (`at_period_end=true`): subscription canceled but
+            `ends_at = current_period_end` so the graph stays usable through the
+            paid period. The existing suspend → deprovision sensor pipeline tears
+            it down after the retention window once the period closes.
+
+          Requires `confirm` to equal the URL `graph_id` as a guard against
+          accidental destructive calls.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -161,11 +169,11 @@ def sync(
 ) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Delete Graph
 
-   Permanently destroys a user graph: cancels its subscription immediately and queues fast-path
-  deprovisioning (LadybugDB database removed, DynamoDB slot freed, PG records cleaned). Requires
-  `confirm` to equal the URL `graph_id`. Caller must be admin on the graph. Not allowed on shared
-  repositories. Deprovisioning typically completes within ~10 minutes; poll the graph status to
-  verify.
+   Permanently destroys a user graph and cancels its subscription. Two modes via the `at_period_end`
+  body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
+  graph usable through the current billing period and tear it down at the period boundary via the
+  existing suspend → deprovision pipeline. Requires `confirm` to equal the URL `graph_id`. Caller must
+  be admin on the graph. Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -175,10 +183,18 @@ def sync(
       idempotency_key (None | str | Unset):
       body (DeleteGraphOp): Body for the delete-graph operation.
 
-          Permanently destroys the graph: cancels its subscription immediately, then
-          triggers fast-path deprovisioning (LadybugDB database removed, DynamoDB slot
-          freed, PG records cleaned). Requires `confirm` to equal the URL `graph_id`
-          as a guard against accidental destructive calls.
+          Permanently destroys the graph and cancels its subscription. Two modes:
+
+          - **Immediate** (default): subscription canceled now (`ends_at = now`) and
+            fast-path deprovisioning fires within ~10 minutes. Use when you want
+            the data gone and the slot freed right away.
+          - **At period end** (`at_period_end=true`): subscription canceled but
+            `ends_at = current_period_end` so the graph stays usable through the
+            paid period. The existing suspend → deprovision sensor pipeline tears
+            it down after the retention window once the period closes.
+
+          Requires `confirm` to equal the URL `graph_id` as a guard against
+          accidental destructive calls.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -205,11 +221,11 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
   """Delete Graph
 
-   Permanently destroys a user graph: cancels its subscription immediately and queues fast-path
-  deprovisioning (LadybugDB database removed, DynamoDB slot freed, PG records cleaned). Requires
-  `confirm` to equal the URL `graph_id`. Caller must be admin on the graph. Not allowed on shared
-  repositories. Deprovisioning typically completes within ~10 minutes; poll the graph status to
-  verify.
+   Permanently destroys a user graph and cancels its subscription. Two modes via the `at_period_end`
+  body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
+  graph usable through the current billing period and tear it down at the period boundary via the
+  existing suspend → deprovision pipeline. Requires `confirm` to equal the URL `graph_id`. Caller must
+  be admin on the graph. Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -219,10 +235,18 @@ async def asyncio_detailed(
       idempotency_key (None | str | Unset):
       body (DeleteGraphOp): Body for the delete-graph operation.
 
-          Permanently destroys the graph: cancels its subscription immediately, then
-          triggers fast-path deprovisioning (LadybugDB database removed, DynamoDB slot
-          freed, PG records cleaned). Requires `confirm` to equal the URL `graph_id`
-          as a guard against accidental destructive calls.
+          Permanently destroys the graph and cancels its subscription. Two modes:
+
+          - **Immediate** (default): subscription canceled now (`ends_at = now`) and
+            fast-path deprovisioning fires within ~10 minutes. Use when you want
+            the data gone and the slot freed right away.
+          - **At period end** (`at_period_end=true`): subscription canceled but
+            `ends_at = current_period_end` so the graph stays usable through the
+            paid period. The existing suspend → deprovision sensor pipeline tears
+            it down after the retention window once the period closes.
+
+          Requires `confirm` to equal the URL `graph_id` as a guard against
+          accidental destructive calls.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -252,11 +276,11 @@ async def asyncio(
 ) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
   """Delete Graph
 
-   Permanently destroys a user graph: cancels its subscription immediately and queues fast-path
-  deprovisioning (LadybugDB database removed, DynamoDB slot freed, PG records cleaned). Requires
-  `confirm` to equal the URL `graph_id`. Caller must be admin on the graph. Not allowed on shared
-  repositories. Deprovisioning typically completes within ~10 minutes; poll the graph status to
-  verify.
+   Permanently destroys a user graph and cancels its subscription. Two modes via the `at_period_end`
+  body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
+  graph usable through the current billing period and tear it down at the period boundary via the
+  existing suspend → deprovision pipeline. Requires `confirm` to equal the URL `graph_id`. Caller must
+  be admin on the graph. Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -266,10 +290,18 @@ async def asyncio(
       idempotency_key (None | str | Unset):
       body (DeleteGraphOp): Body for the delete-graph operation.
 
-          Permanently destroys the graph: cancels its subscription immediately, then
-          triggers fast-path deprovisioning (LadybugDB database removed, DynamoDB slot
-          freed, PG records cleaned). Requires `confirm` to equal the URL `graph_id`
-          as a guard against accidental destructive calls.
+          Permanently destroys the graph and cancels its subscription. Two modes:
+
+          - **Immediate** (default): subscription canceled now (`ends_at = now`) and
+            fast-path deprovisioning fires within ~10 minutes. Use when you want
+            the data gone and the slot freed right away.
+          - **At period end** (`at_period_end=true`): subscription canceled but
+            `ends_at = current_period_end` so the graph stays usable through the
+            paid period. The existing suspend → deprovision sensor pipeline tears
+            it down after the retention window once the period closes.
+
+          Requires `confirm` to equal the URL `graph_id` as a guard against
+          accidental destructive calls.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
