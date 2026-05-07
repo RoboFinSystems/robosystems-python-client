@@ -13,12 +13,18 @@ T = TypeVar("T", bound="PeriodSpec")
 
 @_attrs_define
 class PeriodSpec:
-  """A reporting period column.
+  """A single reporting period column.
 
-  Attributes:
-      start (datetime.date):
-      end (datetime.date):
-      label (str):
+  Reports render facts in N period columns side-by-side. Each
+  ``PeriodSpec`` is one column — its ``start``/``end`` define the
+  window the report's facts roll up into; ``label`` is what the renderer
+  prints in the column header. For year-over-year statements, supply two
+  PeriodSpecs (current + comparative); for YTD by quarter, supply four.
+
+      Attributes:
+          start (datetime.date): Period start date (inclusive). Window the column rolls up.
+          end (datetime.date): Period end date (inclusive). Window the column rolls up.
+          label (str): Column header label (e.g. 'FY2025 Q3', '2024', 'YTD').
   """
 
   start: datetime.date

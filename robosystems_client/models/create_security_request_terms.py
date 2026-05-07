@@ -11,7 +11,11 @@ T = TypeVar("T", bound="CreateSecurityRequestTerms")
 
 @_attrs_define
 class CreateSecurityRequestTerms:
-  """ """
+  """Instrument-specific terms blob (JSONB). Shape depends on `security_type` — common keys include
+  `liquidation_preference`, `strike_price_cents`, `discount_pct`, `valuation_cap_cents`, `maturity_date`, `vesting`.
+  Used by future waterfall-distribution modeling; treat as authoritative storage for instrument mechanics.
+
+  """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

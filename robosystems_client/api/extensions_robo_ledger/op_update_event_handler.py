@@ -7,7 +7,9 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_event_handler_response import (
+  OperationEnvelopeEventHandlerResponse,
+)
 from ...models.operation_error import OperationError
 from ...models.update_event_handler_request import UpdateEventHandlerRequest
 from ...types import UNSET, Response, Unset
@@ -40,9 +42,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeEventHandlerResponse
+  | OperationError
+  | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeEventHandlerResponse.from_dict(response.json())
 
     return response_200
 
@@ -90,7 +98,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -105,7 +115,9 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
+]:
   """Update Event Handler
 
    Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
@@ -117,14 +129,20 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateEventHandlerRequest):
+      body (UpdateEventHandlerRequest): Update an existing event handler. All fields except
+          ``event_handler_id`` are optional — pass only what changes.
+
+          ``transaction_template`` is **fully replaced** when supplied (no
+          partial template patches). ``metadata_patch`` does deep-merge into
+          the existing metadata. ``approve=true`` sets ``approved_by`` and
+          ``approved_at``; ``approve=false`` clears them.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -146,7 +164,13 @@ def sync(
   client: AuthenticatedClient,
   body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeEventHandlerResponse
+  | OperationError
+  | None
+):
   """Update Event Handler
 
    Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
@@ -158,14 +182,20 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateEventHandlerRequest):
+      body (UpdateEventHandlerRequest): Update an existing event handler. All fields except
+          ``event_handler_id`` are optional — pass only what changes.
+
+          ``transaction_template`` is **fully replaced** when supplied (no
+          partial template patches). ``metadata_patch`` does deep-merge into
+          the existing metadata. ``approve=true`` sets ``approved_by`` and
+          ``approved_at``; ``approve=false`` clears them.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
   """
 
   return sync_detailed(
@@ -182,7 +212,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
+]:
   """Update Event Handler
 
    Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
@@ -194,14 +226,20 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateEventHandlerRequest):
+      body (UpdateEventHandlerRequest): Update an existing event handler. All fields except
+          ``event_handler_id`` are optional — pass only what changes.
+
+          ``transaction_template`` is **fully replaced** when supplied (no
+          partial template patches). ``metadata_patch`` does deep-merge into
+          the existing metadata. ``approve=true`` sets ``approved_by`` and
+          ``approved_at``; ``approve=false`` clears them.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -221,7 +259,13 @@ async def asyncio(
   client: AuthenticatedClient,
   body: UpdateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeEventHandlerResponse
+  | OperationError
+  | None
+):
   """Update Event Handler
 
    Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
@@ -233,14 +277,20 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateEventHandlerRequest):
+      body (UpdateEventHandlerRequest): Update an existing event handler. All fields except
+          ``event_handler_id`` are optional — pass only what changes.
+
+          ``transaction_template`` is **fully replaced** when supplied (no
+          partial template patches). ``metadata_patch`` does deep-merge into
+          the existing metadata. ``approve=true`` sets ``approved_by`` and
+          ``approved_at``; ``approve=false`` clears them.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
   """
 
   return (

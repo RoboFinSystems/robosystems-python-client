@@ -31,11 +31,13 @@ class UpdateJournalEntryRequest:
   existing line items are left untouched.
 
       Attributes:
-          entry_id (str):
-          posting_date (datetime.date | None | Unset):
-          memo (None | str | Unset):
-          type_ (None | Unset | UpdateJournalEntryRequestTypeType0):
-          line_items (list[JournalEntryLineItemInput] | None | Unset):
+          entry_id (str): The draft entry to update.
+          posting_date (datetime.date | None | Unset): New posting date.
+          memo (None | str | Unset): New entry-level memo.
+          type_ (None | Unset | UpdateJournalEntryRequestTypeType0): New entry type. `closing` should normally only be set
+              by close-period.
+          line_items (list[JournalEntryLineItemInput] | None | Unset): Replacement line items. Whole-list replacement (not
+              patch). The new set must still balance (total_debit == total_credit). Omit to leave existing lines untouched.
   """
 
   entry_id: str

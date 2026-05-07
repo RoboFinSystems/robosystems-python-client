@@ -6,32 +6,54 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DeleteInformationBlockRequestPayload")
+T = TypeVar("T", bound="DeleteResult")
 
 
 @_attrs_define
-class DeleteInformationBlockRequestPayload:
-  """Block-type-specific delete payload. Typically carries just the structure_id. Shape-validated against the registry
-  entry's `delete_request_model` at dispatch time.
+class DeleteResult:
+  """Shared response shape for delete / soft-delete operations.
 
+  ``deleted=True`` means the operation succeeded (a row was deleted or
+  flipped). The handler returns 404 instead when the row didn't exist
+  to begin with — the response shape is never used to communicate "not
+  found".
+
+  Defined once here to avoid OpenAPI components key collisions
+  between roboledger and roboinvestor (both surfaces produced
+  separate ``DeleteResult`` classes before consolidation).
+
+      Attributes:
+          deleted (bool): `true` when the row was deleted in this call. Always `true` today — 404 covers the not-found
+              case at the HTTP layer rather than via this field.
   """
 
+  deleted: bool
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    deleted = self.deleted
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "deleted": deleted,
+      }
+    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    delete_information_block_request_payload = cls()
+    deleted = d.pop("deleted")
 
-    delete_information_block_request_payload.additional_properties = d
-    return delete_information_block_request_payload
+    delete_result = cls(
+      deleted=deleted,
+    )
+
+    delete_result.additional_properties = d
+    return delete_result
 
   @property
   def additional_keys(self) -> list[str]:

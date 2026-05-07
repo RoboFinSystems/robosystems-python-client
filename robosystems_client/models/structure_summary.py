@@ -1,0 +1,83 @@
+from __future__ import annotations
+
+from collections.abc import Mapping
+from typing import Any, TypeVar
+
+from attrs import define as _attrs_define
+from attrs import field as _attrs_field
+
+T = TypeVar("T", bound="StructureSummary")
+
+
+@_attrs_define
+class StructureSummary:
+  """A structure available within this report's taxonomy.
+
+  Each structure is a renderable section (Balance Sheet, Income
+  Statement, Cash Flow Statement, Equity, or a Schedule). The Report
+  row owns the facts; structures are the lenses that project them.
+
+      Attributes:
+          id (str): Structure identifier.
+          name (str): Human-readable structure name.
+          structure_type (str): Structure category: `balance_sheet`, `income_statement`, `cash_flow_statement`,
+              `equity_statement`, `schedule`.
+  """
+
+  id: str
+  name: str
+  structure_type: str
+  additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+
+  def to_dict(self) -> dict[str, Any]:
+    id = self.id
+
+    name = self.name
+
+    structure_type = self.structure_type
+
+    field_dict: dict[str, Any] = {}
+    field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "id": id,
+        "name": name,
+        "structure_type": structure_type,
+      }
+    )
+
+    return field_dict
+
+  @classmethod
+  def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    d = dict(src_dict)
+    id = d.pop("id")
+
+    name = d.pop("name")
+
+    structure_type = d.pop("structure_type")
+
+    structure_summary = cls(
+      id=id,
+      name=name,
+      structure_type=structure_type,
+    )
+
+    structure_summary.additional_properties = d
+    return structure_summary
+
+  @property
+  def additional_keys(self) -> list[str]:
+    return list(self.additional_properties.keys())
+
+  def __getitem__(self, key: str) -> Any:
+    return self.additional_properties[key]
+
+  def __setitem__(self, key: str, value: Any) -> None:
+    self.additional_properties[key] = value
+
+  def __delitem__(self, key: str) -> None:
+    del self.additional_properties[key]
+
+  def __contains__(self, key: str) -> bool:
+    return key in self.additional_properties

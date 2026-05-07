@@ -8,7 +8,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.delete_journal_entry_request import DeleteJournalEntryRequest
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_delete_result import OperationEnvelopeDeleteResult
 from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
 
@@ -40,9 +40,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeDeleteResult.from_dict(response.json())
 
     return response_200
 
@@ -90,7 +90,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -105,7 +107,9 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: DeleteJournalEntryRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError
+]:
   """Delete Journal Entry
 
    Hard-delete a draft journal entry. Posted entries are immutable and must be reversed instead.
@@ -125,7 +129,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -147,7 +151,7 @@ def sync(
   client: AuthenticatedClient,
   body: DeleteJournalEntryRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError | None:
   """Delete Journal Entry
 
    Hard-delete a draft journal entry. Posted entries are immutable and must be reversed instead.
@@ -167,7 +171,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError
   """
 
   return sync_detailed(
@@ -184,7 +188,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: DeleteJournalEntryRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError
+]:
   """Delete Journal Entry
 
    Hard-delete a draft journal entry. Posted entries are immutable and must be reversed instead.
@@ -204,7 +210,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -224,7 +230,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: DeleteJournalEntryRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError | None:
   """Delete Journal Entry
 
    Hard-delete a draft journal entry. Posted entries are immutable and must be reversed instead.
@@ -244,7 +250,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeDeleteResult | OperationError
   """
 
   return (

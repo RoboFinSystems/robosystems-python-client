@@ -11,9 +11,10 @@ T = TypeVar("T", bound="DeleteReportOperation")
 
 @_attrs_define
 class DeleteReportOperation:
-  """
+  """Delete a Report definition and all its facts.
+
   Attributes:
-      report_id (str):
+      report_id (str): The Report to delete.
   """
 
   report_id: str

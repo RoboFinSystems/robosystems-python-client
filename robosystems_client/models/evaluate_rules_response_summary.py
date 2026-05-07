@@ -6,17 +6,14 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="CreateInformationBlockRequestPayload")
+T = TypeVar("T", bound="EvaluateRulesResponseSummary")
 
 
 @_attrs_define
-class CreateInformationBlockRequestPayload:
-  """Block-type-specific creation payload. Shape-validated against the registry entry's `create_request_model` at
-  dispatch time; the validation error surfaces as a 422 at the API boundary.
+class EvaluateRulesResponseSummary:
+  """Status counts keyed by outcome string: ``{'pass': N, 'fail': N, 'error': N, 'skipped': N}``."""
 
-  """
-
-  additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+  additional_properties: dict[str, int] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
 
@@ -28,19 +25,19 @@ class CreateInformationBlockRequestPayload:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    create_information_block_request_payload = cls()
+    evaluate_rules_response_summary = cls()
 
-    create_information_block_request_payload.additional_properties = d
-    return create_information_block_request_payload
+    evaluate_rules_response_summary.additional_properties = d
+    return evaluate_rules_response_summary
 
   @property
   def additional_keys(self) -> list[str]:
     return list(self.additional_properties.keys())
 
-  def __getitem__(self, key: str) -> Any:
+  def __getitem__(self, key: str) -> int:
     return self.additional_properties[key]
 
-  def __setitem__(self, key: str, value: Any) -> None:
+  def __setitem__(self, key: str, value: int) -> None:
     self.additional_properties[key] = value
 
   def __delitem__(self, key: str) -> None:

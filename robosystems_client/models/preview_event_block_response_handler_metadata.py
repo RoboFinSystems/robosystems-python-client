@@ -6,12 +6,15 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="OperationEnvelopeResultType0")
+T = TypeVar("T", bound="PreviewEventBlockResponseHandlerMetadata")
 
 
 @_attrs_define
-class OperationEnvelopeResultType0:
-  """ """
+class PreviewEventBlockResponseHandlerMetadata:
+  """Handler-specific compute output. For Python handlers like 'asset_disposed', includes NBV, gain/loss, accumulated
+  depreciation. Empty for DSL-handler previews.
+
+  """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -25,10 +28,10 @@ class OperationEnvelopeResultType0:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    operation_envelope_result_type_0 = cls()
+    preview_event_block_response_handler_metadata = cls()
 
-    operation_envelope_result_type_0.additional_properties = d
-    return operation_envelope_result_type_0
+    preview_event_block_response_handler_metadata.additional_properties = d
+    return preview_event_block_response_handler_metadata
 
   @property
   def additional_keys(self) -> list[str]:

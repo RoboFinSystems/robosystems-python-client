@@ -7,7 +7,9 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_taxonomy_block_envelope import (
+  OperationEnvelopeTaxonomyBlockEnvelope,
+)
 from ...models.operation_error import OperationError
 from ...models.update_taxonomy_block_request import UpdateTaxonomyBlockRequest
 from ...types import UNSET, Response, Unset
@@ -40,9 +42,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeTaxonomyBlockEnvelope
+  | OperationError
+  | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeTaxonomyBlockEnvelope.from_dict(response.json())
 
     return response_200
 
@@ -90,7 +98,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeTaxonomyBlockEnvelope | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -105,7 +115,9 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeTaxonomyBlockEnvelope | OperationError
+]:
   """Update Taxonomy Block
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
@@ -131,7 +143,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeTaxonomyBlockEnvelope | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -153,7 +165,13 @@ def sync(
   client: AuthenticatedClient,
   body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeTaxonomyBlockEnvelope
+  | OperationError
+  | None
+):
   """Update Taxonomy Block
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
@@ -179,7 +197,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeTaxonomyBlockEnvelope | OperationError
   """
 
   return sync_detailed(
@@ -196,7 +214,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeTaxonomyBlockEnvelope | OperationError
+]:
   """Update Taxonomy Block
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
@@ -222,7 +242,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeTaxonomyBlockEnvelope | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -242,7 +262,13 @@ async def asyncio(
   client: AuthenticatedClient,
   body: UpdateTaxonomyBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeTaxonomyBlockEnvelope
+  | OperationError
+  | None
+):
   """Update Taxonomy Block
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
@@ -268,7 +294,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeTaxonomyBlockEnvelope | OperationError
   """
 
   return (

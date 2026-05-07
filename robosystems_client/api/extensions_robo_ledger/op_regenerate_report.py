@@ -8,7 +8,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_report_response import OperationEnvelopeReportResponse
 from ...models.regenerate_report_operation import RegenerateReportOperation
 from ...types import UNSET, Response, Unset
 
@@ -40,9 +40,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeReportResponse.from_dict(response.json())
 
     return response_200
 
@@ -94,7 +94,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,10 +109,11 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: RegenerateReportOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   """Regenerate Report
 
-
+   Re-runs fact generation for an existing Report against the latest ledger state. Pass
+  `period_start`/`period_end`/`periods` only if you want to change the reporting window.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -120,14 +121,17 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (RegenerateReportOperation):
+      body (RegenerateReportOperation): Regenerate facts for an existing Report. Carries
+          `report_id` from
+          the path-style RPC body; period overrides are inherited from
+          :class:`RegenerateReportRequest`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -149,10 +153,11 @@ def sync(
   client: AuthenticatedClient,
   body: RegenerateReportOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   """Regenerate Report
 
-
+   Re-runs fact generation for an existing Report against the latest ledger state. Pass
+  `period_start`/`period_end`/`periods` only if you want to change the reporting window.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -160,14 +165,17 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (RegenerateReportOperation):
+      body (RegenerateReportOperation): Regenerate facts for an existing Report. Carries
+          `report_id` from
+          the path-style RPC body; period overrides are inherited from
+          :class:`RegenerateReportRequest`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse
   """
 
   return sync_detailed(
@@ -184,10 +192,11 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: RegenerateReportOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   """Regenerate Report
 
-
+   Re-runs fact generation for an existing Report against the latest ledger state. Pass
+  `period_start`/`period_end`/`periods` only if you want to change the reporting window.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -195,14 +204,17 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (RegenerateReportOperation):
+      body (RegenerateReportOperation): Regenerate facts for an existing Report. Carries
+          `report_id` from
+          the path-style RPC body; period overrides are inherited from
+          :class:`RegenerateReportRequest`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -222,10 +234,11 @@ async def asyncio(
   client: AuthenticatedClient,
   body: RegenerateReportOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   """Regenerate Report
 
-
+   Re-runs fact generation for an existing Report against the latest ledger state. Pass
+  `period_start`/`period_end`/`periods` only if you want to change the reporting window.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -233,14 +246,17 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (RegenerateReportOperation):
+      body (RegenerateReportOperation): Regenerate facts for an existing Report. Carries
+          `report_id` from
+          the path-style RPC body; period overrides are inherited from
+          :class:`RegenerateReportRequest`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse
   """
 
   return (

@@ -19,10 +19,10 @@ class JournalEntryLineItemInput:
   other must be zero. Amounts are in minor currency units (cents).
 
       Attributes:
-          element_id (str):
-          debit_amount (int | Unset):  Default: 0.
-          credit_amount (int | Unset):  Default: 0.
-          description (None | str | Unset):
+          element_id (str): Element ULID identifying the account to post to.
+          debit_amount (int | Unset): Debit amount in cents. Must be 0 if `credit_amount` > 0. Default: 0.
+          credit_amount (int | Unset): Credit amount in cents. Must be 0 if `debit_amount` > 0. Default: 0.
+          description (None | str | Unset): Per-line memo (overrides the entry-level memo on this line).
   """
 
   element_id: str

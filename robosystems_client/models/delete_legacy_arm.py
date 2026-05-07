@@ -6,39 +6,38 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.delete_legacy_arm_block_type import DeleteLegacyArmBlockType
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.update_information_block_request_payload import (
-    UpdateInformationBlockRequestPayload,
-  )
+  from ..models.delete_legacy_arm_payload import DeleteLegacyArmPayload
 
 
-T = TypeVar("T", bound="UpdateInformationBlockRequest")
+T = TypeVar("T", bound="DeleteLegacyArm")
 
 
 @_attrs_define
-class UpdateInformationBlockRequest:
-  """Generic update request — mirrors :class:`CreateInformationBlockRequest`.
+class DeleteLegacyArm:
+  """Delete-information-block body for block types that don't yet have
+  a typed delete path at the API boundary.
 
-  Validated against the registry entry's ``update_request_model``.
-  Block types that don't support updates (e.g. the statement family,
-  whose Structures are library-seeded) surface ``NotImplementedError``
-  from their dispatch handler, which the registrar maps to HTTP 501.
+  Statement-family blocks cannot be deleted per tenant (the underlying
+  Report should be archived via the report APIs instead). Metric
+  deletion is not yet implemented. Calls return HTTP 501.
 
       Attributes:
-          block_type (str): Block type discriminator. Must match a registered entry.
-          payload (UpdateInformationBlockRequestPayload | Unset): Block-type-specific update payload. Typically carries
-              the structure_id plus whichever fields are editable for this block type. Shape-validated against the registry
-              entry's `update_request_model` at dispatch time.
+          block_type (DeleteLegacyArmBlockType): Statement-family or metric block type. Deletion returns 501 — statements
+              are library-seeded (archive the underlying Report instead); metric deletion is pending.
+          payload (DeleteLegacyArmPayload | Unset): Untyped payload — typed-arm validation is skipped because the dispatch
+              handler raises 501 before the payload is consumed.
   """
 
-  block_type: str
-  payload: UpdateInformationBlockRequestPayload | Unset = UNSET
+  block_type: DeleteLegacyArmBlockType
+  payload: DeleteLegacyArmPayload | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    block_type = self.block_type
+    block_type = self.block_type.value
 
     payload: dict[str, Any] | Unset = UNSET
     if not isinstance(self.payload, Unset):
@@ -58,27 +57,25 @@ class UpdateInformationBlockRequest:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.update_information_block_request_payload import (
-      UpdateInformationBlockRequestPayload,
-    )
+    from ..models.delete_legacy_arm_payload import DeleteLegacyArmPayload
 
     d = dict(src_dict)
-    block_type = d.pop("block_type")
+    block_type = DeleteLegacyArmBlockType(d.pop("block_type"))
 
     _payload = d.pop("payload", UNSET)
-    payload: UpdateInformationBlockRequestPayload | Unset
+    payload: DeleteLegacyArmPayload | Unset
     if isinstance(_payload, Unset):
       payload = UNSET
     else:
-      payload = UpdateInformationBlockRequestPayload.from_dict(_payload)
+      payload = DeleteLegacyArmPayload.from_dict(_payload)
 
-    update_information_block_request = cls(
+    delete_legacy_arm = cls(
       block_type=block_type,
       payload=payload,
     )
 
-    update_information_block_request.additional_properties = d
-    return update_information_block_request
+    delete_legacy_arm.additional_properties = d
+    return delete_legacy_arm
 
   @property
   def additional_keys(self) -> list[str]:

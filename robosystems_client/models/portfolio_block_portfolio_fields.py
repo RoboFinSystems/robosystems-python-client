@@ -18,12 +18,15 @@ class PortfolioBlockPortfolioFields:
   """Fields settable on the portfolio core when creating a block.
 
   Attributes:
-      name (str):
-      description (None | str | Unset):
-      strategy (None | str | Unset):
-      inception_date (datetime.date | None | Unset):
-      base_currency (str | Unset):  Default: 'USD'.
-      entity_id (None | str | Unset):
+      name (str): Display name for the portfolio. 1-200 characters.
+      description (None | str | Unset): Free-text description of the portfolio.
+      strategy (None | str | Unset): Free-text strategy classification (e.g. `value`, `growth`, `income`). Open
+          vocabulary.
+      inception_date (datetime.date | None | Unset): Date the portfolio was established (YYYY-MM-DD).
+      base_currency (str | Unset): ISO 4217 currency code used for portfolio-level aggregates (e.g.
+          `total_cost_basis_dollars`). Default: 'USD'.
+      entity_id (None | str | Unset): ID of the owning entity (e.g. fund, trust, or person). Optional — leave unset
+          for unattributed portfolios.
   """
 
   name: str

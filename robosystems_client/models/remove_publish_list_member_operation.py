@@ -11,10 +11,11 @@ T = TypeVar("T", bound="RemovePublishListMemberOperation")
 
 @_attrs_define
 class RemovePublishListMemberOperation:
-  """
+  """Remove a single recipient from a publish list.
+
   Attributes:
-      list_id (str):
-      member_id (str):
+      list_id (str): The publish list.
+      member_id (str): The membership row to remove.
   """
 
   list_id: str

@@ -22,7 +22,9 @@ class DeletePortfolioBlockOperation:
 
       Attributes:
           portfolio_id (str): Target portfolio ID.
-          confirm_active_positions (bool | Unset):  Default: False.
+          confirm_active_positions (bool | Unset): Required acknowledgement when the portfolio has active positions. Set
+              `true` to consent to cascade-deleting them; leave `false` and the operation returns 409 if any active positions
+              exist. Default: False.
   """
 
   portfolio_id: str

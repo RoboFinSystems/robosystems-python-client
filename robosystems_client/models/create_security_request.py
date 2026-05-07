@@ -17,16 +17,31 @@ T = TypeVar("T", bound="CreateSecurityRequest")
 
 @_attrs_define
 class CreateSecurityRequest:
-  """
-  Attributes:
-      name (str):
-      security_type (str):
-      entity_id (None | str | Unset):
-      source_graph_id (None | str | Unset):
-      security_subtype (None | str | Unset):
-      terms (CreateSecurityRequestTerms | Unset):
-      authorized_shares (int | None | Unset):
-      outstanding_shares (int | None | Unset):
+  """CQRS body for `POST /operations/create-security`.
+
+  Mints a new security as Master Data — referenced by positions, never
+  created inline by portfolio operations. The `terms` blob carries
+  instrument-specific shape (liquidation preference, strike price,
+  vesting) used by future waterfall-distribution modeling.
+
+      Attributes:
+          name (str): Display name for the security (e.g. `Common Stock Class A`, `Series A Preferred`). 1-200 characters.
+          security_type (str): Instrument family. Open vocabulary — common values: `common_stock`, `preferred_stock`,
+              `warrant`, `convertible_note`, `safe`, `option`, `llc_unit`, `lp_interest`, `restricted_stock_unit`.
+          entity_id (None | str | Unset): ID of the issuing entity. Optional only if `source_graph_id` is set (pre-
+              association before the entity is finalized).
+          source_graph_id (None | str | Unset): Optional pre-association to a tenant company graph. Lets you mint
+              securities for an entity that hasn't been promoted to a real `entity_id` yet.
+          security_subtype (None | str | Unset): Free-text refinement of `security_type` (e.g. `class_a`, `series_a`,
+              `series_seed`). No vocabulary enforcement.
+          terms (CreateSecurityRequestTerms | Unset): Instrument-specific terms blob (JSONB). Shape depends on
+              `security_type` — common keys include `liquidation_preference`, `strike_price_cents`, `discount_pct`,
+              `valuation_cap_cents`, `maturity_date`, `vesting`. Used by future waterfall-distribution modeling; treat as
+              authoritative storage for instrument mechanics.
+          authorized_shares (int | None | Unset): Total shares the issuer is authorized to issue for this class. `null`
+              for instruments where shares aren't a meaningful unit (e.g. convertible notes pre-conversion).
+          outstanding_shares (int | None | Unset): Shares currently issued and outstanding. Should be ≤
+              `authorized_shares` when both are set.
   """
 
   name: str

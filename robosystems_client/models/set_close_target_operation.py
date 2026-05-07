@@ -15,7 +15,7 @@ T = TypeVar("T", bound="SetCloseTargetOperation")
 class SetCloseTargetOperation:
   """
   Attributes:
-      period (str): Target period in YYYY-MM format
+      period (str): Target period in YYYY-MM format. Must be > current `closed_through`.
       note (None | str | Unset): Free-form note attached to the audit event
   """
 

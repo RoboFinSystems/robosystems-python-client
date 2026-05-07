@@ -8,7 +8,9 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_fiscal_calendar_response import (
+  OperationEnvelopeFiscalCalendarResponse,
+)
 from ...models.set_close_target_operation import SetCloseTargetOperation
 from ...types import UNSET, Response, Unset
 
@@ -40,9 +42,11 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> (
+  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeFiscalCalendarResponse.from_dict(response.json())
 
     return response_200
 
@@ -94,7 +98,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,11 +115,15 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: SetCloseTargetOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
+]:
   """Set Close Target
 
-   Period format: YYYY-MM. The close target is the user-controlled goal date, distinct from
-  `closed_through` (what's actually closed).
+   Set the user-controlled goal period for closing (`close_target`). Format: YYYY-MM. Distinct from
+  `closed_through` (what's actually locked) — setting a target doesn't close anything; call `close-
+  period` for that. The catch-up sequence between `closed_through` and this target appears on the
+  response's `fiscal_calendar.catch_up_sequence`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -128,7 +138,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse]
   """
 
   kwargs = _get_kwargs(
@@ -150,11 +160,15 @@ def sync(
   client: AuthenticatedClient,
   body: SetCloseTargetOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> (
+  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse | None
+):
   """Set Close Target
 
-   Period format: YYYY-MM. The close target is the user-controlled goal date, distinct from
-  `closed_through` (what's actually closed).
+   Set the user-controlled goal period for closing (`close_target`). Format: YYYY-MM. Distinct from
+  `closed_through` (what's actually locked) — setting a target doesn't close anything; call `close-
+  period` for that. The catch-up sequence between `closed_through` and this target appears on the
+  response's `fiscal_calendar.catch_up_sequence`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -169,7 +183,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
   """
 
   return sync_detailed(
@@ -186,11 +200,15 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: SetCloseTargetOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
+]:
   """Set Close Target
 
-   Period format: YYYY-MM. The close target is the user-controlled goal date, distinct from
-  `closed_through` (what's actually closed).
+   Set the user-controlled goal period for closing (`close_target`). Format: YYYY-MM. Distinct from
+  `closed_through` (what's actually locked) — setting a target doesn't close anything; call `close-
+  period` for that. The catch-up sequence between `closed_through` and this target appears on the
+  response's `fiscal_calendar.catch_up_sequence`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -205,7 +223,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse]
   """
 
   kwargs = _get_kwargs(
@@ -225,11 +243,15 @@ async def asyncio(
   client: AuthenticatedClient,
   body: SetCloseTargetOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> (
+  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse | None
+):
   """Set Close Target
 
-   Period format: YYYY-MM. The close target is the user-controlled goal date, distinct from
-  `closed_through` (what's actually closed).
+   Set the user-controlled goal period for closing (`close_target`). Format: YYYY-MM. Distinct from
+  `closed_through` (what's actually locked) — setting a target doesn't close anything; call `close-
+  period` for that. The catch-up sequence between `closed_through` and this target appears on the
+  response's `fiscal_calendar.catch_up_sequence`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -244,7 +266,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
   """
 
   return (

@@ -19,18 +19,36 @@ T = TypeVar("T", bound="CreateReportRequest")
 
 @_attrs_define
 class CreateReportRequest:
-  """
-  Attributes:
-      name (str): Report name
-      mapping_id (str): Mapping structure ID for CoA→GAAP rollup
-      period_start (datetime.date): Period start date (inclusive)
-      period_end (datetime.date): Period end date (inclusive)
-      taxonomy_id (str | Unset): Taxonomy ID — determines which structures are available Default:
-          'tax_usgaap_reporting'.
-      period_type (str | Unset): Period type: monthly, quarterly, annual Default: 'quarterly'.
-      comparative (bool | Unset): Include prior period comparison Default: True.
-      periods (list[PeriodSpec] | None | Unset): Multi-period columns. Overrides period_start/period_end/comparative
-          when set.
+  """Generate report facts from the ledger and publish a Report definition.
+
+  The report is materialized synchronously: we resolve the taxonomy +
+  CoA mapping, roll up GL facts into reportable concepts, attach them
+  to a fresh ``Report`` row, evaluate any reporting-rule structures
+  (cell-level checks), and stamp ``generation_status='published'``.
+  Subsequent ``regenerate-report`` calls re-run the same pipeline against
+  the latest ledger state without creating a new Report row.
+
+  ``period_start``/``period_end``/``comparative`` is the simple path
+  (auto-derives current + prior period). For multi-column reports
+  (YTD-by-quarter, multi-year) supply ``periods`` explicitly — when
+  set, ``period_start``/``period_end``/``comparative`` are ignored as
+  inputs to period generation.
+
+      Attributes:
+          name (str): Human-readable report name shown in lists and headers.
+          mapping_id (str): Mapping structure that rolls up the tenant's chart of accounts to the taxonomy's reporting
+              concepts. Created via `create-mapping-association` / `auto-map-elements`.
+          period_start (datetime.date): Current-period start (inclusive). Ignored when `periods` is supplied.
+          period_end (datetime.date): Current-period end (inclusive). Must be >= `period_start`. Ignored when `periods` is
+              supplied.
+          taxonomy_id (str | Unset): Taxonomy that defines the structures (BS / IS / CF / Equity / Schedules) this report
+              can render. Defaults to the platform US GAAP reporting taxonomy. Default: 'tax_usgaap_reporting'.
+          period_type (str | Unset): Period cadence: `monthly`, `quarterly`, or `annual`. Default: 'quarterly'.
+          comparative (bool | Unset): When true, automatically generates a prior-period column (same length as the current
+              period). Ignored when `periods` is supplied. Default: True.
+          periods (list[PeriodSpec] | None | Unset): Explicit period columns. When set, overrides
+              `period_start`/`period_end`/`comparative`. Use for multi-period layouts (YTD-by-quarter, multi-year, custom
+              rolling windows).
   """
 
   name: str

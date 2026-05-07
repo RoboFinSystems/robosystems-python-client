@@ -11,10 +11,12 @@ T = TypeVar("T", bound="AddPublishListMembersOperation")
 
 @_attrs_define
 class AddPublishListMembersOperation:
-  """
+  """Add recipient graphs to a publish list.
+
   Attributes:
-      target_graph_ids (list[str]): Graph IDs to add to this list
-      list_id (str):
+      target_graph_ids (list[str]): Graph IDs to add. Each must exist and have the same extension (roboledger /
+          roboinvestor) enabled. Self-graph rejected.
+      list_id (str): The publish list to add members to.
   """
 
   target_graph_ids: list[str]

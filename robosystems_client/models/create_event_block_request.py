@@ -43,19 +43,26 @@ class CreateEventBlockRequest:
       event_class (CreateEventBlockRequestEventClass | Unset): REA event class. 'economic' events change resources and
           drive GL postings; 'support' events are audit-trail / value-chain primitives (typically captured with
           apply_handlers=False). Default: CreateEventBlockRequestEventClass.ECONOMIC.
-      agent_id (None | str | Unset): Counterparty agent id
-      resource_type (CreateEventBlockRequestResourceTypeType0 | None | Unset): REA resource kind. One of: goods,
-          services, money, right, obligation, information, labor.
-      resource_element_id (None | str | Unset): Specific element being exchanged, if applicable
+      agent_id (None | str | Unset): ID of the counterparty agent (customer, vendor, employee, lender) involved in the
+          event. `null` for internal-only events.
+      resource_type (CreateEventBlockRequestResourceTypeType0 | None | Unset): REA resource kind being exchanged. One
+          of: `goods`, `services`, `money`, `right`, `obligation`, `information`, `labor`.
+      resource_element_id (None | str | Unset): ID of the specific element being exchanged, when known (e.g. the cash
+          account for a treasury movement, the inventory item for a sale).
       effective_at (datetime.datetime | None | Unset): Accounting recognition date, if different from occurred_at
       external_id (None | str | Unset): Source-system dedup key. (source, external_id) is enforced unique when
           external_id is provided, so retries from external adapters are idempotent at the DB level.
       external_url (None | str | Unset): Deep link back to source-system record
-      amount (int | None | Unset): Cents, signed
-      currency (str | Unset): ISO 4217 currency code Default: 'USD'.
-      description (None | str | Unset):
-      metadata (CreateEventBlockRequestMetadata | Unset): Event-type-specific payload
-      dimension_ids (list[str] | Unset):
+      amount (int | None | Unset): Economic value of the event in **cents** of `currency`, signed. Sign convention
+          follows the perspective of the entity that owns the graph: inflows positive, outflows negative. `null` for non-
+          economic events (e.g. `event_class='support'`).
+      currency (str | Unset): ISO 4217 currency code for `amount`. Default: 'USD'.
+      description (None | str | Unset): Free-text human-readable summary of the event.
+      metadata (CreateEventBlockRequestMetadata | Unset): Free-form payload, opaque to the event surface. When
+          `apply_handlers=True`, the matched handler's metadata schema validates this dict — required keys depend on the
+          handler registered for `event_type`. Use `preview-event-block` to discover the expected shape without writing.
+      dimension_ids (list[str] | Unset): IDs of dimension members tagging this event (e.g. department, fund, project).
+          Propagate to the GL entries produced by the handler.
       obligated_by_event_id (None | str | Unset): Forward-materialization link: the event that scheduled or obligated
           this one (e.g. depreciation entries point at the asset_acquired event).
       discharges_event_id (None | str | Unset): Settlement link: the obligation this event discharges (e.g.

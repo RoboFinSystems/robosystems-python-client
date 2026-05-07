@@ -1,17 +1,13 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.operation_envelope_status import OperationEnvelopeStatus
 from ..types import UNSET, Unset
-
-if TYPE_CHECKING:
-  from ..models.operation_envelope_result_type_0 import OperationEnvelopeResultType0
-
 
 T = TypeVar("T", bound="OperationEnvelope")
 
@@ -30,6 +26,11 @@ class OperationEnvelope:
   endpoint until completion.  Failed dispatches still mint an
   ``operation_id`` so the audit log and any partial SSE events stay
   correlatable.
+
+  ``TResult`` parameterizes the ``result`` field so per-op response shapes
+  surface in OpenAPI. Operations that pin ``OperationSpec.result_type`` get
+  ``OperationEnvelope[YourEnvelope]`` as their response model; ops that
+  don't keep the default ``Any`` shape (`result: any | null` on the wire).
 
   Fields:
   - ``operation``: kebab-case command name (e.g. ``close-period``)
@@ -51,7 +52,7 @@ class OperationEnvelope:
           operation_id (str): op_-prefixed ULID for audit and SSE correlation
           status (OperationEnvelopeStatus): Operation lifecycle state
           at (str): ISO-8601 UTC timestamp
-          result (list[Any] | None | OperationEnvelopeResultType0 | Unset): Command-specific result payload
+          result (Any | None | Unset): Command-specific result payload
           created_by (None | str | Unset): User ID that initiated the operation (null for legacy callers)
           idempotent_replay (bool | Unset): True when this envelope came from the idempotency cache — the underlying
               command did not execute again. False on fresh executions. Default: False.
@@ -61,14 +62,12 @@ class OperationEnvelope:
   operation_id: str
   status: OperationEnvelopeStatus
   at: str
-  result: list[Any] | None | OperationEnvelopeResultType0 | Unset = UNSET
+  result: Any | None | Unset = UNSET
   created_by: None | str | Unset = UNSET
   idempotent_replay: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    from ..models.operation_envelope_result_type_0 import OperationEnvelopeResultType0
-
     operation = self.operation
 
     operation_id = self.operation_id
@@ -77,14 +76,9 @@ class OperationEnvelope:
 
     at = self.at
 
-    result: dict[str, Any] | list[Any] | None | Unset
+    result: Any | None | Unset
     if isinstance(self.result, Unset):
       result = UNSET
-    elif isinstance(self.result, OperationEnvelopeResultType0):
-      result = self.result.to_dict()
-    elif isinstance(self.result, list):
-      result = self.result
-
     else:
       result = self.result
 
@@ -117,8 +111,6 @@ class OperationEnvelope:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.operation_envelope_result_type_0 import OperationEnvelopeResultType0
-
     d = dict(src_dict)
     operation = d.pop("operation")
 
@@ -128,30 +120,12 @@ class OperationEnvelope:
 
     at = d.pop("at")
 
-    def _parse_result(
-      data: object,
-    ) -> list[Any] | None | OperationEnvelopeResultType0 | Unset:
+    def _parse_result(data: object) -> Any | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      try:
-        if not isinstance(data, dict):
-          raise TypeError()
-        result_type_0 = OperationEnvelopeResultType0.from_dict(data)
-
-        return result_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      try:
-        if not isinstance(data, list):
-          raise TypeError()
-        result_type_1 = cast(list[Any], data)
-
-        return result_type_1
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(list[Any] | None | OperationEnvelopeResultType0 | Unset, data)
+      return cast(Any | None | Unset, data)
 
     result = _parse_result(d.pop("result", UNSET))
 

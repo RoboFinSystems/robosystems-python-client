@@ -8,7 +8,9 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_event_handler_request import CreateEventHandlerRequest
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_event_handler_response import (
+  OperationEnvelopeEventHandlerResponse,
+)
 from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
 
@@ -40,9 +42,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeEventHandlerResponse
+  | OperationError
+  | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeEventHandlerResponse.from_dict(response.json())
 
     return response_200
 
@@ -90,7 +98,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -105,7 +115,9 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
+]:
   """Create Event Handler
 
    Define a rule that fires GL transactions when a matching event block is created with
@@ -120,14 +132,26 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateEventHandlerRequest):
+      body (CreateEventHandlerRequest): Register a new event-type → transaction-template rule.
+
+          When ``create-event-block`` runs with ``apply_handlers=True``, the
+          registry resolves the *highest-priority active* handler whose match
+          criteria all match the event, then evaluates the
+          ``transaction_template`` to produce GL rows. Match precedence: among
+          active handlers for the same ``event_type``, the one with the most
+          specific match (more match fields satisfied) wins; ties broken by
+          ``priority`` desc, then ``created_at`` asc.
+
+          All match fields except ``event_type`` are optional — leaving them
+          unset matches anything. Use ``match_metadata_expression`` for
+          fine-grained discrimination (e.g. only payroll categories).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -149,7 +173,13 @@ def sync(
   client: AuthenticatedClient,
   body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeEventHandlerResponse
+  | OperationError
+  | None
+):
   """Create Event Handler
 
    Define a rule that fires GL transactions when a matching event block is created with
@@ -164,14 +194,26 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateEventHandlerRequest):
+      body (CreateEventHandlerRequest): Register a new event-type → transaction-template rule.
+
+          When ``create-event-block`` runs with ``apply_handlers=True``, the
+          registry resolves the *highest-priority active* handler whose match
+          criteria all match the event, then evaluates the
+          ``transaction_template`` to produce GL rows. Match precedence: among
+          active handlers for the same ``event_type``, the one with the most
+          specific match (more match fields satisfied) wins; ties broken by
+          ``priority`` desc, then ``created_at`` asc.
+
+          All match fields except ``event_type`` are optional — leaving them
+          unset matches anything. Use ``match_metadata_expression`` for
+          fine-grained discrimination (e.g. only payroll categories).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
   """
 
   return sync_detailed(
@@ -188,7 +230,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
+]:
   """Create Event Handler
 
    Define a rule that fires GL transactions when a matching event block is created with
@@ -203,14 +247,26 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateEventHandlerRequest):
+      body (CreateEventHandlerRequest): Register a new event-type → transaction-template rule.
+
+          When ``create-event-block`` runs with ``apply_handlers=True``, the
+          registry resolves the *highest-priority active* handler whose match
+          criteria all match the event, then evaluates the
+          ``transaction_template`` to produce GL rows. Match precedence: among
+          active handlers for the same ``event_type``, the one with the most
+          specific match (more match fields satisfied) wins; ties broken by
+          ``priority`` desc, then ``created_at`` asc.
+
+          All match fields except ``event_type`` are optional — leaving them
+          unset matches anything. Use ``match_metadata_expression`` for
+          fine-grained discrimination (e.g. only payroll categories).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -230,7 +286,13 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateEventHandlerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeEventHandlerResponse
+  | OperationError
+  | None
+):
   """Create Event Handler
 
    Define a rule that fires GL transactions when a matching event block is created with
@@ -245,14 +307,26 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateEventHandlerRequest):
+      body (CreateEventHandlerRequest): Register a new event-type → transaction-template rule.
+
+          When ``create-event-block`` runs with ``apply_handlers=True``, the
+          registry resolves the *highest-priority active* handler whose match
+          criteria all match the event, then evaluates the
+          ``transaction_template`` to produce GL rows. Match precedence: among
+          active handlers for the same ``event_type``, the one with the most
+          specific match (more match fields satisfied) wins; ties broken by
+          ``priority`` desc, then ``created_at`` asc.
+
+          All match fields except ``event_type`` are optional — leaving them
+          unset matches anything. Use ``match_metadata_expression`` for
+          fine-grained discrimination (e.g. only payroll categories).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeEventHandlerResponse | OperationError
   """
 
   return (

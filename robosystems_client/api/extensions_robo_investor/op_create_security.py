@@ -8,7 +8,9 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_security_request import CreateSecurityRequest
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_security_response import (
+  OperationEnvelopeSecurityResponse,
+)
 from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
 
@@ -40,9 +42,11 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeSecurityResponse.from_dict(response.json())
 
     return response_200
 
@@ -90,7 +94,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -105,7 +111,9 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateSecurityRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError
+]:
   """Create Security
 
    Register a security (common stock, preferred stock, warrant, convertible note, etc.) owned by this
@@ -118,14 +126,19 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateSecurityRequest):
+      body (CreateSecurityRequest): CQRS body for `POST /operations/create-security`.
+
+          Mints a new security as Master Data — referenced by positions, never
+          created inline by portfolio operations. The `terms` blob carries
+          instrument-specific shape (liquidation preference, strike price,
+          vesting) used by future waterfall-distribution modeling.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -147,7 +160,9 @@ def sync(
   client: AuthenticatedClient,
   body: CreateSecurityRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError | None
+):
   """Create Security
 
    Register a security (common stock, preferred stock, warrant, convertible note, etc.) owned by this
@@ -160,14 +175,19 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateSecurityRequest):
+      body (CreateSecurityRequest): CQRS body for `POST /operations/create-security`.
+
+          Mints a new security as Master Data — referenced by positions, never
+          created inline by portfolio operations. The `terms` blob carries
+          instrument-specific shape (liquidation preference, strike price,
+          vesting) used by future waterfall-distribution modeling.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError
   """
 
   return sync_detailed(
@@ -184,7 +204,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateSecurityRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError
+]:
   """Create Security
 
    Register a security (common stock, preferred stock, warrant, convertible note, etc.) owned by this
@@ -197,14 +219,19 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateSecurityRequest):
+      body (CreateSecurityRequest): CQRS body for `POST /operations/create-security`.
+
+          Mints a new security as Master Data — referenced by positions, never
+          created inline by portfolio operations. The `terms` blob carries
+          instrument-specific shape (liquidation preference, strike price,
+          vesting) used by future waterfall-distribution modeling.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -224,7 +251,9 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateSecurityRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError | None
+):
   """Create Security
 
    Register a security (common stock, preferred stock, warrant, convertible note, etc.) owned by this
@@ -237,14 +266,19 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateSecurityRequest):
+      body (CreateSecurityRequest): CQRS body for `POST /operations/create-security`.
+
+          Mints a new security as Master Data — referenced by positions, never
+          created inline by portfolio operations. The `terms` blob carries
+          instrument-specific shape (liquidation preference, strike price,
+          vesting) used by future waterfall-distribution modeling.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeSecurityResponse | OperationError
   """
 
   return (

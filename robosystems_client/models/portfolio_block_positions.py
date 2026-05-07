@@ -22,9 +22,12 @@ class PortfolioBlockPositions:
   """Position deltas applied atomically inside `update-portfolio-block`.
 
   Attributes:
-      add (list[PortfolioBlockPositionAdd] | Unset):
-      update (list[PortfolioBlockPositionUpdate] | Unset):
-      dispose (list[PortfolioBlockPositionDispose] | Unset):
+      add (list[PortfolioBlockPositionAdd] | Unset): New positions to mint inside this portfolio. Each references an
+          existing `security_id`.
+      update (list[PortfolioBlockPositionUpdate] | Unset): Patches to existing positions, addressed by position `id`.
+          Unset fields on each entry are left unchanged.
+      dispose (list[PortfolioBlockPositionDispose] | Unset): Positions to soft-dispose, addressed by position `id`.
+          Status flips to `disposed` and `disposition_date` is stamped.
   """
 
   add: list[PortfolioBlockPositionAdd] | Unset = UNSET

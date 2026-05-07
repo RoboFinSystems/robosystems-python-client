@@ -10,7 +10,9 @@ from ...models.create_mapping_association_operation import (
   CreateMappingAssociationOperation,
 )
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_association_response import (
+  OperationEnvelopeAssociationResponse,
+)
 from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
 
@@ -42,9 +44,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeAssociationResponse
+  | OperationError
+  | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeAssociationResponse.from_dict(response.json())
 
     return response_200
 
@@ -92,7 +100,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeAssociationResponse | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -107,10 +117,13 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateMappingAssociationOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeAssociationResponse | OperationError
+]:
   """Create Mapping Association
 
-   Link a chart-of-accounts element to a US GAAP reporting concept.
+   Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
+  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -118,18 +131,19 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
-          mapping-association`.
+      body (CreateMappingAssociationOperation): Create one CoA → reporting-concept mapping edge.
 
-          Bundles the target mapping structure's `mapping_id` with the association
-          payload so REST + MCP share a single body type via the registrar.
+          This is the iterative, AI-assisted craft path. Each call adds a single
+          association to the target mapping structure. Use `auto-map-elements`
+          to create many at once via the MappingAgent. Reject duplicates: if
+          the (from, to, type) tuple already exists, the call returns 409.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeAssociationResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -151,10 +165,17 @@ def sync(
   client: AuthenticatedClient,
   body: CreateMappingAssociationOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeAssociationResponse
+  | OperationError
+  | None
+):
   """Create Mapping Association
 
-   Link a chart-of-accounts element to a US GAAP reporting concept.
+   Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
+  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -162,18 +183,19 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
-          mapping-association`.
+      body (CreateMappingAssociationOperation): Create one CoA → reporting-concept mapping edge.
 
-          Bundles the target mapping structure's `mapping_id` with the association
-          payload so REST + MCP share a single body type via the registrar.
+          This is the iterative, AI-assisted craft path. Each call adds a single
+          association to the target mapping structure. Use `auto-map-elements`
+          to create many at once via the MappingAgent. Reject duplicates: if
+          the (from, to, type) tuple already exists, the call returns 409.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeAssociationResponse | OperationError
   """
 
   return sync_detailed(
@@ -190,10 +212,13 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateMappingAssociationOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeAssociationResponse | OperationError
+]:
   """Create Mapping Association
 
-   Link a chart-of-accounts element to a US GAAP reporting concept.
+   Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
+  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -201,18 +226,19 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
-          mapping-association`.
+      body (CreateMappingAssociationOperation): Create one CoA → reporting-concept mapping edge.
 
-          Bundles the target mapping structure's `mapping_id` with the association
-          payload so REST + MCP share a single body type via the registrar.
+          This is the iterative, AI-assisted craft path. Each call adds a single
+          association to the target mapping structure. Use `auto-map-elements`
+          to create many at once via the MappingAgent. Reject duplicates: if
+          the (from, to, type) tuple already exists, the call returns 409.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeAssociationResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -232,10 +258,17 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateMappingAssociationOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeAssociationResponse
+  | OperationError
+  | None
+):
   """Create Mapping Association
 
-   Link a chart-of-accounts element to a US GAAP reporting concept.
+   Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
+  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -243,18 +276,19 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateMappingAssociationOperation): CQRS-shaped body for `POST /operations/create-
-          mapping-association`.
+      body (CreateMappingAssociationOperation): Create one CoA → reporting-concept mapping edge.
 
-          Bundles the target mapping structure's `mapping_id` with the association
-          payload so REST + MCP share a single body type via the registrar.
+          This is the iterative, AI-assisted craft path. Each call adds a single
+          association to the target mapping structure. Use `auto-map-elements`
+          to create many at once via the MappingAgent. Reject duplicates: if
+          the (from, to, type) tuple already exists, the call returns 409.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeAssociationResponse | OperationError
   """
 
   return (

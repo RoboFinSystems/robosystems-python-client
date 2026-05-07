@@ -11,10 +11,17 @@ T = TypeVar("T", bound="AutoMapElementsOperation")
 
 @_attrs_define
 class AutoMapElementsOperation:
-  """Request body for the auto-map-elements async operation.
+  """Run the MappingAgent over a mapping structure (async).
 
-  Attributes:
-      mapping_id (str):
+  The MappingAgent walks every unmapped CoA element and proposes
+  associations to reporting concepts. Confidence thresholds: ≥0.90
+  auto-approved (association created), 0.70-0.89 flagged for review
+  (created with `confidence` set; surface it in your UI), <0.70 skipped.
+  Returns a `pending` envelope immediately; subscribe to the SSE stream
+  for progress.
+
+      Attributes:
+          mapping_id (str): The mapping structure to populate.
   """
 
   mapping_id: str

@@ -11,7 +11,11 @@ T = TypeVar("T", bound="CreateEventBlockRequestMetadata")
 
 @_attrs_define
 class CreateEventBlockRequestMetadata:
-  """Event-type-specific payload"""
+  """Free-form payload, opaque to the event surface. When `apply_handlers=True`, the matched handler's metadata schema
+  validates this dict — required keys depend on the handler registered for `event_type`. Use `preview-event-block` to
+  discover the expected shape without writing.
+
+  """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

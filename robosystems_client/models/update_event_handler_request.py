@@ -23,21 +23,32 @@ T = TypeVar("T", bound="UpdateEventHandlerRequest")
 
 @_attrs_define
 class UpdateEventHandlerRequest:
-  """
-  Attributes:
-      event_handler_id (str):
-      name (None | str | Unset):
-      description (None | str | Unset):
-      event_category (None | str | Unset):
-      match_source (None | str | Unset):
-      match_agent_type (None | str | Unset):
-      match_resource_type (None | str | Unset):
-      match_metadata_expression (None | Unset | UpdateEventHandlerRequestMatchMetadataExpressionType0):
-      transaction_template (None | TransactionTemplate | Unset):
-      priority (int | None | Unset):
-      is_active (bool | None | Unset):
-      approve (bool | None | Unset):
-      metadata_patch (UpdateEventHandlerRequestMetadataPatch | Unset):
+  """Update an existing event handler. All fields except
+  ``event_handler_id`` are optional — pass only what changes.
+
+  ``transaction_template`` is **fully replaced** when supplied (no
+  partial template patches). ``metadata_patch`` does deep-merge into
+  the existing metadata. ``approve=true`` sets ``approved_by`` and
+  ``approved_at``; ``approve=false`` clears them.
+
+      Attributes:
+          event_handler_id (str): The handler to update.
+          name (None | str | Unset): New name. Omit to leave unchanged.
+          description (None | str | Unset): New description.
+          event_category (None | str | Unset):
+          match_source (None | str | Unset):
+          match_agent_type (None | str | Unset):
+          match_resource_type (None | str | Unset):
+          match_metadata_expression (None | Unset | UpdateEventHandlerRequestMatchMetadataExpressionType0):
+          transaction_template (None | TransactionTemplate | Unset): Replacement template. Whole-template replace — no
+              partial patch. Omit to leave unchanged.
+          priority (int | None | Unset):
+          is_active (bool | None | Unset): Toggle activation. False removes the handler from match-time consideration
+              without deleting it.
+          approve (bool | None | Unset): Approval shortcut: True stamps approved_by/approved_at to the current user; False
+              clears both.
+          metadata_patch (UpdateEventHandlerRequestMetadataPatch | Unset): Deep-merged into the existing handler.metadata.
+              Pass `{}` to leave metadata unchanged.
   """
 
   event_handler_id: str

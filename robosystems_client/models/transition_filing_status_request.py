@@ -19,8 +19,9 @@ class TransitionFilingStatusRequest:
   audit fields land cleanly.
 
       Attributes:
-          report_id (str):
-          target_status (str): under_review | archived
+          report_id (str): The Report to transition.
+          target_status (str): Target lifecycle state: `under_review` (submit a draft for review) or `archived` (supersede
+              / retire a filed report). Reaching `filed` goes through `file-report` so audit fields land cleanly.
   """
 
   report_id: str

@@ -9,7 +9,9 @@ from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.initialize_ledger_request import InitializeLedgerRequest
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_initialize_ledger_response import (
+  OperationEnvelopeInitializeLedgerResponse,
+)
 from ...types import UNSET, Response, Unset
 
 
@@ -40,9 +42,11 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> (
+  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeInitializeLedgerResponse.from_dict(response.json())
 
     return response_200
 
@@ -94,7 +98,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,7 +115,9 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: InitializeLedgerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
+]:
   """Initialize Ledger
 
    One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
@@ -120,14 +128,27 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (InitializeLedgerRequest):
+      body (InitializeLedgerRequest): One-time setup for a graph's fiscal calendar.
+
+          Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
+          ``earliest_data_period`` (or 24 months ago) through the current month,
+          and stamps periods on or before ``closed_through`` as already closed.
+          Subsequent calls return 409 — there's no re-initialize.
+
+          The two pointers it sets up:
+
+          - ``closed_through`` (system-maintained): the latest period whose
+            books are locked. Set on init for businesses with prior close
+            history; null for a fresh start.
+          - ``close_target`` (user-controlled): the goal date the user is
+            closing toward. Set independently via `set-close-target`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse]
   """
 
   kwargs = _get_kwargs(
@@ -149,7 +170,9 @@ def sync(
   client: AuthenticatedClient,
   body: InitializeLedgerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> (
+  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse | None
+):
   """Initialize Ledger
 
    One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
@@ -160,14 +183,27 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (InitializeLedgerRequest):
+      body (InitializeLedgerRequest): One-time setup for a graph's fiscal calendar.
+
+          Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
+          ``earliest_data_period`` (or 24 months ago) through the current month,
+          and stamps periods on or before ``closed_through`` as already closed.
+          Subsequent calls return 409 — there's no re-initialize.
+
+          The two pointers it sets up:
+
+          - ``closed_through`` (system-maintained): the latest period whose
+            books are locked. Set on init for businesses with prior close
+            history; null for a fresh start.
+          - ``close_target`` (user-controlled): the goal date the user is
+            closing toward. Set independently via `set-close-target`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
   """
 
   return sync_detailed(
@@ -184,7 +220,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: InitializeLedgerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
+]:
   """Initialize Ledger
 
    One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
@@ -195,14 +233,27 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (InitializeLedgerRequest):
+      body (InitializeLedgerRequest): One-time setup for a graph's fiscal calendar.
+
+          Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
+          ``earliest_data_period`` (or 24 months ago) through the current month,
+          and stamps periods on or before ``closed_through`` as already closed.
+          Subsequent calls return 409 — there's no re-initialize.
+
+          The two pointers it sets up:
+
+          - ``closed_through`` (system-maintained): the latest period whose
+            books are locked. Set on init for businesses with prior close
+            history; null for a fresh start.
+          - ``close_target`` (user-controlled): the goal date the user is
+            closing toward. Set independently via `set-close-target`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse]
   """
 
   kwargs = _get_kwargs(
@@ -222,7 +273,9 @@ async def asyncio(
   client: AuthenticatedClient,
   body: InitializeLedgerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> (
+  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse | None
+):
   """Initialize Ledger
 
    One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
@@ -233,14 +286,27 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (InitializeLedgerRequest):
+      body (InitializeLedgerRequest): One-time setup for a graph's fiscal calendar.
+
+          Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
+          ``earliest_data_period`` (or 24 months ago) through the current month,
+          and stamps periods on or before ``closed_through`` as already closed.
+          Subsequent calls return 409 — there's no re-initialize.
+
+          The two pointers it sets up:
+
+          - ``closed_through`` (system-maintained): the latest period whose
+            books are locked. Set on init for businesses with prior close
+            history; null for a fresh start.
+          - ``close_target`` (user-controlled): the goal date the user is
+            closing toward. Set independently via `set-close-target`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
   """
 
   return (

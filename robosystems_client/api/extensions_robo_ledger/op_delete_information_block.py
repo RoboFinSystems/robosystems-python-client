@@ -6,9 +6,12 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.delete_information_block_request import DeleteInformationBlockRequest
+from ...models.delete_legacy_arm import DeleteLegacyArm
+from ...models.delete_schedule_arm import DeleteScheduleArm
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_delete_information_block_response import (
+  OperationEnvelopeDeleteInformationBlockResponse,
+)
 from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
 
@@ -16,7 +19,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: DeleteInformationBlockRequest,
+  body: DeleteLegacyArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -30,7 +33,10 @@ def _get_kwargs(
     ),
   }
 
-  _kwargs["json"] = body.to_dict()
+  if isinstance(body, DeleteScheduleArm):
+    _kwargs["json"] = body.to_dict()
+  else:
+    _kwargs["json"] = body.to_dict()
 
   headers["Content-Type"] = "application/json"
 
@@ -40,9 +46,17 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeDeleteInformationBlockResponse
+  | OperationError
+  | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeDeleteInformationBlockResponse.from_dict(
+      response.json()
+    )
 
     return response_200
 
@@ -90,7 +104,12 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeDeleteInformationBlockResponse
+  | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -103,9 +122,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteInformationBlockRequest,
+  body: DeleteLegacyArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeDeleteInformationBlockResponse
+  | OperationError
+]:
   """Delete Information Block
 
    Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
@@ -118,18 +142,18 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteInformationBlockRequest): Generic delete request — mirrors
-          :class:`CreateInformationBlockRequest`.
-
-          Validated against the registry entry's ``delete_request_model``.
-          Block types that don't support deletion raise ``NotImplementedError``.
+      body (DeleteLegacyArm | DeleteScheduleArm): Delete an Information Block. The body is a
+          discriminated union on
+          `block_type` mirroring `CreateInformationBlockRequest`. The schedule
+          arm carries a fully typed delete payload; statement and metric arms
+          return HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeDeleteInformationBlockResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -149,9 +173,15 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteInformationBlockRequest,
+  body: DeleteLegacyArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeDeleteInformationBlockResponse
+  | OperationError
+  | None
+):
   """Delete Information Block
 
    Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
@@ -164,18 +194,18 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteInformationBlockRequest): Generic delete request — mirrors
-          :class:`CreateInformationBlockRequest`.
-
-          Validated against the registry entry's ``delete_request_model``.
-          Block types that don't support deletion raise ``NotImplementedError``.
+      body (DeleteLegacyArm | DeleteScheduleArm): Delete an Information Block. The body is a
+          discriminated union on
+          `block_type` mirroring `CreateInformationBlockRequest`. The schedule
+          arm carries a fully typed delete payload; statement and metric arms
+          return HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeDeleteInformationBlockResponse | OperationError
   """
 
   return sync_detailed(
@@ -190,9 +220,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteInformationBlockRequest,
+  body: DeleteLegacyArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeDeleteInformationBlockResponse
+  | OperationError
+]:
   """Delete Information Block
 
    Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
@@ -205,18 +240,18 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteInformationBlockRequest): Generic delete request — mirrors
-          :class:`CreateInformationBlockRequest`.
-
-          Validated against the registry entry's ``delete_request_model``.
-          Block types that don't support deletion raise ``NotImplementedError``.
+      body (DeleteLegacyArm | DeleteScheduleArm): Delete an Information Block. The body is a
+          discriminated union on
+          `block_type` mirroring `CreateInformationBlockRequest`. The schedule
+          arm carries a fully typed delete payload; statement and metric arms
+          return HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeDeleteInformationBlockResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -234,9 +269,15 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteInformationBlockRequest,
+  body: DeleteLegacyArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeDeleteInformationBlockResponse
+  | OperationError
+  | None
+):
   """Delete Information Block
 
    Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
@@ -249,18 +290,18 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteInformationBlockRequest): Generic delete request — mirrors
-          :class:`CreateInformationBlockRequest`.
-
-          Validated against the registry entry's ``delete_request_model``.
-          Block types that don't support deletion raise ``NotImplementedError``.
+      body (DeleteLegacyArm | DeleteScheduleArm): Delete an Information Block. The body is a
+          discriminated union on
+          `block_type` mirroring `CreateInformationBlockRequest`. The schedule
+          arm carries a fully typed delete payload; statement and metric arms
+          return HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeDeleteInformationBlockResponse | OperationError
   """
 
   return (

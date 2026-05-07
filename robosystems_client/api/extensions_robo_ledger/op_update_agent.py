@@ -7,7 +7,9 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_ledger_agent_response import (
+  OperationEnvelopeLedgerAgentResponse,
+)
 from ...models.operation_error import OperationError
 from ...models.update_agent_request import UpdateAgentRequest
 from ...types import UNSET, Response, Unset
@@ -40,9 +42,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeLedgerAgentResponse
+  | OperationError
+  | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeLedgerAgentResponse.from_dict(response.json())
 
     return response_200
 
@@ -90,7 +98,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeLedgerAgentResponse | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -105,7 +115,9 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeLedgerAgentResponse | OperationError
+]:
   """Update Agent
 
    Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
@@ -117,14 +129,16 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest):
+      body (UpdateAgentRequest): Patch an agent. All fields except ``agent_id`` are optional —
+          pass only what changes. ``metadata_patch`` is deep-merged into the
+          existing metadata dict.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeLedgerAgentResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -146,7 +160,13 @@ def sync(
   client: AuthenticatedClient,
   body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeLedgerAgentResponse
+  | OperationError
+  | None
+):
   """Update Agent
 
    Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
@@ -158,14 +178,16 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest):
+      body (UpdateAgentRequest): Patch an agent. All fields except ``agent_id`` are optional —
+          pass only what changes. ``metadata_patch`` is deep-merged into the
+          existing metadata dict.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeLedgerAgentResponse | OperationError
   """
 
   return sync_detailed(
@@ -182,7 +204,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeLedgerAgentResponse | OperationError
+]:
   """Update Agent
 
    Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
@@ -194,14 +218,16 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest):
+      body (UpdateAgentRequest): Patch an agent. All fields except ``agent_id`` are optional —
+          pass only what changes. ``metadata_patch`` is deep-merged into the
+          existing metadata dict.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeLedgerAgentResponse | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -221,7 +247,13 @@ async def asyncio(
   client: AuthenticatedClient,
   body: UpdateAgentRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeLedgerAgentResponse
+  | OperationError
+  | None
+):
   """Update Agent
 
    Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
@@ -233,14 +265,16 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest):
+      body (UpdateAgentRequest): Patch an agent. All fields except ``agent_id`` are optional —
+          pass only what changes. ``metadata_patch`` is deep-merged into the
+          existing metadata dict.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeLedgerAgentResponse | OperationError
   """
 
   return (

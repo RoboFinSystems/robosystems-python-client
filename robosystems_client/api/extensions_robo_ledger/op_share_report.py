@@ -8,7 +8,9 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_share_report_response import (
+  OperationEnvelopeShareReportResponse,
+)
 from ...models.share_report_operation import ShareReportOperation
 from ...types import UNSET, Response, Unset
 
@@ -40,9 +42,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeShareReportResponse.from_dict(response.json())
 
     return response_200
 
@@ -94,7 +96,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,10 +113,15 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: ShareReportOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse
+]:
   """Share Report
 
-   Only published reports can be shared. Sends the report to all members of the target publish list.
+   Pushes a published report to every member of the target publish list. Each share is an independent
+  copy: the report row + all its facts are cloned into the recipient's tenant schema with
+  `source_graph_id` / `source_report_id` provenance fields populated. Per-target outcomes (success or
+  error) surface in the response — share does not fail-fast across targets.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -120,14 +129,14 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ShareReportOperation):
+      body (ShareReportOperation): Share a published Report to every member of a publish list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -149,10 +158,13 @@ def sync(
   client: AuthenticatedClient,
   body: ShareReportOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse | None:
   """Share Report
 
-   Only published reports can be shared. Sends the report to all members of the target publish list.
+   Pushes a published report to every member of the target publish list. Each share is an independent
+  copy: the report row + all its facts are cloned into the recipient's tenant schema with
+  `source_graph_id` / `source_report_id` provenance fields populated. Per-target outcomes (success or
+  error) surface in the response — share does not fail-fast across targets.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -160,14 +172,14 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ShareReportOperation):
+      body (ShareReportOperation): Share a published Report to every member of a publish list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse
   """
 
   return sync_detailed(
@@ -184,10 +196,15 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: ShareReportOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse
+]:
   """Share Report
 
-   Only published reports can be shared. Sends the report to all members of the target publish list.
+   Pushes a published report to every member of the target publish list. Each share is an independent
+  copy: the report row + all its facts are cloned into the recipient's tenant schema with
+  `source_graph_id` / `source_report_id` provenance fields populated. Per-target outcomes (success or
+  error) surface in the response — share does not fail-fast across targets.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -195,14 +212,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ShareReportOperation):
+      body (ShareReportOperation): Share a published Report to every member of a publish list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -222,10 +239,13 @@ async def asyncio(
   client: AuthenticatedClient,
   body: ShareReportOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse | None:
   """Share Report
 
-   Only published reports can be shared. Sends the report to all members of the target publish list.
+   Pushes a published report to every member of the target publish list. Each share is an independent
+  copy: the report row + all its facts are cloned into the recipient's tenant schema with
+  `source_graph_id` / `source_report_id` provenance fields populated. Per-target outcomes (success or
+  error) surface in the response — share does not fail-fast across targets.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -233,14 +253,14 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ShareReportOperation):
+      body (ShareReportOperation): Share a published Report to every member of a publish list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeShareReportResponse
   """
 
   return (

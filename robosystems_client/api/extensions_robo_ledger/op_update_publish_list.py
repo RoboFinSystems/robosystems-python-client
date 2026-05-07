@@ -8,7 +8,9 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_publish_list_response import (
+  OperationEnvelopePublishListResponse,
+)
 from ...models.update_publish_list_operation import UpdatePublishListOperation
 from ...types import UNSET, Response, Unset
 
@@ -40,9 +42,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopePublishListResponse.from_dict(response.json())
 
     return response_200
 
@@ -94,7 +96,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,7 +113,9 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: UpdatePublishListOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse
+]:
   """Update Publish List
 
    Updates the publish list's `name` and/or `description`. Membership is managed via add/remove-member
@@ -121,14 +127,14 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdatePublishListOperation):
+      body (UpdatePublishListOperation): Update a publish list's metadata. Carries `list_id`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse]
   """
 
   kwargs = _get_kwargs(
@@ -150,7 +156,7 @@ def sync(
   client: AuthenticatedClient,
   body: UpdatePublishListOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse | None:
   """Update Publish List
 
    Updates the publish list's `name` and/or `description`. Membership is managed via add/remove-member
@@ -162,14 +168,14 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdatePublishListOperation):
+      body (UpdatePublishListOperation): Update a publish list's metadata. Carries `list_id`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse
   """
 
   return sync_detailed(
@@ -186,7 +192,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: UpdatePublishListOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse
+]:
   """Update Publish List
 
    Updates the publish list's `name` and/or `description`. Membership is managed via add/remove-member
@@ -198,14 +206,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdatePublishListOperation):
+      body (UpdatePublishListOperation): Update a publish list's metadata. Carries `list_id`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse]
   """
 
   kwargs = _get_kwargs(
@@ -225,7 +233,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: UpdatePublishListOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse | None:
   """Update Publish List
 
    Updates the publish list's `name` and/or `description`. Membership is managed via add/remove-member
@@ -237,14 +245,14 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdatePublishListOperation):
+      body (UpdatePublishListOperation): Update a publish list's metadata. Carries `list_id`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopePublishListResponse
   """
 
   return (

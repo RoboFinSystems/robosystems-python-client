@@ -15,7 +15,7 @@ class DeleteJournalEntryRequest:
   deleted — reverse them instead.
 
       Attributes:
-          entry_id (str):
+          entry_id (str): The draft entry to delete.
   """
 
   entry_id: str

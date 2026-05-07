@@ -23,15 +23,18 @@ class UpdateSecurityOperation:
 
   Attributes:
       security_id (str): Target security ID.
-      entity_id (None | str | Unset):
-      source_graph_id (None | str | Unset):
-      name (None | str | Unset):
-      security_type (None | str | Unset):
-      security_subtype (None | str | Unset):
-      terms (None | Unset | UpdateSecurityOperationTermsType0):
-      is_active (bool | None | Unset):
-      authorized_shares (int | None | Unset):
-      outstanding_shares (int | None | Unset):
+      entity_id (None | str | Unset): Reassign to a different issuing entity. Unset = unchanged.
+      source_graph_id (None | str | Unset): Update the pre-association tenant graph. Unset = unchanged.
+      name (None | str | Unset): New display name. Unset = unchanged.
+      security_type (None | str | Unset): New instrument family. Unset = unchanged. Reclassifying a security may
+          invalidate existing `terms` shape; the operation does not validate the cross-field consistency.
+      security_subtype (None | str | Unset): New subtype refinement. Unset = unchanged.
+      terms (None | Unset | UpdateSecurityOperationTermsType0): Replacement terms blob. Pass `null`/omit to leave
+          existing terms unchanged; pass `{}` to clear them.
+      is_active (bool | None | Unset): Active flag. Set `false` to soft-deactivate (positions remain addressable but
+          the security is hidden from active lookups).
+      authorized_shares (int | None | Unset): New authorized share count. Unset = unchanged.
+      outstanding_shares (int | None | Unset): New outstanding share count. Unset = unchanged.
   """
 
   security_id: str

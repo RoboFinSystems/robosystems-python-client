@@ -17,14 +17,23 @@ class LinkEntityTaxonomyRequest:
   """Link an entity to a taxonomy (creates the ENTITY_HAS_TAXONOMY edge).
 
   This is how a graph declares "this entity reports under this taxonomy."
-  For chart_of_accounts taxonomies, this tells the platform which CoA the
-  entity uses. For reporting taxonomies, which standard (us-gaap, ifrs).
+  For ``chart_of_accounts`` taxonomies, this tells the platform which CoA
+  the entity uses. For reporting taxonomies, which standard (us-gaap,
+  ifrs). Idempotent — re-linking returns the existing edge unchanged.
+
+  CoA blocks auto-link at create time; use this to switch the primary
+  CoA, link a reporting extension, or attach a custom ontology
+  explicitly.
 
       Attributes:
-          taxonomy_id (str):
-          basis (LinkEntityTaxonomyRequestBasis | Unset):  Default: LinkEntityTaxonomyRequestBasis.CHART_OF_ACCOUNTS.
-          is_primary (bool | Unset):  Default: True.
-          adoption_context (None | str | Unset):  Default: 'voluntary'.
+          taxonomy_id (str): The taxonomy to link to.
+          basis (LinkEntityTaxonomyRequestBasis | Unset): Linkage role: `chart_of_accounts` (the entity's CoA),
+              `reporting` (reporting standard like us-gaap), `mapping` (CoA→reporting rollup), `schedule` (schedule
+              structure). Default: LinkEntityTaxonomyRequestBasis.CHART_OF_ACCOUNTS.
+          is_primary (bool | Unset): Mark this as the primary linkage for the basis. False allows secondary attachments
+              (e.g. parallel reporting standards). Default: True.
+          adoption_context (None | str | Unset): Why the entity is reporting under this taxonomy (e.g. 'voluntary',
+              'regulatory', 'lender_requirement'). Default: 'voluntary'.
   """
 
   taxonomy_id: str

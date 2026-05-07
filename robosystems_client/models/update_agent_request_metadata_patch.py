@@ -11,7 +11,7 @@ T = TypeVar("T", bound="UpdateAgentRequestMetadataPatch")
 
 @_attrs_define
 class UpdateAgentRequestMetadataPatch:
-  """ """
+  """Deep-merged into agent.metadata. Pass `{}` to leave unchanged."""
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
