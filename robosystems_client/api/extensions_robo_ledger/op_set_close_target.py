@@ -7,7 +7,6 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope_fiscal_calendar_response import (
   OperationEnvelopeFiscalCalendarResponse,
 )
@@ -42,9 +41,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> (
-  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse | None
-):
+) -> ErrorResponse | OperationEnvelopeFiscalCalendarResponse | None:
   if response.status_code == 200:
     response_200 = OperationEnvelopeFiscalCalendarResponse.from_dict(response.json())
 
@@ -76,7 +73,7 @@ def _parse_response(
     return response_409
 
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -98,9 +95,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -115,9 +110,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: SetCloseTargetOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]:
   """Set Close Target
 
    Set the user-controlled goal period for closing (`close_target`). Format: YYYY-MM. Distinct from
@@ -138,7 +131,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse]
+      Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]
   """
 
   kwargs = _get_kwargs(
@@ -160,9 +153,7 @@ def sync(
   client: AuthenticatedClient,
   body: SetCloseTargetOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> (
-  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse | None
-):
+) -> ErrorResponse | OperationEnvelopeFiscalCalendarResponse | None:
   """Set Close Target
 
    Set the user-controlled goal period for closing (`close_target`). Format: YYYY-MM. Distinct from
@@ -183,7 +174,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
+      ErrorResponse | OperationEnvelopeFiscalCalendarResponse
   """
 
   return sync_detailed(
@@ -200,9 +191,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: SetCloseTargetOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]:
   """Set Close Target
 
    Set the user-controlled goal period for closing (`close_target`). Format: YYYY-MM. Distinct from
@@ -223,7 +212,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse]
+      Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]
   """
 
   kwargs = _get_kwargs(
@@ -243,9 +232,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: SetCloseTargetOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> (
-  ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse | None
-):
+) -> ErrorResponse | OperationEnvelopeFiscalCalendarResponse | None:
   """Set Close Target
 
    Set the user-controlled goal period for closing (`close_target`). Format: YYYY-MM. Distinct from
@@ -266,7 +253,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelopeFiscalCalendarResponse
+      ErrorResponse | OperationEnvelopeFiscalCalendarResponse
   """
 
   return (

@@ -7,7 +7,6 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...models.sync_connection_request import SyncConnectionRequest
 from ...types import UNSET, Response, Unset
@@ -42,7 +41,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | OperationEnvelope | None:
   if response.status_code == 202:
     response_202 = OperationEnvelope.from_dict(response.json())
 
@@ -74,7 +73,7 @@ def _parse_response(
     return response_409
 
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -100,7 +99,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -116,7 +115,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | OperationEnvelope]:
   """Sync Connection
 
    SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
@@ -134,7 +133,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[Any | ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -158,7 +157,7 @@ def sync(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | OperationEnvelope | None:
   """Sync Connection
 
    SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
@@ -176,7 +175,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError | OperationEnvelope
+      Any | ErrorResponse | OperationEnvelope
   """
 
   return sync_detailed(
@@ -195,7 +194,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[Any | ErrorResponse | OperationEnvelope]:
   """Sync Connection
 
    SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
@@ -213,7 +212,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[Any | ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -235,7 +234,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: SyncConnectionRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> Any | ErrorResponse | OperationEnvelope | None:
   """Sync Connection
 
    SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
@@ -253,7 +252,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError | OperationEnvelope
+      Any | ErrorResponse | OperationEnvelope
   """
 
   return (

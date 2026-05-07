@@ -1,16 +1,15 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.http_validation_error import HTTPValidationError
+from ...models.error_response import ErrorResponse
 from ...models.operation_envelope_journal_entry_response import (
   OperationEnvelopeJournalEntryResponse,
 )
-from ...models.operation_error import OperationError
 from ...models.update_journal_entry_request import UpdateJournalEntryRequest
 from ...types import UNSET, Response, Unset
 
@@ -42,52 +41,50 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> (
-  Any
-  | HTTPValidationError
-  | OperationEnvelopeJournalEntryResponse
-  | OperationError
-  | None
-):
+) -> ErrorResponse | OperationEnvelopeJournalEntryResponse | None:
   if response.status_code == 200:
     response_200 = OperationEnvelopeJournalEntryResponse.from_dict(response.json())
 
     return response_200
 
   if response.status_code == 400:
-    response_400 = OperationError.from_dict(response.json())
+    response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
 
   if response.status_code == 401:
-    response_401 = cast(Any, None)
+    response_401 = ErrorResponse.from_dict(response.json())
+
     return response_401
 
   if response.status_code == 403:
-    response_403 = cast(Any, None)
+    response_403 = ErrorResponse.from_dict(response.json())
+
     return response_403
 
   if response.status_code == 404:
-    response_404 = OperationError.from_dict(response.json())
+    response_404 = ErrorResponse.from_dict(response.json())
 
     return response_404
 
   if response.status_code == 409:
-    response_409 = OperationError.from_dict(response.json())
+    response_409 = ErrorResponse.from_dict(response.json())
 
     return response_409
 
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
   if response.status_code == 429:
-    response_429 = cast(Any, None)
+    response_429 = ErrorResponse.from_dict(response.json())
+
     return response_429
 
   if response.status_code == 500:
-    response_500 = cast(Any, None)
+    response_500 = ErrorResponse.from_dict(response.json())
+
     return response_500
 
   if client.raise_on_unexpected_status:
@@ -98,9 +95,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[
-  Any | HTTPValidationError | OperationEnvelopeJournalEntryResponse | OperationError
-]:
+) -> Response[ErrorResponse | OperationEnvelopeJournalEntryResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -115,9 +110,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: UpdateJournalEntryRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  Any | HTTPValidationError | OperationEnvelopeJournalEntryResponse | OperationError
-]:
+) -> Response[ErrorResponse | OperationEnvelopeJournalEntryResponse]:
   """Update Journal Entry
 
    Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
@@ -144,7 +137,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelopeJournalEntryResponse | OperationError]
+      Response[ErrorResponse | OperationEnvelopeJournalEntryResponse]
   """
 
   kwargs = _get_kwargs(
@@ -166,13 +159,7 @@ def sync(
   client: AuthenticatedClient,
   body: UpdateJournalEntryRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> (
-  Any
-  | HTTPValidationError
-  | OperationEnvelopeJournalEntryResponse
-  | OperationError
-  | None
-):
+) -> ErrorResponse | OperationEnvelopeJournalEntryResponse | None:
   """Update Journal Entry
 
    Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
@@ -199,7 +186,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelopeJournalEntryResponse | OperationError
+      ErrorResponse | OperationEnvelopeJournalEntryResponse
   """
 
   return sync_detailed(
@@ -216,9 +203,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: UpdateJournalEntryRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  Any | HTTPValidationError | OperationEnvelopeJournalEntryResponse | OperationError
-]:
+) -> Response[ErrorResponse | OperationEnvelopeJournalEntryResponse]:
   """Update Journal Entry
 
    Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
@@ -245,7 +230,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelopeJournalEntryResponse | OperationError]
+      Response[ErrorResponse | OperationEnvelopeJournalEntryResponse]
   """
 
   kwargs = _get_kwargs(
@@ -265,13 +250,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: UpdateJournalEntryRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> (
-  Any
-  | HTTPValidationError
-  | OperationEnvelopeJournalEntryResponse
-  | OperationError
-  | None
-):
+) -> ErrorResponse | OperationEnvelopeJournalEntryResponse | None:
   """Update Journal Entry
 
    Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
@@ -298,7 +277,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelopeJournalEntryResponse | OperationError
+      ErrorResponse | OperationEnvelopeJournalEntryResponse
   """
 
   return (

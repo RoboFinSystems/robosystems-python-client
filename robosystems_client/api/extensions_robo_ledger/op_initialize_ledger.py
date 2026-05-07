@@ -7,7 +7,6 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
 from ...models.initialize_ledger_request import InitializeLedgerRequest
 from ...models.operation_envelope_initialize_ledger_response import (
   OperationEnvelopeInitializeLedgerResponse,
@@ -42,9 +41,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> (
-  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse | None
-):
+) -> ErrorResponse | OperationEnvelopeInitializeLedgerResponse | None:
   if response.status_code == 200:
     response_200 = OperationEnvelopeInitializeLedgerResponse.from_dict(response.json())
 
@@ -76,7 +73,7 @@ def _parse_response(
     return response_409
 
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -98,9 +95,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeInitializeLedgerResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -115,9 +110,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: InitializeLedgerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeInitializeLedgerResponse]:
   """Initialize Ledger
 
    One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
@@ -148,7 +141,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse]
+      Response[ErrorResponse | OperationEnvelopeInitializeLedgerResponse]
   """
 
   kwargs = _get_kwargs(
@@ -170,9 +163,7 @@ def sync(
   client: AuthenticatedClient,
   body: InitializeLedgerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> (
-  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse | None
-):
+) -> ErrorResponse | OperationEnvelopeInitializeLedgerResponse | None:
   """Initialize Ledger
 
    One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
@@ -203,7 +194,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
+      ErrorResponse | OperationEnvelopeInitializeLedgerResponse
   """
 
   return sync_detailed(
@@ -220,9 +211,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: InitializeLedgerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeInitializeLedgerResponse]:
   """Initialize Ledger
 
    One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
@@ -253,7 +242,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse]
+      Response[ErrorResponse | OperationEnvelopeInitializeLedgerResponse]
   """
 
   kwargs = _get_kwargs(
@@ -273,9 +262,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: InitializeLedgerRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> (
-  ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse | None
-):
+) -> ErrorResponse | OperationEnvelopeInitializeLedgerResponse | None:
   """Initialize Ledger
 
    One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
@@ -306,7 +293,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelopeInitializeLedgerResponse
+      ErrorResponse | OperationEnvelopeInitializeLedgerResponse
   """
 
   return (
