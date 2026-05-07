@@ -364,7 +364,7 @@ class TestLedgerWrites:
     body = mock_op.call_args.kwargs["body"]
     assert body.event_type == "schedule_entry_due"
     assert body.event_category.value == "recognition"
-    assert body.source == "scheduled"
+    assert body.source == "schedule"
     assert body.apply_handlers is True
     metadata = body.metadata.to_dict()
     assert metadata["schedule_id"] == "str_1"
@@ -442,7 +442,7 @@ class TestJournalEntries:
     body = call_kwargs["body"]
     assert body.event_type == "journal_entry_recorded"
     assert body.event_category.value == "adjustment"
-    assert body.source == "native"
+    assert body.source == "manual"
     assert body.apply_handlers is True
     metadata = body.metadata.to_dict()
     assert metadata["memo"] == "Q1 revenue"

@@ -439,7 +439,7 @@ class LedgerClient:
     event_category: str,
     occurred_at: str,
     metadata: dict[str, Any],
-    source: str = "native",
+    source: str = "manual",
     event_class: str = "economic",
     obligated_by_event_id: str | None = None,
     discharges_event_id: str | None = None,
@@ -448,6 +448,12 @@ class LedgerClient:
 
     ``occurred_at`` accepts either a date string (``YYYY-MM-DD``) — which
     is normalized to midnight UTC — or a full ISO-8601 timestamp.
+
+    ``source`` describes who fired the event — must match the server's
+    CHECK constraint set: ``manual`` (user-initiated, the default),
+    ``schedule`` (recurring schedule fired), ``system`` (internal
+    automation), or one of the adapter-driven values
+    (``quickbooks`` / ``xero`` / ``plaid``) for sync ingestion.
     """
     if "T" not in occurred_at:
       occurred_dt = datetime.datetime.fromisoformat(f"{occurred_at}T00:00:00+00:00")
@@ -985,12 +991,14 @@ class LedgerClient:
     sale_proceeds: int | None = None,
     proceeds_element_id: str | None = None,
     gain_loss_element_id: str | None = None,
+    source: str = "manual",
   ) -> EventBlockEnvelope:
     """Dispose of a schedule asset — atomically truncates forward facts,
     drops the SumEquals rule, and posts a balanced disposal entry.
 
     Routes through ``create-event-block`` with
-    ``event_type='asset_disposed'``.
+    ``event_type='asset_disposed'``. ``source`` defaults to ``"manual"``
+    (user-initiated disposal); sync adapters override.
     """
     metadata: dict[str, Any] = {
       "schedule_id": structure_id,
@@ -1008,6 +1016,7 @@ class LedgerClient:
       event_category="adjustment",
       occurred_at=disposal_date,
       metadata=metadata,
+      source=source,
     )
     response = op_create_event_block(
       graph_id=graph_id, body=body, client=self._get_client()
@@ -1099,7 +1108,8 @@ class LedgerClient:
     Routes through ``create-event-block`` with
     ``event_type='schedule_entry_due'`` — the underlying handler dispatches
     one of created / unchanged / regenerated / removed / skipped internally.
-    Returns the EventBlockEnvelope.
+    Always emits ``source='schedule'`` since the event is schedule-driven
+    by definition. Returns the EventBlockEnvelope.
     """
     metadata: dict[str, Any] = {
       "schedule_id": structure_id,
@@ -1113,7 +1123,7 @@ class LedgerClient:
       event_type="schedule_entry_due",
       event_category="recognition",
       occurred_at=posting_date,
-      source="scheduled",
+      source="schedule",
       metadata=metadata,
     )
     response = op_create_event_block(
@@ -1134,6 +1144,7 @@ class LedgerClient:
     type: str = "standard",  # noqa: A002
     status: str = "draft",
     transaction_id: str | None = None,
+    source: str = "manual",
     idempotency_key: str | None = None,
   ) -> EventBlockEnvelope:
     """Create a journal entry with balanced line items (DR=CR enforced).
@@ -1145,6 +1156,10 @@ class LedgerClient:
     Defaults to ``status='draft'`` for ongoing writes. Pass
     ``status='posted'`` for historical data import where entries
     represent already-happened business events.
+
+    ``source`` defaults to ``"manual"`` (user-initiated). Sync adapters
+    (QuickBooks, Plaid, etc.) pass their adapter name so the underlying
+    Event row records the correct origin.
 
     Supply ``idempotency_key`` to make the call safe to retry — replays
     within 24 hours return the same envelope. Reusing the key with a
@@ -1166,6 +1181,7 @@ class LedgerClient:
       event_category="adjustment",
       occurred_at=posting_date,
       metadata=metadata,
+      source=source,
     )
     response = op_create_event_block(
       graph_id=graph_id,
@@ -1203,11 +1219,13 @@ class LedgerClient:
     posting_date: str | None = None,
     memo: str | None = None,
     reason: str | None = None,
+    source: str = "manual",
   ) -> EventBlockEnvelope:
     """Reverse a posted journal entry (creates offsetting entry, marks original as reversed).
 
     Routes through ``create-event-block`` with
     ``event_type='journal_entry_reversed'``. Returns the EventBlockEnvelope.
+    ``source`` defaults to ``"manual"`` — sync adapters override.
     """
     metadata: dict[str, Any] = {"entry_id": entry_id}
     if posting_date is not None:
@@ -1222,6 +1240,7 @@ class LedgerClient:
       event_category="adjustment",
       occurred_at=occurred_at,
       metadata=metadata,
+      source=source,
     )
     response = op_create_event_block(
       graph_id=graph_id, body=body, client=self._get_client()
