@@ -11,7 +11,7 @@ T = TypeVar("T", bound="CreateEventHandlerRequestMetadata")
 
 @_attrs_define
 class CreateEventHandlerRequestMetadata:
-  """ """
+  """Free-form metadata stored alongside the handler."""
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

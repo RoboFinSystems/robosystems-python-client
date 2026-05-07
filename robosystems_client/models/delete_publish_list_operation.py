@@ -11,9 +11,12 @@ T = TypeVar("T", bound="DeletePublishListOperation")
 
 @_attrs_define
 class DeletePublishListOperation:
-  """
-  Attributes:
-      list_id (str):
+  """Delete a publish list. All membership rows are removed; reports
+  previously shared via this list are not affected (each share is an
+  independent copy in the recipient's graph).
+
+      Attributes:
+          list_id (str): The publish list to delete.
   """
 
   list_id: str

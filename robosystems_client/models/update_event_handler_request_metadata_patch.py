@@ -11,7 +11,7 @@ T = TypeVar("T", bound="UpdateEventHandlerRequestMetadataPatch")
 
 @_attrs_define
 class UpdateEventHandlerRequestMetadataPatch:
-  """ """
+  """Deep-merged into the existing handler.metadata. Pass `{}` to leave metadata unchanged."""
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

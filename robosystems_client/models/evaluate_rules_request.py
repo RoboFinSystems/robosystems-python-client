@@ -27,7 +27,8 @@ class EvaluateRulesRequest:
   for each element regardless of period.
 
       Attributes:
-          structure_id (str):
+          structure_id (str): Structure to evaluate rules for. Resolves all rules scoped to this structure plus rules
+              attached to its elements and associations.
           fact_set_id (None | str | Unset): Optional FactSet id to stamp on each VerificationResult row. Allows results to
               be scoped to a specific period run once write paths populate the FactSet table on every run.
           period_start (datetime.date | None | Unset): Lower bound on the fact period window (inclusive).

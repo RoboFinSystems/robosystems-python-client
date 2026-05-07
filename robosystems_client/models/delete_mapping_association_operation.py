@@ -11,10 +11,11 @@ T = TypeVar("T", bound="DeleteMappingAssociationOperation")
 
 @_attrs_define
 class DeleteMappingAssociationOperation:
-  """
+  """Delete a single CoA → reporting-concept mapping edge.
+
   Attributes:
-      mapping_id (str):
-      association_id (str):
+      mapping_id (str): The mapping structure containing the association.
+      association_id (str): The association edge to delete.
   """
 
   mapping_id: str

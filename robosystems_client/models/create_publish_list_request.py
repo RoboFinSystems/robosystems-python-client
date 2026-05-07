@@ -13,10 +13,12 @@ T = TypeVar("T", bound="CreatePublishListRequest")
 
 @_attrs_define
 class CreatePublishListRequest:
-  """
-  Attributes:
-      name (str): List name
-      description (None | str | Unset): Optional description
+  """Create a new publish list. Members are added separately via
+  `add-publish-list-members`.
+
+      Attributes:
+          name (str): Human-readable list name (must be unique per graph).
+          description (None | str | Unset): Free-form description shown to list owners.
   """
 
   name: str

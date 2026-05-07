@@ -13,31 +13,37 @@ T = TypeVar("T", bound="UpdateEntityRequest")
 
 @_attrs_define
 class UpdateEntityRequest:
-  """Request to update entity details. Only provided fields are updated.
+  """Update the graph's primary entity. All fields are optional —
+  pass only what changes. Identifiers (CIK, LEI, tax_id) are typically
+  set once at onboarding; address fields are flattened to make them
+  easy to project into reporting forms (1099, state filings).
 
-  Attributes:
-      name (None | str | Unset):
-      legal_name (None | str | Unset):
-      uri (None | str | Unset):
-      cik (None | str | Unset):
-      ticker (None | str | Unset):
-      exchange (None | str | Unset):
-      sic (None | str | Unset):
-      sic_description (None | str | Unset):
-      category (None | str | Unset):
-      state_of_incorporation (None | str | Unset):
-      fiscal_year_end (None | str | Unset):
-      tax_id (None | str | Unset):
-      lei (None | str | Unset):
-      industry (None | str | Unset):
-      entity_type (None | str | Unset):
-      phone (None | str | Unset):
-      website (None | str | Unset):
-      address_line1 (None | str | Unset):
-      address_city (None | str | Unset):
-      address_state (None | str | Unset):
-      address_postal_code (None | str | Unset):
-      address_country (None | str | Unset):
+  The graph is implicit (URL path) — there's no `entity_id` field
+  because the operation always targets the graph's primary entity.
+
+      Attributes:
+          name (None | str | Unset):
+          legal_name (None | str | Unset):
+          uri (None | str | Unset):
+          cik (None | str | Unset):
+          ticker (None | str | Unset):
+          exchange (None | str | Unset):
+          sic (None | str | Unset):
+          sic_description (None | str | Unset):
+          category (None | str | Unset):
+          state_of_incorporation (None | str | Unset):
+          fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD (e.g. '12-31', '06-30').
+          tax_id (None | str | Unset):
+          lei (None | str | Unset):
+          industry (None | str | Unset):
+          entity_type (None | str | Unset):
+          phone (None | str | Unset):
+          website (None | str | Unset):
+          address_line1 (None | str | Unset):
+          address_city (None | str | Unset):
+          address_state (None | str | Unset):
+          address_postal_code (None | str | Unset):
+          address_country (None | str | Unset):
   """
 
   name: None | str | Unset = UNSET

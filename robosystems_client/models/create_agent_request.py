@@ -20,24 +20,35 @@ T = TypeVar("T", bound="CreateAgentRequest")
 
 @_attrs_define
 class CreateAgentRequest:
-  """
-  Attributes:
-      agent_type (str): 'customer' | 'vendor' | 'employee' | 'owner' | 'supplier' | 'government' | 'lender' | 'self' |
-          'other'
-      name (str):
-      legal_name (None | str | Unset):
-      tax_id (None | str | Unset):
-      registration_number (None | str | Unset):
-      duns (None | str | Unset):
-      lei (None | str | Unset):
-      email (None | str | Unset):
-      phone (None | str | Unset):
-      address (CreateAgentRequestAddressType0 | None | Unset):
-      source (str | Unset): 'quickbooks' | 'xero' | 'plaid' | 'native' Default: 'native'.
-      external_id (None | str | Unset):
-      is_active (bool | Unset):  Default: True.
-      is_1099_recipient (bool | Unset):  Default: False.
-      metadata (CreateAgentRequestMetadata | Unset):
+  """Create a new economic counterparty.
+
+  ``agent_type`` is the relationship category (customer, vendor,
+  employee, etc.) — the same legal entity may have multiple Agent rows
+  if they play multiple roles (e.g. a vendor who also became a
+  customer). ``source`` distinguishes integration-imported rows from
+  native-created ones; ``external_id`` carries the source-system's
+  primary key for sync.
+
+      Attributes:
+          agent_type (str): Relationship category: 'customer' | 'vendor' | 'employee' | 'owner' | 'supplier' |
+              'government' | 'lender' | 'self' | 'other'.
+          name (str): Display name shown in lists and on transactions.
+          legal_name (None | str | Unset): Full registered legal name (when different from `name`).
+          tax_id (None | str | Unset): Tax ID (EIN / SSN / VAT). Used for 1099 / withholding reporting.
+          registration_number (None | str | Unset): Registry-issued company number (e.g. state corp file number).
+          duns (None | str | Unset): Dun & Bradstreet DUNS number.
+          lei (None | str | Unset): Legal Entity Identifier (ISO 17442).
+          email (None | str | Unset):
+          phone (None | str | Unset):
+          address (CreateAgentRequestAddressType0 | None | Unset): Free-form address object (e.g. {"line1": "...", "city":
+              "...", "state": "...", "postal_code": "..."}).
+          source (str | Unset): Provenance: 'native' (created in-app), 'quickbooks' / 'xero' / 'plaid' (synced from
+              integration). Drives reconciliation behavior. Default: 'native'.
+          external_id (None | str | Unset): Source system primary key — used to match on subsequent syncs.
+          is_active (bool | Unset): Inactive agents stay in history but can't be picked for new txns. Default: True.
+          is_1099_recipient (bool | Unset): Marks a vendor as 1099-eligible. Drives year-end 1099 reporting. Default:
+              False.
+          metadata (CreateAgentRequestMetadata | Unset):
   """
 
   agent_type: str

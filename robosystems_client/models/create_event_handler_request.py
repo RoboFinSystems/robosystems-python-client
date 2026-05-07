@@ -24,33 +24,49 @@ T = TypeVar("T", bound="CreateEventHandlerRequest")
 
 @_attrs_define
 class CreateEventHandlerRequest:
-  """
-  Attributes:
-      name (str):
-      event_type (str):
-      transaction_template (TransactionTemplate): The handler's output spec — one or more balanced entries to post.
+  """Register a new event-type → transaction-template rule.
 
-          Wire shape::
+  When ``create-event-block`` runs with ``apply_handlers=True``, the
+  registry resolves the *highest-priority active* handler whose match
+  criteria all match the event, then evaluates the
+  ``transaction_template`` to produce GL rows. Match precedence: among
+  active handlers for the same ``event_type``, the one with the most
+  specific match (more match fields satisfied) wins; ties broken by
+  ``priority`` desc, then ``created_at`` asc.
 
-              {
-                "transactions": [{
-                  "entry_template": {
-                    "debit": {"element_id": "elem_...", "amount": "{{ event.amount }}"},
-                    "credit": {"element_id": "elem_...", "amount": "{{ event.amount }}"}
+  All match fields except ``event_type`` are optional — leaving them
+  unset matches anything. Use ``match_metadata_expression`` for
+  fine-grained discrimination (e.g. only payroll categories).
+
+      Attributes:
+          name (str): Human-readable handler name (unique per graph).
+          event_type (str): Event type to match. Matches the `event_type` field on incoming events from `create-event-
+              block`.
+          transaction_template (TransactionTemplate): The handler's output spec — one or more balanced entries to post.
+
+              Wire shape::
+
+                  {
+                    "transactions": [{
+                      "entry_template": {
+                        "debit": {"element_id": "elem_...", "amount": "{{ event.amount }}"},
+                        "credit": {"element_id": "elem_...", "amount": "{{ event.amount }}"}
+                      }
+                    }]
                   }
-                }]
-              }
-      description (None | str | Unset):
-      event_category (None | str | Unset):
-      match_source (None | str | Unset):
-      match_agent_type (None | str | Unset):
-      match_resource_type (None | str | Unset):
-      match_metadata_expression (CreateEventHandlerRequestMatchMetadataExpressionType0 | None | Unset): JSONPath-style
-          equality map against event.metadata, e.g. {"category": "payroll"} or {"metadata.category": "payroll"}
-      priority (int | Unset):  Default: 0.
-      is_active (bool | Unset):  Default: True.
-      origin (CreateEventHandlerRequestOrigin | Unset):  Default: CreateEventHandlerRequestOrigin.TENANT.
-      metadata (CreateEventHandlerRequestMetadata | Unset):
+          description (None | str | Unset): Free-form description shown in admin UIs.
+          event_category (None | str | Unset): Optional category filter (e.g. 'expense', 'revenue').
+          match_source (None | str | Unset): Match the event's `source` field (e.g. 'quickbooks', 'plaid'). Useful when
+              the same event_type comes from multiple integrations.
+          match_agent_type (None | str | Unset): Match agent-emitted events by agent_type.
+          match_resource_type (None | str | Unset): Match resource-bound events by resource_type.
+          match_metadata_expression (CreateEventHandlerRequestMatchMetadataExpressionType0 | None | Unset): JSONPath-style
+              equality map against event.metadata, e.g. {"category": "payroll"} or {"metadata.category": "payroll"}
+          priority (int | Unset): Tiebreaker when multiple equally-specific handlers match. Higher = wins. Default: 0.
+          is_active (bool | Unset): Inactive handlers are ignored at match time. Default: True.
+          origin (CreateEventHandlerRequestOrigin | Unset): Provenance of the handler. `tenant` = author by graph owner;
+              `hub` = platform-shipped template (immutable for tenants). Default: CreateEventHandlerRequestOrigin.TENANT.
+          metadata (CreateEventHandlerRequestMetadata | Unset): Free-form metadata stored alongside the handler.
   """
 
   name: str

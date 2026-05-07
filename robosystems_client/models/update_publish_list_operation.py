@@ -13,11 +13,12 @@ T = TypeVar("T", bound="UpdatePublishListOperation")
 
 @_attrs_define
 class UpdatePublishListOperation:
-  """
+  """Update a publish list's metadata. Carries `list_id`.
+
   Attributes:
-      list_id (str):
-      name (None | str | Unset):
-      description (None | str | Unset):
+      list_id (str): The publish list to update.
+      name (None | str | Unset): New list name. Omit to leave unchanged.
+      description (None | str | Unset): New description. Omit to leave unchanged.
   """
 
   list_id: str

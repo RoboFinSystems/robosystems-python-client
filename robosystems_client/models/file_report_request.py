@@ -17,6 +17,8 @@ class FileReportRequest:
   ``filed_at`` are stamped from the auth context + server clock; the
   request itself carries no fields today (kept as a model for OpenAPI
   shape consistency and to avoid breaking changes if we add fields).
+  Use ``transition-filing-status`` for the non-file legs of the
+  lifecycle (`draft ↔ under_review`, `filed → archived`).
 
       Attributes:
           report_id (str): The Report to file.

@@ -9,7 +9,7 @@ from ...client import AuthenticatedClient, Client
 from ...models.create_report_request import CreateReportRequest
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_report_response import OperationEnvelopeReportResponse
 from ...types import UNSET, Response, Unset
 
 
@@ -40,9 +40,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeReportResponse.from_dict(response.json())
 
     return response_200
 
@@ -94,7 +94,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,7 +109,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateReportRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   """Create Report
 
    Generates report facts from the ledger and marks the report as published.
@@ -120,14 +120,28 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateReportRequest):
+      body (CreateReportRequest): Generate report facts from the ledger and publish a Report
+          definition.
+
+          The report is materialized synchronously: we resolve the taxonomy +
+          CoA mapping, roll up GL facts into reportable concepts, attach them
+          to a fresh ``Report`` row, evaluate any reporting-rule structures
+          (cell-level checks), and stamp ``generation_status='published'``.
+          Subsequent ``regenerate-report`` calls re-run the same pipeline against
+          the latest ledger state without creating a new Report row.
+
+          ``period_start``/``period_end``/``comparative`` is the simple path
+          (auto-derives current + prior period). For multi-column reports
+          (YTD-by-quarter, multi-year) supply ``periods`` explicitly — when
+          set, ``period_start``/``period_end``/``comparative`` are ignored as
+          inputs to period generation.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -149,7 +163,7 @@ def sync(
   client: AuthenticatedClient,
   body: CreateReportRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   """Create Report
 
    Generates report facts from the ledger and marks the report as published.
@@ -160,14 +174,28 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateReportRequest):
+      body (CreateReportRequest): Generate report facts from the ledger and publish a Report
+          definition.
+
+          The report is materialized synchronously: we resolve the taxonomy +
+          CoA mapping, roll up GL facts into reportable concepts, attach them
+          to a fresh ``Report`` row, evaluate any reporting-rule structures
+          (cell-level checks), and stamp ``generation_status='published'``.
+          Subsequent ``regenerate-report`` calls re-run the same pipeline against
+          the latest ledger state without creating a new Report row.
+
+          ``period_start``/``period_end``/``comparative`` is the simple path
+          (auto-derives current + prior period). For multi-column reports
+          (YTD-by-quarter, multi-year) supply ``periods`` explicitly — when
+          set, ``period_start``/``period_end``/``comparative`` are ignored as
+          inputs to period generation.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse
   """
 
   return sync_detailed(
@@ -184,7 +212,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateReportRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   """Create Report
 
    Generates report facts from the ledger and marks the report as published.
@@ -195,14 +223,28 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateReportRequest):
+      body (CreateReportRequest): Generate report facts from the ledger and publish a Report
+          definition.
+
+          The report is materialized synchronously: we resolve the taxonomy +
+          CoA mapping, roll up GL facts into reportable concepts, attach them
+          to a fresh ``Report`` row, evaluate any reporting-rule structures
+          (cell-level checks), and stamp ``generation_status='published'``.
+          Subsequent ``regenerate-report`` calls re-run the same pipeline against
+          the latest ledger state without creating a new Report row.
+
+          ``period_start``/``period_end``/``comparative`` is the simple path
+          (auto-derives current + prior period). For multi-column reports
+          (YTD-by-quarter, multi-year) supply ``periods`` explicitly — when
+          set, ``period_start``/``period_end``/``comparative`` are ignored as
+          inputs to period generation.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -222,7 +264,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateReportRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   """Create Report
 
    Generates report facts from the ledger and marks the report as published.
@@ -233,14 +275,28 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateReportRequest):
+      body (CreateReportRequest): Generate report facts from the ledger and publish a Report
+          definition.
+
+          The report is materialized synchronously: we resolve the taxonomy +
+          CoA mapping, roll up GL facts into reportable concepts, attach them
+          to a fresh ``Report`` row, evaluate any reporting-rule structures
+          (cell-level checks), and stamp ``generation_status='published'``.
+          Subsequent ``regenerate-report`` calls re-run the same pipeline against
+          the latest ledger state without creating a new Report row.
+
+          ``period_start``/``period_end``/``comparative`` is the simple path
+          (auto-derives current + prior period). For multi-column reports
+          (YTD-by-quarter, multi-year) supply ``periods`` explicitly — when
+          set, ``period_start``/``period_end``/``comparative`` are ignored as
+          inputs to period generation.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse
   """
 
   return (

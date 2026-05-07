@@ -11,13 +11,20 @@ T = TypeVar("T", bound="DeleteResult")
 
 @_attrs_define
 class DeleteResult:
-  """Shared response shape for soft-delete operations (e.g.,
-  `delete-security`). `deleted=true` means a row was flipped; 404 is
-  raised by the handler when no row existed.
+  """Shared response shape for delete / soft-delete operations.
+
+  ``deleted=True`` means the operation succeeded (a row was deleted or
+  flipped). The handler returns 404 instead when the row didn't exist
+  to begin with — the response shape is never used to communicate "not
+  found".
+
+  Defined once here to avoid OpenAPI components key collisions
+  between roboledger and roboinvestor (both surfaces produced
+  separate ``DeleteResult`` classes before consolidation).
 
       Attributes:
-          deleted (bool): `true` when the row was soft-deleted in this call. Always `true` on a 200 response; the 404 path
-              is taken instead when the row didn't exist.
+          deleted (bool): `true` when the row was deleted in this call. Always `true` today — 404 covers the not-found
+              case at the HTTP layer rather than via this field.
   """
 
   deleted: bool

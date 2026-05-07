@@ -22,21 +22,25 @@ T = TypeVar("T", bound="UpdateAgentRequest")
 
 @_attrs_define
 class UpdateAgentRequest:
-  """
-  Attributes:
-      agent_id (str):
-      name (None | str | Unset):
-      legal_name (None | str | Unset):
-      tax_id (None | str | Unset):
-      registration_number (None | str | Unset):
-      duns (None | str | Unset):
-      lei (None | str | Unset):
-      email (None | str | Unset):
-      phone (None | str | Unset):
-      address (None | Unset | UpdateAgentRequestAddressType0):
-      is_active (bool | None | Unset):
-      is_1099_recipient (bool | None | Unset):
-      metadata_patch (UpdateAgentRequestMetadataPatch | Unset):
+  """Patch an agent. All fields except ``agent_id`` are optional —
+  pass only what changes. ``metadata_patch`` is deep-merged into the
+  existing metadata dict.
+
+      Attributes:
+          agent_id (str): The agent to update.
+          name (None | str | Unset):
+          legal_name (None | str | Unset):
+          tax_id (None | str | Unset):
+          registration_number (None | str | Unset):
+          duns (None | str | Unset):
+          lei (None | str | Unset):
+          email (None | str | Unset):
+          phone (None | str | Unset):
+          address (None | Unset | UpdateAgentRequestAddressType0):
+          is_active (bool | None | Unset): Toggle activation. Inactive agents are hidden from new-transaction pickers.
+          is_1099_recipient (bool | None | Unset):
+          metadata_patch (UpdateAgentRequestMetadataPatch | Unset): Deep-merged into agent.metadata. Pass `{}` to leave
+              unchanged.
   """
 
   agent_id: str

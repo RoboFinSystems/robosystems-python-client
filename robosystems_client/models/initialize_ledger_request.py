@@ -13,16 +13,30 @@ T = TypeVar("T", bound="InitializeLedgerRequest")
 
 @_attrs_define
 class InitializeLedgerRequest:
-  """
-  Attributes:
-      closed_through (None | str | Unset): YYYY-MM period. Periods ≤ this date are treated as historical (already
-          closed before the user joined). Set to null for a fresh business with no prior close state.
-      fiscal_year_start_month (int | Unset): Fiscal year start month (1-12). Defaults to calendar year. Default: 1.
-      auto_seed_schedules (bool | Unset): If true, run the SchedulerAgent to create schedules from historical BS
-          activity. NOT YET IMPLEMENTED — returns a warning in v1. Default: False.
-      earliest_data_period (None | str | Unset): YYYY-MM period representing the earliest month that has transaction
-          data. Used to create FiscalPeriod rows. Defaults to 24 months before the current month.
-      note (None | str | Unset): Free-form note attached to the audit event
+  """One-time setup for a graph's fiscal calendar.
+
+  Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
+  ``earliest_data_period`` (or 24 months ago) through the current month,
+  and stamps periods on or before ``closed_through`` as already closed.
+  Subsequent calls return 409 — there's no re-initialize.
+
+  The two pointers it sets up:
+
+  - ``closed_through`` (system-maintained): the latest period whose
+    books are locked. Set on init for businesses with prior close
+    history; null for a fresh start.
+  - ``close_target`` (user-controlled): the goal date the user is
+    closing toward. Set independently via `set-close-target`.
+
+      Attributes:
+          closed_through (None | str | Unset): YYYY-MM period. Periods ≤ this date are treated as historical (already
+              closed before the user joined). Set to null for a fresh business with no prior close state.
+          fiscal_year_start_month (int | Unset): Fiscal year start month (1-12). Defaults to calendar year. Default: 1.
+          auto_seed_schedules (bool | Unset): If true, run the SchedulerAgent to create schedules from historical BS
+              activity. NOT YET IMPLEMENTED — returns a warning in v1. Default: False.
+          earliest_data_period (None | str | Unset): YYYY-MM period representing the earliest month that has transaction
+              data. Used to create FiscalPeriod rows. Defaults to 24 months before the current month.
+          note (None | str | Unset): Free-form note attached to the audit event
   """
 
   closed_through: None | str | Unset = UNSET

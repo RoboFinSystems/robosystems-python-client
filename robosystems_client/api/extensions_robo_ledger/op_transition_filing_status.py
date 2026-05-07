@@ -8,7 +8,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_report_response import OperationEnvelopeReportResponse
 from ...models.transition_filing_status_request import TransitionFilingStatusRequest
 from ...types import UNSET, Response, Unset
 
@@ -40,9 +40,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeReportResponse.from_dict(response.json())
 
     return response_200
 
@@ -94,7 +94,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,7 +109,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: TransitionFilingStatusRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   """Transition Filing Status
 
    Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed →
@@ -134,7 +134,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -156,7 +156,7 @@ def sync(
   client: AuthenticatedClient,
   body: TransitionFilingStatusRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   """Transition Filing Status
 
    Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed →
@@ -181,7 +181,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse
   """
 
   return sync_detailed(
@@ -198,7 +198,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: TransitionFilingStatusRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]:
   """Transition Filing Status
 
    Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed →
@@ -223,7 +223,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse]
   """
 
   kwargs = _get_kwargs(
@@ -243,7 +243,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: TransitionFilingStatusRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse | None:
   """Transition Filing Status
 
    Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed →
@@ -268,7 +268,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeReportResponse
   """
 
   return (

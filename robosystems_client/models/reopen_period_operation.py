@@ -13,10 +13,12 @@ T = TypeVar("T", bound="ReopenPeriodOperation")
 
 @_attrs_define
 class ReopenPeriodOperation:
-  """
+  """Reopen the most recently closed fiscal period.
+
   Attributes:
       reason (str): Required reason for the reopen (captured in audit log)
-      period (str):
+      period (str): Period to reopen, in YYYY-MM. Must equal current `closed_through` — only the most recent close can
+          be undone.
       note (None | str | Unset): Additional free-form note
   """
 

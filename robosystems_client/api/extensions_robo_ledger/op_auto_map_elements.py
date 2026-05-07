@@ -122,7 +122,14 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (AutoMapElementsOperation): Request body for the auto-map-elements async operation.
+      body (AutoMapElementsOperation): Run the MappingAgent over a mapping structure (async).
+
+          The MappingAgent walks every unmapped CoA element and proposes
+          associations to reporting concepts. Confidence thresholds: ≥0.90
+          auto-approved (association created), 0.70-0.89 flagged for review
+          (created with `confidence` set; surface it in your UI), <0.70 skipped.
+          Returns a `pending` envelope immediately; subscribe to the SSE stream
+          for progress.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -164,7 +171,14 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (AutoMapElementsOperation): Request body for the auto-map-elements async operation.
+      body (AutoMapElementsOperation): Run the MappingAgent over a mapping structure (async).
+
+          The MappingAgent walks every unmapped CoA element and proposes
+          associations to reporting concepts. Confidence thresholds: ≥0.90
+          auto-approved (association created), 0.70-0.89 flagged for review
+          (created with `confidence` set; surface it in your UI), <0.70 skipped.
+          Returns a `pending` envelope immediately; subscribe to the SSE stream
+          for progress.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -201,7 +215,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (AutoMapElementsOperation): Request body for the auto-map-elements async operation.
+      body (AutoMapElementsOperation): Run the MappingAgent over a mapping structure (async).
+
+          The MappingAgent walks every unmapped CoA element and proposes
+          associations to reporting concepts. Confidence thresholds: ≥0.90
+          auto-approved (association created), 0.70-0.89 flagged for review
+          (created with `confidence` set; surface it in your UI), <0.70 skipped.
+          Returns a `pending` envelope immediately; subscribe to the SSE stream
+          for progress.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -241,7 +262,14 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (AutoMapElementsOperation): Request body for the auto-map-elements async operation.
+      body (AutoMapElementsOperation): Run the MappingAgent over a mapping structure (async).
+
+          The MappingAgent walks every unmapped CoA element and proposes
+          associations to reporting concepts. Confidence thresholds: ≥0.90
+          auto-approved (association created), 0.70-0.89 flagged for review
+          (created with `confidence` set; surface it in your UI), <0.70 skipped.
+          Returns a `pending` envelope immediately; subscribe to the SSE stream
+          for progress.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

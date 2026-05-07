@@ -16,21 +16,28 @@ T = TypeVar("T", bound="CreateMappingAssociationOperation")
 
 @_attrs_define
 class CreateMappingAssociationOperation:
-  """CQRS-shaped body for `POST /operations/create-mapping-association`.
+  """Create one CoA → reporting-concept mapping edge.
 
-  Bundles the target mapping structure's `mapping_id` with the association
-  payload so REST + MCP share a single body type via the registrar.
+  This is the iterative, AI-assisted craft path. Each call adds a single
+  association to the target mapping structure. Use `auto-map-elements`
+  to create many at once via the MappingAgent. Reject duplicates: if
+  the (from, to, type) tuple already exists, the call returns 409.
 
       Attributes:
-          from_element_id (str):
-          to_element_id (str):
+          from_element_id (str): Source element (typically a CoA element).
+          to_element_id (str): Target element (typically a US GAAP reporting concept).
           mapping_id (str): Target mapping structure ID.
-          association_type (CreateMappingAssociationOperationAssociationType | Unset):  Default:
+          association_type (CreateMappingAssociationOperationAssociationType | Unset): Edge semantics. `mapping` rolls up
+              CoA elements into reporting concepts; `presentation` orders concepts in a structure; `calculation` carries
+              debit/credit weights; `equivalence` is a synonym link. Default:
               CreateMappingAssociationOperationAssociationType.MAPPING.
-          order_value (float | None | Unset):
-          weight (float | None | Unset):
-          confidence (float | None | Unset):
-          suggested_by (None | str | Unset):
+          order_value (float | None | Unset): Display order within the structure (lower = earlier).
+          weight (float | None | Unset): Calculation weight (typically +1.0 or -1.0). Used by calculation linkbases to
+              express signed roll-ups.
+          confidence (float | None | Unset): Confidence score (0–1). For AI-suggested mappings: ≥0.90 auto-approved,
+              0.70–0.89 flagged for review, <0.70 skipped.
+          suggested_by (None | str | Unset): Source of the suggestion (e.g., 'mapping_agent', 'user'). Captured for audit;
+              not used by the runtime.
   """
 
   from_element_id: str

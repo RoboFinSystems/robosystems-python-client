@@ -11,10 +11,11 @@ T = TypeVar("T", bound="ShareReportOperation")
 
 @_attrs_define
 class ShareReportOperation:
-  """
+  """Share a published Report to every member of a publish list.
+
   Attributes:
-      publish_list_id (str): Publish list to share the report to
-      report_id (str):
+      publish_list_id (str): Publish list whose members will receive the report. Created via `create-publish-list`.
+      report_id (str): The published Report to share.
   """
 
   publish_list_id: str

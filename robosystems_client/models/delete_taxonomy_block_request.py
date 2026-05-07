@@ -21,9 +21,10 @@ class DeleteTaxonomyBlockRequest:
   ``facts_deleted``.
 
       Attributes:
-          taxonomy_id (str):
+          taxonomy_id (str): The taxonomy to delete.
           reason (str): Human-readable justification (audit log).
-          cascade_facts (bool | Unset):  Default: False.
+          cascade_facts (bool | Unset): When true, also deletes any Fact rows referencing elements in this taxonomy. When
+              false (default), the operation fails with 422 if such rows exist. Default: False.
   """
 
   taxonomy_id: str

@@ -19,12 +19,17 @@ T = TypeVar("T", bound="RegenerateReportOperation")
 
 @_attrs_define
 class RegenerateReportOperation:
-  """
-  Attributes:
-      report_id (str):
-      period_start (datetime.date | None | Unset): New period start date
-      period_end (datetime.date | None | Unset): New period end date
-      periods (list[PeriodSpec] | None | Unset): New period columns. Overrides period_start/period_end.
+  """Regenerate facts for an existing Report. Carries `report_id` from
+  the path-style RPC body; period overrides are inherited from
+  :class:`RegenerateReportRequest`.
+
+      Attributes:
+          report_id (str): The Report to regenerate.
+          period_start (datetime.date | None | Unset): New current-period start. Optional — omit to keep the existing
+              window.
+          period_end (datetime.date | None | Unset): New current-period end. Optional — omit to keep the existing window.
+          periods (list[PeriodSpec] | None | Unset): New explicit period columns. Overrides `period_start`/`period_end`
+              when supplied.
   """
 
   report_id: str

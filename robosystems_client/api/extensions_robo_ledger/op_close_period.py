@@ -9,7 +9,9 @@ from ...client import AuthenticatedClient, Client
 from ...models.close_period_operation import ClosePeriodOperation
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_close_period_response import (
+  OperationEnvelopeClosePeriodResponse,
+)
 from ...types import UNSET, Response, Unset
 
 
@@ -40,9 +42,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeClosePeriodResponse.from_dict(response.json())
 
     return response_200
 
@@ -94,7 +96,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,10 +113,16 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: ClosePeriodOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
+]:
   """Close Fiscal Period
 
-
+   Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
+  `closed_through` by one, and auto-advances `close_target` if this close caught up to it. Period must
+  be exactly `closed_through + 1` — sequence violations return 422 with structured `blockers`. Common
+  blockers: `sync_stale` (override with `allow_stale_sync=true` after manual verification),
+  `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-order).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -120,14 +130,17 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ClosePeriodOperation):
+      body (ClosePeriodOperation): Close a single fiscal period. Carries the YYYY-MM `period` in
+          the
+          request body alongside the close-time options inherited from
+          :class:`ClosePeriodRequest`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse]
   """
 
   kwargs = _get_kwargs(
@@ -149,10 +162,14 @@ def sync(
   client: AuthenticatedClient,
   body: ClosePeriodOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse | None:
   """Close Fiscal Period
 
-
+   Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
+  `closed_through` by one, and auto-advances `close_target` if this close caught up to it. Period must
+  be exactly `closed_through + 1` — sequence violations return 422 with structured `blockers`. Common
+  blockers: `sync_stale` (override with `allow_stale_sync=true` after manual verification),
+  `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-order).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -160,14 +177,17 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ClosePeriodOperation):
+      body (ClosePeriodOperation): Close a single fiscal period. Carries the YYYY-MM `period` in
+          the
+          request body alongside the close-time options inherited from
+          :class:`ClosePeriodRequest`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
   """
 
   return sync_detailed(
@@ -184,10 +204,16 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: ClosePeriodOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[
+  ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
+]:
   """Close Fiscal Period
 
-
+   Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
+  `closed_through` by one, and auto-advances `close_target` if this close caught up to it. Period must
+  be exactly `closed_through + 1` — sequence violations return 422 with structured `blockers`. Common
+  blockers: `sync_stale` (override with `allow_stale_sync=true` after manual verification),
+  `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-order).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -195,14 +221,17 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ClosePeriodOperation):
+      body (ClosePeriodOperation): Close a single fiscal period. Carries the YYYY-MM `period` in
+          the
+          request body alongside the close-time options inherited from
+          :class:`ClosePeriodRequest`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse]
   """
 
   kwargs = _get_kwargs(
@@ -222,10 +251,14 @@ async def asyncio(
   client: AuthenticatedClient,
   body: ClosePeriodOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse | None:
   """Close Fiscal Period
 
-
+   Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
+  `closed_through` by one, and auto-advances `close_target` if this close caught up to it. Period must
+  be exactly `closed_through + 1` — sequence violations return 422 with structured `blockers`. Common
+  blockers: `sync_stale` (override with `allow_stale_sync=true` after manual verification),
+  `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-order).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -233,14 +266,17 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ClosePeriodOperation):
+      body (ClosePeriodOperation): Close a single fiscal period. Carries the YYYY-MM `period` in
+          the
+          request body alongside the close-time options inherited from
+          :class:`ClosePeriodRequest`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
   """
 
   return (

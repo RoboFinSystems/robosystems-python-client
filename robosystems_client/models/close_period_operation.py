@@ -13,12 +13,15 @@ T = TypeVar("T", bound="ClosePeriodOperation")
 
 @_attrs_define
 class ClosePeriodOperation:
-  """
-  Attributes:
-      period (str):
-      note (None | str | Unset): Free-form note attached to the close event
-      allow_stale_sync (bool | Unset): Override the sync-currency gate. Only use when you have manually verified that
-          the source data for the period is complete. Default: False.
+  """Close a single fiscal period. Carries the YYYY-MM `period` in the
+  request body alongside the close-time options inherited from
+  :class:`ClosePeriodRequest`.
+
+      Attributes:
+          period (str): Period to close, in YYYY-MM. Must be exactly `closed_through + 1` — close runs sequentially.
+          note (None | str | Unset): Free-form note attached to the close event
+          allow_stale_sync (bool | Unset): Override the sync-currency gate. Only use when you have manually verified that
+              the source data for the period is complete. Default: False.
   """
 
   period: str

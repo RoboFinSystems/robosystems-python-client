@@ -26,6 +26,7 @@ from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
 from .artifact_response import ArtifactResponse
 from .artifact_response_template_type_0 import ArtifactResponseTemplateType0
+from .association_response import AssociationResponse
 from .auth_response import AuthResponse
 from .auth_response_org_type_0 import AuthResponseOrgType0
 from .auth_response_user import AuthResponseUser
@@ -53,6 +54,7 @@ from .checkout_response import CheckoutResponse
 from .checkout_status_response import CheckoutStatusResponse
 from .classification_lite import ClassificationLite
 from .close_period_operation import ClosePeriodOperation
+from .close_period_response import ClosePeriodResponse
 from .connection_lite import ConnectionLite
 from .connection_options_response import ConnectionOptionsResponse
 from .connection_provider_info import ConnectionProviderInfo
@@ -143,6 +145,7 @@ from .delete_schedule_request import DeleteScheduleRequest
 from .delete_security_operation import DeleteSecurityOperation
 from .delete_subgraph_op import DeleteSubgraphOp
 from .delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
+from .delete_taxonomy_block_response import DeleteTaxonomyBlockResponse
 from .detailed_transactions_response import DetailedTransactionsResponse
 from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
@@ -166,12 +169,22 @@ from .enhanced_credit_transaction_response_metadata import (
 )
 from .enhanced_file_status_layers import EnhancedFileStatusLayers
 from .entity_lite import EntityLite
+from .entity_taxonomy_response import EntityTaxonomyResponse
 from .entry_template_request import EntryTemplateRequest
 from .entry_template_request_entry_type import EntryTemplateRequestEntryType
 from .error_response import ErrorResponse
 from .evaluate_rules_request import EvaluateRulesRequest
+from .evaluate_rules_response import EvaluateRulesResponse
+from .evaluate_rules_response_summary import EvaluateRulesResponseSummary
 from .event_block_envelope import EventBlockEnvelope
 from .event_block_envelope_metadata import EventBlockEnvelopeMetadata
+from .event_handler_response import EventHandlerResponse
+from .event_handler_response_match_metadata_expression_type_0 import (
+  EventHandlerResponseMatchMetadataExpressionType0,
+)
+from .event_handler_response_transaction_template import (
+  EventHandlerResponseTransactionTemplate,
+)
 from .fact_lite import FactLite
 from .fact_set_lite import FactSetLite
 from .file_info import FileInfo
@@ -181,6 +194,8 @@ from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
 from .file_upload_response import FileUploadResponse
 from .financial_statement_analysis_request import FinancialStatementAnalysisRequest
+from .fiscal_calendar_response import FiscalCalendarResponse
+from .fiscal_period_summary import FiscalPeriodSummary
 from .forgot_password_request import ForgotPasswordRequest
 from .forgot_password_response_forgotpassword import (
   ForgotPasswordResponseForgotpassword,
@@ -223,12 +238,18 @@ from .information_block_envelope_dimensions_item import (
 from .information_model_response import InformationModelResponse
 from .initial_entity_data import InitialEntityData
 from .initialize_ledger_request import InitializeLedgerRequest
+from .initialize_ledger_response import InitializeLedgerResponse
 from .instance_usage import InstanceUsage
 from .invite_member_request import InviteMemberRequest
 from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
 from .journal_entry_line_item_input import JournalEntryLineItemInput
+from .journal_entry_line_item_response import JournalEntryLineItemResponse
+from .journal_entry_response import JournalEntryResponse
+from .ledger_agent_response import LedgerAgentResponse
+from .ledger_agent_response_address_type_0 import LedgerAgentResponseAddressType0
+from .ledger_entity_response import LedgerEntityResponse
 from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
@@ -258,6 +279,18 @@ from .operation_costs import OperationCosts
 from .operation_costs_ai_operations import OperationCostsAiOperations
 from .operation_costs_token_pricing import OperationCostsTokenPricing
 from .operation_envelope import OperationEnvelope
+from .operation_envelope_association_response import (
+  OperationEnvelopeAssociationResponse,
+)
+from .operation_envelope_association_response_status import (
+  OperationEnvelopeAssociationResponseStatus,
+)
+from .operation_envelope_close_period_response import (
+  OperationEnvelopeClosePeriodResponse,
+)
+from .operation_envelope_close_period_response_status import (
+  OperationEnvelopeClosePeriodResponseStatus,
+)
 from .operation_envelope_delete_information_block_response import (
   OperationEnvelopeDeleteInformationBlockResponse,
 )
@@ -272,9 +305,39 @@ from .operation_envelope_delete_portfolio_block_response_status import (
 )
 from .operation_envelope_delete_result import OperationEnvelopeDeleteResult
 from .operation_envelope_delete_result_status import OperationEnvelopeDeleteResultStatus
+from .operation_envelope_delete_taxonomy_block_response import (
+  OperationEnvelopeDeleteTaxonomyBlockResponse,
+)
+from .operation_envelope_delete_taxonomy_block_response_status import (
+  OperationEnvelopeDeleteTaxonomyBlockResponseStatus,
+)
+from .operation_envelope_entity_taxonomy_response import (
+  OperationEnvelopeEntityTaxonomyResponse,
+)
+from .operation_envelope_entity_taxonomy_response_status import (
+  OperationEnvelopeEntityTaxonomyResponseStatus,
+)
+from .operation_envelope_evaluate_rules_response import (
+  OperationEnvelopeEvaluateRulesResponse,
+)
+from .operation_envelope_evaluate_rules_response_status import (
+  OperationEnvelopeEvaluateRulesResponseStatus,
+)
 from .operation_envelope_event_block_envelope import OperationEnvelopeEventBlockEnvelope
 from .operation_envelope_event_block_envelope_status import (
   OperationEnvelopeEventBlockEnvelopeStatus,
+)
+from .operation_envelope_event_handler_response import (
+  OperationEnvelopeEventHandlerResponse,
+)
+from .operation_envelope_event_handler_response_status import (
+  OperationEnvelopeEventHandlerResponseStatus,
+)
+from .operation_envelope_fiscal_calendar_response import (
+  OperationEnvelopeFiscalCalendarResponse,
+)
+from .operation_envelope_fiscal_calendar_response_status import (
+  OperationEnvelopeFiscalCalendarResponseStatus,
 )
 from .operation_envelope_information_block_envelope import (
   OperationEnvelopeInformationBlockEnvelope,
@@ -282,17 +345,75 @@ from .operation_envelope_information_block_envelope import (
 from .operation_envelope_information_block_envelope_status import (
   OperationEnvelopeInformationBlockEnvelopeStatus,
 )
+from .operation_envelope_initialize_ledger_response import (
+  OperationEnvelopeInitializeLedgerResponse,
+)
+from .operation_envelope_initialize_ledger_response_status import (
+  OperationEnvelopeInitializeLedgerResponseStatus,
+)
+from .operation_envelope_journal_entry_response import (
+  OperationEnvelopeJournalEntryResponse,
+)
+from .operation_envelope_journal_entry_response_status import (
+  OperationEnvelopeJournalEntryResponseStatus,
+)
+from .operation_envelope_ledger_agent_response import (
+  OperationEnvelopeLedgerAgentResponse,
+)
+from .operation_envelope_ledger_agent_response_status import (
+  OperationEnvelopeLedgerAgentResponseStatus,
+)
+from .operation_envelope_ledger_entity_response import (
+  OperationEnvelopeLedgerEntityResponse,
+)
+from .operation_envelope_ledger_entity_response_status import (
+  OperationEnvelopeLedgerEntityResponseStatus,
+)
 from .operation_envelope_portfolio_block_envelope import (
   OperationEnvelopePortfolioBlockEnvelope,
 )
 from .operation_envelope_portfolio_block_envelope_status import (
   OperationEnvelopePortfolioBlockEnvelopeStatus,
 )
+from .operation_envelope_preview_event_block_response import (
+  OperationEnvelopePreviewEventBlockResponse,
+)
+from .operation_envelope_preview_event_block_response_status import (
+  OperationEnvelopePreviewEventBlockResponseStatus,
+)
+from .operation_envelope_publish_list_response import (
+  OperationEnvelopePublishListResponse,
+)
+from .operation_envelope_publish_list_response_status import (
+  OperationEnvelopePublishListResponseStatus,
+)
+from .operation_envelope_report_response import OperationEnvelopeReportResponse
+from .operation_envelope_report_response_status import (
+  OperationEnvelopeReportResponseStatus,
+)
 from .operation_envelope_security_response import OperationEnvelopeSecurityResponse
 from .operation_envelope_security_response_status import (
   OperationEnvelopeSecurityResponseStatus,
 )
+from .operation_envelope_share_report_response import (
+  OperationEnvelopeShareReportResponse,
+)
+from .operation_envelope_share_report_response_status import (
+  OperationEnvelopeShareReportResponseStatus,
+)
 from .operation_envelope_status import OperationEnvelopeStatus
+from .operation_envelope_taxonomy_block_envelope import (
+  OperationEnvelopeTaxonomyBlockEnvelope,
+)
+from .operation_envelope_taxonomy_block_envelope_status import (
+  OperationEnvelopeTaxonomyBlockEnvelopeStatus,
+)
+from .operation_envelopelist_publish_list_member_response import (
+  OperationEnvelopelistPublishListMemberResponse,
+)
+from .operation_envelopelist_publish_list_member_response_status import (
+  OperationEnvelopelistPublishListMemberResponseStatus,
+)
 from .operation_error import OperationError
 from .operation_error_detail_type_1 import OperationErrorDetailType1
 from .org_detail_response import OrgDetailResponse
@@ -330,6 +451,12 @@ from .portfolio_block_position_dispose import PortfolioBlockPositionDispose
 from .portfolio_block_position_update import PortfolioBlockPositionUpdate
 from .portfolio_block_positions import PortfolioBlockPositions
 from .position_block import PositionBlock
+from .preview_event_block_response import PreviewEventBlockResponse
+from .preview_event_block_response_handler_metadata import (
+  PreviewEventBlockResponseHandlerMetadata,
+)
+from .publish_list_member_response import PublishListMemberResponse
+from .publish_list_response import PublishListResponse
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
@@ -340,6 +467,8 @@ from .rendering_lite import RenderingLite
 from .rendering_period_lite import RenderingPeriodLite
 from .rendering_row_lite import RenderingRowLite
 from .reopen_period_operation import ReopenPeriodOperation
+from .report_response import ReportResponse
+from .report_response_rule_summary_type_0 import ReportResponseRuleSummaryType0
 from .repository_info import RepositoryInfo
 from .repository_subscriptions import RepositorySubscriptions
 from .resend_verification_email_response_resendverificationemail import (
@@ -382,6 +511,8 @@ from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
 from .set_close_target_operation import SetCloseTargetOperation
 from .share_report_operation import ShareReportOperation
+from .share_report_response import ShareReportResponse
+from .share_result_item import ShareResultItem
 from .sso_complete_request import SSOCompleteRequest
 from .sso_exchange_request import SSOExchangeRequest
 from .sso_exchange_response import SSOExchangeResponse
@@ -389,6 +520,7 @@ from .sso_token_response import SSOTokenResponse
 from .statement_mechanics import StatementMechanics
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
+from .structure_summary import StructureSummary
 from .structure_update_patch import StructureUpdatePatch
 from .structure_update_patch_metadata_type_0 import StructureUpdatePatchMetadataType0
 from .subgraph_quota_response import SubgraphQuotaResponse
@@ -406,6 +538,7 @@ from .table_info import TableInfo
 from .table_list_response import TableListResponse
 from .table_query_request import TableQueryRequest
 from .table_query_response import TableQueryResponse
+from .taxonomy_block_association import TaxonomyBlockAssociation
 from .taxonomy_block_association_request import TaxonomyBlockAssociationRequest
 from .taxonomy_block_association_request_association_type import (
   TaxonomyBlockAssociationRequestAssociationType,
@@ -413,8 +546,15 @@ from .taxonomy_block_association_request_association_type import (
 from .taxonomy_block_association_request_metadata import (
   TaxonomyBlockAssociationRequestMetadata,
 )
+from .taxonomy_block_element import TaxonomyBlockElement
+from .taxonomy_block_element_origin import TaxonomyBlockElementOrigin
 from .taxonomy_block_element_request import TaxonomyBlockElementRequest
 from .taxonomy_block_element_request_metadata import TaxonomyBlockElementRequestMetadata
+from .taxonomy_block_envelope import TaxonomyBlockEnvelope
+from .taxonomy_block_envelope_verification_results_item import (
+  TaxonomyBlockEnvelopeVerificationResultsItem,
+)
+from .taxonomy_block_rule import TaxonomyBlockRule
 from .taxonomy_block_rule_request import TaxonomyBlockRuleRequest
 from .taxonomy_block_rule_request_metadata import TaxonomyBlockRuleRequestMetadata
 from .taxonomy_block_rule_request_rule_category import (
@@ -427,6 +567,7 @@ from .taxonomy_block_rule_request_severity import TaxonomyBlockRuleRequestSeveri
 from .taxonomy_block_rule_request_variables_item import (
   TaxonomyBlockRuleRequestVariablesItem,
 )
+from .taxonomy_block_structure import TaxonomyBlockStructure
 from .taxonomy_block_structure_request import TaxonomyBlockStructureRequest
 from .taxonomy_block_structure_request_metadata import (
   TaxonomyBlockStructureRequestMetadata,
@@ -436,6 +577,7 @@ from .taxonomy_block_structure_request_structure_type import (
 )
 from .tier_capacity import TierCapacity
 from .token_pricing import TokenPricing
+from .transaction_preview import TransactionPreview
 from .transaction_summary_response import TransactionSummaryResponse
 from .transaction_template import TransactionTemplate
 from .transaction_template_entry import TransactionTemplateEntry
@@ -515,6 +657,7 @@ __all__ = (
   "APIKeysResponse",
   "ArtifactResponse",
   "ArtifactResponseTemplateType0",
+  "AssociationResponse",
   "AuthResponse",
   "AuthResponseOrgType0",
   "AuthResponseUser",
@@ -540,6 +683,7 @@ __all__ = (
   "CheckoutStatusResponse",
   "ClassificationLite",
   "ClosePeriodOperation",
+  "ClosePeriodResponse",
   "ConnectionLite",
   "ConnectionOptionsResponse",
   "ConnectionProviderInfo",
@@ -618,6 +762,7 @@ __all__ = (
   "DeleteSecurityOperation",
   "DeleteSubgraphOp",
   "DeleteTaxonomyBlockRequest",
+  "DeleteTaxonomyBlockResponse",
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
@@ -637,12 +782,18 @@ __all__ = (
   "EnhancedCreditTransactionResponseMetadata",
   "EnhancedFileStatusLayers",
   "EntityLite",
+  "EntityTaxonomyResponse",
   "EntryTemplateRequest",
   "EntryTemplateRequestEntryType",
   "ErrorResponse",
   "EvaluateRulesRequest",
+  "EvaluateRulesResponse",
+  "EvaluateRulesResponseSummary",
   "EventBlockEnvelope",
   "EventBlockEnvelopeMetadata",
+  "EventHandlerResponse",
+  "EventHandlerResponseMatchMetadataExpressionType0",
+  "EventHandlerResponseTransactionTemplate",
   "FactLite",
   "FactSetLite",
   "FileInfo",
@@ -652,6 +803,8 @@ __all__ = (
   "FileUploadRequest",
   "FileUploadResponse",
   "FinancialStatementAnalysisRequest",
+  "FiscalCalendarResponse",
+  "FiscalPeriodSummary",
   "ForgotPasswordRequest",
   "ForgotPasswordResponseForgotpassword",
   "GetCurrentAuthUserResponseGetcurrentauthuser",
@@ -684,12 +837,18 @@ __all__ = (
   "InformationModelResponse",
   "InitialEntityData",
   "InitializeLedgerRequest",
+  "InitializeLedgerResponse",
   "InstanceUsage",
   "InviteMemberRequest",
   "Invoice",
   "InvoiceLineItem",
   "InvoicesResponse",
   "JournalEntryLineItemInput",
+  "JournalEntryLineItemResponse",
+  "JournalEntryResponse",
+  "LedgerAgentResponse",
+  "LedgerAgentResponseAddressType0",
+  "LedgerEntityResponse",
   "LinkEntityTaxonomyRequest",
   "LinkEntityTaxonomyRequestBasis",
   "ListConnectionsProviderType0",
@@ -715,21 +874,55 @@ __all__ = (
   "OperationCostsAiOperations",
   "OperationCostsTokenPricing",
   "OperationEnvelope",
+  "OperationEnvelopeAssociationResponse",
+  "OperationEnvelopeAssociationResponseStatus",
+  "OperationEnvelopeClosePeriodResponse",
+  "OperationEnvelopeClosePeriodResponseStatus",
   "OperationEnvelopeDeleteInformationBlockResponse",
   "OperationEnvelopeDeleteInformationBlockResponseStatus",
   "OperationEnvelopeDeletePortfolioBlockResponse",
   "OperationEnvelopeDeletePortfolioBlockResponseStatus",
   "OperationEnvelopeDeleteResult",
   "OperationEnvelopeDeleteResultStatus",
+  "OperationEnvelopeDeleteTaxonomyBlockResponse",
+  "OperationEnvelopeDeleteTaxonomyBlockResponseStatus",
+  "OperationEnvelopeEntityTaxonomyResponse",
+  "OperationEnvelopeEntityTaxonomyResponseStatus",
+  "OperationEnvelopeEvaluateRulesResponse",
+  "OperationEnvelopeEvaluateRulesResponseStatus",
   "OperationEnvelopeEventBlockEnvelope",
   "OperationEnvelopeEventBlockEnvelopeStatus",
+  "OperationEnvelopeEventHandlerResponse",
+  "OperationEnvelopeEventHandlerResponseStatus",
+  "OperationEnvelopeFiscalCalendarResponse",
+  "OperationEnvelopeFiscalCalendarResponseStatus",
   "OperationEnvelopeInformationBlockEnvelope",
   "OperationEnvelopeInformationBlockEnvelopeStatus",
+  "OperationEnvelopeInitializeLedgerResponse",
+  "OperationEnvelopeInitializeLedgerResponseStatus",
+  "OperationEnvelopeJournalEntryResponse",
+  "OperationEnvelopeJournalEntryResponseStatus",
+  "OperationEnvelopeLedgerAgentResponse",
+  "OperationEnvelopeLedgerAgentResponseStatus",
+  "OperationEnvelopeLedgerEntityResponse",
+  "OperationEnvelopeLedgerEntityResponseStatus",
+  "OperationEnvelopelistPublishListMemberResponse",
+  "OperationEnvelopelistPublishListMemberResponseStatus",
   "OperationEnvelopePortfolioBlockEnvelope",
   "OperationEnvelopePortfolioBlockEnvelopeStatus",
+  "OperationEnvelopePreviewEventBlockResponse",
+  "OperationEnvelopePreviewEventBlockResponseStatus",
+  "OperationEnvelopePublishListResponse",
+  "OperationEnvelopePublishListResponseStatus",
+  "OperationEnvelopeReportResponse",
+  "OperationEnvelopeReportResponseStatus",
   "OperationEnvelopeSecurityResponse",
   "OperationEnvelopeSecurityResponseStatus",
+  "OperationEnvelopeShareReportResponse",
+  "OperationEnvelopeShareReportResponseStatus",
   "OperationEnvelopeStatus",
+  "OperationEnvelopeTaxonomyBlockEnvelope",
+  "OperationEnvelopeTaxonomyBlockEnvelopeStatus",
   "OperationError",
   "OperationErrorDetailType1",
   "OrgDetailResponse",
@@ -767,6 +960,10 @@ __all__ = (
   "PortfolioBlockPositions",
   "PortfolioBlockPositionUpdate",
   "PositionBlock",
+  "PreviewEventBlockResponse",
+  "PreviewEventBlockResponseHandlerMetadata",
+  "PublishListMemberResponse",
+  "PublishListResponse",
   "QueryLimits",
   "QuickBooksConnectionConfig",
   "RateLimits",
@@ -777,6 +974,8 @@ __all__ = (
   "RenderingPeriodLite",
   "RenderingRowLite",
   "ReopenPeriodOperation",
+  "ReportResponse",
+  "ReportResponseRuleSummaryType0",
   "RepositoryInfo",
   "RepositorySubscriptions",
   "ResendVerificationEmailResponseResendverificationemail",
@@ -811,6 +1010,8 @@ __all__ = (
   "ServiceOfferingSummary",
   "SetCloseTargetOperation",
   "ShareReportOperation",
+  "ShareReportResponse",
+  "ShareResultItem",
   "SSOCompleteRequest",
   "SSOExchangeRequest",
   "SSOExchangeResponse",
@@ -818,6 +1019,7 @@ __all__ = (
   "StatementMechanics",
   "StorageLimits",
   "StorageSummary",
+  "StructureSummary",
   "StructureUpdatePatch",
   "StructureUpdatePatchMetadataType0",
   "SubgraphQuotaResponse",
@@ -833,22 +1035,30 @@ __all__ = (
   "TableListResponse",
   "TableQueryRequest",
   "TableQueryResponse",
+  "TaxonomyBlockAssociation",
   "TaxonomyBlockAssociationRequest",
   "TaxonomyBlockAssociationRequestAssociationType",
   "TaxonomyBlockAssociationRequestMetadata",
+  "TaxonomyBlockElement",
+  "TaxonomyBlockElementOrigin",
   "TaxonomyBlockElementRequest",
   "TaxonomyBlockElementRequestMetadata",
+  "TaxonomyBlockEnvelope",
+  "TaxonomyBlockEnvelopeVerificationResultsItem",
+  "TaxonomyBlockRule",
   "TaxonomyBlockRuleRequest",
   "TaxonomyBlockRuleRequestMetadata",
   "TaxonomyBlockRuleRequestRuleCategory",
   "TaxonomyBlockRuleRequestRulePattern",
   "TaxonomyBlockRuleRequestSeverity",
   "TaxonomyBlockRuleRequestVariablesItem",
+  "TaxonomyBlockStructure",
   "TaxonomyBlockStructureRequest",
   "TaxonomyBlockStructureRequestMetadata",
   "TaxonomyBlockStructureRequestStructureType",
   "TierCapacity",
   "TokenPricing",
+  "TransactionPreview",
   "TransactionSummaryResponse",
   "TransactionTemplate",
   "TransactionTemplateEntry",
