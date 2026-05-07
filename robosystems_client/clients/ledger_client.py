@@ -275,6 +275,30 @@ from ..models.update_taxonomy_block_request import UpdateTaxonomyBlockRequest
 from ..models.delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
 from ..models.evaluate_rules_request import EvaluateRulesRequest
 from ..models.update_entity_request import UpdateEntityRequest
+
+# Typed result models — used as facade method return types.
+from ..models.association_response import AssociationResponse
+from ..models.close_period_response import ClosePeriodResponse
+from ..models.delete_information_block_response import DeleteInformationBlockResponse
+from ..models.delete_result import DeleteResult
+from ..models.delete_taxonomy_block_response import DeleteTaxonomyBlockResponse
+from ..models.entity_taxonomy_response import EntityTaxonomyResponse
+from ..models.evaluate_rules_response import EvaluateRulesResponse
+from ..models.event_block_envelope import EventBlockEnvelope
+from ..models.event_handler_response import EventHandlerResponse
+from ..models.fiscal_calendar_response import FiscalCalendarResponse
+from ..models.information_block_envelope import InformationBlockEnvelope
+from ..models.initialize_ledger_response import InitializeLedgerResponse
+from ..models.journal_entry_response import JournalEntryResponse
+from ..models.ledger_agent_response import LedgerAgentResponse
+from ..models.ledger_entity_response import LedgerEntityResponse
+from ..models.preview_event_block_response import PreviewEventBlockResponse
+from ..models.publish_list_member_response import PublishListMemberResponse
+from ..models.publish_list_response import PublishListResponse
+from ..models.report_response import ReportResponse
+from ..models.share_report_response import ShareReportResponse
+from ..models.taxonomy_block_envelope import TaxonomyBlockEnvelope
+
 from ..types import UNSET
 
 
@@ -361,8 +385,44 @@ class LedgerClient:
       raise RuntimeError(f"{label} failed: {envelope!r}")
     return envelope.result
 
+  def _typed_result(self, label: str, envelope: Any, expected: type[Any]) -> Any:
+    """Return ``envelope.result`` for typed-envelope facade methods.
+
+    The calling facade method's return-type annotation advertises the
+    expected typed class (e.g. ``LedgerAgentResponse``); the runtime
+    return is whatever the SDK gave us:
+
+    - In production the SDK has parsed the typed envelope into the
+      generated attrs class — callers get autocomplete + ``.field``
+      access.
+    - In tests using dict mocks (or untyped envelopes), the result is
+      a plain ``dict`` — callers can use either ``result["field"]`` or
+      promote with ``ExpectedClass.from_dict(result)``.
+
+    A ``None`` result is normalized to ``{"deleted": True}`` for
+    delete-style returns to preserve the legacy sentinel behavior.
+
+    Raises :class:`RuntimeError` only when the envelope itself is
+    malformed (label included for debuggability).
+    """
+    result = envelope.result
+    if result is None or (
+      hasattr(result, "__class__") and "Unset" in result.__class__.__name__
+    ):
+      # Delete-style ops historically returned {"deleted": True} when the
+      # server omitted the result body. Preserve that sentinel for back-compat.
+      return {"deleted": True}
+    return result
+
   def _call_op(self, label: str, response: Any) -> Any:
-    """Common error handling for every generated op_* REST call."""
+    """Common error handling for every generated op_* REST call.
+
+    Returns the parsed envelope unchanged. Typed-envelope ops surface
+    ``envelope.result`` as the SDK's typed attrs class (e.g.
+    ``ReportResponse``); untyped ops surface it as a plain dict via
+    ``OperationEnvelopeResultType0``. Facade methods are responsible
+    for asserting / casting the result to the type they advertise.
+    """
     if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
       raise RuntimeError(
         f"{label} failed: {response.status_code}: {response.content!r}"
@@ -370,12 +430,6 @@ class LedgerClient:
     envelope = response.parsed
     if not self._is_envelope(envelope):
       raise RuntimeError(f"{label} failed: unexpected response shape: {envelope!r}")
-    # Normalize result to a plain dict — typed envelopes carry the result
-    # as an attrs class (e.g. `EventBlockEnvelope`); untyped envelopes
-    # (Any-default) sometimes wrap it in `OperationEnvelopeResultType0`.
-    # Either way, downstream callers expect `dict[str, Any]`.
-    if envelope.result is not None and hasattr(envelope.result, "to_dict"):
-      envelope.result = envelope.result.to_dict()
     return envelope
 
   def _build_event_block_request(
@@ -432,12 +486,14 @@ class LedgerClient:
     data = self._query(graph_id, LIST_ENTITIES_QUERY, {"source": source})
     return parse_entities(data)
 
-  def update_entity(self, graph_id: str, updates: dict[str, Any]) -> dict[str, Any]:
+  def update_entity(
+    self, graph_id: str, updates: dict[str, Any]
+  ) -> LedgerEntityResponse:
     """Update the entity for this graph. Only provided fields are applied."""
     body = UpdateEntityRequest.from_dict(updates)
     response = op_update_entity(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Update entity", response)
-    return envelope.result or {}
+    return self._typed_result("Update entity", envelope, LedgerEntityResponse)
 
   # ── Summary ────────────────────────────────────────────────────────
 
@@ -634,7 +690,7 @@ class LedgerClient:
 
   def create_taxonomy_block(
     self, graph_id: str, body: dict[str, Any], idempotency_key: str | None = None
-  ) -> dict[str, Any]:
+  ) -> TaxonomyBlockEnvelope:
     """Create a taxonomy block atomically (taxonomy + structures +
     elements + associations + rules in one envelope).
     """
@@ -646,22 +702,22 @@ class LedgerClient:
       idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
     )
     envelope = self._call_op("Create taxonomy block", response)
-    return envelope.result or {}
+    return self._typed_result("Create taxonomy block", envelope, TaxonomyBlockEnvelope)
 
   def update_taxonomy_block(
     self, graph_id: str, body: dict[str, Any]
-  ) -> dict[str, Any]:
+  ) -> TaxonomyBlockEnvelope:
     """Update a taxonomy block — add/update/remove elements, structures, associations, or rules."""
     request = UpdateTaxonomyBlockRequest.from_dict(body)
     response = op_update_taxonomy_block(
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Update taxonomy block", response)
-    return envelope.result or {}
+    return self._typed_result("Update taxonomy block", envelope, TaxonomyBlockEnvelope)
 
   def delete_taxonomy_block(
     self, graph_id: str, taxonomy_id: str, reason: str, cascade_facts: bool = False
-  ) -> dict[str, Any]:
+  ) -> DeleteTaxonomyBlockResponse:
     """Delete a taxonomy block. Cascades through elements, structures, and associations."""
     request = DeleteTaxonomyBlockRequest.from_dict(
       {"taxonomy_id": taxonomy_id, "reason": reason, "cascade_facts": cascade_facts}
@@ -670,7 +726,9 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Delete taxonomy block", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
+    return self._typed_result(
+      "Delete taxonomy block", envelope, DeleteTaxonomyBlockResponse
+    )
 
   def link_entity_taxonomy(
     self,
@@ -679,7 +737,7 @@ class LedgerClient:
     basis: str = "chart_of_accounts",
     is_primary: bool = True,
     adoption_context: str | None = "voluntary",
-  ) -> dict[str, Any]:
+  ) -> EntityTaxonomyResponse:
     """Link the graph's entity to a taxonomy (ENTITY_HAS_TAXONOMY edge).
 
     Idempotent — returns existing linkage if already present.
@@ -696,7 +754,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Link entity taxonomy", response)
-    return envelope.result or {}
+    return self._typed_result("Link entity taxonomy", envelope, EntityTaxonomyResponse)
 
   def list_elements(
     self,
@@ -772,7 +830,7 @@ class LedgerClient:
     from_element_id: str,
     to_element_id: str,
     confidence: float = 1.0,
-  ) -> dict[str, Any]:
+  ) -> AssociationResponse:
     """Create a manual mapping association between two elements."""
     body = CreateMappingAssociationOperation(
       mapping_id=mapping_id,
@@ -784,11 +842,13 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Create mapping association", response)
-    return envelope.result or {}
+    return self._typed_result(
+      "Create mapping association", envelope, AssociationResponse
+    )
 
   def delete_mapping_association(
     self, graph_id: str, mapping_id: str, association_id: str
-  ) -> dict[str, Any]:
+  ) -> DeleteResult:
     """Delete a mapping association."""
     body = DeleteMappingAssociationOperation(
       mapping_id=mapping_id, association_id=association_id
@@ -797,7 +857,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete mapping association", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
+    return self._typed_result("Delete mapping association", envelope, DeleteResult)
 
   def auto_map_elements(self, graph_id: str, mapping_id: str) -> dict[str, Any]:
     """Trigger the AI MappingAgent (async). Returns an operation ack."""
@@ -875,7 +935,7 @@ class LedgerClient:
     useful_life_months: int | None = None,
     asset_element_id: str | None = None,
     auto_reverse: bool = False,
-  ) -> dict[str, Any]:
+  ) -> InformationBlockEnvelope:
     """Create a new schedule with pre-generated monthly facts."""
     payload_dict: dict[str, Any] = {
       "name": name,
@@ -913,7 +973,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Create schedule", response)
-    return envelope.result or {}
+    return self._typed_result("Create schedule", envelope, InformationBlockEnvelope)
 
   def dispose_schedule(
     self,
@@ -925,7 +985,7 @@ class LedgerClient:
     sale_proceeds: int | None = None,
     proceeds_element_id: str | None = None,
     gain_loss_element_id: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> EventBlockEnvelope:
     """Dispose of a schedule asset — atomically truncates forward facts,
     drops the SumEquals rule, and posts a balanced disposal entry.
 
@@ -953,7 +1013,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Dispose schedule", response)
-    return envelope.result or {}
+    return self._typed_result("Dispose schedule", envelope, EventBlockEnvelope)
 
   def evaluate_rules(
     self,
@@ -962,7 +1022,7 @@ class LedgerClient:
     fact_set_id: str | None = None,
     period_start: str | None = None,
     period_end: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> EvaluateRulesResponse:
     """Evaluate taxonomy rules against facts in a structure."""
     body_dict: dict[str, Any] = {"structure_id": structure_id}
     if fact_set_id is not None:
@@ -976,11 +1036,11 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Evaluate rules", response)
-    return envelope.result or {}
+    return self._typed_result("Evaluate rules", envelope, EvaluateRulesResponse)
 
   def update_schedule(
     self, graph_id: str, structure_id: str, body: dict[str, Any]
-  ) -> dict[str, Any]:
+  ) -> InformationBlockEnvelope:
     """Update mutable fields on a schedule (name, entry_template, metadata)."""
     payload = UpdateScheduleRequest.from_dict({"structure_id": structure_id, **body})
     request = UpdateScheduleArm(block_type="schedule", payload=payload)
@@ -988,9 +1048,11 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Update schedule", response)
-    return envelope.result or {}
+    return self._typed_result("Update schedule", envelope, InformationBlockEnvelope)
 
-  def delete_schedule(self, graph_id: str, structure_id: str) -> dict[str, Any]:
+  def delete_schedule(
+    self, graph_id: str, structure_id: str
+  ) -> DeleteInformationBlockResponse:
     """Permanently delete a schedule (cascades through facts + associations)."""
     payload = DeleteScheduleRequest.from_dict({"structure_id": structure_id})
     body = DeleteScheduleArm(block_type="schedule", payload=payload)
@@ -998,7 +1060,9 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete schedule", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
+    return self._typed_result(
+      "Delete schedule", envelope, DeleteInformationBlockResponse
+    )
 
   # ── Period close ────────────────────────────────────────────────────
 
@@ -1029,7 +1093,7 @@ class LedgerClient:
     period_start: str,
     period_end: str,
     memo: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> EventBlockEnvelope:
     """Idempotently create (or refresh) a draft closing entry from a schedule.
 
     Routes through ``create-event-block`` with
@@ -1056,7 +1120,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Create closing entry", response)
-    return envelope.result or {}
+    return self._typed_result("Create closing entry", envelope, EventBlockEnvelope)
 
   # ── Journal entries (native accounting writes) ──────────────────────
 
@@ -1071,7 +1135,7 @@ class LedgerClient:
     status: str = "draft",
     transaction_id: str | None = None,
     idempotency_key: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> EventBlockEnvelope:
     """Create a journal entry with balanced line items (DR=CR enforced).
 
     Routes through ``create-event-block`` with
@@ -1110,25 +1174,27 @@ class LedgerClient:
       idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
     )
     envelope = self._call_op("Create journal entry", response)
-    return envelope.result or {}
+    return self._typed_result("Create journal entry", envelope, EventBlockEnvelope)
 
-  def update_journal_entry(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+  def update_journal_entry(
+    self, graph_id: str, body: dict[str, Any]
+  ) -> JournalEntryResponse:
     """Update a draft journal entry. Posted entries are immutable."""
     request = UpdateJournalEntryRequest.from_dict(body)
     response = op_update_journal_entry(
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Update journal entry", response)
-    return envelope.result or {}
+    return self._typed_result("Update journal entry", envelope, JournalEntryResponse)
 
-  def delete_journal_entry(self, graph_id: str, entry_id: str) -> dict[str, Any]:
+  def delete_journal_entry(self, graph_id: str, entry_id: str) -> DeleteResult:
     """Hard-delete a draft journal entry. Posted entries must be reversed."""
     body = DeleteJournalEntryRequest(entry_id=entry_id)
     response = op_delete_journal_entry(
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete journal entry", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
+    return self._typed_result("Delete journal entry", envelope, DeleteResult)
 
   def reverse_journal_entry(
     self,
@@ -1137,7 +1203,7 @@ class LedgerClient:
     posting_date: str | None = None,
     memo: str | None = None,
     reason: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> EventBlockEnvelope:
     """Reverse a posted journal entry (creates offsetting entry, marks original as reversed).
 
     Routes through ``create-event-block`` with
@@ -1161,7 +1227,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Reverse journal entry", response)
-    return envelope.result or {}
+    return self._typed_result("Reverse journal entry", envelope, EventBlockEnvelope)
 
   # ── Event blocks (generic preview + status transitions) ──────────────
 
@@ -1170,7 +1236,7 @@ class LedgerClient:
     graph_id: str,
     body: dict[str, Any],
     idempotency_key: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> EventBlockEnvelope:
     """Create an event block directly from a dict.
 
     Use for support-class events (``event_class='support'``) with categories
@@ -1187,13 +1253,13 @@ class LedgerClient:
       idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
     )
     envelope = self._call_op("Create event block", response)
-    return envelope.result or {}
+    return self._typed_result("Create event block", envelope, EventBlockEnvelope)
 
   def preview_event_block(
     self,
     graph_id: str,
     body: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> PreviewEventBlockResponse:
     """Dry-run an event block — resolve handler, evaluate metadata, return
     the planned GL rows without writing anything.
 
@@ -1207,13 +1273,15 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Preview event block", response)
-    return envelope.result or {}
+    return self._typed_result(
+      "Preview event block", envelope, PreviewEventBlockResponse
+    )
 
   def update_event_block(
     self,
     graph_id: str,
     body: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> EventBlockEnvelope:
     """Apply a status transition and/or field corrections to an event block.
 
     Use for posting drafts (``classified`` → ``committed`` → ``fulfilled``),
@@ -1226,7 +1294,7 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Update event block", response)
-    return envelope.result or {}
+    return self._typed_result("Update event block", envelope, EventBlockEnvelope)
 
   # ── Agents (REA counterparties) ───────────────────────────────────────
 
@@ -1235,7 +1303,7 @@ class LedgerClient:
     graph_id: str,
     body: dict[str, Any],
     idempotency_key: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> LedgerAgentResponse:
     """Create an agent — REA counterparty (customer, vendor, employee, etc.)
     referenced by event blocks via ``agent_id``.
 
@@ -1250,13 +1318,13 @@ class LedgerClient:
       idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
     )
     envelope = self._call_op("Create agent", response)
-    return envelope.result or {}
+    return self._typed_result("Create agent", envelope, LedgerAgentResponse)
 
   def update_agent(
     self,
     graph_id: str,
     body: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> LedgerAgentResponse:
     """Update an agent. ``metadata_patch`` is a partial merge into existing
     metadata; all other fields replace.
     """
@@ -1265,7 +1333,7 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Update agent", response)
-    return envelope.result or {}
+    return self._typed_result("Update agent", envelope, LedgerAgentResponse)
 
   # ── Event handlers (DSL handler registry) ────────────────────────────
 
@@ -1273,7 +1341,7 @@ class LedgerClient:
     self,
     graph_id: str,
     body: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> EventHandlerResponse:
     """Register a tenant-configurable event handler — DSL row in the
     ``event_handlers`` table that drives ``create-event-block`` for event
     types not covered by a Python handler.
@@ -1283,13 +1351,13 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Create event handler", response)
-    return envelope.result or {}
+    return self._typed_result("Create event handler", envelope, EventHandlerResponse)
 
   def update_event_handler(
     self,
     graph_id: str,
     body: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> EventHandlerResponse:
     """Update a registered event handler. Pass ``approve=True`` in the body
     to flip an AI-suggested handler from unapproved to active.
     """
@@ -1298,7 +1366,7 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Update event handler", response)
-    return envelope.result or {}
+    return self._typed_result("Update event handler", envelope, EventHandlerResponse)
 
   # ── Financial statements (graph-backed) ──────────────────────────────
 
@@ -1387,7 +1455,7 @@ class LedgerClient:
     earliest_data_period: str | None = None,
     auto_seed_schedules: bool | None = None,
     note: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> InitializeLedgerResponse:
     """One-time ledger initialization — seed fiscal calendar + periods."""
     body = InitializeLedgerRequest(
       closed_through=closed_through if closed_through is not None else UNSET,
@@ -1406,14 +1474,14 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Initialize ledger", response)
-    return envelope.result or {}
+    return self._typed_result("Initialize ledger", envelope, InitializeLedgerResponse)
 
   def set_close_target(
     self,
     graph_id: str,
     period: str,
     note: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> FiscalCalendarResponse:
     """Set the user-controlled close target (YYYY-MM)."""
     body = SetCloseTargetOperation(
       period=period,
@@ -1423,7 +1491,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Set close target", response)
-    return envelope.result or {}
+    return self._typed_result("Set close target", envelope, FiscalCalendarResponse)
 
   def close_period(
     self,
@@ -1431,7 +1499,7 @@ class LedgerClient:
     period: str,
     note: str | None = None,
     allow_stale_sync: bool | None = None,
-  ) -> dict[str, Any]:
+  ) -> ClosePeriodResponse:
     """Close a fiscal period — the final commit action."""
     body = ClosePeriodOperation(
       period=period,
@@ -1440,7 +1508,7 @@ class LedgerClient:
     )
     response = op_close_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Close period", response)
-    return envelope.result or {}
+    return self._typed_result("Close period", envelope, ClosePeriodResponse)
 
   def reopen_period(
     self,
@@ -1448,7 +1516,7 @@ class LedgerClient:
     period: str,
     reason: str,
     note: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> FiscalCalendarResponse:
     """Reopen a closed fiscal period. Requires a reason for the audit log."""
     body = ReopenPeriodOperation(
       period=period,
@@ -1457,7 +1525,7 @@ class LedgerClient:
     )
     response = op_reopen_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Reopen period", response)
-    return envelope.result or {}
+    return self._typed_result("Reopen period", envelope, FiscalCalendarResponse)
 
   # ── Reports ─────────────────────────────────────────────────────────
 
@@ -1471,8 +1539,10 @@ class LedgerClient:
     taxonomy_id: str = "tax_usgaap_reporting",
     period_type: str = "quarterly",
     comparative: bool = True,
-  ) -> dict[str, Any]:
-    """Kick off report creation (async). Returns an operation ack."""
+  ) -> ReportResponse:
+    """Generate report facts from the ledger and publish a Report
+    definition. Synchronous — returns the published report header.
+    """
     body = CreateReportRequest(
       name=name,
       mapping_id=mapping_id,
@@ -1484,7 +1554,7 @@ class LedgerClient:
     )
     response = op_create_report(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Create report", response)
-    return {"operation_id": envelope.operation_id, "status": envelope.status}
+    return self._typed_result("Create report", envelope, ReportResponse)
 
   def list_reports(self, graph_id: str) -> list[dict[str, Any]]:
     """List all reports for a graph (includes received shared reports)."""
@@ -1528,8 +1598,10 @@ class LedgerClient:
     report_id: str,
     period_start: str | None = None,
     period_end: str | None = None,
-  ) -> dict[str, Any]:
-    """Regenerate an existing report (async). Returns an operation ack."""
+  ) -> ReportResponse:
+    """Re-run fact generation for an existing Report against the latest
+    ledger state. Synchronous — returns the regenerated report header.
+    """
     body = RegenerateReportOperation(
       report_id=report_id,
       period_start=period_start if period_start is not None else UNSET,
@@ -1539,24 +1611,28 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Regenerate report", response)
-    return {"operation_id": envelope.operation_id, "status": envelope.status}
+    return self._typed_result("Regenerate report", envelope, ReportResponse)
 
-  def delete_report(self, graph_id: str, report_id: str) -> None:
+  def delete_report(self, graph_id: str, report_id: str) -> DeleteResult:
     """Delete a report and its generated facts."""
     body = DeleteReportOperation(report_id=report_id)
     response = op_delete_report(graph_id=graph_id, body=body, client=self._get_client())
-    self._call_op("Delete report", response)
+    envelope = self._call_op("Delete report", response)
+    return self._typed_result("Delete report", envelope, DeleteResult)
 
   def share_report(
     self, graph_id: str, report_id: str, publish_list_id: str
-  ) -> dict[str, Any]:
-    """Share a published report to every member of a publish list (async)."""
+  ) -> ShareReportResponse:
+    """Share a published report to every member of a publish list. Each
+    target receives an independent copy; per-recipient outcomes appear
+    in the response's ``results`` list.
+    """
     body = ShareReportOperation(report_id=report_id, publish_list_id=publish_list_id)
     response = op_share_report(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Share report", response)
-    return {"operation_id": envelope.operation_id, "status": envelope.status}
+    return self._typed_result("Share report", envelope, ShareReportResponse)
 
-  def file_report(self, graph_id: str, report_id: str) -> dict[str, Any]:
+  def file_report(self, graph_id: str, report_id: str) -> ReportResponse:
     """Transition a Report's filing_status to 'filed' — locks the package.
 
     Allowed from 'draft' or 'under_review'. Stamps filed_at + filed_by from
@@ -1565,11 +1641,11 @@ class LedgerClient:
     body = FileReportRequest(report_id=report_id)
     response = op_file_report(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("File report", response)
-    return {"operation_id": envelope.operation_id, "status": envelope.status}
+    return self._typed_result("File report", envelope, ReportResponse)
 
   def transition_filing_status(
     self, graph_id: str, report_id: str, target_status: str
-  ) -> dict[str, Any]:
+  ) -> ReportResponse:
     """Move a Report along the non-file legs of the filing lifecycle.
 
     Use ``file_report()`` to reach 'filed' so audit fields land cleanly.
@@ -1583,7 +1659,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Transition filing status", response)
-    return {"operation_id": envelope.operation_id, "status": envelope.status}
+    return self._typed_result("Transition filing status", envelope, ReportResponse)
 
   def is_shared_report(self, report: dict[str, Any] | Any) -> bool:
     """Check if a report was received via sharing (vs locally created)."""
@@ -1609,7 +1685,7 @@ class LedgerClient:
 
   def create_publish_list(
     self, graph_id: str, name: str, description: str | None = None
-  ) -> dict[str, Any]:
+  ) -> PublishListResponse:
     """Create a new publish list."""
     body = CreatePublishListRequest(
       name=name,
@@ -1619,7 +1695,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Create publish list", response)
-    return envelope.result or {}
+    return self._typed_result("Create publish list", envelope, PublishListResponse)
 
   def update_publish_list(
     self,
@@ -1627,7 +1703,7 @@ class LedgerClient:
     list_id: str,
     name: str | None = None,
     description: str | None = None,
-  ) -> dict[str, Any]:
+  ) -> PublishListResponse:
     """Update a publish list's name or description."""
     body = UpdatePublishListOperation(
       list_id=list_id,
@@ -1638,20 +1714,22 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Update publish list", response)
-    return envelope.result or {}
+    return self._typed_result("Update publish list", envelope, PublishListResponse)
 
-  def delete_publish_list(self, graph_id: str, list_id: str) -> None:
+  def delete_publish_list(self, graph_id: str, list_id: str) -> DeleteResult:
     """Delete a publish list."""
     body = DeletePublishListOperation(list_id=list_id)
     response = op_delete_publish_list(
       graph_id=graph_id, body=body, client=self._get_client()
     )
-    self._call_op("Delete publish list", response)
+    envelope = self._call_op("Delete publish list", response)
+    return self._typed_result("Delete publish list", envelope, DeleteResult)
 
   def add_publish_list_members(
     self, graph_id: str, list_id: str, target_graph_ids: list[str]
-  ) -> dict[str, Any]:
-    """Add target graphs as members of a publish list."""
+  ) -> list[PublishListMemberResponse]:
+    """Add target graphs as members of a publish list. Returns the
+    membership rows that were just created."""
     body = AddPublishListMembersOperation(
       list_id=list_id, target_graph_ids=target_graph_ids
     )
@@ -1659,15 +1737,21 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Add publish list members", response)
-    return envelope.result or {}
+    result = envelope.result
+    if not isinstance(result, list):
+      raise RuntimeError(
+        f"Add publish list members: expected list result, got "
+        f"{type(result).__name__}: {envelope!r}"
+      )
+    return result
 
   def remove_publish_list_member(
     self, graph_id: str, list_id: str, member_id: str
-  ) -> dict[str, Any]:
+  ) -> DeleteResult:
     """Remove a single member from a publish list."""
     body = RemovePublishListMemberOperation(list_id=list_id, member_id=member_id)
     response = op_remove_publish_list_member(
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Remove publish list member", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
+    return self._typed_result("Remove publish list member", envelope, DeleteResult)

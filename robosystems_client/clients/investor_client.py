@@ -9,7 +9,12 @@ pattern as `LedgerClient`:
   `/extensions/roboinvestor/{graph_id}/operations/{operation_name}`.
 
 Every write returns an `OperationEnvelope`; the facade unwraps
-`envelope.result` and returns a snake_case dict.
+`envelope.result` and returns the typed SDK class advertised on the
+method's return-type annotation (e.g. ``PortfolioBlockEnvelope``,
+``SecurityResponse``, ``DeleteResult``). In production the result is
+the SDK's generated attrs class; in unit-test contexts using dict
+mocks, the result is a plain dict — both surface fields the same way
+in the JSON-serialized response.
 """
 
 from __future__ import annotations
@@ -56,7 +61,11 @@ from ..graphql.queries.investor import (
 from ..models.create_portfolio_block_request import CreatePortfolioBlockRequest
 from ..models.create_security_request import CreateSecurityRequest
 from ..models.delete_portfolio_block_operation import DeletePortfolioBlockOperation
+from ..models.delete_portfolio_block_response import DeletePortfolioBlockResponse
+from ..models.delete_result import DeleteResult
 from ..models.delete_security_operation import DeleteSecurityOperation
+from ..models.portfolio_block_envelope import PortfolioBlockEnvelope
+from ..models.security_response import SecurityResponse
 from ..models.update_portfolio_block_operation import UpdatePortfolioBlockOperation
 from ..models.update_security_operation import UpdateSecurityOperation
 
@@ -119,6 +128,14 @@ class InvestorClient:
     return all(hasattr(value, f) for f in self._ENVELOPE_FIELDS)
 
   def _call_op(self, label: str, response: Any) -> Any:
+    """Common error handling for every generated op_* REST call.
+
+    Returns the parsed envelope unchanged. Typed-envelope ops surface
+    ``envelope.result`` as the SDK's typed attrs class (e.g.
+    ``PortfolioBlockEnvelope``); untyped ops surface it as a plain dict.
+    Facade methods are responsible for casting the result to the type
+    they advertise.
+    """
     if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
       raise RuntimeError(
         f"{label} failed: {response.status_code}: {response.content!r}"
@@ -126,11 +143,22 @@ class InvestorClient:
     envelope = response.parsed
     if not self._is_envelope(envelope):
       raise RuntimeError(f"{label} failed: unexpected response shape: {envelope!r}")
-    # Normalize result to a plain dict — typed envelopes carry the result
-    # as an attrs class (e.g. `PortfolioBlockEnvelope`).
-    if envelope.result is not None and hasattr(envelope.result, "to_dict"):
-      envelope.result = envelope.result.to_dict()
     return envelope
+
+  def _typed_result(self, label: str, envelope: Any, expected: type[Any]) -> Any:
+    """Return ``envelope.result`` for typed-envelope facade methods.
+
+    See :meth:`LedgerClient._typed_result` for the contract. Briefly: in
+    production the SDK gives back the typed attrs class; in tests using
+    dict mocks the result is a plain dict; ``None``/``Unset`` is
+    normalized to ``{"deleted": True}`` for delete-style returns.
+    """
+    result = envelope.result
+    if result is None or (
+      hasattr(result, "__class__") and "Unset" in result.__class__.__name__
+    ):
+      return {"deleted": True}
+    return result
 
   # ── Portfolios ──────────────────────────────────────────────────────
 
@@ -154,21 +182,23 @@ class InvestorClient:
 
   def create_portfolio_block(
     self, graph_id: str, body: dict[str, Any]
-  ) -> dict[str, Any]:
+  ) -> PortfolioBlockEnvelope:
     """Create a portfolio with optional initial positions in one atomic operation."""
     request = CreatePortfolioBlockRequest.from_dict(body)
     response = op_create_portfolio_block(
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Create portfolio block", response)
-    return envelope.result or {}
+    return self._typed_result(
+      "Create portfolio block", envelope, PortfolioBlockEnvelope
+    )
 
   def update_portfolio_block(
     self,
     graph_id: str,
     portfolio_id: str,
     updates: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> PortfolioBlockEnvelope:
     """Update portfolio metadata and/or apply position deltas (add/update/dispose)."""
     body_dict = {**updates, "portfolio_id": portfolio_id}
     body = UpdatePortfolioBlockOperation.from_dict(body_dict)
@@ -176,14 +206,16 @@ class InvestorClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Update portfolio block", response)
-    return envelope.result or {}
+    return self._typed_result(
+      "Update portfolio block", envelope, PortfolioBlockEnvelope
+    )
 
   def delete_portfolio_block(
     self,
     graph_id: str,
     portfolio_id: str,
     confirm_active_positions: bool = False,
-  ) -> dict[str, Any]:
+  ) -> DeletePortfolioBlockResponse:
     """Delete a portfolio and all its positions. Requires `confirm_active_positions=True` when active positions exist."""
     body = DeletePortfolioBlockOperation(
       portfolio_id=portfolio_id,
@@ -193,7 +225,9 @@ class InvestorClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete portfolio block", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
+    return self._typed_result(
+      "Delete portfolio block", envelope, DeletePortfolioBlockResponse
+    )
 
   # ── Securities ──────────────────────────────────────────────────────
 
@@ -225,21 +259,21 @@ class InvestorClient:
     data = self._query(graph_id, GET_SECURITY_QUERY, {"securityId": security_id})
     return parse_security(data)
 
-  def create_security(self, graph_id: str, body: dict[str, Any]) -> dict[str, Any]:
+  def create_security(self, graph_id: str, body: dict[str, Any]) -> SecurityResponse:
     """Create a new security. Auto-links to an entity when `source_graph_id` is set."""
     request = CreateSecurityRequest.from_dict(body)
     response = op_create_security(
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Create security", response)
-    return envelope.result or {}
+    return self._typed_result("Create security", envelope, SecurityResponse)
 
   def update_security(
     self,
     graph_id: str,
     security_id: str,
     updates: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> SecurityResponse:
     """Update a security's metadata. Only provided fields are applied."""
     body_dict = {**updates, "security_id": security_id}
     body = UpdateSecurityOperation.from_dict(body_dict)
@@ -247,16 +281,16 @@ class InvestorClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Update security", response)
-    return envelope.result or {}
+    return self._typed_result("Update security", envelope, SecurityResponse)
 
-  def delete_security(self, graph_id: str, security_id: str) -> dict[str, Any]:
+  def delete_security(self, graph_id: str, security_id: str) -> DeleteResult:
     """Soft-delete a security (sets is_active=False)."""
     body = DeleteSecurityOperation(security_id=security_id)
     response = op_delete_security(
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete security", response)
-    return envelope.result if envelope.result is not None else {"deleted": True}
+    return self._typed_result("Delete security", envelope, DeleteResult)
 
   # ── Positions (read-only — writes go through portfolio block) ────────
 
