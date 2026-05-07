@@ -8,7 +8,6 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.close_period_operation import ClosePeriodOperation
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope_close_period_response import (
   OperationEnvelopeClosePeriodResponse,
 )
@@ -42,7 +41,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse | None:
+) -> ErrorResponse | OperationEnvelopeClosePeriodResponse | None:
   if response.status_code == 200:
     response_200 = OperationEnvelopeClosePeriodResponse.from_dict(response.json())
 
@@ -74,7 +73,7 @@ def _parse_response(
     return response_409
 
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -96,9 +95,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeClosePeriodResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -113,9 +110,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: ClosePeriodOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeClosePeriodResponse]:
   """Close Fiscal Period
 
    Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
@@ -140,7 +135,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse]
+      Response[ErrorResponse | OperationEnvelopeClosePeriodResponse]
   """
 
   kwargs = _get_kwargs(
@@ -162,7 +157,7 @@ def sync(
   client: AuthenticatedClient,
   body: ClosePeriodOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse | None:
+) -> ErrorResponse | OperationEnvelopeClosePeriodResponse | None:
   """Close Fiscal Period
 
    Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
@@ -187,7 +182,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
+      ErrorResponse | OperationEnvelopeClosePeriodResponse
   """
 
   return sync_detailed(
@@ -204,9 +199,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: ClosePeriodOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopeClosePeriodResponse]:
   """Close Fiscal Period
 
    Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
@@ -231,7 +224,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse]
+      Response[ErrorResponse | OperationEnvelopeClosePeriodResponse]
   """
 
   kwargs = _get_kwargs(
@@ -251,7 +244,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: ClosePeriodOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse | None:
+) -> ErrorResponse | OperationEnvelopeClosePeriodResponse | None:
   """Close Fiscal Period
 
    Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
@@ -276,7 +269,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelopeClosePeriodResponse
+      ErrorResponse | OperationEnvelopeClosePeriodResponse
   """
 
   return (

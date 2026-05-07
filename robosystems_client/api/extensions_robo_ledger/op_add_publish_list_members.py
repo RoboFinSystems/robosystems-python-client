@@ -8,7 +8,6 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelopelist_publish_list_member_response import (
   OperationEnvelopelistPublishListMemberResponse,
 )
@@ -42,12 +41,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> (
-  ErrorResponse
-  | HTTPValidationError
-  | OperationEnvelopelistPublishListMemberResponse
-  | None
-):
+) -> ErrorResponse | OperationEnvelopelistPublishListMemberResponse | None:
   if response.status_code == 200:
     response_200 = OperationEnvelopelistPublishListMemberResponse.from_dict(
       response.json()
@@ -81,7 +75,7 @@ def _parse_response(
     return response_409
 
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -103,9 +97,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopelistPublishListMemberResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopelistPublishListMemberResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -120,9 +112,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: AddPublishListMembersOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopelistPublishListMemberResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopelistPublishListMemberResponse]:
   """Add Members to Publish List
 
    Add one or more recipient graphs to a publish list. Targets must exist and have the same extension
@@ -141,7 +131,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelopelistPublishListMemberResponse]
+      Response[ErrorResponse | OperationEnvelopelistPublishListMemberResponse]
   """
 
   kwargs = _get_kwargs(
@@ -163,12 +153,7 @@ def sync(
   client: AuthenticatedClient,
   body: AddPublishListMembersOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> (
-  ErrorResponse
-  | HTTPValidationError
-  | OperationEnvelopelistPublishListMemberResponse
-  | None
-):
+) -> ErrorResponse | OperationEnvelopelistPublishListMemberResponse | None:
   """Add Members to Publish List
 
    Add one or more recipient graphs to a publish list. Targets must exist and have the same extension
@@ -187,7 +172,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelopelistPublishListMemberResponse
+      ErrorResponse | OperationEnvelopelistPublishListMemberResponse
   """
 
   return sync_detailed(
@@ -204,9 +189,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: AddPublishListMembersOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[
-  ErrorResponse | HTTPValidationError | OperationEnvelopelistPublishListMemberResponse
-]:
+) -> Response[ErrorResponse | OperationEnvelopelistPublishListMemberResponse]:
   """Add Members to Publish List
 
    Add one or more recipient graphs to a publish list. Targets must exist and have the same extension
@@ -225,7 +208,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelopelistPublishListMemberResponse]
+      Response[ErrorResponse | OperationEnvelopelistPublishListMemberResponse]
   """
 
   kwargs = _get_kwargs(
@@ -245,12 +228,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: AddPublishListMembersOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> (
-  ErrorResponse
-  | HTTPValidationError
-  | OperationEnvelopelistPublishListMemberResponse
-  | None
-):
+) -> ErrorResponse | OperationEnvelopelistPublishListMemberResponse | None:
   """Add Members to Publish List
 
    Add one or more recipient graphs to a publish list. Targets must exist and have the same extension
@@ -269,7 +247,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelopelistPublishListMemberResponse
+      ErrorResponse | OperationEnvelopelistPublishListMemberResponse
   """
 
   return (

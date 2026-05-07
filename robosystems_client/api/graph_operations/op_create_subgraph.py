@@ -8,7 +8,6 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_subgraph_request import CreateSubgraphRequest
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
 from ...models.operation_envelope import OperationEnvelope
 from ...types import UNSET, Response, Unset
 
@@ -40,7 +39,7 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | OperationEnvelope | None:
   if response.status_code == 200:
     response_200 = OperationEnvelope.from_dict(response.json())
 
@@ -72,7 +71,7 @@ def _parse_response(
     return response_409
 
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -94,7 +93,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -109,7 +108,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   """Create Subgraph
 
    Set `fork_parent=true` to clone parent graph data into the new subgraph (async, returns a pending
@@ -128,7 +127,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -150,7 +149,7 @@ def sync(
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | OperationEnvelope | None:
   """Create Subgraph
 
    Set `fork_parent=true` to clone parent graph data into the new subgraph (async, returns a pending
@@ -169,7 +168,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | OperationEnvelope
   """
 
   return sync_detailed(
@@ -186,7 +185,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | OperationEnvelope]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   """Create Subgraph
 
    Set `fork_parent=true` to clone parent graph data into the new subgraph (async, returns a pending
@@ -205,7 +204,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | OperationEnvelope]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -225,7 +224,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: CreateSubgraphRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | OperationEnvelope | None:
+) -> ErrorResponse | OperationEnvelope | None:
   """Create Subgraph
 
    Set `fork_parent=true` to clone parent graph data into the new subgraph (async, returns a pending
@@ -244,7 +243,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | OperationEnvelope
+      ErrorResponse | OperationEnvelope
   """
 
   return (
