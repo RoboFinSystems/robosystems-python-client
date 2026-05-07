@@ -6,36 +6,38 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.update_legacy_arm_block_type import UpdateLegacyArmBlockType
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.delete_information_block_request_payload import (
-    DeleteInformationBlockRequestPayload,
-  )
+  from ..models.update_legacy_arm_payload import UpdateLegacyArmPayload
 
 
-T = TypeVar("T", bound="DeleteInformationBlockRequest")
+T = TypeVar("T", bound="UpdateLegacyArm")
 
 
 @_attrs_define
-class DeleteInformationBlockRequest:
-  """Generic delete request — mirrors :class:`CreateInformationBlockRequest`.
+class UpdateLegacyArm:
+  """Update-information-block body for block types that don't yet have
+  a typed update path at the API boundary.
 
-  Validated against the registry entry's ``delete_request_model``.
-  Block types that don't support deletion raise ``NotImplementedError``.
+  Statement-family blocks are library-seeded and immutable. Metric
+  block updates are not yet implemented. Calling this endpoint with
+  one of these block types returns HTTP 501.
 
       Attributes:
-          block_type (str): Block type discriminator. Must match a registered entry.
-          payload (DeleteInformationBlockRequestPayload | Unset): Block-type-specific delete payload. Typically carries
-              just the structure_id. Shape-validated against the registry entry's `delete_request_model` at dispatch time.
+          block_type (UpdateLegacyArmBlockType): Statement-family or metric block type. Updates return 501 — statement
+              Structures are library-seeded; metric updates are pending.
+          payload (UpdateLegacyArmPayload | Unset): Untyped payload — typed-arm validation is skipped because the dispatch
+              handler raises 501 before the payload is consumed.
   """
 
-  block_type: str
-  payload: DeleteInformationBlockRequestPayload | Unset = UNSET
+  block_type: UpdateLegacyArmBlockType
+  payload: UpdateLegacyArmPayload | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    block_type = self.block_type
+    block_type = self.block_type.value
 
     payload: dict[str, Any] | Unset = UNSET
     if not isinstance(self.payload, Unset):
@@ -55,27 +57,25 @@ class DeleteInformationBlockRequest:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.delete_information_block_request_payload import (
-      DeleteInformationBlockRequestPayload,
-    )
+    from ..models.update_legacy_arm_payload import UpdateLegacyArmPayload
 
     d = dict(src_dict)
-    block_type = d.pop("block_type")
+    block_type = UpdateLegacyArmBlockType(d.pop("block_type"))
 
     _payload = d.pop("payload", UNSET)
-    payload: DeleteInformationBlockRequestPayload | Unset
+    payload: UpdateLegacyArmPayload | Unset
     if isinstance(_payload, Unset):
       payload = UNSET
     else:
-      payload = DeleteInformationBlockRequestPayload.from_dict(_payload)
+      payload = UpdateLegacyArmPayload.from_dict(_payload)
 
-    delete_information_block_request = cls(
+    update_legacy_arm = cls(
       block_type=block_type,
       payload=payload,
     )
 
-    delete_information_block_request.additional_properties = d
-    return delete_information_block_request
+    update_legacy_arm.additional_properties = d
+    return update_legacy_arm
 
   @property
   def additional_keys(self) -> list[str]:

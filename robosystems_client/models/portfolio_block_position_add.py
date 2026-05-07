@@ -21,16 +21,22 @@ class PortfolioBlockPositionAdd:
   (Master Data CRUD owns that lifecycle).
 
       Attributes:
-          security_id (str):
-          quantity (float):
-          quantity_type (str | Unset):  Default: 'shares'.
-          cost_basis (int | Unset):  Default: 0.
-          currency (str | Unset):  Default: 'USD'.
-          current_value (int | None | Unset):
-          valuation_date (datetime.date | None | Unset):
-          valuation_source (None | str | Unset):
-          acquisition_date (datetime.date | None | Unset):
-          notes (None | str | Unset):
+          security_id (str): ID of the existing security this position holds. Securities are minted via `create-security`;
+              the operation returns 404 if the ID is unknown.
+          quantity (float): Quantity held, in units defined by `quantity_type` (e.g. share count for `shares`, face value
+              for `principal`).
+          quantity_type (str | Unset): Unit basis for `quantity`. Common values: `shares` (equity units), `units`
+              (generic), `principal` (debt face value). Default: 'shares'.
+          cost_basis (int | Unset): Total cost basis for this lot, in **cents** of `currency`. Stored as integer cents to
+              avoid float precision drift; $1,250.00 USD is `125000`. Default: 0.
+          currency (str | Unset): ISO 4217 currency code for `cost_basis` and `current_value`. Default: 'USD'.
+          current_value (int | None | Unset): Latest mark-to-market value in **cents** of `currency`, or `null` if
+              unmarked. Pair with `valuation_date` and `valuation_source` when set.
+          valuation_date (datetime.date | None | Unset): Date `current_value` was sourced (YYYY-MM-DD).
+          valuation_source (None | str | Unset): Free-text source attribution for `current_value` (e.g. `manual`,
+              `broker_statement`, vendor name).
+          acquisition_date (datetime.date | None | Unset): Date the position was originally acquired (YYYY-MM-DD).
+          notes (None | str | Unset): Free-text notes attached to the position.
   """
 
   security_id: str

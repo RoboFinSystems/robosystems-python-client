@@ -20,15 +20,16 @@ class PortfolioBlockPositionUpdate:
   Unset fields are ignored; `id` is the only required field.
 
       Attributes:
-          id (str):
-          quantity (float | None | Unset):
-          quantity_type (None | str | Unset):
-          cost_basis (int | None | Unset):
-          current_value (int | None | Unset):
-          valuation_date (datetime.date | None | Unset):
-          valuation_source (None | str | Unset):
-          acquisition_date (datetime.date | None | Unset):
-          notes (None | str | Unset):
+          id (str): Target position ID. Must belong to the portfolio identified by `portfolio_id` on the parent operation.
+          quantity (float | None | Unset): New quantity in units of `quantity_type`. Unset = unchanged.
+          quantity_type (None | str | Unset): New unit basis (`shares` | `units` | `principal`). Unset = unchanged.
+          cost_basis (int | None | Unset): New cost basis in **cents** of the position's currency. Unset = unchanged.
+          current_value (int | None | Unset): New mark-to-market value in **cents**. Unset = unchanged. Set alongside
+              `valuation_date` / `valuation_source` to record a fresh valuation event.
+          valuation_date (datetime.date | None | Unset): New valuation date (YYYY-MM-DD). Unset = unchanged.
+          valuation_source (None | str | Unset): New valuation source attribution. Unset = unchanged.
+          acquisition_date (datetime.date | None | Unset): New acquisition date (YYYY-MM-DD). Unset = unchanged.
+          notes (None | str | Unset): New notes. Unset = unchanged.
   """
 
   id: str

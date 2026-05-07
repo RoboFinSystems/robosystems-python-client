@@ -6,13 +6,13 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="UpdateInformationBlockRequestPayload")
+T = TypeVar("T", bound="UpdateLegacyArmPayload")
 
 
 @_attrs_define
-class UpdateInformationBlockRequestPayload:
-  """Block-type-specific update payload. Typically carries the structure_id plus whichever fields are editable for this
-  block type. Shape-validated against the registry entry's `update_request_model` at dispatch time.
+class UpdateLegacyArmPayload:
+  """Untyped payload — typed-arm validation is skipped because the dispatch handler raises 501 before the payload is
+  consumed.
 
   """
 
@@ -28,10 +28,10 @@ class UpdateInformationBlockRequestPayload:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    update_information_block_request_payload = cls()
+    update_legacy_arm_payload = cls()
 
-    update_information_block_request_payload.additional_properties = d
-    return update_information_block_request_payload
+    update_legacy_arm_payload.additional_properties = d
+    return update_legacy_arm_payload
 
   @property
   def additional_keys(self) -> list[str]:

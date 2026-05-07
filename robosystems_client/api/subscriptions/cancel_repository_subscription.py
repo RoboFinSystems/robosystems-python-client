@@ -10,13 +10,13 @@ from ...models.cancel_subscription_request import CancelSubscriptionRequest
 from ...models.error_response import ErrorResponse
 from ...models.graph_subscription_response import GraphSubscriptionResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...types import Response
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CancelSubscriptionRequest,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
 
@@ -27,7 +27,8 @@ def _get_kwargs(
     ),
   }
 
-  _kwargs["json"] = body.to_dict()
+  if not isinstance(body, Unset):
+    _kwargs["json"] = body.to_dict()
 
   headers["Content-Type"] = "application/json"
 
@@ -99,7 +100,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CancelSubscriptionRequest,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> Response[ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]:
   """Cancel Repository Subscription
 
@@ -111,7 +112,7 @@ def sync_detailed(
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
-      body (CancelSubscriptionRequest): Request to cancel a subscription.
+      body (CancelSubscriptionRequest | Unset): Request to cancel a subscription.
 
           Default behavior cancels at period end (soft cancel). Pass `immediate=True`
           to terminate the subscription right away — this requires `confirm` to equal
@@ -142,7 +143,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CancelSubscriptionRequest,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> ErrorResponse | GraphSubscriptionResponse | HTTPValidationError | None:
   """Cancel Repository Subscription
 
@@ -154,7 +155,7 @@ def sync(
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
-      body (CancelSubscriptionRequest): Request to cancel a subscription.
+      body (CancelSubscriptionRequest | Unset): Request to cancel a subscription.
 
           Default behavior cancels at period end (soft cancel). Pass `immediate=True`
           to terminate the subscription right away — this requires `confirm` to equal
@@ -180,7 +181,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CancelSubscriptionRequest,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> Response[ErrorResponse | GraphSubscriptionResponse | HTTPValidationError]:
   """Cancel Repository Subscription
 
@@ -192,7 +193,7 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
-      body (CancelSubscriptionRequest): Request to cancel a subscription.
+      body (CancelSubscriptionRequest | Unset): Request to cancel a subscription.
 
           Default behavior cancels at period end (soft cancel). Pass `immediate=True`
           to terminate the subscription right away — this requires `confirm` to equal
@@ -221,7 +222,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CancelSubscriptionRequest,
+  body: CancelSubscriptionRequest | Unset = UNSET,
 ) -> ErrorResponse | GraphSubscriptionResponse | HTTPValidationError | None:
   """Cancel Repository Subscription
 
@@ -233,7 +234,7 @@ async def asyncio(
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
-      body (CancelSubscriptionRequest): Request to cancel a subscription.
+      body (CancelSubscriptionRequest | Unset): Request to cancel a subscription.
 
           Default behavior cancels at period end (soft cancel). Pass `immediate=True`
           to terminate the subscription right away — this requires `confirm` to equal

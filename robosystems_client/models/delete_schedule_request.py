@@ -6,29 +6,50 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="OperationEnvelopeResultType0")
+T = TypeVar("T", bound="DeleteScheduleRequest")
 
 
 @_attrs_define
-class OperationEnvelopeResultType0:
-  """ """
+class DeleteScheduleRequest:
+  """Delete a schedule — cascades through facts and associations.
 
+  Hard deletes the Structure, all Facts tied to it, and all
+  Associations tied to it. This is a permanent, irreversible
+  operation. For ending a schedule early without removing history,
+  fire `create-event-block(event_type='asset_disposed')` instead — the
+  handler truncates the schedule + posts the disposal entry atomically.
+
+      Attributes:
+          structure_id (str):
+  """
+
+  structure_id: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    structure_id = self.structure_id
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "structure_id": structure_id,
+      }
+    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    operation_envelope_result_type_0 = cls()
+    structure_id = d.pop("structure_id")
 
-    operation_envelope_result_type_0.additional_properties = d
-    return operation_envelope_result_type_0
+    delete_schedule_request = cls(
+      structure_id=structure_id,
+    )
+
+    delete_schedule_request.additional_properties = d
+    return delete_schedule_request
 
   @property
   def additional_keys(self) -> list[str]:

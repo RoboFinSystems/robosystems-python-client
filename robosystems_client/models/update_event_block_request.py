@@ -29,7 +29,7 @@ class UpdateEventBlockRequest:
   All fields except event_id are optional — only supplied fields are updated.
 
       Attributes:
-          event_id (str):
+          event_id (str): Target event ID.
           transition_to (None | Unset | UpdateEventBlockRequestTransitionToType0): Status transition. Valid moves depend
               on current status: captured → committed | voided | superseded; classified → committed | pending | fulfilled |
               voided | superseded; committed → pending | fulfilled | voided | superseded; pending → fulfilled | voided |
@@ -37,8 +37,10 @@ class UpdateEventBlockRequest:
               fulfilled are usually set by handlers, not by callers, but the transition is allowed for corrections.
           superseded_by_id (None | str | Unset): New event id that replaces this one. Required when
               transition_to='superseded'.
-          description (None | str | Unset):
-          effective_at (datetime.datetime | None | Unset):
+          description (None | str | Unset): Replacement free-text summary. Unset = unchanged; pass an empty string to
+              clear.
+          effective_at (datetime.datetime | None | Unset): New accounting recognition date. Unset = unchanged. Useful when
+              an event was captured against the wrong period.
           metadata_patch (UpdateEventBlockRequestMetadataPatch | Unset): Key-value pairs merged into existing metadata
               (additive patch, not replace).
           obligated_by_event_id (None | str | Unset): Set/update the forward-materialization link.

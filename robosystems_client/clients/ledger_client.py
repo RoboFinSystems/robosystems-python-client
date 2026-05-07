@@ -239,25 +239,19 @@ from ..models.update_agent_request import UpdateAgentRequest
 from ..models.update_event_block_request import UpdateEventBlockRequest
 from ..models.update_event_handler_request import UpdateEventHandlerRequest
 from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
-from ..models.delete_information_block_request import DeleteInformationBlockRequest
-from ..models.delete_information_block_request_payload import (
-  DeleteInformationBlockRequestPayload,
-)
+from ..models.delete_schedule_arm import DeleteScheduleArm
+from ..models.delete_schedule_request import DeleteScheduleRequest
 from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from ..models.update_journal_entry_request import UpdateJournalEntryRequest
-from ..models.update_information_block_request import UpdateInformationBlockRequest
-from ..models.update_information_block_request_payload import (
-  UpdateInformationBlockRequestPayload,
-)
+from ..models.update_schedule_arm import UpdateScheduleArm
+from ..models.update_schedule_request import UpdateScheduleRequest
 from ..models.close_period_operation import ClosePeriodOperation
 from ..models.create_view_request import CreateViewRequest
 from ..models.create_mapping_association_operation import (
   CreateMappingAssociationOperation,
 )
-from ..models.create_information_block_request import CreateInformationBlockRequest
-from ..models.create_information_block_request_payload import (
-  CreateInformationBlockRequestPayload,
-)
+from ..models.create_schedule_arm import CreateScheduleArm
+from ..models.create_schedule_request import CreateScheduleRequest
 from ..models.delete_mapping_association_operation import (
   DeleteMappingAssociationOperation,
 )
@@ -902,8 +896,8 @@ class LedgerClient:
     if schedule_metadata:
       payload_dict["schedule_metadata"] = schedule_metadata
 
-    payload = CreateInformationBlockRequestPayload.from_dict(payload_dict)
-    body = CreateInformationBlockRequest(block_type="schedule", payload=payload)
+    payload = CreateScheduleRequest.from_dict(payload_dict)
+    body = CreateScheduleArm(block_type="schedule", payload=payload)
     response = op_create_information_block(
       graph_id=graph_id, body=body, client=self._get_client()
     )
@@ -977,10 +971,8 @@ class LedgerClient:
     self, graph_id: str, structure_id: str, body: dict[str, Any]
   ) -> dict[str, Any]:
     """Update mutable fields on a schedule (name, entry_template, metadata)."""
-    payload = UpdateInformationBlockRequestPayload.from_dict(
-      {"structure_id": structure_id, **body}
-    )
-    request = UpdateInformationBlockRequest(block_type="schedule", payload=payload)
+    payload = UpdateScheduleRequest.from_dict({"structure_id": structure_id, **body})
+    request = UpdateScheduleArm(block_type="schedule", payload=payload)
     response = op_update_information_block(
       graph_id=graph_id, body=request, client=self._get_client()
     )
@@ -989,10 +981,8 @@ class LedgerClient:
 
   def delete_schedule(self, graph_id: str, structure_id: str) -> dict[str, Any]:
     """Permanently delete a schedule (cascades through facts + associations)."""
-    payload = DeleteInformationBlockRequestPayload.from_dict(
-      {"structure_id": structure_id}
-    )
-    body = DeleteInformationBlockRequest(block_type="schedule", payload=payload)
+    payload = DeleteScheduleRequest.from_dict({"structure_id": structure_id})
+    body = DeleteScheduleArm(block_type="schedule", payload=payload)
     response = op_delete_information_block(
       graph_id=graph_id, body=body, client=self._get_client()
     )

@@ -20,8 +20,10 @@ class PortfolioBlockPositionDispose:
   `metadata.disposition_reason`.
 
       Attributes:
-          id (str):
-          disposition_reason (None | str | Unset):
+          id (str): Target position ID to dispose. Must belong to the portfolio identified by `portfolio_id` on the parent
+              operation.
+          disposition_reason (None | str | Unset): Optional free-text reason recorded under `metadata.disposition_reason`
+              on the disposed position.
   """
 
   id: str

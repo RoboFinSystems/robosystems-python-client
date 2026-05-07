@@ -6,9 +6,12 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_information_block_request import CreateInformationBlockRequest
+from ...models.create_legacy_arm import CreateLegacyArm
+from ...models.create_schedule_arm import CreateScheduleArm
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_information_block_envelope import (
+  OperationEnvelopeInformationBlockEnvelope,
+)
 from ...models.operation_error import OperationError
 from ...types import UNSET, Response, Unset
 
@@ -16,7 +19,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateInformationBlockRequest,
+  body: CreateLegacyArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -30,7 +33,10 @@ def _get_kwargs(
     ),
   }
 
-  _kwargs["json"] = body.to_dict()
+  if isinstance(body, CreateScheduleArm):
+    _kwargs["json"] = body.to_dict()
+  else:
+    _kwargs["json"] = body.to_dict()
 
   headers["Content-Type"] = "application/json"
 
@@ -40,9 +46,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeInformationBlockEnvelope
+  | OperationError
+  | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeInformationBlockEnvelope.from_dict(response.json())
 
     return response_200
 
@@ -90,7 +102,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -103,9 +117,11 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateInformationBlockRequest,
+  body: CreateLegacyArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
+]:
   """Create Information Block
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
@@ -118,22 +134,20 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateInformationBlockRequest): Generic create request — discriminator + typed-at-
-          dispatch payload.
-
-          ``block_type`` selects the registry entry. ``payload`` is validated
-          against ``BlockTypeRegistryEntry.create_request_model`` (e.g.
-          :class:`CreateScheduleRequest` for ``block_type='schedule'``) by the
-          command dispatcher. Chosen over a Pydantic discriminated union on the
-          top-level request so adding a block type is one registry line, not a
-          union-arm edit at the request-model layer.
+      body (CreateLegacyArm | CreateScheduleArm): Create an Information Block. The body is a
+          discriminated union on
+          `block_type`: pick the arm matching the block type you want to
+          create. The schedule arm carries a fully typed payload; statement
+          and metric arms accept an untyped payload but currently return HTTP
+          501 (statements are constructed via `create-report`; metric
+          construction is pending).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -153,9 +167,15 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateInformationBlockRequest,
+  body: CreateLegacyArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeInformationBlockEnvelope
+  | OperationError
+  | None
+):
   """Create Information Block
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
@@ -168,22 +188,20 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateInformationBlockRequest): Generic create request — discriminator + typed-at-
-          dispatch payload.
-
-          ``block_type`` selects the registry entry. ``payload`` is validated
-          against ``BlockTypeRegistryEntry.create_request_model`` (e.g.
-          :class:`CreateScheduleRequest` for ``block_type='schedule'``) by the
-          command dispatcher. Chosen over a Pydantic discriminated union on the
-          top-level request so adding a block type is one registry line, not a
-          union-arm edit at the request-model layer.
+      body (CreateLegacyArm | CreateScheduleArm): Create an Information Block. The body is a
+          discriminated union on
+          `block_type`: pick the arm matching the block type you want to
+          create. The schedule arm carries a fully typed payload; statement
+          and metric arms accept an untyped payload but currently return HTTP
+          501 (statements are constructed via `create-report`; metric
+          construction is pending).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
   """
 
   return sync_detailed(
@@ -198,9 +216,11 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateInformationBlockRequest,
+  body: CreateLegacyArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
+]:
   """Create Information Block
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
@@ -213,22 +233,20 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateInformationBlockRequest): Generic create request — discriminator + typed-at-
-          dispatch payload.
-
-          ``block_type`` selects the registry entry. ``payload`` is validated
-          against ``BlockTypeRegistryEntry.create_request_model`` (e.g.
-          :class:`CreateScheduleRequest` for ``block_type='schedule'``) by the
-          command dispatcher. Chosen over a Pydantic discriminated union on the
-          top-level request so adding a block type is one registry line, not a
-          union-arm edit at the request-model layer.
+      body (CreateLegacyArm | CreateScheduleArm): Create an Information Block. The body is a
+          discriminated union on
+          `block_type`: pick the arm matching the block type you want to
+          create. The schedule arm carries a fully typed payload; statement
+          and metric arms accept an untyped payload but currently return HTTP
+          501 (statements are constructed via `create-report`; metric
+          construction is pending).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -246,9 +264,15 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateInformationBlockRequest,
+  body: CreateLegacyArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeInformationBlockEnvelope
+  | OperationError
+  | None
+):
   """Create Information Block
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
@@ -261,22 +285,20 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateInformationBlockRequest): Generic create request — discriminator + typed-at-
-          dispatch payload.
-
-          ``block_type`` selects the registry entry. ``payload`` is validated
-          against ``BlockTypeRegistryEntry.create_request_model`` (e.g.
-          :class:`CreateScheduleRequest` for ``block_type='schedule'``) by the
-          command dispatcher. Chosen over a Pydantic discriminated union on the
-          top-level request so adding a block type is one registry line, not a
-          union-arm edit at the request-model layer.
+      body (CreateLegacyArm | CreateScheduleArm): Create an Information Block. The body is a
+          discriminated union on
+          `block_type`: pick the arm matching the block type you want to
+          create. The schedule arm carries a fully typed payload; statement
+          and metric arms accept an untyped payload but currently return HTTP
+          501 (statements are constructed via `create-report`; metric
+          construction is pending).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
   """
 
   return (

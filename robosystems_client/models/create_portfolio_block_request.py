@@ -26,7 +26,8 @@ class CreatePortfolioBlockRequest:
 
       Attributes:
           portfolio (PortfolioBlockPortfolioFields): Fields settable on the portfolio core when creating a block.
-          positions (list[PortfolioBlockPositionAdd] | Unset):
+          positions (list[PortfolioBlockPositionAdd] | Unset): Initial positions to mint inside the new portfolio. Each
+              references an existing security; pass `[]` to create an empty portfolio.
   """
 
   portfolio: PortfolioBlockPortfolioFields

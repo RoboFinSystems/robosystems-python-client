@@ -6,32 +6,47 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="CreateInformationBlockRequestPayload")
+T = TypeVar("T", bound="DeleteResult")
 
 
 @_attrs_define
-class CreateInformationBlockRequestPayload:
-  """Block-type-specific creation payload. Shape-validated against the registry entry's `create_request_model` at
-  dispatch time; the validation error surfaces as a 422 at the API boundary.
+class DeleteResult:
+  """Shared response shape for soft-delete operations (e.g.,
+  `delete-security`). `deleted=true` means a row was flipped; 404 is
+  raised by the handler when no row existed.
 
+      Attributes:
+          deleted (bool): `true` when the row was soft-deleted in this call. Always `true` on a 200 response; the 404 path
+              is taken instead when the row didn't exist.
   """
 
+  deleted: bool
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    deleted = self.deleted
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "deleted": deleted,
+      }
+    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    create_information_block_request_payload = cls()
+    deleted = d.pop("deleted")
 
-    create_information_block_request_payload.additional_properties = d
-    return create_information_block_request_payload
+    delete_result = cls(
+      deleted=deleted,
+    )
+
+    delete_result.additional_properties = d
+    return delete_result
 
   @property
   def additional_keys(self) -> list[str]:

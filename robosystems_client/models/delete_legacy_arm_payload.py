@@ -6,13 +6,13 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DeleteInformationBlockRequestPayload")
+T = TypeVar("T", bound="DeleteLegacyArmPayload")
 
 
 @_attrs_define
-class DeleteInformationBlockRequestPayload:
-  """Block-type-specific delete payload. Typically carries just the structure_id. Shape-validated against the registry
-  entry's `delete_request_model` at dispatch time.
+class DeleteLegacyArmPayload:
+  """Untyped payload — typed-arm validation is skipped because the dispatch handler raises 501 before the payload is
+  consumed.
 
   """
 
@@ -28,10 +28,10 @@ class DeleteInformationBlockRequestPayload:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    delete_information_block_request_payload = cls()
+    delete_legacy_arm_payload = cls()
 
-    delete_information_block_request_payload.additional_properties = d
-    return delete_information_block_request_payload
+    delete_legacy_arm_payload.additional_properties = d
+    return delete_legacy_arm_payload
 
   @property
   def additional_keys(self) -> list[str]:

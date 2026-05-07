@@ -18,12 +18,13 @@ class PortfolioBlockPortfolioPatch:
   """Patchable portfolio fields on `update-portfolio-block`. Unset fields ignored.
 
   Attributes:
-      name (None | str | Unset):
-      description (None | str | Unset):
-      strategy (None | str | Unset):
-      inception_date (datetime.date | None | Unset):
-      base_currency (None | str | Unset):
-      entity_id (None | str | Unset):
+      name (None | str | Unset): New display name. Unset = unchanged.
+      description (None | str | Unset): New description. Unset = unchanged.
+      strategy (None | str | Unset): New strategy classification. Unset = unchanged.
+      inception_date (datetime.date | None | Unset): New inception date (YYYY-MM-DD). Unset = unchanged.
+      base_currency (None | str | Unset): New ISO 4217 base currency code. Unset = unchanged. Note: changing base
+          currency does not retroactively reprice historical positions.
+      entity_id (None | str | Unset): New owning-entity ID. Unset = unchanged.
   """
 
   name: None | str | Unset = UNSET

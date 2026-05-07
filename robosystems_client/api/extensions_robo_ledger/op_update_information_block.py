@@ -7,16 +7,19 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
-from ...models.operation_envelope import OperationEnvelope
+from ...models.operation_envelope_information_block_envelope import (
+  OperationEnvelopeInformationBlockEnvelope,
+)
 from ...models.operation_error import OperationError
-from ...models.update_information_block_request import UpdateInformationBlockRequest
+from ...models.update_legacy_arm import UpdateLegacyArm
+from ...models.update_schedule_arm import UpdateScheduleArm
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: UpdateInformationBlockRequest,
+  body: UpdateLegacyArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -30,7 +33,10 @@ def _get_kwargs(
     ),
   }
 
-  _kwargs["json"] = body.to_dict()
+  if isinstance(body, UpdateScheduleArm):
+    _kwargs["json"] = body.to_dict()
+  else:
+    _kwargs["json"] = body.to_dict()
 
   headers["Content-Type"] = "application/json"
 
@@ -40,9 +46,15 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeInformationBlockEnvelope
+  | OperationError
+  | None
+):
   if response.status_code == 200:
-    response_200 = OperationEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeInformationBlockEnvelope.from_dict(response.json())
 
     return response_200
 
@@ -90,7 +102,9 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
+]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -103,9 +117,11 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateInformationBlockRequest,
+  body: UpdateLegacyArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
+]:
   """Update Information Block
 
    Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
@@ -118,20 +134,19 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateInformationBlockRequest): Generic update request — mirrors
-          :class:`CreateInformationBlockRequest`.
-
-          Validated against the registry entry's ``update_request_model``.
-          Block types that don't support updates (e.g. the statement family,
-          whose Structures are library-seeded) surface ``NotImplementedError``
-          from their dispatch handler, which the registrar maps to HTTP 501.
+      body (UpdateLegacyArm | UpdateScheduleArm): Update an Information Block. The body is a
+          discriminated union on
+          `block_type` mirroring `CreateInformationBlockRequest`. The schedule
+          arm carries a fully typed update payload; statement and metric arms
+          return HTTP 501 (statements are library-seeded; metric updates are
+          pending).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -151,9 +166,15 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateInformationBlockRequest,
+  body: UpdateLegacyArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeInformationBlockEnvelope
+  | OperationError
+  | None
+):
   """Update Information Block
 
    Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
@@ -166,20 +187,19 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateInformationBlockRequest): Generic update request — mirrors
-          :class:`CreateInformationBlockRequest`.
-
-          Validated against the registry entry's ``update_request_model``.
-          Block types that don't support updates (e.g. the statement family,
-          whose Structures are library-seeded) surface ``NotImplementedError``
-          from their dispatch handler, which the registrar maps to HTTP 501.
+      body (UpdateLegacyArm | UpdateScheduleArm): Update an Information Block. The body is a
+          discriminated union on
+          `block_type` mirroring `CreateInformationBlockRequest`. The schedule
+          arm carries a fully typed update payload; statement and metric arms
+          return HTTP 501 (statements are library-seeded; metric updates are
+          pending).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
   """
 
   return sync_detailed(
@@ -194,9 +214,11 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateInformationBlockRequest,
+  body: UpdateLegacyArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[Any | HTTPValidationError | OperationEnvelope | OperationError]:
+) -> Response[
+  Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
+]:
   """Update Information Block
 
    Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
@@ -209,20 +231,19 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateInformationBlockRequest): Generic update request — mirrors
-          :class:`CreateInformationBlockRequest`.
-
-          Validated against the registry entry's ``update_request_model``.
-          Block types that don't support updates (e.g. the statement family,
-          whose Structures are library-seeded) surface ``NotImplementedError``
-          from their dispatch handler, which the registrar maps to HTTP 501.
+      body (UpdateLegacyArm | UpdateScheduleArm): Update an Information Block. The body is a
+          discriminated union on
+          `block_type` mirroring `CreateInformationBlockRequest`. The schedule
+          arm carries a fully typed update payload; statement and metric arms
+          return HTTP 501 (statements are library-seeded; metric updates are
+          pending).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | HTTPValidationError | OperationEnvelope | OperationError]
+      Response[Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError]
   """
 
   kwargs = _get_kwargs(
@@ -240,9 +261,15 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateInformationBlockRequest,
+  body: UpdateLegacyArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
-) -> Any | HTTPValidationError | OperationEnvelope | OperationError | None:
+) -> (
+  Any
+  | HTTPValidationError
+  | OperationEnvelopeInformationBlockEnvelope
+  | OperationError
+  | None
+):
   """Update Information Block
 
    Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
@@ -255,20 +282,19 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateInformationBlockRequest): Generic update request — mirrors
-          :class:`CreateInformationBlockRequest`.
-
-          Validated against the registry entry's ``update_request_model``.
-          Block types that don't support updates (e.g. the statement family,
-          whose Structures are library-seeded) surface ``NotImplementedError``
-          from their dispatch handler, which the registrar maps to HTTP 501.
+      body (UpdateLegacyArm | UpdateScheduleArm): Update an Information Block. The body is a
+          discriminated union on
+          `block_type` mirroring `CreateInformationBlockRequest`. The schedule
+          arm carries a fully typed update payload; statement and metric arms
+          return HTTP 501 (statements are library-seeded; metric updates are
+          pending).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | HTTPValidationError | OperationEnvelope | OperationError
+      Any | HTTPValidationError | OperationEnvelopeInformationBlockEnvelope | OperationError
   """
 
   return (
