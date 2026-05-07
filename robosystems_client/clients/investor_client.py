@@ -57,7 +57,6 @@ from ..models.create_portfolio_block_request import CreatePortfolioBlockRequest
 from ..models.create_security_request import CreateSecurityRequest
 from ..models.delete_portfolio_block_operation import DeletePortfolioBlockOperation
 from ..models.delete_security_operation import DeleteSecurityOperation
-from ..models.operation_envelope import OperationEnvelope
 from ..models.update_portfolio_block_operation import UpdatePortfolioBlockOperation
 from ..models.update_security_operation import UpdateSecurityOperation
 
@@ -107,14 +106,30 @@ class InvestorClient:
     cleaned = strip_none_vars(variables) if variables else None
     return self._get_graphql_client().execute(graph_id, query, cleaned)
 
-  def _call_op(self, label: str, response: Any) -> OperationEnvelope:
+  # The backend's `OperationEnvelope` is generic on the result type
+  # (`OperationEnvelope[T]`). Each typed op generates a separate
+  # `OperationEnvelope<ResultType>` attrs class in the SDK, with no
+  # shared base — so an `isinstance(envelope, OperationEnvelope)` check
+  # would reject typed ops like `create-portfolio-block`. We duck-type
+  # on the four envelope fields instead, which keeps the helper working
+  # for every current and future typed op without import bookkeeping.
+  _ENVELOPE_FIELDS = ("operation", "operation_id", "status", "result")
+
+  def _is_envelope(self, value: Any) -> bool:
+    return all(hasattr(value, f) for f in self._ENVELOPE_FIELDS)
+
+  def _call_op(self, label: str, response: Any) -> Any:
     if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
       raise RuntimeError(
         f"{label} failed: {response.status_code}: {response.content!r}"
       )
     envelope = response.parsed
-    if not isinstance(envelope, OperationEnvelope):
+    if not self._is_envelope(envelope):
       raise RuntimeError(f"{label} failed: unexpected response shape: {envelope!r}")
+    # Normalize result to a plain dict — typed envelopes carry the result
+    # as an attrs class (e.g. `PortfolioBlockEnvelope`).
+    if envelope.result is not None and hasattr(envelope.result, "to_dict"):
+      envelope.result = envelope.result.to_dict()
     return envelope
 
   # ── Portfolios ──────────────────────────────────────────────────────

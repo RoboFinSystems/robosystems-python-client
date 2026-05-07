@@ -261,7 +261,6 @@ from ..models.create_report_request import CreateReportRequest
 from ..models.delete_publish_list_operation import DeletePublishListOperation
 from ..models.delete_report_operation import DeleteReportOperation
 from ..models.file_report_request import FileReportRequest
-from ..models.operation_envelope import OperationEnvelope
 from ..models.regenerate_report_operation import RegenerateReportOperation
 from ..models.transition_filing_status_request import TransitionFilingStatusRequest
 from ..models.remove_publish_list_member_operation import (
@@ -344,25 +343,37 @@ class LedgerClient:
     cleaned = strip_none_vars(variables) if variables else None
     return self._get_graphql_client().execute(graph_id, query, cleaned)
 
-  def _unwrap(self, label: str, envelope: OperationEnvelope | Any) -> Any:
+  # The backend's `OperationEnvelope` is generic on the result type
+  # (`OperationEnvelope[T]`). Each typed op generates a separate
+  # `OperationEnvelope<ResultType>` attrs class in the SDK, with no
+  # shared base — so an `isinstance(envelope, OperationEnvelope)` check
+  # would reject typed ops like `create-event-block`. We duck-type on
+  # the four envelope fields instead, which keeps the helper working
+  # for every current and future typed op without import bookkeeping.
+  _ENVELOPE_FIELDS = ("operation", "operation_id", "status", "result")
+
+  def _is_envelope(self, value: Any) -> bool:
+    return all(hasattr(value, f) for f in self._ENVELOPE_FIELDS)
+
+  def _unwrap(self, label: str, envelope: Any) -> Any:
     """Unwrap an operation envelope and return `result` (None on failure)."""
-    if not isinstance(envelope, OperationEnvelope):
+    if not self._is_envelope(envelope):
       raise RuntimeError(f"{label} failed: {envelope!r}")
-    # envelope.result is untyped dict / list / None in the generated model
     return envelope.result
 
-  def _call_op(self, label: str, response: Any) -> OperationEnvelope:
+  def _call_op(self, label: str, response: Any) -> Any:
     """Common error handling for every generated op_* REST call."""
     if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
       raise RuntimeError(
         f"{label} failed: {response.status_code}: {response.content!r}"
       )
     envelope = response.parsed
-    if not isinstance(envelope, OperationEnvelope):
+    if not self._is_envelope(envelope):
       raise RuntimeError(f"{label} failed: unexpected response shape: {envelope!r}")
-    # Normalize result to a plain dict — the generated SDK sometimes
-    # wraps it in an OperationEnvelopeResultType0 attrs class instead
-    # of a dict, depending on the response shape.
+    # Normalize result to a plain dict — typed envelopes carry the result
+    # as an attrs class (e.g. `EventBlockEnvelope`); untyped envelopes
+    # (Any-default) sometimes wrap it in `OperationEnvelopeResultType0`.
+    # Either way, downstream callers expect `dict[str, Any]`.
     if envelope.result is not None and hasattr(envelope.result, "to_dict"):
       envelope.result = envelope.result.to_dict()
     return envelope
