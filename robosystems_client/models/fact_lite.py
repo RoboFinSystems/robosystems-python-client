@@ -24,6 +24,8 @@ class FactLite:
       period_end (datetime.date):
       period_type (str):
       fact_scope (str): historical | in_scope
+      element_name (None | str | Unset):
+      element_qname (None | str | Unset):
       period_start (datetime.date | None | Unset):
       unit (str | Unset):  Default: 'USD'.
       fact_set_id (None | str | Unset):
@@ -35,6 +37,8 @@ class FactLite:
   period_end: datetime.date
   period_type: str
   fact_scope: str
+  element_name: None | str | Unset = UNSET
+  element_qname: None | str | Unset = UNSET
   period_start: datetime.date | None | Unset = UNSET
   unit: str | Unset = "USD"
   fact_set_id: None | str | Unset = UNSET
@@ -52,6 +56,18 @@ class FactLite:
     period_type = self.period_type
 
     fact_scope = self.fact_scope
+
+    element_name: None | str | Unset
+    if isinstance(self.element_name, Unset):
+      element_name = UNSET
+    else:
+      element_name = self.element_name
+
+    element_qname: None | str | Unset
+    if isinstance(self.element_qname, Unset):
+      element_qname = UNSET
+    else:
+      element_qname = self.element_qname
 
     period_start: None | str | Unset
     if isinstance(self.period_start, Unset):
@@ -81,6 +97,10 @@ class FactLite:
         "fact_scope": fact_scope,
       }
     )
+    if element_name is not UNSET:
+      field_dict["element_name"] = element_name
+    if element_qname is not UNSET:
+      field_dict["element_qname"] = element_qname
     if period_start is not UNSET:
       field_dict["period_start"] = period_start
     if unit is not UNSET:
@@ -104,6 +124,24 @@ class FactLite:
     period_type = d.pop("period_type")
 
     fact_scope = d.pop("fact_scope")
+
+    def _parse_element_name(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    element_name = _parse_element_name(d.pop("element_name", UNSET))
+
+    def _parse_element_qname(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    element_qname = _parse_element_qname(d.pop("element_qname", UNSET))
 
     def _parse_period_start(data: object) -> datetime.date | None | Unset:
       if data is None:
@@ -140,6 +178,8 @@ class FactLite:
       period_end=period_end,
       period_type=period_type,
       fact_scope=fact_scope,
+      element_name=element_name,
+      element_qname=element_qname,
       period_start=period_start,
       unit=unit,
       fact_set_id=fact_set_id,

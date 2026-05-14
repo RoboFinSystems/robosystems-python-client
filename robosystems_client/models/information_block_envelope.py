@@ -50,6 +50,9 @@ class InformationBlockEnvelope:
               registered block types (the Structure → Taxonomy FK is non-null); declared optional to keep the shape forward-
               compatible with future synthetic blocks that don't originate from a taxonomy.
           taxonomy_name (None | str | Unset): Display name of the source taxonomy.
+          disclosure_id (None | str | Unset): Qname of the named Disclosure this block corresponds to (e.g.,
+              'disclosures:BalanceSheet'), when an inbound reportedDisclosure-requiresDisclosure arc identifies one. Null for
+              tenant-authored blocks without a Disclosure mapping.
           elements (list[ElementLite] | Unset):
           connections (list[ConnectionLite] | Unset):
           facts (list[FactLite] | Unset):
@@ -84,6 +87,7 @@ class InformationBlockEnvelope:
   artifact: ArtifactResponse
   taxonomy_id: None | str | Unset = UNSET
   taxonomy_name: None | str | Unset = UNSET
+  disclosure_id: None | str | Unset = UNSET
   elements: list[ElementLite] | Unset = UNSET
   connections: list[ConnectionLite] | Unset = UNSET
   facts: list[FactLite] | Unset = UNSET
@@ -122,6 +126,12 @@ class InformationBlockEnvelope:
       taxonomy_name = UNSET
     else:
       taxonomy_name = self.taxonomy_name
+
+    disclosure_id: None | str | Unset
+    if isinstance(self.disclosure_id, Unset):
+      disclosure_id = UNSET
+    else:
+      disclosure_id = self.disclosure_id
 
     elements: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.elements, Unset):
@@ -194,6 +204,8 @@ class InformationBlockEnvelope:
       field_dict["taxonomy_id"] = taxonomy_id
     if taxonomy_name is not UNSET:
       field_dict["taxonomy_name"] = taxonomy_name
+    if disclosure_id is not UNSET:
+      field_dict["disclosure_id"] = disclosure_id
     if elements is not UNSET:
       field_dict["elements"] = elements
     if connections is not UNSET:
@@ -260,6 +272,15 @@ class InformationBlockEnvelope:
       return cast(None | str | Unset, data)
 
     taxonomy_name = _parse_taxonomy_name(d.pop("taxonomy_name", UNSET))
+
+    def _parse_disclosure_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    disclosure_id = _parse_disclosure_id(d.pop("disclosure_id", UNSET))
 
     _elements = d.pop("elements", UNSET)
     elements: list[ElementLite] | Unset = UNSET
@@ -353,6 +374,7 @@ class InformationBlockEnvelope:
       artifact=artifact,
       taxonomy_id=taxonomy_id,
       taxonomy_name=taxonomy_name,
+      disclosure_id=disclosure_id,
       elements=elements,
       connections=connections,
       facts=facts,

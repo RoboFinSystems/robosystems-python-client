@@ -48,6 +48,7 @@ from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
 from .cancel_subscription_request import CancelSubscriptionRequest
+from .change_reporting_style_op import ChangeReportingStyleOp
 from .change_tier_op import ChangeTierOp
 from .change_tier_op_new_tier import ChangeTierOpNewTier
 from .checkout_response import CheckoutResponse
@@ -55,6 +56,9 @@ from .checkout_status_response import CheckoutStatusResponse
 from .classification_lite import ClassificationLite
 from .close_period_operation import ClosePeriodOperation
 from .close_period_response import ClosePeriodResponse
+from .close_period_response_rule_summary_type_0 import (
+  ClosePeriodResponseRuleSummaryType0,
+)
 from .connection_lite import ConnectionLite
 from .connection_options_response import ConnectionOptionsResponse
 from .connection_provider_info import ConnectionProviderInfo
@@ -438,6 +442,7 @@ from .password_check_response_character_types import PasswordCheckResponseCharac
 from .password_policy_response import PasswordPolicyResponse
 from .password_policy_response_policy import PasswordPolicyResponsePolicy
 from .payment_method import PaymentMethod
+from .pending_obligation_detail_response import PendingObligationDetailResponse
 from .performance_insights import PerformanceInsights
 from .performance_insights_operation_stats import PerformanceInsightsOperationStats
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
@@ -677,6 +682,7 @@ __all__ = (
   "BillingCustomer",
   "CancelOperationResponseCanceloperation",
   "CancelSubscriptionRequest",
+  "ChangeReportingStyleOp",
   "ChangeTierOp",
   "ChangeTierOpNewTier",
   "CheckoutResponse",
@@ -684,6 +690,7 @@ __all__ = (
   "ClassificationLite",
   "ClosePeriodOperation",
   "ClosePeriodResponse",
+  "ClosePeriodResponseRuleSummaryType0",
   "ConnectionLite",
   "ConnectionOptionsResponse",
   "ConnectionProviderInfo",
@@ -947,6 +954,7 @@ __all__ = (
   "PasswordPolicyResponse",
   "PasswordPolicyResponsePolicy",
   "PaymentMethod",
+  "PendingObligationDetailResponse",
   "PerformanceInsights",
   "PerformanceInsightsOperationStats",
   "PerformanceInsightsSlowQueriesItem",
