@@ -12,6 +12,9 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.fiscal_period_summary import FiscalPeriodSummary
+  from ..models.pending_obligation_detail_response import (
+    PendingObligationDetailResponse,
+  )
 
 
 T = TypeVar("T", bound="FiscalCalendarResponse")
@@ -32,7 +35,17 @@ class FiscalCalendarResponse:
       closeable_now (bool | Unset): Whether the next period in the catch-up sequence passes all closeable gates
           Default: False.
       blockers (list[str] | Unset): Structured blocker codes when closeable_now is False: 'sequence_violation',
-          'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed'
+          'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations'
+      pending_obligation_count (int | Unset): Number of pending schedule_entry_due events blocking close. Non-zero
+          only when `pending_obligations` is in `blockers`. Default: 0.
+      pending_obligation_sample (list[PendingObligationDetailResponse] | Unset): Sample of up to 5 pending obligations
+          (schedule_id, schedule_name, period, event_id) ordered by occurred_at. Use `list-event-blocks` with
+          event_type=schedule_entry_due&status=pending for the full set.
+      earliest_pending_period (None | str | Unset): Earliest period (YYYY-MM) with a pending obligation blocking
+          close. Null when no pending_obligations blocker is active.
+      sync_stale_days (int | None | Unset): Days the most recent sync is stale relative to the period to close.
+          Populated only when `sync_stale` is in `blockers` and last_sync_at exists (null when there's a connection but no
+          sync has ever run).
       last_close_at (datetime.datetime | None | Unset):
       initialized_at (datetime.datetime | None | Unset):
       last_sync_at (datetime.datetime | None | Unset): Most recent QB sync timestamp (if connected)
@@ -47,6 +60,10 @@ class FiscalCalendarResponse:
   catch_up_sequence: list[str] | Unset = UNSET
   closeable_now: bool | Unset = False
   blockers: list[str] | Unset = UNSET
+  pending_obligation_count: int | Unset = 0
+  pending_obligation_sample: list[PendingObligationDetailResponse] | Unset = UNSET
+  earliest_pending_period: None | str | Unset = UNSET
+  sync_stale_days: int | None | Unset = UNSET
   last_close_at: datetime.datetime | None | Unset = UNSET
   initialized_at: datetime.datetime | None | Unset = UNSET
   last_sync_at: datetime.datetime | None | Unset = UNSET
@@ -81,6 +98,27 @@ class FiscalCalendarResponse:
     blockers: list[str] | Unset = UNSET
     if not isinstance(self.blockers, Unset):
       blockers = self.blockers
+
+    pending_obligation_count = self.pending_obligation_count
+
+    pending_obligation_sample: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.pending_obligation_sample, Unset):
+      pending_obligation_sample = []
+      for pending_obligation_sample_item_data in self.pending_obligation_sample:
+        pending_obligation_sample_item = pending_obligation_sample_item_data.to_dict()
+        pending_obligation_sample.append(pending_obligation_sample_item)
+
+    earliest_pending_period: None | str | Unset
+    if isinstance(self.earliest_pending_period, Unset):
+      earliest_pending_period = UNSET
+    else:
+      earliest_pending_period = self.earliest_pending_period
+
+    sync_stale_days: int | None | Unset
+    if isinstance(self.sync_stale_days, Unset):
+      sync_stale_days = UNSET
+    else:
+      sync_stale_days = self.sync_stale_days
 
     last_close_at: None | str | Unset
     if isinstance(self.last_close_at, Unset):
@@ -133,6 +171,14 @@ class FiscalCalendarResponse:
       field_dict["closeable_now"] = closeable_now
     if blockers is not UNSET:
       field_dict["blockers"] = blockers
+    if pending_obligation_count is not UNSET:
+      field_dict["pending_obligation_count"] = pending_obligation_count
+    if pending_obligation_sample is not UNSET:
+      field_dict["pending_obligation_sample"] = pending_obligation_sample
+    if earliest_pending_period is not UNSET:
+      field_dict["earliest_pending_period"] = earliest_pending_period
+    if sync_stale_days is not UNSET:
+      field_dict["sync_stale_days"] = sync_stale_days
     if last_close_at is not UNSET:
       field_dict["last_close_at"] = last_close_at
     if initialized_at is not UNSET:
@@ -147,6 +193,9 @@ class FiscalCalendarResponse:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.fiscal_period_summary import FiscalPeriodSummary
+    from ..models.pending_obligation_detail_response import (
+      PendingObligationDetailResponse,
+    )
 
     d = dict(src_dict)
     graph_id = d.pop("graph_id")
@@ -178,6 +227,39 @@ class FiscalCalendarResponse:
     closeable_now = d.pop("closeable_now", UNSET)
 
     blockers = cast(list[str], d.pop("blockers", UNSET))
+
+    pending_obligation_count = d.pop("pending_obligation_count", UNSET)
+
+    _pending_obligation_sample = d.pop("pending_obligation_sample", UNSET)
+    pending_obligation_sample: list[PendingObligationDetailResponse] | Unset = UNSET
+    if _pending_obligation_sample is not UNSET:
+      pending_obligation_sample = []
+      for pending_obligation_sample_item_data in _pending_obligation_sample:
+        pending_obligation_sample_item = PendingObligationDetailResponse.from_dict(
+          pending_obligation_sample_item_data
+        )
+
+        pending_obligation_sample.append(pending_obligation_sample_item)
+
+    def _parse_earliest_pending_period(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    earliest_pending_period = _parse_earliest_pending_period(
+      d.pop("earliest_pending_period", UNSET)
+    )
+
+    def _parse_sync_stale_days(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    sync_stale_days = _parse_sync_stale_days(d.pop("sync_stale_days", UNSET))
 
     def _parse_last_close_at(data: object) -> datetime.datetime | None | Unset:
       if data is None:
@@ -248,6 +330,10 @@ class FiscalCalendarResponse:
       catch_up_sequence=catch_up_sequence,
       closeable_now=closeable_now,
       blockers=blockers,
+      pending_obligation_count=pending_obligation_count,
+      pending_obligation_sample=pending_obligation_sample,
+      earliest_pending_period=earliest_pending_period,
+      sync_stale_days=sync_stale_days,
       last_close_at=last_close_at,
       initialized_at=initialized_at,
       last_sync_at=last_sync_at,

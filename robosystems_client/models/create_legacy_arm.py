@@ -22,11 +22,11 @@ class CreateLegacyArm:
   a typed construction path at the API boundary.
 
   Statement-family blocks (balance_sheet, income_statement,
-  cash_flow_statement, equity_statement) are constructed via
-  `create-report`, not this endpoint. Metric blocks are recognized
-  but their evaluator has not shipped. Calling this endpoint with one
-  of these block types returns HTTP 501 with a hint pointing to the
-  correct construction path.
+  cash_flow_statement, equity_statement, comprehensive_income) are
+  constructed via `create-report`, not this endpoint. Metric blocks
+  are recognized but their evaluator has not shipped. Calling this
+  endpoint with one of these block types returns HTTP 501 with a hint
+  pointing to the correct construction path.
 
       Attributes:
           block_type (CreateLegacyArmBlockType): Statement-family or metric block type. The endpoint returns 501 for these
