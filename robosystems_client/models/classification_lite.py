@@ -29,7 +29,7 @@ class ClassificationLite:
           id (str): Classification vocabulary row id.
           category (str): One of the 3 association-level categories in the `public.classifications` CHECK constraint:
               'concept_arrangement', 'member_arrangement', or 'named_disclosure'.
-          identifier (str): Vocabulary identifier within the category — e.g. 'RollUp', 'aggregation', 'AssetsRollUp'.
+          identifier (str): Vocabulary identifier within the category — e.g. 'RollUp', 'whole_part', 'AssetsRollUp'.
           is_primary (bool | Unset): Whether this is the canonical classification for the (association|element, category)
               pair. Non-primary rows capture alternates / AI suggestions alongside the chosen primary. Default: True.
           confidence (float | None | Unset): AI/adapter-supplied confidence (0.0-1.0). Null for deterministic library-

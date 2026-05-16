@@ -126,7 +126,7 @@ def sync_detailed(
 
           Switches the graph to a different Reporting Style. The target Style
           must be a library- or customer-authored Structure with
-          ``structure_type='reporting_style'`` and a complete composition
+          ``block_type='reporting_style'`` and a complete composition
           (one Network per required statement type — BS / IS / CF / SE). Filed
           Reports are unaffected because each ``Report`` already pins its own
           ``structure_id`` per FactSet at create-time; new reports use the new
@@ -177,7 +177,7 @@ def sync(
 
           Switches the graph to a different Reporting Style. The target Style
           must be a library- or customer-authored Structure with
-          ``structure_type='reporting_style'`` and a complete composition
+          ``block_type='reporting_style'`` and a complete composition
           (one Network per required statement type — BS / IS / CF / SE). Filed
           Reports are unaffected because each ``Report`` already pins its own
           ``structure_id`` per FactSet at create-time; new reports use the new
@@ -223,7 +223,7 @@ async def asyncio_detailed(
 
           Switches the graph to a different Reporting Style. The target Style
           must be a library- or customer-authored Structure with
-          ``structure_type='reporting_style'`` and a complete composition
+          ``block_type='reporting_style'`` and a complete composition
           (one Network per required statement type — BS / IS / CF / SE). Filed
           Reports are unaffected because each ``Report`` already pins its own
           ``structure_id`` per FactSet at create-time; new reports use the new
@@ -272,7 +272,7 @@ async def asyncio(
 
           Switches the graph to a different Reporting Style. The target Style
           must be a library- or customer-authored Structure with
-          ``structure_type='reporting_style'`` and a complete composition
+          ``block_type='reporting_style'`` and a complete composition
           (one Network per required statement type — BS / IS / CF / SE). Filed
           Reports are unaffected because each ``Report`` already pins its own
           ``structure_id`` per FactSet at create-time; new reports use the new

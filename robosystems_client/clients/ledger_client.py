@@ -802,13 +802,13 @@ class LedgerClient:
     self,
     graph_id: str,
     taxonomy_id: str | None = None,
-    structure_type: str | None = None,
+    block_type: str | None = None,
   ) -> list[dict[str, Any]]:
     """List reporting structures (IS, BS, CF, schedules) with optional filters."""
     data = self._query(
       graph_id,
       LIST_STRUCTURES_QUERY,
-      {"taxonomyId": taxonomy_id, "structureType": structure_type},
+      {"taxonomyId": taxonomy_id, "blockType": block_type},
     )
     return parse_structures(data)
 
@@ -1598,16 +1598,16 @@ class LedgerClient:
     return parse_report_package(data)
 
   def get_statement(
-    self, graph_id: str, report_id: str, structure_type: str
+    self, graph_id: str, report_id: str, block_type: str
   ) -> dict[str, Any] | None:
     """Render a financial statement — facts viewed through a structure.
 
-    `structure_type`: income_statement, balance_sheet, cash_flow_statement, ...
+    `block_type`: income_statement, balance_sheet, cash_flow_statement, ...
     """
     data = self._query(
       graph_id,
       GET_STATEMENT_QUERY,
-      {"reportId": report_id, "structureType": structure_type},
+      {"reportId": report_id, "blockType": block_type},
     )
     return parse_statement(data)
 

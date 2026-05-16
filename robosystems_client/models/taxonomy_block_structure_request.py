@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.taxonomy_block_structure_request_structure_type import (
-  TaxonomyBlockStructureRequestStructureType,
+from ..models.taxonomy_block_structure_request_block_type import (
+  TaxonomyBlockStructureRequestBlockType,
 )
 from ..types import UNSET, Unset
 
@@ -26,8 +26,8 @@ class TaxonomyBlockStructureRequest:
 
   Attributes:
       name (str): Envelope-local structure name (unique within envelope).
-      structure_type (TaxonomyBlockStructureRequestStructureType): DB ``structures.structure_type`` enum. CoA blocks
-          use ``chart_of_accounts``; reporting extensions use the statement family or ``custom``; custom ontology uses
+      block_type (TaxonomyBlockStructureRequestBlockType): DB ``structures.block_type`` enum. CoA blocks use
+          ``chart_of_accounts``; reporting extensions use the statement family or ``custom``; custom ontology uses
           ``custom``.
       description (None | str | Unset):
       role_uri (None | str | Unset):
@@ -35,7 +35,7 @@ class TaxonomyBlockStructureRequest:
   """
 
   name: str
-  structure_type: TaxonomyBlockStructureRequestStructureType
+  block_type: TaxonomyBlockStructureRequestBlockType
   description: None | str | Unset = UNSET
   role_uri: None | str | Unset = UNSET
   metadata: TaxonomyBlockStructureRequestMetadata | Unset = UNSET
@@ -44,7 +44,7 @@ class TaxonomyBlockStructureRequest:
   def to_dict(self) -> dict[str, Any]:
     name = self.name
 
-    structure_type = self.structure_type.value
+    block_type = self.block_type.value
 
     description: None | str | Unset
     if isinstance(self.description, Unset):
@@ -67,7 +67,7 @@ class TaxonomyBlockStructureRequest:
     field_dict.update(
       {
         "name": name,
-        "structure_type": structure_type,
+        "block_type": block_type,
       }
     )
     if description is not UNSET:
@@ -88,7 +88,7 @@ class TaxonomyBlockStructureRequest:
     d = dict(src_dict)
     name = d.pop("name")
 
-    structure_type = TaxonomyBlockStructureRequestStructureType(d.pop("structure_type"))
+    block_type = TaxonomyBlockStructureRequestBlockType(d.pop("block_type"))
 
     def _parse_description(data: object) -> None | str | Unset:
       if data is None:
@@ -117,7 +117,7 @@ class TaxonomyBlockStructureRequest:
 
     taxonomy_block_structure_request = cls(
       name=name,
-      structure_type=structure_type,
+      block_type=block_type,
       description=description,
       role_uri=role_uri,
       metadata=metadata,

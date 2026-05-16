@@ -527,10 +527,10 @@ def parse_unmapped_elements(data: dict[str, Any]) -> list[dict[str, Any]]:
 # ── Structures / mappings ─────────────────────────────────────────────
 
 LIST_STRUCTURES_QUERY = """
-query ListLedgerStructures($taxonomyId: String, $structureType: String) {
-  structures(taxonomyId: $taxonomyId, structureType: $structureType) {
+query ListLedgerStructures($taxonomyId: String, $blockType: String) {
+  structures(taxonomyId: $taxonomyId, blockType: $blockType) {
     structures {
-      id name description structureType taxonomyId isActive
+      id name description blockType taxonomyId isActive
     }
   }
 }
@@ -546,7 +546,7 @@ LIST_MAPPINGS_QUERY = """
 query ListLedgerMappings {
   mappings {
     structures {
-      id name description structureType taxonomyId isActive
+      id name description blockType taxonomyId isActive
     }
   }
 }
@@ -561,7 +561,7 @@ def parse_mappings(data: dict[str, Any]) -> list[dict[str, Any]]:
 GET_MAPPING_QUERY = """
 query GetLedgerMapping($mappingId: String!) {
   mapping(mappingId: $mappingId) {
-    id name structureType taxonomyId totalAssociations
+    id name blockType taxonomyId totalAssociations
     associations {
       id structureId
       fromElementId fromElementName fromElementQname
@@ -602,7 +602,7 @@ query GetInformationBlock($id: ID!) {
     id blockType name displayName category
     taxonomyId taxonomyName
     informationModel { conceptArrangement memberArrangement }
-    artifact { topic parentheticalNote template mechanics }
+    artifact { topic rendererNote template mechanics }
     elements {
       id qname name code elementType
       isAbstract isMonetary balanceType periodType
@@ -641,7 +641,7 @@ query ListInformationBlocks(
     id blockType name displayName category
     taxonomyId taxonomyName
     informationModel { conceptArrangement memberArrangement }
-    artifact { topic parentheticalNote template mechanics }
+    artifact { topic rendererNote template mechanics }
     elements {
       id qname name code elementType
       isAbstract isMonetary balanceType periodType
@@ -717,7 +717,7 @@ query GetLedgerClosingBookStructures {
     categories {
       label
       items {
-        id name itemType structureType reportId status
+        id name itemType blockType reportId status
       }
     }
   }
@@ -760,7 +760,7 @@ query ListLedgerReports {
       createdAt lastGenerated entityName
       sourceGraphId sourceReportId sharedAt
       periods { start end label }
-      structures { id name structureType }
+      structures { id name blockType }
     }
   }
 }
@@ -781,7 +781,7 @@ query GetLedgerReport($reportId: String!) {
     filingStatus filedAt filedBy supersedesId supersededById
     sourceGraphId sourceReportId sharedAt
     periods { start end label }
-    structures { id name structureType }
+    structures { id name blockType }
   }
 }
 """.strip()
@@ -795,7 +795,7 @@ def parse_report(data: dict[str, Any]) -> dict[str, Any] | None:
 # Report rehydrated as a package — Report metadata + N rendered
 # `InformationBlock` envelopes (one per attached FactSet). Drives the
 # `/reports/[id]` package viewer and replaces the per-statement
-# `getStatement(reportId, structureType)` round-trip flow.
+# `getStatement(reportId, blockType)` round-trip flow.
 GET_REPORT_PACKAGE_QUERY = """
 query GetLedgerReportPackage($reportId: String!) {
   reportPackage(reportId: $reportId) {
@@ -812,7 +812,7 @@ query GetLedgerReportPackage($reportId: String!) {
         id blockType name displayName category
         taxonomyId taxonomyName
         informationModel { conceptArrangement memberArrangement }
-        artifact { topic parentheticalNote template mechanics }
+        artifact { topic rendererNote template mechanics }
         elements {
           id qname name code elementType
           isAbstract isMonetary balanceType periodType
@@ -826,7 +826,7 @@ query GetLedgerReportPackage($reportId: String!) {
           periodType unit factScope factSetId
         }
         rules {
-          id ruleCategory rulePattern ruleExpression
+          id ruleCategory rulePattern ruleCheckKind ruleExpression
           ruleMessage ruleSeverity ruleOrigin
         }
         factSet {
@@ -861,9 +861,9 @@ def parse_report_package(data: dict[str, Any]) -> dict[str, Any] | None:
 
 
 GET_STATEMENT_QUERY = """
-query GetLedgerStatement($reportId: String!, $structureType: String!) {
-  statement(reportId: $reportId, structureType: $structureType) {
-    reportId structureId structureName structureType unmappedCount
+query GetLedgerStatement($reportId: String!, $blockType: String!) {
+  statement(reportId: $reportId, blockType: $blockType) {
+    reportId structureId structureName blockType unmappedCount
     periods { start end label }
     rows {
       elementId elementQname elementName trait

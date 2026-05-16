@@ -25,7 +25,7 @@ class ArtifactResponse:
   Attributes:
       mechanics (MetricMechanics | ScheduleMechanics | StatementMechanics):
       topic (None | str | Unset): Structure.description — the block's human-readable topic.
-      parenthetical_note (None | str | Unset): e.g. 'in thousands', 'except per share'.
+      renderer_note (None | str | Unset): e.g. 'in thousands', 'except per share'.
       template (ArtifactResponseTemplateType0 | None | Unset): Reusable layout (ordering, subtotals, styling) when
           attached. First-class templates are not yet implemented; this field is always null on currently-shipped block
           types.
@@ -33,7 +33,7 @@ class ArtifactResponse:
 
   mechanics: MetricMechanics | ScheduleMechanics | StatementMechanics
   topic: None | str | Unset = UNSET
-  parenthetical_note: None | str | Unset = UNSET
+  renderer_note: None | str | Unset = UNSET
   template: ArtifactResponseTemplateType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -56,11 +56,11 @@ class ArtifactResponse:
     else:
       topic = self.topic
 
-    parenthetical_note: None | str | Unset
-    if isinstance(self.parenthetical_note, Unset):
-      parenthetical_note = UNSET
+    renderer_note: None | str | Unset
+    if isinstance(self.renderer_note, Unset):
+      renderer_note = UNSET
     else:
-      parenthetical_note = self.parenthetical_note
+      renderer_note = self.renderer_note
 
     template: dict[str, Any] | None | Unset
     if isinstance(self.template, Unset):
@@ -79,8 +79,8 @@ class ArtifactResponse:
     )
     if topic is not UNSET:
       field_dict["topic"] = topic
-    if parenthetical_note is not UNSET:
-      field_dict["parenthetical_note"] = parenthetical_note
+    if renderer_note is not UNSET:
+      field_dict["renderer_note"] = renderer_note
     if template is not UNSET:
       field_dict["template"] = template
 
@@ -131,14 +131,14 @@ class ArtifactResponse:
 
     topic = _parse_topic(d.pop("topic", UNSET))
 
-    def _parse_parenthetical_note(data: object) -> None | str | Unset:
+    def _parse_renderer_note(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
       return cast(None | str | Unset, data)
 
-    parenthetical_note = _parse_parenthetical_note(d.pop("parenthetical_note", UNSET))
+    renderer_note = _parse_renderer_note(d.pop("renderer_note", UNSET))
 
     def _parse_template(data: object) -> ArtifactResponseTemplateType0 | None | Unset:
       if data is None:
@@ -160,7 +160,7 @@ class ArtifactResponse:
     artifact_response = cls(
       mechanics=mechanics,
       topic=topic,
-      parenthetical_note=parenthetical_note,
+      renderer_note=renderer_note,
       template=template,
     )
 
