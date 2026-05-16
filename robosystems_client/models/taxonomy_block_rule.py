@@ -15,24 +15,31 @@ T = TypeVar("T", bound="TaxonomyBlockRule")
 class TaxonomyBlockRule:
   """Rule projection for the Taxonomy Block envelope.
 
-  Attributes:
-      id (str):
-      name (str):
-      rule_category (str):
-      rule_pattern (str):
-      rule_expression (str):
-      severity (str | Unset):  Default: 'error'.
-      origin (str | Unset): 'forked' | 'native' | 'auto' — matches DB CHECK. Default: 'native'.
-      target_kind (None | str | Unset):
-      target_ref (None | str | Unset): Polymorphic display string — structure_id, element qname, association_id, or
-          taxonomy_id depending on ``target_kind``.
+  Exactly one of ``rule_pattern`` (arithmetic) or ``rule_check_kind``
+  (model-structure) is non-null per row, enforced by the
+  ``check_rule_pattern_kind_xor`` DB constraint. See
+  information-block.md §5.2.2.
+
+      Attributes:
+          id (str):
+          name (str):
+          rule_category (str):
+          rule_expression (str):
+          rule_pattern (None | str | Unset):
+          rule_check_kind (None | str | Unset):
+          severity (str | Unset):  Default: 'error'.
+          origin (str | Unset): 'forked' | 'native' | 'auto' — matches DB CHECK. Default: 'native'.
+          target_kind (None | str | Unset):
+          target_ref (None | str | Unset): Polymorphic display string — structure_id, element qname, association_id, or
+              taxonomy_id depending on ``target_kind``.
   """
 
   id: str
   name: str
   rule_category: str
-  rule_pattern: str
   rule_expression: str
+  rule_pattern: None | str | Unset = UNSET
+  rule_check_kind: None | str | Unset = UNSET
   severity: str | Unset = "error"
   origin: str | Unset = "native"
   target_kind: None | str | Unset = UNSET
@@ -46,9 +53,19 @@ class TaxonomyBlockRule:
 
     rule_category = self.rule_category
 
-    rule_pattern = self.rule_pattern
-
     rule_expression = self.rule_expression
+
+    rule_pattern: None | str | Unset
+    if isinstance(self.rule_pattern, Unset):
+      rule_pattern = UNSET
+    else:
+      rule_pattern = self.rule_pattern
+
+    rule_check_kind: None | str | Unset
+    if isinstance(self.rule_check_kind, Unset):
+      rule_check_kind = UNSET
+    else:
+      rule_check_kind = self.rule_check_kind
 
     severity = self.severity
 
@@ -73,10 +90,13 @@ class TaxonomyBlockRule:
         "id": id,
         "name": name,
         "rule_category": rule_category,
-        "rule_pattern": rule_pattern,
         "rule_expression": rule_expression,
       }
     )
+    if rule_pattern is not UNSET:
+      field_dict["rule_pattern"] = rule_pattern
+    if rule_check_kind is not UNSET:
+      field_dict["rule_check_kind"] = rule_check_kind
     if severity is not UNSET:
       field_dict["severity"] = severity
     if origin is not UNSET:
@@ -97,9 +117,25 @@ class TaxonomyBlockRule:
 
     rule_category = d.pop("rule_category")
 
-    rule_pattern = d.pop("rule_pattern")
-
     rule_expression = d.pop("rule_expression")
+
+    def _parse_rule_pattern(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    rule_pattern = _parse_rule_pattern(d.pop("rule_pattern", UNSET))
+
+    def _parse_rule_check_kind(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    rule_check_kind = _parse_rule_check_kind(d.pop("rule_check_kind", UNSET))
 
     severity = d.pop("severity", UNSET)
 
@@ -127,8 +163,9 @@ class TaxonomyBlockRule:
       id=id,
       name=name,
       rule_category=rule_category,
-      rule_pattern=rule_pattern,
       rule_expression=rule_expression,
+      rule_pattern=rule_pattern,
+      rule_check_kind=rule_check_kind,
       severity=severity,
       origin=origin,
       target_kind=target_kind,
