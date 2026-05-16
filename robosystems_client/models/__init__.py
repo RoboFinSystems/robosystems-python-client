@@ -574,11 +574,11 @@ from .taxonomy_block_rule_request_variables_item import (
 )
 from .taxonomy_block_structure import TaxonomyBlockStructure
 from .taxonomy_block_structure_request import TaxonomyBlockStructureRequest
+from .taxonomy_block_structure_request_block_type import (
+  TaxonomyBlockStructureRequestBlockType,
+)
 from .taxonomy_block_structure_request_metadata import (
   TaxonomyBlockStructureRequestMetadata,
-)
-from .taxonomy_block_structure_request_structure_type import (
-  TaxonomyBlockStructureRequestStructureType,
 )
 from .tier_capacity import TierCapacity
 from .token_pricing import TokenPricing
@@ -1062,8 +1062,8 @@ __all__ = (
   "TaxonomyBlockRuleRequestVariablesItem",
   "TaxonomyBlockStructure",
   "TaxonomyBlockStructureRequest",
+  "TaxonomyBlockStructureRequestBlockType",
   "TaxonomyBlockStructureRequestMetadata",
-  "TaxonomyBlockStructureRequestStructureType",
   "TierCapacity",
   "TokenPricing",
   "TransactionPreview",

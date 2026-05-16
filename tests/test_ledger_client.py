@@ -201,7 +201,7 @@ class TestLedgerReads:
             "id": "map_1",
             "name": "CoA → GAAP",
             "description": None,
-            "structureType": "coa_mapping",
+            "blockType": "coa_mapping",
             "taxonomyId": "tax_usgaap",
             "isActive": True,
           }
@@ -211,7 +211,7 @@ class TestLedgerReads:
     client = LedgerClient(mock_config)
     mappings = client.list_mappings(graph_id)
     assert len(mappings) == 1
-    assert mappings[0]["structure_type"] == "coa_mapping"
+    assert mappings[0]["block_type"] == "coa_mapping"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_fiscal_calendar(self, mock_execute, mock_config, graph_id):
@@ -1060,7 +1060,7 @@ class TestLedgerReadsAdditional:
             "id": "str_1",
             "name": "Income Statement",
             "description": None,
-            "structureType": "income_statement",
+            "blockType": "income_statement",
             "taxonomyId": "tax_usgaap",
             "isActive": True,
           }
@@ -1068,11 +1068,11 @@ class TestLedgerReadsAdditional:
       }
     }
     client = LedgerClient(mock_config)
-    result = client.list_structures(graph_id, structure_type="income_statement")
+    result = client.list_structures(graph_id, block_type="income_statement")
     assert len(result) == 1
-    assert result[0]["structure_type"] == "income_statement"
+    assert result[0]["block_type"] == "income_statement"
     variables = mock_execute.call_args[0][2]
-    assert variables["structureType"] == "income_statement"
+    assert variables["blockType"] == "income_statement"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_mapping(self, mock_execute, mock_config, graph_id):
@@ -1080,7 +1080,7 @@ class TestLedgerReadsAdditional:
       "mapping": {
         "id": "map_1",
         "name": "CoA → GAAP",
-        "structureType": "coa_mapping",
+        "blockType": "coa_mapping",
         "taxonomyId": "tax_usgaap",
         "totalAssociations": 2,
         "associations": [
@@ -1151,7 +1151,7 @@ class TestLedgerReadsAdditional:
           },
           "artifact": {
             "topic": None,
-            "parentheticalNote": None,
+            "rendererNote": None,
             "template": None,
             "mechanics": {
               "kind": "closing_entry_generator",
@@ -1190,7 +1190,7 @@ class TestLedgerReadsAdditional:
         },
         "artifact": {
           "topic": None,
-          "parentheticalNote": None,
+          "rendererNote": None,
           "template": None,
           "mechanics": {"kind": "closing_entry_generator"},
         },
@@ -1284,7 +1284,7 @@ class TestLedgerReadsAdditional:
                 "id": "str_1",
                 "name": "Depreciation",
                 "itemType": "schedule",
-                "structureType": "schedule",
+                "blockType": "schedule",
                 "reportId": None,
                 "status": None,
               }

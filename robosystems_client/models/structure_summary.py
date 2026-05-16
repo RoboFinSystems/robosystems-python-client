@@ -20,13 +20,13 @@ class StructureSummary:
       Attributes:
           id (str): Structure identifier.
           name (str): Human-readable structure name.
-          structure_type (str): Structure category: `balance_sheet`, `income_statement`, `cash_flow_statement`,
+          block_type (str): Structure category: `balance_sheet`, `income_statement`, `cash_flow_statement`,
               `equity_statement`, `schedule`.
   """
 
   id: str
   name: str
-  structure_type: str
+  block_type: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -34,7 +34,7 @@ class StructureSummary:
 
     name = self.name
 
-    structure_type = self.structure_type
+    block_type = self.block_type
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -42,7 +42,7 @@ class StructureSummary:
       {
         "id": id,
         "name": name,
-        "structure_type": structure_type,
+        "block_type": block_type,
       }
     )
 
@@ -55,12 +55,12 @@ class StructureSummary:
 
     name = d.pop("name")
 
-    structure_type = d.pop("structure_type")
+    block_type = d.pop("block_type")
 
     structure_summary = cls(
       id=id,
       name=name,
-      structure_type=structure_type,
+      block_type=block_type,
     )
 
     structure_summary.additional_properties = d

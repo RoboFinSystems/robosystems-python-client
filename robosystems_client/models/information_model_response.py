@@ -18,7 +18,8 @@ class InformationModelResponse:
   Attributes:
       concept_arrangement (None | str | Unset): roll_up | roll_forward | variance | adjustment | set | arithmetic |
           textblock. Null for block types where the concept arrangement is implicit in their mechanics.
-      member_arrangement (None | str | Unset): aggregation | nonaggregation, or null if non-hypercube.
+      member_arrangement (None | str | Unset): is_a | whole_part | nested_whole_part | two_dimension_aggregation |
+          complex_aggregating_whole_part, or null if non-hypercube.
   """
 
   concept_arrangement: None | str | Unset = UNSET

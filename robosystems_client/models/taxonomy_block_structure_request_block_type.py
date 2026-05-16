@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class TaxonomyBlockStructureRequestStructureType(str, Enum):
+class TaxonomyBlockStructureRequestBlockType(str, Enum):
   BALANCE_SHEET = "balance_sheet"
   CASH_FLOW_STATEMENT = "cash_flow_statement"
   CHART_OF_ACCOUNTS = "chart_of_accounts"

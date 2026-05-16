@@ -18,14 +18,14 @@ class TaxonomyBlockStructure:
   Attributes:
       id (str):
       name (str):
-      structure_type (str):
+      block_type (str):
       description (None | str | Unset):
       role_uri (None | str | Unset):
   """
 
   id: str
   name: str
-  structure_type: str
+  block_type: str
   description: None | str | Unset = UNSET
   role_uri: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -35,7 +35,7 @@ class TaxonomyBlockStructure:
 
     name = self.name
 
-    structure_type = self.structure_type
+    block_type = self.block_type
 
     description: None | str | Unset
     if isinstance(self.description, Unset):
@@ -55,7 +55,7 @@ class TaxonomyBlockStructure:
       {
         "id": id,
         "name": name,
-        "structure_type": structure_type,
+        "block_type": block_type,
       }
     )
     if description is not UNSET:
@@ -72,7 +72,7 @@ class TaxonomyBlockStructure:
 
     name = d.pop("name")
 
-    structure_type = d.pop("structure_type")
+    block_type = d.pop("block_type")
 
     def _parse_description(data: object) -> None | str | Unset:
       if data is None:
@@ -95,7 +95,7 @@ class TaxonomyBlockStructure:
     taxonomy_block_structure = cls(
       id=id,
       name=name,
-      structure_type=structure_type,
+      block_type=block_type,
       description=description,
       role_uri=role_uri,
     )

@@ -31,9 +31,15 @@ class RuleLite:
           rule_category (str): One of 8 cm:VerificationRule subclasses — AutomatedAccountingAndReportingChecks,
               FundamentalAccountingConceptRelation, PeerConsistencyRule, PriorPeriodConsistencyRule,
               ReportLevelModelStructureRule, ReportingSystemSpecificRule, ToDoManualTask, XBRLTechnicalSyntaxRule.
-          rule_pattern (str): One of 10 cm:BusinessRulePattern mechanisms — Adjustment, CoExists, EqualTo, Exists,
-              GreaterThan, GreaterThanOrEqualToZero, LessThan, RollForward, RollUp, Variance.
           rule_expression (str):
+          rule_pattern (None | str | Unset): Arithmetic / logical pattern evaluated over fact values. One of 11
+              cm:BusinessRulePattern mechanisms — Adjustment, CoExists, EqualTo, Exists, GreaterThan,
+              GreaterThanOrEqualToZero, LessThan, RollForward, RollUp, SumEquals, Variance. Null when the rule is a structural
+              check (see rule_check_kind).
+          rule_check_kind (None | str | Unset): Model-structure check kind evaluated over the association graph. One of 6
+              kinds — LeafHasClassification, LibraryOriginImmutability, NoCycles, NoOrphanArcs, ParentBeforeChild,
+              UniqueQNameInTaxonomy. Null when the rule is an arithmetic pattern (see rule_pattern). Exactly one of
+              rule_pattern / rule_check_kind is non-null per rule.
           rule_target (None | RuleTargetLite | Unset):
           rule_variables (list[RuleVariableLite] | Unset):
           rule_message (None | str | Unset):
@@ -46,8 +52,9 @@ class RuleLite:
 
   id: str
   rule_category: str
-  rule_pattern: str
   rule_expression: str
+  rule_pattern: None | str | Unset = UNSET
+  rule_check_kind: None | str | Unset = UNSET
   rule_target: None | RuleTargetLite | Unset = UNSET
   rule_variables: list[RuleVariableLite] | Unset = UNSET
   rule_message: None | str | Unset = UNSET
@@ -62,9 +69,19 @@ class RuleLite:
 
     rule_category = self.rule_category
 
-    rule_pattern = self.rule_pattern
-
     rule_expression = self.rule_expression
+
+    rule_pattern: None | str | Unset
+    if isinstance(self.rule_pattern, Unset):
+      rule_pattern = UNSET
+    else:
+      rule_pattern = self.rule_pattern
+
+    rule_check_kind: None | str | Unset
+    if isinstance(self.rule_check_kind, Unset):
+      rule_check_kind = UNSET
+    else:
+      rule_check_kind = self.rule_check_kind
 
     rule_target: dict[str, Any] | None | Unset
     if isinstance(self.rule_target, Unset):
@@ -97,10 +114,13 @@ class RuleLite:
       {
         "id": id,
         "rule_category": rule_category,
-        "rule_pattern": rule_pattern,
         "rule_expression": rule_expression,
       }
     )
+    if rule_pattern is not UNSET:
+      field_dict["rule_pattern"] = rule_pattern
+    if rule_check_kind is not UNSET:
+      field_dict["rule_check_kind"] = rule_check_kind
     if rule_target is not UNSET:
       field_dict["rule_target"] = rule_target
     if rule_variables is not UNSET:
@@ -124,9 +144,25 @@ class RuleLite:
 
     rule_category = d.pop("rule_category")
 
-    rule_pattern = d.pop("rule_pattern")
-
     rule_expression = d.pop("rule_expression")
+
+    def _parse_rule_pattern(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    rule_pattern = _parse_rule_pattern(d.pop("rule_pattern", UNSET))
+
+    def _parse_rule_check_kind(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    rule_check_kind = _parse_rule_check_kind(d.pop("rule_check_kind", UNSET))
 
     def _parse_rule_target(data: object) -> None | RuleTargetLite | Unset:
       if data is None:
@@ -170,8 +206,9 @@ class RuleLite:
     rule_lite = cls(
       id=id,
       rule_category=rule_category,
-      rule_pattern=rule_pattern,
       rule_expression=rule_expression,
+      rule_pattern=rule_pattern,
+      rule_check_kind=rule_check_kind,
       rule_target=rule_target,
       rule_variables=rule_variables,
       rule_message=rule_message,
