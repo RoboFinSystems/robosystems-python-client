@@ -37,6 +37,15 @@ class TaxonomyBlockRuleRequest:
   ``target_taxonomy_self`` must be set (or all null for a global rule).
   The ``model_validator`` enforces this contract at the Pydantic layer.
 
+  Only **arithmetic** rule patterns are user-creatable via this API
+  (the ``rule_pattern`` Literal below). The 6 model-structure check
+  kinds (``NoCycles``, ``NoOrphanArcs``, ``ParentBeforeChild``,
+  ``LeafHasClassification``, ``LibraryOriginImmutability``,
+  ``UniqueQNameInTaxonomy``) are system-managed — they're auto-emitted
+  by :func:`emit_auto_rules` at taxonomy-block creation time and
+  populate ``rules.rule_check_kind`` instead of ``rule_pattern``. See
+  information-block.md §5.2.2 for the axis split.
+
       Attributes:
           name (str): Rule identifier, unique within envelope.
           rule_category (TaxonomyBlockRuleRequestRuleCategory): One of 8 cm:VerificationRule subclasses.
