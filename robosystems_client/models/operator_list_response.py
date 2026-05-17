@@ -7,27 +7,27 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-  from ..models.agent_list_response_agents import AgentListResponseAgents
+  from ..models.operator_list_response_operators import OperatorListResponseOperators
 
 
-T = TypeVar("T", bound="AgentListResponse")
+T = TypeVar("T", bound="OperatorListResponse")
 
 
 @_attrs_define
-class AgentListResponse:
-  """Response for listing available agents.
+class OperatorListResponse:
+  """Response for listing available operators.
 
   Attributes:
-      agents (AgentListResponseAgents): Dictionary of available agents with metadata
-      total (int): Total number of agents
+      operators (OperatorListResponseOperators): Dictionary of available operators with metadata
+      total (int): Total number of operators
   """
 
-  agents: AgentListResponseAgents
+  operators: OperatorListResponseOperators
   total: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    agents = self.agents.to_dict()
+    operators = self.operators.to_dict()
 
     total = self.total
 
@@ -35,7 +35,7 @@ class AgentListResponse:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "agents": agents,
+        "operators": operators,
         "total": total,
       }
     )
@@ -44,20 +44,20 @@ class AgentListResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.agent_list_response_agents import AgentListResponseAgents
+    from ..models.operator_list_response_operators import OperatorListResponseOperators
 
     d = dict(src_dict)
-    agents = AgentListResponseAgents.from_dict(d.pop("agents"))
+    operators = OperatorListResponseOperators.from_dict(d.pop("operators"))
 
     total = d.pop("total")
 
-    agent_list_response = cls(
-      agents=agents,
+    operator_list_response = cls(
+      operators=operators,
       total=total,
     )
 
-    agent_list_response.additional_properties = d
-    return agent_list_response
+    operator_list_response.additional_properties = d
+    return operator_list_response
 
   @property
   def additional_keys(self) -> list[str]:

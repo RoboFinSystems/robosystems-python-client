@@ -8,68 +8,72 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
-from ..models.agent_mode import AgentMode
+from ..models.operator_mode import OperatorMode
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.agent_response_error_details_type_0 import (
-    AgentResponseErrorDetailsType0,
+  from ..models.operator_response_error_details_type_0 import (
+    OperatorResponseErrorDetailsType0,
   )
-  from ..models.agent_response_metadata_type_0 import AgentResponseMetadataType0
-  from ..models.agent_response_tokens_used_type_0 import AgentResponseTokensUsedType0
+  from ..models.operator_response_metadata_type_0 import OperatorResponseMetadataType0
+  from ..models.operator_response_tokens_used_type_0 import (
+    OperatorResponseTokensUsedType0,
+  )
 
 
-T = TypeVar("T", bound="AgentResponse")
+T = TypeVar("T", bound="OperatorResponse")
 
 
 @_attrs_define
-class AgentResponse:
-  """Response model for agent interactions.
+class OperatorResponse:
+  """Response model for operator interactions.
 
   Attributes:
-      content (str): The agent's response content
-      agent_used (str): The agent type that handled the request
-      mode_used (AgentMode): Agent execution modes.
-      metadata (AgentResponseMetadataType0 | None | Unset): Response metadata including routing info
-      tokens_used (AgentResponseTokensUsedType0 | None | Unset): Token usage statistics
+      content (str): The operator's response content
+      operator_used (str): The operator type that handled the request
+      mode_used (OperatorMode): Operator execution modes.
+      metadata (None | OperatorResponseMetadataType0 | Unset): Response metadata including routing info
+      tokens_used (None | OperatorResponseTokensUsedType0 | Unset): Token usage statistics
       confidence_score (float | None | Unset): Confidence score of the response (0.0-1.0 scale)
       operation_id (None | str | Unset): Operation ID for SSE monitoring
       is_partial (bool | Unset): Whether this is a partial response Default: False.
-      error_details (AgentResponseErrorDetailsType0 | None | Unset): Error details if any
+      error_details (None | OperatorResponseErrorDetailsType0 | Unset): Error details if any
       execution_time (float | None | Unset): Execution time in seconds
       timestamp (datetime.datetime | Unset): Response timestamp
   """
 
   content: str
-  agent_used: str
-  mode_used: AgentMode
-  metadata: AgentResponseMetadataType0 | None | Unset = UNSET
-  tokens_used: AgentResponseTokensUsedType0 | None | Unset = UNSET
+  operator_used: str
+  mode_used: OperatorMode
+  metadata: None | OperatorResponseMetadataType0 | Unset = UNSET
+  tokens_used: None | OperatorResponseTokensUsedType0 | Unset = UNSET
   confidence_score: float | None | Unset = UNSET
   operation_id: None | str | Unset = UNSET
   is_partial: bool | Unset = False
-  error_details: AgentResponseErrorDetailsType0 | None | Unset = UNSET
+  error_details: None | OperatorResponseErrorDetailsType0 | Unset = UNSET
   execution_time: float | None | Unset = UNSET
   timestamp: datetime.datetime | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    from ..models.agent_response_error_details_type_0 import (
-      AgentResponseErrorDetailsType0,
+    from ..models.operator_response_error_details_type_0 import (
+      OperatorResponseErrorDetailsType0,
     )
-    from ..models.agent_response_metadata_type_0 import AgentResponseMetadataType0
-    from ..models.agent_response_tokens_used_type_0 import AgentResponseTokensUsedType0
+    from ..models.operator_response_metadata_type_0 import OperatorResponseMetadataType0
+    from ..models.operator_response_tokens_used_type_0 import (
+      OperatorResponseTokensUsedType0,
+    )
 
     content = self.content
 
-    agent_used = self.agent_used
+    operator_used = self.operator_used
 
     mode_used = self.mode_used.value
 
     metadata: dict[str, Any] | None | Unset
     if isinstance(self.metadata, Unset):
       metadata = UNSET
-    elif isinstance(self.metadata, AgentResponseMetadataType0):
+    elif isinstance(self.metadata, OperatorResponseMetadataType0):
       metadata = self.metadata.to_dict()
     else:
       metadata = self.metadata
@@ -77,7 +81,7 @@ class AgentResponse:
     tokens_used: dict[str, Any] | None | Unset
     if isinstance(self.tokens_used, Unset):
       tokens_used = UNSET
-    elif isinstance(self.tokens_used, AgentResponseTokensUsedType0):
+    elif isinstance(self.tokens_used, OperatorResponseTokensUsedType0):
       tokens_used = self.tokens_used.to_dict()
     else:
       tokens_used = self.tokens_used
@@ -99,7 +103,7 @@ class AgentResponse:
     error_details: dict[str, Any] | None | Unset
     if isinstance(self.error_details, Unset):
       error_details = UNSET
-    elif isinstance(self.error_details, AgentResponseErrorDetailsType0):
+    elif isinstance(self.error_details, OperatorResponseErrorDetailsType0):
       error_details = self.error_details.to_dict()
     else:
       error_details = self.error_details
@@ -119,7 +123,7 @@ class AgentResponse:
     field_dict.update(
       {
         "content": content,
-        "agent_used": agent_used,
+        "operator_used": operator_used,
         "mode_used": mode_used,
       }
     )
@@ -144,20 +148,22 @@ class AgentResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.agent_response_error_details_type_0 import (
-      AgentResponseErrorDetailsType0,
+    from ..models.operator_response_error_details_type_0 import (
+      OperatorResponseErrorDetailsType0,
     )
-    from ..models.agent_response_metadata_type_0 import AgentResponseMetadataType0
-    from ..models.agent_response_tokens_used_type_0 import AgentResponseTokensUsedType0
+    from ..models.operator_response_metadata_type_0 import OperatorResponseMetadataType0
+    from ..models.operator_response_tokens_used_type_0 import (
+      OperatorResponseTokensUsedType0,
+    )
 
     d = dict(src_dict)
     content = d.pop("content")
 
-    agent_used = d.pop("agent_used")
+    operator_used = d.pop("operator_used")
 
-    mode_used = AgentMode(d.pop("mode_used"))
+    mode_used = OperatorMode(d.pop("mode_used"))
 
-    def _parse_metadata(data: object) -> AgentResponseMetadataType0 | None | Unset:
+    def _parse_metadata(data: object) -> None | OperatorResponseMetadataType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -165,16 +171,18 @@ class AgentResponse:
       try:
         if not isinstance(data, dict):
           raise TypeError()
-        metadata_type_0 = AgentResponseMetadataType0.from_dict(data)
+        metadata_type_0 = OperatorResponseMetadataType0.from_dict(data)
 
         return metadata_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(AgentResponseMetadataType0 | None | Unset, data)
+      return cast(None | OperatorResponseMetadataType0 | Unset, data)
 
     metadata = _parse_metadata(d.pop("metadata", UNSET))
 
-    def _parse_tokens_used(data: object) -> AgentResponseTokensUsedType0 | None | Unset:
+    def _parse_tokens_used(
+      data: object,
+    ) -> None | OperatorResponseTokensUsedType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -182,12 +190,12 @@ class AgentResponse:
       try:
         if not isinstance(data, dict):
           raise TypeError()
-        tokens_used_type_0 = AgentResponseTokensUsedType0.from_dict(data)
+        tokens_used_type_0 = OperatorResponseTokensUsedType0.from_dict(data)
 
         return tokens_used_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(AgentResponseTokensUsedType0 | None | Unset, data)
+      return cast(None | OperatorResponseTokensUsedType0 | Unset, data)
 
     tokens_used = _parse_tokens_used(d.pop("tokens_used", UNSET))
 
@@ -213,7 +221,7 @@ class AgentResponse:
 
     def _parse_error_details(
       data: object,
-    ) -> AgentResponseErrorDetailsType0 | None | Unset:
+    ) -> None | OperatorResponseErrorDetailsType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -221,12 +229,12 @@ class AgentResponse:
       try:
         if not isinstance(data, dict):
           raise TypeError()
-        error_details_type_0 = AgentResponseErrorDetailsType0.from_dict(data)
+        error_details_type_0 = OperatorResponseErrorDetailsType0.from_dict(data)
 
         return error_details_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(AgentResponseErrorDetailsType0 | None | Unset, data)
+      return cast(None | OperatorResponseErrorDetailsType0 | Unset, data)
 
     error_details = _parse_error_details(d.pop("error_details", UNSET))
 
@@ -246,9 +254,9 @@ class AgentResponse:
     else:
       timestamp = isoparse(_timestamp)
 
-    agent_response = cls(
+    operator_response = cls(
       content=content,
-      agent_used=agent_used,
+      operator_used=operator_used,
       mode_used=mode_used,
       metadata=metadata,
       tokens_used=tokens_used,
@@ -260,8 +268,8 @@ class AgentResponse:
       timestamp=timestamp,
     )
 
-    agent_response.additional_properties = d
-    return agent_response
+    operator_response.additional_properties = d
+    return operator_response
 
   @property
   def additional_keys(self) -> list[str]:

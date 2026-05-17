@@ -20,7 +20,7 @@ class CreateMappingAssociationOperation:
 
   This is the iterative, AI-assisted craft path. Each call adds a single
   association to the target mapping structure. Use `auto-map-elements`
-  to create many at once via the MappingAgent. Reject duplicates: if
+  to create many at once via the MappingOperator. Reject duplicates: if
   the (from, to, type) tuple already exists, the call returns 409.
 
       Attributes:

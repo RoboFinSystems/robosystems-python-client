@@ -14,13 +14,13 @@ from .query_client import (
   QueryOptions,
   QueuedQueryError,
 )
-from .agent_client import (
-  AgentClient,
-  AgentResult,
-  QueuedAgentResponse,
-  AgentQueryRequest,
-  AgentOptions,
-  QueuedAgentError,
+from .operator_client import (
+  OperatorClient,
+  OperatorResult,
+  QueuedOperatorResponse,
+  OperatorQueryRequest,
+  OperatorOptions,
+  QueuedOperatorError,
 )
 from .operation_client import (
   OperationClient,
@@ -135,13 +135,13 @@ __all__ = [
   "QueryRequest",
   "QueryOptions",
   "QueuedQueryError",
-  # Agent Client
-  "AgentClient",
-  "AgentResult",
-  "QueuedAgentResponse",
-  "AgentQueryRequest",
-  "AgentOptions",
-  "QueuedAgentError",
+  # AI Operator Client
+  "OperatorClient",
+  "OperatorResult",
+  "QueuedOperatorResponse",
+  "OperatorQueryRequest",
+  "OperatorOptions",
+  "QueuedOperatorError",
   # Operation Client
   "OperationClient",
   "OperationStatus",
@@ -225,14 +225,14 @@ def stream_query(graph_id: str, query: str, parameters=None, chunk_size=None):
   return clients.query.stream_query(graph_id, query, parameters, chunk_size)
 
 
-def agent_query(graph_id: str, message: str, context=None):
-  """Execute an agent query using the default clients instance"""
-  return clients.agent.query(graph_id, message, context)
+def operator_query(graph_id: str, message: str, context=None):
+  """Execute an operator query using the default clients instance"""
+  return clients.operator.query(graph_id, message, context)
 
 
 def analyze_financials(graph_id: str, message: str, on_progress=None):
-  """Execute financial agent using the default clients instance"""
-  return clients.agent.analyze_financials(graph_id, message, on_progress)
+  """Execute financial operator using the default clients instance"""
+  return clients.operator.analyze_financials(graph_id, message, on_progress)
 
 
 # DataFrame convenience functions (if pandas is available)

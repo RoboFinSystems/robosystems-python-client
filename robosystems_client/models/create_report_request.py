@@ -42,7 +42,9 @@ class CreateReportRequest:
           period_end (datetime.date): Current-period end (inclusive). Must be >= `period_start`. Ignored when `periods` is
               supplied.
           taxonomy_id (str | Unset): Taxonomy that defines the structures (BS / IS / CF / Equity / Schedules) this report
-              can render. Defaults to the platform US GAAP reporting taxonomy. Default: 'tax_usgaap_reporting'.
+              can render. Accepts either an exact tenant-specific taxonomy UUID or a standard name (e.g. 'rs-gaap'). Standard
+              names resolve to the latest reporting_standard taxonomy with that name. Defaults to 'rs-gaap', the canonical
+              reporting vocabulary. Default: 'rs-gaap'.
           period_type (str | Unset): Period cadence: `monthly`, `quarterly`, or `annual`. Default: 'quarterly'.
           comparative (bool | Unset): When true, automatically generates a prior-period column (same length as the current
               period). Ignored when `periods` is supplied. Default: True.
@@ -55,7 +57,7 @@ class CreateReportRequest:
   mapping_id: str
   period_start: datetime.date
   period_end: datetime.date
-  taxonomy_id: str | Unset = "tax_usgaap_reporting"
+  taxonomy_id: str | Unset = "rs-gaap"
   period_type: str | Unset = "quarterly"
   comparative: bool | Unset = True
   periods: list[PeriodSpec] | None | Unset = UNSET

@@ -8,22 +8,22 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="AgentMetadataResponse")
+T = TypeVar("T", bound="OperatorMetadataResponse")
 
 
 @_attrs_define
-class AgentMetadataResponse:
-  """Response for agent metadata.
+class OperatorMetadataResponse:
+  """Response for operator metadata.
 
   Attributes:
-      name (str): Agent name
-      description (str): Agent description
-      version (str): Agent version
-      capabilities (list[str]): Agent capabilities
+      name (str): Operator name
+      description (str): Operator description
+      version (str): Operator version
+      capabilities (list[str]): Operator capabilities
       supported_modes (list[str]): Supported execution modes
-      requires_credits (bool): Whether agent requires credits
-      author (None | str | Unset): Agent author
-      tags (list[str] | Unset): Agent tags
+      requires_credits (bool): Whether operator requires credits
+      author (None | str | Unset): Operator author
+      tags (list[str] | Unset): Operator tags
   """
 
   name: str
@@ -104,7 +104,7 @@ class AgentMetadataResponse:
 
     tags = cast(list[str], d.pop("tags", UNSET))
 
-    agent_metadata_response = cls(
+    operator_metadata_response = cls(
       name=name,
       description=description,
       version=version,
@@ -115,8 +115,8 @@ class AgentMetadataResponse:
       tags=tags,
     )
 
-    agent_metadata_response.additional_properties = d
-    return agent_metadata_response
+    operator_metadata_response.additional_properties = d
+    return operator_metadata_response
 
   @property
   def additional_keys(self) -> list[str]:

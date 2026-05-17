@@ -10,11 +10,11 @@ from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="AgentMessage")
+T = TypeVar("T", bound="OperatorMessage")
 
 
 @_attrs_define
-class AgentMessage:
+class OperatorMessage:
   """Message in conversation history.
 
   Attributes:
@@ -78,14 +78,14 @@ class AgentMessage:
 
     timestamp = _parse_timestamp(d.pop("timestamp", UNSET))
 
-    agent_message = cls(
+    operator_message = cls(
       role=role,
       content=content,
       timestamp=timestamp,
     )
 
-    agent_message.additional_properties = d
-    return agent_message
+    operator_message.additional_properties = d
+    return operator_message
 
   @property
   def additional_keys(self) -> list[str]:

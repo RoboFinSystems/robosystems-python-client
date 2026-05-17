@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Dict, Any, Optional, Callable
 
 from .query_client import QueryClient
-from .agent_client import AgentClient
+from .operator_client import OperatorClient
 from .operation_client import OperationClient
 from .file_client import FileClient
 from .document_client import DocumentClient
@@ -65,7 +65,7 @@ class RoboSystemsClients:
 
     # Initialize clients
     self.query = QueryClient(self.config)
-    self.agent = AgentClient(self.config)
+    self.operator = OperatorClient(self.config)
     self.operations = OperationClient(self.config)
     self.files = FileClient(self.config)
     self.tables = TableClient(self.config)
@@ -101,7 +101,7 @@ class RoboSystemsClients:
   def close(self):
     """Clean up all active connections"""
     self.query.close()
-    self.agent.close()
+    self.operator.close()
     self.operations.close_all()
     if hasattr(self.files, "close"):
       self.files.close()

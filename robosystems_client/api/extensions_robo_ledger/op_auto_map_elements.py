@@ -121,9 +121,9 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (AutoMapElementsOperation): Run the MappingAgent over a mapping structure (async).
+      body (AutoMapElementsOperation): Run the MappingOperator over a mapping structure (async).
 
-          The MappingAgent walks every unmapped CoA element and proposes
+          The MappingOperator walks every unmapped CoA element and proposes
           associations to reporting concepts. Confidence thresholds: ≥0.90
           auto-approved (association created), 0.70-0.89 flagged for review
           (created with `confidence` set; surface it in your UI), <0.70 skipped.
@@ -170,9 +170,9 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (AutoMapElementsOperation): Run the MappingAgent over a mapping structure (async).
+      body (AutoMapElementsOperation): Run the MappingOperator over a mapping structure (async).
 
-          The MappingAgent walks every unmapped CoA element and proposes
+          The MappingOperator walks every unmapped CoA element and proposes
           associations to reporting concepts. Confidence thresholds: ≥0.90
           auto-approved (association created), 0.70-0.89 flagged for review
           (created with `confidence` set; surface it in your UI), <0.70 skipped.
@@ -214,9 +214,9 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (AutoMapElementsOperation): Run the MappingAgent over a mapping structure (async).
+      body (AutoMapElementsOperation): Run the MappingOperator over a mapping structure (async).
 
-          The MappingAgent walks every unmapped CoA element and proposes
+          The MappingOperator walks every unmapped CoA element and proposes
           associations to reporting concepts. Confidence thresholds: ≥0.90
           auto-approved (association created), 0.70-0.89 flagged for review
           (created with `confidence` set; surface it in your UI), <0.70 skipped.
@@ -261,9 +261,9 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (AutoMapElementsOperation): Run the MappingAgent over a mapping structure (async).
+      body (AutoMapElementsOperation): Run the MappingOperator over a mapping structure (async).
 
-          The MappingAgent walks every unmapped CoA element and proposes
+          The MappingOperator walks every unmapped CoA element and proposes
           associations to reporting concepts. Confidence thresholds: ≥0.90
           auto-approved (association created), 0.70-0.89 flagged for review
           (created with `confidence` set; surface it in your UI), <0.70 skipped.

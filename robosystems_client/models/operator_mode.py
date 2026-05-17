@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class AgentMode(str, Enum):
+class OperatorMode(str, Enum):
   EXTENDED = "extended"
   QUICK = "quick"
   STANDARD = "standard"

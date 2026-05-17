@@ -6,11 +6,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="AgentListResponseAgentsAdditionalProperty")
+T = TypeVar("T", bound="OperatorRecommendationRequestContextType0")
 
 
 @_attrs_define
-class AgentListResponseAgentsAdditionalProperty:
+class OperatorRecommendationRequestContextType0:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -25,10 +25,10 @@ class AgentListResponseAgentsAdditionalProperty:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    agent_list_response_agents_additional_property = cls()
+    operator_recommendation_request_context_type_0 = cls()
 
-    agent_list_response_agents_additional_property.additional_properties = d
-    return agent_list_response_agents_additional_property
+    operator_recommendation_request_context_type_0.additional_properties = d
+    return operator_recommendation_request_context_type_0
 
   @property
   def additional_keys(self) -> list[str]:

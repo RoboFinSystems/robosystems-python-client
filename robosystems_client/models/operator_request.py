@@ -6,40 +6,40 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.agent_mode import AgentMode
+from ..models.operator_mode import OperatorMode
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.agent_message import AgentMessage
-  from ..models.agent_request_context_type_0 import AgentRequestContextType0
+  from ..models.operator_message import OperatorMessage
+  from ..models.operator_request_context_type_0 import OperatorRequestContextType0
   from ..models.selection_criteria import SelectionCriteria
 
 
-T = TypeVar("T", bound="AgentRequest")
+T = TypeVar("T", bound="OperatorRequest")
 
 
 @_attrs_define
-class AgentRequest:
-  """Request model for agent interactions.
+class OperatorRequest:
+  """Request model for operator interactions.
 
   Attributes:
       message (str): The query or message to process
-      history (list[AgentMessage] | Unset): Conversation history
-      context (AgentRequestContextType0 | None | Unset): Additional context for analysis (e.g., enable_rag,
+      history (list[OperatorMessage] | Unset): Conversation history
+      context (None | OperatorRequestContextType0 | Unset): Additional context for analysis (e.g., enable_rag,
           include_schema)
-      mode (AgentMode | None | Unset): Execution mode Default: AgentMode.STANDARD.
-      agent_type (None | str | Unset): Specific agent type to use (optional)
-      selection_criteria (None | SelectionCriteria | Unset): Criteria for agent selection
+      mode (None | OperatorMode | Unset): Execution mode Default: OperatorMode.STANDARD.
+      operator_type (None | str | Unset): Specific operator type to use (optional)
+      selection_criteria (None | SelectionCriteria | Unset): Criteria for operator selection
       force_extended_analysis (bool | Unset): Force extended analysis mode with comprehensive research Default: False.
       enable_rag (bool | Unset): Enable RAG context enrichment Default: True.
       stream (bool | Unset): Enable streaming response Default: False.
   """
 
   message: str
-  history: list[AgentMessage] | Unset = UNSET
-  context: AgentRequestContextType0 | None | Unset = UNSET
-  mode: AgentMode | None | Unset = AgentMode.STANDARD
-  agent_type: None | str | Unset = UNSET
+  history: list[OperatorMessage] | Unset = UNSET
+  context: None | OperatorRequestContextType0 | Unset = UNSET
+  mode: None | OperatorMode | Unset = OperatorMode.STANDARD
+  operator_type: None | str | Unset = UNSET
   selection_criteria: None | SelectionCriteria | Unset = UNSET
   force_extended_analysis: bool | Unset = False
   enable_rag: bool | Unset = True
@@ -47,7 +47,7 @@ class AgentRequest:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    from ..models.agent_request_context_type_0 import AgentRequestContextType0
+    from ..models.operator_request_context_type_0 import OperatorRequestContextType0
     from ..models.selection_criteria import SelectionCriteria
 
     message = self.message
@@ -62,7 +62,7 @@ class AgentRequest:
     context: dict[str, Any] | None | Unset
     if isinstance(self.context, Unset):
       context = UNSET
-    elif isinstance(self.context, AgentRequestContextType0):
+    elif isinstance(self.context, OperatorRequestContextType0):
       context = self.context.to_dict()
     else:
       context = self.context
@@ -70,16 +70,16 @@ class AgentRequest:
     mode: None | str | Unset
     if isinstance(self.mode, Unset):
       mode = UNSET
-    elif isinstance(self.mode, AgentMode):
+    elif isinstance(self.mode, OperatorMode):
       mode = self.mode.value
     else:
       mode = self.mode
 
-    agent_type: None | str | Unset
-    if isinstance(self.agent_type, Unset):
-      agent_type = UNSET
+    operator_type: None | str | Unset
+    if isinstance(self.operator_type, Unset):
+      operator_type = UNSET
     else:
-      agent_type = self.agent_type
+      operator_type = self.operator_type
 
     selection_criteria: dict[str, Any] | None | Unset
     if isinstance(self.selection_criteria, Unset):
@@ -108,8 +108,8 @@ class AgentRequest:
       field_dict["context"] = context
     if mode is not UNSET:
       field_dict["mode"] = mode
-    if agent_type is not UNSET:
-      field_dict["agent_type"] = agent_type
+    if operator_type is not UNSET:
+      field_dict["operator_type"] = operator_type
     if selection_criteria is not UNSET:
       field_dict["selection_criteria"] = selection_criteria
     if force_extended_analysis is not UNSET:
@@ -123,23 +123,23 @@ class AgentRequest:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.agent_message import AgentMessage
-    from ..models.agent_request_context_type_0 import AgentRequestContextType0
+    from ..models.operator_message import OperatorMessage
+    from ..models.operator_request_context_type_0 import OperatorRequestContextType0
     from ..models.selection_criteria import SelectionCriteria
 
     d = dict(src_dict)
     message = d.pop("message")
 
     _history = d.pop("history", UNSET)
-    history: list[AgentMessage] | Unset = UNSET
+    history: list[OperatorMessage] | Unset = UNSET
     if _history is not UNSET:
       history = []
       for history_item_data in _history:
-        history_item = AgentMessage.from_dict(history_item_data)
+        history_item = OperatorMessage.from_dict(history_item_data)
 
         history.append(history_item)
 
-    def _parse_context(data: object) -> AgentRequestContextType0 | None | Unset:
+    def _parse_context(data: object) -> None | OperatorRequestContextType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -147,16 +147,16 @@ class AgentRequest:
       try:
         if not isinstance(data, dict):
           raise TypeError()
-        context_type_0 = AgentRequestContextType0.from_dict(data)
+        context_type_0 = OperatorRequestContextType0.from_dict(data)
 
         return context_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(AgentRequestContextType0 | None | Unset, data)
+      return cast(None | OperatorRequestContextType0 | Unset, data)
 
     context = _parse_context(d.pop("context", UNSET))
 
-    def _parse_mode(data: object) -> AgentMode | None | Unset:
+    def _parse_mode(data: object) -> None | OperatorMode | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -164,23 +164,23 @@ class AgentRequest:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        mode_type_0 = AgentMode(data)
+        mode_type_0 = OperatorMode(data)
 
         return mode_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(AgentMode | None | Unset, data)
+      return cast(None | OperatorMode | Unset, data)
 
     mode = _parse_mode(d.pop("mode", UNSET))
 
-    def _parse_agent_type(data: object) -> None | str | Unset:
+    def _parse_operator_type(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
       return cast(None | str | Unset, data)
 
-    agent_type = _parse_agent_type(d.pop("agent_type", UNSET))
+    operator_type = _parse_operator_type(d.pop("operator_type", UNSET))
 
     def _parse_selection_criteria(data: object) -> None | SelectionCriteria | Unset:
       if data is None:
@@ -205,20 +205,20 @@ class AgentRequest:
 
     stream = d.pop("stream", UNSET)
 
-    agent_request = cls(
+    operator_request = cls(
       message=message,
       history=history,
       context=context,
       mode=mode,
-      agent_type=agent_type,
+      operator_type=operator_type,
       selection_criteria=selection_criteria,
       force_extended_analysis=force_extended_analysis,
       enable_rag=enable_rag,
       stream=stream,
     )
 
-    agent_request.additional_properties = d
-    return agent_request
+    operator_request.additional_properties = d
+    return operator_request
 
   @property
   def additional_keys(self) -> list[str]:
