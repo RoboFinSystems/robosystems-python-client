@@ -1,28 +1,28 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.batch_agent_request import BatchAgentRequest
-from ...models.batch_agent_response import BatchAgentResponse
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.operator_recommendation_request import OperatorRecommendationRequest
+from ...models.operator_recommendation_response import OperatorRecommendationResponse
 from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: BatchAgentRequest,
+  body: OperatorRecommendationRequest,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/agent/batch".format(
+    "url": "/v1/graphs/{graph_id}/operator/recommend".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -37,9 +37,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | BatchAgentResponse | ErrorResponse | HTTPValidationError | None:
+) -> ErrorResponse | HTTPValidationError | OperatorRecommendationResponse | None:
   if response.status_code == 200:
-    response_200 = BatchAgentResponse.from_dict(response.json())
+    response_200 = OperatorRecommendationResponse.from_dict(response.json())
 
     return response_200
 
@@ -52,10 +52,6 @@ def _parse_response(
     response_401 = ErrorResponse.from_dict(response.json())
 
     return response_401
-
-  if response.status_code == 402:
-    response_402 = cast(Any, None)
-    return response_402
 
   if response.status_code == 403:
     response_403 = ErrorResponse.from_dict(response.json())
@@ -90,7 +86,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | BatchAgentResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OperatorRecommendationResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -103,23 +99,23 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: BatchAgentRequest,
-) -> Response[Any | BatchAgentResponse | ErrorResponse | HTTPValidationError]:
-  """Batch Process Queries
+  body: OperatorRecommendationRequest,
+) -> Response[ErrorResponse | HTTPValidationError | OperatorRecommendationResponse]:
+  """Get Operator Recommendations
 
-   Process up to 10 queries sequentially or in parallel. Partial failure is supported — each result has
-  individual error handling.
+   Returns operators ranked by confidence score for a query, with explanations. Use before execution
+  when unsure which operator to pick.
 
   Args:
       graph_id (str):
-      body (BatchAgentRequest): Request for batch processing multiple queries.
+      body (OperatorRecommendationRequest): Request for operator recommendations.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | BatchAgentResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | OperatorRecommendationResponse]
   """
 
   kwargs = _get_kwargs(
@@ -138,23 +134,23 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: BatchAgentRequest,
-) -> Any | BatchAgentResponse | ErrorResponse | HTTPValidationError | None:
-  """Batch Process Queries
+  body: OperatorRecommendationRequest,
+) -> ErrorResponse | HTTPValidationError | OperatorRecommendationResponse | None:
+  """Get Operator Recommendations
 
-   Process up to 10 queries sequentially or in parallel. Partial failure is supported — each result has
-  individual error handling.
+   Returns operators ranked by confidence score for a query, with explanations. Use before execution
+  when unsure which operator to pick.
 
   Args:
       graph_id (str):
-      body (BatchAgentRequest): Request for batch processing multiple queries.
+      body (OperatorRecommendationRequest): Request for operator recommendations.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | BatchAgentResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | OperatorRecommendationResponse
   """
 
   return sync_detailed(
@@ -168,23 +164,23 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: BatchAgentRequest,
-) -> Response[Any | BatchAgentResponse | ErrorResponse | HTTPValidationError]:
-  """Batch Process Queries
+  body: OperatorRecommendationRequest,
+) -> Response[ErrorResponse | HTTPValidationError | OperatorRecommendationResponse]:
+  """Get Operator Recommendations
 
-   Process up to 10 queries sequentially or in parallel. Partial failure is supported — each result has
-  individual error handling.
+   Returns operators ranked by confidence score for a query, with explanations. Use before execution
+  when unsure which operator to pick.
 
   Args:
       graph_id (str):
-      body (BatchAgentRequest): Request for batch processing multiple queries.
+      body (OperatorRecommendationRequest): Request for operator recommendations.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | BatchAgentResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | OperatorRecommendationResponse]
   """
 
   kwargs = _get_kwargs(
@@ -201,23 +197,23 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: BatchAgentRequest,
-) -> Any | BatchAgentResponse | ErrorResponse | HTTPValidationError | None:
-  """Batch Process Queries
+  body: OperatorRecommendationRequest,
+) -> ErrorResponse | HTTPValidationError | OperatorRecommendationResponse | None:
+  """Get Operator Recommendations
 
-   Process up to 10 queries sequentially or in parallel. Partial failure is supported — each result has
-  individual error handling.
+   Returns operators ranked by confidence score for a query, with explanations. Use before execution
+  when unsure which operator to pick.
 
   Args:
       graph_id (str):
-      body (BatchAgentRequest): Request for batch processing multiple queries.
+      body (OperatorRecommendationRequest): Request for operator recommendations.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | BatchAgentResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | OperatorRecommendationResponse
   """
 
   return (

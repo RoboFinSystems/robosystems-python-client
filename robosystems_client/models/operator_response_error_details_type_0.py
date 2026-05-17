@@ -6,11 +6,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="AgentResponseErrorDetailsType0")
+T = TypeVar("T", bound="OperatorResponseErrorDetailsType0")
 
 
 @_attrs_define
-class AgentResponseErrorDetailsType0:
+class OperatorResponseErrorDetailsType0:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -25,10 +25,10 @@ class AgentResponseErrorDetailsType0:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    agent_response_error_details_type_0 = cls()
+    operator_response_error_details_type_0 = cls()
 
-    agent_response_error_details_type_0.additional_properties = d
-    return agent_response_error_details_type_0
+    operator_response_error_details_type_0.additional_properties = d
+    return operator_response_error_details_type_0
 
   @property
   def additional_keys(self) -> list[str]:

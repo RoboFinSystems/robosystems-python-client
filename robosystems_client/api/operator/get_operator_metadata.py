@@ -6,22 +6,22 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.agent_metadata_response import AgentMetadataResponse
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.operator_metadata_response import OperatorMetadataResponse
 from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
-  agent_type: str,
+  operator_type: str,
 ) -> dict[str, Any]:
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": "/v1/graphs/{graph_id}/agent/{agent_type}".format(
+    "url": "/v1/graphs/{graph_id}/operator/{operator_type}".format(
       graph_id=quote(str(graph_id), safe=""),
-      agent_type=quote(str(agent_type), safe=""),
+      operator_type=quote(str(operator_type), safe=""),
     ),
   }
 
@@ -30,9 +30,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AgentMetadataResponse | ErrorResponse | HTTPValidationError | None:
+) -> ErrorResponse | HTTPValidationError | OperatorMetadataResponse | None:
   if response.status_code == 200:
-    response_200 = AgentMetadataResponse.from_dict(response.json())
+    response_200 = OperatorMetadataResponse.from_dict(response.json())
 
     return response_200
 
@@ -79,7 +79,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AgentMetadataResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OperatorMetadataResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -90,27 +90,27 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  agent_type: str,
+  operator_type: str,
   *,
   client: AuthenticatedClient,
-) -> Response[AgentMetadataResponse | ErrorResponse | HTTPValidationError]:
-  """Get Agent Metadata
+) -> Response[ErrorResponse | HTTPValidationError | OperatorMetadataResponse]:
+  """Get Operator Metadata
 
   Args:
       graph_id (str):
-      agent_type (str): Agent type identifier (e.g., 'financial', 'research', 'rag')
+      operator_type (str): Operator type identifier (e.g., 'financial', 'research', 'rag')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentMetadataResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | OperatorMetadataResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    agent_type=agent_type,
+    operator_type=operator_type,
   )
 
   response = client.get_httpx_client().request(
@@ -122,54 +122,54 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  agent_type: str,
+  operator_type: str,
   *,
   client: AuthenticatedClient,
-) -> AgentMetadataResponse | ErrorResponse | HTTPValidationError | None:
-  """Get Agent Metadata
+) -> ErrorResponse | HTTPValidationError | OperatorMetadataResponse | None:
+  """Get Operator Metadata
 
   Args:
       graph_id (str):
-      agent_type (str): Agent type identifier (e.g., 'financial', 'research', 'rag')
+      operator_type (str): Operator type identifier (e.g., 'financial', 'research', 'rag')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentMetadataResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | OperatorMetadataResponse
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    agent_type=agent_type,
+    operator_type=operator_type,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  agent_type: str,
+  operator_type: str,
   *,
   client: AuthenticatedClient,
-) -> Response[AgentMetadataResponse | ErrorResponse | HTTPValidationError]:
-  """Get Agent Metadata
+) -> Response[ErrorResponse | HTTPValidationError | OperatorMetadataResponse]:
+  """Get Operator Metadata
 
   Args:
       graph_id (str):
-      agent_type (str): Agent type identifier (e.g., 'financial', 'research', 'rag')
+      operator_type (str): Operator type identifier (e.g., 'financial', 'research', 'rag')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentMetadataResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | OperatorMetadataResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    agent_type=agent_type,
+    operator_type=operator_type,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -179,28 +179,28 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  agent_type: str,
+  operator_type: str,
   *,
   client: AuthenticatedClient,
-) -> AgentMetadataResponse | ErrorResponse | HTTPValidationError | None:
-  """Get Agent Metadata
+) -> ErrorResponse | HTTPValidationError | OperatorMetadataResponse | None:
+  """Get Operator Metadata
 
   Args:
       graph_id (str):
-      agent_type (str): Agent type identifier (e.g., 'financial', 'research', 'rag')
+      operator_type (str): Operator type identifier (e.g., 'financial', 'research', 'rag')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentMetadataResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | OperatorMetadataResponse
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      agent_type=agent_type,
+      operator_type=operator_type,
       client=client,
     )
   ).parsed

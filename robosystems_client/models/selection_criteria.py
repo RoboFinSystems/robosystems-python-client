@@ -6,7 +6,7 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.agent_mode import AgentMode
+from ..models.operator_mode import OperatorMode
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="SelectionCriteria")
@@ -14,21 +14,21 @@ T = TypeVar("T", bound="SelectionCriteria")
 
 @_attrs_define
 class SelectionCriteria:
-  """Criteria for agent selection.
+  """Criteria for operator selection.
 
   Attributes:
       min_confidence (float | Unset): Minimum confidence score Default: 0.3.
-      required_capabilities (list[str] | Unset): Required agent capabilities
-      preferred_mode (AgentMode | None | Unset): Preferred execution mode
+      required_capabilities (list[str] | Unset): Required operator capabilities
+      preferred_mode (None | OperatorMode | Unset): Preferred execution mode
       max_response_time (float | Unset): Maximum response time in seconds Default: 60.0.
-      excluded_agents (list[str] | Unset): Agents to exclude from selection
+      excluded_operators (list[str] | Unset): Operators to exclude from selection
   """
 
   min_confidence: float | Unset = 0.3
   required_capabilities: list[str] | Unset = UNSET
-  preferred_mode: AgentMode | None | Unset = UNSET
+  preferred_mode: None | OperatorMode | Unset = UNSET
   max_response_time: float | Unset = 60.0
-  excluded_agents: list[str] | Unset = UNSET
+  excluded_operators: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -41,16 +41,16 @@ class SelectionCriteria:
     preferred_mode: None | str | Unset
     if isinstance(self.preferred_mode, Unset):
       preferred_mode = UNSET
-    elif isinstance(self.preferred_mode, AgentMode):
+    elif isinstance(self.preferred_mode, OperatorMode):
       preferred_mode = self.preferred_mode.value
     else:
       preferred_mode = self.preferred_mode
 
     max_response_time = self.max_response_time
 
-    excluded_agents: list[str] | Unset = UNSET
-    if not isinstance(self.excluded_agents, Unset):
-      excluded_agents = self.excluded_agents
+    excluded_operators: list[str] | Unset = UNSET
+    if not isinstance(self.excluded_operators, Unset):
+      excluded_operators = self.excluded_operators
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -63,8 +63,8 @@ class SelectionCriteria:
       field_dict["preferred_mode"] = preferred_mode
     if max_response_time is not UNSET:
       field_dict["max_response_time"] = max_response_time
-    if excluded_agents is not UNSET:
-      field_dict["excluded_agents"] = excluded_agents
+    if excluded_operators is not UNSET:
+      field_dict["excluded_operators"] = excluded_operators
 
     return field_dict
 
@@ -75,7 +75,7 @@ class SelectionCriteria:
 
     required_capabilities = cast(list[str], d.pop("required_capabilities", UNSET))
 
-    def _parse_preferred_mode(data: object) -> AgentMode | None | Unset:
+    def _parse_preferred_mode(data: object) -> None | OperatorMode | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -83,25 +83,25 @@ class SelectionCriteria:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        preferred_mode_type_0 = AgentMode(data)
+        preferred_mode_type_0 = OperatorMode(data)
 
         return preferred_mode_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(AgentMode | None | Unset, data)
+      return cast(None | OperatorMode | Unset, data)
 
     preferred_mode = _parse_preferred_mode(d.pop("preferred_mode", UNSET))
 
     max_response_time = d.pop("max_response_time", UNSET)
 
-    excluded_agents = cast(list[str], d.pop("excluded_agents", UNSET))
+    excluded_operators = cast(list[str], d.pop("excluded_operators", UNSET))
 
     selection_criteria = cls(
       min_confidence=min_confidence,
       required_capabilities=required_capabilities,
       preferred_mode=preferred_mode,
       max_response_time=max_response_time,
-      excluded_agents=excluded_agents,
+      excluded_operators=excluded_operators,
     )
 
     selection_criteria.additional_properties = d

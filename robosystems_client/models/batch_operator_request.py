@@ -9,22 +9,22 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.agent_request import AgentRequest
+  from ..models.operator_request import OperatorRequest
 
 
-T = TypeVar("T", bound="BatchAgentRequest")
+T = TypeVar("T", bound="BatchOperatorRequest")
 
 
 @_attrs_define
-class BatchAgentRequest:
+class BatchOperatorRequest:
   """Request for batch processing multiple queries.
 
   Attributes:
-      queries (list[AgentRequest]): List of queries to process (max 10)
+      queries (list[OperatorRequest]): List of queries to process (max 10)
       parallel (bool | Unset): Process queries in parallel Default: False.
   """
 
-  queries: list[AgentRequest]
+  queries: list[OperatorRequest]
   parallel: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -50,25 +50,25 @@ class BatchAgentRequest:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.agent_request import AgentRequest
+    from ..models.operator_request import OperatorRequest
 
     d = dict(src_dict)
     queries = []
     _queries = d.pop("queries")
     for queries_item_data in _queries:
-      queries_item = AgentRequest.from_dict(queries_item_data)
+      queries_item = OperatorRequest.from_dict(queries_item_data)
 
       queries.append(queries_item)
 
     parallel = d.pop("parallel", UNSET)
 
-    batch_agent_request = cls(
+    batch_operator_request = cls(
       queries=queries,
       parallel=parallel,
     )
 
-    batch_agent_request.additional_properties = d
-    return batch_agent_request
+    batch_operator_request.additional_properties = d
+    return batch_operator_request
 
   @property
   def additional_keys(self) -> list[str]:

@@ -9,30 +9,30 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.agent_recommendation_request_context_type_0 import (
-    AgentRecommendationRequestContextType0,
+  from ..models.operator_recommendation_request_context_type_0 import (
+    OperatorRecommendationRequestContextType0,
   )
 
 
-T = TypeVar("T", bound="AgentRecommendationRequest")
+T = TypeVar("T", bound="OperatorRecommendationRequest")
 
 
 @_attrs_define
-class AgentRecommendationRequest:
-  """Request for agent recommendations.
+class OperatorRecommendationRequest:
+  """Request for operator recommendations.
 
   Attributes:
       query (str): Query to analyze
-      context (AgentRecommendationRequestContextType0 | None | Unset): Additional context
+      context (None | OperatorRecommendationRequestContextType0 | Unset): Additional context
   """
 
   query: str
-  context: AgentRecommendationRequestContextType0 | None | Unset = UNSET
+  context: None | OperatorRecommendationRequestContextType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    from ..models.agent_recommendation_request_context_type_0 import (
-      AgentRecommendationRequestContextType0,
+    from ..models.operator_recommendation_request_context_type_0 import (
+      OperatorRecommendationRequestContextType0,
     )
 
     query = self.query
@@ -40,7 +40,7 @@ class AgentRecommendationRequest:
     context: dict[str, Any] | None | Unset
     if isinstance(self.context, Unset):
       context = UNSET
-    elif isinstance(self.context, AgentRecommendationRequestContextType0):
+    elif isinstance(self.context, OperatorRecommendationRequestContextType0):
       context = self.context.to_dict()
     else:
       context = self.context
@@ -59,8 +59,8 @@ class AgentRecommendationRequest:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.agent_recommendation_request_context_type_0 import (
-      AgentRecommendationRequestContextType0,
+    from ..models.operator_recommendation_request_context_type_0 import (
+      OperatorRecommendationRequestContextType0,
     )
 
     d = dict(src_dict)
@@ -68,7 +68,7 @@ class AgentRecommendationRequest:
 
     def _parse_context(
       data: object,
-    ) -> AgentRecommendationRequestContextType0 | None | Unset:
+    ) -> None | OperatorRecommendationRequestContextType0 | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -76,22 +76,22 @@ class AgentRecommendationRequest:
       try:
         if not isinstance(data, dict):
           raise TypeError()
-        context_type_0 = AgentRecommendationRequestContextType0.from_dict(data)
+        context_type_0 = OperatorRecommendationRequestContextType0.from_dict(data)
 
         return context_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(AgentRecommendationRequestContextType0 | None | Unset, data)
+      return cast(None | OperatorRecommendationRequestContextType0 | Unset, data)
 
     context = _parse_context(d.pop("context", UNSET))
 
-    agent_recommendation_request = cls(
+    operator_recommendation_request = cls(
       query=query,
       context=context,
     )
 
-    agent_recommendation_request.additional_properties = d
-    return agent_recommendation_request
+    operator_recommendation_request.additional_properties = d
+    return operator_recommendation_request
 
   @property
   def additional_keys(self) -> list[str]:

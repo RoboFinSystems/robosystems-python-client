@@ -6,11 +6,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="AgentRequestContextType0")
+T = TypeVar("T", bound="OperatorListResponseOperatorsAdditionalProperty")
 
 
 @_attrs_define
-class AgentRequestContextType0:
+class OperatorListResponseOperatorsAdditionalProperty:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -25,10 +25,10 @@ class AgentRequestContextType0:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    agent_request_context_type_0 = cls()
+    operator_list_response_operators_additional_property = cls()
 
-    agent_request_context_type_0.additional_properties = d
-    return agent_request_context_type_0
+    operator_list_response_operators_additional_property.additional_properties = d
+    return operator_list_response_operators_additional_property
 
   @property
   def additional_keys(self) -> list[str]:

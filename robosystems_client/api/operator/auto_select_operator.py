@@ -6,19 +6,18 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.agent_request import AgentRequest
-from ...models.agent_response import AgentResponse
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.operator_request import OperatorRequest
+from ...models.operator_response import OperatorResponse
 from ...models.response_mode import ResponseMode
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
-  agent_type: str,
   *,
-  body: AgentRequest,
+  body: OperatorRequest,
   mode: None | ResponseMode | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -38,9 +37,8 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/agent/{agent_type}".format(
+    "url": "/v1/graphs/{graph_id}/operator".format(
       graph_id=quote(str(graph_id), safe=""),
-      agent_type=quote(str(agent_type), safe=""),
     ),
     "params": params,
   }
@@ -55,9 +53,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AgentResponse | Any | ErrorResponse | HTTPValidationError | None:
+) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
   if response.status_code == 200:
-    response_200 = AgentResponse.from_dict(response.json())
+    response_200 = OperatorResponse.from_dict(response.json())
 
     return response_200
 
@@ -112,7 +110,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -123,34 +121,33 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  agent_type: str,
   *,
   client: AuthenticatedClient,
-  body: AgentRequest,
+  body: OperatorRequest,
   mode: None | ResponseMode | Unset = UNSET,
-) -> Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]:
-  """Execute Specific Agent
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
+  """Auto-select Operator for Query
 
-   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
-  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
+   Routes to the best operator for your query. Operators: `financial` (SEC, accounting), `research`
+  (deep analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
+  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+  `?mode=sync|async`.
 
   Args:
       graph_id (str):
-      agent_type (str):
       mode (None | ResponseMode | Unset): Override execution mode: sync, async, stream, or auto
-      body (AgentRequest): Request model for agent interactions.
+      body (OperatorRequest): Request model for operator interactions.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    agent_type=agent_type,
     body=body,
     mode=mode,
   )
@@ -164,34 +161,33 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  agent_type: str,
   *,
   client: AuthenticatedClient,
-  body: AgentRequest,
+  body: OperatorRequest,
   mode: None | ResponseMode | Unset = UNSET,
-) -> AgentResponse | Any | ErrorResponse | HTTPValidationError | None:
-  """Execute Specific Agent
+) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
+  """Auto-select Operator for Query
 
-   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
-  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
+   Routes to the best operator for your query. Operators: `financial` (SEC, accounting), `research`
+  (deep analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
+  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+  `?mode=sync|async`.
 
   Args:
       graph_id (str):
-      agent_type (str):
       mode (None | ResponseMode | Unset): Override execution mode: sync, async, stream, or auto
-      body (AgentRequest): Request model for agent interactions.
+      body (OperatorRequest): Request model for operator interactions.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentResponse | Any | ErrorResponse | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError | OperatorResponse
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    agent_type=agent_type,
     client=client,
     body=body,
     mode=mode,
@@ -200,34 +196,33 @@ def sync(
 
 async def asyncio_detailed(
   graph_id: str,
-  agent_type: str,
   *,
   client: AuthenticatedClient,
-  body: AgentRequest,
+  body: OperatorRequest,
   mode: None | ResponseMode | Unset = UNSET,
-) -> Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]:
-  """Execute Specific Agent
+) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
+  """Auto-select Operator for Query
 
-   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
-  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
+   Routes to the best operator for your query. Operators: `financial` (SEC, accounting), `research`
+  (deep analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
+  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+  `?mode=sync|async`.
 
   Args:
       graph_id (str):
-      agent_type (str):
       mode (None | ResponseMode | Unset): Override execution mode: sync, async, stream, or auto
-      body (AgentRequest): Request model for agent interactions.
+      body (OperatorRequest): Request model for operator interactions.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentResponse | Any | ErrorResponse | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    agent_type=agent_type,
     body=body,
     mode=mode,
   )
@@ -239,35 +234,34 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  agent_type: str,
   *,
   client: AuthenticatedClient,
-  body: AgentRequest,
+  body: OperatorRequest,
   mode: None | ResponseMode | Unset = UNSET,
-) -> AgentResponse | Any | ErrorResponse | HTTPValidationError | None:
-  """Execute Specific Agent
+) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
+  """Auto-select Operator for Query
 
-   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
-  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
+   Routes to the best operator for your query. Operators: `financial` (SEC, accounting), `research`
+  (deep analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
+  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+  `?mode=sync|async`.
 
   Args:
       graph_id (str):
-      agent_type (str):
       mode (None | ResponseMode | Unset): Override execution mode: sync, async, stream, or auto
-      body (AgentRequest): Request model for agent interactions.
+      body (OperatorRequest): Request model for operator interactions.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentResponse | Any | ErrorResponse | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError | OperatorResponse
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      agent_type=agent_type,
       client=client,
       body=body,
       mode=mode,

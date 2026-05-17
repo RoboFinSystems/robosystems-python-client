@@ -8,32 +8,32 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="AgentRecommendation")
+T = TypeVar("T", bound="OperatorRecommendation")
 
 
 @_attrs_define
-class AgentRecommendation:
-  """Single agent recommendation.
+class OperatorRecommendation:
+  """Single operator recommendation.
 
   Attributes:
-      agent_type (str): Agent type identifier
-      agent_name (str): Agent display name
+      operator_type (str): Operator type identifier
+      operator_name (str): Operator display name
       confidence (float): Confidence score (0-1)
-      capabilities (list[str]): Agent capabilities
+      capabilities (list[str]): Operator capabilities
       reason (None | str | Unset): Reason for recommendation
   """
 
-  agent_type: str
-  agent_name: str
+  operator_type: str
+  operator_name: str
   confidence: float
   capabilities: list[str]
   reason: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    agent_type = self.agent_type
+    operator_type = self.operator_type
 
-    agent_name = self.agent_name
+    operator_name = self.operator_name
 
     confidence = self.confidence
 
@@ -49,8 +49,8 @@ class AgentRecommendation:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "agent_type": agent_type,
-        "agent_name": agent_name,
+        "operator_type": operator_type,
+        "operator_name": operator_name,
         "confidence": confidence,
         "capabilities": capabilities,
       }
@@ -63,9 +63,9 @@ class AgentRecommendation:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    agent_type = d.pop("agent_type")
+    operator_type = d.pop("operator_type")
 
-    agent_name = d.pop("agent_name")
+    operator_name = d.pop("operator_name")
 
     confidence = d.pop("confidence")
 
@@ -80,16 +80,16 @@ class AgentRecommendation:
 
     reason = _parse_reason(d.pop("reason", UNSET))
 
-    agent_recommendation = cls(
-      agent_type=agent_type,
-      agent_name=agent_name,
+    operator_recommendation = cls(
+      operator_type=operator_type,
+      operator_name=operator_name,
       confidence=confidence,
       capabilities=capabilities,
       reason=reason,
     )
 
-    agent_recommendation.additional_properties = d
-    return agent_recommendation
+    operator_recommendation.additional_properties = d
+    return operator_recommendation
 
   @property
   def additional_keys(self) -> list[str]:

@@ -7,23 +7,23 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-  from ..models.agent_response import AgentResponse
+  from ..models.operator_response import OperatorResponse
 
 
-T = TypeVar("T", bound="BatchAgentResponse")
+T = TypeVar("T", bound="BatchOperatorResponse")
 
 
 @_attrs_define
-class BatchAgentResponse:
+class BatchOperatorResponse:
   """Response for batch processing.
 
   Attributes:
-      results (list[AgentResponse]): List of agent responses (includes successes and failures)
+      results (list[OperatorResponse]): List of operator responses (includes successes and failures)
       total_execution_time (float): Total execution time in seconds
       parallel_processed (bool): Whether queries were processed in parallel
   """
 
-  results: list[AgentResponse]
+  results: list[OperatorResponse]
   total_execution_time: float
   parallel_processed: bool
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -52,13 +52,13 @@ class BatchAgentResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.agent_response import AgentResponse
+    from ..models.operator_response import OperatorResponse
 
     d = dict(src_dict)
     results = []
     _results = d.pop("results")
     for results_item_data in _results:
-      results_item = AgentResponse.from_dict(results_item_data)
+      results_item = OperatorResponse.from_dict(results_item_data)
 
       results.append(results_item)
 
@@ -66,14 +66,14 @@ class BatchAgentResponse:
 
     parallel_processed = d.pop("parallel_processed")
 
-    batch_agent_response = cls(
+    batch_operator_response = cls(
       results=results,
       total_execution_time=total_execution_time,
       parallel_processed=parallel_processed,
     )
 
-    batch_agent_response.additional_properties = d
-    return batch_agent_response
+    batch_operator_response.additional_properties = d
+    return batch_operator_response
 
   @property
   def additional_keys(self) -> list[str]:

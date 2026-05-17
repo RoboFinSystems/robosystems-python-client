@@ -7,19 +7,19 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-  from ..models.agent_list_response_agents_additional_property import (
-    AgentListResponseAgentsAdditionalProperty,
+  from ..models.operator_list_response_operators_additional_property import (
+    OperatorListResponseOperatorsAdditionalProperty,
   )
 
 
-T = TypeVar("T", bound="AgentListResponseAgents")
+T = TypeVar("T", bound="OperatorListResponseOperators")
 
 
 @_attrs_define
-class AgentListResponseAgents:
-  """Dictionary of available agents with metadata"""
+class OperatorListResponseOperators:
+  """Dictionary of available operators with metadata"""
 
-  additional_properties: dict[str, AgentListResponseAgentsAdditionalProperty] = (
+  additional_properties: dict[str, OperatorListResponseOperatorsAdditionalProperty] = (
     _attrs_field(init=False, factory=dict)
   )
 
@@ -33,33 +33,33 @@ class AgentListResponseAgents:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.agent_list_response_agents_additional_property import (
-      AgentListResponseAgentsAdditionalProperty,
+    from ..models.operator_list_response_operators_additional_property import (
+      OperatorListResponseOperatorsAdditionalProperty,
     )
 
     d = dict(src_dict)
-    agent_list_response_agents = cls()
+    operator_list_response_operators = cls()
 
     additional_properties = {}
     for prop_name, prop_dict in d.items():
-      additional_property = AgentListResponseAgentsAdditionalProperty.from_dict(
+      additional_property = OperatorListResponseOperatorsAdditionalProperty.from_dict(
         prop_dict
       )
 
       additional_properties[prop_name] = additional_property
 
-    agent_list_response_agents.additional_properties = additional_properties
-    return agent_list_response_agents
+    operator_list_response_operators.additional_properties = additional_properties
+    return operator_list_response_operators
 
   @property
   def additional_keys(self) -> list[str]:
     return list(self.additional_properties.keys())
 
-  def __getitem__(self, key: str) -> AgentListResponseAgentsAdditionalProperty:
+  def __getitem__(self, key: str) -> OperatorListResponseOperatorsAdditionalProperty:
     return self.additional_properties[key]
 
   def __setitem__(
-    self, key: str, value: AgentListResponseAgentsAdditionalProperty
+    self, key: str, value: OperatorListResponseOperatorsAdditionalProperty
   ) -> None:
     self.additional_properties[key] = value
 

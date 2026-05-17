@@ -1,22 +1,24 @@
-"""Enhanced Agent Client with SSE support
+"""Enhanced AI Operator Client with SSE support
 
-Provides intelligent agent execution with automatic strategy selection.
+Provides intelligent operator execution with automatic strategy selection.
 """
 
 from dataclasses import dataclass
 from typing import Dict, Any, Optional, Callable
 from datetime import datetime
 
-from ..api.agent.auto_select_agent import sync_detailed as auto_select_agent
-from ..api.agent.execute_specific_agent import sync_detailed as execute_specific_agent
-from ..models.agent_request import AgentRequest
-from ..models.agent_message import AgentMessage
+from ..api.operator.auto_select_operator import sync_detailed as auto_select_operator
+from ..api.operator.execute_specific_operator import (
+  sync_detailed as execute_specific_operator,
+)
+from ..models.operator_request import OperatorRequest
+from ..models.operator_message import OperatorMessage
 from .sse_client import SSEClient, SSEConfig, EventType
 
 
 @dataclass
-class AgentQueryRequest:
-  """Request object for agent queries"""
+class OperatorQueryRequest:
+  """Request object for operator queries"""
 
   message: str
   history: Optional[list] = None
@@ -27,8 +29,8 @@ class AgentQueryRequest:
 
 
 @dataclass
-class AgentOptions:
-  """Options for agent execution"""
+class OperatorOptions:
+  """Options for operator execution"""
 
   mode: Optional[str] = "auto"  # 'auto', 'sync', 'async'
   max_wait: Optional[int] = None
@@ -36,11 +38,11 @@ class AgentOptions:
 
 
 @dataclass
-class AgentResult:
-  """Result from agent execution"""
+class OperatorResult:
+  """Result from operator execution"""
 
   content: str
-  agent_used: str
+  operator_used: str
   mode_used: str
   metadata: Optional[Dict[str, Any]] = None
   tokens_used: Optional[Dict[str, int]] = None
@@ -50,8 +52,8 @@ class AgentResult:
 
 
 @dataclass
-class QueuedAgentResponse:
-  """Response when agent execution is queued"""
+class QueuedOperatorResponse:
+  """Response when operator execution is queued"""
 
   status: str
   operation_id: str
@@ -59,16 +61,16 @@ class QueuedAgentResponse:
   sse_endpoint: Optional[str] = None
 
 
-class QueuedAgentError(Exception):
-  """Exception thrown when agent execution is queued and maxWait is 0"""
+class QueuedOperatorError(Exception):
+  """Exception thrown when operator execution is queued and maxWait is 0"""
 
-  def __init__(self, queue_info: QueuedAgentResponse):
-    super().__init__("Agent execution was queued")
+  def __init__(self, queue_info: QueuedOperatorResponse):
+    super().__init__("Operator execution was queued")
     self.queue_info = queue_info
 
 
-class AgentClient:
-  """Enhanced agent client with SSE streaming support"""
+class OperatorClient:
+  """Enhanced AI Operator client with SSE streaming support"""
 
   def __init__(self, config: Dict[str, Any]):
     self.config = config
@@ -80,18 +82,18 @@ class AgentClient:
   def execute_query(
     self,
     graph_id: str,
-    request: AgentQueryRequest,
-    options: AgentOptions = None,
-  ) -> AgentResult:
-    """Execute agent query with automatic agent selection"""
+    request: OperatorQueryRequest,
+    options: OperatorOptions = None,
+  ) -> OperatorResult:
+    """Execute operator query with automatic operator selection"""
     if options is None:
-      options = AgentOptions()
+      options = OperatorOptions()
 
     # Build request data
-    agent_request = AgentRequest(
+    operator_request = OperatorRequest(
       message=request.message,
       history=[
-        AgentMessage(role=msg["role"], content=msg["content"])
+        OperatorMessage(role=msg["role"], content=msg["content"])
         for msg in (request.history or [])
       ],
       context=request.context,
@@ -115,10 +117,10 @@ class AgentClient:
     )
 
     try:
-      response = auto_select_agent(
+      response = auto_select_operator(
         graph_id=graph_id,
         client=client,
-        body=agent_request,
+        body=operator_request,
       )
 
       # Check response type and handle accordingly
@@ -135,16 +137,16 @@ class AgentClient:
         # Check if this is an immediate response (sync or SSE execution)
         has_content = False
         if isinstance(data, dict):
-          has_content = "content" in data and "agent_used" in data
+          has_content = "content" in data and "operator_used" in data
         else:
-          has_content = hasattr(data, "content") and hasattr(data, "agent_used")
+          has_content = hasattr(data, "content") and hasattr(data, "operator_used")
 
         if has_content:
           # Extract data from either dict or attrs object
           if isinstance(data, dict):
-            return AgentResult(
+            return OperatorResult(
               content=data["content"],
-              agent_used=data["agent_used"],
+              operator_used=data["operator_used"],
               mode_used=data["mode_used"],
               metadata=data.get("metadata"),
               tokens_used=data.get("tokens_used"),
@@ -156,9 +158,11 @@ class AgentClient:
             # attrs object - access attributes directly
             from ..types import UNSET
 
-            return AgentResult(
+            return OperatorResult(
               content=data.content if data.content is not UNSET else "",
-              agent_used=data.agent_used if data.agent_used is not UNSET else "unknown",
+              operator_used=data.operator_used
+              if data.operator_used is not UNSET
+              else "unknown",
               mode_used=data.mode_used.value
               if hasattr(data.mode_used, "value")
               else data.mode_used
@@ -184,10 +188,10 @@ class AgentClient:
         if isinstance(data, dict):
           is_queued = "operation_id" in data
           if is_queued:
-            queued_response = QueuedAgentResponse(
+            queued_response = QueuedOperatorResponse(
               status=data.get("status", "queued"),
               operation_id=data["operation_id"],
-              message=data.get("message", "Agent execution queued"),
+              message=data.get("message", "Operator execution queued"),
               sse_endpoint=data.get("sse_endpoint"),
             )
         else:
@@ -195,12 +199,12 @@ class AgentClient:
           if is_queued:
             from ..types import UNSET
 
-            queued_response = QueuedAgentResponse(
+            queued_response = QueuedOperatorResponse(
               status=data.status if hasattr(data, "status") else "queued",
               operation_id=data.operation_id,
               message=data.message
               if hasattr(data, "message") and data.message is not UNSET
-              else "Agent execution queued",
+              else "Operator execution queued",
               sse_endpoint=data.sse_endpoint
               if hasattr(data, "sse_endpoint") and data.sse_endpoint is not UNSET
               else None,
@@ -209,13 +213,15 @@ class AgentClient:
         if is_queued and queued_response:
           # If user doesn't want to wait, raise with queue info
           if options.max_wait == 0:
-            raise QueuedAgentError(queued_response)
+            raise QueuedOperatorError(queued_response)
 
           # Use SSE to monitor the operation
-          return self._wait_for_agent_completion(queued_response.operation_id, options)
+          return self._wait_for_operator_completion(
+            queued_response.operation_id, options
+          )
 
     except Exception as e:
-      if isinstance(e, QueuedAgentError):
+      if isinstance(e, QueuedOperatorError):
         raise
 
       error_msg = str(e)
@@ -223,29 +229,29 @@ class AgentClient:
       if (
         "401" in error_msg or "403" in error_msg or "unauthorized" in error_msg.lower()
       ):
-        raise Exception(f"Authentication failed during agent execution: {error_msg}")
+        raise Exception(f"Authentication failed during operator execution: {error_msg}")
       else:
-        raise Exception(f"Agent execution failed: {error_msg}")
+        raise Exception(f"Operator execution failed: {error_msg}")
 
     # Unexpected response format
-    raise Exception("Unexpected response format from agent endpoint")
+    raise Exception("Unexpected response format from operator endpoint")
 
-  def execute_agent(
+  def execute_operator(
     self,
     graph_id: str,
-    agent_type: str,
-    request: AgentQueryRequest,
-    options: AgentOptions = None,
-  ) -> AgentResult:
-    """Execute specific agent type"""
+    operator_type: str,
+    request: OperatorQueryRequest,
+    options: OperatorOptions = None,
+  ) -> OperatorResult:
+    """Execute specific operator type"""
     if options is None:
-      options = AgentOptions()
+      options = OperatorOptions()
 
     # Build request data
-    agent_request = AgentRequest(
+    operator_request = OperatorRequest(
       message=request.message,
       history=[
-        AgentMessage(role=msg["role"], content=msg["content"])
+        OperatorMessage(role=msg["role"], content=msg["content"])
         for msg in (request.history or [])
       ],
       context=request.context,
@@ -269,11 +275,11 @@ class AgentClient:
     )
 
     try:
-      response = execute_specific_agent(
+      response = execute_specific_operator(
         graph_id=graph_id,
-        agent_type=agent_type,
+        operator_type=operator_type,
         client=client,
-        body=agent_request,
+        body=operator_request,
       )
 
       # Check response type and handle accordingly
@@ -289,16 +295,16 @@ class AgentClient:
         # Check if this is an immediate response
         has_content = False
         if isinstance(data, dict):
-          has_content = "content" in data and "agent_used" in data
+          has_content = "content" in data and "operator_used" in data
         else:
-          has_content = hasattr(data, "content") and hasattr(data, "agent_used")
+          has_content = hasattr(data, "content") and hasattr(data, "operator_used")
 
         if has_content:
           # Extract data from either dict or attrs object
           if isinstance(data, dict):
-            return AgentResult(
+            return OperatorResult(
               content=data["content"],
-              agent_used=data["agent_used"],
+              operator_used=data["operator_used"],
               mode_used=data["mode_used"],
               metadata=data.get("metadata"),
               tokens_used=data.get("tokens_used"),
@@ -310,9 +316,11 @@ class AgentClient:
             # attrs object
             from ..types import UNSET
 
-            return AgentResult(
+            return OperatorResult(
               content=data.content if data.content is not UNSET else "",
-              agent_used=data.agent_used if data.agent_used is not UNSET else "unknown",
+              operator_used=data.operator_used
+              if data.operator_used is not UNSET
+              else "unknown",
               mode_used=data.mode_used.value
               if hasattr(data.mode_used, "value")
               else data.mode_used
@@ -338,10 +346,10 @@ class AgentClient:
         if isinstance(data, dict):
           is_queued = "operation_id" in data
           if is_queued:
-            queued_response = QueuedAgentResponse(
+            queued_response = QueuedOperatorResponse(
               status=data.get("status", "queued"),
               operation_id=data["operation_id"],
-              message=data.get("message", "Agent execution queued"),
+              message=data.get("message", "Operator execution queued"),
               sse_endpoint=data.get("sse_endpoint"),
             )
         else:
@@ -349,12 +357,12 @@ class AgentClient:
           if is_queued:
             from ..types import UNSET
 
-            queued_response = QueuedAgentResponse(
+            queued_response = QueuedOperatorResponse(
               status=data.status if hasattr(data, "status") else "queued",
               operation_id=data.operation_id,
               message=data.message
               if hasattr(data, "message") and data.message is not UNSET
-              else "Agent execution queued",
+              else "Operator execution queued",
               sse_endpoint=data.sse_endpoint
               if hasattr(data, "sse_endpoint") and data.sse_endpoint is not UNSET
               else None,
@@ -363,30 +371,32 @@ class AgentClient:
         if is_queued and queued_response:
           # If user doesn't want to wait, raise with queue info
           if options.max_wait == 0:
-            raise QueuedAgentError(queued_response)
+            raise QueuedOperatorError(queued_response)
 
           # Use SSE to monitor the operation
-          return self._wait_for_agent_completion(queued_response.operation_id, options)
+          return self._wait_for_operator_completion(
+            queued_response.operation_id, options
+          )
 
     except Exception as e:
-      if isinstance(e, QueuedAgentError):
+      if isinstance(e, QueuedOperatorError):
         raise
 
       error_msg = str(e)
       if (
         "401" in error_msg or "403" in error_msg or "unauthorized" in error_msg.lower()
       ):
-        raise Exception(f"Authentication failed during agent execution: {error_msg}")
+        raise Exception(f"Authentication failed during operator execution: {error_msg}")
       else:
-        raise Exception(f"Agent execution failed: {error_msg}")
+        raise Exception(f"Operator execution failed: {error_msg}")
 
     # Unexpected response format
-    raise Exception("Unexpected response format from agent endpoint")
+    raise Exception("Unexpected response format from operator endpoint")
 
-  def _wait_for_agent_completion(
-    self, operation_id: str, options: AgentOptions
-  ) -> AgentResult:
-    """Wait for agent completion and return final result"""
+  def _wait_for_operator_completion(
+    self, operation_id: str, options: OperatorOptions
+  ) -> OperatorResult:
+    """Wait for operator completion and return final result"""
     result = None
     error = None
     completed = False
@@ -401,19 +411,19 @@ class AgentClient:
           data.get("message", "Processing..."), data.get("percentage")
         )
 
-    def on_agent_started(data):
+    def on_operator_started(data):
       if options.on_progress:
-        options.on_progress(f"Agent {data.get('agent_type')} started", 0)
+        options.on_progress(f"Agent {data.get('operator_type')} started", 0)
 
-    def on_agent_initialized(data):
+    def on_operator_initialized(data):
       if options.on_progress:
-        options.on_progress(f"{data.get('agent_name')} initialized", 10)
+        options.on_progress(f"{data.get('operator_name')} initialized", 10)
 
-    def on_agent_completed(data):
+    def on_operator_completed(data):
       nonlocal result, completed
-      result = AgentResult(
+      result = OperatorResult(
         content=data.get("content", ""),
-        agent_used=data.get("agent_used", "unknown"),
+        operator_used=data.get("operator_used", "unknown"),
         mode_used=data.get("mode_used", "standard"),
         metadata=data.get("metadata"),
         tokens_used=data.get("tokens_used"),
@@ -427,16 +437,16 @@ class AgentClient:
       nonlocal result, completed
       if not result:
         # Fallback to generic completion event
-        agent_result = data.get("result", data)
-        result = AgentResult(
-          content=agent_result.get("content", ""),
-          agent_used=agent_result.get("agent_used", "unknown"),
-          mode_used=agent_result.get("mode_used", "standard"),
-          metadata=agent_result.get("metadata"),
-          tokens_used=agent_result.get("tokens_used"),
-          confidence_score=agent_result.get("confidence_score"),
-          execution_time=agent_result.get("execution_time"),
-          timestamp=agent_result.get("timestamp", datetime.now().isoformat()),
+        operator_result = data.get("result", data)
+        result = OperatorResult(
+          content=operator_result.get("content", ""),
+          operator_used=operator_result.get("operator_used", "unknown"),
+          mode_used=operator_result.get("mode_used", "standard"),
+          metadata=operator_result.get("metadata"),
+          tokens_used=operator_result.get("tokens_used"),
+          confidence_score=operator_result.get("confidence_score"),
+          execution_time=operator_result.get("execution_time"),
+          timestamp=operator_result.get("timestamp", datetime.now().isoformat()),
         )
         completed = True
 
@@ -447,15 +457,15 @@ class AgentClient:
 
     def on_cancelled():
       nonlocal error, completed
-      error = Exception("Agent execution cancelled")
+      error = Exception("Operator execution cancelled")
       completed = True
 
     # Register event handlers
     sse_client.on(EventType.OPERATION_PROGRESS.value, on_progress)
-    sse_client.on("agent_started", on_agent_started)
-    sse_client.on("agent_initialized", on_agent_initialized)
+    sse_client.on("operator_started", on_operator_started)
+    sse_client.on("operator_initialized", on_operator_initialized)
     sse_client.on("progress", on_progress)
-    sse_client.on("agent_completed", on_agent_completed)
+    sse_client.on("operator_completed", on_operator_completed)
     sse_client.on(EventType.OPERATION_COMPLETED.value, on_completed)
     sse_client.on(EventType.OPERATION_ERROR.value, on_error)
     sse_client.on("error", on_error)
@@ -478,21 +488,21 @@ class AgentClient:
 
   def query(
     self, graph_id: str, message: str, context: Dict[str, Any] = None
-  ) -> AgentResult:
-    """Convenience method for simple agent queries with auto-selection"""
-    request = AgentQueryRequest(message=message, context=context)
-    return self.execute_query(graph_id, request, AgentOptions(mode="auto"))
+  ) -> OperatorResult:
+    """Convenience method for simple operator queries with auto-selection"""
+    request = OperatorQueryRequest(message=message, context=context)
+    return self.execute_query(graph_id, request, OperatorOptions(mode="auto"))
 
   def analyze_financials(
     self,
     graph_id: str,
     message: str,
     on_progress: Optional[Callable[[str, Optional[int]], None]] = None,
-  ) -> AgentResult:
-    """Execute financial agent for financial analysis"""
-    request = AgentQueryRequest(message=message)
-    return self.execute_agent(
-      graph_id, "financial", request, AgentOptions(on_progress=on_progress)
+  ) -> OperatorResult:
+    """Execute financial operator for financial analysis"""
+    request = OperatorQueryRequest(message=message)
+    return self.execute_operator(
+      graph_id, "financial", request, OperatorOptions(on_progress=on_progress)
     )
 
   def research(
@@ -500,11 +510,11 @@ class AgentClient:
     graph_id: str,
     message: str,
     on_progress: Optional[Callable[[str, Optional[int]], None]] = None,
-  ) -> AgentResult:
-    """Execute research agent for deep research"""
-    request = AgentQueryRequest(message=message)
-    return self.execute_agent(
-      graph_id, "research", request, AgentOptions(on_progress=on_progress)
+  ) -> OperatorResult:
+    """Execute research operator for deep research"""
+    request = OperatorQueryRequest(message=message)
+    return self.execute_operator(
+      graph_id, "research", request, OperatorOptions(on_progress=on_progress)
     )
 
   def rag(
@@ -512,11 +522,11 @@ class AgentClient:
     graph_id: str,
     message: str,
     on_progress: Optional[Callable[[str, Optional[int]], None]] = None,
-  ) -> AgentResult:
-    """Execute RAG agent for fast retrieval"""
-    request = AgentQueryRequest(message=message)
-    return self.execute_agent(
-      graph_id, "rag", request, AgentOptions(on_progress=on_progress)
+  ) -> OperatorResult:
+    """Execute RAG operator for fast retrieval"""
+    request = OperatorQueryRequest(message=message)
+    return self.execute_operator(
+      graph_id, "rag", request, OperatorOptions(on_progress=on_progress)
     )
 
   def close(self):

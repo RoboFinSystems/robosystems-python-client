@@ -7,22 +7,22 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-  from ..models.agent_recommendation import AgentRecommendation
+  from ..models.operator_recommendation import OperatorRecommendation
 
 
-T = TypeVar("T", bound="AgentRecommendationResponse")
+T = TypeVar("T", bound="OperatorRecommendationResponse")
 
 
 @_attrs_define
-class AgentRecommendationResponse:
-  """Response for agent recommendations.
+class OperatorRecommendationResponse:
+  """Response for operator recommendations.
 
   Attributes:
-      recommendations (list[AgentRecommendation]): List of agent recommendations sorted by confidence
+      recommendations (list[OperatorRecommendation]): List of operator recommendations sorted by confidence
       query (str): The analyzed query
   """
 
-  recommendations: list[AgentRecommendation]
+  recommendations: list[OperatorRecommendation]
   query: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -47,25 +47,25 @@ class AgentRecommendationResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.agent_recommendation import AgentRecommendation
+    from ..models.operator_recommendation import OperatorRecommendation
 
     d = dict(src_dict)
     recommendations = []
     _recommendations = d.pop("recommendations")
     for recommendations_item_data in _recommendations:
-      recommendations_item = AgentRecommendation.from_dict(recommendations_item_data)
+      recommendations_item = OperatorRecommendation.from_dict(recommendations_item_data)
 
       recommendations.append(recommendations_item)
 
     query = d.pop("query")
 
-    agent_recommendation_response = cls(
+    operator_recommendation_response = cls(
       recommendations=recommendations,
       query=query,
     )
 
-    agent_recommendation_response.additional_properties = d
-    return agent_recommendation_response
+    operator_recommendation_response.additional_properties = d
+    return operator_recommendation_response
 
   @property
   def additional_keys(self) -> list[str]:

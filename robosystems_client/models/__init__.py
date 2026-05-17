@@ -2,26 +2,6 @@
 
 from .account_info import AccountInfo
 from .add_publish_list_members_operation import AddPublishListMembersOperation
-from .agent_list_response import AgentListResponse
-from .agent_list_response_agents import AgentListResponseAgents
-from .agent_list_response_agents_additional_property import (
-  AgentListResponseAgentsAdditionalProperty,
-)
-from .agent_message import AgentMessage
-from .agent_metadata_response import AgentMetadataResponse
-from .agent_mode import AgentMode
-from .agent_recommendation import AgentRecommendation
-from .agent_recommendation_request import AgentRecommendationRequest
-from .agent_recommendation_request_context_type_0 import (
-  AgentRecommendationRequestContextType0,
-)
-from .agent_recommendation_response import AgentRecommendationResponse
-from .agent_request import AgentRequest
-from .agent_request_context_type_0 import AgentRequestContextType0
-from .agent_response import AgentResponse
-from .agent_response_error_details_type_0 import AgentResponseErrorDetailsType0
-from .agent_response_metadata_type_0 import AgentResponseMetadataType0
-from .agent_response_tokens_used_type_0 import AgentResponseTokensUsedType0
 from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
 from .artifact_response import ArtifactResponse
@@ -41,8 +21,8 @@ from .backup_list_response import BackupListResponse
 from .backup_response import BackupResponse
 from .backup_stats_response import BackupStatsResponse
 from .backup_stats_response_backup_formats import BackupStatsResponseBackupFormats
-from .batch_agent_request import BatchAgentRequest
-from .batch_agent_response import BatchAgentResponse
+from .batch_operator_request import BatchOperatorRequest
+from .batch_operator_response import BatchOperatorResponse
 from .billing_customer import BillingCustomer
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
@@ -420,6 +400,26 @@ from .operation_envelopelist_publish_list_member_response_status import (
 )
 from .operation_error import OperationError
 from .operation_error_detail_type_1 import OperationErrorDetailType1
+from .operator_list_response import OperatorListResponse
+from .operator_list_response_operators import OperatorListResponseOperators
+from .operator_list_response_operators_additional_property import (
+  OperatorListResponseOperatorsAdditionalProperty,
+)
+from .operator_message import OperatorMessage
+from .operator_metadata_response import OperatorMetadataResponse
+from .operator_mode import OperatorMode
+from .operator_recommendation import OperatorRecommendation
+from .operator_recommendation_request import OperatorRecommendationRequest
+from .operator_recommendation_request_context_type_0 import (
+  OperatorRecommendationRequestContextType0,
+)
+from .operator_recommendation_response import OperatorRecommendationResponse
+from .operator_request import OperatorRequest
+from .operator_request_context_type_0 import OperatorRequestContextType0
+from .operator_response import OperatorResponse
+from .operator_response_error_details_type_0 import OperatorResponseErrorDetailsType0
+from .operator_response_metadata_type_0 import OperatorResponseMetadataType0
+from .operator_response_tokens_used_type_0 import OperatorResponseTokensUsedType0
 from .org_detail_response import OrgDetailResponse
 from .org_detail_response_graphs_item import OrgDetailResponseGraphsItem
 from .org_detail_response_limits_type_0 import OrgDetailResponseLimitsType0
@@ -642,22 +642,6 @@ from .view_projections import ViewProjections
 __all__ = (
   "AccountInfo",
   "AddPublishListMembersOperation",
-  "AgentListResponse",
-  "AgentListResponseAgents",
-  "AgentListResponseAgentsAdditionalProperty",
-  "AgentMessage",
-  "AgentMetadataResponse",
-  "AgentMode",
-  "AgentRecommendation",
-  "AgentRecommendationRequest",
-  "AgentRecommendationRequestContextType0",
-  "AgentRecommendationResponse",
-  "AgentRequest",
-  "AgentRequestContextType0",
-  "AgentResponse",
-  "AgentResponseErrorDetailsType0",
-  "AgentResponseMetadataType0",
-  "AgentResponseTokensUsedType0",
   "APIKeyInfo",
   "APIKeysResponse",
   "ArtifactResponse",
@@ -677,8 +661,8 @@ __all__ = (
   "BackupResponse",
   "BackupStatsResponse",
   "BackupStatsResponseBackupFormats",
-  "BatchAgentRequest",
-  "BatchAgentResponse",
+  "BatchOperatorRequest",
+  "BatchOperatorResponse",
   "BillingCustomer",
   "CancelOperationResponseCanceloperation",
   "CancelSubscriptionRequest",
@@ -932,6 +916,22 @@ __all__ = (
   "OperationEnvelopeTaxonomyBlockEnvelopeStatus",
   "OperationError",
   "OperationErrorDetailType1",
+  "OperatorListResponse",
+  "OperatorListResponseOperators",
+  "OperatorListResponseOperatorsAdditionalProperty",
+  "OperatorMessage",
+  "OperatorMetadataResponse",
+  "OperatorMode",
+  "OperatorRecommendation",
+  "OperatorRecommendationRequest",
+  "OperatorRecommendationRequestContextType0",
+  "OperatorRecommendationResponse",
+  "OperatorRequest",
+  "OperatorRequestContextType0",
+  "OperatorResponse",
+  "OperatorResponseErrorDetailsType0",
+  "OperatorResponseMetadataType0",
+  "OperatorResponseTokensUsedType0",
   "OrgDetailResponse",
   "OrgDetailResponseGraphsItem",
   "OrgDetailResponseLimitsType0",

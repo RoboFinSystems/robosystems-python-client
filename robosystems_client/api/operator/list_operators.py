@@ -6,40 +6,45 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.agent_recommendation_request import AgentRecommendationRequest
-from ...models.agent_recommendation_response import AgentRecommendationResponse
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
-from ...types import Response
+from ...models.operator_list_response import OperatorListResponse
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: AgentRecommendationRequest,
+  capability: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
-  headers: dict[str, Any] = {}
+
+  params: dict[str, Any] = {}
+
+  json_capability: None | str | Unset
+  if isinstance(capability, Unset):
+    json_capability = UNSET
+  else:
+    json_capability = capability
+  params["capability"] = json_capability
+
+  params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": "/v1/graphs/{graph_id}/agent/recommend".format(
+    "method": "get",
+    "url": "/v1/graphs/{graph_id}/operator".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
+    "params": params,
   }
 
-  _kwargs["json"] = body.to_dict()
-
-  headers["Content-Type"] = "application/json"
-
-  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> AgentRecommendationResponse | ErrorResponse | HTTPValidationError | None:
+) -> ErrorResponse | HTTPValidationError | OperatorListResponse | None:
   if response.status_code == 200:
-    response_200 = AgentRecommendationResponse.from_dict(response.json())
+    response_200 = OperatorListResponse.from_dict(response.json())
 
     return response_200
 
@@ -86,7 +91,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OperatorListResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -99,28 +104,28 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: AgentRecommendationRequest,
-) -> Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]:
-  """Get Agent Recommendations
+  capability: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | HTTPValidationError | OperatorListResponse]:
+  """List Available Operators
 
-   Returns agents ranked by confidence score for a query, with explanations. Use before execution when
-  unsure which agent to pick.
+   Filter by capability using the `capability` query param (e.g., `financial_analysis`, `rag_search`).
 
   Args:
       graph_id (str):
-      body (AgentRecommendationRequest): Request for agent recommendations.
+      capability (None | str | Unset): Filter by capability (e.g., 'financial_analysis',
+          'rag_search')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | OperatorListResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    body=body,
+    capability=capability,
   )
 
   response = client.get_httpx_client().request(
@@ -134,29 +139,29 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: AgentRecommendationRequest,
-) -> AgentRecommendationResponse | ErrorResponse | HTTPValidationError | None:
-  """Get Agent Recommendations
+  capability: None | str | Unset = UNSET,
+) -> ErrorResponse | HTTPValidationError | OperatorListResponse | None:
+  """List Available Operators
 
-   Returns agents ranked by confidence score for a query, with explanations. Use before execution when
-  unsure which agent to pick.
+   Filter by capability using the `capability` query param (e.g., `financial_analysis`, `rag_search`).
 
   Args:
       graph_id (str):
-      body (AgentRecommendationRequest): Request for agent recommendations.
+      capability (None | str | Unset): Filter by capability (e.g., 'financial_analysis',
+          'rag_search')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentRecommendationResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | OperatorListResponse
   """
 
   return sync_detailed(
     graph_id=graph_id,
     client=client,
-    body=body,
+    capability=capability,
   ).parsed
 
 
@@ -164,28 +169,28 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: AgentRecommendationRequest,
-) -> Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]:
-  """Get Agent Recommendations
+  capability: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | HTTPValidationError | OperatorListResponse]:
+  """List Available Operators
 
-   Returns agents ranked by confidence score for a query, with explanations. Use before execution when
-  unsure which agent to pick.
+   Filter by capability using the `capability` query param (e.g., `financial_analysis`, `rag_search`).
 
   Args:
       graph_id (str):
-      body (AgentRecommendationRequest): Request for agent recommendations.
+      capability (None | str | Unset): Filter by capability (e.g., 'financial_analysis',
+          'rag_search')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[AgentRecommendationResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | OperatorListResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    body=body,
+    capability=capability,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -197,29 +202,29 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: AgentRecommendationRequest,
-) -> AgentRecommendationResponse | ErrorResponse | HTTPValidationError | None:
-  """Get Agent Recommendations
+  capability: None | str | Unset = UNSET,
+) -> ErrorResponse | HTTPValidationError | OperatorListResponse | None:
+  """List Available Operators
 
-   Returns agents ranked by confidence score for a query, with explanations. Use before execution when
-  unsure which agent to pick.
+   Filter by capability using the `capability` query param (e.g., `financial_analysis`, `rag_search`).
 
   Args:
       graph_id (str):
-      body (AgentRecommendationRequest): Request for agent recommendations.
+      capability (None | str | Unset): Filter by capability (e.g., 'financial_analysis',
+          'rag_search')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      AgentRecommendationResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | OperatorListResponse
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
       client=client,
-      body=body,
+      capability=capability,
     )
   ).parsed
