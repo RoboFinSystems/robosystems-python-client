@@ -8,6 +8,9 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
+from ..models.update_event_block_request_event_action_type_0 import (
+  UpdateEventBlockRequestEventActionType0,
+)
 from ..models.update_event_block_request_transition_to_type_0 import (
   UpdateEventBlockRequestTransitionToType0,
 )
@@ -43,6 +46,9 @@ class UpdateEventBlockRequest:
               an event was captured against the wrong period.
           metadata_patch (UpdateEventBlockRequestMetadataPatch | Unset): Key-value pairs merged into existing metadata
               (additive patch, not replace).
+          event_action (None | Unset | UpdateEventBlockRequestEventActionType0): Set or correct the canonical action verb.
+              Unset = unchanged. Useful when an adapter improvement makes a previously-NULL verb fillable, or when
+              reclassifying after the fact.
           obligated_by_event_id (None | str | Unset): Set/update the forward-materialization link.
           discharges_event_id (None | str | Unset): Set/update the settlement link.
   """
@@ -53,6 +59,7 @@ class UpdateEventBlockRequest:
   description: None | str | Unset = UNSET
   effective_at: datetime.datetime | None | Unset = UNSET
   metadata_patch: UpdateEventBlockRequestMetadataPatch | Unset = UNSET
+  event_action: None | Unset | UpdateEventBlockRequestEventActionType0 = UNSET
   obligated_by_event_id: None | str | Unset = UNSET
   discharges_event_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -92,6 +99,14 @@ class UpdateEventBlockRequest:
     if not isinstance(self.metadata_patch, Unset):
       metadata_patch = self.metadata_patch.to_dict()
 
+    event_action: None | str | Unset
+    if isinstance(self.event_action, Unset):
+      event_action = UNSET
+    elif isinstance(self.event_action, UpdateEventBlockRequestEventActionType0):
+      event_action = self.event_action.value
+    else:
+      event_action = self.event_action
+
     obligated_by_event_id: None | str | Unset
     if isinstance(self.obligated_by_event_id, Unset):
       obligated_by_event_id = UNSET
@@ -121,6 +136,8 @@ class UpdateEventBlockRequest:
       field_dict["effective_at"] = effective_at
     if metadata_patch is not UNSET:
       field_dict["metadata_patch"] = metadata_patch
+    if event_action is not UNSET:
+      field_dict["event_action"] = event_action
     if obligated_by_event_id is not UNSET:
       field_dict["obligated_by_event_id"] = obligated_by_event_id
     if discharges_event_id is not UNSET:
@@ -198,6 +215,25 @@ class UpdateEventBlockRequest:
     else:
       metadata_patch = UpdateEventBlockRequestMetadataPatch.from_dict(_metadata_patch)
 
+    def _parse_event_action(
+      data: object,
+    ) -> None | Unset | UpdateEventBlockRequestEventActionType0:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        event_action_type_0 = UpdateEventBlockRequestEventActionType0(data)
+
+        return event_action_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | Unset | UpdateEventBlockRequestEventActionType0, data)
+
+    event_action = _parse_event_action(d.pop("event_action", UNSET))
+
     def _parse_obligated_by_event_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -227,6 +263,7 @@ class UpdateEventBlockRequest:
       description=description,
       effective_at=effective_at,
       metadata_patch=metadata_patch,
+      event_action=event_action,
       obligated_by_event_id=obligated_by_event_id,
       discharges_event_id=discharges_event_id,
     )

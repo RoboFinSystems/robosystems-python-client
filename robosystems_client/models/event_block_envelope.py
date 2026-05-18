@@ -8,6 +8,9 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
+from ..models.event_block_envelope_event_action_type_0 import (
+  EventBlockEnvelopeEventActionType0,
+)
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
@@ -55,6 +58,8 @@ class EventBlockEnvelope:
           amount (int | None | Unset): Economic value in **cents** of `currency`, signed (inflows positive, outflows
               negative). `null` for non-economic events.
           description (None | str | Unset): Free-text human-readable summary.
+          event_action (EventBlockEnvelopeEventActionType0 | None | Unset): Canonical action verb refining
+              `event_category`. Null when the source adapter or capture path didn't supply one.
           agent_id (None | str | Unset): Counterparty agent ID, when the event involves one.
           resource_type (None | str | Unset): REA resource kind being exchanged (`goods`, `services`, `money`, `right`,
               `obligation`, `information`, `labor`).
@@ -86,6 +91,7 @@ class EventBlockEnvelope:
   external_url: None | str | Unset = UNSET
   amount: int | None | Unset = UNSET
   description: None | str | Unset = UNSET
+  event_action: EventBlockEnvelopeEventActionType0 | None | Unset = UNSET
   agent_id: None | str | Unset = UNSET
   resource_type: None | str | Unset = UNSET
   resource_element_id: None | str | Unset = UNSET
@@ -151,6 +157,14 @@ class EventBlockEnvelope:
       description = UNSET
     else:
       description = self.description
+
+    event_action: None | str | Unset
+    if isinstance(self.event_action, Unset):
+      event_action = UNSET
+    elif isinstance(self.event_action, EventBlockEnvelopeEventActionType0):
+      event_action = self.event_action.value
+    else:
+      event_action = self.event_action
 
     agent_id: None | str | Unset
     if isinstance(self.agent_id, Unset):
@@ -222,6 +236,8 @@ class EventBlockEnvelope:
       field_dict["amount"] = amount
     if description is not UNSET:
       field_dict["description"] = description
+    if event_action is not UNSET:
+      field_dict["event_action"] = event_action
     if agent_id is not UNSET:
       field_dict["agent_id"] = agent_id
     if resource_type is not UNSET:
@@ -321,6 +337,25 @@ class EventBlockEnvelope:
 
     description = _parse_description(d.pop("description", UNSET))
 
+    def _parse_event_action(
+      data: object,
+    ) -> EventBlockEnvelopeEventActionType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        event_action_type_0 = EventBlockEnvelopeEventActionType0(data)
+
+        return event_action_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(EventBlockEnvelopeEventActionType0 | None | Unset, data)
+
+    event_action = _parse_event_action(d.pop("event_action", UNSET))
+
     def _parse_agent_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -410,6 +445,7 @@ class EventBlockEnvelope:
       external_url=external_url,
       amount=amount,
       description=description,
+      event_action=event_action,
       agent_id=agent_id,
       resource_type=resource_type,
       resource_element_id=resource_element_id,

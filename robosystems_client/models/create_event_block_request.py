@@ -8,6 +8,9 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
+from ..models.create_event_block_request_event_action_type_0 import (
+  CreateEventBlockRequestEventActionType0,
+)
 from ..models.create_event_block_request_event_category import (
   CreateEventBlockRequestEventCategory,
 )
@@ -43,6 +46,10 @@ class CreateEventBlockRequest:
       event_class (CreateEventBlockRequestEventClass | Unset): REA event class. 'economic' events change resources and
           drive GL postings; 'support' events are audit-trail / value-chain primitives (typically captured with
           apply_handlers=False). Default: CreateEventBlockRequestEventClass.ECONOMIC.
+      event_action (CreateEventBlockRequestEventActionType0 | None | Unset): Canonical action verb refining
+          `event_category`. Disambiguates concepts ERPs collapse: `transferAllRights` (ownership transfer, no physical
+          movement) vs `transferCustody` (physical only, no rights transfer) — load-bearing for consignment, drop-
+          shipping, marketplace settlement, escrow. Optional; null is valid for legacy events and during adapter rollout.
       agent_id (None | str | Unset): ID of the counterparty agent (customer, vendor, employee, lender) involved in the
           event. `null` for internal-only events.
       resource_type (CreateEventBlockRequestResourceTypeType0 | None | Unset): REA resource kind being exchanged. One
@@ -78,6 +85,7 @@ class CreateEventBlockRequest:
   event_class: CreateEventBlockRequestEventClass | Unset = (
     CreateEventBlockRequestEventClass.ECONOMIC
   )
+  event_action: CreateEventBlockRequestEventActionType0 | None | Unset = UNSET
   agent_id: None | str | Unset = UNSET
   resource_type: CreateEventBlockRequestResourceTypeType0 | None | Unset = UNSET
   resource_element_id: None | str | Unset = UNSET
@@ -106,6 +114,14 @@ class CreateEventBlockRequest:
     event_class: str | Unset = UNSET
     if not isinstance(self.event_class, Unset):
       event_class = self.event_class.value
+
+    event_action: None | str | Unset
+    if isinstance(self.event_action, Unset):
+      event_action = UNSET
+    elif isinstance(self.event_action, CreateEventBlockRequestEventActionType0):
+      event_action = self.event_action.value
+    else:
+      event_action = self.event_action
 
     agent_id: None | str | Unset
     if isinstance(self.agent_id, Unset):
@@ -195,6 +211,8 @@ class CreateEventBlockRequest:
     )
     if event_class is not UNSET:
       field_dict["event_class"] = event_class
+    if event_action is not UNSET:
+      field_dict["event_action"] = event_action
     if agent_id is not UNSET:
       field_dict["agent_id"] = agent_id
     if resource_type is not UNSET:
@@ -247,6 +265,25 @@ class CreateEventBlockRequest:
       event_class = UNSET
     else:
       event_class = CreateEventBlockRequestEventClass(_event_class)
+
+    def _parse_event_action(
+      data: object,
+    ) -> CreateEventBlockRequestEventActionType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        event_action_type_0 = CreateEventBlockRequestEventActionType0(data)
+
+        return event_action_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(CreateEventBlockRequestEventActionType0 | None | Unset, data)
+
+    event_action = _parse_event_action(d.pop("event_action", UNSET))
 
     def _parse_agent_id(data: object) -> None | str | Unset:
       if data is None:
@@ -381,6 +418,7 @@ class CreateEventBlockRequest:
       occurred_at=occurred_at,
       source=source,
       event_class=event_class,
+      event_action=event_action,
       agent_id=agent_id,
       resource_type=resource_type,
       resource_element_id=resource_element_id,

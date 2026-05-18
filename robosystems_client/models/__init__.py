@@ -58,6 +58,9 @@ from .create_checkout_request_resource_config import CreateCheckoutRequestResour
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_event_block_request import CreateEventBlockRequest
+from .create_event_block_request_event_action_type_0 import (
+  CreateEventBlockRequestEventActionType0,
+)
 from .create_event_block_request_event_category import (
   CreateEventBlockRequestEventCategory,
 )
@@ -161,6 +164,7 @@ from .evaluate_rules_request import EvaluateRulesRequest
 from .evaluate_rules_response import EvaluateRulesResponse
 from .evaluate_rules_response_summary import EvaluateRulesResponseSummary
 from .event_block_envelope import EventBlockEnvelope
+from .event_block_envelope_event_action_type_0 import EventBlockEnvelopeEventActionType0
 from .event_block_envelope_metadata import EventBlockEnvelopeMetadata
 from .event_handler_response import EventHandlerResponse
 from .event_handler_response_match_metadata_expression_type_0 import (
@@ -596,6 +600,9 @@ from .update_agent_request_metadata_patch import UpdateAgentRequestMetadataPatch
 from .update_api_key_request import UpdateAPIKeyRequest
 from .update_entity_request import UpdateEntityRequest
 from .update_event_block_request import UpdateEventBlockRequest
+from .update_event_block_request_event_action_type_0 import (
+  UpdateEventBlockRequestEventActionType0,
+)
 from .update_event_block_request_metadata_patch import (
   UpdateEventBlockRequestMetadataPatch,
 )
@@ -694,6 +701,7 @@ __all__ = (
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
   "CreateEventBlockRequest",
+  "CreateEventBlockRequestEventActionType0",
   "CreateEventBlockRequestEventCategory",
   "CreateEventBlockRequestEventClass",
   "CreateEventBlockRequestMetadata",
@@ -781,6 +789,7 @@ __all__ = (
   "EvaluateRulesResponse",
   "EvaluateRulesResponseSummary",
   "EventBlockEnvelope",
+  "EventBlockEnvelopeEventActionType0",
   "EventBlockEnvelopeMetadata",
   "EventHandlerResponse",
   "EventHandlerResponseMatchMetadataExpressionType0",
@@ -1080,6 +1089,7 @@ __all__ = (
   "UpdateAPIKeyRequest",
   "UpdateEntityRequest",
   "UpdateEventBlockRequest",
+  "UpdateEventBlockRequestEventActionType0",
   "UpdateEventBlockRequestMetadataPatch",
   "UpdateEventBlockRequestTransitionToType0",
   "UpdateEventHandlerRequest",
