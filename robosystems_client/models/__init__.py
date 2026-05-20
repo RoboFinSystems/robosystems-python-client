@@ -7,6 +7,7 @@ from .api_keys_response import APIKeysResponse
 from .artifact_response import ArtifactResponse
 from .artifact_response_template_type_0 import ArtifactResponseTemplateType0
 from .association_response import AssociationResponse
+from .attribution_filter import AttributionFilter
 from .auth_response import AuthResponse
 from .auth_response_org_type_0 import AuthResponseOrgType0
 from .auth_response_user import AuthResponseUser
@@ -87,6 +88,11 @@ from .create_portfolio_block_request import CreatePortfolioBlockRequest
 from .create_publish_list_request import CreatePublishListRequest
 from .create_report_request import CreateReportRequest
 from .create_repository_subscription_request import CreateRepositorySubscriptionRequest
+from .create_rollforward_arm import CreateRollforwardArm
+from .create_rollforward_request import CreateRollforwardRequest
+from .create_rollforward_request_validation_mode import (
+  CreateRollforwardRequestValidationMode,
+)
 from .create_schedule_arm import CreateScheduleArm
 from .create_schedule_request import CreateScheduleRequest
 from .create_security_request import CreateSecurityRequest
@@ -127,6 +133,8 @@ from .delete_portfolio_block_response import DeletePortfolioBlockResponse
 from .delete_publish_list_operation import DeletePublishListOperation
 from .delete_report_operation import DeleteReportOperation
 from .delete_result import DeleteResult
+from .delete_rollforward_arm import DeleteRollforwardArm
+from .delete_rollforward_request import DeleteRollforwardRequest
 from .delete_schedule_arm import DeleteScheduleArm
 from .delete_schedule_request import DeleteScheduleRequest
 from .delete_security_operation import DeleteSecurityOperation
@@ -172,6 +180,11 @@ from .event_handler_response_match_metadata_expression_type_0 import (
 )
 from .event_handler_response_transaction_template import (
   EventHandlerResponseTransactionTemplate,
+)
+from .execute_event_block_request import ExecuteEventBlockRequest
+from .execute_event_block_response import ExecuteEventBlockResponse
+from .execute_event_block_response_qb_error_type_0 import (
+  ExecuteEventBlockResponseQbErrorType0,
 )
 from .fact_lite import FactLite
 from .fact_set_lite import FactSetLite
@@ -233,11 +246,15 @@ from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
 from .journal_entry_line_item_input import JournalEntryLineItemInput
+from .journal_entry_line_item_input_metadata_type_0 import (
+  JournalEntryLineItemInputMetadataType0,
+)
 from .journal_entry_line_item_response import JournalEntryLineItemResponse
 from .journal_entry_response import JournalEntryResponse
 from .ledger_agent_response import LedgerAgentResponse
 from .ledger_agent_response_address_type_0 import LedgerAgentResponseAddressType0
 from .ledger_entity_response import LedgerEntityResponse
+from .line_item_metadata_predicate import LineItemMetadataPredicate
 from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
@@ -320,6 +337,12 @@ from .operation_envelope_event_handler_response import (
 )
 from .operation_envelope_event_handler_response_status import (
   OperationEnvelopeEventHandlerResponseStatus,
+)
+from .operation_envelope_execute_event_block_response import (
+  OperationEnvelopeExecuteEventBlockResponse,
+)
+from .operation_envelope_execute_event_block_response_status import (
+  OperationEnvelopeExecuteEventBlockResponseStatus,
 )
 from .operation_envelope_fiscal_calendar_response import (
   OperationEnvelopeFiscalCalendarResponse,
@@ -487,6 +510,8 @@ from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .response_mode import ResponseMode
 from .restore_backup_op import RestoreBackupOp
+from .rollforward_mechanics import RollforwardMechanics
+from .rollforward_mechanics_validation_mode import RollforwardMechanicsValidationMode
 from .rule_lite import RuleLite
 from .rule_target_lite import RuleTargetLite
 from .rule_variable_lite import RuleVariableLite
@@ -627,6 +652,11 @@ from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
 from .update_portfolio_block_operation import UpdatePortfolioBlockOperation
 from .update_publish_list_operation import UpdatePublishListOperation
+from .update_rollforward_arm import UpdateRollforwardArm
+from .update_rollforward_request import UpdateRollforwardRequest
+from .update_rollforward_request_validation_mode_type_0 import (
+  UpdateRollforwardRequestValidationModeType0,
+)
 from .update_schedule_arm import UpdateScheduleArm
 from .update_schedule_request import UpdateScheduleRequest
 from .update_security_operation import UpdateSecurityOperation
@@ -654,6 +684,7 @@ __all__ = (
   "ArtifactResponse",
   "ArtifactResponseTemplateType0",
   "AssociationResponse",
+  "AttributionFilter",
   "AuthResponse",
   "AuthResponseOrgType0",
   "AuthResponseUser",
@@ -720,6 +751,9 @@ __all__ = (
   "CreatePublishListRequest",
   "CreateReportRequest",
   "CreateRepositorySubscriptionRequest",
+  "CreateRollforwardArm",
+  "CreateRollforwardRequest",
+  "CreateRollforwardRequestValidationMode",
   "CreateScheduleArm",
   "CreateScheduleRequest",
   "CreateSecurityRequest",
@@ -756,6 +790,8 @@ __all__ = (
   "DeletePublishListOperation",
   "DeleteReportOperation",
   "DeleteResult",
+  "DeleteRollforwardArm",
+  "DeleteRollforwardRequest",
   "DeleteScheduleArm",
   "DeleteScheduleRequest",
   "DeleteSecurityOperation",
@@ -794,6 +830,9 @@ __all__ = (
   "EventHandlerResponse",
   "EventHandlerResponseMatchMetadataExpressionType0",
   "EventHandlerResponseTransactionTemplate",
+  "ExecuteEventBlockRequest",
+  "ExecuteEventBlockResponse",
+  "ExecuteEventBlockResponseQbErrorType0",
   "FactLite",
   "FactSetLite",
   "FileInfo",
@@ -844,11 +883,13 @@ __all__ = (
   "InvoiceLineItem",
   "InvoicesResponse",
   "JournalEntryLineItemInput",
+  "JournalEntryLineItemInputMetadataType0",
   "JournalEntryLineItemResponse",
   "JournalEntryResponse",
   "LedgerAgentResponse",
   "LedgerAgentResponseAddressType0",
   "LedgerEntityResponse",
+  "LineItemMetadataPredicate",
   "LinkEntityTaxonomyRequest",
   "LinkEntityTaxonomyRequestBasis",
   "ListConnectionsProviderType0",
@@ -894,6 +935,8 @@ __all__ = (
   "OperationEnvelopeEventBlockEnvelopeStatus",
   "OperationEnvelopeEventHandlerResponse",
   "OperationEnvelopeEventHandlerResponseStatus",
+  "OperationEnvelopeExecuteEventBlockResponse",
+  "OperationEnvelopeExecuteEventBlockResponseStatus",
   "OperationEnvelopeFiscalCalendarResponse",
   "OperationEnvelopeFiscalCalendarResponseStatus",
   "OperationEnvelopeInformationBlockEnvelope",
@@ -1000,6 +1043,8 @@ __all__ = (
   "ResetPasswordValidateResponse",
   "ResponseMode",
   "RestoreBackupOp",
+  "RollforwardMechanics",
+  "RollforwardMechanicsValidationMode",
   "RuleLite",
   "RuleTargetLite",
   "RuleVariableLite",
@@ -1106,6 +1151,9 @@ __all__ = (
   "UpdatePasswordRequest",
   "UpdatePortfolioBlockOperation",
   "UpdatePublishListOperation",
+  "UpdateRollforwardArm",
+  "UpdateRollforwardRequest",
+  "UpdateRollforwardRequestValidationModeType0",
   "UpdateScheduleArm",
   "UpdateScheduleRequest",
   "UpdateSecurityOperation",

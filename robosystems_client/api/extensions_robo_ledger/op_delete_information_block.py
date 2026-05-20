@@ -7,6 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.delete_legacy_arm import DeleteLegacyArm
+from ...models.delete_rollforward_arm import DeleteRollforwardArm
 from ...models.delete_schedule_arm import DeleteScheduleArm
 from ...models.error_response import ErrorResponse
 from ...models.operation_envelope_delete_information_block_response import (
@@ -18,7 +19,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: DeleteLegacyArm | DeleteScheduleArm,
+  body: DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -33,6 +34,8 @@ def _get_kwargs(
   }
 
   if isinstance(body, DeleteScheduleArm):
+    _kwargs["json"] = body.to_dict()
+  elif isinstance(body, DeleteRollforwardArm):
     _kwargs["json"] = body.to_dict()
   else:
     _kwargs["json"] = body.to_dict()
@@ -114,7 +117,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteLegacyArm | DeleteScheduleArm,
+  body: DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeDeleteInformationBlockResponse]:
   """Delete Information Block
@@ -129,8 +132,8 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteLegacyArm | DeleteScheduleArm): Delete an Information Block. The body is a
-          discriminated union on
+      body (DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm): Delete an Information
+          Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
           arm carries a fully typed delete payload; statement and metric arms
           return HTTP 501.
@@ -160,7 +163,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteLegacyArm | DeleteScheduleArm,
+  body: DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeDeleteInformationBlockResponse | None:
   """Delete Information Block
@@ -175,8 +178,8 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteLegacyArm | DeleteScheduleArm): Delete an Information Block. The body is a
-          discriminated union on
+      body (DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm): Delete an Information
+          Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
           arm carries a fully typed delete payload; statement and metric arms
           return HTTP 501.
@@ -201,7 +204,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteLegacyArm | DeleteScheduleArm,
+  body: DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeDeleteInformationBlockResponse]:
   """Delete Information Block
@@ -216,8 +219,8 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteLegacyArm | DeleteScheduleArm): Delete an Information Block. The body is a
-          discriminated union on
+      body (DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm): Delete an Information
+          Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
           arm carries a fully typed delete payload; statement and metric arms
           return HTTP 501.
@@ -245,7 +248,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteLegacyArm | DeleteScheduleArm,
+  body: DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeDeleteInformationBlockResponse | None:
   """Delete Information Block
@@ -260,8 +263,8 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteLegacyArm | DeleteScheduleArm): Delete an Information Block. The body is a
-          discriminated union on
+      body (DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm): Delete an Information
+          Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
           arm carries a fully typed delete payload; statement and metric arms
           return HTTP 501.
