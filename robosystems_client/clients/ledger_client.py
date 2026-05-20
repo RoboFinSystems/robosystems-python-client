@@ -239,8 +239,14 @@ from ..models.update_agent_request import UpdateAgentRequest
 from ..models.update_event_block_request import UpdateEventBlockRequest
 from ..models.update_event_handler_request import UpdateEventHandlerRequest
 from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
+from ..models.create_legacy_arm import CreateLegacyArm
+from ..models.create_rollforward_arm import CreateRollforwardArm
+from ..models.delete_legacy_arm import DeleteLegacyArm
+from ..models.delete_rollforward_arm import DeleteRollforwardArm
 from ..models.delete_schedule_arm import DeleteScheduleArm
 from ..models.delete_schedule_request import DeleteScheduleRequest
+from ..models.update_legacy_arm import UpdateLegacyArm
+from ..models.update_rollforward_arm import UpdateRollforwardArm
 from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from ..models.update_journal_entry_request import UpdateJournalEntryRequest
 from ..models.update_schedule_arm import UpdateScheduleArm
@@ -918,6 +924,66 @@ class LedgerClient:
       },
     )
     return parse_information_blocks(data)
+
+  def create_information_block(
+    self,
+    graph_id: str,
+    body: CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
+    *,
+    idempotency_key: str | None = None,
+  ) -> InformationBlockEnvelope:
+    """Create an Information Block of any registered block_type.
+
+    Generic wrapper over ``create-information-block``. Pass a typed
+    arm body (``CreateScheduleArm``, ``CreateRollforwardArm``, or
+    ``CreateLegacyArm``) — the discriminator routes server-side to
+    the correct dispatch handler.
+
+    Convenience methods exist for specific block types — e.g.
+    ``create_schedule()`` builds + posts a ``CreateScheduleArm``.
+    For block types without a convenience method (currently
+    ``rollforward``), use this generic entry.
+    """
+    response = op_create_information_block(
+      graph_id=graph_id,
+      body=body,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Create information block", response)
+    return self._typed_result(
+      "Create information block", envelope, InformationBlockEnvelope
+    )
+
+  def update_information_block(
+    self,
+    graph_id: str,
+    body: UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm,
+  ) -> InformationBlockEnvelope:
+    """Update an Information Block. Generic wrapper over
+    ``update-information-block``."""
+    response = op_update_information_block(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Update information block", response)
+    return self._typed_result(
+      "Update information block", envelope, InformationBlockEnvelope
+    )
+
+  def delete_information_block(
+    self,
+    graph_id: str,
+    body: DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm,
+  ) -> DeleteInformationBlockResponse:
+    """Delete an Information Block. Generic wrapper over
+    ``delete-information-block``."""
+    response = op_delete_information_block(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Delete information block", response)
+    return self._typed_result(
+      "Delete information block", envelope, DeleteInformationBlockResponse
+    )
 
   # ── Schedules ──────────────────────────────────────────────────────
 
