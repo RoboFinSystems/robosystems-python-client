@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
   from ..models.artifact_response_template_type_0 import ArtifactResponseTemplateType0
   from ..models.metric_mechanics import MetricMechanics
+  from ..models.rollforward_mechanics import RollforwardMechanics
   from ..models.schedule_mechanics import ScheduleMechanics
   from ..models.statement_mechanics import StatementMechanics
 
@@ -23,7 +24,7 @@ class ArtifactResponse:
   """The block's producible-artifact envelope — topic, template, mechanics.
 
   Attributes:
-      mechanics (MetricMechanics | ScheduleMechanics | StatementMechanics):
+      mechanics (MetricMechanics | RollforwardMechanics | ScheduleMechanics | StatementMechanics):
       topic (None | str | Unset): Structure.description — the block's human-readable topic.
       renderer_note (None | str | Unset): e.g. 'in thousands', 'except per share'.
       template (ArtifactResponseTemplateType0 | None | Unset): Reusable layout (ordering, subtotals, styling) when
@@ -31,7 +32,9 @@ class ArtifactResponse:
           types.
   """
 
-  mechanics: MetricMechanics | ScheduleMechanics | StatementMechanics
+  mechanics: (
+    MetricMechanics | RollforwardMechanics | ScheduleMechanics | StatementMechanics
+  )
   topic: None | str | Unset = UNSET
   renderer_note: None | str | Unset = UNSET
   template: ArtifactResponseTemplateType0 | None | Unset = UNSET
@@ -39,6 +42,7 @@ class ArtifactResponse:
 
   def to_dict(self) -> dict[str, Any]:
     from ..models.artifact_response_template_type_0 import ArtifactResponseTemplateType0
+    from ..models.metric_mechanics import MetricMechanics
     from ..models.schedule_mechanics import ScheduleMechanics
     from ..models.statement_mechanics import StatementMechanics
 
@@ -46,6 +50,8 @@ class ArtifactResponse:
     if isinstance(self.mechanics, ScheduleMechanics):
       mechanics = self.mechanics.to_dict()
     elif isinstance(self.mechanics, StatementMechanics):
+      mechanics = self.mechanics.to_dict()
+    elif isinstance(self.mechanics, MetricMechanics):
       mechanics = self.mechanics.to_dict()
     else:
       mechanics = self.mechanics.to_dict()
@@ -90,6 +96,7 @@ class ArtifactResponse:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.artifact_response_template_type_0 import ArtifactResponseTemplateType0
     from ..models.metric_mechanics import MetricMechanics
+    from ..models.rollforward_mechanics import RollforwardMechanics
     from ..models.schedule_mechanics import ScheduleMechanics
     from ..models.statement_mechanics import StatementMechanics
 
@@ -97,7 +104,9 @@ class ArtifactResponse:
 
     def _parse_mechanics(
       data: object,
-    ) -> MetricMechanics | ScheduleMechanics | StatementMechanics:
+    ) -> (
+      MetricMechanics | RollforwardMechanics | ScheduleMechanics | StatementMechanics
+    ):
       try:
         if not isinstance(data, dict):
           raise TypeError()
@@ -114,11 +123,19 @@ class ArtifactResponse:
         return mechanics_type_1
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        mechanics_type_2 = MetricMechanics.from_dict(data)
+
+        return mechanics_type_2
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
       if not isinstance(data, dict):
         raise TypeError()
-      mechanics_type_2 = MetricMechanics.from_dict(data)
+      mechanics_type_3 = RollforwardMechanics.from_dict(data)
 
-      return mechanics_type_2
+      return mechanics_type_3
 
     mechanics = _parse_mechanics(d.pop("mechanics"))
 

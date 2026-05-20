@@ -11,6 +11,7 @@ from ...models.operation_envelope_information_block_envelope import (
   OperationEnvelopeInformationBlockEnvelope,
 )
 from ...models.update_legacy_arm import UpdateLegacyArm
+from ...models.update_rollforward_arm import UpdateRollforwardArm
 from ...models.update_schedule_arm import UpdateScheduleArm
 from ...types import UNSET, Response, Unset
 
@@ -18,7 +19,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: UpdateLegacyArm | UpdateScheduleArm,
+  body: UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -33,6 +34,8 @@ def _get_kwargs(
   }
 
   if isinstance(body, UpdateScheduleArm):
+    _kwargs["json"] = body.to_dict()
+  elif isinstance(body, UpdateRollforwardArm):
     _kwargs["json"] = body.to_dict()
   else:
     _kwargs["json"] = body.to_dict()
@@ -112,7 +115,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateLegacyArm | UpdateScheduleArm,
+  body: UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeInformationBlockEnvelope]:
   """Update Information Block
@@ -127,8 +130,8 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateLegacyArm | UpdateScheduleArm): Update an Information Block. The body is a
-          discriminated union on
+      body (UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm): Update an Information
+          Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
           arm carries a fully typed update payload; statement and metric arms
           return HTTP 501 (statements are library-seeded; metric updates are
@@ -159,7 +162,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateLegacyArm | UpdateScheduleArm,
+  body: UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeInformationBlockEnvelope | None:
   """Update Information Block
@@ -174,8 +177,8 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateLegacyArm | UpdateScheduleArm): Update an Information Block. The body is a
-          discriminated union on
+      body (UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm): Update an Information
+          Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
           arm carries a fully typed update payload; statement and metric arms
           return HTTP 501 (statements are library-seeded; metric updates are
@@ -201,7 +204,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateLegacyArm | UpdateScheduleArm,
+  body: UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeInformationBlockEnvelope]:
   """Update Information Block
@@ -216,8 +219,8 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateLegacyArm | UpdateScheduleArm): Update an Information Block. The body is a
-          discriminated union on
+      body (UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm): Update an Information
+          Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
           arm carries a fully typed update payload; statement and metric arms
           return HTTP 501 (statements are library-seeded; metric updates are
@@ -246,7 +249,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateLegacyArm | UpdateScheduleArm,
+  body: UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeInformationBlockEnvelope | None:
   """Update Information Block
@@ -261,8 +264,8 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateLegacyArm | UpdateScheduleArm): Update an Information Block. The body is a
-          discriminated union on
+      body (UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm): Update an Information
+          Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
           arm carries a fully typed update payload; statement and metric arms
           return HTTP 501 (statements are library-seeded; metric updates are
