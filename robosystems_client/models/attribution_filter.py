@@ -33,17 +33,20 @@ class AttributionFilter:
       Attributes:
           target_qname (str): QName of the flow concept this filter produces facts for — e.g. ``rs-
               gaap:ProceedsFromIssuanceOfCommonStock``. Resolved to ``target_element_id`` at create time.
-          predicate (LineItemMetadataPredicate): Filter ledger LineItems whose ``metadata_[field]`` is in ``values``.
+          predicate (LineItemMetadataPredicate): Filter ledger LineItems by flow concept.
 
-              The single predicate kind shipped in Phase 2 MVP. Sufficient for any
-              source taxonomy that stamps a flow-tag column on each transaction
-              line — mini's ``TransactionDescriptionCode``, future XBRL GL
-              ``GenericFlowCategory`` columns, custom tenant tags.
+              The single predicate kind shipped to date. ``values`` are flow-concept
+              qnames — mini's ``TransactionDescriptionCode`` values, rs-gaap flow
+              concepts (what the enrichment classifier emits for QuickBooks data),
+              future XBRL GL ``GenericFlowCategory`` codes. The engine resolves them
+              to element_ids and matches the first-class ``LineItem.flow_element_id``
+              FK; matched lines aggregate signed into the attributed fact for the
+              period.
 
-              ``field`` is the JSONB key under ``line_items.metadata`` (e.g.
-              ``"transaction_description_code"``). ``values`` is the set of values
-              that route to the filter's target concept; matched LineItems aggregate
-              signed into the attributed fact for the period.
+              ``field`` is **legacy and ignored** — the flow tag used to live in
+              ``line_items.metadata[field]`` but has been promoted to the typed
+              ``flow_element_id`` FK. Retained for wire-compatibility; the engine no
+              longer reads it.
           target_element_id (None | str | Unset): Resolved element id for ``target_qname``. Null at create time; populated
               by the handler before persistence. Round-tripped in the envelope.
   """
