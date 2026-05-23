@@ -20,6 +20,7 @@ if TYPE_CHECKING:
   from ..models.information_model_response import InformationModelResponse
   from ..models.rule_lite import RuleLite
   from ..models.verification_result_lite import VerificationResultLite
+  from ..models.verification_summary import VerificationSummary
   from ..models.view_projections import ViewProjections
 
 
@@ -62,6 +63,9 @@ class InformationBlockEnvelope:
               underlying block has no FactSet row yet — typically library-seeded statement Structures with no tenant-generated
               facts, or Schedule rows written before the create-side FactSet stamping was added.
           verification_results (list[VerificationResultLite] | Unset):
+          verification_summary (None | Unset | VerificationSummary): Server-computed aggregate over
+              ``verification_results`` — overall pass/fail/error/skip counts plus a per-rule_category breakdown for the
+              grouped Verification Results panel. Null when the block has no verification results.
           view (ViewProjections | Unset): Charlie's six ``type-of View`` arms, surfaced at the envelope boundary.
 
               Each projection is computed server-side at envelope-build time when
@@ -95,11 +99,13 @@ class InformationBlockEnvelope:
   dimensions: list[InformationBlockEnvelopeDimensionsItem] | Unset = UNSET
   fact_set: FactSetLite | None | Unset = UNSET
   verification_results: list[VerificationResultLite] | Unset = UNSET
+  verification_summary: None | Unset | VerificationSummary = UNSET
   view: ViewProjections | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     from ..models.fact_set_lite import FactSetLite
+    from ..models.verification_summary import VerificationSummary
 
     id = self.id
 
@@ -183,6 +189,14 @@ class InformationBlockEnvelope:
         verification_results_item = verification_results_item_data.to_dict()
         verification_results.append(verification_results_item)
 
+    verification_summary: dict[str, Any] | None | Unset
+    if isinstance(self.verification_summary, Unset):
+      verification_summary = UNSET
+    elif isinstance(self.verification_summary, VerificationSummary):
+      verification_summary = self.verification_summary.to_dict()
+    else:
+      verification_summary = self.verification_summary
+
     view: dict[str, Any] | Unset = UNSET
     if not isinstance(self.view, Unset):
       view = self.view.to_dict()
@@ -220,6 +234,8 @@ class InformationBlockEnvelope:
       field_dict["fact_set"] = fact_set
     if verification_results is not UNSET:
       field_dict["verification_results"] = verification_results
+    if verification_summary is not UNSET:
+      field_dict["verification_summary"] = verification_summary
     if view is not UNSET:
       field_dict["view"] = view
 
@@ -238,6 +254,7 @@ class InformationBlockEnvelope:
     from ..models.information_model_response import InformationModelResponse
     from ..models.rule_lite import RuleLite
     from ..models.verification_result_lite import VerificationResultLite
+    from ..models.verification_summary import VerificationSummary
     from ..models.view_projections import ViewProjections
 
     d = dict(src_dict)
@@ -357,6 +374,25 @@ class InformationBlockEnvelope:
 
         verification_results.append(verification_results_item)
 
+    def _parse_verification_summary(data: object) -> None | Unset | VerificationSummary:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        verification_summary_type_0 = VerificationSummary.from_dict(data)
+
+        return verification_summary_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | Unset | VerificationSummary, data)
+
+    verification_summary = _parse_verification_summary(
+      d.pop("verification_summary", UNSET)
+    )
+
     _view = d.pop("view", UNSET)
     view: ViewProjections | Unset
     if isinstance(_view, Unset):
@@ -382,6 +418,7 @@ class InformationBlockEnvelope:
       dimensions=dimensions,
       fact_set=fact_set,
       verification_results=verification_results,
+      verification_summary=verification_summary,
       view=view,
     )
 
