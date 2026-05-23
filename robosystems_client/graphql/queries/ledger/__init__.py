@@ -845,6 +845,10 @@ query GetLedgerReportPackage($reportId: String!) {
           id ruleId structureId factSetId status message
           periodStart periodEnd evaluatedAt
         }
+        verificationSummary {
+          total passed failed errored skipped
+          byCategory { category total passed failed errored skipped }
+        }
         view {
           rendering {
             rows {
