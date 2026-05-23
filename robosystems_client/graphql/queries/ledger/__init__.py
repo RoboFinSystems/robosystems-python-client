@@ -615,6 +615,10 @@ query GetInformationBlock($id: ID!) {
       id elementId value periodStart periodEnd
       periodType unit factScope factSetId
     }
+    verificationSummary {
+      total passed failed errored skipped
+      byCategory { category total passed failed errored skipped }
+    }
   }
 }
 """.strip()
@@ -653,6 +657,10 @@ query ListInformationBlocks(
     facts {
       id elementId value periodStart periodEnd
       periodType unit factScope factSetId
+    }
+    verificationSummary {
+      total passed failed errored skipped
+      byCategory { category total passed failed errored skipped }
     }
   }
 }
