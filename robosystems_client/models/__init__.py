@@ -669,7 +669,9 @@ from .user_response import UserResponse
 from .validation_error import ValidationError
 from .validation_error_context import ValidationErrorContext
 from .validation_lite import ValidationLite
+from .verification_category_summary import VerificationCategorySummary
 from .verification_result_lite import VerificationResultLite
+from .verification_summary import VerificationSummary
 from .view_axis_config import ViewAxisConfig
 from .view_axis_config_element_labels_type_0 import ViewAxisConfigElementLabelsType0
 from .view_axis_config_member_labels_type_0 import ViewAxisConfigMemberLabelsType0
@@ -1166,7 +1168,9 @@ __all__ = (
   "ValidationError",
   "ValidationErrorContext",
   "ValidationLite",
+  "VerificationCategorySummary",
   "VerificationResultLite",
+  "VerificationSummary",
   "ViewAxisConfig",
   "ViewAxisConfigElementLabelsType0",
   "ViewAxisConfigMemberLabelsType0",

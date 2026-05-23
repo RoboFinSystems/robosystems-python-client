@@ -13,57 +13,60 @@ T = TypeVar("T", bound="LineItemMetadataPredicate")
 
 @_attrs_define
 class LineItemMetadataPredicate:
-  """Filter ledger LineItems whose ``metadata_[field]`` is in ``values``.
+  """Filter ledger LineItems by flow concept.
 
-  The single predicate kind shipped in Phase 2 MVP. Sufficient for any
-  source taxonomy that stamps a flow-tag column on each transaction
-  line — mini's ``TransactionDescriptionCode``, future XBRL GL
-  ``GenericFlowCategory`` columns, custom tenant tags.
+  The single predicate kind shipped to date. ``values`` are flow-concept
+  qnames — mini's ``TransactionDescriptionCode`` values, rs-gaap flow
+  concepts (what the enrichment classifier emits for QuickBooks data),
+  future XBRL GL ``GenericFlowCategory`` codes. The engine resolves them
+  to element_ids and matches the first-class ``LineItem.flow_element_id``
+  FK; matched lines aggregate signed into the attributed fact for the
+  period.
 
-  ``field`` is the JSONB key under ``line_items.metadata`` (e.g.
-  ``"transaction_description_code"``). ``values`` is the set of values
-  that route to the filter's target concept; matched LineItems aggregate
-  signed into the attributed fact for the period.
+  ``field`` is **legacy and ignored** — the flow tag used to live in
+  ``line_items.metadata[field]`` but has been promoted to the typed
+  ``flow_element_id`` FK. Retained for wire-compatibility; the engine no
+  longer reads it.
 
       Attributes:
-          field (str): JSONB key under ``line_items.metadata`` to match against — e.g. ``transaction_description_code``.
-              The renderer performs an exact-string comparison on the JSONB-extracted text value.
-          values (list[str]): Metadata values that route to this filter's target concept. A LineItem matches when
-              ``metadata[field] ∈ values`` AND the line falls within the rollforward's period.
+          values (list[str]): Flow-concept qnames that route to this filter's target concept. A LineItem matches when its
+              ``flow_element_id`` is one of the elements named here AND the line falls within the rollforward's period.
           kind (Literal['line_item_metadata_field'] | Unset): Discriminator value selecting this predicate shape. Default:
               'line_item_metadata_field'.
+          field (str | Unset): Legacy/ignored. The flow tag now lives in the typed ``flow_element_id`` FK, not JSONB
+              metadata; the engine no longer reads this. Retained for wire-compatibility. Default:
+              'transaction_description_code'.
   """
 
-  field: str
   values: list[str]
   kind: Literal["line_item_metadata_field"] | Unset = "line_item_metadata_field"
+  field: str | Unset = "transaction_description_code"
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    field = self.field
-
     values = self.values
 
     kind = self.kind
+
+    field = self.field
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "field": field,
         "values": values,
       }
     )
     if kind is not UNSET:
       field_dict["kind"] = kind
+    if field is not UNSET:
+      field_dict["field"] = field
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    field = d.pop("field")
-
     values = cast(list[str], d.pop("values"))
 
     kind = cast(Literal["line_item_metadata_field"] | Unset, d.pop("kind", UNSET))
@@ -72,10 +75,12 @@ class LineItemMetadataPredicate:
         f"kind must match const 'line_item_metadata_field', got '{kind}'"
       )
 
+    field = d.pop("field", UNSET)
+
     line_item_metadata_predicate = cls(
-      field=field,
       values=values,
       kind=kind,
+      field=field,
     )
 
     line_item_metadata_predicate.additional_properties = d

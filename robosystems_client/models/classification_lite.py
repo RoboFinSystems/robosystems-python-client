@@ -34,8 +34,8 @@ class ClassificationLite:
               pair. Non-primary rows capture alternates / AI suggestions alongside the chosen primary. Default: True.
           confidence (float | None | Unset): AI/adapter-supplied confidence (0.0-1.0). Null for deterministic library-
               seeded rows.
-          source (None | str | Unset): Provenance — 'arcrole_analysis', 'disclosure_mechanics', 'us-gaap-metamodel',
-              adapter name, etc.
+          source (None | str | Unset): Provenance — 'arcrole_analysis', 'disclosure_mechanics', 'fac-traits', adapter
+              name, etc.
   """
 
   id: str

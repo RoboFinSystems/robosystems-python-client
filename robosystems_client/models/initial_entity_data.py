@@ -30,6 +30,13 @@ class InitialEntityData:
           state_of_incorporation (None | str | Unset): State of incorporation
           fiscal_year_end (None | str | Unset): Fiscal year end (MMDD)
           ein (None | str | Unset): Employer Identification Number
+          entity_type (None | str | Unset): Entity legal form (e.g. 'corporation', 'llc' / 'limited_liability_company',
+              'partnership', 'sole_proprietorship', 'non_profit'). Drives the graph's default Reporting Style at creation —
+              partnership and llc get dedicated equity-form Styles; everything else defaults to corporate. Blank falls back to
+              corporate.
+          reporting_style_id (None | str | Unset): Optional explicit Reporting Style Structure id to pin on the graph,
+              overriding the entity_type-derived default. Leave blank to derive from entity_type. Change later via the change-
+              reporting-style operation.
   """
 
   name: str
@@ -42,6 +49,8 @@ class InitialEntityData:
   state_of_incorporation: None | str | Unset = UNSET
   fiscal_year_end: None | str | Unset = UNSET
   ein: None | str | Unset = UNSET
+  entity_type: None | str | Unset = UNSET
+  reporting_style_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -97,6 +106,18 @@ class InitialEntityData:
     else:
       ein = self.ein
 
+    entity_type: None | str | Unset
+    if isinstance(self.entity_type, Unset):
+      entity_type = UNSET
+    else:
+      entity_type = self.entity_type
+
+    reporting_style_id: None | str | Unset
+    if isinstance(self.reporting_style_id, Unset):
+      reporting_style_id = UNSET
+    else:
+      reporting_style_id = self.reporting_style_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -121,6 +142,10 @@ class InitialEntityData:
       field_dict["fiscal_year_end"] = fiscal_year_end
     if ein is not UNSET:
       field_dict["ein"] = ein
+    if entity_type is not UNSET:
+      field_dict["entity_type"] = entity_type
+    if reporting_style_id is not UNSET:
+      field_dict["reporting_style_id"] = reporting_style_id
 
     return field_dict
 
@@ -205,6 +230,24 @@ class InitialEntityData:
 
     ein = _parse_ein(d.pop("ein", UNSET))
 
+    def _parse_entity_type(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_type = _parse_entity_type(d.pop("entity_type", UNSET))
+
+    def _parse_reporting_style_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    reporting_style_id = _parse_reporting_style_id(d.pop("reporting_style_id", UNSET))
+
     initial_entity_data = cls(
       name=name,
       uri=uri,
@@ -216,6 +259,8 @@ class InitialEntityData:
       state_of_incorporation=state_of_incorporation,
       fiscal_year_end=fiscal_year_end,
       ein=ein,
+      entity_type=entity_type,
+      reporting_style_id=reporting_style_id,
     )
 
     initial_entity_data.additional_properties = d
