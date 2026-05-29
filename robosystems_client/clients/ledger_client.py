@@ -23,8 +23,13 @@ same backend surface as the ledger operations.
 from __future__ import annotations
 
 import datetime
+import re
+from dataclasses import dataclass
 from http import HTTPStatus
+from pathlib import Path
 from typing import Any
+
+import httpx
 
 from ..api.extensions_robo_ledger.op_auto_map_elements import (
   sync_detailed as op_auto_map_elements,
@@ -306,6 +311,43 @@ from ..models.share_report_response import ShareReportResponse
 from ..models.taxonomy_block_envelope import TaxonomyBlockEnvelope
 
 from ..types import UNSET
+
+
+# Captures the ``filename`` value from a Content-Disposition header, with
+# or without quotes. Used by ``download_report_bundle`` to recover the
+# server-suggested filename when writing the bundle to disk.
+_FILENAME_PATTERN = re.compile(r'filename="?([^";]+)"?', re.IGNORECASE)
+
+
+def _parse_filename(content_disposition: str) -> str | None:
+  """Extract the ``filename`` value from a Content-Disposition header.
+
+  Returns ``None`` when the header is empty or doesn't carry a
+  filename — the caller falls back to a synthesized name in that case.
+  """
+  if not content_disposition:
+    return None
+  match = _FILENAME_PATTERN.search(content_disposition)
+  return match.group(1) if match else None
+
+
+@dataclass
+class ReportBundleDownload:
+  """Result of downloading a Report's serialization bundle.
+
+  ``content`` is the raw artifact bytes. ``filename`` is the
+  server-suggested name (``{report_id}-g{generation}.{ext}``).
+  ``path`` is populated when the caller passed a ``to=`` argument to
+  :meth:`LedgerClient.download_report_bundle` — points at the file
+  the SDK wrote to disk.
+  """
+
+  content: bytes
+  filename: str
+  format: str
+  content_type: str
+  generation_count: int | None
+  path: Path | None = None
 
 
 class LedgerClient:
@@ -1716,6 +1758,99 @@ class LedgerClient:
     response = op_share_report(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Share report", response)
     return self._typed_result("Share report", envelope, ShareReportResponse)
+
+  def download_report_bundle(
+    self,
+    graph_id: str,
+    report_id: str,
+    *,
+    format: str = "jsonld",
+    to: str | Path | None = None,
+    expires_in: int = 300,
+  ) -> ReportBundleDownload:
+    """Download a Report's serialization bundle (JSON-LD or XBRL 2.1).
+
+    JSON-LD path: backend returns a JSON envelope with a short-lived
+    presigned URL to the S3-stamped bundle; client follows the URL
+    and pulls the bytes. XBRL path: backend streams the zip directly
+    (per spec — XBRL is on-demand emit, not stored).
+
+    Args:
+        graph_id: Graph identifier owning the Report.
+        report_id: Report identifier (``rpt_``-prefixed ULID).
+        format: Serialization flavor — ``"jsonld"`` for the JSON-LD
+            bundle, ``"xbrl-2.1"`` for the XBRL 2.1 zip. Other RDF /
+            XBRL flavors slot in as their producers ship.
+        to: Optional file path to write the bytes to. When set, the
+            returned ``ReportBundleDownload.path`` points at the
+            written file.
+        expires_in: Presigned URL lifetime in seconds (JSON-LD only;
+            ignored for XBRL flavors).
+
+    Returns:
+        :class:`ReportBundleDownload` with the artifact bytes,
+        server-suggested filename, content type, generation count,
+        and (when ``to`` is set) the path written.
+
+    Raises:
+        RuntimeError: backend returned non-2xx or the presigned URL
+            could not be followed.
+    """
+    if not self.token:
+      raise RuntimeError("No API key provided. Set X-API-Key in headers.")
+    base = self.base_url.rstrip("/")
+    url = (
+      f"{base}/extensions/roboledger/{graph_id}/reports/{report_id}"
+      f"/download?format={format}&expires_in={expires_in}"
+    )
+    headers = {**self.headers, "X-API-Key": self.token}
+    with httpx.Client(timeout=self.timeout) as client:
+      response = client.get(url, headers=headers)
+      if response.status_code != 200:
+        raise RuntimeError(
+          f"Download bundle failed ({response.status_code}): {response.text}"
+        )
+      content_type = response.headers.get("content-type", "")
+      if "application/json" in content_type:
+        # JSON-LD path — envelope contains a presigned URL to follow
+        envelope = response.json()
+        download_url = envelope["download_url"]
+        artifact = client.get(download_url)
+        if artifact.status_code != 200:
+          raise RuntimeError(
+            f"Failed to follow presigned URL ({artifact.status_code}): {artifact.text}"
+          )
+        filename = (
+          _parse_filename(artifact.headers.get("content-disposition", ""))
+          or f"{report_id}-g{envelope.get('generation_count', 1)}.jsonld"
+        )
+        result = ReportBundleDownload(
+          content=artifact.content,
+          filename=filename,
+          format=str(envelope.get("format", format)),
+          content_type=str(envelope.get("content_type", "application/ld+json")),
+          generation_count=envelope.get("generation_count"),
+        )
+      else:
+        # XBRL path — body IS the zip
+        filename = (
+          _parse_filename(response.headers.get("content-disposition", ""))
+          or f"{report_id}.zip"
+        )
+        generation_header = response.headers.get("x-bundle-generation")
+        result = ReportBundleDownload(
+          content=response.content,
+          filename=filename,
+          format=response.headers.get("x-bundle-format", format),
+          content_type=content_type or "application/zip",
+          generation_count=int(generation_header) if generation_header else None,
+        )
+    if to is not None:
+      path = Path(to)
+      path.parent.mkdir(parents=True, exist_ok=True)
+      path.write_bytes(result.content)
+      result.path = path
+    return result
 
   def file_report(self, graph_id: str, report_id: str) -> ReportResponse:
     """Transition a Report's filing_status to 'filed' — locks the package.

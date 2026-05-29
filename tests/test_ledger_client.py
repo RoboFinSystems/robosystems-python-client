@@ -1821,3 +1821,165 @@ class TestFinancialStatementOps:
     body = mock_op.call_args.kwargs["body"]
     assert body.ticker == "NVDA"
     assert body.fiscal_year == 2025
+
+
+# ── Bundle download (REST GET to /reports/{id}/download) ──────────────
+
+
+@pytest.mark.unit
+class TestDownloadReportBundle:
+  """``download_report_bundle`` bypasses the typed op_* generators and
+  hits the endpoint via httpx directly — these tests stub the httpx
+  Client at the call site."""
+
+  def _mock_json_envelope(self, gen: int = 1) -> Mock:
+    """Mock the initial JSON envelope response for the JSON-LD path."""
+    resp = Mock()
+    resp.status_code = 200
+    resp.headers = {"content-type": "application/json"}
+    resp.json.return_value = {
+      "download_url": "https://s3.example.com/bundles/rpt_01/g1.jsonld",
+      "expires_at": "2026-05-28T12:30:00Z",
+      "content_type": "application/ld+json",
+      "format": "jsonld",
+      "generation_count": gen,
+    }
+    return resp
+
+  def _mock_artifact(self, content: bytes, filename: str = "rpt_01-g1.jsonld") -> Mock:
+    resp = Mock()
+    resp.status_code = 200
+    resp.headers = {"content-disposition": f'attachment; filename="{filename}"'}
+    resp.content = content
+    return resp
+
+  def _mock_xbrl_response(self, content: bytes, gen: int = 1) -> Mock:
+    """Mock the direct binary-stream response for the XBRL path."""
+    resp = Mock()
+    resp.status_code = 200
+    resp.headers = {
+      "content-type": "application/zip",
+      "content-disposition": f'attachment; filename="rpt_01-g{gen}.zip"',
+      "x-bundle-format": "xbrl-2.1",
+      "x-bundle-generation": str(gen),
+    }
+    resp.content = content
+    resp.text = ""
+    return resp
+
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_jsonld_download_follows_presigned_url(
+    self, mock_client_cls, mock_config, graph_id
+  ):
+    """JSON-LD path: envelope GET → presigned URL GET → bytes."""
+    mock_client = Mock()
+    mock_client.__enter__ = Mock(return_value=mock_client)
+    mock_client.__exit__ = Mock(return_value=None)
+    mock_client.get.side_effect = [
+      self._mock_json_envelope(gen=2),
+      self._mock_artifact(b'{"@graph": []}', "rpt_01-g2.jsonld"),
+    ]
+    mock_client_cls.return_value = mock_client
+
+    result = LedgerClient(mock_config).download_report_bundle(
+      graph_id, "rpt_01", format="jsonld"
+    )
+
+    assert result.content == b'{"@graph": []}'
+    assert result.filename == "rpt_01-g2.jsonld"
+    assert result.format == "jsonld"
+    assert result.content_type == "application/ld+json"
+    assert result.generation_count == 2
+    # First request hits our endpoint with X-API-Key auth.
+    first_call = mock_client.get.call_args_list[0]
+    assert "/reports/rpt_01/download" in first_call.args[0]
+    assert "format=jsonld" in first_call.args[0]
+    headers = first_call.kwargs["headers"]
+    assert headers["X-API-Key"] == "test-api-key"
+
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_xbrl_download_streams_zip_directly(
+    self, mock_client_cls, mock_config, graph_id
+  ):
+    """XBRL path: single GET, binary response, no presigned URL hop."""
+    zip_bytes = b"PK\x03\x04dummy-zip-payload"
+    mock_client = Mock()
+    mock_client.__enter__ = Mock(return_value=mock_client)
+    mock_client.__exit__ = Mock(return_value=None)
+    mock_client.get.return_value = self._mock_xbrl_response(zip_bytes, gen=3)
+    mock_client_cls.return_value = mock_client
+
+    result = LedgerClient(mock_config).download_report_bundle(
+      graph_id, "rpt_01", format="xbrl-2.1"
+    )
+
+    assert result.content == zip_bytes
+    assert result.filename == "rpt_01-g3.zip"
+    assert result.format == "xbrl-2.1"
+    assert result.content_type == "application/zip"
+    assert result.generation_count == 3
+    # XBRL path only makes one HTTP call.
+    assert mock_client.get.call_count == 1
+
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_to_arg_writes_bytes_to_disk(
+    self, mock_client_cls, mock_config, graph_id, tmp_path
+  ):
+    """``to=path`` writes the artifact and exposes ``result.path``."""
+    zip_bytes = b"PK\x03\x04zip"
+    mock_client = Mock()
+    mock_client.__enter__ = Mock(return_value=mock_client)
+    mock_client.__exit__ = Mock(return_value=None)
+    mock_client.get.return_value = self._mock_xbrl_response(zip_bytes)
+    mock_client_cls.return_value = mock_client
+
+    target = tmp_path / "subdir" / "out.zip"
+    result = LedgerClient(mock_config).download_report_bundle(
+      graph_id, "rpt_01", format="xbrl-2.1", to=str(target)
+    )
+
+    assert result.path == target
+    assert target.read_bytes() == zip_bytes
+    # Parent directories get created automatically.
+    assert target.parent.is_dir()
+
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_non_200_endpoint_response_raises(
+    self, mock_client_cls, mock_config, graph_id
+  ):
+    err_resp = Mock(status_code=404, text="not found")
+    err_resp.headers = {}
+    mock_client = Mock()
+    mock_client.__enter__ = Mock(return_value=mock_client)
+    mock_client.__exit__ = Mock(return_value=None)
+    mock_client.get.return_value = err_resp
+    mock_client_cls.return_value = mock_client
+
+    with pytest.raises(RuntimeError, match="Download bundle failed"):
+      LedgerClient(mock_config).download_report_bundle(graph_id, "rpt_missing")
+
+  def test_no_token_raises(self, mock_config, graph_id):
+    mock_config["token"] = None
+    with pytest.raises(RuntimeError, match="No API key"):
+      LedgerClient(mock_config).download_report_bundle(graph_id, "rpt_01")
+
+
+def test_parse_filename_quoted():
+  from robosystems_client.clients.ledger_client import _parse_filename
+
+  assert _parse_filename('attachment; filename="rpt_01-g1.jsonld"') == (
+    "rpt_01-g1.jsonld"
+  )
+
+
+def test_parse_filename_unquoted():
+  from robosystems_client.clients.ledger_client import _parse_filename
+
+  assert _parse_filename("attachment; filename=rpt_01-g1.zip") == "rpt_01-g1.zip"
+
+
+def test_parse_filename_missing_returns_none():
+  from robosystems_client.clients.ledger_client import _parse_filename
+
+  assert _parse_filename("") is None
+  assert _parse_filename("attachment") is None
