@@ -1793,8 +1793,16 @@ class LedgerClient:
         and (when ``to`` is set) the path written.
 
     Raises:
-        RuntimeError: backend returned non-2xx or the presigned URL
-            could not be followed.
+        RuntimeError: backend returned non-2xx, the presigned URL
+            could not be followed, or no API key is configured on the
+            client.
+        httpx.TimeoutException: the request exceeded ``self.timeout``
+            (passed through unwrapped so callers with their own
+            retry / backoff strategy can distinguish a timeout from a
+            generic failure).
+        httpx.RequestError: any other transport-level failure
+            (DNS, connection refused, TLS); not wrapped so the original
+            networking context surfaces in tracebacks.
     """
     if not self.token:
       raise RuntimeError("No API key provided. Set X-API-Key in headers.")
