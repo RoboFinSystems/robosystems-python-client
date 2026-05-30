@@ -615,9 +615,34 @@ query GetInformationBlock($id: ID!) {
       id elementId value periodStart periodEnd
       periodType unit factScope factSetId
     }
+    rules {
+      id ruleCategory rulePattern ruleCheckKind ruleExpression
+      ruleMessage ruleSeverity ruleOrigin
+      ruleTarget { targetKind targetRefId }
+      ruleVariables { variableName variableQname }
+    }
+    factSet {
+      id structureId periodStart periodEnd
+      factsetType entityId reportId provenance
+    }
+    verificationResults {
+      id ruleId structureId factSetId status message
+      periodStart periodEnd evaluatedAt
+    }
     verificationSummary {
       total passed failed errored skipped
       byCategory { category total passed failed errored skipped }
+    }
+    view {
+      rendering {
+        rows {
+          elementId elementQname elementName classification
+          balanceType values isSubtotal depth
+        }
+        periods { start end label }
+        validation { passed checks failures warnings }
+        unmappedCount
+      }
     }
   }
 }
@@ -658,9 +683,34 @@ query ListInformationBlocks(
       id elementId value periodStart periodEnd
       periodType unit factScope factSetId
     }
+    rules {
+      id ruleCategory rulePattern ruleCheckKind ruleExpression
+      ruleMessage ruleSeverity ruleOrigin
+      ruleTarget { targetKind targetRefId }
+      ruleVariables { variableName variableQname }
+    }
+    factSet {
+      id structureId periodStart periodEnd
+      factsetType entityId reportId provenance
+    }
+    verificationResults {
+      id ruleId structureId factSetId status message
+      periodStart periodEnd evaluatedAt
+    }
     verificationSummary {
       total passed failed errored skipped
       byCategory { category total passed failed errored skipped }
+    }
+    view {
+      rendering {
+        rows {
+          elementId elementQname elementName classification
+          balanceType values isSubtotal depth
+        }
+        periods { start end label }
+        validation { passed checks failures warnings }
+        unmappedCount
+      }
     }
   }
 }
@@ -836,10 +886,12 @@ query GetLedgerReportPackage($reportId: String!) {
         rules {
           id ruleCategory rulePattern ruleCheckKind ruleExpression
           ruleMessage ruleSeverity ruleOrigin
+          ruleTarget { targetKind targetRefId }
+          ruleVariables { variableName variableQname }
         }
         factSet {
           id structureId periodStart periodEnd
-          factsetType entityId reportId
+          factsetType entityId reportId provenance
         }
         verificationResults {
           id ruleId structureId factSetId status message

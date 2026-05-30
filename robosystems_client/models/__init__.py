@@ -188,6 +188,7 @@ from .execute_event_block_response_qb_error_type_0 import (
 )
 from .fact_lite import FactLite
 from .fact_set_lite import FactSetLite
+from .fact_set_lite_provenance_type_0 import FactSetLiteProvenanceType0
 from .file_info import FileInfo
 from .file_layer_status import FileLayerStatus
 from .file_report_request import FileReportRequest
@@ -840,6 +841,7 @@ __all__ = (
   "ExecuteEventBlockResponseQbErrorType0",
   "FactLite",
   "FactSetLite",
+  "FactSetLiteProvenanceType0",
   "FileInfo",
   "FileLayerStatus",
   "FileReportRequest",

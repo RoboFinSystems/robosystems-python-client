@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+  from ..models.fact_set_lite_provenance_type_0 import FactSetLiteProvenanceType0
+
 
 T = TypeVar("T", bound="FactSetLite")
 
@@ -32,6 +36,9 @@ class FactSetLite:
           period_start (datetime.date | None | Unset):
           report_id (None | str | Unset): Back-pointer to the ``reports`` table while ``report_id`` still lives on facts.
               Drops out once the retirement migration lands.
+          provenance (FactSetLiteProvenanceType0 | None | Unset): Typed ``FactProvenance`` descriptor (discriminated on
+              ``origin``: pivot | schedule | derived | asserted) recording how this FactSet's facts were constructed. Surfaced
+              as JSON, mirroring how mechanics is exposed. Null for pre-feature historical FactSets.
   """
 
   id: str
@@ -41,9 +48,12 @@ class FactSetLite:
   structure_id: None | str | Unset = UNSET
   period_start: datetime.date | None | Unset = UNSET
   report_id: None | str | Unset = UNSET
+  provenance: FactSetLiteProvenanceType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.fact_set_lite_provenance_type_0 import FactSetLiteProvenanceType0
+
     id = self.id
 
     period_end = self.period_end.isoformat()
@@ -72,6 +82,14 @@ class FactSetLite:
     else:
       report_id = self.report_id
 
+    provenance: dict[str, Any] | None | Unset
+    if isinstance(self.provenance, Unset):
+      provenance = UNSET
+    elif isinstance(self.provenance, FactSetLiteProvenanceType0):
+      provenance = self.provenance.to_dict()
+    else:
+      provenance = self.provenance
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -88,11 +106,15 @@ class FactSetLite:
       field_dict["period_start"] = period_start
     if report_id is not UNSET:
       field_dict["report_id"] = report_id
+    if provenance is not UNSET:
+      field_dict["provenance"] = provenance
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.fact_set_lite_provenance_type_0 import FactSetLiteProvenanceType0
+
     d = dict(src_dict)
     id = d.pop("id")
 
@@ -137,6 +159,23 @@ class FactSetLite:
 
     report_id = _parse_report_id(d.pop("report_id", UNSET))
 
+    def _parse_provenance(data: object) -> FactSetLiteProvenanceType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        provenance_type_0 = FactSetLiteProvenanceType0.from_dict(data)
+
+        return provenance_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(FactSetLiteProvenanceType0 | None | Unset, data)
+
+    provenance = _parse_provenance(d.pop("provenance", UNSET))
+
     fact_set_lite = cls(
       id=id,
       period_end=period_end,
@@ -145,6 +184,7 @@ class FactSetLite:
       structure_id=structure_id,
       period_start=period_start,
       report_id=report_id,
+      provenance=provenance,
     )
 
     fact_set_lite.additional_properties = d
