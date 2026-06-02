@@ -39,7 +39,7 @@ class EventBlockEnvelope:
               `fulfilled` (obligation discharged), `voided` (canceled — terminal), `superseded` (replaced by a corrected event
               — terminal). See `UpdateEventBlockRequest.transition_to` for the valid transition graph.
           occurred_at (datetime.datetime): When the event happened in the real world (UTC).
-          source (str): Capture source (`quickbooks`, `xero`, `plaid`, `native`, `scheduled`, …). Used for adapter
+          source (str): Capture source (`manual`, `system`, `schedule`, `quickbooks`, `xero`, `plaid`). Used for adapter
               routing.
           currency (str): ISO 4217 currency code for `amount`.
           metadata (EventBlockEnvelopeMetadata): Free-form payload — handler-specific keys when the event ran through a

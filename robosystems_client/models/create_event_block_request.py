@@ -42,7 +42,7 @@ class CreateEventBlockRequest:
           (control, approval, reconciliation, inquiry) require event_class='support'. The DB CHECK rejects mismatched
           pairings.
       occurred_at (datetime.datetime): When the event happened in the real world
-      source (str): 'quickbooks' | 'xero' | 'plaid' | 'native' | 'scheduled' | ...
+      source (str): 'manual' | 'system' | 'schedule' | 'quickbooks' | 'xero' | 'plaid'
       event_class (CreateEventBlockRequestEventClass | Unset): REA event class. 'economic' events change resources and
           drive GL postings; 'support' events are audit-trail / value-chain primitives (typically captured with
           apply_handlers=False). Default: CreateEventBlockRequestEventClass.ECONOMIC.
