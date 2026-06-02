@@ -396,6 +396,12 @@ from .operation_envelope_preview_event_block_response import (
 from .operation_envelope_preview_event_block_response_status import (
   OperationEnvelopePreviewEventBlockResponseStatus,
 )
+from .operation_envelope_promote_obligations_response import (
+  OperationEnvelopePromoteObligationsResponse,
+)
+from .operation_envelope_promote_obligations_response_status import (
+  OperationEnvelopePromoteObligationsResponseStatus,
+)
 from .operation_envelope_publish_list_response import (
   OperationEnvelopePublishListResponse,
 )
@@ -491,6 +497,11 @@ from .preview_event_block_response import PreviewEventBlockResponse
 from .preview_event_block_response_handler_metadata import (
   PreviewEventBlockResponseHandlerMetadata,
 )
+from .promote_obligations_request import PromoteObligationsRequest
+from .promote_obligations_response import PromoteObligationsResponse
+from .promote_obligations_response_errors_item import (
+  PromoteObligationsResponseErrorsItem,
+)
 from .publish_list_member_response import PublishListMemberResponse
 from .publish_list_response import PublishListResponse
 from .query_limits import QueryLimits
@@ -548,6 +559,8 @@ from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
 from .set_close_target_operation import SetCloseTargetOperation
+from .set_write_policy_request import SetWritePolicyRequest
+from .set_write_policy_request_write_policy import SetWritePolicyRequestWritePolicy
 from .share_report_operation import ShareReportOperation
 from .share_report_response import ShareReportResponse
 from .share_result_item import ShareResultItem
@@ -963,6 +976,8 @@ __all__ = (
   "OperationEnvelopePortfolioBlockEnvelopeStatus",
   "OperationEnvelopePreviewEventBlockResponse",
   "OperationEnvelopePreviewEventBlockResponseStatus",
+  "OperationEnvelopePromoteObligationsResponse",
+  "OperationEnvelopePromoteObligationsResponseStatus",
   "OperationEnvelopePublishListResponse",
   "OperationEnvelopePublishListResponseStatus",
   "OperationEnvelopeReportResponse",
@@ -1030,6 +1045,9 @@ __all__ = (
   "PositionBlock",
   "PreviewEventBlockResponse",
   "PreviewEventBlockResponseHandlerMetadata",
+  "PromoteObligationsRequest",
+  "PromoteObligationsResponse",
+  "PromoteObligationsResponseErrorsItem",
   "PublishListMemberResponse",
   "PublishListResponse",
   "QueryLimits",
@@ -1079,6 +1097,8 @@ __all__ = (
   "ServiceOfferingsResponse",
   "ServiceOfferingSummary",
   "SetCloseTargetOperation",
+  "SetWritePolicyRequest",
+  "SetWritePolicyRequestWritePolicy",
   "ShareReportOperation",
   "ShareReportResponse",
   "ShareResultItem",

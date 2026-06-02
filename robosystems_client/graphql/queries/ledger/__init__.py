@@ -747,10 +747,11 @@ query GetLedgerPeriodDrafts($period: String!) {
   periodDrafts(period: $period) {
     period periodStart periodEnd draftCount
     totalDebit totalCredit allBalanced
+    qbWritebackConnectionId qbWritePolicy qbPublishCount localOnlyCount
     drafts {
       entryId postingDate type memo provenance
       sourceStructureId sourceStructureName
-      totalDebit totalCredit balanced
+      totalDebit totalCredit balanced willPublishToQb
       lineItems {
         lineItemId elementId elementCode elementName
         debitAmount creditAmount description

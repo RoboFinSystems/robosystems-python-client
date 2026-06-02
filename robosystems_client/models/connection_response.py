@@ -30,6 +30,9 @@ class ConnectionResponse:
       entity_id (None | str | Unset): Entity identifier
       updated_at (datetime.datetime | None | str | Unset): Last update timestamp
       last_sync (datetime.datetime | None | str | Unset): Last sync timestamp
+      write_policy (None | str | Unset): Source-of-truth write policy: 'native' (RoboSystems is authoritative; no
+          outbound write-back) or 'qb_authoritative' (QuickBooks is authoritative; RoboSystems-originated entries publish
+          to QB). Set via the write-policy endpoint.
   """
 
   connection_id: str
@@ -40,6 +43,7 @@ class ConnectionResponse:
   entity_id: None | str | Unset = UNSET
   updated_at: datetime.datetime | None | str | Unset = UNSET
   last_sync: datetime.datetime | None | str | Unset = UNSET
+  write_policy: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -79,6 +83,12 @@ class ConnectionResponse:
     else:
       last_sync = self.last_sync
 
+    write_policy: None | str | Unset
+    if isinstance(self.write_policy, Unset):
+      write_policy = UNSET
+    else:
+      write_policy = self.write_policy
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -96,6 +106,8 @@ class ConnectionResponse:
       field_dict["updated_at"] = updated_at
     if last_sync is not UNSET:
       field_dict["last_sync"] = last_sync
+    if write_policy is not UNSET:
+      field_dict["write_policy"] = write_policy
 
     return field_dict
 
@@ -168,6 +180,15 @@ class ConnectionResponse:
 
     last_sync = _parse_last_sync(d.pop("last_sync", UNSET))
 
+    def _parse_write_policy(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    write_policy = _parse_write_policy(d.pop("write_policy", UNSET))
+
     connection_response = cls(
       connection_id=connection_id,
       provider=provider,
@@ -177,6 +198,7 @@ class ConnectionResponse:
       entity_id=entity_id,
       updated_at=updated_at,
       last_sync=last_sync,
+      write_policy=write_policy,
     )
 
     connection_response.additional_properties = d
