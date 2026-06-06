@@ -59,10 +59,6 @@ create-feature branch_type="feature" branch_name="" base_branch="main" update="y
 create-release type="patch":
     bin/create-release.sh {{type}}
 
-# Create PR
-create-pr target_branch="main" claude_review="true":
-    bin/create-pr.sh {{target_branch}} {{claude_review}}
-
 # Clean up development artifacts
 clean:
     rm -rf .pytest_cache
