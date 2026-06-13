@@ -52,7 +52,7 @@ build-package:
     python -m build
 
 # Create a feature branch
-create-feature branch_type="feature" branch_name="" base_branch="main" update="yes":
+create-feature branch_type="feature" branch_name="" base_branch="main" update="no":
     bin/create-feature.sh {{branch_type}} {{branch_name}} {{base_branch}} {{update}}
 
 # Version management
