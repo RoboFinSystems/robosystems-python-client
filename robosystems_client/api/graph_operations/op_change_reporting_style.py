@@ -111,9 +111,9 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelope]:
   """Change Reporting Style
 
-   Switches the graph's Reporting Style (Phase 2 of §3.2). Synchronous: validates the target Style has
-  a complete composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports
-  are unaffected; new reports use the new Style. Idempotent on the same id.
+   Switches the graph's Reporting Style. Synchronous: validates the target Style has a complete
+  composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports are
+  unaffected; new reports use the new Style. Idempotent on the same id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -121,8 +121,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ChangeReportingStyleOp): Body for the change-reporting-style operation (Phase 2 of
-          §3.2).
+      body (ChangeReportingStyleOp): Body for the change-reporting-style operation.
 
           Switches the graph to a different Reporting Style. The target Style
           must be a library- or customer-authored Structure with
@@ -162,9 +161,9 @@ def sync(
 ) -> ErrorResponse | OperationEnvelope | None:
   """Change Reporting Style
 
-   Switches the graph's Reporting Style (Phase 2 of §3.2). Synchronous: validates the target Style has
-  a complete composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports
-  are unaffected; new reports use the new Style. Idempotent on the same id.
+   Switches the graph's Reporting Style. Synchronous: validates the target Style has a complete
+  composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports are
+  unaffected; new reports use the new Style. Idempotent on the same id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -172,8 +171,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ChangeReportingStyleOp): Body for the change-reporting-style operation (Phase 2 of
-          §3.2).
+      body (ChangeReportingStyleOp): Body for the change-reporting-style operation.
 
           Switches the graph to a different Reporting Style. The target Style
           must be a library- or customer-authored Structure with
@@ -208,9 +206,9 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelope]:
   """Change Reporting Style
 
-   Switches the graph's Reporting Style (Phase 2 of §3.2). Synchronous: validates the target Style has
-  a complete composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports
-  are unaffected; new reports use the new Style. Idempotent on the same id.
+   Switches the graph's Reporting Style. Synchronous: validates the target Style has a complete
+  composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports are
+  unaffected; new reports use the new Style. Idempotent on the same id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -218,8 +216,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ChangeReportingStyleOp): Body for the change-reporting-style operation (Phase 2 of
-          §3.2).
+      body (ChangeReportingStyleOp): Body for the change-reporting-style operation.
 
           Switches the graph to a different Reporting Style. The target Style
           must be a library- or customer-authored Structure with
@@ -257,9 +254,9 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelope | None:
   """Change Reporting Style
 
-   Switches the graph's Reporting Style (Phase 2 of §3.2). Synchronous: validates the target Style has
-  a complete composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports
-  are unaffected; new reports use the new Style. Idempotent on the same id.
+   Switches the graph's Reporting Style. Synchronous: validates the target Style has a complete
+  composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports are
+  unaffected; new reports use the new Style. Idempotent on the same id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -267,8 +264,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ChangeReportingStyleOp): Body for the change-reporting-style operation (Phase 2 of
-          §3.2).
+      body (ChangeReportingStyleOp): Body for the change-reporting-style operation.
 
           Switches the graph to a different Reporting Style. The target Style
           must be a library- or customer-authored Structure with

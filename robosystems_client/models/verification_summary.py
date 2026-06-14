@@ -20,7 +20,7 @@ class VerificationSummary:
   """Server-computed aggregate of a block's ``verification_results``.
 
   Overall counts plus a per-``rule_category`` breakdown, so the viewer
-  renders the grouped Verification Results panel (financial-viewer §7.12)
+  renders the grouped Verification Results panel
   without a client-side results→rules join. Status closure is
   ``pass | fail | error | skipped`` (the ``public.verification_results``
   CHECK); ``total`` is their sum.
