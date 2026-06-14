@@ -17,8 +17,7 @@ class TaxonomyBlockRule:
 
   Exactly one of ``rule_pattern`` (arithmetic) or ``rule_check_kind``
   (model-structure) is non-null per row, enforced by the
-  ``check_rule_pattern_kind_xor`` DB constraint. See
-  information-block.md §5.2.2.
+  ``check_rule_pattern_kind_xor`` DB constraint.
 
       Attributes:
           id (str):

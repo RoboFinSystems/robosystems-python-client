@@ -43,8 +43,7 @@ class TaxonomyBlockRuleRequest:
   ``LeafHasClassification``, ``LibraryOriginImmutability``,
   ``UniqueQNameInTaxonomy``) are system-managed — they're auto-emitted
   by :func:`emit_auto_rules` at taxonomy-block creation time and
-  populate ``rules.rule_check_kind`` instead of ``rule_pattern``. See
-  information-block.md §5.2.2 for the axis split.
+  populate ``rules.rule_check_kind`` instead of ``rule_pattern``.
 
       Attributes:
           name (str): Rule identifier, unique within envelope.

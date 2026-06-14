@@ -16,8 +16,8 @@ class VerificationCategorySummary:
   """Pass/fail/skip counts for one ``rule_category`` within a block's
   verification results.
 
-  Drives the per-category accordions in the Verification Results panel
-  (financial-viewer §7.12). ``category`` is the rule's ``rule_category``
+  Drives the per-category accordions in the Verification Results panel.
+  ``category`` is the rule's ``rule_category``
   (one of the cm:VerificationRule subclasses), resolved by joining each
   result to its Rule.
 

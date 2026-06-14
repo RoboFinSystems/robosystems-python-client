@@ -22,18 +22,17 @@ T = TypeVar("T", bound="RollforwardMechanics")
 class RollforwardMechanics:
   """Filter-based attribution mechanics for ``block_type='rollforward'``.
 
-  Implements Tier 2 of the rollforward attribution design
-  (``information-block.md`` §4.5). Each block decomposes one BS
-  source element's period delta into a list of flow concepts via
-  declared :class:`AttributionFilter` predicates. The renderer
-  evaluates the filters against ledger LineItems at envelope-build
-  time, emits one attributed fact per filter per period, and arbitrates
-  any residual against the default change tag (Tier 1 fallback).
+  Filter-based attribution: each block decomposes one BS source
+  element's period delta into a list of flow concepts via declared
+  :class:`AttributionFilter` predicates. The renderer evaluates the
+  filters against ledger LineItems at envelope-build time, emits one
+  attributed fact per filter per period, and arbitrates any residual
+  against the default change tag fallback.
 
   Reads directly from the typed ``structures.artifact_mechanics`` JSONB
   column. ``attribution_filters`` rides as nested JSON; the predicate
-  union widens as new predicate shapes ship (Phase 2 MVP carries only
-  ``line_item_metadata_field``).
+  union widens as new predicate shapes are added — currently only
+  ``line_item_metadata_field`` is carried.
 
       Attributes:
           bs_source_element_id (str): Element id of the balance-sheet source whose period delta this block decomposes.
@@ -41,10 +40,10 @@ class RollforwardMechanics:
           bs_source_qname (str): QName of the BS source element (e.g. ``mini:CashAndCashEquivalents``). Round-tripped for
               caller convenience; ``bs_source_element_id`` is authoritative.
           kind (Literal['rollforward'] | Unset):  Default: 'rollforward'.
-          default_change_tag_element_id (None | str | Unset): Element id of the Tier 1 default change tag — the fallback
-              flow concept that receives any residual (Δ BS − Σ filter matches). Null when no default is declared; behavior on
+          default_change_tag_element_id (None | str | Unset): Element id of the default change tag — the fallback flow
+              concept that receives any residual (Δ BS − Σ filter matches). Null when no default is declared; behavior on
               residual then follows ``validation_mode``.
-          default_change_tag_qname (None | str | Unset): QName of the Tier 1 default change tag (e.g. ``rs-
+          default_change_tag_qname (None | str | Unset): QName of the default change tag (e.g. ``rs-
               gaap:IncreaseDecreaseInCashAndCashEquivalents``). Round-tripped for caller convenience and operator-readable
               envelopes; ``default_change_tag_element_id`` is authoritative. Null iff ``default_change_tag_element_id`` is
               null.

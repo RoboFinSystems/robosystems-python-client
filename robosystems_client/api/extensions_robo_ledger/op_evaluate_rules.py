@@ -115,8 +115,8 @@ def sync_detailed(
 
    Runs every rule targeting the given structure (plus element- and association-scoped rules for the
   structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
-  VerificationResult row per rule, and returns the results plus a status-keyed summary. Phase delta.3
-  — decoding mode, 5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
+  VerificationResult row per rule, and returns the results plus a status-keyed summary. Decoding mode,
+  5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -167,8 +167,8 @@ def sync(
 
    Runs every rule targeting the given structure (plus element- and association-scoped rules for the
   structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
-  VerificationResult row per rule, and returns the results plus a status-keyed summary. Phase delta.3
-  — decoding mode, 5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
+  VerificationResult row per rule, and returns the results plus a status-keyed summary. Decoding mode,
+  5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -214,8 +214,8 @@ async def asyncio_detailed(
 
    Runs every rule targeting the given structure (plus element- and association-scoped rules for the
   structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
-  VerificationResult row per rule, and returns the results plus a status-keyed summary. Phase delta.3
-  — decoding mode, 5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
+  VerificationResult row per rule, and returns the results plus a status-keyed summary. Decoding mode,
+  5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -264,8 +264,8 @@ async def asyncio(
 
    Runs every rule targeting the given structure (plus element- and association-scoped rules for the
   structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
-  VerificationResult row per rule, and returns the results plus a status-keyed summary. Phase delta.3
-  — decoding mode, 5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
+  VerificationResult row per rule, and returns the results plus a status-keyed summary. Decoding mode,
+  5 patterns (EqualTo, RollUp, RollForward, Exists, CoExists).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
