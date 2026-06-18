@@ -1823,103 +1823,91 @@ class TestFinancialStatementOps:
     assert body.fiscal_year == 2025
 
 
-# ── Bundle download (REST GET to /reports/{id}/download) ──────────────
+# ── Bundle download (GraphQL reportDownloadUrl → follow presigned URL) ──
 
 
 @pytest.mark.unit
 class TestDownloadReportBundle:
-  """``download_report_bundle`` bypasses the typed op_* generators and
-  hits the endpoint via httpx directly — these tests stub the httpx
-  Client at the call site."""
+  """``download_report_bundle`` resolves a presigned URL via GraphQL
+  (``reportDownloadUrl``), then follows it with httpx to pull the
+  bytes — these tests stub ``_query`` and the httpx Client."""
 
-  def _mock_json_envelope(self, gen: int = 1) -> Mock:
-    """Mock the initial JSON envelope response for the JSON-LD path."""
-    resp = Mock()
-    resp.status_code = 200
-    resp.headers = {"content-type": "application/json"}
-    resp.json.return_value = {
-      "download_url": "https://s3.example.com/bundles/rpt_01/g1.jsonld",
-      "expires_at": "2026-05-28T12:30:00Z",
-      "content_type": "application/ld+json",
-      "format": "jsonld",
-      "generation_count": gen,
+  def _gql_data(self, content_type: str, fmt: str, gen: int = 1) -> dict:
+    """Raw GraphQL `data` for the reportDownloadUrl field (camelCase)."""
+    return {
+      "reportDownloadUrl": {
+        "downloadUrl": "https://s3.example.com/bundles/rpt_01/g1",
+        "expiresAt": "2026-05-28T12:30:00Z",
+        "contentType": content_type,
+        "format": fmt,
+        "generationCount": gen,
+      }
     }
-    return resp
 
-  def _mock_artifact(self, content: bytes, filename: str = "rpt_01-g1.jsonld") -> Mock:
+  def _mock_artifact(self, content: bytes, filename: str) -> Mock:
     resp = Mock()
     resp.status_code = 200
     resp.headers = {"content-disposition": f'attachment; filename="{filename}"'}
     resp.content = content
     return resp
 
-  def _mock_xbrl_response(self, content: bytes, gen: int = 1) -> Mock:
-    """Mock the direct binary-stream response for the XBRL path."""
-    resp = Mock()
-    resp.status_code = 200
-    resp.headers = {
-      "content-type": "application/zip",
-      "content-disposition": f'attachment; filename="rpt_01-g{gen}.zip"',
-      "x-bundle-format": "xbrl-2.1",
-      "x-bundle-generation": str(gen),
-    }
-    resp.content = content
-    resp.text = ""
-    return resp
+  def _patch_httpx(self, mock_client_cls, artifact: Mock) -> Mock:
+    mock_client = Mock()
+    mock_client.__enter__ = Mock(return_value=mock_client)
+    mock_client.__exit__ = Mock(return_value=None)
+    mock_client.get.return_value = artifact
+    mock_client_cls.return_value = mock_client
+    return mock_client
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
   def test_jsonld_download_follows_presigned_url(
     self, mock_client_cls, mock_config, graph_id
   ):
-    """JSON-LD path: envelope GET → presigned URL GET → bytes."""
-    mock_client = Mock()
-    mock_client.__enter__ = Mock(return_value=mock_client)
-    mock_client.__exit__ = Mock(return_value=None)
-    mock_client.get.side_effect = [
-      self._mock_json_envelope(gen=2),
-      self._mock_artifact(b'{"@graph": []}', "rpt_01-g2.jsonld"),
-    ]
-    mock_client_cls.return_value = mock_client
-
-    result = LedgerClient(mock_config).download_report_bundle(
-      graph_id, "rpt_01", format="jsonld"
+    """JSON-LD: GraphQL resolves the URL, client follows it for bytes."""
+    mock_client = self._patch_httpx(
+      mock_client_cls, self._mock_artifact(b'{"@graph": []}', "rpt_01-g2.jsonld")
     )
+    with patch.object(
+      LedgerClient,
+      "_query",
+      return_value=self._gql_data("application/ld+json", "jsonld", gen=2),
+    ) as mock_query:
+      result = LedgerClient(mock_config).download_report_bundle(
+        graph_id, "rpt_01", format="jsonld"
+      )
 
     assert result.content == b'{"@graph": []}'
     assert result.filename == "rpt_01-g2.jsonld"
     assert result.format == "jsonld"
     assert result.content_type == "application/ld+json"
     assert result.generation_count == 2
-    # First request hits our endpoint with X-API-Key auth.
-    first_call = mock_client.get.call_args_list[0]
-    assert "/reports/rpt_01/download" in first_call.args[0]
-    assert "format=jsonld" in first_call.args[0]
-    headers = first_call.kwargs["headers"]
-    assert headers["X-API-Key"] == "test-api-key"
+    # GraphQL var carries the enum NAME, not the wire flavor string.
+    assert mock_query.call_args.args[2]["format"] == "JSONLD"
+    # The bytes come from following the presigned URL.
+    assert mock_client.get.call_args.args[0].startswith("https://s3.example.com/")
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
-  def test_xbrl_download_streams_zip_directly(
+  def test_xbrl_download_follows_presigned_url(
     self, mock_client_cls, mock_config, graph_id
   ):
-    """XBRL path: single GET, binary response, no presigned URL hop."""
+    """XBRL: same presigned-URL path now (no more direct zip stream)."""
     zip_bytes = b"PK\x03\x04dummy-zip-payload"
-    mock_client = Mock()
-    mock_client.__enter__ = Mock(return_value=mock_client)
-    mock_client.__exit__ = Mock(return_value=None)
-    mock_client.get.return_value = self._mock_xbrl_response(zip_bytes, gen=3)
-    mock_client_cls.return_value = mock_client
-
-    result = LedgerClient(mock_config).download_report_bundle(
-      graph_id, "rpt_01", format="xbrl-2.1"
-    )
+    self._patch_httpx(mock_client_cls, self._mock_artifact(zip_bytes, "rpt_01-g3.zip"))
+    with patch.object(
+      LedgerClient,
+      "_query",
+      return_value=self._gql_data("application/zip", "xbrl-2.1", gen=3),
+    ) as mock_query:
+      result = LedgerClient(mock_config).download_report_bundle(
+        graph_id, "rpt_01", format="xbrl-2.1"
+      )
 
     assert result.content == zip_bytes
     assert result.filename == "rpt_01-g3.zip"
     assert result.format == "xbrl-2.1"
     assert result.content_type == "application/zip"
     assert result.generation_count == 3
-    # XBRL path only makes one HTTP call.
-    assert mock_client.get.call_count == 1
+    assert mock_query.call_args.args[2]["format"] == "XBRL_2_1"
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
   def test_to_arg_writes_bytes_to_disk(
@@ -1927,16 +1915,16 @@ class TestDownloadReportBundle:
   ):
     """``to=path`` writes the artifact and exposes ``result.path``."""
     zip_bytes = b"PK\x03\x04zip"
-    mock_client = Mock()
-    mock_client.__enter__ = Mock(return_value=mock_client)
-    mock_client.__exit__ = Mock(return_value=None)
-    mock_client.get.return_value = self._mock_xbrl_response(zip_bytes)
-    mock_client_cls.return_value = mock_client
-
+    self._patch_httpx(mock_client_cls, self._mock_artifact(zip_bytes, "rpt_01-g1.zip"))
     target = tmp_path / "subdir" / "out.zip"
-    result = LedgerClient(mock_config).download_report_bundle(
-      graph_id, "rpt_01", format="xbrl-2.1", to=str(target)
-    )
+    with patch.object(
+      LedgerClient,
+      "_query",
+      return_value=self._gql_data("application/zip", "xbrl-2.1"),
+    ):
+      result = LedgerClient(mock_config).download_report_bundle(
+        graph_id, "rpt_01", format="xbrl-2.1", to=str(target)
+      )
 
     assert result.path == target
     assert target.read_bytes() == zip_bytes
@@ -1944,19 +1932,25 @@ class TestDownloadReportBundle:
     assert target.parent.is_dir()
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
-  def test_non_200_endpoint_response_raises(
-    self, mock_client_cls, mock_config, graph_id
-  ):
-    err_resp = Mock(status_code=404, text="not found")
+  def test_presigned_url_non_200_raises(self, mock_client_cls, mock_config, graph_id):
+    err_resp = Mock(status_code=403, text="expired")
     err_resp.headers = {}
-    mock_client = Mock()
-    mock_client.__enter__ = Mock(return_value=mock_client)
-    mock_client.__exit__ = Mock(return_value=None)
-    mock_client.get.return_value = err_resp
-    mock_client_cls.return_value = mock_client
+    self._patch_httpx(mock_client_cls, err_resp)
+    with patch.object(
+      LedgerClient,
+      "_query",
+      return_value=self._gql_data("application/ld+json", "jsonld"),
+    ):
+      with pytest.raises(RuntimeError, match="Failed to follow presigned URL"):
+        LedgerClient(mock_config).download_report_bundle(graph_id, "rpt_01")
 
-    with pytest.raises(RuntimeError, match="Download bundle failed"):
-      LedgerClient(mock_config).download_report_bundle(graph_id, "rpt_missing")
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_missing_report_raises(self, mock_client_cls, mock_config, graph_id):
+    with patch.object(LedgerClient, "_query", return_value={"reportDownloadUrl": None}):
+      with pytest.raises(RuntimeError, match="not found"):
+        LedgerClient(mock_config).download_report_bundle(graph_id, "rpt_missing")
+    # Never reaches the artifact fetch.
+    mock_client_cls.assert_not_called()
 
   def test_no_token_raises(self, mock_config, graph_id):
     mock_config["token"] = None

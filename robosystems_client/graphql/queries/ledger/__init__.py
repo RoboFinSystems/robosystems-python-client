@@ -851,6 +851,31 @@ def parse_report(data: dict[str, Any]) -> dict[str, Any] | None:
   return keys_to_snake(r) if r is not None else None
 
 
+# Presigned-URL download for a published Report's serialization bundle.
+# Replaces the retired `GET .../reports/{id}/download` REST resource — a
+# download is a read, so it lives on the read surface. Every flavor
+# resolves to a short-lived presigned S3 URL the client follows directly
+# (JSON-LD stamped at publish; XBRL materialized + cached on first
+# request). `format` takes the `ReportDownloadFormat` enum (JSONLD,
+# XBRL_2_1).
+GET_REPORT_DOWNLOAD_URL_QUERY = """
+query GetLedgerReportDownloadUrl(
+  $reportId: String!
+  $format: ReportDownloadFormat = JSONLD
+  $expiresIn: Int = 300
+) {
+  reportDownloadUrl(reportId: $reportId, format: $format, expiresIn: $expiresIn) {
+    downloadUrl expiresAt contentType format generationCount
+  }
+}
+""".strip()
+
+
+def parse_report_download_url(data: dict[str, Any]) -> dict[str, Any] | None:
+  r = data.get("reportDownloadUrl")
+  return keys_to_snake(r) if r is not None else None
+
+
 # Report rehydrated as a package — Report metadata + N rendered
 # `InformationBlock` envelopes (one per attached FactSet). Drives the
 # `/reports/[id]` package viewer and replaces the per-statement
