@@ -16,8 +16,11 @@ T = TypeVar("T", bound="EntryTemplateRequest")
 class EntryTemplateRequest:
   """
   Attributes:
-      debit_element_id (str): Element to debit (e.g., Depreciation Expense)
-      credit_element_id (str): Element to credit (e.g., Accumulated Depreciation)
+      debit_element_id (str): CoA element id to debit (e.g. Depreciation Expense). This is a chart-of-accounts element
+          id — the `id` returned by get-unmapped-elements / get-graph-schema — NOT a taxonomy qname.
+      credit_element_id (str): CoA element id to credit (e.g. Accumulated Depreciation). A chart-of-accounts element
+          id (see get-unmapped-elements), not a taxonomy qname. One template = one debit/credit pair; model a multi-
+          account entry as several schedules.
       entry_type (EntryTemplateRequestEntryType | Unset): Entry type for generated entries Default:
           EntryTemplateRequestEntryType.CLOSING.
       memo_template (str | Unset): Memo template ({structure_name} is replaced) Default: ''.

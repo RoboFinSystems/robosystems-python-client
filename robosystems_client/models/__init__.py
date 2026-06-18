@@ -209,9 +209,6 @@ from .get_file_info_response import GetFileInfoResponse
 from .get_operation_status_response_getoperationstatus import (
   GetOperationStatusResponseGetoperationstatus,
 )
-from .get_report_bundle_download_url_report_bundle_download_response import (
-  GetReportBundleDownloadUrlReportBundleDownloadResponse,
-)
 from .graph_capacity_response import GraphCapacityResponse
 from .graph_info import GraphInfo
 from .graph_limits_response import GraphLimitsResponse
@@ -869,7 +866,6 @@ __all__ = (
   "GetCurrentAuthUserResponseGetcurrentauthuser",
   "GetFileInfoResponse",
   "GetOperationStatusResponseGetoperationstatus",
-  "GetReportBundleDownloadUrlReportBundleDownloadResponse",
   "GraphCapacityResponse",
   "GraphInfo",
   "GraphLimitsResponse",

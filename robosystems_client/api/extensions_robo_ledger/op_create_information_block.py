@@ -122,7 +122,10 @@ def sync_detailed(
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
   `payload` is validated against that type's creation schema at dispatch. Schedule dispatches to the
-  existing Schedule machinery; statement block types raise 501 (use create-report instead).
+  existing Schedule machinery; statement block types raise 501 (use create-report instead). Authoring
+  schedules for a close? Call `get-close-playbook` (mode='initiate') first — one schedule is a single
+  debit/credit element pair, so multi-line entries become multiple schedules, and element ids must be
+  real (discover via get-graph-schema / get-unmapped-elements / suggest-mapping).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -170,7 +173,10 @@ def sync(
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
   `payload` is validated against that type's creation schema at dispatch. Schedule dispatches to the
-  existing Schedule machinery; statement block types raise 501 (use create-report instead).
+  existing Schedule machinery; statement block types raise 501 (use create-report instead). Authoring
+  schedules for a close? Call `get-close-playbook` (mode='initiate') first — one schedule is a single
+  debit/credit element pair, so multi-line entries become multiple schedules, and element ids must be
+  real (discover via get-graph-schema / get-unmapped-elements / suggest-mapping).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -213,7 +219,10 @@ async def asyncio_detailed(
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
   `payload` is validated against that type's creation schema at dispatch. Schedule dispatches to the
-  existing Schedule machinery; statement block types raise 501 (use create-report instead).
+  existing Schedule machinery; statement block types raise 501 (use create-report instead). Authoring
+  schedules for a close? Call `get-close-playbook` (mode='initiate') first — one schedule is a single
+  debit/credit element pair, so multi-line entries become multiple schedules, and element ids must be
+  real (discover via get-graph-schema / get-unmapped-elements / suggest-mapping).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -259,7 +268,10 @@ async def asyncio(
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
   `payload` is validated against that type's creation schema at dispatch. Schedule dispatches to the
-  existing Schedule machinery; statement block types raise 501 (use create-report instead).
+  existing Schedule machinery; statement block types raise 501 (use create-report instead). Authoring
+  schedules for a close? Call `get-close-playbook` (mode='initiate') first — one schedule is a single
+  debit/credit element pair, so multi-line entries become multiple schedules, and element ids must be
+  real (discover via get-graph-schema / get-unmapped-elements / suggest-mapping).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

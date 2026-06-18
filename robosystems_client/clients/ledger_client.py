@@ -210,6 +210,7 @@ from ..graphql.queries.ledger import (
 )
 from ..graphql.queries.ledger import (
   GET_PUBLISH_LIST_QUERY,
+  GET_REPORT_DOWNLOAD_URL_QUERY,
   GET_REPORT_PACKAGE_QUERY,
   GET_REPORT_QUERY,
   GET_STATEMENT_QUERY,
@@ -218,6 +219,7 @@ from ..graphql.queries.ledger import (
   parse_publish_list,
   parse_publish_lists,
   parse_report,
+  parse_report_download_url,
   parse_report_package,
   parse_reports,
   parse_statement,
@@ -317,6 +319,10 @@ from ..types import UNSET
 # or without quotes. Used by ``download_report_bundle`` to recover the
 # server-suggested filename when writing the bundle to disk.
 _FILENAME_PATTERN = re.compile(r'filename="?([^";]+)"?', re.IGNORECASE)
+
+# Map the wire flavor strings the facade accepts to the GraphQL
+# ``ReportDownloadFormat`` enum names used as query variables.
+_DOWNLOAD_FORMAT_ALIASES = {"jsonld": "JSONLD", "xbrl-2.1": "XBRL_2_1"}
 
 
 def _parse_filename(content_disposition: str) -> str | None:
@@ -1768,24 +1774,24 @@ class LedgerClient:
     to: str | Path | None = None,
     expires_in: int = 300,
   ) -> ReportBundleDownload:
-    """Download a Report's serialization bundle (JSON-LD or XBRL 2.1).
+    """Download a published Report's serialization bundle (JSON-LD or XBRL 2.1).
 
-    JSON-LD path: backend returns a JSON envelope with a short-lived
-    presigned URL to the S3-stamped bundle; client follows the URL
-    and pulls the bytes. XBRL path: backend streams the zip directly
-    (per spec — XBRL is on-demand emit, not stored).
+    A download is a read, so the presigned URL is resolved through the
+    GraphQL ``reportDownloadUrl`` field (the REST download route was
+    retired). Every flavor resolves to a short-lived presigned S3 URL —
+    JSON-LD is stamped at publish time; XBRL is materialized + cached on
+    first request. The client follows the URL and pulls the bytes.
 
     Args:
         graph_id: Graph identifier owning the Report.
         report_id: Report identifier (``rpt_``-prefixed ULID).
-        format: Serialization flavor — ``"jsonld"`` for the JSON-LD
-            bundle, ``"xbrl-2.1"`` for the XBRL 2.1 zip. Other RDF /
-            XBRL flavors slot in as their producers ship.
+        format: Serialization flavor — ``"jsonld"`` (default) or
+            ``"xbrl-2.1"``. The enum names ``"JSONLD"`` / ``"XBRL_2_1"``
+            are also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
             written file.
-        expires_in: Presigned URL lifetime in seconds (JSON-LD only;
-            ignored for XBRL flavors).
+        expires_in: Presigned URL lifetime in seconds (60–3600).
 
     Returns:
         :class:`ReportBundleDownload` with the artifact bytes,
@@ -1793,66 +1799,50 @@ class LedgerClient:
         and (when ``to`` is set) the path written.
 
     Raises:
-        RuntimeError: backend returned non-2xx, the presigned URL
-            could not be followed, or no API key is configured on the
-            client.
-        httpx.TimeoutException: the request exceeded ``self.timeout``
-            (passed through unwrapped so callers with their own
-            retry / backoff strategy can distinguish a timeout from a
-            generic failure).
-        httpx.RequestError: any other transport-level failure
-            (DNS, connection refused, TLS); not wrapped so the original
+        RuntimeError: the report doesn't exist, or the presigned URL
+            could not be followed.
+        GraphQLError: the report exists but has no published bundle
+            (``REPORT_BUNDLE_NOT_AVAILABLE``), or another GraphQL error.
+        httpx.TimeoutException: following the presigned URL exceeded
+            ``self.timeout`` (passed through unwrapped so callers with
+            their own retry / backoff can distinguish it from a generic
+            failure).
+        httpx.RequestError: any other transport-level failure (DNS,
+            connection refused, TLS); not wrapped so the original
             networking context surfaces in tracebacks.
     """
-    if not self.token:
-      raise RuntimeError("No API key provided. Set X-API-Key in headers.")
-    base = self.base_url.rstrip("/")
-    url = (
-      f"{base}/extensions/roboledger/{graph_id}/reports/{report_id}"
-      f"/download?format={format}&expires_in={expires_in}"
+    gql_format = _DOWNLOAD_FORMAT_ALIASES.get(format.lower(), format)
+    data = self._query(
+      graph_id,
+      GET_REPORT_DOWNLOAD_URL_QUERY,
+      {"reportId": report_id, "format": gql_format, "expiresIn": expires_in},
     )
-    headers = {**self.headers, "X-API-Key": self.token}
+    info = parse_report_download_url(data)
+    if info is None:
+      raise RuntimeError(f"Report '{report_id}' not found.")
+
+    download_url = info["download_url"]
     with httpx.Client(timeout=self.timeout) as client:
-      response = client.get(url, headers=headers)
-      if response.status_code != 200:
-        raise RuntimeError(
-          f"Download bundle failed ({response.status_code}): {response.text}"
-        )
-      content_type = response.headers.get("content-type", "")
-      if "application/json" in content_type:
-        # JSON-LD path — envelope contains a presigned URL to follow
-        envelope = response.json()
-        download_url = envelope["download_url"]
-        artifact = client.get(download_url)
-        if artifact.status_code != 200:
-          raise RuntimeError(
-            f"Failed to follow presigned URL ({artifact.status_code}): {artifact.text}"
-          )
-        filename = (
-          _parse_filename(artifact.headers.get("content-disposition", ""))
-          or f"{report_id}-g{envelope.get('generation_count', 1)}.jsonld"
-        )
-        result = ReportBundleDownload(
-          content=artifact.content,
-          filename=filename,
-          format=str(envelope.get("format", format)),
-          content_type=str(envelope.get("content_type", "application/ld+json")),
-          generation_count=envelope.get("generation_count"),
-        )
-      else:
-        # XBRL path — body IS the zip
-        filename = (
-          _parse_filename(response.headers.get("content-disposition", ""))
-          or f"{report_id}.zip"
-        )
-        generation_header = response.headers.get("x-bundle-generation")
-        result = ReportBundleDownload(
-          content=response.content,
-          filename=filename,
-          format=response.headers.get("x-bundle-format", format),
-          content_type=content_type or "application/zip",
-          generation_count=int(generation_header) if generation_header else None,
-        )
+      # Presigned URL is pre-authorized — no auth headers attached.
+      artifact = client.get(download_url)
+    if artifact.status_code != 200:
+      raise RuntimeError(
+        f"Failed to follow presigned URL ({artifact.status_code}): {artifact.text}"
+      )
+
+    generation_count = info.get("generation_count")
+    default_ext = "zip" if gql_format == "XBRL_2_1" else "jsonld"
+    filename = (
+      _parse_filename(artifact.headers.get("content-disposition", ""))
+      or f"{report_id}-g{generation_count or 1}.{default_ext}"
+    )
+    result = ReportBundleDownload(
+      content=artifact.content,
+      filename=filename,
+      format=str(info.get("format", format)),
+      content_type=str(info.get("content_type", "")),
+      generation_count=generation_count,
+    )
     if to is not None:
       path = Path(to)
       path.parent.mkdir(parents=True, exist_ok=True)

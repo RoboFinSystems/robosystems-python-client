@@ -23,16 +23,20 @@ class CreateScheduleRequest:
   """
   Attributes:
       name (str): Schedule name
-      element_ids (list[str]): Element IDs to include
+      element_ids (list[str]): CoA element ids the schedule touches (the `id` from get-unmapped-elements, not taxonomy
+          qnames) — typically the same debit + credit ids used in entry_template.
       period_start (datetime.date): First period start
       period_end (datetime.date): Last period end
       monthly_amount (int): Monthly amount in cents
       entry_template (EntryTemplateRequest):
       taxonomy_id (None | str | Unset): Taxonomy ID (auto-creates if omitted)
       schedule_metadata (None | ScheduleMetadataRequest | Unset):
-      closed_through (datetime.date | None | Unset): If provided, facts with period_end ≤ this date are flagged as
-          'historical' (already reflected in opening balances, ignored by the close workflow). Used during initial ledger
-          setup to create schedules whose early facts have already been captured elsewhere.
+      closed_through (datetime.date | None | Unset): Watermark for onboarding. Facts with period_end ≤ this date are
+          flagged 'historical' and their schedule_entry_due obligations are emitted 'voided', so the close workflow starts
+          drafting at the first open period. Set this to the last day of the fiscal calendar's closed_through month
+          (calendar '2026-05' → '2026-05-31') whether those months were actually closed in RoboLedger or just baseline-
+          watermarked at initialization. Omitting it (when prior periods exist) leaves pre-watermark periods as 'pending'
+          obligations that block the first close.
       source_transaction_id (None | str | Unset): Free-form reference to the originating GL transaction (e.g. an
           import ID, ledger entry ID, or external system key). Stored in artifact_mechanics for audit; no FK constraint.
   """
