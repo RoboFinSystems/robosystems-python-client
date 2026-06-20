@@ -1382,6 +1382,46 @@ class TestScheduleAdditionalOps:
     result = client.delete_schedule(graph_id, "str_sched_1")
     assert result["structure_id"] == "str_sched_1"
 
+  @patch("robosystems_client.clients.ledger_client.op_rebuild_schedule")
+  def test_rebuild_schedule(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "rebuild-schedule",
+      {
+        "structure_id": "str_sched_1",
+        "name": "Depreciation",
+        "taxonomy_id": "tax_dep",
+        "total_periods": 36,
+        "total_facts": 36,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.rebuild_schedule(graph_id, "str_sched_1")
+    assert result["total_facts"] == 36
+    assert mock_op.call_args.kwargs["graph_id"] == graph_id
+    body = mock_op.call_args.kwargs["body"]
+    assert body.structure_id == "str_sched_1"
+    assert mock_op.call_args.kwargs["idempotency_key"] is UNSET
+
+  @patch("robosystems_client.clients.ledger_client.op_rebuild_schedule")
+  def test_rebuild_schedule_passes_idempotency_key(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope(
+      "rebuild-schedule",
+      {
+        "structure_id": "str_sched_1",
+        "name": "Depreciation",
+        "taxonomy_id": "tax_dep",
+        "total_periods": 36,
+        "total_facts": 36,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.rebuild_schedule(graph_id, "str_sched_1", idempotency_key="key-123")
+    assert mock_op.call_args.kwargs["idempotency_key"] == "key-123"
+
 
 # ── Period close additional ops ─────────────────────────────────────────
 

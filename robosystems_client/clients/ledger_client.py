@@ -103,6 +103,9 @@ from ..api.extensions_robo_ledger.op_update_entity import (
 from ..api.extensions_robo_ledger.op_update_information_block import (
   sync_detailed as op_update_information_block,
 )
+from ..api.extensions_robo_ledger.op_rebuild_schedule import (
+  sync_detailed as op_rebuild_schedule,
+)
 from ..api.extensions_robo_ledger.op_add_publish_list_members import (
   sync_detailed as op_add_publish_list_members,
 )
@@ -252,6 +255,7 @@ from ..models.delete_legacy_arm import DeleteLegacyArm
 from ..models.delete_rollforward_arm import DeleteRollforwardArm
 from ..models.delete_schedule_arm import DeleteScheduleArm
 from ..models.delete_schedule_request import DeleteScheduleRequest
+from ..models.rebuild_schedule_request import RebuildScheduleRequest
 from ..models.update_legacy_arm import UpdateLegacyArm
 from ..models.update_rollforward_arm import UpdateRollforwardArm
 from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
@@ -309,6 +313,7 @@ from ..models.preview_event_block_response import PreviewEventBlockResponse
 from ..models.publish_list_member_response import PublishListMemberResponse
 from ..models.publish_list_response import PublishListResponse
 from ..models.report_response import ReportResponse
+from ..models.schedule_created_response import ScheduleCreatedResponse
 from ..models.share_report_response import ShareReportResponse
 from ..models.taxonomy_block_envelope import TaxonomyBlockEnvelope
 
@@ -1186,6 +1191,40 @@ class LedgerClient:
     return self._typed_result(
       "Delete schedule", envelope, DeleteInformationBlockResponse
     )
+
+  def rebuild_schedule(
+    self,
+    graph_id: str,
+    structure_id: str,
+    *,
+    idempotency_key: str | None = None,
+  ) -> ScheduleCreatedResponse:
+    """Rebuild a schedule in place — re-run the generator on an existing schedule.
+
+    Atomic alternative to delete-then-recreate (which orphans pending
+    obligations): preserves the structure id, element associations, and
+    taxonomy; voids the old pending obligation chain; deletes the old
+    facts + SumEquals rules; and regenerates fresh forward facts + a
+    fresh obligation chain from the schedule's stored definition
+    (``entry_template`` / ``schedule_metadata`` / ``monthly_amount`` /
+    period bounds). The historical-vs-in-scope split is re-derived from
+    the current fiscal calendar ``closed_through``, so a rebuild re-scopes
+    the schedule to today's close state. Use this to pick up a fixed
+    generator without orphaning obligations.
+
+    Supply ``idempotency_key`` to make the call safe to retry — replays
+    within 24 hours return the same envelope. Reusing the key with a
+    different body returns HTTP 409.
+    """
+    body = RebuildScheduleRequest(structure_id=structure_id)
+    response = op_rebuild_schedule(
+      graph_id=graph_id,
+      body=body,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Rebuild schedule", response)
+    return self._typed_result("Rebuild schedule", envelope, ScheduleCreatedResponse)
 
   # ── Period close ────────────────────────────────────────────────────
 
