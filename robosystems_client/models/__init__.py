@@ -409,6 +409,12 @@ from .operation_envelope_report_response import OperationEnvelopeReportResponse
 from .operation_envelope_report_response_status import (
   OperationEnvelopeReportResponseStatus,
 )
+from .operation_envelope_schedule_created_response import (
+  OperationEnvelopeScheduleCreatedResponse,
+)
+from .operation_envelope_schedule_created_response_status import (
+  OperationEnvelopeScheduleCreatedResponseStatus,
+)
 from .operation_envelope_security_response import OperationEnvelopeSecurityResponse
 from .operation_envelope_security_response_status import (
   OperationEnvelopeSecurityResponseStatus,
@@ -504,6 +510,7 @@ from .publish_list_response import PublishListResponse
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
+from .rebuild_schedule_request import RebuildScheduleRequest
 from .regenerate_report_operation import RegenerateReportOperation
 from .register_request import RegisterRequest
 from .remove_publish_list_member_operation import RemovePublishListMemberOperation
@@ -527,6 +534,10 @@ from .rollforward_mechanics_validation_mode import RollforwardMechanicsValidatio
 from .rule_lite import RuleLite
 from .rule_target_lite import RuleTargetLite
 from .rule_variable_lite import RuleVariableLite
+from .schedule_created_response import ScheduleCreatedResponse
+from .schedule_created_response_rule_summary_type_0 import (
+  ScheduleCreatedResponseRuleSummaryType0,
+)
 from .schedule_mechanics import ScheduleMechanics
 from .schedule_metadata_request import ScheduleMetadataRequest
 from .schema_export_response import SchemaExportResponse
@@ -978,6 +989,8 @@ __all__ = (
   "OperationEnvelopePublishListResponseStatus",
   "OperationEnvelopeReportResponse",
   "OperationEnvelopeReportResponseStatus",
+  "OperationEnvelopeScheduleCreatedResponse",
+  "OperationEnvelopeScheduleCreatedResponseStatus",
   "OperationEnvelopeSecurityResponse",
   "OperationEnvelopeSecurityResponseStatus",
   "OperationEnvelopeShareReportResponse",
@@ -1049,6 +1062,7 @@ __all__ = (
   "QueryLimits",
   "QuickBooksConnectionConfig",
   "RateLimits",
+  "RebuildScheduleRequest",
   "RegenerateReportOperation",
   "RegisterRequest",
   "RemovePublishListMemberOperation",
@@ -1070,6 +1084,8 @@ __all__ = (
   "RuleLite",
   "RuleTargetLite",
   "RuleVariableLite",
+  "ScheduleCreatedResponse",
+  "ScheduleCreatedResponseRuleSummaryType0",
   "ScheduleMechanics",
   "ScheduleMetadataRequest",
   "SchemaExportResponse",
