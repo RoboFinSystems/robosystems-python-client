@@ -327,7 +327,11 @@ _FILENAME_PATTERN = re.compile(r'filename="?([^";]+)"?', re.IGNORECASE)
 
 # Map the wire flavor strings the facade accepts to the GraphQL
 # ``ReportDownloadFormat`` enum names used as query variables.
-_DOWNLOAD_FORMAT_ALIASES = {"jsonld": "JSONLD", "xbrl-2.1": "XBRL_2_1"}
+_DOWNLOAD_FORMAT_ALIASES = {
+  "jsonld": "JSONLD",
+  "holon-jsonld": "HOLON_JSONLD",
+  "xbrl-2.1": "XBRL_2_1",
+}
 
 
 def _parse_filename(content_disposition: str) -> str | None:
@@ -1824,9 +1828,11 @@ class LedgerClient:
     Args:
         graph_id: Graph identifier owning the Report.
         report_id: Report identifier (``rpt_``-prefixed ULID).
-        format: Serialization flavor — ``"jsonld"`` (default) or
-            ``"xbrl-2.1"``. The enum names ``"JSONLD"`` / ``"XBRL_2_1"``
-            are also accepted.
+        format: Serialization flavor — ``"jsonld"`` (default, the flat
+            canonical bundle), ``"holon-jsonld"`` (the dataset-form
+            scene/boundary/projection holon), or ``"xbrl-2.1"``. The enum
+            names ``"JSONLD"`` / ``"HOLON_JSONLD"`` / ``"XBRL_2_1"`` are
+            also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
             written file.
@@ -1870,7 +1876,9 @@ class LedgerClient:
       )
 
     generation_count = info.get("generation_count")
-    default_ext = "zip" if gql_format == "XBRL_2_1" else "jsonld"
+    default_ext = {"XBRL_2_1": "zip", "HOLON_JSONLD": "holon.jsonld"}.get(
+      gql_format, "jsonld"
+    )
     filename = (
       _parse_filename(artifact.headers.get("content-disposition", ""))
       or f"{report_id}-g{generation_count or 1}.{default_ext}"
