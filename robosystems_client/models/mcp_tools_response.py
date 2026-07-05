@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.mcp_tools_response_tools_item import MCPToolsResponseToolsItem
@@ -19,9 +21,13 @@ class MCPToolsResponse:
 
   Attributes:
       tools (list[MCPToolsResponseToolsItem]): List of available MCP tools with their schemas
+      instructions (None | str | Unset): Per-graph routing guidance for MCP clients, tailored to the graph's category
+          and live tool set. Clients should pass this to the MCP server's `instructions` handshake field so it is always
+          in the agent's context.
   """
 
   tools: list[MCPToolsResponseToolsItem]
+  instructions: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -30,6 +36,12 @@ class MCPToolsResponse:
       tools_item = tools_item_data.to_dict()
       tools.append(tools_item)
 
+    instructions: None | str | Unset
+    if isinstance(self.instructions, Unset):
+      instructions = UNSET
+    else:
+      instructions = self.instructions
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -37,6 +49,8 @@ class MCPToolsResponse:
         "tools": tools,
       }
     )
+    if instructions is not UNSET:
+      field_dict["instructions"] = instructions
 
     return field_dict
 
@@ -52,8 +66,18 @@ class MCPToolsResponse:
 
       tools.append(tools_item)
 
+    def _parse_instructions(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    instructions = _parse_instructions(d.pop("instructions", UNSET))
+
     mcp_tools_response = cls(
       tools=tools,
+      instructions=instructions,
     )
 
     mcp_tools_response.additional_properties = d
