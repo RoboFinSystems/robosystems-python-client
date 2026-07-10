@@ -8,33 +8,33 @@ from attrs import define as _attrs_define
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.cypher_query_request_parameters_type_0 import (
-    CypherQueryRequestParametersType0,
+  from ..models.cypher_statement_request_parameters_type_0 import (
+    CypherStatementRequestParametersType0,
   )
 
 
-T = TypeVar("T", bound="CypherQueryRequest")
+T = TypeVar("T", bound="CypherStatementRequest")
 
 
 @_attrs_define
-class CypherQueryRequest:
+class CypherStatementRequest:
   """Request model for Cypher query execution.
 
   Attributes:
       query (str): The Cypher query to execute. Use parameters ($param_name) for all dynamic values to prevent
           injection attacks.
-      parameters (CypherQueryRequestParametersType0 | None | Unset): Query parameters for safe value substitution.
+      parameters (CypherStatementRequestParametersType0 | None | Unset): Query parameters for safe value substitution.
           ALWAYS use parameters instead of string interpolation.
       timeout (int | None | Unset): Query timeout in seconds (1-300) Default: 60.
   """
 
   query: str
-  parameters: CypherQueryRequestParametersType0 | None | Unset = UNSET
+  parameters: CypherStatementRequestParametersType0 | None | Unset = UNSET
   timeout: int | None | Unset = 60
 
   def to_dict(self) -> dict[str, Any]:
-    from ..models.cypher_query_request_parameters_type_0 import (
-      CypherQueryRequestParametersType0,
+    from ..models.cypher_statement_request_parameters_type_0 import (
+      CypherStatementRequestParametersType0,
     )
 
     query = self.query
@@ -42,7 +42,7 @@ class CypherQueryRequest:
     parameters: dict[str, Any] | None | Unset
     if isinstance(self.parameters, Unset):
       parameters = UNSET
-    elif isinstance(self.parameters, CypherQueryRequestParametersType0):
+    elif isinstance(self.parameters, CypherStatementRequestParametersType0):
       parameters = self.parameters.to_dict()
     else:
       parameters = self.parameters
@@ -69,8 +69,8 @@ class CypherQueryRequest:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.cypher_query_request_parameters_type_0 import (
-      CypherQueryRequestParametersType0,
+    from ..models.cypher_statement_request_parameters_type_0 import (
+      CypherStatementRequestParametersType0,
     )
 
     d = dict(src_dict)
@@ -78,7 +78,7 @@ class CypherQueryRequest:
 
     def _parse_parameters(
       data: object,
-    ) -> CypherQueryRequestParametersType0 | None | Unset:
+    ) -> CypherStatementRequestParametersType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
@@ -86,12 +86,12 @@ class CypherQueryRequest:
       try:
         if not isinstance(data, dict):
           raise TypeError()
-        parameters_type_0 = CypherQueryRequestParametersType0.from_dict(data)
+        parameters_type_0 = CypherStatementRequestParametersType0.from_dict(data)
 
         return parameters_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
         pass
-      return cast(CypherQueryRequestParametersType0 | None | Unset, data)
+      return cast(CypherStatementRequestParametersType0 | None | Unset, data)
 
     parameters = _parse_parameters(d.pop("parameters", UNSET))
 
@@ -104,10 +104,10 @@ class CypherQueryRequest:
 
     timeout = _parse_timeout(d.pop("timeout", UNSET))
 
-    cypher_query_request = cls(
+    cypher_statement_request = cls(
       query=query,
       parameters=parameters,
       timeout=timeout,
     )
 
-    return cypher_query_request
+    return cypher_statement_request

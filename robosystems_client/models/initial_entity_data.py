@@ -34,7 +34,7 @@ class InitialEntityData:
               'partnership', 'sole_proprietorship', 'non_profit'). Drives the graph's default Reporting Style at creation —
               partnership and llc get dedicated equity-form Styles; everything else defaults to corporate. Blank falls back to
               corporate.
-          reporting_style_id (None | str | Unset): Optional explicit Reporting Style Structure id to pin on the graph,
+          reporting_style_id (None | str | Unset): Optional explicit Reporting Style Structure id to pin on the entity,
               overriding the entity_type-derived default. Leave blank to derive from entity_type. Change later via the change-
               reporting-style operation.
   """

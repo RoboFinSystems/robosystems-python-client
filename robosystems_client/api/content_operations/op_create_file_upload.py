@@ -8,21 +8,23 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.file_upload_request import FileUploadRequest
-from ...models.file_upload_response import FileUploadResponse
-from ...models.http_validation_error import HTTPValidationError
-from ...types import Response
+from ...models.operation_envelope import OperationEnvelope
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
   body: FileUploadRequest,
+  idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
+  if not isinstance(idempotency_key, Unset):
+    headers["Idempotency-Key"] = idempotency_key
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/files".format(
+    "url": "/v1/graphs/{graph_id}/operations/create-file-upload".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -37,9 +39,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | FileUploadResponse | HTTPValidationError | None:
+) -> ErrorResponse | OperationEnvelope | None:
   if response.status_code == 200:
-    response_200 = FileUploadResponse.from_dict(response.json())
+    response_200 = OperationEnvelope.from_dict(response.json())
 
     return response_200
 
@@ -63,8 +65,13 @@ def _parse_response(
 
     return response_404
 
+  if response.status_code == 409:
+    response_409 = ErrorResponse.from_dict(response.json())
+
+    return response_409
+
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -86,7 +93,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | FileUploadResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -100,15 +107,20 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
-) -> Response[ErrorResponse | FileUploadResponse | HTTPValidationError]:
-  """Create File Upload
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelope]:
+  """Create File Upload (presign an S3 upload)
 
-   Returns a presigned S3 URL for direct upload. After uploading, call `PATCH /files/{file_id}` with
-  `status=uploaded` to trigger DuckDB staging. Tables are auto-created if missing. Not allowed on
-  entity graphs or shared repositories.
+   Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
+  `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
+  missing. Not allowed on entity graphs or shared repositories.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
+      idempotency_key (None | str | Unset):
       body (FileUploadRequest):
 
   Raises:
@@ -116,12 +128,13 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | FileUploadResponse | HTTPValidationError]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = client.get_httpx_client().request(
@@ -136,15 +149,20 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
-) -> ErrorResponse | FileUploadResponse | HTTPValidationError | None:
-  """Create File Upload
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelope | None:
+  """Create File Upload (presign an S3 upload)
 
-   Returns a presigned S3 URL for direct upload. After uploading, call `PATCH /files/{file_id}` with
-  `status=uploaded` to trigger DuckDB staging. Tables are auto-created if missing. Not allowed on
-  entity graphs or shared repositories.
+   Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
+  `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
+  missing. Not allowed on entity graphs or shared repositories.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
+      idempotency_key (None | str | Unset):
       body (FileUploadRequest):
 
   Raises:
@@ -152,13 +170,14 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | FileUploadResponse | HTTPValidationError
+      ErrorResponse | OperationEnvelope
   """
 
   return sync_detailed(
     graph_id=graph_id,
     client=client,
     body=body,
+    idempotency_key=idempotency_key,
   ).parsed
 
 
@@ -167,15 +186,20 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
-) -> Response[ErrorResponse | FileUploadResponse | HTTPValidationError]:
-  """Create File Upload
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelope]:
+  """Create File Upload (presign an S3 upload)
 
-   Returns a presigned S3 URL for direct upload. After uploading, call `PATCH /files/{file_id}` with
-  `status=uploaded` to trigger DuckDB staging. Tables are auto-created if missing. Not allowed on
-  entity graphs or shared repositories.
+   Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
+  `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
+  missing. Not allowed on entity graphs or shared repositories.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
+      idempotency_key (None | str | Unset):
       body (FileUploadRequest):
 
   Raises:
@@ -183,12 +207,13 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | FileUploadResponse | HTTPValidationError]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -201,15 +226,20 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: FileUploadRequest,
-) -> ErrorResponse | FileUploadResponse | HTTPValidationError | None:
-  """Create File Upload
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelope | None:
+  """Create File Upload (presign an S3 upload)
 
-   Returns a presigned S3 URL for direct upload. After uploading, call `PATCH /files/{file_id}` with
-  `status=uploaded` to trigger DuckDB staging. Tables are auto-created if missing. Not allowed on
-  entity graphs or shared repositories.
+   Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
+  `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
+  missing. Not allowed on entity graphs or shared repositories.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
+      idempotency_key (None | str | Unset):
       body (FileUploadRequest):
 
   Raises:
@@ -217,7 +247,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | FileUploadResponse | HTTPValidationError
+      ErrorResponse | OperationEnvelope
   """
 
   return (
@@ -225,5 +255,6 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       body=body,
+      idempotency_key=idempotency_key,
     )
   ).parsed

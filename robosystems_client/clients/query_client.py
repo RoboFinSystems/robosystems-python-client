@@ -17,8 +17,8 @@ from typing import (
 )
 from datetime import datetime
 
-from ..api.query.execute_cypher_query import sync_detailed as execute_cypher_query
-from ..models.cypher_query_request import CypherQueryRequest
+from ..api.query.execute_cypher import sync_detailed as execute_cypher_query
+from ..models.cypher_statement_request import CypherStatementRequest
 from .sse_client import SSEClient, AsyncSSEClient, SSEConfig, EventType
 
 
@@ -93,7 +93,7 @@ class QueryClient:
       options = QueryOptions()
 
     # Build request data
-    query_request = CypherQueryRequest(
+    query_request = CypherStatementRequest(
       query=request.query, parameters=request.parameters or {}
     )
 

@@ -11,11 +11,11 @@ from typing import Dict, Any, Optional, Callable, Union, BinaryIO
 import logging
 import httpx
 
-from ..api.files.create_file_upload import (
+from ..api.content_operations.op_create_file_upload import (
   sync_detailed as create_file_upload,
 )
-from ..api.files.update_file import (
-  sync_detailed as update_file,
+from ..api.content_operations.op_ingest_file import (
+  sync_detailed as ingest_file,
 )
 from ..api.files.list_files import (
   sync_detailed as list_files,
@@ -23,11 +23,12 @@ from ..api.files.list_files import (
 from ..api.files.get_file import (
   sync_detailed as get_file,
 )
-from ..api.files.delete_file import (
+from ..api.content_operations.op_delete_file import (
   sync_detailed as delete_file,
 )
 from ..models.file_upload_request import FileUploadRequest
-from ..models.file_status_update import FileStatusUpdate
+from ..models.ingest_file_op import IngestFileOp
+from ..models.delete_file_op import DeleteFileOp
 
 logger = logging.getLogger(__name__)
 
@@ -157,7 +158,10 @@ class FileClient:
 
       response = create_file_upload(**kwargs)
 
-      if response.status_code != 200 or not response.parsed:
+      # create-file-upload is a content operation: the presign payload
+      # (upload_url, file_id) is carried in the OperationEnvelope's result.
+      upload_data = getattr(response.parsed, "result", None) or {}
+      if response.status_code != 200 or not upload_data:
         error_msg = f"Failed to get upload URL: {response.status_code}"
         return FileUploadResult(
           file_id="",
@@ -169,9 +173,8 @@ class FileClient:
           error=error_msg,
         )
 
-      upload_data = response.parsed
-      upload_url = upload_data.upload_url
-      file_id = upload_data.file_id
+      upload_url = upload_data.get("upload_url")
+      file_id = upload_data.get("file_id")
 
       # Override S3 endpoint if configured (e.g., for LocalStack)
       if self.s3_endpoint_url:
@@ -212,25 +215,24 @@ class FileClient:
           error=f"S3 upload failed: {s3_response.status_code}",
         )
 
-      # Step 3: Mark file as uploaded
+      # Step 3: Ingest the uploaded file (stage into DuckDB)
       if options.on_progress:
-        options.on_progress(f"Marking {file_name} as uploaded...")
+        options.on_progress(f"Ingesting {file_name}...")
 
-      status_update = FileStatusUpdate(
-        status="uploaded",
+      ingest_op = IngestFileOp(
+        file_id=file_id,
         ingest_to_graph=options.ingest_to_graph,
       )
 
       update_kwargs = {
         "graph_id": graph_id,
-        "file_id": file_id,
         "client": client,
-        "body": status_update,
+        "body": ingest_op,
       }
 
-      update_response = update_file(**update_kwargs)
+      update_response = ingest_file(**update_kwargs)
 
-      if update_response.status_code != 200 or not update_response.parsed:
+      if update_response.status_code not in (200, 202) or not update_response.parsed:
         return FileUploadResult(
           file_id=file_id,
           file_size=len(file_content),
@@ -241,10 +243,12 @@ class FileClient:
           error="Failed to complete file upload",
         )
 
-      # Extract metadata from response
-      response_data = update_response.parsed
-      actual_file_size = getattr(response_data, "file_size_bytes", len(file_content))
-      actual_row_count = getattr(response_data, "row_count", 0)
+      # Extract staging metadata from the operation envelope result. Large files
+      # stage asynchronously (pending envelope, no result yet) — fall back to the
+      # uploaded byte count and a zero row count in that case.
+      ingest_data = getattr(update_response.parsed, "result", None) or {}
+      actual_file_size = ingest_data.get("file_size_bytes", len(file_content))
+      actual_row_count = ingest_data.get("row_count", 0) or 0
 
       if options.on_progress:
         options.on_progress(
@@ -423,16 +427,17 @@ class FileClient:
         headers=self.headers,
       )
 
+      delete_op = DeleteFileOp(file_id=file_id, cascade=cascade)
+
       kwargs = {
         "graph_id": graph_id,
-        "file_id": file_id,
         "client": client,
-        "cascade": cascade,
+        "body": delete_op,
       }
 
       response = delete_file(**kwargs)
 
-      if response.status_code not in [200, 204]:
+      if response.status_code not in [200, 202, 204]:
         logger.error(f"Failed to delete file {file_id}: {response.status_code}")
         return False
 

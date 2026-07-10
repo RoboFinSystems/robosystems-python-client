@@ -8,31 +8,40 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.memory_recall_request import MemoryRecallRequest
+from ...models.search_response import SearchResponse
 from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
-  document_id: str,
+  *,
+  body: MemoryRecallRequest,
 ) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
 
   _kwargs: dict[str, Any] = {
-    "method": "delete",
-    "url": "/v1/graphs/{graph_id}/documents/{document_id}".format(
+    "method": "post",
+    "url": "/v1/graphs/{graph_id}/memory/recall".format(
       graph_id=quote(str(graph_id), safe=""),
-      document_id=quote(str(document_id), safe=""),
     ),
   }
 
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
+
+  _kwargs["headers"] = headers
   return _kwargs
 
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | ErrorResponse | HTTPValidationError | None:
-  if response.status_code == 204:
-    response_204 = cast(Any, None)
-    return response_204
+) -> Any | ErrorResponse | HTTPValidationError | SearchResponse | None:
+  if response.status_code == 200:
+    response_200 = SearchResponse.from_dict(response.json())
+
+    return response_200
 
   if response.status_code == 400:
     response_400 = ErrorResponse.from_dict(response.json())
@@ -69,6 +78,10 @@ def _parse_response(
 
     return response_500
 
+  if response.status_code == 503:
+    response_503 = cast(Any, None)
+    return response_503
+
   if client.raise_on_unexpected_status:
     raise errors.UnexpectedStatus(response.status_code, response.content)
   else:
@@ -77,7 +90,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | ErrorResponse | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | SearchResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -88,27 +101,30 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  document_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | ErrorResponse | HTTPValidationError]:
-  """Delete Document
+  body: MemoryRecallRequest,
+) -> Response[Any | ErrorResponse | HTTPValidationError | SearchResponse]:
+  """Recall Semantic Memory
+
+   Ranked semantic recall over the graph's per-graph memory store. Returns scored hits in the same
+  shape as document search.
 
   Args:
       graph_id (str):
-      document_id (str):
+      body (MemoryRecallRequest): Body for recall (ranked semantic search over memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError | SearchResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    document_id=document_id,
+    body=body,
   )
 
   response = client.get_httpx_client().request(
@@ -120,54 +136,60 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  document_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | ErrorResponse | HTTPValidationError | None:
-  """Delete Document
+  body: MemoryRecallRequest,
+) -> Any | ErrorResponse | HTTPValidationError | SearchResponse | None:
+  """Recall Semantic Memory
+
+   Ranked semantic recall over the graph's per-graph memory store. Returns scored hits in the same
+  shape as document search.
 
   Args:
       graph_id (str):
-      document_id (str):
+      body (MemoryRecallRequest): Body for recall (ranked semantic search over memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError | SearchResponse
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    document_id=document_id,
     client=client,
+    body=body,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  document_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[Any | ErrorResponse | HTTPValidationError]:
-  """Delete Document
+  body: MemoryRecallRequest,
+) -> Response[Any | ErrorResponse | HTTPValidationError | SearchResponse]:
+  """Recall Semantic Memory
+
+   Ranked semantic recall over the graph's per-graph memory store. Returns scored hits in the same
+  shape as document search.
 
   Args:
       graph_id (str):
-      document_id (str):
+      body (MemoryRecallRequest): Body for recall (ranked semantic search over memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError | SearchResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    document_id=document_id,
+    body=body,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -177,28 +199,31 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  document_id: str,
   *,
   client: AuthenticatedClient,
-) -> Any | ErrorResponse | HTTPValidationError | None:
-  """Delete Document
+  body: MemoryRecallRequest,
+) -> Any | ErrorResponse | HTTPValidationError | SearchResponse | None:
+  """Recall Semantic Memory
+
+   Ranked semantic recall over the graph's per-graph memory store. Returns scored hits in the same
+  shape as document search.
 
   Args:
       graph_id (str):
-      document_id (str):
+      body (MemoryRecallRequest): Body for recall (ranked semantic search over memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError | SearchResponse
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      document_id=document_id,
       client=client,
+      body=body,
     )
   ).parsed

@@ -6,11 +6,11 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="TableQueryResponse")
+T = TypeVar("T", bound="SqlStatementResponse")
 
 
 @_attrs_define
-class TableQueryResponse:
+class SqlStatementResponse:
   """
   Attributes:
       columns (list[str]): Column names
@@ -67,15 +67,15 @@ class TableQueryResponse:
 
     execution_time_ms = d.pop("execution_time_ms")
 
-    table_query_response = cls(
+    sql_statement_response = cls(
       columns=columns,
       rows=rows,
       row_count=row_count,
       execution_time_ms=execution_time_ms,
     )
 
-    table_query_response.additional_properties = d
-    return table_query_response
+    sql_statement_response.additional_properties = d
+    return sql_statement_response
 
   @property
   def additional_keys(self) -> list[str]:

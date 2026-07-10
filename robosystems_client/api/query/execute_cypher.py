@@ -6,7 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.cypher_query_request import CypherQueryRequest
+from ...models.cypher_statement_request import CypherStatementRequest
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.response_mode import ResponseMode
@@ -16,7 +16,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CypherQueryRequest,
+  body: CypherStatementRequest,
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
@@ -47,7 +47,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/query".format(
+    "url": "/v1/graphs/{graph_id}/query/cypher".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
     "params": params,
@@ -142,24 +142,25 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CypherQueryRequest,
+  body: CypherStatementRequest,
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
 ) -> Response[Any | ErrorResponse | HTTPValidationError]:
-  r"""Execute Cypher Query
+  r"""Execute Cypher Statement
 
-   Main graphs are **read-only** — use the staging pipeline to ingest data. Subgraphs support full
-  writes. Always use parameterized queries (`parameters: {\"key\": \"val\"}`) to prevent injection.
-  Response modes: `auto` (default), `sync`, `async`, `stream`. Under load, queries are queued and emit
-  an `operation_id` for SSE monitoring at `/v1/operations/{id}/stream`.
+   Cypher over the graph (LadybugDB). Main graphs are **read-only** — use the staging pipeline to
+  ingest data. Subgraphs support full writes. Always use parameterized queries (`parameters: {\"key\":
+  \"val\"}`) to prevent injection. Response modes: `auto` (default), `sync`, `async`, `stream`. Under
+  load, queries are queued and emit an `operation_id` for SSE monitoring at
+  `/v1/operations/{id}/stream`.
 
   Args:
       graph_id (str):
       mode (None | ResponseMode | Unset): Response mode override
       chunk_size (int | None | Unset): Rows per chunk for streaming
       test_mode (bool | Unset): Enable test mode for better debugging Default: False.
-      body (CypherQueryRequest): Request model for Cypher query execution.
+      body (CypherStatementRequest): Request model for Cypher query execution.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -188,24 +189,25 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CypherQueryRequest,
+  body: CypherStatementRequest,
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
 ) -> Any | ErrorResponse | HTTPValidationError | None:
-  r"""Execute Cypher Query
+  r"""Execute Cypher Statement
 
-   Main graphs are **read-only** — use the staging pipeline to ingest data. Subgraphs support full
-  writes. Always use parameterized queries (`parameters: {\"key\": \"val\"}`) to prevent injection.
-  Response modes: `auto` (default), `sync`, `async`, `stream`. Under load, queries are queued and emit
-  an `operation_id` for SSE monitoring at `/v1/operations/{id}/stream`.
+   Cypher over the graph (LadybugDB). Main graphs are **read-only** — use the staging pipeline to
+  ingest data. Subgraphs support full writes. Always use parameterized queries (`parameters: {\"key\":
+  \"val\"}`) to prevent injection. Response modes: `auto` (default), `sync`, `async`, `stream`. Under
+  load, queries are queued and emit an `operation_id` for SSE monitoring at
+  `/v1/operations/{id}/stream`.
 
   Args:
       graph_id (str):
       mode (None | ResponseMode | Unset): Response mode override
       chunk_size (int | None | Unset): Rows per chunk for streaming
       test_mode (bool | Unset): Enable test mode for better debugging Default: False.
-      body (CypherQueryRequest): Request model for Cypher query execution.
+      body (CypherStatementRequest): Request model for Cypher query execution.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -229,24 +231,25 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CypherQueryRequest,
+  body: CypherStatementRequest,
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
 ) -> Response[Any | ErrorResponse | HTTPValidationError]:
-  r"""Execute Cypher Query
+  r"""Execute Cypher Statement
 
-   Main graphs are **read-only** — use the staging pipeline to ingest data. Subgraphs support full
-  writes. Always use parameterized queries (`parameters: {\"key\": \"val\"}`) to prevent injection.
-  Response modes: `auto` (default), `sync`, `async`, `stream`. Under load, queries are queued and emit
-  an `operation_id` for SSE monitoring at `/v1/operations/{id}/stream`.
+   Cypher over the graph (LadybugDB). Main graphs are **read-only** — use the staging pipeline to
+  ingest data. Subgraphs support full writes. Always use parameterized queries (`parameters: {\"key\":
+  \"val\"}`) to prevent injection. Response modes: `auto` (default), `sync`, `async`, `stream`. Under
+  load, queries are queued and emit an `operation_id` for SSE monitoring at
+  `/v1/operations/{id}/stream`.
 
   Args:
       graph_id (str):
       mode (None | ResponseMode | Unset): Response mode override
       chunk_size (int | None | Unset): Rows per chunk for streaming
       test_mode (bool | Unset): Enable test mode for better debugging Default: False.
-      body (CypherQueryRequest): Request model for Cypher query execution.
+      body (CypherStatementRequest): Request model for Cypher query execution.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -273,24 +276,25 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CypherQueryRequest,
+  body: CypherStatementRequest,
   mode: None | ResponseMode | Unset = UNSET,
   chunk_size: int | None | Unset = UNSET,
   test_mode: bool | Unset = False,
 ) -> Any | ErrorResponse | HTTPValidationError | None:
-  r"""Execute Cypher Query
+  r"""Execute Cypher Statement
 
-   Main graphs are **read-only** — use the staging pipeline to ingest data. Subgraphs support full
-  writes. Always use parameterized queries (`parameters: {\"key\": \"val\"}`) to prevent injection.
-  Response modes: `auto` (default), `sync`, `async`, `stream`. Under load, queries are queued and emit
-  an `operation_id` for SSE monitoring at `/v1/operations/{id}/stream`.
+   Cypher over the graph (LadybugDB). Main graphs are **read-only** — use the staging pipeline to
+  ingest data. Subgraphs support full writes. Always use parameterized queries (`parameters: {\"key\":
+  \"val\"}`) to prevent injection. Response modes: `auto` (default), `sync`, `async`, `stream`. Under
+  load, queries are queued and emit an `operation_id` for SSE monitoring at
+  `/v1/operations/{id}/stream`.
 
   Args:
       graph_id (str):
       mode (None | ResponseMode | Unset): Response mode override
       chunk_size (int | None | Unset): Rows per chunk for streaming
       test_mode (bool | Unset): Enable test mode for better debugging Default: False.
-      body (CypherQueryRequest): Request model for Cypher query execution.
+      body (CypherStatementRequest): Request model for Cypher query execution.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

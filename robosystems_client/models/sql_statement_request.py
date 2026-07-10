@@ -7,15 +7,16 @@ from attrs import define as _attrs_define
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="TableQueryRequest")
+T = TypeVar("T", bound="SqlStatementRequest")
 
 
 @_attrs_define
-class TableQueryRequest:
+class SqlStatementRequest:
   """
   Attributes:
-      sql (str): SQL query to execute on staging tables. Use ? placeholders or $param_name for dynamic values to
-          prevent SQL injection.
+      sql (str): SQL query over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric
+          data, often ahead of the materialized graph. Use ? placeholders or $param_name for dynamic values to prevent SQL
+          injection.
       parameters (list[Any] | None | Unset): Query parameters for safe value substitution. ALWAYS use parameters
           instead of string concatenation.
   """
@@ -69,9 +70,9 @@ class TableQueryRequest:
 
     parameters = _parse_parameters(d.pop("parameters", UNSET))
 
-    table_query_request = cls(
+    sql_statement_request = cls(
       sql=sql,
       parameters=parameters,
     )
 
-    return table_query_request
+    return sql_statement_request

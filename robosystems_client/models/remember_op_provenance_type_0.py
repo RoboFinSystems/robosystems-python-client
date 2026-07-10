@@ -6,11 +6,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="CypherQueryRequestParametersType0")
+T = TypeVar("T", bound="RememberOpProvenanceType0")
 
 
 @_attrs_define
-class CypherQueryRequestParametersType0:
+class RememberOpProvenanceType0:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -25,10 +25,10 @@ class CypherQueryRequestParametersType0:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    cypher_query_request_parameters_type_0 = cls()
+    remember_op_provenance_type_0 = cls()
 
-    cypher_query_request_parameters_type_0.additional_properties = d
-    return cypher_query_request_parameters_type_0
+    remember_op_provenance_type_0.additional_properties = d
+    return remember_op_provenance_type_0
 
   @property
   def additional_keys(self) -> list[str]:

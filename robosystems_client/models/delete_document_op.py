@@ -1,53 +1,33 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DocumentUploadResponse")
+T = TypeVar("T", bound="DeleteDocumentOp")
 
 
 @_attrs_define
-class DocumentUploadResponse:
-  """Response from document upload.
+class DeleteDocumentOp:
+  """Body for delete-document (corpus content-op).
 
   Attributes:
-      id (str):
-      document_id (str):
-      sections_indexed (int):
-      total_content_length (int):
-      section_ids (list[str]):
+      document_id (str): Document id to delete
   """
 
-  id: str
   document_id: str
-  sections_indexed: int
-  total_content_length: int
-  section_ids: list[str]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    id = self.id
-
     document_id = self.document_id
-
-    sections_indexed = self.sections_indexed
-
-    total_content_length = self.total_content_length
-
-    section_ids = self.section_ids
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "id": id,
         "document_id": document_id,
-        "sections_indexed": sections_indexed,
-        "total_content_length": total_content_length,
-        "section_ids": section_ids,
       }
     )
 
@@ -56,26 +36,14 @@ class DocumentUploadResponse:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    id = d.pop("id")
-
     document_id = d.pop("document_id")
 
-    sections_indexed = d.pop("sections_indexed")
-
-    total_content_length = d.pop("total_content_length")
-
-    section_ids = cast(list[str], d.pop("section_ids"))
-
-    document_upload_response = cls(
-      id=id,
+    delete_document_op = cls(
       document_id=document_id,
-      sections_indexed=sections_indexed,
-      total_content_length=total_content_length,
-      section_ids=section_ids,
     )
 
-    document_upload_response.additional_properties = d
-    return document_upload_response
+    delete_document_op.additional_properties = d
+    return delete_document_op
 
   @property
   def additional_keys(self) -> list[str]:

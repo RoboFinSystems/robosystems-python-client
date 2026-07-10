@@ -9,20 +9,23 @@ from http import HTTPStatus
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from ..api.documents.delete_document import sync_detailed as delete_document
+from ..api.content_operations.op_delete_document import (
+  sync_detailed as delete_document,
+)
+from ..api.content_operations.op_index_document import (
+  sync_detailed as index_document,
+)
 from ..api.documents.get_document import sync_detailed as get_document
 from ..api.documents.list_documents import sync_detailed as list_documents
-from ..api.documents.update_document import sync_detailed as update_document
-from ..api.documents.upload_document import sync_detailed as upload_document
 from ..api.search.get_document_section import sync_detailed as get_document_section
 from ..api.search.search_documents import sync_detailed as search_documents
 from ..client import AuthenticatedClient
+from ..models.delete_document_op import DeleteDocumentOp
 from ..models.document_detail_response import DocumentDetailResponse
 from ..models.document_list_response import DocumentListResponse
 from ..models.document_section import DocumentSection
-from ..models.document_update_request import DocumentUpdateRequest
-from ..models.document_upload_request import DocumentUploadRequest
-from ..models.document_upload_response import DocumentUploadResponse
+from ..models.index_document_op import IndexDocumentOp
+from ..models.operation_envelope import OperationEnvelope
 from ..models.search_request import SearchRequest
 from ..models.search_response import SearchResponse
 from ..types import UNSET
@@ -57,7 +60,7 @@ class DocumentClient:
     tags: Optional[List[str]] = None,
     folder: Optional[str] = None,
     external_id: Optional[str] = None,
-  ) -> DocumentUploadResponse:
+  ) -> OperationEnvelope:
     """Upload a markdown document for text indexing.
 
     The document is sectioned on headings, embedded, and indexed
@@ -72,9 +75,9 @@ class DocumentClient:
         external_id: Optional external ID for upsert behavior.
 
     Returns:
-        DocumentUploadResponse with section IDs and counts.
+        OperationEnvelope; `result` carries the document ID and section counts.
     """
-    body = DocumentUploadRequest(
+    body = IndexDocumentOp(
       title=title,
       content=content,
       tags=tags if tags is not None else UNSET,
@@ -83,8 +86,8 @@ class DocumentClient:
     )
 
     client = self._get_client()
-    response = upload_document(graph_id=graph_id, client=client, body=body)
-    if response.status_code != HTTPStatus.OK:
+    response = index_document(graph_id=graph_id, client=client, body=body)
+    if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
       raise Exception(
         f"Document upload failed ({response.status_code}): {response.content.decode()}"
       )
@@ -124,11 +127,11 @@ class DocumentClient:
     content: Optional[str] = None,
     tags: Optional[List[str]] = UNSET,
     folder: Optional[str] = UNSET,
-  ) -> DocumentUploadResponse:
+  ) -> OperationEnvelope:
     """Update a document's content and/or metadata.
 
-    Only provided fields are updated. Content is re-sectioned,
-    re-embedded, and re-indexed in OpenSearch.
+    Re-indexing an existing ``document_id`` upserts it: content is
+    re-sectioned, re-embedded, and re-indexed in OpenSearch.
 
     Args:
         graph_id: Target graph ID.
@@ -139,9 +142,10 @@ class DocumentClient:
         folder: Updated folder (None to clear, UNSET to leave unchanged).
 
     Returns:
-        DocumentUploadResponse with updated section counts.
+        OperationEnvelope; `result` carries the updated section counts.
     """
-    body = DocumentUpdateRequest(
+    body = IndexDocumentOp(
+      document_id=document_id,
       title=title if title is not None else UNSET,
       content=content if content is not None else UNSET,
       tags=tags,
@@ -149,10 +153,8 @@ class DocumentClient:
     )
 
     client = self._get_client()
-    response = update_document(
-      graph_id=graph_id, document_id=document_id, client=client, body=body
-    )
-    if response.status_code != HTTPStatus.OK:
+    response = index_document(graph_id=graph_id, client=client, body=body)
+    if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
       raise Exception(
         f"Update document failed ({response.status_code}): {response.content.decode()}"
       )
@@ -166,7 +168,7 @@ class DocumentClient:
     tags: Optional[List[str]] = None,
     folder: Optional[str] = None,
     external_id: Optional[str] = None,
-  ) -> DocumentUploadResponse:
+  ) -> OperationEnvelope:
     """Upload a markdown file by path.
 
     Reads the file, optionally extracts title from filename,
@@ -201,7 +203,7 @@ class DocumentClient:
     directory: str | Path,
     pattern: str = "*.md",
     folder: Optional[str] = None,
-  ) -> List[DocumentUploadResponse]:
+  ) -> List[OperationEnvelope]:
     """Upload all markdown files from a directory.
 
     Args:
@@ -338,9 +340,13 @@ class DocumentClient:
     """
     client = self._get_client()
     response = delete_document(
-      graph_id=graph_id, document_id=document_id, client=client
+      graph_id=graph_id, client=client, body=DeleteDocumentOp(document_id=document_id)
     )
-    if response.status_code == HTTPStatus.NO_CONTENT:
+    if response.status_code in (
+      HTTPStatus.OK,
+      HTTPStatus.ACCEPTED,
+      HTTPStatus.NO_CONTENT,
+    ):
       return True
     if response.status_code == HTTPStatus.NOT_FOUND:
       return False

@@ -137,24 +137,25 @@ class TestFileDataclasses:
 class TestFileUpload:
   """Test suite for FileClient.upload method."""
 
-  @patch("robosystems_client.clients.file_client.update_file")
+  @patch("robosystems_client.clients.file_client.ingest_file")
   @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_bytesio(self, mock_create, mock_update, mock_config, graph_id):
     """Test uploading a BytesIO buffer."""
     # Mock presigned URL response
     mock_create_resp = Mock()
     mock_create_resp.status_code = 200
-    mock_create_resp.parsed = Mock()
-    mock_create_resp.parsed.upload_url = "http://s3.localhost/bucket/file.parquet"
-    mock_create_resp.parsed.file_id = "file-new-123"
+    mock_create_resp.parsed = Mock(
+      result={
+        "upload_url": "http://s3.localhost/bucket/file.parquet",
+        "file_id": "file-new-123",
+      }
+    )
     mock_create.return_value = mock_create_resp
 
     # Mock update response
     mock_update_resp = Mock()
     mock_update_resp.status_code = 200
-    mock_update_resp.parsed = Mock()
-    mock_update_resp.parsed.file_size_bytes = 1234
-    mock_update_resp.parsed.row_count = 10
+    mock_update_resp.parsed = Mock(result={"file_size_bytes": 1234, "row_count": 10})
     mock_update.return_value = mock_update_resp
 
     client = FileClient(mock_config)
@@ -190,9 +191,12 @@ class TestFileUpload:
     """Test upload failure when S3 PUT fails."""
     mock_create_resp = Mock()
     mock_create_resp.status_code = 200
-    mock_create_resp.parsed = Mock()
-    mock_create_resp.parsed.upload_url = "http://s3.localhost/bucket/file.parquet"
-    mock_create_resp.parsed.file_id = "file-s3-fail"
+    mock_create_resp.parsed = Mock(
+      result={
+        "upload_url": "http://s3.localhost/bucket/file.parquet",
+        "file_id": "file-s3-fail",
+      }
+    )
     mock_create.return_value = mock_create_resp
 
     client = FileClient(mock_config)
@@ -204,7 +208,7 @@ class TestFileUpload:
     assert result.success is False
     assert "S3 upload failed" in result.error
 
-  @patch("robosystems_client.clients.file_client.update_file")
+  @patch("robosystems_client.clients.file_client.ingest_file")
   @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_status_update_failure(
     self, mock_create, mock_update, mock_config, graph_id
@@ -212,9 +216,12 @@ class TestFileUpload:
     """Test upload failure when status update fails."""
     mock_create_resp = Mock()
     mock_create_resp.status_code = 200
-    mock_create_resp.parsed = Mock()
-    mock_create_resp.parsed.upload_url = "http://s3.localhost/bucket/file.parquet"
-    mock_create_resp.parsed.file_id = "file-update-fail"
+    mock_create_resp.parsed = Mock(
+      result={
+        "upload_url": "http://s3.localhost/bucket/file.parquet",
+        "file_id": "file-update-fail",
+      }
+    )
     mock_create.return_value = mock_create_resp
 
     mock_update_resp = Mock()
@@ -250,7 +257,7 @@ class TestFileUpload:
     assert result.success is False
     assert "Unsupported file type" in result.error
 
-  @patch("robosystems_client.clients.file_client.update_file")
+  @patch("robosystems_client.clients.file_client.ingest_file")
   @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_with_progress_callback(
     self, mock_create, mock_update, mock_config, graph_id
@@ -258,16 +265,17 @@ class TestFileUpload:
     """Test upload calls progress callback at each step."""
     mock_create_resp = Mock()
     mock_create_resp.status_code = 200
-    mock_create_resp.parsed = Mock()
-    mock_create_resp.parsed.upload_url = "http://s3.localhost/bucket/file.parquet"
-    mock_create_resp.parsed.file_id = "file-progress"
+    mock_create_resp.parsed = Mock(
+      result={
+        "upload_url": "http://s3.localhost/bucket/file.parquet",
+        "file_id": "file-progress",
+      }
+    )
     mock_create.return_value = mock_create_resp
 
     mock_update_resp = Mock()
     mock_update_resp.status_code = 200
-    mock_update_resp.parsed = Mock()
-    mock_update_resp.parsed.file_size_bytes = 100
-    mock_update_resp.parsed.row_count = 5
+    mock_update_resp.parsed = Mock(result={"file_size_bytes": 100, "row_count": 5})
     mock_update.return_value = mock_update_resp
 
     client = FileClient(mock_config)
@@ -281,7 +289,7 @@ class TestFileUpload:
 
     assert len(progress_messages) >= 3  # URL, upload, mark uploaded
 
-  @patch("robosystems_client.clients.file_client.update_file")
+  @patch("robosystems_client.clients.file_client.ingest_file")
   @patch("robosystems_client.clients.file_client.create_file_upload")
   def test_upload_with_s3_endpoint_override(
     self, mock_create, mock_update, mock_config, graph_id
@@ -291,18 +299,17 @@ class TestFileUpload:
 
     mock_create_resp = Mock()
     mock_create_resp.status_code = 200
-    mock_create_resp.parsed = Mock()
-    mock_create_resp.parsed.upload_url = (
-      "https://s3.amazonaws.com/bucket/file.parquet?sig=abc"
+    mock_create_resp.parsed = Mock(
+      result={
+        "upload_url": "https://s3.amazonaws.com/bucket/file.parquet?sig=abc",
+        "file_id": "file-s3-override",
+      }
     )
-    mock_create_resp.parsed.file_id = "file-s3-override"
     mock_create.return_value = mock_create_resp
 
     mock_update_resp = Mock()
     mock_update_resp.status_code = 200
-    mock_update_resp.parsed = Mock()
-    mock_update_resp.parsed.file_size_bytes = 100
-    mock_update_resp.parsed.row_count = 5
+    mock_update_resp.parsed = Mock(result={"file_size_bytes": 100, "row_count": 5})
     mock_update.return_value = mock_update_resp
 
     client = FileClient(mock_config)
@@ -455,4 +462,4 @@ class TestFileDelete:
 
     assert result is True
     call_kwargs = mock_delete.call_args[1]
-    assert call_kwargs["cascade"] is True
+    assert call_kwargs["body"].cascade is True

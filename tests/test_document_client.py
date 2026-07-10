@@ -44,12 +44,12 @@ class TestDocumentClientInit:
 class TestDocumentUpload:
   """Test suite for DocumentClient.upload method."""
 
-  @patch("robosystems_client.clients.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.index_document")
   def test_upload_document(self, mock_upload, mock_config, graph_id):
     """Test uploading a markdown document."""
     mock_resp = Mock()
     mock_resp.status_code = HTTPStatus.OK
-    mock_resp.parsed = Mock(document_id="doc-123", section_count=3)
+    mock_resp.parsed = Mock(result={"document_id": "doc-123", "section_count": 3})
     mock_upload.return_value = mock_resp
 
     client = DocumentClient(mock_config)
@@ -61,11 +61,11 @@ class TestDocumentUpload:
       folder="reports",
     )
 
-    assert result.document_id == "doc-123"
-    assert result.section_count == 3
+    assert result.result["document_id"] == "doc-123"
+    assert result.result["section_count"] == 3
     mock_upload.assert_called_once()
 
-  @patch("robosystems_client.clients.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.index_document")
   def test_upload_document_failure(self, mock_upload, mock_config, graph_id):
     """Test upload failure raises exception."""
     mock_resp = Mock()
@@ -78,18 +78,18 @@ class TestDocumentUpload:
     with pytest.raises(Exception, match="Document upload failed"):
       client.upload(graph_id=graph_id, title="Bad", content="content")
 
-  @patch("robosystems_client.clients.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.index_document")
   def test_upload_minimal(self, mock_upload, mock_config, graph_id):
     """Test upload with only required fields."""
     mock_resp = Mock()
     mock_resp.status_code = HTTPStatus.OK
-    mock_resp.parsed = Mock(document_id="doc-min", section_count=1)
+    mock_resp.parsed = Mock(result={"document_id": "doc-min", "section_count": 1})
     mock_upload.return_value = mock_resp
 
     client = DocumentClient(mock_config)
     result = client.upload(graph_id=graph_id, title="Minimal", content="Just text.")
 
-    assert result.document_id == "doc-min"
+    assert result.result["document_id"] == "doc-min"
 
 
 @pytest.mark.unit
@@ -142,12 +142,12 @@ class TestDocumentGet:
 class TestDocumentUpdate:
   """Test suite for DocumentClient.update method."""
 
-  @patch("robosystems_client.clients.document_client.update_document")
+  @patch("robosystems_client.clients.document_client.index_document")
   def test_update_document(self, mock_update, mock_config, graph_id):
     """Test updating a document."""
     mock_resp = Mock()
     mock_resp.status_code = HTTPStatus.OK
-    mock_resp.parsed = Mock(document_id="doc-upd", section_count=5)
+    mock_resp.parsed = Mock(result={"document_id": "doc-upd", "section_count": 5})
     mock_update.return_value = mock_resp
 
     client = DocumentClient(mock_config)
@@ -158,9 +158,9 @@ class TestDocumentUpdate:
       content="# Updated\n\nNew content.",
     )
 
-    assert result.section_count == 5
+    assert result.result["section_count"] == 5
 
-  @patch("robosystems_client.clients.document_client.update_document")
+  @patch("robosystems_client.clients.document_client.index_document")
   def test_update_document_failure(self, mock_update, mock_config, graph_id):
     """Test update failure raises exception."""
     mock_resp = Mock()
@@ -338,7 +338,7 @@ class TestDocumentSection:
 class TestDocumentUploadFile:
   """Test suite for DocumentClient.upload_file method."""
 
-  @patch("robosystems_client.clients.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.index_document")
   def test_upload_file(self, mock_upload, mock_config, graph_id, tmp_path):
     """Test uploading a file from disk."""
     md_file = tmp_path / "test-doc.md"
@@ -346,15 +346,15 @@ class TestDocumentUploadFile:
 
     mock_resp = Mock()
     mock_resp.status_code = HTTPStatus.OK
-    mock_resp.parsed = Mock(document_id="doc-file", section_count=2)
+    mock_resp.parsed = Mock(result={"document_id": "doc-file", "section_count": 2})
     mock_upload.return_value = mock_resp
 
     client = DocumentClient(mock_config)
     result = client.upload_file(graph_id=graph_id, file_path=md_file)
 
-    assert result.document_id == "doc-file"
+    assert result.result["document_id"] == "doc-file"
 
-  @patch("robosystems_client.clients.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.index_document")
   def test_upload_file_title_from_filename(
     self, mock_upload, mock_config, graph_id, tmp_path
   ):
@@ -364,7 +364,7 @@ class TestDocumentUploadFile:
 
     mock_resp = Mock()
     mock_resp.status_code = HTTPStatus.OK
-    mock_resp.parsed = Mock(document_id="doc-title", section_count=1)
+    mock_resp.parsed = Mock(result={"document_id": "doc-title", "section_count": 1})
     mock_upload.return_value = mock_resp
 
     client = DocumentClient(mock_config)
@@ -379,7 +379,7 @@ class TestDocumentUploadFile:
 class TestDocumentUploadDirectory:
   """Test suite for DocumentClient.upload_directory method."""
 
-  @patch("robosystems_client.clients.document_client.upload_document")
+  @patch("robosystems_client.clients.document_client.index_document")
   def test_upload_directory(self, mock_upload, mock_config, graph_id, tmp_path):
     """Test uploading all markdown files from a directory."""
     (tmp_path / "doc1.md").write_text("# Doc 1")
@@ -388,7 +388,7 @@ class TestDocumentUploadDirectory:
 
     mock_resp = Mock()
     mock_resp.status_code = HTTPStatus.OK
-    mock_resp.parsed = Mock(document_id="doc-dir", section_count=1)
+    mock_resp.parsed = Mock(result={"document_id": "doc-dir", "section_count": 1})
     mock_upload.return_value = mock_resp
 
     client = DocumentClient(mock_config)
