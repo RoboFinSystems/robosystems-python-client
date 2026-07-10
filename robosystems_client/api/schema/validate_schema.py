@@ -1,6 +1,5 @@
 from http import HTTPStatus
 from typing import Any, cast
-from urllib.parse import quote
 
 import httpx
 
@@ -13,7 +12,6 @@ from ...types import Response
 
 
 def _get_kwargs(
-  graph_id: str,
   *,
   body: SchemaValidationRequest,
 ) -> dict[str, Any]:
@@ -21,9 +19,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/schema/validate".format(
-      graph_id=quote(str(graph_id), safe=""),
-    ),
+    "url": "/v1/graphs/schema/validate",
   }
 
   _kwargs["json"] = body.to_dict()
@@ -98,7 +94,6 @@ def _build_response(
 
 
 def sync_detailed(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
@@ -110,7 +105,6 @@ def sync_detailed(
   and dict formats.
 
   Args:
-      graph_id (str):
       body (SchemaValidationRequest): Request model for schema validation.
 
   Raises:
@@ -122,7 +116,6 @@ def sync_detailed(
   """
 
   kwargs = _get_kwargs(
-    graph_id=graph_id,
     body=body,
   )
 
@@ -134,7 +127,6 @@ def sync_detailed(
 
 
 def sync(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
@@ -146,7 +138,6 @@ def sync(
   and dict formats.
 
   Args:
-      graph_id (str):
       body (SchemaValidationRequest): Request model for schema validation.
 
   Raises:
@@ -158,14 +149,12 @@ def sync(
   """
 
   return sync_detailed(
-    graph_id=graph_id,
     client=client,
     body=body,
   ).parsed
 
 
 async def asyncio_detailed(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
@@ -177,7 +166,6 @@ async def asyncio_detailed(
   and dict formats.
 
   Args:
-      graph_id (str):
       body (SchemaValidationRequest): Request model for schema validation.
 
   Raises:
@@ -189,7 +177,6 @@ async def asyncio_detailed(
   """
 
   kwargs = _get_kwargs(
-    graph_id=graph_id,
     body=body,
   )
 
@@ -199,7 +186,6 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
   body: SchemaValidationRequest,
@@ -211,7 +197,6 @@ async def asyncio(
   and dict formats.
 
   Args:
-      graph_id (str):
       body (SchemaValidationRequest): Request model for schema validation.
 
   Raises:
@@ -224,7 +209,6 @@ async def asyncio(
 
   return (
     await asyncio_detailed(
-      graph_id=graph_id,
       client=client,
       body=body,
     )
