@@ -29,7 +29,8 @@ from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
 from .cancel_subscription_request import CancelSubscriptionRequest
-from .change_reporting_style_op import ChangeReportingStyleOp
+from .change_reporting_style_request import ChangeReportingStyleRequest
+from .change_reporting_style_response import ChangeReportingStyleResponse
 from .change_tier_op import ChangeTierOp
 from .change_tier_op_new_tier import ChangeTierOpNewTier
 from .checkout_response import CheckoutResponse
@@ -115,12 +116,15 @@ from .custom_schema_definition_nodes_item import CustomSchemaDefinitionNodesItem
 from .custom_schema_definition_relationships_item import (
   CustomSchemaDefinitionRelationshipsItem,
 )
-from .cypher_query_request import CypherQueryRequest
-from .cypher_query_request_parameters_type_0 import CypherQueryRequestParametersType0
+from .cypher_statement_request import CypherStatementRequest
+from .cypher_statement_request_parameters_type_0 import (
+  CypherStatementRequestParametersType0,
+)
 from .database_health_response import DatabaseHealthResponse
 from .database_info_response import DatabaseInfoResponse
 from .database_storage_entry import DatabaseStorageEntry
-from .delete_file_response import DeleteFileResponse
+from .delete_document_op import DeleteDocumentOp
+from .delete_file_op import DeleteFileOp
 from .delete_graph_op import DeleteGraphOp
 from .delete_information_block_response import DeleteInformationBlockResponse
 from .delete_journal_entry_request import DeleteJournalEntryRequest
@@ -150,9 +154,6 @@ from .document_detail_response import DocumentDetailResponse
 from .document_list_item import DocumentListItem
 from .document_list_response import DocumentListResponse
 from .document_section import DocumentSection
-from .document_update_request import DocumentUpdateRequest
-from .document_upload_request import DocumentUploadRequest
-from .document_upload_response import DocumentUploadResponse
 from .download_quota import DownloadQuota
 from .element_lite import ElementLite
 from .element_update_patch import ElementUpdatePatch
@@ -192,12 +193,11 @@ from .fact_set_lite_provenance_type_0 import FactSetLiteProvenanceType0
 from .file_info import FileInfo
 from .file_layer_status import FileLayerStatus
 from .file_report_request import FileReportRequest
-from .file_status_update import FileStatusUpdate
 from .file_upload_request import FileUploadRequest
-from .file_upload_response import FileUploadResponse
 from .financial_statement_analysis_request import FinancialStatementAnalysisRequest
 from .fiscal_calendar_response import FiscalCalendarResponse
 from .fiscal_period_summary import FiscalPeriodSummary
+from .forget_op import ForgetOp
 from .forgot_password_request import ForgotPasswordRequest
 from .forgot_password_response_forgotpassword import (
   ForgotPasswordResponseForgotpassword,
@@ -233,11 +233,13 @@ from .graph_usage_response_recent_events_item import GraphUsageResponseRecentEve
 from .health_status import HealthStatus
 from .health_status_details_type_0 import HealthStatusDetailsType0
 from .http_validation_error import HTTPValidationError
+from .index_document_op import IndexDocumentOp
 from .information_block_envelope import InformationBlockEnvelope
 from .information_block_envelope_dimensions_item import (
   InformationBlockEnvelopeDimensionsItem,
 )
 from .information_model_response import InformationModelResponse
+from .ingest_file_op import IngestFileOp
 from .initial_entity_data import InitialEntityData
 from .initialize_ledger_request import InitializeLedgerRequest
 from .initialize_ledger_response import InitializeLedgerResponse
@@ -270,6 +272,10 @@ from .mcp_tool_call import MCPToolCall
 from .mcp_tool_call_arguments import MCPToolCallArguments
 from .mcp_tools_response import MCPToolsResponse
 from .mcp_tools_response_tools_item import MCPToolsResponseToolsItem
+from .memory_list_response import MemoryListResponse
+from .memory_recall_request import MemoryRecallRequest
+from .memory_record import MemoryRecord
+from .memory_record_provenance_type_0 import MemoryRecordProvenanceType0
 from .metric_mechanics import MetricMechanics
 from .o_auth_callback_request import OAuthCallbackRequest
 from .o_auth_init_request import OAuthInitRequest
@@ -290,6 +296,12 @@ from .operation_envelope_association_response import (
 )
 from .operation_envelope_association_response_status import (
   OperationEnvelopeAssociationResponseStatus,
+)
+from .operation_envelope_change_reporting_style_response import (
+  OperationEnvelopeChangeReportingStyleResponse,
+)
+from .operation_envelope_change_reporting_style_response_status import (
+  OperationEnvelopeChangeReportingStyleResponseStatus,
 )
 from .operation_envelope_close_period_response import (
   OperationEnvelopeClosePeriodResponse,
@@ -513,6 +525,8 @@ from .rate_limits import RateLimits
 from .rebuild_schedule_request import RebuildScheduleRequest
 from .regenerate_report_operation import RegenerateReportOperation
 from .register_request import RegisterRequest
+from .remember_op import RememberOp
+from .remember_op_provenance_type_0 import RememberOpProvenanceType0
 from .remove_publish_list_member_operation import RemovePublishListMemberOperation
 from .rendering_lite import RenderingLite
 from .rendering_period_lite import RenderingPeriodLite
@@ -572,6 +586,8 @@ from .set_write_policy_request_write_policy import SetWritePolicyRequestWritePol
 from .share_report_operation import ShareReportOperation
 from .share_report_response import ShareReportResponse
 from .share_result_item import ShareResultItem
+from .sql_statement_request import SqlStatementRequest
+from .sql_statement_response import SqlStatementResponse
 from .sso_complete_request import SSOCompleteRequest
 from .sso_exchange_request import SSOExchangeRequest
 from .sso_exchange_response import SSOExchangeResponse
@@ -595,8 +611,6 @@ from .sync_connection_request_sync_options_type_0 import (
 )
 from .table_info import TableInfo
 from .table_list_response import TableListResponse
-from .table_query_request import TableQueryRequest
-from .table_query_response import TableQueryResponse
 from .taxonomy_block_association import TaxonomyBlockAssociation
 from .taxonomy_block_association_request import TaxonomyBlockAssociationRequest
 from .taxonomy_block_association_request_association_type import (
@@ -666,13 +680,14 @@ from .update_event_handler_request_match_metadata_expression_type_0 import (
 from .update_event_handler_request_metadata_patch import (
   UpdateEventHandlerRequestMetadataPatch,
 )
-from .update_file_response_updatefile import UpdateFileResponseUpdatefile
 from .update_journal_entry_request import UpdateJournalEntryRequest
 from .update_journal_entry_request_type_type_0 import UpdateJournalEntryRequestTypeType0
 from .update_legacy_arm import UpdateLegacyArm
 from .update_legacy_arm_block_type import UpdateLegacyArmBlockType
 from .update_legacy_arm_payload import UpdateLegacyArmPayload
 from .update_member_role_request import UpdateMemberRoleRequest
+from .update_memory_op import UpdateMemoryOp
+from .update_memory_op_provenance_type_0 import UpdateMemoryOpProvenanceType0
 from .update_org_request import UpdateOrgRequest
 from .update_password_request import UpdatePasswordRequest
 from .update_portfolio_block_operation import UpdatePortfolioBlockOperation
@@ -731,7 +746,8 @@ __all__ = (
   "BillingCustomer",
   "CancelOperationResponseCanceloperation",
   "CancelSubscriptionRequest",
-  "ChangeReportingStyleOp",
+  "ChangeReportingStyleRequest",
+  "ChangeReportingStyleResponse",
   "ChangeTierOp",
   "ChangeTierOpNewTier",
   "CheckoutResponse",
@@ -799,12 +815,13 @@ __all__ = (
   "CustomSchemaDefinitionMetadata",
   "CustomSchemaDefinitionNodesItem",
   "CustomSchemaDefinitionRelationshipsItem",
-  "CypherQueryRequest",
-  "CypherQueryRequestParametersType0",
+  "CypherStatementRequest",
+  "CypherStatementRequestParametersType0",
   "DatabaseHealthResponse",
   "DatabaseInfoResponse",
   "DatabaseStorageEntry",
-  "DeleteFileResponse",
+  "DeleteDocumentOp",
+  "DeleteFileOp",
   "DeleteGraphOp",
   "DeleteInformationBlockResponse",
   "DeleteJournalEntryRequest",
@@ -832,9 +849,6 @@ __all__ = (
   "DocumentListItem",
   "DocumentListResponse",
   "DocumentSection",
-  "DocumentUpdateRequest",
-  "DocumentUploadRequest",
-  "DocumentUploadResponse",
   "DownloadQuota",
   "ElementLite",
   "ElementUpdatePatch",
@@ -866,12 +880,11 @@ __all__ = (
   "FileInfo",
   "FileLayerStatus",
   "FileReportRequest",
-  "FileStatusUpdate",
   "FileUploadRequest",
-  "FileUploadResponse",
   "FinancialStatementAnalysisRequest",
   "FiscalCalendarResponse",
   "FiscalPeriodSummary",
+  "ForgetOp",
   "ForgotPasswordRequest",
   "ForgotPasswordResponseForgotpassword",
   "GetCurrentAuthUserResponseGetcurrentauthuser",
@@ -899,9 +912,11 @@ __all__ = (
   "HealthStatus",
   "HealthStatusDetailsType0",
   "HTTPValidationError",
+  "IndexDocumentOp",
   "InformationBlockEnvelope",
   "InformationBlockEnvelopeDimensionsItem",
   "InformationModelResponse",
+  "IngestFileOp",
   "InitialEntityData",
   "InitializeLedgerRequest",
   "InitializeLedgerResponse",
@@ -932,6 +947,10 @@ __all__ = (
   "MCPToolCallArguments",
   "MCPToolsResponse",
   "MCPToolsResponseToolsItem",
+  "MemoryListResponse",
+  "MemoryRecallRequest",
+  "MemoryRecord",
+  "MemoryRecordProvenanceType0",
   "MetricMechanics",
   "OAuthCallbackRequest",
   "OAuthInitRequest",
@@ -945,6 +964,8 @@ __all__ = (
   "OperationEnvelope",
   "OperationEnvelopeAssociationResponse",
   "OperationEnvelopeAssociationResponseStatus",
+  "OperationEnvelopeChangeReportingStyleResponse",
+  "OperationEnvelopeChangeReportingStyleResponseStatus",
   "OperationEnvelopeClosePeriodResponse",
   "OperationEnvelopeClosePeriodResponseStatus",
   "OperationEnvelopeDeleteInformationBlockResponse",
@@ -1065,6 +1086,8 @@ __all__ = (
   "RebuildScheduleRequest",
   "RegenerateReportOperation",
   "RegisterRequest",
+  "RememberOp",
+  "RememberOpProvenanceType0",
   "RemovePublishListMemberOperation",
   "RenderingLite",
   "RenderingPeriodLite",
@@ -1114,6 +1137,8 @@ __all__ = (
   "ShareReportOperation",
   "ShareReportResponse",
   "ShareResultItem",
+  "SqlStatementRequest",
+  "SqlStatementResponse",
   "SSOCompleteRequest",
   "SSOExchangeRequest",
   "SSOExchangeResponse",
@@ -1135,8 +1160,6 @@ __all__ = (
   "SyncConnectionRequestSyncOptionsType0",
   "TableInfo",
   "TableListResponse",
-  "TableQueryRequest",
-  "TableQueryResponse",
   "TaxonomyBlockAssociation",
   "TaxonomyBlockAssociationRequest",
   "TaxonomyBlockAssociationRequestAssociationType",
@@ -1180,13 +1203,14 @@ __all__ = (
   "UpdateEventHandlerRequest",
   "UpdateEventHandlerRequestMatchMetadataExpressionType0",
   "UpdateEventHandlerRequestMetadataPatch",
-  "UpdateFileResponseUpdatefile",
   "UpdateJournalEntryRequest",
   "UpdateJournalEntryRequestTypeType0",
   "UpdateLegacyArm",
   "UpdateLegacyArmBlockType",
   "UpdateLegacyArmPayload",
   "UpdateMemberRoleRequest",
+  "UpdateMemoryOp",
+  "UpdateMemoryOpProvenanceType0",
   "UpdateOrgRequest",
   "UpdatePasswordRequest",
   "UpdatePortfolioBlockOperation",

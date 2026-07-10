@@ -1,28 +1,28 @@
 from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.document_upload_request import DocumentUploadRequest
-from ...models.document_upload_response import DocumentUploadResponse
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.sql_statement_request import SqlStatementRequest
+from ...models.sql_statement_response import SqlStatementResponse
 from ...types import Response
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: DocumentUploadRequest,
+  body: SqlStatementRequest,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/documents".format(
+    "url": "/v1/graphs/{graph_id}/query/sql".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -37,9 +37,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> DocumentUploadResponse | ErrorResponse | HTTPValidationError | None:
+) -> Any | ErrorResponse | HTTPValidationError | SqlStatementResponse | None:
   if response.status_code == 200:
-    response_200 = DocumentUploadResponse.from_dict(response.json())
+    response_200 = SqlStatementResponse.from_dict(response.json())
 
     return response_200
 
@@ -62,6 +62,10 @@ def _parse_response(
     response_404 = ErrorResponse.from_dict(response.json())
 
     return response_404
+
+  if response.status_code == 408:
+    response_408 = cast(Any, None)
+    return response_408
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
@@ -86,7 +90,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[Any | ErrorResponse | HTTPValidationError | SqlStatementResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -99,22 +103,25 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DocumentUploadRequest,
-) -> Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]:
-  """Upload Document
+  body: SqlStatementRequest,
+) -> Response[Any | ErrorResponse | HTTPValidationError | SqlStatementResponse]:
+  """Execute SQL Statement
 
-   Stored in PostgreSQL, synced to OpenSearch for search. Not allowed on shared repositories.
+   SQL over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric data,
+  often ahead of the materialized graph. Use `?` placeholders with the `parameters` array to prevent
+  injection. Read-only (SELECT only), 30s timeout, 10K row limit. Not available on shared
+  repositories.
 
   Args:
       graph_id (str):
-      body (DocumentUploadRequest): Upload a markdown document for text indexing.
+      body (SqlStatementRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError | SqlStatementResponse]
   """
 
   kwargs = _get_kwargs(
@@ -133,22 +140,25 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DocumentUploadRequest,
-) -> DocumentUploadResponse | ErrorResponse | HTTPValidationError | None:
-  """Upload Document
+  body: SqlStatementRequest,
+) -> Any | ErrorResponse | HTTPValidationError | SqlStatementResponse | None:
+  """Execute SQL Statement
 
-   Stored in PostgreSQL, synced to OpenSearch for search. Not allowed on shared repositories.
+   SQL over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric data,
+  often ahead of the materialized graph. Use `?` placeholders with the `parameters` array to prevent
+  injection. Read-only (SELECT only), 30s timeout, 10K row limit. Not available on shared
+  repositories.
 
   Args:
       graph_id (str):
-      body (DocumentUploadRequest): Upload a markdown document for text indexing.
+      body (SqlStatementRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      DocumentUploadResponse | ErrorResponse | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError | SqlStatementResponse
   """
 
   return sync_detailed(
@@ -162,22 +172,25 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DocumentUploadRequest,
-) -> Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]:
-  """Upload Document
+  body: SqlStatementRequest,
+) -> Response[Any | ErrorResponse | HTTPValidationError | SqlStatementResponse]:
+  """Execute SQL Statement
 
-   Stored in PostgreSQL, synced to OpenSearch for search. Not allowed on shared repositories.
+   SQL over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric data,
+  often ahead of the materialized graph. Use `?` placeholders with the `parameters` array to prevent
+  injection. Read-only (SELECT only), 30s timeout, 10K row limit. Not available on shared
+  repositories.
 
   Args:
       graph_id (str):
-      body (DocumentUploadRequest): Upload a markdown document for text indexing.
+      body (SqlStatementRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]
+      Response[Any | ErrorResponse | HTTPValidationError | SqlStatementResponse]
   """
 
   kwargs = _get_kwargs(
@@ -194,22 +207,25 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DocumentUploadRequest,
-) -> DocumentUploadResponse | ErrorResponse | HTTPValidationError | None:
-  """Upload Document
+  body: SqlStatementRequest,
+) -> Any | ErrorResponse | HTTPValidationError | SqlStatementResponse | None:
+  """Execute SQL Statement
 
-   Stored in PostgreSQL, synced to OpenSearch for search. Not allowed on shared repositories.
+   SQL over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric data,
+  often ahead of the materialized graph. Use `?` placeholders with the `parameters` array to prevent
+  injection. Read-only (SELECT only), 30s timeout, 10K row limit. Not available on shared
+  repositories.
 
   Args:
       graph_id (str):
-      body (DocumentUploadRequest): Upload a markdown document for text indexing.
+      body (SqlStatementRequest):
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      DocumentUploadResponse | ErrorResponse | HTTPValidationError
+      Any | ErrorResponse | HTTPValidationError | SqlStatementResponse
   """
 
   return (

@@ -7,25 +7,25 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.file_status_update import FileStatusUpdate
-from ...models.http_validation_error import HTTPValidationError
-from ...models.update_file_response_updatefile import UpdateFileResponseUpdatefile
-from ...types import Response
+from ...models.operation_envelope import OperationEnvelope
+from ...models.remember_op import RememberOp
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
-  file_id: str,
   *,
-  body: FileStatusUpdate,
+  body: RememberOp,
+  idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
+  if not isinstance(idempotency_key, Unset):
+    headers["Idempotency-Key"] = idempotency_key
 
   _kwargs: dict[str, Any] = {
-    "method": "patch",
-    "url": "/v1/graphs/{graph_id}/files/{file_id}".format(
+    "method": "post",
+    "url": "/v1/graphs/{graph_id}/operations/remember".format(
       graph_id=quote(str(graph_id), safe=""),
-      file_id=quote(str(file_id), safe=""),
     ),
   }
 
@@ -39,9 +39,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
+) -> ErrorResponse | OperationEnvelope | None:
   if response.status_code == 200:
-    response_200 = UpdateFileResponseUpdatefile.from_dict(response.json())
+    response_200 = OperationEnvelope.from_dict(response.json())
 
     return response_200
 
@@ -65,8 +65,13 @@ def _parse_response(
 
     return response_404
 
+  if response.status_code == 409:
+    response_409 = ErrorResponse.from_dict(response.json())
+
+    return response_409
+
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -88,7 +93,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -99,34 +104,36 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  file_id: str,
   *,
   client: AuthenticatedClient,
-  body: FileStatusUpdate,
-) -> Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
-  """Update File Status
+  body: RememberOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelope]:
+  """Remember (write semantic memory)
 
-   Setting `status=uploaded` validates the file in S3, calculates row count, and triggers DuckDB
-  staging. Small files use direct staging; large files use a background Dagster job with an
-  `operation_id` for SSE monitoring. Set `ingest_to_graph=true` to auto-chain graph materialization.
+   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
+  it later via `POST /memory/recall`.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      file_id (str): File ID
-      body (FileStatusUpdate):
+      idempotency_key (None | str | Unset):
+      body (RememberOp): Body for the remember operation (write a semantic memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    file_id=file_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = client.get_httpx_client().request(
@@ -138,68 +145,72 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  file_id: str,
   *,
   client: AuthenticatedClient,
-  body: FileStatusUpdate,
-) -> ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
-  """Update File Status
+  body: RememberOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelope | None:
+  """Remember (write semantic memory)
 
-   Setting `status=uploaded` validates the file in S3, calculates row count, and triggers DuckDB
-  staging. Small files use direct staging; large files use a background Dagster job with an
-  `operation_id` for SSE monitoring. Set `ingest_to_graph=true` to auto-chain graph materialization.
+   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
+  it later via `POST /memory/recall`.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      file_id (str): File ID
-      body (FileStatusUpdate):
+      idempotency_key (None | str | Unset):
+      body (RememberOp): Body for the remember operation (write a semantic memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile
+      ErrorResponse | OperationEnvelope
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    file_id=file_id,
     client=client,
     body=body,
+    idempotency_key=idempotency_key,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  file_id: str,
   *,
   client: AuthenticatedClient,
-  body: FileStatusUpdate,
-) -> Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]:
-  """Update File Status
+  body: RememberOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelope]:
+  """Remember (write semantic memory)
 
-   Setting `status=uploaded` validates the file in S3, calculates row count, and triggers DuckDB
-  staging. Small files use direct staging; large files use a background Dagster job with an
-  `operation_id` for SSE monitoring. Set `ingest_to_graph=true` to auto-chain graph materialization.
+   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
+  it later via `POST /memory/recall`.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      file_id (str): File ID
-      body (FileStatusUpdate):
+      idempotency_key (None | str | Unset):
+      body (RememberOp): Body for the remember operation (write a semantic memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    file_id=file_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -209,35 +220,37 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  file_id: str,
   *,
   client: AuthenticatedClient,
-  body: FileStatusUpdate,
-) -> ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile | None:
-  """Update File Status
+  body: RememberOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelope | None:
+  """Remember (write semantic memory)
 
-   Setting `status=uploaded` validates the file in S3, calculates row count, and triggers DuckDB
-  staging. Small files use direct staging; large files use a background Dagster job with an
-  `operation_id` for SSE monitoring. Set `ingest_to_graph=true` to auto-chain graph materialization.
+   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
+  it later via `POST /memory/recall`.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      file_id (str): File ID
-      body (FileStatusUpdate):
+      idempotency_key (None | str | Unset):
+      body (RememberOp): Body for the remember operation (write a semantic memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | UpdateFileResponseUpdatefile
+      ErrorResponse | OperationEnvelope
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      file_id=file_id,
       client=client,
       body=body,
+      idempotency_key=idempotency_key,
     )
   ).parsed

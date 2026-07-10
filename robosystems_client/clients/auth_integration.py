@@ -55,10 +55,10 @@ class AuthenticatedClients(RoboSystemsClients):
     self, graph_id: str, query: str, parameters: Dict[str, Any] = None
   ):
     """Execute Cypher query using authenticated SDK client"""
-    from ..api.query.execute_cypher_query import sync_detailed
-    from ..models.cypher_query_request import CypherQueryRequest
+    from ..api.query.execute_cypher import sync_detailed
+    from ..models.cypher_statement_request import CypherStatementRequest
 
-    request = CypherQueryRequest(query=query, parameters=parameters or {})
+    request = CypherStatementRequest(query=query, parameters=parameters or {})
 
     # Execute the query
     response = sync_detailed(

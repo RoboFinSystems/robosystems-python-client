@@ -6,30 +6,47 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.delete_file_response import DeleteFileResponse
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.memory_list_response import MemoryListResponse
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
-  file_id: str,
   *,
-  cascade: bool | Unset = False,
+  memory_type: None | str | Unset = UNSET,
+  source: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
 ) -> dict[str, Any]:
 
   params: dict[str, Any] = {}
 
-  params["cascade"] = cascade
+  json_memory_type: None | str | Unset
+  if isinstance(memory_type, Unset):
+    json_memory_type = UNSET
+  else:
+    json_memory_type = memory_type
+  params["memory_type"] = json_memory_type
+
+  json_source: None | str | Unset
+  if isinstance(source, Unset):
+    json_source = UNSET
+  else:
+    json_source = source
+  params["source"] = json_source
+
+  params["limit"] = limit
+
+  params["offset"] = offset
 
   params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
   _kwargs: dict[str, Any] = {
-    "method": "delete",
-    "url": "/v1/graphs/{graph_id}/files/{file_id}".format(
+    "method": "get",
+    "url": "/v1/graphs/{graph_id}/memory".format(
       graph_id=quote(str(graph_id), safe=""),
-      file_id=quote(str(file_id), safe=""),
     ),
     "params": params,
   }
@@ -39,9 +56,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
+) -> ErrorResponse | HTTPValidationError | MemoryListResponse | None:
   if response.status_code == 200:
-    response_200 = DeleteFileResponse.from_dict(response.json())
+    response_200 = MemoryListResponse.from_dict(response.json())
 
     return response_200
 
@@ -88,7 +105,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | HTTPValidationError | MemoryListResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -99,34 +116,36 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  file_id: str,
   *,
   client: AuthenticatedClient,
-  cascade: bool | Unset = False,
-) -> Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]:
-  """Delete File
-
-   Removes from S3 and database. `cascade=true` also deletes data from DuckDB tables and marks the
-  graph stale (rebuild recommended). Not allowed on shared repositories.
+  memory_type: None | str | Unset = UNSET,
+  source: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
+) -> Response[ErrorResponse | HTTPValidationError | MemoryListResponse]:
+  """List Memories
 
   Args:
       graph_id (str):
-      file_id (str): File ID
-      cascade (bool | Unset): If true, delete from all layers including DuckDB and mark graph
-          stale Default: False.
+      memory_type (None | str | Unset): Filter by memory type
+      source (None | str | Unset): Filter by source
+      limit (int | Unset):  Default: 100.
+      offset (int | Unset):  Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | MemoryListResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    file_id=file_id,
-    cascade=cascade,
+    memory_type=memory_type,
+    source=source,
+    limit=limit,
+    offset=offset,
   )
 
   response = client.get_httpx_client().request(
@@ -138,68 +157,72 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  file_id: str,
   *,
   client: AuthenticatedClient,
-  cascade: bool | Unset = False,
-) -> DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
-  """Delete File
-
-   Removes from S3 and database. `cascade=true` also deletes data from DuckDB tables and marks the
-  graph stale (rebuild recommended). Not allowed on shared repositories.
+  memory_type: None | str | Unset = UNSET,
+  source: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
+) -> ErrorResponse | HTTPValidationError | MemoryListResponse | None:
+  """List Memories
 
   Args:
       graph_id (str):
-      file_id (str): File ID
-      cascade (bool | Unset): If true, delete from all layers including DuckDB and mark graph
-          stale Default: False.
+      memory_type (None | str | Unset): Filter by memory type
+      source (None | str | Unset): Filter by source
+      limit (int | Unset):  Default: 100.
+      offset (int | Unset):  Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      DeleteFileResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | MemoryListResponse
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    file_id=file_id,
     client=client,
-    cascade=cascade,
+    memory_type=memory_type,
+    source=source,
+    limit=limit,
+    offset=offset,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  file_id: str,
   *,
   client: AuthenticatedClient,
-  cascade: bool | Unset = False,
-) -> Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]:
-  """Delete File
-
-   Removes from S3 and database. `cascade=true` also deletes data from DuckDB tables and marks the
-  graph stale (rebuild recommended). Not allowed on shared repositories.
+  memory_type: None | str | Unset = UNSET,
+  source: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
+) -> Response[ErrorResponse | HTTPValidationError | MemoryListResponse]:
+  """List Memories
 
   Args:
       graph_id (str):
-      file_id (str): File ID
-      cascade (bool | Unset): If true, delete from all layers including DuckDB and mark graph
-          stale Default: False.
+      memory_type (None | str | Unset): Filter by memory type
+      source (None | str | Unset): Filter by source
+      limit (int | Unset):  Default: 100.
+      offset (int | Unset):  Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[DeleteFileResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | MemoryListResponse]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    file_id=file_id,
-    cascade=cascade,
+    memory_type=memory_type,
+    source=source,
+    limit=limit,
+    offset=offset,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -209,35 +232,37 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  file_id: str,
   *,
   client: AuthenticatedClient,
-  cascade: bool | Unset = False,
-) -> DeleteFileResponse | ErrorResponse | HTTPValidationError | None:
-  """Delete File
-
-   Removes from S3 and database. `cascade=true` also deletes data from DuckDB tables and marks the
-  graph stale (rebuild recommended). Not allowed on shared repositories.
+  memory_type: None | str | Unset = UNSET,
+  source: None | str | Unset = UNSET,
+  limit: int | Unset = 100,
+  offset: int | Unset = 0,
+) -> ErrorResponse | HTTPValidationError | MemoryListResponse | None:
+  """List Memories
 
   Args:
       graph_id (str):
-      file_id (str): File ID
-      cascade (bool | Unset): If true, delete from all layers including DuckDB and mark graph
-          stale Default: False.
+      memory_type (None | str | Unset): Filter by memory type
+      source (None | str | Unset): Filter by source
+      limit (int | Unset):  Default: 100.
+      offset (int | Unset):  Default: 0.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      DeleteFileResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | MemoryListResponse
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      file_id=file_id,
       client=client,
-      cascade=cascade,
+      memory_type=memory_type,
+      source=source,
+      limit=limit,
+      offset=offset,
     )
   ).parsed

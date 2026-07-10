@@ -8,32 +8,51 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="DocumentUploadRequest")
+T = TypeVar("T", bound="IndexDocumentOp")
 
 
 @_attrs_define
-class DocumentUploadRequest:
-  """Upload a markdown document for text indexing.
+class IndexDocumentOp:
+  """Body for index-document (corpus content-op).
 
-  Attributes:
-      title (str): Document title
-      content (str): Markdown content
-      tags (list[str] | None | Unset): Optional tags for filtering
-      folder (None | str | Unset): Optional folder/category
-      external_id (None | str | Unset): Optional external identifier for upsert (e.g., Google Drive file ID)
+  Create a new document when ``document_id`` is absent; update the named
+  document (partial — only supplied fields) when present.
+
+      Attributes:
+          document_id (None | str | Unset): Present → update that document; absent → create a new one
+          title (None | str | Unset): Required when creating
+          content (None | str | Unset): Required when creating
+          tags (list[str] | None | Unset): Optional labels
+          folder (None | str | Unset): Optional folder
+          external_id (None | str | Unset): Upsert key (create): re-indexing the same id replaces
   """
 
-  title: str
-  content: str
+  document_id: None | str | Unset = UNSET
+  title: None | str | Unset = UNSET
+  content: None | str | Unset = UNSET
   tags: list[str] | None | Unset = UNSET
   folder: None | str | Unset = UNSET
   external_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    title = self.title
+    document_id: None | str | Unset
+    if isinstance(self.document_id, Unset):
+      document_id = UNSET
+    else:
+      document_id = self.document_id
 
-    content = self.content
+    title: None | str | Unset
+    if isinstance(self.title, Unset):
+      title = UNSET
+    else:
+      title = self.title
+
+    content: None | str | Unset
+    if isinstance(self.content, Unset):
+      content = UNSET
+    else:
+      content = self.content
 
     tags: list[str] | None | Unset
     if isinstance(self.tags, Unset):
@@ -58,12 +77,13 @@ class DocumentUploadRequest:
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update(
-      {
-        "title": title,
-        "content": content,
-      }
-    )
+    field_dict.update({})
+    if document_id is not UNSET:
+      field_dict["document_id"] = document_id
+    if title is not UNSET:
+      field_dict["title"] = title
+    if content is not UNSET:
+      field_dict["content"] = content
     if tags is not UNSET:
       field_dict["tags"] = tags
     if folder is not UNSET:
@@ -76,9 +96,33 @@ class DocumentUploadRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    title = d.pop("title")
 
-    content = d.pop("content")
+    def _parse_document_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    document_id = _parse_document_id(d.pop("document_id", UNSET))
+
+    def _parse_title(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    title = _parse_title(d.pop("title", UNSET))
+
+    def _parse_content(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    content = _parse_content(d.pop("content", UNSET))
 
     def _parse_tags(data: object) -> list[str] | None | Unset:
       if data is None:
@@ -115,7 +159,8 @@ class DocumentUploadRequest:
 
     external_id = _parse_external_id(d.pop("external_id", UNSET))
 
-    document_upload_request = cls(
+    index_document_op = cls(
+      document_id=document_id,
       title=title,
       content=content,
       tags=tags,
@@ -123,8 +168,8 @@ class DocumentUploadRequest:
       external_id=external_id,
     )
 
-    document_upload_request.additional_properties = d
-    return document_upload_request
+    index_document_op.additional_properties = d
+    return index_document_op
 
   @property
   def additional_keys(self) -> list[str]:

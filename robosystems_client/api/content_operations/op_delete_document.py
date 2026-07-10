@@ -1,28 +1,30 @@
 from http import HTTPStatus
-from typing import Any, cast
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.delete_document_op import DeleteDocumentOp
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
-from ...models.table_query_request import TableQueryRequest
-from ...models.table_query_response import TableQueryResponse
-from ...types import Response
+from ...models.operation_envelope import OperationEnvelope
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: TableQueryRequest,
+  body: DeleteDocumentOp,
+  idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
+  if not isinstance(idempotency_key, Unset):
+    headers["Idempotency-Key"] = idempotency_key
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/tables/query".format(
+    "url": "/v1/graphs/{graph_id}/operations/delete-document".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -37,9 +39,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | ErrorResponse | HTTPValidationError | TableQueryResponse | None:
+) -> ErrorResponse | OperationEnvelope | None:
   if response.status_code == 200:
-    response_200 = TableQueryResponse.from_dict(response.json())
+    response_200 = OperationEnvelope.from_dict(response.json())
 
     return response_200
 
@@ -63,12 +65,13 @@ def _parse_response(
 
     return response_404
 
-  if response.status_code == 408:
-    response_408 = cast(Any, None)
-    return response_408
+  if response.status_code == 409:
+    response_409 = ErrorResponse.from_dict(response.json())
+
+    return response_409
 
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -90,7 +93,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -103,29 +106,33 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TableQueryRequest,
-) -> Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]:
-  """Query Staging Tables with SQL
+  body: DeleteDocumentOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelope]:
+  """Delete Document (remove from the corpus)
 
-   Execute SQL against DuckDB staging tables for pre-ingestion validation. Use `?` placeholders with
-  the `parameters` array to prevent injection. Read-only (SELECT only), 30s timeout, 10K row limit.
-  Not allowed on shared repositories.
+   Delete a document from PostgreSQL and OpenSearch by id.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      body (TableQueryRequest):
+      idempotency_key (None | str | Unset):
+      body (DeleteDocumentOp): Body for delete-document (corpus content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = client.get_httpx_client().request(
@@ -139,30 +146,34 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TableQueryRequest,
-) -> Any | ErrorResponse | HTTPValidationError | TableQueryResponse | None:
-  """Query Staging Tables with SQL
+  body: DeleteDocumentOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelope | None:
+  """Delete Document (remove from the corpus)
 
-   Execute SQL against DuckDB staging tables for pre-ingestion validation. Use `?` placeholders with
-  the `parameters` array to prevent injection. Read-only (SELECT only), 30s timeout, 10K row limit.
-  Not allowed on shared repositories.
+   Delete a document from PostgreSQL and OpenSearch by id.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      body (TableQueryRequest):
+      idempotency_key (None | str | Unset):
+      body (DeleteDocumentOp): Body for delete-document (corpus content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError | TableQueryResponse
+      ErrorResponse | OperationEnvelope
   """
 
   return sync_detailed(
     graph_id=graph_id,
     client=client,
     body=body,
+    idempotency_key=idempotency_key,
   ).parsed
 
 
@@ -170,29 +181,33 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TableQueryRequest,
-) -> Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]:
-  """Query Staging Tables with SQL
+  body: DeleteDocumentOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelope]:
+  """Delete Document (remove from the corpus)
 
-   Execute SQL against DuckDB staging tables for pre-ingestion validation. Use `?` placeholders with
-  the `parameters` array to prevent injection. Read-only (SELECT only), 30s timeout, 10K row limit.
-  Not allowed on shared repositories.
+   Delete a document from PostgreSQL and OpenSearch by id.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      body (TableQueryRequest):
+      idempotency_key (None | str | Unset):
+      body (DeleteDocumentOp): Body for delete-document (corpus content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError | TableQueryResponse]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -204,24 +219,27 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: TableQueryRequest,
-) -> Any | ErrorResponse | HTTPValidationError | TableQueryResponse | None:
-  """Query Staging Tables with SQL
+  body: DeleteDocumentOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelope | None:
+  """Delete Document (remove from the corpus)
 
-   Execute SQL against DuckDB staging tables for pre-ingestion validation. Use `?` placeholders with
-  the `parameters` array to prevent injection. Read-only (SELECT only), 30s timeout, 10K row limit.
-  Not allowed on shared repositories.
+   Delete a document from PostgreSQL and OpenSearch by id.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      body (TableQueryRequest):
+      idempotency_key (None | str | Unset):
+      body (DeleteDocumentOp): Body for delete-document (corpus content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError | TableQueryResponse
+      ErrorResponse | OperationEnvelope
   """
 
   return (
@@ -229,5 +247,6 @@ async def asyncio(
       graph_id=graph_id,
       client=client,
       body=body,
+      idempotency_key=idempotency_key,
     )
   ).parsed

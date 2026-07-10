@@ -11,10 +11,10 @@ import logging
 from ..api.tables.list_tables import (
   sync_detailed as list_tables,
 )
-from ..api.tables.query_tables import (
+from ..api.query.execute_sql import (
   sync_detailed as query_tables,
 )
-from ..models.table_query_request import TableQueryRequest
+from ..models.sql_statement_request import SqlStatementRequest
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +131,7 @@ class TableClient:
       if limit is not None:
         final_query = f"{sql_query.rstrip(';')} LIMIT {limit}"
 
-      request = TableQueryRequest(sql=final_query)
+      request = SqlStatementRequest(sql=final_query)
 
       from ..client import AuthenticatedClient
 

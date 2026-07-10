@@ -38,6 +38,8 @@ class LedgerEntityResponse:
           lei (None | str | Unset): Legal Entity Identifier (ISO 17442).
           industry (None | str | Unset): Free-form industry label.
           entity_type (None | str | Unset): Legal form (e.g. 'corporation', 'llc', 'lp').
+          reporting_style_id (None | str | Unset): Active Reporting Style (Structure id) governing this entity's statement
+              layout. Change it via the change-reporting-style operation.
           phone (None | str | Unset):
           website (None | str | Unset):
           status (str | Unset): Operational status: 'active' | 'inactive' | 'dissolved'. Default: 'active'.
@@ -73,6 +75,7 @@ class LedgerEntityResponse:
   lei: None | str | Unset = UNSET
   industry: None | str | Unset = UNSET
   entity_type: None | str | Unset = UNSET
+  reporting_style_id: None | str | Unset = UNSET
   phone: None | str | Unset = UNSET
   website: None | str | Unset = UNSET
   status: str | Unset = "active"
@@ -179,6 +182,12 @@ class LedgerEntityResponse:
       entity_type = UNSET
     else:
       entity_type = self.entity_type
+
+    reporting_style_id: None | str | Unset
+    if isinstance(self.reporting_style_id, Unset):
+      reporting_style_id = UNSET
+    else:
+      reporting_style_id = self.reporting_style_id
 
     phone: None | str | Unset
     if isinstance(self.phone, Unset):
@@ -300,6 +309,8 @@ class LedgerEntityResponse:
       field_dict["industry"] = industry
     if entity_type is not UNSET:
       field_dict["entity_type"] = entity_type
+    if reporting_style_id is not UNSET:
+      field_dict["reporting_style_id"] = reporting_style_id
     if phone is not UNSET:
       field_dict["phone"] = phone
     if website is not UNSET:
@@ -470,6 +481,15 @@ class LedgerEntityResponse:
 
     entity_type = _parse_entity_type(d.pop("entity_type", UNSET))
 
+    def _parse_reporting_style_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    reporting_style_id = _parse_reporting_style_id(d.pop("reporting_style_id", UNSET))
+
     def _parse_phone(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -612,6 +632,7 @@ class LedgerEntityResponse:
       lei=lei,
       industry=industry,
       entity_type=entity_type,
+      reporting_style_id=reporting_style_id,
       phone=phone,
       website=website,
       status=status,

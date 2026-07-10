@@ -23,14 +23,14 @@ def run_command(cmd: str, description: str) -> bool:
 
 
 def patch_ndjson_handling() -> bool:
-  """Add NDJSON handling to execute_cypher_query._parse_response."""
+  """Add NDJSON handling to execute_cypher._parse_response."""
 
   file_path = (
     Path(__file__).parent.parent
     / "robosystems_client"
     / "api"
     / "query"
-    / "execute_cypher_query.py"
+    / "execute_cypher.py"
   )
 
   if not file_path.exists():
@@ -55,7 +55,7 @@ def patch_ndjson_handling() -> bool:
 """
 
   # Find the location to insert the patch (raw generated code uses 4 spaces).
-  # The /v1/graphs/{graph_id}/query endpoint declares `response_model=None`
+  # The /v1/graphs/{graph_id}/query/cypher endpoint declares `response_model=None`
   # (it returns JSONResponse | StreamingResponse | EventSourceResponse depending
   # on mode), so the generator emits `response.json()` directly with no typed
   # Response200 model.

@@ -6,26 +6,26 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.document_update_request import DocumentUpdateRequest
-from ...models.document_upload_response import DocumentUploadResponse
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
-from ...types import Response
+from ...models.forget_op import ForgetOp
+from ...models.operation_envelope import OperationEnvelope
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
-  document_id: str,
   *,
-  body: DocumentUpdateRequest,
+  body: ForgetOp,
+  idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
+  if not isinstance(idempotency_key, Unset):
+    headers["Idempotency-Key"] = idempotency_key
 
   _kwargs: dict[str, Any] = {
-    "method": "put",
-    "url": "/v1/graphs/{graph_id}/documents/{document_id}".format(
+    "method": "post",
+    "url": "/v1/graphs/{graph_id}/operations/forget".format(
       graph_id=quote(str(graph_id), safe=""),
-      document_id=quote(str(document_id), safe=""),
     ),
   }
 
@@ -39,9 +39,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> DocumentUploadResponse | ErrorResponse | HTTPValidationError | None:
+) -> ErrorResponse | OperationEnvelope | None:
   if response.status_code == 200:
-    response_200 = DocumentUploadResponse.from_dict(response.json())
+    response_200 = OperationEnvelope.from_dict(response.json())
 
     return response_200
 
@@ -65,8 +65,13 @@ def _parse_response(
 
     return response_404
 
+  if response.status_code == 409:
+    response_409 = ErrorResponse.from_dict(response.json())
+
+    return response_409
+
   if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
+    response_422 = ErrorResponse.from_dict(response.json())
 
     return response_422
 
@@ -88,7 +93,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -99,32 +104,35 @@ def _build_response(
 
 def sync_detailed(
   graph_id: str,
-  document_id: str,
   *,
   client: AuthenticatedClient,
-  body: DocumentUpdateRequest,
-) -> Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]:
-  """Update Document
+  body: ForgetOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelope]:
+  """Forget (delete a semantic memory)
 
-   Updates content and/or metadata. Re-syncs to OpenSearch.
+   Delete a semantic memory by its server-generated id.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      document_id (str):
-      body (DocumentUpdateRequest): Update a document's metadata and/or content.
+      idempotency_key (None | str | Unset):
+      body (ForgetOp): Body for the forget operation (delete a semantic memory by id).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    document_id=document_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = client.get_httpx_client().request(
@@ -136,64 +144,70 @@ def sync_detailed(
 
 def sync(
   graph_id: str,
-  document_id: str,
   *,
   client: AuthenticatedClient,
-  body: DocumentUpdateRequest,
-) -> DocumentUploadResponse | ErrorResponse | HTTPValidationError | None:
-  """Update Document
+  body: ForgetOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelope | None:
+  """Forget (delete a semantic memory)
 
-   Updates content and/or metadata. Re-syncs to OpenSearch.
+   Delete a semantic memory by its server-generated id.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      document_id (str):
-      body (DocumentUpdateRequest): Update a document's metadata and/or content.
+      idempotency_key (None | str | Unset):
+      body (ForgetOp): Body for the forget operation (delete a semantic memory by id).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      DocumentUploadResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | OperationEnvelope
   """
 
   return sync_detailed(
     graph_id=graph_id,
-    document_id=document_id,
     client=client,
     body=body,
+    idempotency_key=idempotency_key,
   ).parsed
 
 
 async def asyncio_detailed(
   graph_id: str,
-  document_id: str,
   *,
   client: AuthenticatedClient,
-  body: DocumentUpdateRequest,
-) -> Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]:
-  """Update Document
+  body: ForgetOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelope]:
+  """Forget (delete a semantic memory)
 
-   Updates content and/or metadata. Re-syncs to OpenSearch.
+   Delete a semantic memory by its server-generated id.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      document_id (str):
-      body (DocumentUpdateRequest): Update a document's metadata and/or content.
+      idempotency_key (None | str | Unset):
+      body (ForgetOp): Body for the forget operation (delete a semantic memory by id).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[DocumentUploadResponse | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
     graph_id=graph_id,
-    document_id=document_id,
     body=body,
+    idempotency_key=idempotency_key,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -203,33 +217,36 @@ async def asyncio_detailed(
 
 async def asyncio(
   graph_id: str,
-  document_id: str,
   *,
   client: AuthenticatedClient,
-  body: DocumentUpdateRequest,
-) -> DocumentUploadResponse | ErrorResponse | HTTPValidationError | None:
-  """Update Document
+  body: ForgetOp,
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelope | None:
+  """Forget (delete a semantic memory)
 
-   Updates content and/or metadata. Re-syncs to OpenSearch.
+   Delete a semantic memory by its server-generated id.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
 
   Args:
       graph_id (str):
-      document_id (str):
-      body (DocumentUpdateRequest): Update a document's metadata and/or content.
+      idempotency_key (None | str | Unset):
+      body (ForgetOp): Body for the forget operation (delete a semantic memory by id).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      DocumentUploadResponse | ErrorResponse | HTTPValidationError
+      ErrorResponse | OperationEnvelope
   """
 
   return (
     await asyncio_detailed(
       graph_id=graph_id,
-      document_id=document_id,
       client=client,
       body=body,
+      idempotency_key=idempotency_key,
     )
   ).parsed

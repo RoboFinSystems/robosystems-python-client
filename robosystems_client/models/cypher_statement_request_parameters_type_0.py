@@ -6,11 +6,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="UpdateFileResponseUpdatefile")
+T = TypeVar("T", bound="CypherStatementRequestParametersType0")
 
 
 @_attrs_define
-class UpdateFileResponseUpdatefile:
+class CypherStatementRequestParametersType0:
   """ """
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -25,10 +25,10 @@ class UpdateFileResponseUpdatefile:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    update_file_response_updatefile = cls()
+    cypher_statement_request_parameters_type_0 = cls()
 
-    update_file_response_updatefile.additional_properties = d
-    return update_file_response_updatefile
+    cypher_statement_request_parameters_type_0.additional_properties = d
+    return cypher_statement_request_parameters_type_0
 
   @property
   def additional_keys(self) -> list[str]:

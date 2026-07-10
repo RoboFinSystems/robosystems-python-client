@@ -6,8 +6,8 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.change_reporting_style_op import ChangeReportingStyleOp
 from ...models.error_response import ErrorResponse
+from ...models.ingest_file_op import IngestFileOp
 from ...models.operation_envelope import OperationEnvelope
 from ...types import UNSET, Response, Unset
 
@@ -15,7 +15,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: ChangeReportingStyleOp,
+  body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -24,7 +24,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/operations/change-reporting-style".format(
+    "url": "/v1/graphs/{graph_id}/operations/ingest-file".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -106,14 +106,14 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: ChangeReportingStyleOp,
+  body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Change Reporting Style
+  """Ingest File (stage an uploaded file)
 
-   Switches the graph's Reporting Style. Synchronous: validates the target Style has a complete
-  composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports are
-  unaffected; new reports use the new Style. Idempotent on the same id.
+   Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
+  stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
+  `ingest_to_graph` to auto-materialize into the graph after staging.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -121,15 +121,10 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ChangeReportingStyleOp): Body for the change-reporting-style operation.
+      body (IngestFileOp): Body for ingest-file (raw→staging content flow).
 
-          Switches the graph to a different Reporting Style. The target Style
-          must be a library- or customer-authored Structure with
-          ``block_type='reporting_style'`` and a complete composition
-          (one Network per required statement type — BS / IS / CF / SE). Filed
-          Reports are unaffected because each ``Report`` already pins its own
-          ``structure_id`` per FactSet at create-time; new reports use the new
-          Style. Idempotent on the same target id.
+          Marks an uploaded file ready and triggers DuckDB staging. Set
+          ``ingest_to_graph`` to auto-chain graph materialization after staging.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -156,14 +151,14 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: ChangeReportingStyleOp,
+  body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Change Reporting Style
+  """Ingest File (stage an uploaded file)
 
-   Switches the graph's Reporting Style. Synchronous: validates the target Style has a complete
-  composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports are
-  unaffected; new reports use the new Style. Idempotent on the same id.
+   Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
+  stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
+  `ingest_to_graph` to auto-materialize into the graph after staging.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -171,15 +166,10 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ChangeReportingStyleOp): Body for the change-reporting-style operation.
+      body (IngestFileOp): Body for ingest-file (raw→staging content flow).
 
-          Switches the graph to a different Reporting Style. The target Style
-          must be a library- or customer-authored Structure with
-          ``block_type='reporting_style'`` and a complete composition
-          (one Network per required statement type — BS / IS / CF / SE). Filed
-          Reports are unaffected because each ``Report`` already pins its own
-          ``structure_id`` per FactSet at create-time; new reports use the new
-          Style. Idempotent on the same target id.
+          Marks an uploaded file ready and triggers DuckDB staging. Set
+          ``ingest_to_graph`` to auto-chain graph materialization after staging.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -201,14 +191,14 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: ChangeReportingStyleOp,
+  body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Change Reporting Style
+  """Ingest File (stage an uploaded file)
 
-   Switches the graph's Reporting Style. Synchronous: validates the target Style has a complete
-  composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports are
-  unaffected; new reports use the new Style. Idempotent on the same id.
+   Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
+  stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
+  `ingest_to_graph` to auto-materialize into the graph after staging.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -216,15 +206,10 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ChangeReportingStyleOp): Body for the change-reporting-style operation.
+      body (IngestFileOp): Body for ingest-file (raw→staging content flow).
 
-          Switches the graph to a different Reporting Style. The target Style
-          must be a library- or customer-authored Structure with
-          ``block_type='reporting_style'`` and a complete composition
-          (one Network per required statement type — BS / IS / CF / SE). Filed
-          Reports are unaffected because each ``Report`` already pins its own
-          ``structure_id`` per FactSet at create-time; new reports use the new
-          Style. Idempotent on the same target id.
+          Marks an uploaded file ready and triggers DuckDB staging. Set
+          ``ingest_to_graph`` to auto-chain graph materialization after staging.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -249,14 +234,14 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: ChangeReportingStyleOp,
+  body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Change Reporting Style
+  """Ingest File (stage an uploaded file)
 
-   Switches the graph's Reporting Style. Synchronous: validates the target Style has a complete
-  composition in the tenant schema, then updates `graphs.reporting_style_id`. Filed Reports are
-  unaffected; new reports use the new Style. Idempotent on the same id.
+   Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
+  stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
+  `ingest_to_graph` to auto-materialize into the graph after staging.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -264,15 +249,10 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ChangeReportingStyleOp): Body for the change-reporting-style operation.
+      body (IngestFileOp): Body for ingest-file (raw→staging content flow).
 
-          Switches the graph to a different Reporting Style. The target Style
-          must be a library- or customer-authored Structure with
-          ``block_type='reporting_style'`` and a complete composition
-          (one Network per required statement type — BS / IS / CF / SE). Filed
-          Reports are unaffected because each ``Report`` already pins its own
-          ``structure_id`` per FactSet at create-time; new reports use the new
-          Style. Idempotent on the same target id.
+          Marks an uploaded file ready and triggers DuckDB staging. Set
+          ``ingest_to_graph`` to auto-chain graph materialization after staging.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
