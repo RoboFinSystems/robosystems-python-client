@@ -6,7 +6,6 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -81,7 +80,7 @@ class PublishListMemberResponse:
 
     added_by = d.pop("added_by")
 
-    added_at = isoparse(d.pop("added_at"))
+    added_at = datetime.datetime.fromisoformat(d.pop("added_at"))
 
     def _parse_target_graph_name(data: object) -> None | str | Unset:
       if data is None:

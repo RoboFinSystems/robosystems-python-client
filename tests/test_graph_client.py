@@ -110,7 +110,7 @@ class TestGraphClient:
     # Should not raise any exceptions
     client.close()
 
-  @patch("robosystems_client.api.graph_operations.op_delete_graph.sync_detailed")
+  @patch("robosystems_client.api.graph_operations.delete_graph.sync_detailed")
   def test_delete_graph_immediate(self, mock_op, mock_config):
     """delete_graph (default mode) submits immediate cancellation."""
     envelope = MagicMock()
@@ -133,7 +133,7 @@ class TestGraphClient:
     assert body.confirm == "kg_x"
     assert body.at_period_end is False
 
-  @patch("robosystems_client.api.graph_operations.op_delete_graph.sync_detailed")
+  @patch("robosystems_client.api.graph_operations.delete_graph.sync_detailed")
   def test_delete_graph_at_period_end(self, mock_op, mock_config):
     """delete_graph(at_period_end=True) defers cancellation to period end."""
     envelope = MagicMock()
@@ -157,7 +157,7 @@ class TestGraphClient:
     body = mock_op.call_args.kwargs["body"]
     assert body.at_period_end is True
 
-  @patch("robosystems_client.api.graph_operations.op_delete_graph.sync_detailed")
+  @patch("robosystems_client.api.graph_operations.delete_graph.sync_detailed")
   def test_delete_graph_raises_on_failure(self, mock_op, mock_config):
     """Non-2xx response raises RuntimeError with the API error detail."""
     response = MagicMock()

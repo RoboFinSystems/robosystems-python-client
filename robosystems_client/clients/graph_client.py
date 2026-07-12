@@ -322,7 +322,7 @@ class GraphClient:
     Returns:
         MaterializationResult with detailed execution information
     """
-    from ..api.graph_operations.op_materialize import (
+    from ..api.graph_operations.materialize import (
       sync_detailed as materialize_graph,
     )
 
@@ -469,7 +469,7 @@ class GraphClient:
         RuntimeError: If the tier change fails or the operation errors out
         TimeoutError: If the operation does not complete within timeout
     """
-    from ..api.graph_operations.op_change_tier import sync_detailed as change_tier_op
+    from ..api.graph_operations.change_tier import sync_detailed as change_tier_op
     from ..models.change_tier_op import ChangeTierOp
 
     client = self._get_authenticated_client()
@@ -709,7 +709,7 @@ class GraphClient:
     Raises:
         RuntimeError: If the deletion request fails.
     """
-    from ..api.graph_operations.op_delete_graph import (
+    from ..api.graph_operations.delete_graph import (
       sync_detailed as op_delete_graph,
     )
     from ..models.delete_graph_op import DeleteGraphOp

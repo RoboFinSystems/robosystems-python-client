@@ -6,8 +6,8 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.delete_document_op import DeleteDocumentOp
 from ...models.error_response import ErrorResponse
-from ...models.ingest_file_op import IngestFileOp
 from ...models.operation_envelope import OperationEnvelope
 from ...types import UNSET, Response, Unset
 
@@ -15,7 +15,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: IngestFileOp,
+  body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -24,7 +24,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/operations/ingest-file".format(
+    "url": "/v1/graphs/{graph_id}/operations/delete-document".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -106,14 +106,12 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: IngestFileOp,
+  body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Ingest File (stage an uploaded file)
+  """Delete a Document
 
-   Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
-  stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
-  `ingest_to_graph` to auto-materialize into the graph after staging.
+   Delete a document from PostgreSQL and OpenSearch by id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -121,10 +119,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (IngestFileOp): Body for ingest-file (raw→staging content flow).
-
-          Marks an uploaded file ready and triggers DuckDB staging. Set
-          ``ingest_to_graph`` to auto-chain graph materialization after staging.
+      body (DeleteDocumentOp): Body for delete-document (corpus content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -151,14 +146,12 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: IngestFileOp,
+  body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Ingest File (stage an uploaded file)
+  """Delete a Document
 
-   Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
-  stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
-  `ingest_to_graph` to auto-materialize into the graph after staging.
+   Delete a document from PostgreSQL and OpenSearch by id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -166,10 +159,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (IngestFileOp): Body for ingest-file (raw→staging content flow).
-
-          Marks an uploaded file ready and triggers DuckDB staging. Set
-          ``ingest_to_graph`` to auto-chain graph materialization after staging.
+      body (DeleteDocumentOp): Body for delete-document (corpus content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -191,14 +181,12 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: IngestFileOp,
+  body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Ingest File (stage an uploaded file)
+  """Delete a Document
 
-   Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
-  stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
-  `ingest_to_graph` to auto-materialize into the graph after staging.
+   Delete a document from PostgreSQL and OpenSearch by id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -206,10 +194,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (IngestFileOp): Body for ingest-file (raw→staging content flow).
-
-          Marks an uploaded file ready and triggers DuckDB staging. Set
-          ``ingest_to_graph`` to auto-chain graph materialization after staging.
+      body (DeleteDocumentOp): Body for delete-document (corpus content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -234,14 +219,12 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: IngestFileOp,
+  body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Ingest File (stage an uploaded file)
+  """Delete a Document
 
-   Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
-  stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
-  `ingest_to_graph` to auto-materialize into the graph after staging.
+   Delete a document from PostgreSQL and OpenSearch by id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -249,10 +232,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (IngestFileOp): Body for ingest-file (raw→staging content flow).
-
-          Marks an uploaded file ready and triggers DuckDB staging. Set
-          ``ingest_to_graph`` to auto-chain graph materialization after staging.
+      body (DeleteDocumentOp): Body for delete-document (corpus content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

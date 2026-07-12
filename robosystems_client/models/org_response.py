@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.org_role import OrgRole
 from ..models.org_type import OrgType
@@ -88,9 +87,9 @@ class OrgResponse:
 
     graph_count = d.pop("graph_count")
 
-    created_at = isoparse(d.pop("created_at"))
+    created_at = datetime.datetime.fromisoformat(d.pop("created_at"))
 
-    joined_at = isoparse(d.pop("joined_at"))
+    joined_at = datetime.datetime.fromisoformat(d.pop("joined_at"))
 
     org_response = cls(
       id=id,

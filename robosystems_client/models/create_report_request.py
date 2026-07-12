@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -120,9 +119,9 @@ class CreateReportRequest:
 
     mapping_id = d.pop("mapping_id")
 
-    period_start = isoparse(d.pop("period_start")).date()
+    period_start = datetime.date.fromisoformat(d.pop("period_start"))
 
-    period_end = isoparse(d.pop("period_end")).date()
+    period_end = datetime.date.fromisoformat(d.pop("period_end"))
 
     taxonomy_id = d.pop("taxonomy_id", UNSET)
 

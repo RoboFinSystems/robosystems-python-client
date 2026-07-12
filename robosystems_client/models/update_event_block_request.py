@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.update_event_block_request_event_action_type_0 import (
   UpdateEventBlockRequestEventActionType0,
@@ -199,7 +198,7 @@ class UpdateEventBlockRequest:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        effective_at_type_0 = isoparse(data)
+        effective_at_type_0 = datetime.datetime.fromisoformat(data)
 
         return effective_at_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

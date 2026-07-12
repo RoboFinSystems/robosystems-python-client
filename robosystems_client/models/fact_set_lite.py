@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -118,7 +117,7 @@ class FactSetLite:
     d = dict(src_dict)
     id = d.pop("id")
 
-    period_end = isoparse(d.pop("period_end")).date()
+    period_end = datetime.date.fromisoformat(d.pop("period_end"))
 
     factset_type = d.pop("factset_type")
 
@@ -141,7 +140,7 @@ class FactSetLite:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        period_start_type_0 = isoparse(data).date()
+        period_start_type_0 = datetime.date.fromisoformat(data)
 
         return period_start_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

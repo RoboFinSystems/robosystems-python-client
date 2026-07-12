@@ -6,7 +6,6 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 T = TypeVar("T", bound="SSOTokenResponse")
 
@@ -50,7 +49,7 @@ class SSOTokenResponse:
     d = dict(src_dict)
     token = d.pop("token")
 
-    expires_at = isoparse(d.pop("expires_at"))
+    expires_at = datetime.datetime.fromisoformat(d.pop("expires_at"))
 
     apps = cast(list[str], d.pop("apps"))
 

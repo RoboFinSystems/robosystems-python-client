@@ -6,7 +6,6 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -73,9 +72,9 @@ class FiscalPeriodSummary:
     d = dict(src_dict)
     name = d.pop("name")
 
-    start_date = isoparse(d.pop("start_date")).date()
+    start_date = datetime.date.fromisoformat(d.pop("start_date"))
 
-    end_date = isoparse(d.pop("end_date")).date()
+    end_date = datetime.date.fromisoformat(d.pop("end_date"))
 
     status = d.pop("status")
 
@@ -87,7 +86,7 @@ class FiscalPeriodSummary:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        closed_at_type_0 = isoparse(data)
+        closed_at_type_0 = datetime.datetime.fromisoformat(data)
 
         return closed_at_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

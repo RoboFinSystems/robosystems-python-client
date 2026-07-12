@@ -6,16 +6,16 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.delete_file_op import DeleteFileOp
 from ...models.error_response import ErrorResponse
 from ...models.operation_envelope import OperationEnvelope
-from ...models.update_memory_op import UpdateMemoryOp
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: UpdateMemoryOp,
+  body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -24,7 +24,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/operations/update-memory".format(
+    "url": "/v1/graphs/{graph_id}/operations/delete-file".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -106,13 +106,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateMemoryOp,
+  body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Update Memory (edit a semantic memory)
+  """Delete a File
 
-   Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
-  is re-embedded when `text` changes.
+   Delete a file from S3 and PostgreSQL. `cascade=true` also removes its rows from DuckDB staging
+  tables and marks the graph stale.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -120,11 +120,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
-          memory).
-
-          Only supplied fields are changed; the memory is re-embedded when ``text``
-          changes.
+      body (DeleteFileOp): Body for delete-file (raw content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -151,13 +147,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateMemoryOp,
+  body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Update Memory (edit a semantic memory)
+  """Delete a File
 
-   Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
-  is re-embedded when `text` changes.
+   Delete a file from S3 and PostgreSQL. `cascade=true` also removes its rows from DuckDB staging
+  tables and marks the graph stale.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -165,11 +161,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
-          memory).
-
-          Only supplied fields are changed; the memory is re-embedded when ``text``
-          changes.
+      body (DeleteFileOp): Body for delete-file (raw content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -191,13 +183,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateMemoryOp,
+  body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Update Memory (edit a semantic memory)
+  """Delete a File
 
-   Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
-  is re-embedded when `text` changes.
+   Delete a file from S3 and PostgreSQL. `cascade=true` also removes its rows from DuckDB staging
+  tables and marks the graph stale.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -205,11 +197,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
-          memory).
-
-          Only supplied fields are changed; the memory is re-embedded when ``text``
-          changes.
+      body (DeleteFileOp): Body for delete-file (raw content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -234,13 +222,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateMemoryOp,
+  body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Update Memory (edit a semantic memory)
+  """Delete a File
 
-   Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
-  is re-embedded when `text` changes.
+   Delete a file from S3 and PostgreSQL. `cascade=true` also removes its rows from DuckDB staging
+  tables and marks the graph stale.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -248,11 +236,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
-          memory).
-
-          Only supplied fields are changed; the memory is re-embedded when ``text``
-          changes.
+      body (DeleteFileOp): Body for delete-file (raw content-op).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -9,10 +9,10 @@ from http import HTTPStatus
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from ..api.content_operations.op_delete_document import (
+from ..api.content_operations.delete_document import (
   sync_detailed as delete_document,
 )
-from ..api.content_operations.op_index_document import (
+from ..api.content_operations.index_document import (
   sync_detailed as index_document,
 )
 from ..api.documents.get_document import sync_detailed as get_document

@@ -7,7 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.index_document_op import IndexDocumentOp
+from ...models.forget_op import ForgetOp
 from ...models.operation_envelope import OperationEnvelope
 from ...types import UNSET, Response, Unset
 
@@ -15,7 +15,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: IndexDocumentOp,
+  body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -24,7 +24,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/operations/index-document".format(
+    "url": "/v1/graphs/{graph_id}/operations/forget".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -106,13 +106,12 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: IndexDocumentOp,
+  body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Index Document (write to the corpus)
+  """Delete a Semantic Memory
 
-   Create a document (omit `document_id`) or update one (provide it). Stored in PostgreSQL, synced to
-  OpenSearch for search.
+   Delete a semantic memory by its server-generated id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -120,10 +119,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (IndexDocumentOp): Body for index-document (corpus content-op).
-
-          Create a new document when ``document_id`` is absent; update the named
-          document (partial — only supplied fields) when present.
+      body (ForgetOp): Body for the forget operation (delete a semantic memory by id).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -150,13 +146,12 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: IndexDocumentOp,
+  body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Index Document (write to the corpus)
+  """Delete a Semantic Memory
 
-   Create a document (omit `document_id`) or update one (provide it). Stored in PostgreSQL, synced to
-  OpenSearch for search.
+   Delete a semantic memory by its server-generated id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -164,10 +159,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (IndexDocumentOp): Body for index-document (corpus content-op).
-
-          Create a new document when ``document_id`` is absent; update the named
-          document (partial — only supplied fields) when present.
+      body (ForgetOp): Body for the forget operation (delete a semantic memory by id).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -189,13 +181,12 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: IndexDocumentOp,
+  body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Index Document (write to the corpus)
+  """Delete a Semantic Memory
 
-   Create a document (omit `document_id`) or update one (provide it). Stored in PostgreSQL, synced to
-  OpenSearch for search.
+   Delete a semantic memory by its server-generated id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -203,10 +194,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (IndexDocumentOp): Body for index-document (corpus content-op).
-
-          Create a new document when ``document_id`` is absent; update the named
-          document (partial — only supplied fields) when present.
+      body (ForgetOp): Body for the forget operation (delete a semantic memory by id).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -231,13 +219,12 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: IndexDocumentOp,
+  body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Index Document (write to the corpus)
+  """Delete a Semantic Memory
 
-   Create a document (omit `document_id`) or update one (provide it). Stored in PostgreSQL, synced to
-  OpenSearch for search.
+   Delete a semantic memory by its server-generated id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -245,10 +232,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (IndexDocumentOp): Body for index-document (corpus content-op).
-
-          Create a new document when ``document_id`` is absent; update the named
-          document (partial — only supplied fields) when present.
+      body (ForgetOp): Body for the forget operation (delete a semantic memory by id).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

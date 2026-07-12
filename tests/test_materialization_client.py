@@ -114,7 +114,7 @@ class TestGraphClientMaterializeInit:
 class TestMaterialize:
   """Test suite for GraphClient.materialize method."""
 
-  @patch("robosystems_client.api.graph_operations.op_materialize.sync_detailed")
+  @patch("robosystems_client.api.graph_operations.materialize.sync_detailed")
   @patch.object(GraphClient, "_get_authenticated_client")
   def test_materialize_success(self, mock_auth, mock_mat, mock_config, graph_id):
     """Test successful materialization."""
@@ -150,7 +150,7 @@ class TestMaterialize:
     assert result.tables_materialized == ["Entity"]
     assert result.total_rows == 100
 
-  @patch("robosystems_client.api.graph_operations.op_materialize.sync_detailed")
+  @patch("robosystems_client.api.graph_operations.materialize.sync_detailed")
   @patch.object(GraphClient, "_get_authenticated_client")
   def test_materialize_api_failure(self, mock_auth, mock_mat, mock_config, graph_id):
     """Test materialization when API returns error."""
@@ -168,7 +168,7 @@ class TestMaterialize:
     assert result.success is False
     assert result.status == "failed"
 
-  @patch("robosystems_client.api.graph_operations.op_materialize.sync_detailed")
+  @patch("robosystems_client.api.graph_operations.materialize.sync_detailed")
   @patch.object(GraphClient, "_get_authenticated_client")
   def test_materialize_operation_failed(
     self, mock_auth, mock_mat, mock_config, graph_id
@@ -207,7 +207,7 @@ class TestMaterialize:
     assert result.success is False
     assert "No API key" in result.error
 
-  @patch("robosystems_client.api.graph_operations.op_materialize.sync_detailed")
+  @patch("robosystems_client.api.graph_operations.materialize.sync_detailed")
   @patch.object(GraphClient, "_get_authenticated_client")
   def test_materialize_with_progress(self, mock_auth, mock_mat, mock_config, graph_id):
     """Test materialize calls progress callback."""
@@ -244,7 +244,7 @@ class TestMaterialize:
 
     assert len(progress_messages) >= 2  # At least "Submitting" and "queued"
 
-  @patch("robosystems_client.api.graph_operations.op_materialize.sync_detailed")
+  @patch("robosystems_client.api.graph_operations.materialize.sync_detailed")
   @patch.object(GraphClient, "_get_authenticated_client")
   def test_materialize_with_rebuild(self, mock_auth, mock_mat, mock_config, graph_id):
     """Test materialize passes rebuild option."""

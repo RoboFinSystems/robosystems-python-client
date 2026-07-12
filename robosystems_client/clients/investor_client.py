@@ -22,22 +22,22 @@ from __future__ import annotations
 from http import HTTPStatus
 from typing import Any
 
-from ..api.extensions_robo_investor.op_create_portfolio_block import (
+from ..api.extensions_robo_investor.create_portfolio_block import (
   sync_detailed as op_create_portfolio_block,
 )
-from ..api.extensions_robo_investor.op_create_security import (
+from ..api.extensions_robo_investor.create_security import (
   sync_detailed as op_create_security,
 )
-from ..api.extensions_robo_investor.op_delete_portfolio_block import (
+from ..api.extensions_robo_investor.delete_portfolio_block import (
   sync_detailed as op_delete_portfolio_block,
 )
-from ..api.extensions_robo_investor.op_delete_security import (
+from ..api.extensions_robo_investor.delete_security import (
   sync_detailed as op_delete_security,
 )
-from ..api.extensions_robo_investor.op_update_portfolio_block import (
+from ..api.extensions_robo_investor.update_portfolio_block import (
   sync_detailed as op_update_portfolio_block,
 )
-from ..api.extensions_robo_investor.op_update_security import (
+from ..api.extensions_robo_investor.update_security import (
   sync_detailed as op_update_security,
 )
 from ..client import AuthenticatedClient

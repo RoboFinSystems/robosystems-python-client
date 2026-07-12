@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -100,7 +99,7 @@ class RegenerateReportOperation:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        period_start_type_0 = isoparse(data).date()
+        period_start_type_0 = datetime.date.fromisoformat(data)
 
         return period_start_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
@@ -117,7 +116,7 @@ class RegenerateReportOperation:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        period_end_type_0 = isoparse(data).date()
+        period_end_type_0 = datetime.date.fromisoformat(data)
 
         return period_end_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

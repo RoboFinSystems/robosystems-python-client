@@ -7,15 +7,15 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.file_upload_request import FileUploadRequest
 from ...models.operation_envelope import OperationEnvelope
+from ...models.remember_op import RememberOp
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: FileUploadRequest,
+  body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -24,7 +24,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/operations/create-file-upload".format(
+    "url": "/v1/graphs/{graph_id}/operations/remember".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -106,14 +106,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: FileUploadRequest,
+  body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Create File Upload (presign an S3 upload)
+  """Store a Semantic Memory
 
-   Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
-  `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
-  missing. Not allowed on entity graphs or shared repositories.
+   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
+  it later via `POST /memory/recall`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -121,7 +120,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (FileUploadRequest):
+      body (RememberOp): Body for the remember operation (write a semantic memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -148,14 +147,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: FileUploadRequest,
+  body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Create File Upload (presign an S3 upload)
+  """Store a Semantic Memory
 
-   Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
-  `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
-  missing. Not allowed on entity graphs or shared repositories.
+   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
+  it later via `POST /memory/recall`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -163,7 +161,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (FileUploadRequest):
+      body (RememberOp): Body for the remember operation (write a semantic memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -185,14 +183,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: FileUploadRequest,
+  body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Create File Upload (presign an S3 upload)
+  """Store a Semantic Memory
 
-   Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
-  `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
-  missing. Not allowed on entity graphs or shared repositories.
+   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
+  it later via `POST /memory/recall`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -200,7 +197,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (FileUploadRequest):
+      body (RememberOp): Body for the remember operation (write a semantic memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -225,14 +222,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: FileUploadRequest,
+  body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Create File Upload (presign an S3 upload)
+  """Store a Semantic Memory
 
-   Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
-  `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
-  missing. Not allowed on entity graphs or shared repositories.
+   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
+  it later via `POST /memory/recall`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -240,7 +236,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (FileUploadRequest):
+      body (RememberOp): Body for the remember operation (write a semantic memory).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

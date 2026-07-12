@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -293,7 +292,7 @@ class ReportResponse:
 
     comparative = d.pop("comparative")
 
-    created_at = isoparse(d.pop("created_at"))
+    created_at = datetime.datetime.fromisoformat(d.pop("created_at"))
 
     def _parse_period_start(data: object) -> datetime.date | None | Unset:
       if data is None:
@@ -303,7 +302,7 @@ class ReportResponse:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        period_start_type_0 = isoparse(data).date()
+        period_start_type_0 = datetime.date.fromisoformat(data)
 
         return period_start_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
@@ -320,7 +319,7 @@ class ReportResponse:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        period_end_type_0 = isoparse(data).date()
+        period_end_type_0 = datetime.date.fromisoformat(data)
 
         return period_end_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
@@ -370,7 +369,7 @@ class ReportResponse:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        last_generated_type_0 = isoparse(data)
+        last_generated_type_0 = datetime.datetime.fromisoformat(data)
 
         return last_generated_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
@@ -407,7 +406,7 @@ class ReportResponse:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        filed_at_type_0 = isoparse(data)
+        filed_at_type_0 = datetime.datetime.fromisoformat(data)
 
         return filed_at_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
@@ -469,7 +468,7 @@ class ReportResponse:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        shared_at_type_0 = isoparse(data)
+        shared_at_type_0 = datetime.datetime.fromisoformat(data)
 
         return shared_at_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

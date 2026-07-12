@@ -8,14 +8,14 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.operation_envelope import OperationEnvelope
-from ...models.remember_op import RememberOp
+from ...models.update_memory_op import UpdateMemoryOp
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: RememberOp,
+  body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -24,7 +24,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/v1/graphs/{graph_id}/operations/remember".format(
+    "url": "/v1/graphs/{graph_id}/operations/update-memory".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -106,13 +106,13 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: RememberOp,
+  body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Remember (write semantic memory)
+  """Update a Semantic Memory
 
-   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
-  it later via `POST /memory/recall`.
+   Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
+  is re-embedded when `text` changes.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -120,7 +120,11 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (RememberOp): Body for the remember operation (write a semantic memory).
+      body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
+          memory).
+
+          Only supplied fields are changed; the memory is re-embedded when ``text``
+          changes.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -147,13 +151,13 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: RememberOp,
+  body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Remember (write semantic memory)
+  """Update a Semantic Memory
 
-   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
-  it later via `POST /memory/recall`.
+   Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
+  is re-embedded when `text` changes.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -161,7 +165,11 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (RememberOp): Body for the remember operation (write a semantic memory).
+      body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
+          memory).
+
+          Only supplied fields are changed; the memory is re-embedded when ``text``
+          changes.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -183,13 +191,13 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: RememberOp,
+  body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Remember (write semantic memory)
+  """Update a Semantic Memory
 
-   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
-  it later via `POST /memory/recall`.
+   Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
+  is re-embedded when `text` changes.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -197,7 +205,11 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (RememberOp): Body for the remember operation (write a semantic memory).
+      body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
+          memory).
+
+          Only supplied fields are changed; the memory is re-embedded when ``text``
+          changes.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -222,13 +234,13 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: RememberOp,
+  body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Remember (write semantic memory)
+  """Update a Semantic Memory
 
-   Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
-  it later via `POST /memory/recall`.
+   Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
+  is re-embedded when `text` changes.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -236,7 +248,11 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (RememberOp): Body for the remember operation (write a semantic memory).
+      body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
+          memory).
+
+          Only supplied fields are changed; the memory is re-embedded when ``text``
+          changes.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

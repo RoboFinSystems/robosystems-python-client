@@ -6,7 +6,6 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -131,7 +130,7 @@ class PortfolioBlockPortfolioPatch:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        inception_date_type_0 = isoparse(data).date()
+        inception_date_type_0 = datetime.date.fromisoformat(data)
 
         return inception_date_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

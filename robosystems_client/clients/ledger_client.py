@@ -31,124 +31,124 @@ from typing import Any
 
 import httpx
 
-from ..api.extensions_robo_ledger.op_auto_map_elements import (
+from ..api.extensions_robo_ledger.auto_map_elements import (
   sync_detailed as op_auto_map_elements,
 )
-from ..api.extensions_robo_ledger.op_build_fact_grid import (
+from ..api.extensions_robo_ledger.build_fact_grid import (
   sync_detailed as op_build_fact_grid,
 )
-from ..api.extensions_robo_ledger.op_close_period import (
+from ..api.extensions_robo_ledger.close_period import (
   sync_detailed as op_close_period,
 )
-from ..api.extensions_robo_ledger.op_create_agent import (
+from ..api.extensions_robo_ledger.create_agent import (
   sync_detailed as op_create_agent,
 )
-from ..api.extensions_robo_ledger.op_create_event_block import (
+from ..api.extensions_robo_ledger.create_event_block import (
   sync_detailed as op_create_event_block,
 )
-from ..api.extensions_robo_ledger.op_create_event_handler import (
+from ..api.extensions_robo_ledger.create_event_handler import (
   sync_detailed as op_create_event_handler,
 )
-from ..api.extensions_robo_ledger.op_financial_statement_analysis import (
+from ..api.extensions_robo_ledger.financial_statement_analysis import (
   sync_detailed as op_financial_statement_analysis,
 )
-from ..api.extensions_robo_ledger.op_live_financial_statement import (
+from ..api.extensions_robo_ledger.live_financial_statement import (
   sync_detailed as op_live_financial_statement,
 )
-from ..api.extensions_robo_ledger.op_preview_event_block import (
+from ..api.extensions_robo_ledger.preview_event_block import (
   sync_detailed as op_preview_event_block,
 )
-from ..api.extensions_robo_ledger.op_update_agent import (
+from ..api.extensions_robo_ledger.update_agent import (
   sync_detailed as op_update_agent,
 )
-from ..api.extensions_robo_ledger.op_update_event_block import (
+from ..api.extensions_robo_ledger.update_event_block import (
   sync_detailed as op_update_event_block,
 )
-from ..api.extensions_robo_ledger.op_update_event_handler import (
+from ..api.extensions_robo_ledger.update_event_handler import (
   sync_detailed as op_update_event_handler,
 )
-from ..api.extensions_robo_ledger.op_create_mapping_association import (
+from ..api.extensions_robo_ledger.create_mapping_association import (
   sync_detailed as op_create_mapping_association,
 )
-from ..api.extensions_robo_ledger.op_create_information_block import (
+from ..api.extensions_robo_ledger.create_information_block import (
   sync_detailed as op_create_information_block,
 )
-from ..api.extensions_robo_ledger.op_delete_mapping_association import (
+from ..api.extensions_robo_ledger.delete_mapping_association import (
   sync_detailed as op_delete_mapping_association,
 )
-from ..api.extensions_robo_ledger.op_initialize_ledger import (
+from ..api.extensions_robo_ledger.initialize_ledger import (
   sync_detailed as op_initialize_ledger,
 )
-from ..api.extensions_robo_ledger.op_reopen_period import (
+from ..api.extensions_robo_ledger.reopen_period import (
   sync_detailed as op_reopen_period,
 )
-from ..api.extensions_robo_ledger.op_set_close_target import (
+from ..api.extensions_robo_ledger.set_close_target import (
   sync_detailed as op_set_close_target,
 )
-from ..api.extensions_robo_ledger.op_create_taxonomy_block import (
+from ..api.extensions_robo_ledger.create_taxonomy_block import (
   sync_detailed as op_create_taxonomy_block,
 )
-from ..api.extensions_robo_ledger.op_update_taxonomy_block import (
+from ..api.extensions_robo_ledger.update_taxonomy_block import (
   sync_detailed as op_update_taxonomy_block,
 )
-from ..api.extensions_robo_ledger.op_delete_taxonomy_block import (
+from ..api.extensions_robo_ledger.delete_taxonomy_block import (
   sync_detailed as op_delete_taxonomy_block,
 )
-from ..api.extensions_robo_ledger.op_evaluate_rules import (
+from ..api.extensions_robo_ledger.evaluate_rules import (
   sync_detailed as op_evaluate_rules,
 )
-from ..api.extensions_robo_ledger.op_update_entity import (
+from ..api.extensions_robo_ledger.update_entity import (
   sync_detailed as op_update_entity,
 )
-from ..api.extensions_robo_ledger.op_update_information_block import (
+from ..api.extensions_robo_ledger.update_information_block import (
   sync_detailed as op_update_information_block,
 )
-from ..api.extensions_robo_ledger.op_rebuild_schedule import (
+from ..api.extensions_robo_ledger.rebuild_schedule import (
   sync_detailed as op_rebuild_schedule,
 )
-from ..api.extensions_robo_ledger.op_add_publish_list_members import (
+from ..api.extensions_robo_ledger.add_publish_list_members import (
   sync_detailed as op_add_publish_list_members,
 )
-from ..api.extensions_robo_ledger.op_create_publish_list import (
+from ..api.extensions_robo_ledger.create_publish_list import (
   sync_detailed as op_create_publish_list,
 )
-from ..api.extensions_robo_ledger.op_create_report import (
+from ..api.extensions_robo_ledger.create_report import (
   sync_detailed as op_create_report,
 )
-from ..api.extensions_robo_ledger.op_delete_publish_list import (
+from ..api.extensions_robo_ledger.delete_publish_list import (
   sync_detailed as op_delete_publish_list,
 )
-from ..api.extensions_robo_ledger.op_delete_report import (
+from ..api.extensions_robo_ledger.delete_report import (
   sync_detailed as op_delete_report,
 )
-from ..api.extensions_robo_ledger.op_file_report import (
+from ..api.extensions_robo_ledger.file_report import (
   sync_detailed as op_file_report,
 )
-from ..api.extensions_robo_ledger.op_regenerate_report import (
+from ..api.extensions_robo_ledger.regenerate_report import (
   sync_detailed as op_regenerate_report,
 )
-from ..api.extensions_robo_ledger.op_remove_publish_list_member import (
+from ..api.extensions_robo_ledger.remove_publish_list_member import (
   sync_detailed as op_remove_publish_list_member,
 )
-from ..api.extensions_robo_ledger.op_share_report import (
+from ..api.extensions_robo_ledger.share_report import (
   sync_detailed as op_share_report,
 )
-from ..api.extensions_robo_ledger.op_transition_filing_status import (
+from ..api.extensions_robo_ledger.transition_filing_status import (
   sync_detailed as op_transition_filing_status,
 )
-from ..api.extensions_robo_ledger.op_update_publish_list import (
+from ..api.extensions_robo_ledger.update_publish_list import (
   sync_detailed as op_update_publish_list,
 )
-from ..api.extensions_robo_ledger.op_link_entity_taxonomy import (
+from ..api.extensions_robo_ledger.link_entity_taxonomy import (
   sync_detailed as op_link_entity_taxonomy,
 )
-from ..api.extensions_robo_ledger.op_delete_journal_entry import (
+from ..api.extensions_robo_ledger.delete_journal_entry import (
   sync_detailed as op_delete_journal_entry,
 )
-from ..api.extensions_robo_ledger.op_delete_information_block import (
+from ..api.extensions_robo_ledger.delete_information_block import (
   sync_detailed as op_delete_information_block,
 )
-from ..api.extensions_robo_ledger.op_update_journal_entry import (
+from ..api.extensions_robo_ledger.update_journal_entry import (
   sync_detailed as op_update_journal_entry,
 )
 from ..client import AuthenticatedClient

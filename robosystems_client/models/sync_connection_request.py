@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -89,7 +88,7 @@ class SyncConnectionRequest:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        since_date_type_0 = isoparse(data).date()
+        since_date_type_0 = datetime.date.fromisoformat(data)
 
         return since_date_type_0
       except (TypeError, ValueError, AttributeError, KeyError):
