@@ -11,10 +11,10 @@ from typing import Dict, Any, Optional, Callable, Union, BinaryIO
 import logging
 import httpx
 
-from ..api.content_operations.op_create_file_upload import (
+from ..api.content_operations.create_file_upload import (
   sync_detailed as create_file_upload,
 )
-from ..api.content_operations.op_ingest_file import (
+from ..api.content_operations.ingest_file import (
   sync_detailed as ingest_file,
 )
 from ..api.files.list_files import (
@@ -23,7 +23,7 @@ from ..api.files.list_files import (
 from ..api.files.get_file import (
   sync_detailed as get_file,
 )
-from ..api.content_operations.op_delete_file import (
+from ..api.content_operations.delete_file import (
   sync_detailed as delete_file,
 )
 from ..models.file_upload_request import FileUploadRequest
