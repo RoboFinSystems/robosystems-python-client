@@ -109,7 +109,7 @@ def sync_detailed(
   body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Forget (delete a semantic memory)
+  """Delete a Semantic Memory
 
    Delete a semantic memory by its server-generated id.
 
@@ -149,7 +149,7 @@ def sync(
   body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Forget (delete a semantic memory)
+  """Delete a Semantic Memory
 
    Delete a semantic memory by its server-generated id.
 
@@ -184,7 +184,7 @@ async def asyncio_detailed(
   body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Forget (delete a semantic memory)
+  """Delete a Semantic Memory
 
    Delete a semantic memory by its server-generated id.
 
@@ -222,7 +222,7 @@ async def asyncio(
   body: ForgetOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Forget (delete a semantic memory)
+  """Delete a Semantic Memory
 
    Delete a semantic memory by its server-generated id.
 

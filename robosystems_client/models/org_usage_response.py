@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 if TYPE_CHECKING:
   from ..models.org_usage_response_daily_trend_item import (
@@ -96,9 +95,9 @@ class OrgUsageResponse:
 
     period_days = d.pop("period_days")
 
-    start_date = isoparse(d.pop("start_date"))
+    start_date = datetime.datetime.fromisoformat(d.pop("start_date"))
 
-    end_date = isoparse(d.pop("end_date"))
+    end_date = datetime.datetime.fromisoformat(d.pop("end_date"))
 
     summary = OrgUsageSummary.from_dict(d.pop("summary"))
 

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.subgraph_type import SubgraphType
 from ..types import UNSET, Unset
@@ -167,9 +166,9 @@ class SubgraphResponse:
 
     status = d.pop("status")
 
-    created_at = isoparse(d.pop("created_at"))
+    created_at = datetime.datetime.fromisoformat(d.pop("created_at"))
 
-    updated_at = isoparse(d.pop("updated_at"))
+    updated_at = datetime.datetime.fromisoformat(d.pop("updated_at"))
 
     def _parse_description(data: object) -> None | str | Unset:
       if data is None:
@@ -215,7 +214,7 @@ class SubgraphResponse:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        last_accessed_type_0 = isoparse(data)
+        last_accessed_type_0 = datetime.datetime.fromisoformat(data)
 
         return last_accessed_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

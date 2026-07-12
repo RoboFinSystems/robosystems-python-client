@@ -109,7 +109,7 @@ def sync_detailed(
   body: FileUploadRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Create File Upload (presign an S3 upload)
+  """Presign a File Upload
 
    Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
   `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
@@ -151,7 +151,7 @@ def sync(
   body: FileUploadRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Create File Upload (presign an S3 upload)
+  """Presign a File Upload
 
    Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
   `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
@@ -188,7 +188,7 @@ async def asyncio_detailed(
   body: FileUploadRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Create File Upload (presign an S3 upload)
+  """Presign a File Upload
 
    Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
   `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if
@@ -228,7 +228,7 @@ async def asyncio(
   body: FileUploadRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Create File Upload (presign an S3 upload)
+  """Presign a File Upload
 
    Presign an S3 URL for direct upload and register the file. After uploading to the returned URL, call
   `POST /operations/ingest-file` to stage it into DuckDB. The staging table is auto-created if

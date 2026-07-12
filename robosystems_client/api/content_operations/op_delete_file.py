@@ -109,7 +109,7 @@ def sync_detailed(
   body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Delete File
+  """Delete a File
 
    Delete a file from S3 and PostgreSQL. `cascade=true` also removes its rows from DuckDB staging
   tables and marks the graph stale.
@@ -150,7 +150,7 @@ def sync(
   body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Delete File
+  """Delete a File
 
    Delete a file from S3 and PostgreSQL. `cascade=true` also removes its rows from DuckDB staging
   tables and marks the graph stale.
@@ -186,7 +186,7 @@ async def asyncio_detailed(
   body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Delete File
+  """Delete a File
 
    Delete a file from S3 and PostgreSQL. `cascade=true` also removes its rows from DuckDB staging
   tables and marks the graph stale.
@@ -225,7 +225,7 @@ async def asyncio(
   body: DeleteFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Delete File
+  """Delete a File
 
    Delete a file from S3 and PostgreSQL. `cascade=true` also removes its rows from DuckDB staging
   tables and marks the graph stale.

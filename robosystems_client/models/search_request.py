@@ -22,7 +22,7 @@ class SearchRequest:
       section (None | str | Unset): Filter by section ID (item_1, item_1a, item_7, etc.)
       element (None | str | Unset): Filter by XBRL element qname (e.g., us-gaap:Goodwill)
       source_type (None | str | Unset): Filter by source type (xbrl_textblock, narrative_section, ixbrl_disclosure,
-          uploaded_doc, memory)
+          uploaded_doc, connection_doc)
       fiscal_year (int | None | Unset): Filter by fiscal year
       date_from (None | str | Unset): Filter filings on or after date (YYYY-MM-DD)
       date_to (None | str | Unset): Filter filings on or before date (YYYY-MM-DD)

@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.org_role import OrgRole
 
@@ -73,7 +72,7 @@ class OrgMemberResponse:
 
     role = OrgRole(d.pop("role"))
 
-    joined_at = isoparse(d.pop("joined_at"))
+    joined_at = datetime.datetime.fromisoformat(d.pop("joined_at"))
 
     is_active = d.pop("is_active")
 

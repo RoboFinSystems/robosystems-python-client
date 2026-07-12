@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 T = TypeVar("T", bound="SSOExchangeResponse")
 
@@ -52,7 +51,7 @@ class SSOExchangeResponse:
 
     redirect_url = d.pop("redirect_url")
 
-    expires_at = isoparse(d.pop("expires_at"))
+    expires_at = datetime.datetime.fromisoformat(d.pop("expires_at"))
 
     sso_exchange_response = cls(
       session_id=session_id,

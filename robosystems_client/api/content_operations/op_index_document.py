@@ -109,7 +109,7 @@ def sync_detailed(
   body: IndexDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Index Document (write to the corpus)
+  """Index a Document
 
    Create a document (omit `document_id`) or update one (provide it). Stored in PostgreSQL, synced to
   OpenSearch for search.
@@ -153,7 +153,7 @@ def sync(
   body: IndexDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Index Document (write to the corpus)
+  """Index a Document
 
    Create a document (omit `document_id`) or update one (provide it). Stored in PostgreSQL, synced to
   OpenSearch for search.
@@ -192,7 +192,7 @@ async def asyncio_detailed(
   body: IndexDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Index Document (write to the corpus)
+  """Index a Document
 
    Create a document (omit `document_id`) or update one (provide it). Stored in PostgreSQL, synced to
   OpenSearch for search.
@@ -234,7 +234,7 @@ async def asyncio(
   body: IndexDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Index Document (write to the corpus)
+  """Index a Document
 
    Create a document (omit `document_id`) or update one (provide it). Stored in PostgreSQL, synced to
   OpenSearch for search.

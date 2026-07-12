@@ -109,7 +109,7 @@ def sync_detailed(
   body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Ingest File (stage an uploaded file)
+  """Stage an Uploaded File
 
    Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
   stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
@@ -154,7 +154,7 @@ def sync(
   body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Ingest File (stage an uploaded file)
+  """Stage an Uploaded File
 
    Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
   stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
@@ -194,7 +194,7 @@ async def asyncio_detailed(
   body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Ingest File (stage an uploaded file)
+  """Stage an Uploaded File
 
    Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
   stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
@@ -237,7 +237,7 @@ async def asyncio(
   body: IngestFileOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Ingest File (stage an uploaded file)
+  """Stage an Uploaded File
 
    Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
   stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set

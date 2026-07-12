@@ -109,7 +109,7 @@ def sync_detailed(
   body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Remember (write semantic memory)
+  """Store a Semantic Memory
 
    Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
   it later via `POST /memory/recall`.
@@ -150,7 +150,7 @@ def sync(
   body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Remember (write semantic memory)
+  """Store a Semantic Memory
 
    Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
   it later via `POST /memory/recall`.
@@ -186,7 +186,7 @@ async def asyncio_detailed(
   body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Remember (write semantic memory)
+  """Store a Semantic Memory
 
    Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
   it later via `POST /memory/recall`.
@@ -225,7 +225,7 @@ async def asyncio(
   body: RememberOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Remember (write semantic memory)
+  """Store a Semantic Memory
 
    Store a semantic memory in the graph's per-graph memory store. The text is embedded locally; recall
   it later via `POST /memory/recall`.

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.operator_mode import OperatorMode
 from ..types import UNSET, Unset
@@ -252,7 +251,7 @@ class OperatorResponse:
     if isinstance(_timestamp, Unset):
       timestamp = UNSET
     else:
-      timestamp = isoparse(_timestamp)
+      timestamp = datetime.datetime.fromisoformat(_timestamp)
 
     operator_response = cls(
       content=content,

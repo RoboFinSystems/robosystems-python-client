@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -67,7 +66,7 @@ class HealthStatus:
     d = dict(src_dict)
     status = d.pop("status")
 
-    timestamp = isoparse(d.pop("timestamp"))
+    timestamp = datetime.datetime.fromisoformat(d.pop("timestamp"))
 
     def _parse_details(data: object) -> HealthStatusDetailsType0 | None | Unset:
       if data is None:

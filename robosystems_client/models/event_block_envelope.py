@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.event_block_envelope_event_action_type_0 import (
   EventBlockEnvelopeEventActionType0,
@@ -268,7 +267,7 @@ class EventBlockEnvelope:
 
     status = d.pop("status")
 
-    occurred_at = isoparse(d.pop("occurred_at"))
+    occurred_at = datetime.datetime.fromisoformat(d.pop("occurred_at"))
 
     source = d.pop("source")
 
@@ -280,7 +279,7 @@ class EventBlockEnvelope:
 
     event_class = d.pop("event_class")
 
-    created_at = isoparse(d.pop("created_at"))
+    created_at = datetime.datetime.fromisoformat(d.pop("created_at"))
 
     created_by = d.pop("created_by")
 
@@ -292,7 +291,7 @@ class EventBlockEnvelope:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        effective_at_type_0 = isoparse(data)
+        effective_at_type_0 = datetime.datetime.fromisoformat(data)
 
         return effective_at_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

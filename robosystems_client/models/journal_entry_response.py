@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -137,7 +136,7 @@ class JournalEntryResponse:
 
     status = d.pop("status")
 
-    posting_date = isoparse(d.pop("posting_date")).date()
+    posting_date = datetime.date.fromisoformat(d.pop("posting_date"))
 
     line_items = []
     _line_items = d.pop("line_items")
@@ -194,7 +193,7 @@ class JournalEntryResponse:
       try:
         if not isinstance(data, str):
           raise TypeError()
-        posted_at_type_0 = isoparse(data)
+        posted_at_type_0 = datetime.datetime.fromisoformat(data)
 
         return posted_at_type_0
       except (TypeError, ValueError, AttributeError, KeyError):

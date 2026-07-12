@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 T = TypeVar("T", bound="DownloadQuota")
 
@@ -59,7 +58,7 @@ class DownloadQuota:
 
     remaining = d.pop("remaining")
 
-    resets_at = isoparse(d.pop("resets_at"))
+    resets_at = datetime.datetime.fromisoformat(d.pop("resets_at"))
 
     download_quota = cls(
       limit_per_month=limit_per_month,

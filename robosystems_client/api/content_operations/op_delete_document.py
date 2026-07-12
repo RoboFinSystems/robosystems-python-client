@@ -109,7 +109,7 @@ def sync_detailed(
   body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Delete Document (remove from the corpus)
+  """Delete a Document
 
    Delete a document from PostgreSQL and OpenSearch by id.
 
@@ -149,7 +149,7 @@ def sync(
   body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Delete Document (remove from the corpus)
+  """Delete a Document
 
    Delete a document from PostgreSQL and OpenSearch by id.
 
@@ -184,7 +184,7 @@ async def asyncio_detailed(
   body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Delete Document (remove from the corpus)
+  """Delete a Document
 
    Delete a document from PostgreSQL and OpenSearch by id.
 
@@ -222,7 +222,7 @@ async def asyncio(
   body: DeleteDocumentOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Delete Document (remove from the corpus)
+  """Delete a Document
 
    Delete a document from PostgreSQL and OpenSearch by id.
 

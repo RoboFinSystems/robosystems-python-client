@@ -109,7 +109,7 @@ def sync_detailed(
   body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Update Memory (edit a semantic memory)
+  """Update a Semantic Memory
 
    Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
   is re-embedded when `text` changes.
@@ -154,7 +154,7 @@ def sync(
   body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Update Memory (edit a semantic memory)
+  """Update a Semantic Memory
 
    Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
   is re-embedded when `text` changes.
@@ -194,7 +194,7 @@ async def asyncio_detailed(
   body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Update Memory (edit a semantic memory)
+  """Update a Semantic Memory
 
    Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
   is re-embedded when `text` changes.
@@ -237,7 +237,7 @@ async def asyncio(
   body: UpdateMemoryOp,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Update Memory (edit a semantic memory)
+  """Update a Semantic Memory
 
    Partially update a stored memory by its server-generated id. Only supplied fields change; the memory
   is re-embedded when `text` changes.
