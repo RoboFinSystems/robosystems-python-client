@@ -18,7 +18,6 @@ class MaterializeOp:
   Attributes:
       force (bool | Unset): Force materialization even if already up to date Default: False.
       rebuild (bool | Unset): Rebuild the graph from scratch, dropping existing data Default: False.
-      ignore_errors (bool | Unset): Continue past non-fatal row errors Default: True.
       dry_run (bool | Unset): Validate tables without writing to the graph Default: False.
       source (None | str | Unset): Materialization source: 'extensions' for OLTP, omit for DuckDB staging tables
       materialize_embeddings (bool | Unset): Generate vector embeddings during materialization Default: False.
@@ -26,7 +25,6 @@ class MaterializeOp:
 
   force: bool | Unset = False
   rebuild: bool | Unset = False
-  ignore_errors: bool | Unset = True
   dry_run: bool | Unset = False
   source: None | str | Unset = UNSET
   materialize_embeddings: bool | Unset = False
@@ -36,8 +34,6 @@ class MaterializeOp:
     force = self.force
 
     rebuild = self.rebuild
-
-    ignore_errors = self.ignore_errors
 
     dry_run = self.dry_run
 
@@ -56,8 +52,6 @@ class MaterializeOp:
       field_dict["force"] = force
     if rebuild is not UNSET:
       field_dict["rebuild"] = rebuild
-    if ignore_errors is not UNSET:
-      field_dict["ignore_errors"] = ignore_errors
     if dry_run is not UNSET:
       field_dict["dry_run"] = dry_run
     if source is not UNSET:
@@ -73,8 +67,6 @@ class MaterializeOp:
     force = d.pop("force", UNSET)
 
     rebuild = d.pop("rebuild", UNSET)
-
-    ignore_errors = d.pop("ignore_errors", UNSET)
 
     dry_run = d.pop("dry_run", UNSET)
 
@@ -92,7 +84,6 @@ class MaterializeOp:
     materialize_op = cls(
       force=force,
       rebuild=rebuild,
-      ignore_errors=ignore_errors,
       dry_run=dry_run,
       source=source,
       materialize_embeddings=materialize_embeddings,

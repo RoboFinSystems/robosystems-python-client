@@ -21,7 +21,6 @@ class TestMaterializationDataclasses:
     """Test MaterializationOptions default values."""
     options = MaterializationOptions()
 
-    assert options.ignore_errors is True
     assert options.rebuild is False
     assert options.force is False
     assert options.materialize_embeddings is False
@@ -32,7 +31,6 @@ class TestMaterializationDataclasses:
     """Test MaterializationOptions with custom values."""
     progress_fn = Mock()
     options = MaterializationOptions(
-      ignore_errors=False,
       rebuild=True,
       force=True,
       materialize_embeddings=True,
@@ -40,7 +38,6 @@ class TestMaterializationDataclasses:
       timeout=300,
     )
 
-    assert options.ignore_errors is False
     assert options.rebuild is True
     assert options.force is True
     assert options.materialize_embeddings is True

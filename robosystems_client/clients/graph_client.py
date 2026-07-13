@@ -66,7 +66,6 @@ class GraphInfo:
 class MaterializationOptions:
   """Options for graph materialization operations"""
 
-  ignore_errors: bool = True
   rebuild: bool = False
   force: bool = False
   materialize_embeddings: bool = False
@@ -317,7 +316,7 @@ class GraphClient:
 
     Args:
         graph_id: Graph database identifier
-        options: Materialization options (ignore_errors, rebuild, force, timeout)
+        options: Materialization options (rebuild, force, timeout)
 
     Returns:
         MaterializationResult with detailed execution information
@@ -340,7 +339,6 @@ class GraphClient:
         graph_id=graph_id,
         client=client,
         body=MaterializeOp(
-          ignore_errors=options.ignore_errors,
           rebuild=options.rebuild,
           force=options.force,
           materialize_embeddings=options.materialize_embeddings,
