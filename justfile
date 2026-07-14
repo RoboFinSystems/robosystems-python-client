@@ -5,9 +5,14 @@ default:
 # Create virtual environment and install dependencies
 venv:
     pip install uv
-    uv venv 
-    source .venv/bin/activate 
+    uv venv
+    source .venv/bin/activate
+    @just install-hooks
     @just install
+
+# Install git hooks (points core.hooksPath at .githooks; idempotent, safe to re-run)
+install-hooks:
+    git config core.hooksPath .githooks
 
 # Install dependencies
 install:
