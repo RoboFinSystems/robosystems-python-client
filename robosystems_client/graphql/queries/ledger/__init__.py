@@ -612,7 +612,7 @@ query GetInformationBlock($id: ID!) {
       arcrole orderValue weight
     }
     facts {
-      id elementId value periodStart periodEnd
+      id elementId value textValue factType contentType periodStart periodEnd
       periodType unit factScope factSetId
     }
     rules {
@@ -637,7 +637,7 @@ query GetInformationBlock($id: ID!) {
       rendering {
         rows {
           elementId elementQname elementName classification
-          balanceType values isSubtotal depth
+          balanceType values textValue isSubtotal depth
         }
         periods { start end label }
         validation { passed checks failures warnings }
@@ -680,7 +680,7 @@ query ListInformationBlocks(
       arcrole orderValue weight
     }
     facts {
-      id elementId value periodStart periodEnd
+      id elementId value textValue factType contentType periodStart periodEnd
       periodType unit factScope factSetId
     }
     rules {
@@ -705,7 +705,7 @@ query ListInformationBlocks(
       rendering {
         rows {
           elementId elementQname elementName classification
-          balanceType values isSubtotal depth
+          balanceType values textValue isSubtotal depth
         }
         periods { start end label }
         validation { passed checks failures warnings }
@@ -906,7 +906,7 @@ query GetLedgerReportPackage($reportId: String!) {
           arcrole orderValue weight
         }
         facts {
-          id elementId value periodStart periodEnd
+          id elementId value textValue factType contentType periodStart periodEnd
           periodType unit factScope factSetId
         }
         rules {
@@ -931,7 +931,7 @@ query GetLedgerReportPackage($reportId: String!) {
           rendering {
             rows {
               elementId elementQname elementName classification
-              balanceType values isSubtotal depth
+              balanceType values textValue isSubtotal depth
             }
             periods { start end label }
             validation { passed checks failures warnings }
