@@ -28,8 +28,8 @@ class FactSetLite:
       Attributes:
           id (str):
           period_end (datetime.date):
-          factset_type (str): 'report' | 'schedule' | 'custom'. Enum closure enforced by the ``public.fact_sets`` CHECK
-              constraint.
+          factset_type (str): 'report' | 'schedule' | 'custom' | 'disclosure'. Enum closure enforced by the
+              ``public.fact_sets`` CHECK constraint.
           entity_id (str):
           structure_id (None | str | Unset):
           period_start (datetime.date | None | Unset):

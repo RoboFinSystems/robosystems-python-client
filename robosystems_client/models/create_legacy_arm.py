@@ -23,10 +23,13 @@ class CreateLegacyArm:
 
   Statement-family blocks (balance_sheet, income_statement,
   cash_flow_statement, equity_statement, comprehensive_income) are
-  constructed via `create-report`, not this endpoint. Metric blocks
-  are recognized but their evaluator has not shipped. Calling this
-  endpoint with one of these block types returns HTTP 501 with a hint
-  pointing to the correct construction path.
+  constructed via `create-report`, not this endpoint. Disclosure
+  structures (regulatory_disclosure) are vocabulary, authored via
+  `create-taxonomy-block`; their facts land when `create-report`
+  picks them. Metric blocks are recognized but their evaluator has
+  not shipped. Calling this endpoint with one of these block types
+  returns HTTP 501 with a hint pointing to the correct construction
+  path.
 
       Attributes:
           block_type (CreateLegacyArmBlockType): Statement-family or metric block type. The endpoint returns 501 for these

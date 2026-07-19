@@ -19,12 +19,15 @@ class FactLite:
   Attributes:
       id (str):
       element_id (str):
-      value (float):
       period_end (datetime.date):
       period_type (str):
       fact_scope (str): historical | in_scope
       element_name (None | str | Unset):
       element_qname (None | str | Unset):
+      value (float | None | Unset): Numeric value; null for Nonnumeric (text-block) facts.
+      text_value (None | str | Unset): Text payload for Nonnumeric facts; null for numeric.
+      fact_type (str | Unset): Numeric | Nonnumeric Default: 'Numeric'.
+      content_type (None | str | Unset): MIME type of text_value (e.g. 'text/markdown').
       period_start (datetime.date | None | Unset):
       unit (str | Unset):  Default: 'USD'.
       fact_set_id (None | str | Unset):
@@ -32,12 +35,15 @@ class FactLite:
 
   id: str
   element_id: str
-  value: float
   period_end: datetime.date
   period_type: str
   fact_scope: str
   element_name: None | str | Unset = UNSET
   element_qname: None | str | Unset = UNSET
+  value: float | None | Unset = UNSET
+  text_value: None | str | Unset = UNSET
+  fact_type: str | Unset = "Numeric"
+  content_type: None | str | Unset = UNSET
   period_start: datetime.date | None | Unset = UNSET
   unit: str | Unset = "USD"
   fact_set_id: None | str | Unset = UNSET
@@ -47,8 +53,6 @@ class FactLite:
     id = self.id
 
     element_id = self.element_id
-
-    value = self.value
 
     period_end = self.period_end.isoformat()
 
@@ -67,6 +71,26 @@ class FactLite:
       element_qname = UNSET
     else:
       element_qname = self.element_qname
+
+    value: float | None | Unset
+    if isinstance(self.value, Unset):
+      value = UNSET
+    else:
+      value = self.value
+
+    text_value: None | str | Unset
+    if isinstance(self.text_value, Unset):
+      text_value = UNSET
+    else:
+      text_value = self.text_value
+
+    fact_type = self.fact_type
+
+    content_type: None | str | Unset
+    if isinstance(self.content_type, Unset):
+      content_type = UNSET
+    else:
+      content_type = self.content_type
 
     period_start: None | str | Unset
     if isinstance(self.period_start, Unset):
@@ -90,7 +114,6 @@ class FactLite:
       {
         "id": id,
         "element_id": element_id,
-        "value": value,
         "period_end": period_end,
         "period_type": period_type,
         "fact_scope": fact_scope,
@@ -100,6 +123,14 @@ class FactLite:
       field_dict["element_name"] = element_name
     if element_qname is not UNSET:
       field_dict["element_qname"] = element_qname
+    if value is not UNSET:
+      field_dict["value"] = value
+    if text_value is not UNSET:
+      field_dict["text_value"] = text_value
+    if fact_type is not UNSET:
+      field_dict["fact_type"] = fact_type
+    if content_type is not UNSET:
+      field_dict["content_type"] = content_type
     if period_start is not UNSET:
       field_dict["period_start"] = period_start
     if unit is not UNSET:
@@ -115,8 +146,6 @@ class FactLite:
     id = d.pop("id")
 
     element_id = d.pop("element_id")
-
-    value = d.pop("value")
 
     period_end = datetime.date.fromisoformat(d.pop("period_end"))
 
@@ -141,6 +170,35 @@ class FactLite:
       return cast(None | str | Unset, data)
 
     element_qname = _parse_element_qname(d.pop("element_qname", UNSET))
+
+    def _parse_value(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    value = _parse_value(d.pop("value", UNSET))
+
+    def _parse_text_value(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    text_value = _parse_text_value(d.pop("text_value", UNSET))
+
+    fact_type = d.pop("fact_type", UNSET)
+
+    def _parse_content_type(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    content_type = _parse_content_type(d.pop("content_type", UNSET))
 
     def _parse_period_start(data: object) -> datetime.date | None | Unset:
       if data is None:
@@ -173,12 +231,15 @@ class FactLite:
     fact_lite = cls(
       id=id,
       element_id=element_id,
-      value=value,
       period_end=period_end,
       period_type=period_type,
       fact_scope=fact_scope,
       element_name=element_name,
       element_qname=element_qname,
+      value=value,
+      text_value=text_value,
+      fact_type=fact_type,
+      content_type=content_type,
       period_start=period_start,
       unit=unit,
       fact_set_id=fact_set_id,
