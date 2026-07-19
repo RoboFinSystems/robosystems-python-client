@@ -30,6 +30,8 @@ class RenderingRowLite:
               lookup.
           balance_type (None | str | Unset):
           values (list[float | None] | Unset):
+          text_value (None | str | Unset): Narrative payload for text-block disclosure rows (markdown); numeric rows carry
+              values instead.
           is_subtotal (bool | Unset):  Default: False.
           depth (int | Unset):  Default: 0.
   """
@@ -40,6 +42,7 @@ class RenderingRowLite:
   classification: None | str | Unset = UNSET
   balance_type: None | str | Unset = UNSET
   values: list[float | None] | Unset = UNSET
+  text_value: None | str | Unset = UNSET
   is_subtotal: bool | Unset = False
   depth: int | Unset = 0
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -75,6 +78,12 @@ class RenderingRowLite:
         values_item = values_item_data
         values.append(values_item)
 
+    text_value: None | str | Unset
+    if isinstance(self.text_value, Unset):
+      text_value = UNSET
+    else:
+      text_value = self.text_value
+
     is_subtotal = self.is_subtotal
 
     depth = self.depth
@@ -95,6 +104,8 @@ class RenderingRowLite:
       field_dict["balance_type"] = balance_type
     if values is not UNSET:
       field_dict["values"] = values
+    if text_value is not UNSET:
+      field_dict["text_value"] = text_value
     if is_subtotal is not UNSET:
       field_dict["is_subtotal"] = is_subtotal
     if depth is not UNSET:
@@ -151,6 +162,15 @@ class RenderingRowLite:
 
         values.append(values_item)
 
+    def _parse_text_value(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    text_value = _parse_text_value(d.pop("text_value", UNSET))
+
     is_subtotal = d.pop("is_subtotal", UNSET)
 
     depth = d.pop("depth", UNSET)
@@ -162,6 +182,7 @@ class RenderingRowLite:
       classification=classification,
       balance_type=balance_type,
       values=values,
+      text_value=text_value,
       is_subtotal=is_subtotal,
       depth=depth,
     )

@@ -94,6 +94,9 @@ from ..api.extensions_robo_ledger.update_taxonomy_block import (
 from ..api.extensions_robo_ledger.delete_taxonomy_block import (
   sync_detailed as op_delete_taxonomy_block,
 )
+from ..api.extensions_robo_ledger.bind_text_block import (
+  sync_detailed as op_bind_text_block,
+)
 from ..api.extensions_robo_ledger.evaluate_rules import (
   sync_detailed as op_evaluate_rules,
 )
@@ -287,6 +290,8 @@ from ..models.share_report_operation import ShareReportOperation
 from ..models.update_publish_list_operation import UpdatePublishListOperation
 from ..models.reopen_period_operation import ReopenPeriodOperation
 from ..models.set_close_target_operation import SetCloseTargetOperation
+from ..models.bind_text_block_request import BindTextBlockRequest
+from ..models.bind_text_block_response import BindTextBlockResponse
 from ..models.create_taxonomy_block_request import CreateTaxonomyBlockRequest
 from ..models.update_taxonomy_block_request import UpdateTaxonomyBlockRequest
 from ..models.delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
@@ -798,6 +803,27 @@ class LedgerClient:
     return self._typed_result(
       "Delete taxonomy block", envelope, DeleteTaxonomyBlockResponse
     )
+
+  def bind_text_block(
+    self, graph_id: str, body: dict[str, Any], idempotency_key: str | None = None
+  ) -> BindTextBlockResponse:
+    """Bind a platform Document (or one section) to a disclosure element
+    as a Nonnumeric text-block fact in a standing 'disclosure' FactSet.
+
+    ``body`` mirrors BindTextBlockRequest: document_id, structure_id,
+    exactly one of element_id / element_qname, period_start, period_end,
+    plus optional section_id / entity_id. Re-binding the same element
+    and period replaces the fact (``replaced=True`` in the response).
+    """
+    request = BindTextBlockRequest.from_dict(body)
+    response = op_bind_text_block(
+      graph_id=graph_id,
+      body=request,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Bind text block", response)
+    return self._typed_result("Bind text block", envelope, BindTextBlockResponse)
 
   def link_entity_taxonomy(
     self,

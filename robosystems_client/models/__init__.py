@@ -25,6 +25,8 @@ from .backup_stats_response_backup_formats import BackupStatsResponseBackupForma
 from .batch_operator_request import BatchOperatorRequest
 from .batch_operator_response import BatchOperatorResponse
 from .billing_customer import BillingCustomer
+from .bind_text_block_request import BindTextBlockRequest
+from .bind_text_block_response import BindTextBlockResponse
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -296,6 +298,12 @@ from .operation_envelope_association_response import (
 )
 from .operation_envelope_association_response_status import (
   OperationEnvelopeAssociationResponseStatus,
+)
+from .operation_envelope_bind_text_block_response import (
+  OperationEnvelopeBindTextBlockResponse,
+)
+from .operation_envelope_bind_text_block_response_status import (
+  OperationEnvelopeBindTextBlockResponseStatus,
 )
 from .operation_envelope_change_reporting_style_response import (
   OperationEnvelopeChangeReportingStyleResponse,
@@ -645,6 +653,9 @@ from .taxonomy_block_structure_request import TaxonomyBlockStructureRequest
 from .taxonomy_block_structure_request_block_type import (
   TaxonomyBlockStructureRequestBlockType,
 )
+from .taxonomy_block_structure_request_concept_arrangement_type_0 import (
+  TaxonomyBlockStructureRequestConceptArrangementType0,
+)
 from .taxonomy_block_structure_request_metadata import (
   TaxonomyBlockStructureRequestMetadata,
 )
@@ -744,6 +755,8 @@ __all__ = (
   "BatchOperatorRequest",
   "BatchOperatorResponse",
   "BillingCustomer",
+  "BindTextBlockRequest",
+  "BindTextBlockResponse",
   "CancelOperationResponseCanceloperation",
   "CancelSubscriptionRequest",
   "ChangeReportingStyleRequest",
@@ -964,6 +977,8 @@ __all__ = (
   "OperationEnvelope",
   "OperationEnvelopeAssociationResponse",
   "OperationEnvelopeAssociationResponseStatus",
+  "OperationEnvelopeBindTextBlockResponse",
+  "OperationEnvelopeBindTextBlockResponseStatus",
   "OperationEnvelopeChangeReportingStyleResponse",
   "OperationEnvelopeChangeReportingStyleResponseStatus",
   "OperationEnvelopeClosePeriodResponse",
@@ -1180,6 +1195,7 @@ __all__ = (
   "TaxonomyBlockStructure",
   "TaxonomyBlockStructureRequest",
   "TaxonomyBlockStructureRequestBlockType",
+  "TaxonomyBlockStructureRequestConceptArrangementType0",
   "TaxonomyBlockStructureRequestMetadata",
   "TierCapacity",
   "TokenPricing",
