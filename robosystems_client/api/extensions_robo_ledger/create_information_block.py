@@ -6,6 +6,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.create_forecast_arm import CreateForecastArm
 from ...models.create_legacy_arm import CreateLegacyArm
 from ...models.create_rollforward_arm import CreateRollforwardArm
 from ...models.create_schedule_arm import CreateScheduleArm
@@ -19,7 +20,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
+  body: CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -36,6 +37,8 @@ def _get_kwargs(
   if isinstance(body, CreateScheduleArm):
     _kwargs["json"] = body.to_dict()
   elif isinstance(body, CreateRollforwardArm):
+    _kwargs["json"] = body.to_dict()
+  elif isinstance(body, CreateForecastArm):
     _kwargs["json"] = body.to_dict()
   else:
     _kwargs["json"] = body.to_dict()
@@ -115,7 +118,7 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
+  body: CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeInformationBlockEnvelope]:
   """Create Information Block
@@ -133,8 +136,8 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm): Create an Information
-          Block. The body is a discriminated union on
+      body (CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm):
+          Create an Information Block. The body is a discriminated union on
           `block_type`: pick the arm matching the block type you want to
           create. The schedule arm carries a fully typed payload; statement
           and metric arms accept an untyped payload but currently return HTTP
@@ -166,7 +169,7 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
+  body: CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeInformationBlockEnvelope | None:
   """Create Information Block
@@ -184,8 +187,8 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm): Create an Information
-          Block. The body is a discriminated union on
+      body (CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm):
+          Create an Information Block. The body is a discriminated union on
           `block_type`: pick the arm matching the block type you want to
           create. The schedule arm carries a fully typed payload; statement
           and metric arms accept an untyped payload but currently return HTTP
@@ -212,7 +215,7 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
+  body: CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeInformationBlockEnvelope]:
   """Create Information Block
@@ -230,8 +233,8 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm): Create an Information
-          Block. The body is a discriminated union on
+      body (CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm):
+          Create an Information Block. The body is a discriminated union on
           `block_type`: pick the arm matching the block type you want to
           create. The schedule arm carries a fully typed payload; statement
           and metric arms accept an untyped payload but currently return HTTP
@@ -261,7 +264,7 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
+  body: CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeInformationBlockEnvelope | None:
   """Create Information Block
@@ -279,8 +282,8 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm): Create an Information
-          Block. The body is a discriminated union on
+      body (CreateForecastArm | CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm):
+          Create an Information Block. The body is a discriminated union on
           `block_type`: pick the arm matching the block type you want to
           create. The schedule arm carries a fully typed payload; statement
           and metric arms accept an untyped payload but currently return HTTP

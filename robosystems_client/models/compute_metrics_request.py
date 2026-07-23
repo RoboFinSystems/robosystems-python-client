@@ -31,12 +31,17 @@ class ComputeMetricsRequest:
               FactSet's period_start.
           entity_id (None | str | Unset): Entity to compute for. Defaults to the graph's earliest-created entity (the
               primary entity for single-entity graphs).
+          scenario_id (None | str | Unset): Compute on a scenario slice: operands bind that scenario's facts (actuals as
+              the fallback across the seam) and the standing metric set is stamped with the scenario. None (the default)
+              computes actuals only. Pass a forecast block's structure id after compute-forecast to extend the metric series
+              into its forward months.
   """
 
   structure_id: str
   period_end: datetime.date
   period_start: datetime.date | None | Unset = UNSET
   entity_id: None | str | Unset = UNSET
+  scenario_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -58,6 +63,12 @@ class ComputeMetricsRequest:
     else:
       entity_id = self.entity_id
 
+    scenario_id: None | str | Unset
+    if isinstance(self.scenario_id, Unset):
+      scenario_id = UNSET
+    else:
+      scenario_id = self.scenario_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -70,6 +81,8 @@ class ComputeMetricsRequest:
       field_dict["period_start"] = period_start
     if entity_id is not UNSET:
       field_dict["entity_id"] = entity_id
+    if scenario_id is not UNSET:
+      field_dict["scenario_id"] = scenario_id
 
     return field_dict
 
@@ -106,11 +119,21 @@ class ComputeMetricsRequest:
 
     entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
+    def _parse_scenario_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    scenario_id = _parse_scenario_id(d.pop("scenario_id", UNSET))
+
     compute_metrics_request = cls(
       structure_id=structure_id,
       period_end=period_end,
       period_start=period_start,
       entity_id=entity_id,
+      scenario_id=scenario_id,
     )
 
     compute_metrics_request.additional_properties = d

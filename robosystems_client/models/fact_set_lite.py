@@ -28,13 +28,15 @@ class FactSetLite:
       Attributes:
           id (str):
           period_end (datetime.date):
-          factset_type (str): 'report' | 'schedule' | 'custom' | 'disclosure'. Enum closure enforced by the
+          factset_type (str): 'report' | 'schedule' | 'custom' | 'disclosure' | 'metric'. Enum closure enforced by the
               ``public.fact_sets`` CHECK constraint.
           entity_id (str):
           structure_id (None | str | Unset):
           period_start (datetime.date | None | Unset):
           report_id (None | str | Unset): Back-pointer to the ``reports`` table while ``report_id`` still lives on facts.
               Drops out once the retirement migration lands.
+          scenario_id (None | str | Unset): Scenario axis (the forecast engine). NULL = actuals; non-NULL names the owning
+              forecast block whose parallel universe this set belongs to.
           provenance (FactSetLiteProvenanceType0 | None | Unset): Typed ``FactProvenance`` descriptor (discriminated on
               ``origin``: pivot | schedule | derived | asserted) recording how this FactSet's facts were constructed. Surfaced
               as JSON, mirroring how mechanics is exposed. Null for pre-feature historical FactSets.
@@ -47,6 +49,7 @@ class FactSetLite:
   structure_id: None | str | Unset = UNSET
   period_start: datetime.date | None | Unset = UNSET
   report_id: None | str | Unset = UNSET
+  scenario_id: None | str | Unset = UNSET
   provenance: FactSetLiteProvenanceType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -81,6 +84,12 @@ class FactSetLite:
     else:
       report_id = self.report_id
 
+    scenario_id: None | str | Unset
+    if isinstance(self.scenario_id, Unset):
+      scenario_id = UNSET
+    else:
+      scenario_id = self.scenario_id
+
     provenance: dict[str, Any] | None | Unset
     if isinstance(self.provenance, Unset):
       provenance = UNSET
@@ -105,6 +114,8 @@ class FactSetLite:
       field_dict["period_start"] = period_start
     if report_id is not UNSET:
       field_dict["report_id"] = report_id
+    if scenario_id is not UNSET:
+      field_dict["scenario_id"] = scenario_id
     if provenance is not UNSET:
       field_dict["provenance"] = provenance
 
@@ -158,6 +169,15 @@ class FactSetLite:
 
     report_id = _parse_report_id(d.pop("report_id", UNSET))
 
+    def _parse_scenario_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    scenario_id = _parse_scenario_id(d.pop("scenario_id", UNSET))
+
     def _parse_provenance(data: object) -> FactSetLiteProvenanceType0 | None | Unset:
       if data is None:
         return data
@@ -183,6 +203,7 @@ class FactSetLite:
       structure_id=structure_id,
       period_start=period_start,
       report_id=report_id,
+      scenario_id=scenario_id,
       provenance=provenance,
     )
 

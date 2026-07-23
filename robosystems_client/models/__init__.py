@@ -46,6 +46,8 @@ from .close_period_response import ClosePeriodResponse
 from .close_period_response_rule_summary_type_0 import (
   ClosePeriodResponseRuleSummaryType0,
 )
+from .compute_forecast_request import ComputeForecastRequest
+from .compute_forecast_response import ComputeForecastResponse
 from .compute_metrics_request import ComputeMetricsRequest
 from .compute_metrics_response import ComputeMetricsResponse
 from .computed_metric_lite import ComputedMetricLite
@@ -85,6 +87,9 @@ from .create_event_handler_request_match_metadata_expression_type_0 import (
 )
 from .create_event_handler_request_metadata import CreateEventHandlerRequestMetadata
 from .create_event_handler_request_origin import CreateEventHandlerRequestOrigin
+from .create_forecast_arm import CreateForecastArm
+from .create_forecast_request import CreateForecastRequest
+from .create_forecast_request_scenario_kind import CreateForecastRequestScenarioKind
 from .create_graph_request import CreateGraphRequest
 from .create_legacy_arm import CreateLegacyArm
 from .create_legacy_arm_block_type import CreateLegacyArmBlockType
@@ -133,6 +138,8 @@ from .database_info_response import DatabaseInfoResponse
 from .database_storage_entry import DatabaseStorageEntry
 from .delete_document_op import DeleteDocumentOp
 from .delete_file_op import DeleteFileOp
+from .delete_forecast_arm import DeleteForecastArm
+from .delete_forecast_request import DeleteForecastRequest
 from .delete_graph_op import DeleteGraphOp
 from .delete_information_block_response import DeleteInformationBlockResponse
 from .delete_journal_entry_request import DeleteJournalEntryRequest
@@ -205,6 +212,9 @@ from .file_upload_request import FileUploadRequest
 from .financial_statement_analysis_request import FinancialStatementAnalysisRequest
 from .fiscal_calendar_response import FiscalCalendarResponse
 from .fiscal_period_summary import FiscalPeriodSummary
+from .forecast_mechanics import ForecastMechanics
+from .forecast_mechanics_scenario_kind import ForecastMechanicsScenarioKind
+from .forecast_month_lite import ForecastMonthLite
 from .forget_op import ForgetOp
 from .forgot_password_request import ForgotPasswordRequest
 from .forgot_password_response_forgotpassword import (
@@ -265,6 +275,12 @@ from .journal_entry_response import JournalEntryResponse
 from .ledger_agent_response import LedgerAgentResponse
 from .ledger_agent_response_address_type_0 import LedgerAgentResponseAddressType0
 from .ledger_entity_response import LedgerEntityResponse
+from .lever_assertion_lite import LeverAssertionLite
+from .lever_assertion_lite_values_by_period import LeverAssertionLiteValuesByPeriod
+from .lever_assertion_request import LeverAssertionRequest
+from .lever_assertion_request_values_by_period_type_0 import (
+  LeverAssertionRequestValuesByPeriodType0,
+)
 from .line_item_metadata_predicate import LineItemMetadataPredicate
 from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
@@ -322,6 +338,12 @@ from .operation_envelope_close_period_response import (
 )
 from .operation_envelope_close_period_response_status import (
   OperationEnvelopeClosePeriodResponseStatus,
+)
+from .operation_envelope_compute_forecast_response import (
+  OperationEnvelopeComputeForecastResponse,
+)
+from .operation_envelope_compute_forecast_response_status import (
+  OperationEnvelopeComputeForecastResponseStatus,
 )
 from .operation_envelope_compute_metrics_response import (
   OperationEnvelopeComputeMetricsResponse,
@@ -606,6 +628,7 @@ from .set_write_policy_request_write_policy import SetWritePolicyRequestWritePol
 from .share_report_operation import ShareReportOperation
 from .share_report_response import ShareReportResponse
 from .share_result_item import ShareResultItem
+from .skipped_forecast_lite import SkippedForecastLite
 from .skipped_metric_lite import SkippedMetricLite
 from .sql_statement_request import SqlStatementRequest
 from .sql_statement_response import SqlStatementResponse
@@ -707,6 +730,11 @@ from .update_event_handler_request_match_metadata_expression_type_0 import (
 from .update_event_handler_request_metadata_patch import (
   UpdateEventHandlerRequestMetadataPatch,
 )
+from .update_forecast_arm import UpdateForecastArm
+from .update_forecast_request import UpdateForecastRequest
+from .update_forecast_request_scenario_kind_type_0 import (
+  UpdateForecastRequestScenarioKindType0,
+)
 from .update_journal_entry_request import UpdateJournalEntryRequest
 from .update_journal_entry_request_type_type_0 import UpdateJournalEntryRequestTypeType0
 from .update_legacy_arm import UpdateLegacyArm
@@ -789,6 +817,8 @@ __all__ = (
   "ClosePeriodResponse",
   "ClosePeriodResponseRuleSummaryType0",
   "ComputedMetricLite",
+  "ComputeForecastRequest",
+  "ComputeForecastResponse",
   "ComputeMetricsRequest",
   "ComputeMetricsResponse",
   "ConnectionLite",
@@ -819,6 +849,9 @@ __all__ = (
   "CreateEventHandlerRequestMatchMetadataExpressionType0",
   "CreateEventHandlerRequestMetadata",
   "CreateEventHandlerRequestOrigin",
+  "CreateForecastArm",
+  "CreateForecastRequest",
+  "CreateForecastRequestScenarioKind",
   "CreateGraphRequest",
   "CreateLegacyArm",
   "CreateLegacyArmBlockType",
@@ -857,6 +890,8 @@ __all__ = (
   "DatabaseStorageEntry",
   "DeleteDocumentOp",
   "DeleteFileOp",
+  "DeleteForecastArm",
+  "DeleteForecastRequest",
   "DeleteGraphOp",
   "DeleteInformationBlockResponse",
   "DeleteJournalEntryRequest",
@@ -919,6 +954,9 @@ __all__ = (
   "FinancialStatementAnalysisRequest",
   "FiscalCalendarResponse",
   "FiscalPeriodSummary",
+  "ForecastMechanics",
+  "ForecastMechanicsScenarioKind",
+  "ForecastMonthLite",
   "ForgetOp",
   "ForgotPasswordRequest",
   "ForgotPasswordResponseForgotpassword",
@@ -967,6 +1005,10 @@ __all__ = (
   "LedgerAgentResponse",
   "LedgerAgentResponseAddressType0",
   "LedgerEntityResponse",
+  "LeverAssertionLite",
+  "LeverAssertionLiteValuesByPeriod",
+  "LeverAssertionRequest",
+  "LeverAssertionRequestValuesByPeriodType0",
   "LineItemMetadataPredicate",
   "LinkEntityTaxonomyRequest",
   "LinkEntityTaxonomyRequestBasis",
@@ -1005,6 +1047,8 @@ __all__ = (
   "OperationEnvelopeChangeReportingStyleResponseStatus",
   "OperationEnvelopeClosePeriodResponse",
   "OperationEnvelopeClosePeriodResponseStatus",
+  "OperationEnvelopeComputeForecastResponse",
+  "OperationEnvelopeComputeForecastResponseStatus",
   "OperationEnvelopeComputeMetricsResponse",
   "OperationEnvelopeComputeMetricsResponseStatus",
   "OperationEnvelopeDeleteInformationBlockResponse",
@@ -1176,6 +1220,7 @@ __all__ = (
   "ShareReportOperation",
   "ShareReportResponse",
   "ShareResultItem",
+  "SkippedForecastLite",
   "SkippedMetricLite",
   "SqlStatementRequest",
   "SqlStatementResponse",
@@ -1245,6 +1290,9 @@ __all__ = (
   "UpdateEventHandlerRequest",
   "UpdateEventHandlerRequestMatchMetadataExpressionType0",
   "UpdateEventHandlerRequestMetadataPatch",
+  "UpdateForecastArm",
+  "UpdateForecastRequest",
+  "UpdateForecastRequestScenarioKindType0",
   "UpdateJournalEntryRequest",
   "UpdateJournalEntryRequestTypeType0",
   "UpdateLegacyArm",
