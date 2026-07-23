@@ -74,7 +74,9 @@ class InformationBlockEnvelope:
               mode; missing projections (those still in backlog) render as empty
               states without breaking the dispatcher.
 
-              Today: ``rendering`` is computed for the statement family.
+              Today: ``rendering`` is computed for the statement family, and
+              ``chart`` (the 7th arm — panel/series config over the rendering's
+              rows and periods) for metric blocks.
               Other arms (``fact_table``, ``model_structure``, ``verification_results``,
               ``report_elements``, ``business_rules``) come online as their backend
               support lands; ``fact_table`` is trivially derivable from

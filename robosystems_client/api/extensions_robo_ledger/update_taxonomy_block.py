@@ -115,7 +115,8 @@ def sync_detailed(
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
   to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
-  block types (`reporting_standard`) surface 501.
+  block types (`reporting_standard`) surface 501. `reporting_extension` / `custom_ontology` authoring
+  may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -163,7 +164,8 @@ def sync(
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
   to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
-  block types (`reporting_standard`) surface 501.
+  block types (`reporting_standard`) surface 501. `reporting_extension` / `custom_ontology` authoring
+  may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -206,7 +208,8 @@ async def asyncio_detailed(
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
   to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
-  block types (`reporting_standard`) surface 501.
+  block types (`reporting_standard`) surface 501. `reporting_extension` / `custom_ontology` authoring
+  may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -252,7 +255,8 @@ async def asyncio(
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
   to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
-  block types (`reporting_standard`) surface 501.
+  block types (`reporting_standard`) surface 501. `reporting_extension` / `custom_ontology` authoring
+  may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -29,6 +29,8 @@ class RenderingRowLite:
               'equity', 'revenue', 'expense'. Surfaced so the viewer can color-code or group rows without a follow-up trait
               lookup.
           balance_type (None | str | Unset):
+          item_type (None | str | Unset): Value-domain format family from the element (monetary | ratio | percent |
+              multiple | days | …). Drives per-row value formatting; None falls back to is_monetary on the element.
           values (list[float | None] | Unset):
           text_value (None | str | Unset): Narrative payload for text-block disclosure rows (markdown); numeric rows carry
               values instead.
@@ -41,6 +43,7 @@ class RenderingRowLite:
   element_qname: None | str | Unset = UNSET
   classification: None | str | Unset = UNSET
   balance_type: None | str | Unset = UNSET
+  item_type: None | str | Unset = UNSET
   values: list[float | None] | Unset = UNSET
   text_value: None | str | Unset = UNSET
   is_subtotal: bool | Unset = False
@@ -69,6 +72,12 @@ class RenderingRowLite:
       balance_type = UNSET
     else:
       balance_type = self.balance_type
+
+    item_type: None | str | Unset
+    if isinstance(self.item_type, Unset):
+      item_type = UNSET
+    else:
+      item_type = self.item_type
 
     values: list[float | None] | Unset = UNSET
     if not isinstance(self.values, Unset):
@@ -102,6 +111,8 @@ class RenderingRowLite:
       field_dict["classification"] = classification
     if balance_type is not UNSET:
       field_dict["balance_type"] = balance_type
+    if item_type is not UNSET:
+      field_dict["item_type"] = item_type
     if values is not UNSET:
       field_dict["values"] = values
     if text_value is not UNSET:
@@ -147,6 +158,15 @@ class RenderingRowLite:
 
     balance_type = _parse_balance_type(d.pop("balance_type", UNSET))
 
+    def _parse_item_type(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    item_type = _parse_item_type(d.pop("item_type", UNSET))
+
     _values = d.pop("values", UNSET)
     values: list[float | None] | Unset = UNSET
     if _values is not UNSET:
@@ -181,6 +201,7 @@ class RenderingRowLite:
       element_qname=element_qname,
       classification=classification,
       balance_type=balance_type,
+      item_type=item_type,
       values=values,
       text_value=text_value,
       is_subtotal=is_subtotal,

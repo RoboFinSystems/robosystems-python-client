@@ -115,11 +115,12 @@ def sync_detailed(
 
    Create a taxonomy block atomically: one envelope carrying the taxonomy row plus its structures,
   elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
-  tenant CoA) is supported; `reporting_extension` / `custom_ontology` / `reporting_standard` are not
-  yet implemented. NOT the path for a functional close schedule: a structure with
-  block_type='schedule' here is a bare ontology row with none of the schedule machinery (per-period
-  facts, schedule_entry_due obligations, closing-entry generator). To create a working schedule use
-  create-information-block(block_type='schedule').
+  tenant CoA), `reporting_extension`, and `custom_ontology` are supported; `reporting_standard` is
+  library-origin (501). `reporting_extension` / `custom_ontology` authoring may be disabled per
+  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. NOT the path for a functional
+  close schedule: a structure with block_type='schedule' here is a bare ontology row with none of the
+  schedule machinery (per-period facts, schedule_entry_due obligations, closing-entry generator). To
+  create a working schedule use create-information-block(block_type='schedule').
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -171,11 +172,12 @@ def sync(
 
    Create a taxonomy block atomically: one envelope carrying the taxonomy row plus its structures,
   elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
-  tenant CoA) is supported; `reporting_extension` / `custom_ontology` / `reporting_standard` are not
-  yet implemented. NOT the path for a functional close schedule: a structure with
-  block_type='schedule' here is a bare ontology row with none of the schedule machinery (per-period
-  facts, schedule_entry_due obligations, closing-entry generator). To create a working schedule use
-  create-information-block(block_type='schedule').
+  tenant CoA), `reporting_extension`, and `custom_ontology` are supported; `reporting_standard` is
+  library-origin (501). `reporting_extension` / `custom_ontology` authoring may be disabled per
+  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. NOT the path for a functional
+  close schedule: a structure with block_type='schedule' here is a bare ontology row with none of the
+  schedule machinery (per-period facts, schedule_entry_due obligations, closing-entry generator). To
+  create a working schedule use create-information-block(block_type='schedule').
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -222,11 +224,12 @@ async def asyncio_detailed(
 
    Create a taxonomy block atomically: one envelope carrying the taxonomy row plus its structures,
   elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
-  tenant CoA) is supported; `reporting_extension` / `custom_ontology` / `reporting_standard` are not
-  yet implemented. NOT the path for a functional close schedule: a structure with
-  block_type='schedule' here is a bare ontology row with none of the schedule machinery (per-period
-  facts, schedule_entry_due obligations, closing-entry generator). To create a working schedule use
-  create-information-block(block_type='schedule').
+  tenant CoA), `reporting_extension`, and `custom_ontology` are supported; `reporting_standard` is
+  library-origin (501). `reporting_extension` / `custom_ontology` authoring may be disabled per
+  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. NOT the path for a functional
+  close schedule: a structure with block_type='schedule' here is a bare ontology row with none of the
+  schedule machinery (per-period facts, schedule_entry_due obligations, closing-entry generator). To
+  create a working schedule use create-information-block(block_type='schedule').
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -276,11 +279,12 @@ async def asyncio(
 
    Create a taxonomy block atomically: one envelope carrying the taxonomy row plus its structures,
   elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
-  tenant CoA) is supported; `reporting_extension` / `custom_ontology` / `reporting_standard` are not
-  yet implemented. NOT the path for a functional close schedule: a structure with
-  block_type='schedule' here is a bare ontology row with none of the schedule machinery (per-period
-  facts, schedule_entry_due obligations, closing-entry generator). To create a working schedule use
-  create-information-block(block_type='schedule').
+  tenant CoA), `reporting_extension`, and `custom_ontology` are supported; `reporting_standard` is
+  library-origin (501). `reporting_extension` / `custom_ontology` authoring may be disabled per
+  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. NOT the path for a functional
+  close schedule: a structure with block_type='schedule' here is a bare ontology row with none of the
+  schedule machinery (per-period facts, schedule_entry_due obligations, closing-entry generator). To
+  create a working schedule use create-information-block(block_type='schedule').
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
