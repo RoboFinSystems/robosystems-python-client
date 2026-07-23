@@ -21,9 +21,15 @@ class ForecastMonthLite:
       period_start (datetime.date):
       period_end (datetime.date):
       income_statement_fact_set_id (None | str | Unset): Scenario IS FactSet upserted for the month.
-      balance_sheet_fact_set_id (None | str | Unset): Scenario BS FactSet upserted for the month (working-capital
-          instants only in F-1 — the full BS roll is a later phase).
-      computed_count (int | Unset): Number of facts emitted for the month across both sets. Default: 0.
+      balance_sheet_fact_set_id (None | str | Unset): Scenario BS FactSet upserted for the month — the full roll:
+          carry-forward, rule-driven working capital, schedule movements, RE roll, balancing cash (A = L + E by
+          construction).
+      cash_flow_fact_set_id (None | str | Unset): Scenario CF FactSet upserted for the month — indirect-method,
+          derived from BS deltas + NI, reconciled to the balancing ΔCash.
+      computed_count (int | Unset): Number of facts emitted for the month across all sets. Default: 0.
+      verification_passed (bool | None | Unset): Whether every rule evaluated against the month's scenario sets passed
+          (None = no rules ran for the month).
+      verification_failures (list[str] | Unset): Failed/errored rule messages for the month (capped).
   """
 
   period: str
@@ -31,7 +37,10 @@ class ForecastMonthLite:
   period_end: datetime.date
   income_statement_fact_set_id: None | str | Unset = UNSET
   balance_sheet_fact_set_id: None | str | Unset = UNSET
+  cash_flow_fact_set_id: None | str | Unset = UNSET
   computed_count: int | Unset = 0
+  verification_passed: bool | None | Unset = UNSET
+  verification_failures: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -53,7 +62,23 @@ class ForecastMonthLite:
     else:
       balance_sheet_fact_set_id = self.balance_sheet_fact_set_id
 
+    cash_flow_fact_set_id: None | str | Unset
+    if isinstance(self.cash_flow_fact_set_id, Unset):
+      cash_flow_fact_set_id = UNSET
+    else:
+      cash_flow_fact_set_id = self.cash_flow_fact_set_id
+
     computed_count = self.computed_count
+
+    verification_passed: bool | None | Unset
+    if isinstance(self.verification_passed, Unset):
+      verification_passed = UNSET
+    else:
+      verification_passed = self.verification_passed
+
+    verification_failures: list[str] | Unset = UNSET
+    if not isinstance(self.verification_failures, Unset):
+      verification_failures = self.verification_failures
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -68,8 +93,14 @@ class ForecastMonthLite:
       field_dict["income_statement_fact_set_id"] = income_statement_fact_set_id
     if balance_sheet_fact_set_id is not UNSET:
       field_dict["balance_sheet_fact_set_id"] = balance_sheet_fact_set_id
+    if cash_flow_fact_set_id is not UNSET:
+      field_dict["cash_flow_fact_set_id"] = cash_flow_fact_set_id
     if computed_count is not UNSET:
       field_dict["computed_count"] = computed_count
+    if verification_passed is not UNSET:
+      field_dict["verification_passed"] = verification_passed
+    if verification_failures is not UNSET:
+      field_dict["verification_failures"] = verification_failures
 
     return field_dict
 
@@ -104,7 +135,31 @@ class ForecastMonthLite:
       d.pop("balance_sheet_fact_set_id", UNSET)
     )
 
+    def _parse_cash_flow_fact_set_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    cash_flow_fact_set_id = _parse_cash_flow_fact_set_id(
+      d.pop("cash_flow_fact_set_id", UNSET)
+    )
+
     computed_count = d.pop("computed_count", UNSET)
+
+    def _parse_verification_passed(data: object) -> bool | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(bool | None | Unset, data)
+
+    verification_passed = _parse_verification_passed(
+      d.pop("verification_passed", UNSET)
+    )
+
+    verification_failures = cast(list[str], d.pop("verification_failures", UNSET))
 
     forecast_month_lite = cls(
       period=period,
@@ -112,7 +167,10 @@ class ForecastMonthLite:
       period_end=period_end,
       income_statement_fact_set_id=income_statement_fact_set_id,
       balance_sheet_fact_set_id=balance_sheet_fact_set_id,
+      cash_flow_fact_set_id=cash_flow_fact_set_id,
       computed_count=computed_count,
+      verification_passed=verification_passed,
+      verification_failures=verification_failures,
     )
 
     forecast_month_lite.additional_properties = d

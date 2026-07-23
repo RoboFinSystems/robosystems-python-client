@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -28,6 +28,8 @@ class ComputeForecastResponse:
       months (int): Forward months requested.
       months_computed (list[ForecastMonthLite] | Unset):
       skipped (list[SkippedForecastLite] | Unset):
+      diagnostics (list[str] | Unset): Articulation notes — a missing cash/earnings anchor, schedule contributions
+          with no base-set landing spot, an absent cash-flow structure. Informational; the walk still computed.
   """
 
   structure_id: str
@@ -37,6 +39,7 @@ class ComputeForecastResponse:
   months: int
   months_computed: list[ForecastMonthLite] | Unset = UNSET
   skipped: list[SkippedForecastLite] | Unset = UNSET
+  diagnostics: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -64,6 +67,10 @@ class ComputeForecastResponse:
         skipped_item = skipped_item_data.to_dict()
         skipped.append(skipped_item)
 
+    diagnostics: list[str] | Unset = UNSET
+    if not isinstance(self.diagnostics, Unset):
+      diagnostics = self.diagnostics
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -79,6 +86,8 @@ class ComputeForecastResponse:
       field_dict["months_computed"] = months_computed
     if skipped is not UNSET:
       field_dict["skipped"] = skipped
+    if diagnostics is not UNSET:
+      field_dict["diagnostics"] = diagnostics
 
     return field_dict
 
@@ -116,6 +125,8 @@ class ComputeForecastResponse:
 
         skipped.append(skipped_item)
 
+    diagnostics = cast(list[str], d.pop("diagnostics", UNSET))
+
     compute_forecast_response = cls(
       structure_id=structure_id,
       scenario_id=scenario_id,
@@ -124,6 +135,7 @@ class ComputeForecastResponse:
       months=months,
       months_computed=months_computed,
       skipped=skipped,
+      diagnostics=diagnostics,
     )
 
     compute_forecast_response.additional_properties = d
