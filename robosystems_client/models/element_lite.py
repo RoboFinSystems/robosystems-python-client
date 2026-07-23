@@ -30,6 +30,8 @@ class ElementLite:
           is_monetary (bool | Unset):  Default: True.
           balance_type (None | str | Unset):
           period_type (None | str | Unset):
+          item_type (None | str | Unset): Value-domain vocabulary (monetary | ratio | percent | multiple | days | string |
+              …). None means untyped; fall back to is_monetary.
   """
 
   id: str
@@ -41,6 +43,7 @@ class ElementLite:
   is_monetary: bool | Unset = True
   balance_type: None | str | Unset = UNSET
   period_type: None | str | Unset = UNSET
+  item_type: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -78,6 +81,12 @@ class ElementLite:
     else:
       period_type = self.period_type
 
+    item_type: None | str | Unset
+    if isinstance(self.item_type, Unset):
+      item_type = UNSET
+    else:
+      item_type = self.item_type
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -99,6 +108,8 @@ class ElementLite:
       field_dict["balance_type"] = balance_type
     if period_type is not UNSET:
       field_dict["period_type"] = period_type
+    if item_type is not UNSET:
+      field_dict["item_type"] = item_type
 
     return field_dict
 
@@ -151,6 +162,15 @@ class ElementLite:
 
     period_type = _parse_period_type(d.pop("period_type", UNSET))
 
+    def _parse_item_type(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    item_type = _parse_item_type(d.pop("item_type", UNSET))
+
     element_lite = cls(
       id=id,
       name=name,
@@ -161,6 +181,7 @@ class ElementLite:
       is_monetary=is_monetary,
       balance_type=balance_type,
       period_type=period_type,
+      item_type=item_type,
     )
 
     element_lite.additional_properties = d

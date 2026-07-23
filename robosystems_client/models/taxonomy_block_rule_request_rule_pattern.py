@@ -4,6 +4,7 @@ from enum import Enum
 class TaxonomyBlockRuleRequestRulePattern(str, Enum):
   ADJUSTMENT = "Adjustment"
   COEXISTS = "CoExists"
+  DERIVE = "Derive"
   EQUALTO = "EqualTo"
   EXISTS = "Exists"
   GREATERTHAN = "GreaterThan"

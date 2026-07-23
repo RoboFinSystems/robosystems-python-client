@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.structure_update_patch_concept_arrangement_type_0 import (
+  StructureUpdatePatchConceptArrangementType0,
+)
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
@@ -21,18 +24,27 @@ T = TypeVar("T", bound="StructureUpdatePatch")
 class StructureUpdatePatch:
   """Partial-update patch for a single structure, keyed by structure_id.
 
-  Attributes:
-      structure_id (str): Structure id to update.
-      name (None | str | Unset):
-      description (None | str | Unset):
-      role_uri (None | str | Unset):
-      metadata (None | StructureUpdatePatchMetadataType0 | Unset):
+  ``concept_arrangement`` makes a mis-CAP'd structure repairable in
+  place (e.g. promoting a ``set`` note to ``roll_up`` so it gains a
+  footing rule); ``block_type`` stays immutable — it drives block-type
+  routing, so changing it is a re-create, not an edit.
+
+      Attributes:
+          structure_id (str): Structure id to update.
+          name (None | str | Unset):
+          description (None | str | Unset):
+          role_uri (None | str | Unset):
+          concept_arrangement (None | StructureUpdatePatchConceptArrangementType0 | Unset):
+          metadata (None | StructureUpdatePatchMetadataType0 | Unset):
   """
 
   structure_id: str
   name: None | str | Unset = UNSET
   description: None | str | Unset = UNSET
   role_uri: None | str | Unset = UNSET
+  concept_arrangement: None | StructureUpdatePatchConceptArrangementType0 | Unset = (
+    UNSET
+  )
   metadata: None | StructureUpdatePatchMetadataType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -61,6 +73,16 @@ class StructureUpdatePatch:
     else:
       role_uri = self.role_uri
 
+    concept_arrangement: None | str | Unset
+    if isinstance(self.concept_arrangement, Unset):
+      concept_arrangement = UNSET
+    elif isinstance(
+      self.concept_arrangement, StructureUpdatePatchConceptArrangementType0
+    ):
+      concept_arrangement = self.concept_arrangement.value
+    else:
+      concept_arrangement = self.concept_arrangement
+
     metadata: dict[str, Any] | None | Unset
     if isinstance(self.metadata, Unset):
       metadata = UNSET
@@ -82,6 +104,8 @@ class StructureUpdatePatch:
       field_dict["description"] = description
     if role_uri is not UNSET:
       field_dict["role_uri"] = role_uri
+    if concept_arrangement is not UNSET:
+      field_dict["concept_arrangement"] = concept_arrangement
     if metadata is not UNSET:
       field_dict["metadata"] = metadata
 
@@ -123,6 +147,27 @@ class StructureUpdatePatch:
 
     role_uri = _parse_role_uri(d.pop("role_uri", UNSET))
 
+    def _parse_concept_arrangement(
+      data: object,
+    ) -> None | StructureUpdatePatchConceptArrangementType0 | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        concept_arrangement_type_0 = StructureUpdatePatchConceptArrangementType0(data)
+
+        return concept_arrangement_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | StructureUpdatePatchConceptArrangementType0 | Unset, data)
+
+    concept_arrangement = _parse_concept_arrangement(
+      d.pop("concept_arrangement", UNSET)
+    )
+
     def _parse_metadata(
       data: object,
     ) -> None | StructureUpdatePatchMetadataType0 | Unset:
@@ -147,6 +192,7 @@ class StructureUpdatePatch:
       name=name,
       description=description,
       role_uri=role_uri,
+      concept_arrangement=concept_arrangement,
       metadata=metadata,
     )
 

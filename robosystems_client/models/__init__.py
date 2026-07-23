@@ -35,6 +35,9 @@ from .change_reporting_style_request import ChangeReportingStyleRequest
 from .change_reporting_style_response import ChangeReportingStyleResponse
 from .change_tier_op import ChangeTierOp
 from .change_tier_op_new_tier import ChangeTierOpNewTier
+from .chart_lite import ChartLite
+from .chart_panel_lite import ChartPanelLite
+from .chart_series_lite import ChartSeriesLite
 from .checkout_response import CheckoutResponse
 from .checkout_status_response import CheckoutStatusResponse
 from .classification_lite import ClassificationLite
@@ -43,6 +46,9 @@ from .close_period_response import ClosePeriodResponse
 from .close_period_response_rule_summary_type_0 import (
   ClosePeriodResponseRuleSummaryType0,
 )
+from .compute_metrics_request import ComputeMetricsRequest
+from .compute_metrics_response import ComputeMetricsResponse
+from .computed_metric_lite import ComputedMetricLite
 from .connection_lite import ConnectionLite
 from .connection_options_response import ConnectionOptionsResponse
 from .connection_provider_info import ConnectionProviderInfo
@@ -316,6 +322,12 @@ from .operation_envelope_close_period_response import (
 )
 from .operation_envelope_close_period_response_status import (
   OperationEnvelopeClosePeriodResponseStatus,
+)
+from .operation_envelope_compute_metrics_response import (
+  OperationEnvelopeComputeMetricsResponse,
+)
+from .operation_envelope_compute_metrics_response_status import (
+  OperationEnvelopeComputeMetricsResponseStatus,
 )
 from .operation_envelope_delete_information_block_response import (
   OperationEnvelopeDeleteInformationBlockResponse,
@@ -594,6 +606,7 @@ from .set_write_policy_request_write_policy import SetWritePolicyRequestWritePol
 from .share_report_operation import ShareReportOperation
 from .share_report_response import ShareReportResponse
 from .share_result_item import ShareResultItem
+from .skipped_metric_lite import SkippedMetricLite
 from .sql_statement_request import SqlStatementRequest
 from .sql_statement_response import SqlStatementResponse
 from .sso_complete_request import SSOCompleteRequest
@@ -605,6 +618,9 @@ from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
 from .structure_summary import StructureSummary
 from .structure_update_patch import StructureUpdatePatch
+from .structure_update_patch_concept_arrangement_type_0 import (
+  StructureUpdatePatchConceptArrangementType0,
+)
 from .structure_update_patch_metadata_type_0 import StructureUpdatePatchMetadataType0
 from .subgraph_quota_response import SubgraphQuotaResponse
 from .subgraph_response import SubgraphResponse
@@ -763,12 +779,18 @@ __all__ = (
   "ChangeReportingStyleResponse",
   "ChangeTierOp",
   "ChangeTierOpNewTier",
+  "ChartLite",
+  "ChartPanelLite",
+  "ChartSeriesLite",
   "CheckoutResponse",
   "CheckoutStatusResponse",
   "ClassificationLite",
   "ClosePeriodOperation",
   "ClosePeriodResponse",
   "ClosePeriodResponseRuleSummaryType0",
+  "ComputedMetricLite",
+  "ComputeMetricsRequest",
+  "ComputeMetricsResponse",
   "ConnectionLite",
   "ConnectionOptionsResponse",
   "ConnectionProviderInfo",
@@ -983,6 +1005,8 @@ __all__ = (
   "OperationEnvelopeChangeReportingStyleResponseStatus",
   "OperationEnvelopeClosePeriodResponse",
   "OperationEnvelopeClosePeriodResponseStatus",
+  "OperationEnvelopeComputeMetricsResponse",
+  "OperationEnvelopeComputeMetricsResponseStatus",
   "OperationEnvelopeDeleteInformationBlockResponse",
   "OperationEnvelopeDeleteInformationBlockResponseStatus",
   "OperationEnvelopeDeletePortfolioBlockResponse",
@@ -1152,6 +1176,7 @@ __all__ = (
   "ShareReportOperation",
   "ShareReportResponse",
   "ShareResultItem",
+  "SkippedMetricLite",
   "SqlStatementRequest",
   "SqlStatementResponse",
   "SSOCompleteRequest",
@@ -1163,6 +1188,7 @@ __all__ = (
   "StorageSummary",
   "StructureSummary",
   "StructureUpdatePatch",
+  "StructureUpdatePatchConceptArrangementType0",
   "StructureUpdatePatchMetadataType0",
   "SubgraphQuotaResponse",
   "SubgraphResponse",

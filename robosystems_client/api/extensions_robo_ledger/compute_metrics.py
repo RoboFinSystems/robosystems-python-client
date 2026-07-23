@@ -6,10 +6,10 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.compute_metrics_request import ComputeMetricsRequest
 from ...models.error_response import ErrorResponse
-from ...models.evaluate_rules_request import EvaluateRulesRequest
-from ...models.operation_envelope_evaluate_rules_response import (
-  OperationEnvelopeEvaluateRulesResponse,
+from ...models.operation_envelope_compute_metrics_response import (
+  OperationEnvelopeComputeMetricsResponse,
 )
 from ...types import UNSET, Response, Unset
 
@@ -17,7 +17,7 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
   graph_id: str,
   *,
-  body: EvaluateRulesRequest,
+  body: ComputeMetricsRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -26,7 +26,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/evaluate-rules".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/compute-metrics".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -41,9 +41,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | OperationEnvelopeEvaluateRulesResponse | None:
+) -> ErrorResponse | OperationEnvelopeComputeMetricsResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelopeEvaluateRulesResponse.from_dict(response.json())
+    response_200 = OperationEnvelopeComputeMetricsResponse.from_dict(response.json())
 
     return response_200
 
@@ -95,7 +95,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | OperationEnvelopeEvaluateRulesResponse]:
+) -> Response[ErrorResponse | OperationEnvelopeComputeMetricsResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -108,15 +108,16 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: EvaluateRulesRequest,
+  body: ComputeMetricsRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeEvaluateRulesResponse]:
-  """Evaluate Rules for an Information Block
+) -> Response[ErrorResponse | OperationEnvelopeComputeMetricsResponse]:
+  """Compute Metrics for a Metric Block
 
-   Runs every rule targeting the given structure (plus element- and association-scoped rules for the
-  structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
-  VerificationResult row per rule, and returns the results plus a status-keyed summary. Decoding mode,
-  6 patterns (EqualTo, RollUp, RollForward, SumEquals, Exists, CoExists).
+   Resolves the Derive rules scoped to a metric block (block_type='metric'), binds each rule's operands
+  to the entity's most recent persisted report facts at period_end, evaluates, and upserts the
+  period's standing factset_type='metric' FactSet — one per (structure, entity, period_end), so
+  successive runs accumulate the time series and re-running a period replaces its values. Metrics with
+  missing operands or undefined ratios are skipped with a reason, never errored.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -124,23 +125,21 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
+      body (ComputeMetricsRequest): Request body for the ``compute-metrics`` operation.
 
-          Runs every rule scoped to ``structure_id`` (plus element/association-
-          scoped rules for the structure's atoms), binds ``$Variable`` references
-          to facts via qname lookup, and writes one
-          :class:`VerificationResult` row per rule.
-
-          Optional ``period_start`` / ``period_end`` narrow the fact-binding
-          window; without them the engine uses the most recent ``in_scope`` fact
-          for each element regardless of period.
+          Resolves the ``Derive`` rules scoped to the metric block, binds each
+          rule's operands to the entity's most recent persisted report facts at
+          ``period_end``, evaluates, and upserts the period's standing
+          ``factset_type='metric'`` FactSet (re-running a period replaces its
+          facts). One standing FactSet per (structure, entity, period_end) — the
+          accumulating time series.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeEvaluateRulesResponse]
+      Response[ErrorResponse | OperationEnvelopeComputeMetricsResponse]
   """
 
   kwargs = _get_kwargs(
@@ -160,15 +159,16 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: EvaluateRulesRequest,
+  body: ComputeMetricsRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeEvaluateRulesResponse | None:
-  """Evaluate Rules for an Information Block
+) -> ErrorResponse | OperationEnvelopeComputeMetricsResponse | None:
+  """Compute Metrics for a Metric Block
 
-   Runs every rule targeting the given structure (plus element- and association-scoped rules for the
-  structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
-  VerificationResult row per rule, and returns the results plus a status-keyed summary. Decoding mode,
-  6 patterns (EqualTo, RollUp, RollForward, SumEquals, Exists, CoExists).
+   Resolves the Derive rules scoped to a metric block (block_type='metric'), binds each rule's operands
+  to the entity's most recent persisted report facts at period_end, evaluates, and upserts the
+  period's standing factset_type='metric' FactSet — one per (structure, entity, period_end), so
+  successive runs accumulate the time series and re-running a period replaces its values. Metrics with
+  missing operands or undefined ratios are skipped with a reason, never errored.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -176,23 +176,21 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
+      body (ComputeMetricsRequest): Request body for the ``compute-metrics`` operation.
 
-          Runs every rule scoped to ``structure_id`` (plus element/association-
-          scoped rules for the structure's atoms), binds ``$Variable`` references
-          to facts via qname lookup, and writes one
-          :class:`VerificationResult` row per rule.
-
-          Optional ``period_start`` / ``period_end`` narrow the fact-binding
-          window; without them the engine uses the most recent ``in_scope`` fact
-          for each element regardless of period.
+          Resolves the ``Derive`` rules scoped to the metric block, binds each
+          rule's operands to the entity's most recent persisted report facts at
+          ``period_end``, evaluates, and upserts the period's standing
+          ``factset_type='metric'`` FactSet (re-running a period replaces its
+          facts). One standing FactSet per (structure, entity, period_end) — the
+          accumulating time series.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeEvaluateRulesResponse
+      ErrorResponse | OperationEnvelopeComputeMetricsResponse
   """
 
   return sync_detailed(
@@ -207,15 +205,16 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: EvaluateRulesRequest,
+  body: ComputeMetricsRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeEvaluateRulesResponse]:
-  """Evaluate Rules for an Information Block
+) -> Response[ErrorResponse | OperationEnvelopeComputeMetricsResponse]:
+  """Compute Metrics for a Metric Block
 
-   Runs every rule targeting the given structure (plus element- and association-scoped rules for the
-  structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
-  VerificationResult row per rule, and returns the results plus a status-keyed summary. Decoding mode,
-  6 patterns (EqualTo, RollUp, RollForward, SumEquals, Exists, CoExists).
+   Resolves the Derive rules scoped to a metric block (block_type='metric'), binds each rule's operands
+  to the entity's most recent persisted report facts at period_end, evaluates, and upserts the
+  period's standing factset_type='metric' FactSet — one per (structure, entity, period_end), so
+  successive runs accumulate the time series and re-running a period replaces its values. Metrics with
+  missing operands or undefined ratios are skipped with a reason, never errored.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -223,23 +222,21 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
+      body (ComputeMetricsRequest): Request body for the ``compute-metrics`` operation.
 
-          Runs every rule scoped to ``structure_id`` (plus element/association-
-          scoped rules for the structure's atoms), binds ``$Variable`` references
-          to facts via qname lookup, and writes one
-          :class:`VerificationResult` row per rule.
-
-          Optional ``period_start`` / ``period_end`` narrow the fact-binding
-          window; without them the engine uses the most recent ``in_scope`` fact
-          for each element regardless of period.
+          Resolves the ``Derive`` rules scoped to the metric block, binds each
+          rule's operands to the entity's most recent persisted report facts at
+          ``period_end``, evaluates, and upserts the period's standing
+          ``factset_type='metric'`` FactSet (re-running a period replaces its
+          facts). One standing FactSet per (structure, entity, period_end) — the
+          accumulating time series.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeEvaluateRulesResponse]
+      Response[ErrorResponse | OperationEnvelopeComputeMetricsResponse]
   """
 
   kwargs = _get_kwargs(
@@ -257,15 +254,16 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: EvaluateRulesRequest,
+  body: ComputeMetricsRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeEvaluateRulesResponse | None:
-  """Evaluate Rules for an Information Block
+) -> ErrorResponse | OperationEnvelopeComputeMetricsResponse | None:
+  """Compute Metrics for a Metric Block
 
-   Runs every rule targeting the given structure (plus element- and association-scoped rules for the
-  structure's atoms), binds $Variable references to in-scope facts via qname lookup, writes one
-  VerificationResult row per rule, and returns the results plus a status-keyed summary. Decoding mode,
-  6 patterns (EqualTo, RollUp, RollForward, SumEquals, Exists, CoExists).
+   Resolves the Derive rules scoped to a metric block (block_type='metric'), binds each rule's operands
+  to the entity's most recent persisted report facts at period_end, evaluates, and upserts the
+  period's standing factset_type='metric' FactSet — one per (structure, entity, period_end), so
+  successive runs accumulate the time series and re-running a period replaces its values. Metrics with
+  missing operands or undefined ratios are skipped with a reason, never errored.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -273,23 +271,21 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
+      body (ComputeMetricsRequest): Request body for the ``compute-metrics`` operation.
 
-          Runs every rule scoped to ``structure_id`` (plus element/association-
-          scoped rules for the structure's atoms), binds ``$Variable`` references
-          to facts via qname lookup, and writes one
-          :class:`VerificationResult` row per rule.
-
-          Optional ``period_start`` / ``period_end`` narrow the fact-binding
-          window; without them the engine uses the most recent ``in_scope`` fact
-          for each element regardless of period.
+          Resolves the ``Derive`` rules scoped to the metric block, binds each
+          rule's operands to the entity's most recent persisted report facts at
+          ``period_end``, evaluates, and upserts the period's standing
+          ``factset_type='metric'`` FactSet (re-running a period replaces its
+          facts). One standing FactSet per (structure, entity, period_end) — the
+          accumulating time series.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeEvaluateRulesResponse
+      ErrorResponse | OperationEnvelopeComputeMetricsResponse
   """
 
   return (

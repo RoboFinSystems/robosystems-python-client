@@ -9,6 +9,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+  from ..models.chart_lite import ChartLite
   from ..models.rendering_lite import RenderingLite
 
 
@@ -25,7 +26,9 @@ class ViewProjections:
   mode; missing projections (those still in backlog) render as empty
   states without breaking the dispatcher.
 
-  Today: ``rendering`` is computed for the statement family.
+  Today: ``rendering`` is computed for the statement family, and
+  ``chart`` (the 7th arm — panel/series config over the rendering's
+  rows and periods) for metric blocks.
   Other arms (``fact_table``, ``model_structure``, ``verification_results``,
   ``report_elements``, ``business_rules``) come online as their backend
   support lands; ``fact_table`` is trivially derivable from
@@ -34,12 +37,15 @@ class ViewProjections:
 
       Attributes:
           rendering (None | RenderingLite | Unset):
+          chart (ChartLite | None | Unset):
   """
 
   rendering: None | RenderingLite | Unset = UNSET
+  chart: ChartLite | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.chart_lite import ChartLite
     from ..models.rendering_lite import RenderingLite
 
     rendering: dict[str, Any] | None | Unset
@@ -50,16 +56,27 @@ class ViewProjections:
     else:
       rendering = self.rendering
 
+    chart: dict[str, Any] | None | Unset
+    if isinstance(self.chart, Unset):
+      chart = UNSET
+    elif isinstance(self.chart, ChartLite):
+      chart = self.chart.to_dict()
+    else:
+      chart = self.chart
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
     if rendering is not UNSET:
       field_dict["rendering"] = rendering
+    if chart is not UNSET:
+      field_dict["chart"] = chart
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.chart_lite import ChartLite
     from ..models.rendering_lite import RenderingLite
 
     d = dict(src_dict)
@@ -81,8 +98,26 @@ class ViewProjections:
 
     rendering = _parse_rendering(d.pop("rendering", UNSET))
 
+    def _parse_chart(data: object) -> ChartLite | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        chart_type_0 = ChartLite.from_dict(data)
+
+        return chart_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(ChartLite | None | Unset, data)
+
+    chart = _parse_chart(d.pop("chart", UNSET))
+
     view_projections = cls(
       rendering=rendering,
+      chart=chart,
     )
 
     view_projections.additional_properties = d

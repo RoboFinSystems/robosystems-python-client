@@ -48,7 +48,9 @@ class TaxonomyBlockRuleRequest:
       Attributes:
           name (str): Rule identifier, unique within envelope.
           rule_category (TaxonomyBlockRuleRequestRuleCategory): One of 8 cm:VerificationRule subclasses.
-          rule_pattern (TaxonomyBlockRuleRequestRulePattern): One of 11 cm:BusinessRulePattern mechanisms.
+          rule_pattern (TaxonomyBlockRuleRequestRulePattern): One of the cm:BusinessRulePattern mechanisms. 'Derive' rules
+              COMPUTE a value from bound operand facts (compute-metrics) rather than verify one — the tenant-authored-metric
+              pattern.
           expression (str): XPath-flavored predicate body (the rule expression).
           description (None | str | Unset):
           variables (list[TaxonomyBlockRuleRequestVariablesItem] | Unset): ``$Variable`` → qname bindings. Each entry is
