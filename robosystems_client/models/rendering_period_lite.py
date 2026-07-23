@@ -20,11 +20,15 @@ class RenderingPeriodLite:
       start (datetime.date):
       end (datetime.date):
       label (None | str | Unset):
+      forecast (bool | None | Unset): True when this column comes from a forecast scenario's FactSet — the machine-
+          readable seam marker (labels also carry a '(forecast)' suffix, but consumers should key styling off this flag,
+          not label parsing). None/absent = an actuals column.
   """
 
   start: datetime.date
   end: datetime.date
   label: None | str | Unset = UNSET
+  forecast: bool | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -38,6 +42,12 @@ class RenderingPeriodLite:
     else:
       label = self.label
 
+    forecast: bool | None | Unset
+    if isinstance(self.forecast, Unset):
+      forecast = UNSET
+    else:
+      forecast = self.forecast
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -48,6 +58,8 @@ class RenderingPeriodLite:
     )
     if label is not UNSET:
       field_dict["label"] = label
+    if forecast is not UNSET:
+      field_dict["forecast"] = forecast
 
     return field_dict
 
@@ -67,10 +79,20 @@ class RenderingPeriodLite:
 
     label = _parse_label(d.pop("label", UNSET))
 
+    def _parse_forecast(data: object) -> bool | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(bool | None | Unset, data)
+
+    forecast = _parse_forecast(d.pop("forecast", UNSET))
+
     rendering_period_lite = cls(
       start=start,
       end=end,
       label=label,
+      forecast=forecast,
     )
 
     rendering_period_lite.additional_properties = d
