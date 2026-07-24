@@ -22,13 +22,21 @@ class LeverAssertionRequest:
   """One lever's asserted values for the scenario.
 
   ``qname`` must resolve to an ``rs-driver:*`` catalog element (the
-  create handler rejects anything else). Value conventions follow the
-  catalog: percent levers are decimals per month (0.03 = 3%/month),
-  days levers are day counts.
+  create handler rejects anything else). Each lever's value semantics
+  are defined by its catalog element's documentation — surfaced as
+  ``documentation`` on the elements bundled in the forecast block's
+  envelope (``get-information-block``). Percent levers are decimals but
+  their *meaning* varies by lever: growth levers are month-over-month
+  rates (``RevenueGrowthRate`` 0.03 = +3%/month, compounding), while
+  rate-on-base levers are fractions of the same month's base
+  (``CostOfRevenueRate`` 0.62 = cost of revenue at 62% of that month's
+  revenues — not a growth rate). Days levers (``DaysSalesOutstanding``,
+  ``DaysPayableOutstanding``) are day counts.
 
   ``value`` is a uniform fill across the whole horizon;
   ``values_by_period`` overrides individual months (``"YYYY-MM"``
-  keys). At least one of the two must be provided. Months covered by
+  keys) — e.g. a margin-compression ramp asserts a different rate each
+  month. At least one of the two must be provided. Months covered by
   neither carry no assertion — the lever's rule is inactive for that
   month and its target falls to the engine's carry-forward default.
 

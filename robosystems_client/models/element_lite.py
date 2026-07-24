@@ -32,6 +32,9 @@ class ElementLite:
           period_type (None | str | Unset):
           item_type (None | str | Unset): Value-domain vocabulary (monetary | ratio | percent | multiple | days | string |
               …). None means untyped; fall back to is_monetary.
+          documentation (None | str | Unset): The element's documentation-role label — the catalog's authoritative value
+              semantics (e.g. whether a percent driver is a growth rate or a rate-on-base fraction). None when the element
+              carries no documentation label.
   """
 
   id: str
@@ -44,6 +47,7 @@ class ElementLite:
   balance_type: None | str | Unset = UNSET
   period_type: None | str | Unset = UNSET
   item_type: None | str | Unset = UNSET
+  documentation: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -87,6 +91,12 @@ class ElementLite:
     else:
       item_type = self.item_type
 
+    documentation: None | str | Unset
+    if isinstance(self.documentation, Unset):
+      documentation = UNSET
+    else:
+      documentation = self.documentation
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -110,6 +120,8 @@ class ElementLite:
       field_dict["period_type"] = period_type
     if item_type is not UNSET:
       field_dict["item_type"] = item_type
+    if documentation is not UNSET:
+      field_dict["documentation"] = documentation
 
     return field_dict
 
@@ -171,6 +183,15 @@ class ElementLite:
 
     item_type = _parse_item_type(d.pop("item_type", UNSET))
 
+    def _parse_documentation(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    documentation = _parse_documentation(d.pop("documentation", UNSET))
+
     element_lite = cls(
       id=id,
       name=name,
@@ -182,6 +203,7 @@ class ElementLite:
       balance_type=balance_type,
       period_type=period_type,
       item_type=item_type,
+      documentation=documentation,
     )
 
     element_lite.additional_properties = d

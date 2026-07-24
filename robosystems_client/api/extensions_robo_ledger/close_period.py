@@ -114,10 +114,13 @@ def sync_detailed(
   """Close Fiscal Period
 
    Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
-  `closed_through` by one, and auto-advances `close_target` if this close caught up to it. Period must
-  be exactly `closed_through + 1` — sequence violations return 422 with structured `blockers`. Common
-  blockers: `sync_stale` (override with `allow_stale_sync=true` after manual verification),
-  `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-order).
+  `closed_through` by one, auto-advances `close_target` if this close caught up to it, and stamps the
+  period's canonical statement FactSets from the posted ledger (`statements_stamped` /
+  `stamped_statement_sets` in the response; soft-skipped with `statement_stamp_note` when reporting
+  isn't set up). Period must be exactly `closed_through + 1` — sequence violations return 422 with
+  structured `blockers`. Common blockers: `sync_stale` (override with `allow_stale_sync=true` after
+  manual verification), `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-
+  order).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -161,10 +164,13 @@ def sync(
   """Close Fiscal Period
 
    Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
-  `closed_through` by one, and auto-advances `close_target` if this close caught up to it. Period must
-  be exactly `closed_through + 1` — sequence violations return 422 with structured `blockers`. Common
-  blockers: `sync_stale` (override with `allow_stale_sync=true` after manual verification),
-  `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-order).
+  `closed_through` by one, auto-advances `close_target` if this close caught up to it, and stamps the
+  period's canonical statement FactSets from the posted ledger (`statements_stamped` /
+  `stamped_statement_sets` in the response; soft-skipped with `statement_stamp_note` when reporting
+  isn't set up). Period must be exactly `closed_through + 1` — sequence violations return 422 with
+  structured `blockers`. Common blockers: `sync_stale` (override with `allow_stale_sync=true` after
+  manual verification), `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-
+  order).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -203,10 +209,13 @@ async def asyncio_detailed(
   """Close Fiscal Period
 
    Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
-  `closed_through` by one, and auto-advances `close_target` if this close caught up to it. Period must
-  be exactly `closed_through + 1` — sequence violations return 422 with structured `blockers`. Common
-  blockers: `sync_stale` (override with `allow_stale_sync=true` after manual verification),
-  `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-order).
+  `closed_through` by one, auto-advances `close_target` if this close caught up to it, and stamps the
+  period's canonical statement FactSets from the posted ledger (`statements_stamped` /
+  `stamped_statement_sets` in the response; soft-skipped with `statement_stamp_note` when reporting
+  isn't set up). Period must be exactly `closed_through + 1` — sequence violations return 422 with
+  structured `blockers`. Common blockers: `sync_stale` (override with `allow_stale_sync=true` after
+  manual verification), `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-
+  order).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -248,10 +257,13 @@ async def asyncio(
   """Close Fiscal Period
 
    Lock a single fiscal period. Posts draft entries, runs the balance-sheet equation check, advances
-  `closed_through` by one, and auto-advances `close_target` if this close caught up to it. Period must
-  be exactly `closed_through + 1` — sequence violations return 422 with structured `blockers`. Common
-  blockers: `sync_stale` (override with `allow_stale_sync=true` after manual verification),
-  `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-order).
+  `closed_through` by one, auto-advances `close_target` if this close caught up to it, and stamps the
+  period's canonical statement FactSets from the posted ledger (`statements_stamped` /
+  `stamped_statement_sets` in the response; soft-skipped with `statement_stamp_note` when reporting
+  isn't set up). Period must be exactly `closed_through + 1` — sequence violations return 422 with
+  structured `blockers`. Common blockers: `sync_stale` (override with `allow_stale_sync=true` after
+  manual verification), `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-
+  order).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
