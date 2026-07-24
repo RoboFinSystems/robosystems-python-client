@@ -46,6 +46,12 @@ from .close_period_response import ClosePeriodResponse
 from .close_period_response_rule_summary_type_0 import (
   ClosePeriodResponseRuleSummaryType0,
 )
+from .close_period_response_stamped_statement_sets import (
+  ClosePeriodResponseStampedStatementSets,
+)
+from .close_period_response_statement_rule_summary_type_0 import (
+  ClosePeriodResponseStatementRuleSummaryType0,
+)
 from .compute_forecast_request import ComputeForecastRequest
 from .compute_forecast_response import ComputeForecastResponse
 from .compute_metrics_request import ComputeMetricsRequest
@@ -816,6 +822,8 @@ __all__ = (
   "ClosePeriodOperation",
   "ClosePeriodResponse",
   "ClosePeriodResponseRuleSummaryType0",
+  "ClosePeriodResponseStampedStatementSets",
+  "ClosePeriodResponseStatementRuleSummaryType0",
   "ComputedMetricLite",
   "ComputeForecastRequest",
   "ComputeForecastResponse",

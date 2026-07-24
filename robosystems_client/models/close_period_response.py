@@ -12,6 +12,12 @@ if TYPE_CHECKING:
   from ..models.close_period_response_rule_summary_type_0 import (
     ClosePeriodResponseRuleSummaryType0,
   )
+  from ..models.close_period_response_stamped_statement_sets import (
+    ClosePeriodResponseStampedStatementSets,
+  )
+  from ..models.close_period_response_statement_rule_summary_type_0 import (
+    ClosePeriodResponseStatementRuleSummaryType0,
+  )
   from ..models.fiscal_calendar_response import FiscalCalendarResponse
 
 
@@ -33,6 +39,15 @@ class ClosePeriodResponse:
           facts in the period (auto-run on close).
       evaluated_structure_ids (list[str] | Unset): ids of schedule Structures whose rules were evaluated during the
           close. Pairs with rule_summary.
+      statements_stamped (bool | Unset): Whether the close stamped the period's canonical statement FactSets (the
+          close-time pivot). False when the tenant hasn't set up reporting yet — see statement_stamp_note. Default: False.
+      statement_stamp_note (None | str | Unset): Soft-skip reason when statements_stamped is false: no_coa_mapping |
+          no_entity | no_statement_structures | no_taxonomy.
+      stamped_statement_sets (ClosePeriodResponseStampedStatementSets | Unset): structure_id -> fact_set_id for every
+          canonical statement FactSet minted by this close (report_id NULL; replaced on reclose).
+      statement_rule_summary (ClosePeriodResponseStatementRuleSummaryType0 | None | Unset): Aggregated statement-rule
+          verification outcome across the stamped structures — keys: pass/fail/error/skipped. None when no statement rules
+          exist. Distinct from rule_summary (the schedule-rule pass).
   """
 
   fiscal_calendar: FiscalCalendarResponse
@@ -41,11 +56,20 @@ class ClosePeriodResponse:
   target_auto_advanced: bool | Unset = False
   rule_summary: ClosePeriodResponseRuleSummaryType0 | None | Unset = UNSET
   evaluated_structure_ids: list[str] | Unset = UNSET
+  statements_stamped: bool | Unset = False
+  statement_stamp_note: None | str | Unset = UNSET
+  stamped_statement_sets: ClosePeriodResponseStampedStatementSets | Unset = UNSET
+  statement_rule_summary: (
+    ClosePeriodResponseStatementRuleSummaryType0 | None | Unset
+  ) = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     from ..models.close_period_response_rule_summary_type_0 import (
       ClosePeriodResponseRuleSummaryType0,
+    )
+    from ..models.close_period_response_statement_rule_summary_type_0 import (
+      ClosePeriodResponseStatementRuleSummaryType0,
     )
 
     fiscal_calendar = self.fiscal_calendar.to_dict()
@@ -68,6 +92,28 @@ class ClosePeriodResponse:
     if not isinstance(self.evaluated_structure_ids, Unset):
       evaluated_structure_ids = self.evaluated_structure_ids
 
+    statements_stamped = self.statements_stamped
+
+    statement_stamp_note: None | str | Unset
+    if isinstance(self.statement_stamp_note, Unset):
+      statement_stamp_note = UNSET
+    else:
+      statement_stamp_note = self.statement_stamp_note
+
+    stamped_statement_sets: dict[str, Any] | Unset = UNSET
+    if not isinstance(self.stamped_statement_sets, Unset):
+      stamped_statement_sets = self.stamped_statement_sets.to_dict()
+
+    statement_rule_summary: dict[str, Any] | None | Unset
+    if isinstance(self.statement_rule_summary, Unset):
+      statement_rule_summary = UNSET
+    elif isinstance(
+      self.statement_rule_summary, ClosePeriodResponseStatementRuleSummaryType0
+    ):
+      statement_rule_summary = self.statement_rule_summary.to_dict()
+    else:
+      statement_rule_summary = self.statement_rule_summary
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -84,6 +130,14 @@ class ClosePeriodResponse:
       field_dict["rule_summary"] = rule_summary
     if evaluated_structure_ids is not UNSET:
       field_dict["evaluated_structure_ids"] = evaluated_structure_ids
+    if statements_stamped is not UNSET:
+      field_dict["statements_stamped"] = statements_stamped
+    if statement_stamp_note is not UNSET:
+      field_dict["statement_stamp_note"] = statement_stamp_note
+    if stamped_statement_sets is not UNSET:
+      field_dict["stamped_statement_sets"] = stamped_statement_sets
+    if statement_rule_summary is not UNSET:
+      field_dict["statement_rule_summary"] = statement_rule_summary
 
     return field_dict
 
@@ -91,6 +145,12 @@ class ClosePeriodResponse:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.close_period_response_rule_summary_type_0 import (
       ClosePeriodResponseRuleSummaryType0,
+    )
+    from ..models.close_period_response_stamped_statement_sets import (
+      ClosePeriodResponseStampedStatementSets,
+    )
+    from ..models.close_period_response_statement_rule_summary_type_0 import (
+      ClosePeriodResponseStatementRuleSummaryType0,
     )
     from ..models.fiscal_calendar_response import FiscalCalendarResponse
 
@@ -124,6 +184,51 @@ class ClosePeriodResponse:
 
     evaluated_structure_ids = cast(list[str], d.pop("evaluated_structure_ids", UNSET))
 
+    statements_stamped = d.pop("statements_stamped", UNSET)
+
+    def _parse_statement_stamp_note(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    statement_stamp_note = _parse_statement_stamp_note(
+      d.pop("statement_stamp_note", UNSET)
+    )
+
+    _stamped_statement_sets = d.pop("stamped_statement_sets", UNSET)
+    stamped_statement_sets: ClosePeriodResponseStampedStatementSets | Unset
+    if isinstance(_stamped_statement_sets, Unset):
+      stamped_statement_sets = UNSET
+    else:
+      stamped_statement_sets = ClosePeriodResponseStampedStatementSets.from_dict(
+        _stamped_statement_sets
+      )
+
+    def _parse_statement_rule_summary(
+      data: object,
+    ) -> ClosePeriodResponseStatementRuleSummaryType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        statement_rule_summary_type_0 = (
+          ClosePeriodResponseStatementRuleSummaryType0.from_dict(data)
+        )
+
+        return statement_rule_summary_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(ClosePeriodResponseStatementRuleSummaryType0 | None | Unset, data)
+
+    statement_rule_summary = _parse_statement_rule_summary(
+      d.pop("statement_rule_summary", UNSET)
+    )
+
     close_period_response = cls(
       fiscal_calendar=fiscal_calendar,
       period=period,
@@ -131,6 +236,10 @@ class ClosePeriodResponse:
       target_auto_advanced=target_auto_advanced,
       rule_summary=rule_summary,
       evaluated_structure_ids=evaluated_structure_ids,
+      statements_stamped=statements_stamped,
+      statement_stamp_note=statement_stamp_note,
+      stamped_statement_sets=stamped_statement_sets,
+      statement_rule_summary=statement_rule_summary,
     )
 
     close_period_response.additional_properties = d

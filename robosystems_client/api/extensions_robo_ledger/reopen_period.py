@@ -114,8 +114,10 @@ def sync_detailed(
   """Reopen Fiscal Period
 
    Decrement `closed_through` by one. Only the most recently closed period can be reopened (no reach-
-  back). The required `reason` is captured in the audit log. Use sparingly — reopen invalidates
-  downstream artifacts that trusted the closed state (reports, shared filings).
+  back). Retracts the month's canonical statement FactSets (a reopened month is no longer a closed
+  assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
+  sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
+  filings).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -156,8 +158,10 @@ def sync(
   """Reopen Fiscal Period
 
    Decrement `closed_through` by one. Only the most recently closed period can be reopened (no reach-
-  back). The required `reason` is captured in the audit log. Use sparingly — reopen invalidates
-  downstream artifacts that trusted the closed state (reports, shared filings).
+  back). Retracts the month's canonical statement FactSets (a reopened month is no longer a closed
+  assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
+  sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
+  filings).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -193,8 +197,10 @@ async def asyncio_detailed(
   """Reopen Fiscal Period
 
    Decrement `closed_through` by one. Only the most recently closed period can be reopened (no reach-
-  back). The required `reason` is captured in the audit log. Use sparingly — reopen invalidates
-  downstream artifacts that trusted the closed state (reports, shared filings).
+  back). Retracts the month's canonical statement FactSets (a reopened month is no longer a closed
+  assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
+  sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
+  filings).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -233,8 +239,10 @@ async def asyncio(
   """Reopen Fiscal Period
 
    Decrement `closed_through` by one. Only the most recently closed period can be reopened (no reach-
-  back). The required `reason` is captured in the audit log. Use sparingly — reopen invalidates
-  downstream artifacts that trusted the closed state (reports, shared filings).
+  back). Retracts the month's canonical statement FactSets (a reopened month is no longer a closed
+  assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
+  sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
+  filings).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
