@@ -13,6 +13,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.lever_assertion_request import LeverAssertionRequest
+  from ..models.line_assertion_request import LineAssertionRequest
 
 
 T = TypeVar("T", bound="UpdateForecastRequest")
@@ -22,11 +23,13 @@ T = TypeVar("T", bound="UpdateForecastRequest")
 class UpdateForecastRequest:
   """Update a forecast block in place.
 
-  Mutable: name, scenario_kind, horizon_months, base_period, levers.
-  ``levers`` is a **full replace** when provided (partial lever edits
-  would make the asserted set ambiguous). Updating does NOT recompute —
-  previously computed scenario months go stale until the next
-  ``compute-forecast`` run (the compute-metrics drift semantics).
+  Mutable: name, scenario_kind, horizon_months, base_period, levers,
+  line_assertions. ``levers`` and ``line_assertions`` are each a
+  **full replace** when provided (partial edits would make the asserted
+  set ambiguous); replacing one leaves the other as stored. Updating
+  does NOT recompute — previously computed scenario months go stale
+  until the next ``compute-forecast`` run (the compute-metrics drift
+  semantics).
 
       Attributes:
           structure_id (str): Structure ID of the forecast block.
@@ -35,6 +38,8 @@ class UpdateForecastRequest:
           horizon_months (int | None | Unset):
           base_period (None | str | Unset):
           levers (list[LeverAssertionRequest] | None | Unset): Full replacement of the lever set when provided.
+          line_assertions (list[LineAssertionRequest] | None | Unset): Full replacement of the line-assertion set when
+              provided. Pass an empty list to clear every assertion.
   """
 
   structure_id: str
@@ -43,6 +48,7 @@ class UpdateForecastRequest:
   horizon_months: int | None | Unset = UNSET
   base_period: None | str | Unset = UNSET
   levers: list[LeverAssertionRequest] | None | Unset = UNSET
+  line_assertions: list[LineAssertionRequest] | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -86,6 +92,18 @@ class UpdateForecastRequest:
     else:
       levers = self.levers
 
+    line_assertions: list[dict[str, Any]] | None | Unset
+    if isinstance(self.line_assertions, Unset):
+      line_assertions = UNSET
+    elif isinstance(self.line_assertions, list):
+      line_assertions = []
+      for line_assertions_type_0_item_data in self.line_assertions:
+        line_assertions_type_0_item = line_assertions_type_0_item_data.to_dict()
+        line_assertions.append(line_assertions_type_0_item)
+
+    else:
+      line_assertions = self.line_assertions
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -103,12 +121,15 @@ class UpdateForecastRequest:
       field_dict["base_period"] = base_period
     if levers is not UNSET:
       field_dict["levers"] = levers
+    if line_assertions is not UNSET:
+      field_dict["line_assertions"] = line_assertions
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.lever_assertion_request import LeverAssertionRequest
+    from ..models.line_assertion_request import LineAssertionRequest
 
     d = dict(src_dict)
     structure_id = d.pop("structure_id")
@@ -181,6 +202,32 @@ class UpdateForecastRequest:
 
     levers = _parse_levers(d.pop("levers", UNSET))
 
+    def _parse_line_assertions(
+      data: object,
+    ) -> list[LineAssertionRequest] | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, list):
+          raise TypeError()
+        line_assertions_type_0 = []
+        _line_assertions_type_0 = data
+        for line_assertions_type_0_item_data in _line_assertions_type_0:
+          line_assertions_type_0_item = LineAssertionRequest.from_dict(
+            line_assertions_type_0_item_data
+          )
+
+          line_assertions_type_0.append(line_assertions_type_0_item)
+
+        return line_assertions_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(list[LineAssertionRequest] | None | Unset, data)
+
+    line_assertions = _parse_line_assertions(d.pop("line_assertions", UNSET))
+
     update_forecast_request = cls(
       structure_id=structure_id,
       name=name,
@@ -188,6 +235,7 @@ class UpdateForecastRequest:
       horizon_months=horizon_months,
       base_period=base_period,
       levers=levers,
+      line_assertions=line_assertions,
     )
 
     update_forecast_request.additional_properties = d
