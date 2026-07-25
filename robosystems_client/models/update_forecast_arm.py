@@ -25,11 +25,13 @@ class UpdateForecastArm:
           block_type (Literal['forecast']): Discriminator value selecting this arm.
           payload (UpdateForecastRequest): Update a forecast block in place.
 
-              Mutable: name, scenario_kind, horizon_months, base_period, levers.
-              ``levers`` is a **full replace** when provided (partial lever edits
-              would make the asserted set ambiguous). Updating does NOT recompute —
-              previously computed scenario months go stale until the next
-              ``compute-forecast`` run (the compute-metrics drift semantics).
+              Mutable: name, scenario_kind, horizon_months, base_period, levers,
+              line_assertions. ``levers`` and ``line_assertions`` are each a
+              **full replace** when provided (partial edits would make the asserted
+              set ambiguous); replacing one leaves the other as stored. Updating
+              does NOT recompute — previously computed scenario months go stale
+              until the next ``compute-forecast`` run (the compute-metrics drift
+              semantics).
   """
 
   block_type: Literal["forecast"]

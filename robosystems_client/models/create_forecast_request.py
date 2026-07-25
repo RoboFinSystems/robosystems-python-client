@@ -13,6 +13,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.lever_assertion_request import LeverAssertionRequest
+  from ..models.line_assertion_request import LineAssertionRequest
 
 
 T = TypeVar("T", bound="CreateForecastRequest")
@@ -37,6 +38,8 @@ class CreateForecastRequest:
           base_period (None | str | Unset): Seed month (``YYYY-MM``) the walk projects forward from. Defaults to the
               fiscal calendar's closed-through period, else the newest actual report month. Resolved and stored at create
               time.
+          line_assertions (list[LineAssertionRequest] | Unset): Direct statement-line assertions (manual overrides). Each
+              names a calc-DAG leaf and wins over driver rules and carry-forward for the months it asserts.
           entity_id (None | str | Unset): Entity the scenario belongs to. Defaults to the graph's earliest-created entity
               (single-entity convention).
   """
@@ -48,6 +51,7 @@ class CreateForecastRequest:
   )
   horizon_months: int | Unset = 12
   base_period: None | str | Unset = UNSET
+  line_assertions: list[LineAssertionRequest] | Unset = UNSET
   entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -71,6 +75,13 @@ class CreateForecastRequest:
     else:
       base_period = self.base_period
 
+    line_assertions: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.line_assertions, Unset):
+      line_assertions = []
+      for line_assertions_item_data in self.line_assertions:
+        line_assertions_item = line_assertions_item_data.to_dict()
+        line_assertions.append(line_assertions_item)
+
     entity_id: None | str | Unset
     if isinstance(self.entity_id, Unset):
       entity_id = UNSET
@@ -91,6 +102,8 @@ class CreateForecastRequest:
       field_dict["horizon_months"] = horizon_months
     if base_period is not UNSET:
       field_dict["base_period"] = base_period
+    if line_assertions is not UNSET:
+      field_dict["line_assertions"] = line_assertions
     if entity_id is not UNSET:
       field_dict["entity_id"] = entity_id
 
@@ -99,6 +112,7 @@ class CreateForecastRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.lever_assertion_request import LeverAssertionRequest
+    from ..models.line_assertion_request import LineAssertionRequest
 
     d = dict(src_dict)
     name = d.pop("name")
@@ -128,6 +142,15 @@ class CreateForecastRequest:
 
     base_period = _parse_base_period(d.pop("base_period", UNSET))
 
+    _line_assertions = d.pop("line_assertions", UNSET)
+    line_assertions: list[LineAssertionRequest] | Unset = UNSET
+    if _line_assertions is not UNSET:
+      line_assertions = []
+      for line_assertions_item_data in _line_assertions:
+        line_assertions_item = LineAssertionRequest.from_dict(line_assertions_item_data)
+
+        line_assertions.append(line_assertions_item)
+
     def _parse_entity_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -143,6 +166,7 @@ class CreateForecastRequest:
       scenario_kind=scenario_kind,
       horizon_months=horizon_months,
       base_period=base_period,
+      line_assertions=line_assertions,
       entity_id=entity_id,
     )
 
