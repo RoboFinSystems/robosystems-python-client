@@ -14,6 +14,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
   from ..models.lever_assertion_request import LeverAssertionRequest
   from ..models.line_assertion_request import LineAssertionRequest
+  from ..models.line_growth_request import LineGrowthRequest
 
 
 T = TypeVar("T", bound="CreateForecastRequest")
@@ -40,6 +41,9 @@ class CreateForecastRequest:
               time.
           line_assertions (list[LineAssertionRequest] | Unset): Direct statement-line assertions (manual overrides). Each
               names a calc-DAG leaf and wins over driver rules and carry-forward for the months it asserts.
+          line_growth (list[LineGrowthRequest] | Unset): Per-line growth trajectories. Each names an income-statement leaf
+              and grows it month-over-month at the asserted rate — the generic form of the revenue growth lever, for lines the
+              catalog doesn't drive (opex trajectories, cost-cut ramps).
           entity_id (None | str | Unset): Entity the scenario belongs to. Defaults to the graph's earliest-created entity
               (single-entity convention).
   """
@@ -52,6 +56,7 @@ class CreateForecastRequest:
   horizon_months: int | Unset = 12
   base_period: None | str | Unset = UNSET
   line_assertions: list[LineAssertionRequest] | Unset = UNSET
+  line_growth: list[LineGrowthRequest] | Unset = UNSET
   entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -82,6 +87,13 @@ class CreateForecastRequest:
         line_assertions_item = line_assertions_item_data.to_dict()
         line_assertions.append(line_assertions_item)
 
+    line_growth: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.line_growth, Unset):
+      line_growth = []
+      for line_growth_item_data in self.line_growth:
+        line_growth_item = line_growth_item_data.to_dict()
+        line_growth.append(line_growth_item)
+
     entity_id: None | str | Unset
     if isinstance(self.entity_id, Unset):
       entity_id = UNSET
@@ -104,6 +116,8 @@ class CreateForecastRequest:
       field_dict["base_period"] = base_period
     if line_assertions is not UNSET:
       field_dict["line_assertions"] = line_assertions
+    if line_growth is not UNSET:
+      field_dict["line_growth"] = line_growth
     if entity_id is not UNSET:
       field_dict["entity_id"] = entity_id
 
@@ -113,6 +127,7 @@ class CreateForecastRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.lever_assertion_request import LeverAssertionRequest
     from ..models.line_assertion_request import LineAssertionRequest
+    from ..models.line_growth_request import LineGrowthRequest
 
     d = dict(src_dict)
     name = d.pop("name")
@@ -151,6 +166,15 @@ class CreateForecastRequest:
 
         line_assertions.append(line_assertions_item)
 
+    _line_growth = d.pop("line_growth", UNSET)
+    line_growth: list[LineGrowthRequest] | Unset = UNSET
+    if _line_growth is not UNSET:
+      line_growth = []
+      for line_growth_item_data in _line_growth:
+        line_growth_item = LineGrowthRequest.from_dict(line_growth_item_data)
+
+        line_growth.append(line_growth_item)
+
     def _parse_entity_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -167,6 +191,7 @@ class CreateForecastRequest:
       horizon_months=horizon_months,
       base_period=base_period,
       line_assertions=line_assertions,
+      line_growth=line_growth,
       entity_id=entity_id,
     )
 

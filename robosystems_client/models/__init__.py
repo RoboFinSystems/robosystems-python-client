@@ -299,6 +299,12 @@ from .line_assertion_request import LineAssertionRequest
 from .line_assertion_request_values_by_period_type_0 import (
   LineAssertionRequestValuesByPeriodType0,
 )
+from .line_growth_lite import LineGrowthLite
+from .line_growth_lite_values_by_period import LineGrowthLiteValuesByPeriod
+from .line_growth_request import LineGrowthRequest
+from .line_growth_request_values_by_period_type_0 import (
+  LineGrowthRequestValuesByPeriodType0,
+)
 from .line_item_metadata_predicate import LineItemMetadataPredicate
 from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
@@ -1043,6 +1049,10 @@ __all__ = (
   "LineAssertionLiteValuesByPeriod",
   "LineAssertionRequest",
   "LineAssertionRequestValuesByPeriodType0",
+  "LineGrowthLite",
+  "LineGrowthLiteValuesByPeriod",
+  "LineGrowthRequest",
+  "LineGrowthRequestValuesByPeriodType0",
   "LineItemMetadataPredicate",
   "LinkEntityTaxonomyRequest",
   "LinkEntityTaxonomyRequestBasis",

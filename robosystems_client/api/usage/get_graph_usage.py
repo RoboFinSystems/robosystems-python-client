@@ -38,7 +38,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": "/v1/graphs/{graph_id}/analytics/usage".format(
+    "url": "/v1/graphs/{graph_id}/usage".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
     "params": params,
@@ -117,7 +117,7 @@ def sync_detailed(
   include_performance: bool | Unset = False,
   include_events: bool | Unset = False,
 ) -> Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]:
-  """Get Graph Usage Analytics
+  """Get Graph Usage
 
    Time ranges: 24h, 7d, 30d, current_month, last_month. Toggle storage, credits, performance, and
   events sections via query params.
@@ -166,7 +166,7 @@ def sync(
   include_performance: bool | Unset = False,
   include_events: bool | Unset = False,
 ) -> ErrorResponse | GraphUsageResponse | HTTPValidationError | None:
-  """Get Graph Usage Analytics
+  """Get Graph Usage
 
    Time ranges: 24h, 7d, 30d, current_month, last_month. Toggle storage, credits, performance, and
   events sections via query params.
@@ -210,7 +210,7 @@ async def asyncio_detailed(
   include_performance: bool | Unset = False,
   include_events: bool | Unset = False,
 ) -> Response[ErrorResponse | GraphUsageResponse | HTTPValidationError]:
-  """Get Graph Usage Analytics
+  """Get Graph Usage
 
    Time ranges: 24h, 7d, 30d, current_month, last_month. Toggle storage, credits, performance, and
   events sections via query params.
@@ -257,7 +257,7 @@ async def asyncio(
   include_performance: bool | Unset = False,
   include_events: bool | Unset = False,
 ) -> ErrorResponse | GraphUsageResponse | HTTPValidationError | None:
-  """Get Graph Usage Analytics
+  """Get Graph Usage
 
    Time ranges: 24h, 7d, 30d, current_month, last_month. Toggle storage, credits, performance, and
   events sections via query params.
