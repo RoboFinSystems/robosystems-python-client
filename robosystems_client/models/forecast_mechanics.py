@@ -12,6 +12,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
   from ..models.lever_assertion_lite import LeverAssertionLite
   from ..models.line_assertion_lite import LineAssertionLite
+  from ..models.line_growth_lite import LineGrowthLite
 
 
 T = TypeVar("T", bound="ForecastMechanics")
@@ -41,6 +42,8 @@ class ForecastMechanics:
               Default: ForecastMechanicsScenarioKind.FORECAST.
           line_assertions (list[LineAssertionLite] | Unset): Direct statement-line assertions (authoring order) — manual
               overrides that win over driver rules and carry-forward for the months they name.
+          line_growth (list[LineGrowthLite] | Unset): Per-line growth trajectories (authoring order) — each grows an
+              income-statement leaf month-over-month at the asserted rate, compounding from the base month.
           computed_months (int | Unset): Number of forward months with computed scenario FactSets. Runtime state filled at
               envelope-build time — 0 until the first compute-forecast run. Default: 0.
   """
@@ -53,6 +56,7 @@ class ForecastMechanics:
     ForecastMechanicsScenarioKind.FORECAST
   )
   line_assertions: list[LineAssertionLite] | Unset = UNSET
+  line_growth: list[LineGrowthLite] | Unset = UNSET
   computed_months: int | Unset = 0
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -79,6 +83,13 @@ class ForecastMechanics:
         line_assertions_item = line_assertions_item_data.to_dict()
         line_assertions.append(line_assertions_item)
 
+    line_growth: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.line_growth, Unset):
+      line_growth = []
+      for line_growth_item_data in self.line_growth:
+        line_growth_item = line_growth_item_data.to_dict()
+        line_growth.append(line_growth_item)
+
     computed_months = self.computed_months
 
     field_dict: dict[str, Any] = {}
@@ -96,6 +107,8 @@ class ForecastMechanics:
       field_dict["scenario_kind"] = scenario_kind
     if line_assertions is not UNSET:
       field_dict["line_assertions"] = line_assertions
+    if line_growth is not UNSET:
+      field_dict["line_growth"] = line_growth
     if computed_months is not UNSET:
       field_dict["computed_months"] = computed_months
 
@@ -105,6 +118,7 @@ class ForecastMechanics:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.lever_assertion_lite import LeverAssertionLite
     from ..models.line_assertion_lite import LineAssertionLite
+    from ..models.line_growth_lite import LineGrowthLite
 
     d = dict(src_dict)
     horizon_months = d.pop("horizon_months")
@@ -138,6 +152,15 @@ class ForecastMechanics:
 
         line_assertions.append(line_assertions_item)
 
+    _line_growth = d.pop("line_growth", UNSET)
+    line_growth: list[LineGrowthLite] | Unset = UNSET
+    if _line_growth is not UNSET:
+      line_growth = []
+      for line_growth_item_data in _line_growth:
+        line_growth_item = LineGrowthLite.from_dict(line_growth_item_data)
+
+        line_growth.append(line_growth_item)
+
     computed_months = d.pop("computed_months", UNSET)
 
     forecast_mechanics = cls(
@@ -147,6 +170,7 @@ class ForecastMechanics:
       kind=kind,
       scenario_kind=scenario_kind,
       line_assertions=line_assertions,
+      line_growth=line_growth,
       computed_months=computed_months,
     )
 

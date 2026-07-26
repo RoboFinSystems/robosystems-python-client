@@ -24,7 +24,15 @@ class DatabaseHealthResponse:
       avg_query_time_ms (float): Average query execution time in milliseconds
       error_rate_24h (float): Error rate in last 24 hours (percentage)
       last_query_time (None | str | Unset): Timestamp of last query execution
-      memory_usage_mb (float | None | Unset): Memory usage in MB
+      memory_usage_mb (float | None | Unset): Instance memory in use, MB. Only populated for dedicated single-tenant
+          instances; null on shared repositories and packed tiers.
+      memory_usage_percent (float | None | Unset): Instance memory in use, percent. Expect high values during
+          materialization — the engine deliberately boosts to near the whole instance while rebuilding. Read
+          `resource_status` rather than this number alone. Dedicated instances only.
+      cpu_usage_percent (float | None | Unset): Instance CPU in use, percent. Dedicated single-tenant instances only.
+      resource_status (None | str | Unset): Interpreted instance load: 'idle' (headroom), 'busy' (working normally —
+          typical while materializing), 'constrained' (sustained pressure worth acting on). Null when resource metrics are
+          not exposed.
       storage_usage_mb (float | None | Unset): Storage usage in MB
       alerts (list[str] | Unset): Active alerts or warnings
       is_stale (bool | Unset): Whether the graph has staged changes not yet materialized Default: False.
@@ -43,6 +51,9 @@ class DatabaseHealthResponse:
   error_rate_24h: float
   last_query_time: None | str | Unset = UNSET
   memory_usage_mb: float | None | Unset = UNSET
+  memory_usage_percent: float | None | Unset = UNSET
+  cpu_usage_percent: float | None | Unset = UNSET
+  resource_status: None | str | Unset = UNSET
   storage_usage_mb: float | None | Unset = UNSET
   alerts: list[str] | Unset = UNSET
   is_stale: bool | Unset = False
@@ -78,6 +89,24 @@ class DatabaseHealthResponse:
       memory_usage_mb = UNSET
     else:
       memory_usage_mb = self.memory_usage_mb
+
+    memory_usage_percent: float | None | Unset
+    if isinstance(self.memory_usage_percent, Unset):
+      memory_usage_percent = UNSET
+    else:
+      memory_usage_percent = self.memory_usage_percent
+
+    cpu_usage_percent: float | None | Unset
+    if isinstance(self.cpu_usage_percent, Unset):
+      cpu_usage_percent = UNSET
+    else:
+      cpu_usage_percent = self.cpu_usage_percent
+
+    resource_status: None | str | Unset
+    if isinstance(self.resource_status, Unset):
+      resource_status = UNSET
+    else:
+      resource_status = self.resource_status
 
     storage_usage_mb: float | None | Unset
     if isinstance(self.storage_usage_mb, Unset):
@@ -132,6 +161,12 @@ class DatabaseHealthResponse:
       field_dict["last_query_time"] = last_query_time
     if memory_usage_mb is not UNSET:
       field_dict["memory_usage_mb"] = memory_usage_mb
+    if memory_usage_percent is not UNSET:
+      field_dict["memory_usage_percent"] = memory_usage_percent
+    if cpu_usage_percent is not UNSET:
+      field_dict["cpu_usage_percent"] = cpu_usage_percent
+    if resource_status is not UNSET:
+      field_dict["resource_status"] = resource_status
     if storage_usage_mb is not UNSET:
       field_dict["storage_usage_mb"] = storage_usage_mb
     if alerts is not UNSET:
@@ -183,6 +218,35 @@ class DatabaseHealthResponse:
       return cast(float | None | Unset, data)
 
     memory_usage_mb = _parse_memory_usage_mb(d.pop("memory_usage_mb", UNSET))
+
+    def _parse_memory_usage_percent(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    memory_usage_percent = _parse_memory_usage_percent(
+      d.pop("memory_usage_percent", UNSET)
+    )
+
+    def _parse_cpu_usage_percent(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    cpu_usage_percent = _parse_cpu_usage_percent(d.pop("cpu_usage_percent", UNSET))
+
+    def _parse_resource_status(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    resource_status = _parse_resource_status(d.pop("resource_status", UNSET))
 
     def _parse_storage_usage_mb(data: object) -> float | None | Unset:
       if data is None:
@@ -247,6 +311,9 @@ class DatabaseHealthResponse:
       error_rate_24h=error_rate_24h,
       last_query_time=last_query_time,
       memory_usage_mb=memory_usage_mb,
+      memory_usage_percent=memory_usage_percent,
+      cpu_usage_percent=cpu_usage_percent,
+      resource_status=resource_status,
       storage_usage_mb=storage_usage_mb,
       alerts=alerts,
       is_stale=is_stale,

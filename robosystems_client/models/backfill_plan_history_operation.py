@@ -22,12 +22,17 @@ class BackfillPlanHistoryOperation:
           cycle; keep chunks modest and loop on `remaining_periods`. Default: 12.
       allow_stale_sync (bool | Unset): Override the sync-currency gate on each reclose. Historical months predate the
           last sync in the normal case, so this is rarely needed. Default: False.
+      restamp (bool | Unset): Also re-derive months that ALREADY have canonical statement sets (default: skip them).
+          Use after an engine improvement changes what a stamp produces — each month reruns the full reopen → reclose
+          cycle and replaces its sets. A restamp run is not self-resuming (every month in range stays a candidate);
+          advance `start_period` between chunks. Default: False.
       note (None | str | Unset): Free-form note attached to each close audit event
   """
 
   start_period: None | str | Unset = UNSET
   max_periods: int | Unset = 12
   allow_stale_sync: bool | Unset = False
+  restamp: bool | Unset = False
   note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -41,6 +46,8 @@ class BackfillPlanHistoryOperation:
     max_periods = self.max_periods
 
     allow_stale_sync = self.allow_stale_sync
+
+    restamp = self.restamp
 
     note: None | str | Unset
     if isinstance(self.note, Unset):
@@ -57,6 +64,8 @@ class BackfillPlanHistoryOperation:
       field_dict["max_periods"] = max_periods
     if allow_stale_sync is not UNSET:
       field_dict["allow_stale_sync"] = allow_stale_sync
+    if restamp is not UNSET:
+      field_dict["restamp"] = restamp
     if note is not UNSET:
       field_dict["note"] = note
 
@@ -79,6 +88,8 @@ class BackfillPlanHistoryOperation:
 
     allow_stale_sync = d.pop("allow_stale_sync", UNSET)
 
+    restamp = d.pop("restamp", UNSET)
+
     def _parse_note(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -92,6 +103,7 @@ class BackfillPlanHistoryOperation:
       start_period=start_period,
       max_periods=max_periods,
       allow_stale_sync=allow_stale_sync,
+      restamp=restamp,
       note=note,
     )
 
