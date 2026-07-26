@@ -10,6 +10,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.database_storage_entry import DatabaseStorageEntry
+  from ..models.storage_item import StorageItem
 
 
 T = TypeVar("T", bound="InstanceUsage")
@@ -29,6 +30,8 @@ class InstanceUsage:
           total_storage_gb (float | None | Unset): Total storage used across all databases in GB
           usage_percentage (float | None | Unset): Storage usage as percentage of limit (e.g. 105.2)
           databases (list[DatabaseStorageEntry] | Unset): Per-database storage breakdown
+          items (list[StorageItem] | Unset): Itemized storage by type — graph, memory, subgraph, vectors, staging. Sums to
+              total_storage_gb.
   """
 
   limit_gb: float
@@ -37,6 +40,7 @@ class InstanceUsage:
   total_storage_gb: float | None | Unset = UNSET
   usage_percentage: float | None | Unset = UNSET
   databases: list[DatabaseStorageEntry] | Unset = UNSET
+  items: list[StorageItem] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -69,6 +73,13 @@ class InstanceUsage:
         databases_item = databases_item_data.to_dict()
         databases.append(databases_item)
 
+    items: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.items, Unset):
+      items = []
+      for items_item_data in self.items:
+        items_item = items_item_data.to_dict()
+        items.append(items_item)
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -85,12 +96,15 @@ class InstanceUsage:
       field_dict["usage_percentage"] = usage_percentage
     if databases is not UNSET:
       field_dict["databases"] = databases
+    if items is not UNSET:
+      field_dict["items"] = items
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.database_storage_entry import DatabaseStorageEntry
+    from ..models.storage_item import StorageItem
 
     d = dict(src_dict)
     limit_gb = d.pop("limit_gb")
@@ -133,6 +147,15 @@ class InstanceUsage:
 
         databases.append(databases_item)
 
+    _items = d.pop("items", UNSET)
+    items: list[StorageItem] | Unset = UNSET
+    if _items is not UNSET:
+      items = []
+      for items_item_data in _items:
+        items_item = StorageItem.from_dict(items_item_data)
+
+        items.append(items_item)
+
     instance_usage = cls(
       limit_gb=limit_gb,
       status=status,
@@ -140,6 +163,7 @@ class InstanceUsage:
       total_storage_gb=total_storage_gb,
       usage_percentage=usage_percentage,
       databases=databases,
+      items=items,
     )
 
     instance_usage.additional_properties = d

@@ -9,9 +9,6 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.graph_metrics_response_estimated_size import (
-    GraphMetricsResponseEstimatedSize,
-  )
   from ..models.graph_metrics_response_health_status import (
     GraphMetricsResponseHealthStatus,
   )
@@ -19,6 +16,7 @@ if TYPE_CHECKING:
   from ..models.graph_metrics_response_relationship_counts import (
     GraphMetricsResponseRelationshipCounts,
   )
+  from ..models.graph_metrics_response_storage import GraphMetricsResponseStorage
 
 
 T = TypeVar("T", bound="GraphMetricsResponse")
@@ -35,7 +33,9 @@ class GraphMetricsResponse:
       total_relationships (int): Total number of relationships
       node_counts (GraphMetricsResponseNodeCounts): Node counts by label
       relationship_counts (GraphMetricsResponseRelationshipCounts): Relationship counts by type
-      estimated_size (GraphMetricsResponseEstimatedSize): Database size estimates
+      storage (GraphMetricsResponseStorage): Measured on-disk storage: total_bytes/kb/mb/gb plus itemized `items`
+          (graph, memory, subgraph, vectors, staging). Carries `error` instead if the instance could not be reached — the
+          fields are absent rather than estimated.
       health_status (GraphMetricsResponseHealthStatus): Database health information
       graph_name (None | str | Unset): Display name for the graph
       user_role (None | str | Unset): User's role in this graph
@@ -47,7 +47,7 @@ class GraphMetricsResponse:
   total_relationships: int
   node_counts: GraphMetricsResponseNodeCounts
   relationship_counts: GraphMetricsResponseRelationshipCounts
-  estimated_size: GraphMetricsResponseEstimatedSize
+  storage: GraphMetricsResponseStorage
   health_status: GraphMetricsResponseHealthStatus
   graph_name: None | str | Unset = UNSET
   user_role: None | str | Unset = UNSET
@@ -66,7 +66,7 @@ class GraphMetricsResponse:
 
     relationship_counts = self.relationship_counts.to_dict()
 
-    estimated_size = self.estimated_size.to_dict()
+    storage = self.storage.to_dict()
 
     health_status = self.health_status.to_dict()
 
@@ -92,7 +92,7 @@ class GraphMetricsResponse:
         "total_relationships": total_relationships,
         "node_counts": node_counts,
         "relationship_counts": relationship_counts,
-        "estimated_size": estimated_size,
+        "storage": storage,
         "health_status": health_status,
       }
     )
@@ -105,9 +105,6 @@ class GraphMetricsResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.graph_metrics_response_estimated_size import (
-      GraphMetricsResponseEstimatedSize,
-    )
     from ..models.graph_metrics_response_health_status import (
       GraphMetricsResponseHealthStatus,
     )
@@ -117,6 +114,7 @@ class GraphMetricsResponse:
     from ..models.graph_metrics_response_relationship_counts import (
       GraphMetricsResponseRelationshipCounts,
     )
+    from ..models.graph_metrics_response_storage import GraphMetricsResponseStorage
 
     d = dict(src_dict)
     graph_id = d.pop("graph_id")
@@ -133,9 +131,7 @@ class GraphMetricsResponse:
       d.pop("relationship_counts")
     )
 
-    estimated_size = GraphMetricsResponseEstimatedSize.from_dict(
-      d.pop("estimated_size")
-    )
+    storage = GraphMetricsResponseStorage.from_dict(d.pop("storage"))
 
     health_status = GraphMetricsResponseHealthStatus.from_dict(d.pop("health_status"))
 
@@ -164,7 +160,7 @@ class GraphMetricsResponse:
       total_relationships=total_relationships,
       node_counts=node_counts,
       relationship_counts=relationship_counts,
-      estimated_size=estimated_size,
+      storage=storage,
       health_status=health_status,
       graph_name=graph_name,
       user_role=user_role,
