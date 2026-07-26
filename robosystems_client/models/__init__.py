@@ -244,12 +244,12 @@ from .graph_info import GraphInfo
 from .graph_limits_response import GraphLimitsResponse
 from .graph_metadata import GraphMetadata
 from .graph_metrics_response import GraphMetricsResponse
-from .graph_metrics_response_estimated_size import GraphMetricsResponseEstimatedSize
 from .graph_metrics_response_health_status import GraphMetricsResponseHealthStatus
 from .graph_metrics_response_node_counts import GraphMetricsResponseNodeCounts
 from .graph_metrics_response_relationship_counts import (
   GraphMetricsResponseRelationshipCounts,
 )
+from .graph_metrics_response_storage import GraphMetricsResponseStorage
 from .graph_subscription_response import GraphSubscriptionResponse
 from .graph_subscription_tier import GraphSubscriptionTier
 from .graph_subscriptions import GraphSubscriptions
@@ -667,6 +667,7 @@ from .sso_exchange_request import SSOExchangeRequest
 from .sso_exchange_response import SSOExchangeResponse
 from .sso_token_response import SSOTokenResponse
 from .statement_mechanics import StatementMechanics
+from .storage_item import StorageItem
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
 from .structure_summary import StructureSummary
@@ -1004,10 +1005,10 @@ __all__ = (
   "GraphLimitsResponse",
   "GraphMetadata",
   "GraphMetricsResponse",
-  "GraphMetricsResponseEstimatedSize",
   "GraphMetricsResponseHealthStatus",
   "GraphMetricsResponseNodeCounts",
   "GraphMetricsResponseRelationshipCounts",
+  "GraphMetricsResponseStorage",
   "GraphSubscriptionResponse",
   "GraphSubscriptions",
   "GraphSubscriptionTier",
@@ -1275,6 +1276,7 @@ __all__ = (
   "SSOExchangeResponse",
   "SSOTokenResponse",
   "StatementMechanics",
+  "StorageItem",
   "StorageLimits",
   "StorageSummary",
   "StructureSummary",

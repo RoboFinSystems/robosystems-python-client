@@ -6,29 +6,60 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="GraphMetricsResponseEstimatedSize")
+T = TypeVar("T", bound="StorageItem")
 
 
 @_attrs_define
-class GraphMetricsResponseEstimatedSize:
-  """Database size estimates"""
+class StorageItem:
+  """One itemized piece of a graph's on-disk footprint.
 
+  Attributes:
+      type_ (str): One of: graph, memory, subgraph, vectors, staging
+      id (str): Database or index identifier
+      bytes_ (int): Size in bytes
+  """
+
+  type_: str
+  id: str
+  bytes_: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    type_ = self.type_
+
+    id = self.id
+
+    bytes_ = self.bytes_
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "type": type_,
+        "id": id,
+        "bytes": bytes_,
+      }
+    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    graph_metrics_response_estimated_size = cls()
+    type_ = d.pop("type")
 
-    graph_metrics_response_estimated_size.additional_properties = d
-    return graph_metrics_response_estimated_size
+    id = d.pop("id")
+
+    bytes_ = d.pop("bytes")
+
+    storage_item = cls(
+      type_=type_,
+      id=id,
+      bytes_=bytes_,
+    )
+
+    storage_item.additional_properties = d
+    return storage_item
 
   @property
   def additional_keys(self) -> list[str]:
