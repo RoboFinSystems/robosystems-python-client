@@ -32,6 +32,7 @@ class GraphSubscriptionTier:
           backend (str): Database backend identifier
           max_subgraphs (int | Unset): Maximum subgraphs supported Default: 0.
           instance_type (None | str | Unset): Instance type
+          instance_storage_limit_gb (float | Unset): Soft storage cap for the instance in GB Default: 0.0.
   """
 
   name: str
@@ -47,6 +48,7 @@ class GraphSubscriptionTier:
   backend: str
   max_subgraphs: int | Unset = 0
   instance_type: None | str | Unset = UNSET
+  instance_storage_limit_gb: float | Unset = 0.0
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -80,6 +82,8 @@ class GraphSubscriptionTier:
     else:
       instance_type = self.instance_type
 
+    instance_storage_limit_gb = self.instance_storage_limit_gb
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -101,6 +105,8 @@ class GraphSubscriptionTier:
       field_dict["max_subgraphs"] = max_subgraphs
     if instance_type is not UNSET:
       field_dict["instance_type"] = instance_type
+    if instance_storage_limit_gb is not UNSET:
+      field_dict["instance_storage_limit_gb"] = instance_storage_limit_gb
 
     return field_dict
 
@@ -140,6 +146,8 @@ class GraphSubscriptionTier:
 
     instance_type = _parse_instance_type(d.pop("instance_type", UNSET))
 
+    instance_storage_limit_gb = d.pop("instance_storage_limit_gb", UNSET)
+
     graph_subscription_tier = cls(
       name=name,
       display_name=display_name,
@@ -154,6 +162,7 @@ class GraphSubscriptionTier:
       backend=backend,
       max_subgraphs=max_subgraphs,
       instance_type=instance_type,
+      instance_storage_limit_gb=instance_storage_limit_gb,
     )
 
     graph_subscription_tier.additional_properties = d
