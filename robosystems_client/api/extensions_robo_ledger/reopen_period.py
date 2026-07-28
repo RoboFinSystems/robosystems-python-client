@@ -113,9 +113,11 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]:
   """Reopen Fiscal Period
 
-   Decrement `closed_through` by one. Only the most recently closed period can be reopened (no reach-
-  back). Retracts the month's canonical statement FactSets (a reopened month is no longer a closed
-  assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
+   Reopen a closed period for adjustment. Reopening the current `closed_through` decrements it by one;
+  reopening an earlier period is a prior-period adjustment and leaves `closed_through` unchanged — re-
+  closing it restores the period without advancing the pointer. Either way the period's entries become
+  writable again. Retracts the month's canonical statement FactSets (a reopened month is no longer a
+  closed assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
   sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
   filings).
 
@@ -125,7 +127,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ReopenPeriodOperation): Reopen the most recently closed fiscal period.
+      body (ReopenPeriodOperation): Reopen a closed fiscal period.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -157,9 +159,11 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeFiscalCalendarResponse | None:
   """Reopen Fiscal Period
 
-   Decrement `closed_through` by one. Only the most recently closed period can be reopened (no reach-
-  back). Retracts the month's canonical statement FactSets (a reopened month is no longer a closed
-  assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
+   Reopen a closed period for adjustment. Reopening the current `closed_through` decrements it by one;
+  reopening an earlier period is a prior-period adjustment and leaves `closed_through` unchanged — re-
+  closing it restores the period without advancing the pointer. Either way the period's entries become
+  writable again. Retracts the month's canonical statement FactSets (a reopened month is no longer a
+  closed assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
   sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
   filings).
 
@@ -169,7 +173,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ReopenPeriodOperation): Reopen the most recently closed fiscal period.
+      body (ReopenPeriodOperation): Reopen a closed fiscal period.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -196,9 +200,11 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]:
   """Reopen Fiscal Period
 
-   Decrement `closed_through` by one. Only the most recently closed period can be reopened (no reach-
-  back). Retracts the month's canonical statement FactSets (a reopened month is no longer a closed
-  assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
+   Reopen a closed period for adjustment. Reopening the current `closed_through` decrements it by one;
+  reopening an earlier period is a prior-period adjustment and leaves `closed_through` unchanged — re-
+  closing it restores the period without advancing the pointer. Either way the period's entries become
+  writable again. Retracts the month's canonical statement FactSets (a reopened month is no longer a
+  closed assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
   sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
   filings).
 
@@ -208,7 +214,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ReopenPeriodOperation): Reopen the most recently closed fiscal period.
+      body (ReopenPeriodOperation): Reopen a closed fiscal period.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -238,9 +244,11 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeFiscalCalendarResponse | None:
   """Reopen Fiscal Period
 
-   Decrement `closed_through` by one. Only the most recently closed period can be reopened (no reach-
-  back). Retracts the month's canonical statement FactSets (a reopened month is no longer a closed
-  assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
+   Reopen a closed period for adjustment. Reopening the current `closed_through` decrements it by one;
+  reopening an earlier period is a prior-period adjustment and leaves `closed_through` unchanged — re-
+  closing it restores the period without advancing the pointer. Either way the period's entries become
+  writable again. Retracts the month's canonical statement FactSets (a reopened month is no longer a
+  closed assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
   sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
   filings).
 
@@ -250,7 +258,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ReopenPeriodOperation): Reopen the most recently closed fiscal period.
+      body (ReopenPeriodOperation): Reopen a closed fiscal period.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
