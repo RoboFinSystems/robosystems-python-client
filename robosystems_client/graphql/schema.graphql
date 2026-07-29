@@ -1,0 +1,2434 @@
+"""
+One CoA account (Element) — the basic chart-of-accounts row.
+
+``trait`` carries the FASB classification (asset/liability/equity/
+revenue/expense/etc.); ``balance_type`` is the natural side
+('debit' or 'credit'). ``account_type`` is a free-form sub-grouping
+(e.g. 'cash', 'inventory') used by some integrations. Hierarchy is
+expressed via ``parent_id`` + ``depth``.
+"""
+type Account {
+  id: String!
+  code: String
+  name: String!
+  description: String
+  trait: String
+  subClassification: String
+  balanceType: String!
+  parentId: String
+  depth: Int!
+  currency: String!
+  isActive: Boolean!
+  isPlaceholder: Boolean!
+  accountType: String
+  externalId: String
+  externalSource: String
+}
+
+"""
+Paginated chart-of-accounts listing — flat (use the tree endpoint
+for parent/child structure).
+"""
+type AccountList {
+  accounts: [Account!]!
+  pagination: PaginationInfo!
+}
+
+"""
+All CoA accounts that roll up into a single reporting concept,
+with the group total and per-account contributions.
+"""
+type AccountRollupGroup {
+  reportingElementId: String!
+  reportingName: String!
+  reportingQname: String!
+  trait: String!
+  balanceType: String!
+  total: Float!
+  accounts: [AccountRollupRow!]!
+}
+
+"""One CoA account contributing to a reporting concept's rollup."""
+type AccountRollupRow {
+  elementId: String!
+  accountName: String!
+  accountCode: String
+  totalDebits: Float!
+  totalCredits: Float!
+  netBalance: Float!
+}
+
+"""
+Mapping rendered as account rollups — every reporting concept the
+mapping defines, with the CoA accounts that contribute to it and the
+current balance for each. ``total_unmapped`` tracks gaps for UI.
+"""
+type AccountRollups {
+  mappingId: String!
+  mappingName: String!
+  groups: [AccountRollupGroup!]!
+  totalMapped: Int!
+  totalUnmapped: Int!
+}
+
+type AccountTree {
+  roots: [AccountTreeNode!]!
+  totalAccounts: Int!
+}
+
+type AccountTreeNode {
+  id: ID!
+  code: String
+  name: String!
+  trait: String
+  accountType: String
+  balanceType: String!
+  depth: Int!
+  isActive: Boolean!
+  children: [AccountTreeNode!]!
+}
+
+type Agent {
+  id: String!
+  agentType: String!
+  name: String!
+  legalName: String
+  taxId: String
+  registrationNumber: String
+  duns: String
+  lei: String
+  email: String
+  phone: String
+  address: JSON
+  source: String!
+  externalId: String
+  isActive: Boolean!
+  is1099Recipient: Boolean!
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdBy: String
+  openReceivable: OpenBalanceByAgent
+  openPayable: OpenBalanceByAgent
+}
+
+type Artifact {
+  topic: String
+  rendererNote: String
+  template: JSON
+  mechanics: JSON!
+}
+
+"""
+One edge between two elements within a structure (parent/child
+presentation, calculation rollup, mapping, equivalence).
+
+``association_type`` discriminates the edge semantics. Mapping edges
+are the user-facing path (CoA → reporting concept); presentation /
+calculation edges express structure layout and roll-ups.
+``confidence`` is set on AI-suggested mappings (≥0.90 auto-approved,
+0.70-0.89 flagged for review).
+"""
+type Association {
+  id: String!
+  structureId: String!
+  fromElementId: String!
+  fromElementName: String
+  fromElementQname: String
+  toElementId: String!
+  toElementName: String
+  toElementQname: String
+  associationType: String!
+  orderValue: Float
+  weight: Float
+  confidence: Float
+  suggestedBy: String
+  approvedBy: String
+}
+
+"""
+A grouping of closing-book items shown as a sidebar section
+(e.g. Statements, Account Rollups, Schedules, Period Close).
+"""
+type ClosingBookCategory {
+  label: String!
+  items: [ClosingBookItem!]!
+}
+
+"""
+One row in the closing book — a navigable artifact for the
+period (statement, schedule, rollup, etc.).
+
+``item_type`` discriminates: 'statement', 'schedule',
+'account_rollups', 'period_close', 'trial_balance'. Statement items
+carry ``report_id`` to fetch the rendered facts; schedule items
+carry ``status`` ('complete' | 'draft' | 'pending').
+"""
+type ClosingBookItem {
+  id: String!
+  name: String!
+  itemType: String!
+  blockType: String
+  reportId: String
+  status: String
+}
+
+"""
+The closing book navigation tree — categories + items the UI
+uses to render the period-close workspace. ``has_data=False`` when
+the graph has no posted entries yet.
+"""
+type ClosingBookStructures {
+  categories: [ClosingBookCategory!]!
+  hasData: Boolean!
+}
+
+"""Date (isoformat)"""
+scalar Date
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+"""A single draft entry with full line item detail for review."""
+type DraftEntry {
+  entryId: String!
+  postingDate: Date!
+
+  """Entry type (e.g., 'closing', 'adjusting')"""
+  type: String!
+  memo: String
+
+  """
+  Where the entry came from (ENTRY_PROVENANCE_VALUES): source_sync, ai_generated, manual_entry, schedule_derived, system_computed, event_handler
+  """
+  provenance: String
+
+  """Schedule structure that generated this entry (if any)"""
+  sourceStructureId: String
+
+  """Human-readable name of the source schedule"""
+  sourceStructureName: String
+  lineItems: [DraftLineItem!]!
+
+  """Sum of debit amounts in cents"""
+  totalDebit: Int!
+
+  """Sum of credit amounts in cents"""
+  totalCredit: Int!
+
+  """True if total_debit == total_credit"""
+  balanced: Boolean!
+
+  """
+  True if closing the period will publish this draft to QuickBooks — i.e. the graph has a qb_authoritative/hybrid QB connection AND this is an RL-originated draft (schedule/manual) not already in QB. False means it posts locally only.
+  """
+  willPublishToQb: Boolean!
+}
+
+"""A single line item within a draft entry."""
+type DraftLineItem {
+  lineItemId: String!
+  elementId: String!
+  elementCode: String
+  elementName: String!
+
+  """Debit amount in cents"""
+  debitAmount: Int!
+
+  """Credit amount in cents"""
+  creditAmount: Int!
+  description: String
+}
+
+"""Element with taxonomy context — extends AccountResponse."""
+type Element {
+  id: String!
+  code: String
+  name: String!
+  description: String
+  qname: String
+  namespace: String
+  trait: String
+  subClassification: String
+  balanceType: String!
+  periodType: String!
+  isAbstract: Boolean!
+  elementType: String!
+  source: String!
+  taxonomyId: String
+  parentId: String
+  depth: Int!
+  isActive: Boolean!
+  externalId: String
+  externalSource: String
+}
+
+"""Paginated element listing with taxonomy context."""
+type ElementList {
+  elements: [Element!]!
+  pagination: PaginationInfo!
+}
+
+"""
+Lightweight entity projection for embedding in portfolio-block /
+position envelopes. Carries identity-only fields; full entity data
+lives behind the Master Data entity APIs.
+"""
+type EntityLite {
+  """Entity ID (`ent_*` ULID)."""
+  id: ID!
+
+  """Display name of the entity."""
+  name: String!
+
+  """
+  Tenant graph this entity is anchored to, when known. `null` for entities not yet linked to a graph.
+  """
+  sourceGraphId: String
+}
+
+type EventBlock {
+  id: String!
+  eventType: String!
+  eventCategory: String!
+  eventClass: String!
+  status: String!
+  occurredAt: DateTime!
+  effectiveAt: DateTime
+  source: String!
+  externalId: String
+  externalUrl: String
+  amount: Int
+  currency: String!
+  description: String
+  metadata: JSON!
+  dimensionIds: [String!]!
+  agentId: String
+  resourceType: String
+  resourceElementId: String
+  replacedByEventId: String
+  replacesEventId: String
+  obligatedByEventId: String
+  dischargesEventId: String
+  createdAt: DateTime!
+  createdBy: String!
+}
+
+"""
+A single fact row inside a rendered statement.
+
+One row per concept, with one value per period column. Subtotals and
+hierarchy depth come from the structure being projected.
+"""
+type FactRow {
+  """Internal element identifier."""
+  elementId: String!
+
+  """QName of the reporting concept (e.g. 'us-gaap:Revenues')."""
+  elementQname: String!
+
+  """Human-readable concept label."""
+  elementName: String!
+
+  """
+  Concept trait flag from the structure (e.g. 'total', 'subtotal', 'header'). Drives presentation.
+  """
+  trait: String
+
+  """
+  One value per period column, in the same order as `periods`. Null when the concept had no facts in that window.
+  """
+  values: [Float]!
+
+  """True when the row should render as a subtotal line."""
+  isSubtotal: Boolean!
+
+  """Indentation depth in the structure hierarchy (0 = root)."""
+  depth: Int!
+}
+
+"""Current fiscal calendar state for a graph."""
+type FiscalCalendar {
+  graphId: String!
+  fiscalYearStartMonth: Int!
+
+  """Latest closed period (YYYY-MM), or null if nothing closed"""
+  closedThrough: String
+
+  """Target period the user wants closed through (YYYY-MM)"""
+  closeTarget: String
+
+  """
+  Number of periods between closed_through and close_target (inclusive of close_target). 0 means caught up.
+  """
+  gapPeriods: Int!
+
+  """Ordered list of periods that a close run would process"""
+  catchUpSequence: [String!]!
+
+  """
+  Whether the next period in the catch-up sequence passes all closeable gates
+  """
+  closeableNow: Boolean!
+
+  """
+  Structured blocker codes when closeable_now is False: 'sequence_violation', 'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations'
+  """
+  blockers: [String!]!
+
+  """
+  Number of pending schedule_entry_due events blocking close. Non-zero only when `pending_obligations` is in `blockers`.
+  """
+  pendingObligationCount: Int!
+
+  """
+  Sample of up to 5 pending obligations (schedule_id, schedule_name, period, event_id) ordered by occurred_at. Use `list-event-blocks` with event_type=schedule_entry_due&status=pending for the full set.
+  """
+  pendingObligationSample: [PendingObligationDetail!]!
+
+  """
+  Earliest period (YYYY-MM) with a pending obligation blocking close. Null when no pending_obligations blocker is active.
+  """
+  earliestPendingPeriod: String
+
+  """
+  Days the most recent sync is stale relative to the period to close. Populated only when `sync_stale` is in `blockers` and last_sync_at exists (null when there's a connection but no sync has ever run).
+  """
+  syncStaleDays: Int
+  lastCloseAt: DateTime
+  initializedAt: DateTime
+
+  """Most recent QB sync timestamp (if connected)"""
+  lastSyncAt: DateTime
+
+  """Fiscal period rows for this graph"""
+  periods: [FiscalPeriodSummary!]!
+}
+
+"""
+One fiscal period row — header view used in calendar listings.
+
+Status lifecycle: ``open`` → ``closing`` → ``closed``. ``closing``
+is the transient state during a close run; ``closed_at`` stamps when
+the lock landed.
+"""
+type FiscalPeriodSummary {
+  """Period name (YYYY-MM)"""
+  name: String!
+  startDate: Date!
+  endDate: Date!
+
+  """'open' | 'closing' | 'closed'"""
+  status: String!
+  closedAt: DateTime
+}
+
+"""
+All securities held in a single entity, rolled up across the
+caller's portfolios.
+"""
+type Holding {
+  """Issuing entity ID."""
+  entityId: String!
+
+  """Display name of the entity."""
+  entityName: String!
+
+  """Pre-association tenant graph, when set on the securities."""
+  sourceGraphId: String
+
+  """One row per security held in this entity."""
+  securities: [HoldingSecuritySummary!]!
+
+  """Sum of cost basis across all securities, in dollars."""
+  totalCostBasisDollars: Float!
+
+  """
+  Sum of current value across all securities, in dollars. `null` if any security lacks a mark.
+  """
+  totalCurrentValueDollars: Float
+
+  """Number of distinct active positions backing these holdings."""
+  positionCount: Int!
+}
+
+"""One security held by an entity, rolled up across portfolios."""
+type HoldingSecuritySummary {
+  """Security ID."""
+  securityId: String!
+
+  """Display name of the security."""
+  securityName: String!
+
+  """Instrument family (e.g. `common_stock`, `warrant`)."""
+  securityType: String!
+
+  """Total quantity held in `quantity_type` units."""
+  quantity: Float!
+
+  """Unit basis (`shares`, `units`, `principal`)."""
+  quantityType: String!
+
+  """Aggregate cost basis in dollars, summed across all positions."""
+  costBasisDollars: Float!
+
+  """
+  Aggregate current value in dollars, or `null` if any underlying position lacks a mark.
+  """
+  currentValueDollars: Float
+}
+
+"""Aggregated holdings across all of the caller's portfolios."""
+type HoldingsList {
+  """One row per issuing entity."""
+  holdings: [Holding!]!
+
+  """Count of entities represented."""
+  totalEntities: Int!
+
+  """Total active positions backing these holdings."""
+  totalPositions: Int!
+}
+
+type InformationBlock {
+  id: ID!
+  blockType: String!
+  name: String!
+  displayName: String!
+  category: String!
+  taxonomyId: String
+  taxonomyName: String
+  disclosureId: String
+  informationModel: InformationModel!
+  artifact: Artifact!
+  elements: [InformationBlockElement!]!
+  connections: [InformationBlockConnection!]!
+  facts: [InformationBlockFact!]!
+  rules: [InformationBlockRule!]!
+  dimensions: [JSON!]!
+  factSet: InformationBlockFactSet
+  verificationResults: [InformationBlockVerificationResult!]!
+  verificationSummary: InformationBlockVerificationSummary
+  view: InformationBlockViewProjections!
+}
+
+"""
+Server-shaped chart projection — panel/series CONFIG, never values.
+
+The second real server-computed View arm (after ``rendering``). Values
+come from ``rendering.rows`` joined by ``element_id``; the x-axis is
+``rendering.periods``. Renderers (report-components) turn one panel
+into one chart.
+"""
+type InformationBlockChart {
+  panels: [InformationBlockChartPanel!]!
+}
+
+"""
+One chart panel — series sharing a y-axis format family.
+
+Mixed-unit catalogs are unplottable on one axis, so the server groups
+rows into panels by ``item_type`` family (NULL falls back to
+``is_monetary``). The x-axis is always ``rendering.periods``.
+"""
+type InformationBlockChartPanel {
+  """Panel heading — e.g. 'Monetary', 'Ratios'."""
+  label: String
+
+  """
+  Format family shared by the panel's series (monetary | ratio | percent | multiple | days); None for the untyped fallback panel.
+  """
+  itemType: String
+
+  """Per-panel mark — 'line' or 'bar'."""
+  kind: String!
+  series: [InformationBlockChartSeries!]!
+}
+
+"""
+One plottable series in a chart panel.
+
+Carries structure and identity only — the values live in the sibling
+``rendering.rows`` (join on ``element_id``), so the chart arm never
+duplicates the value matrix. ``key`` is the stable series identity for
+client state (colors, toggles); today it equals ``element_id``, and
+future axes (the forecast scenario) arrive as new fields on this
+model, never a new arm shape.
+"""
+type InformationBlockChartSeries {
+  """Stable series id — element_id today."""
+  key: String!
+  elementId: String!
+
+  """Display name for legends."""
+  label: String!
+}
+
+"""
+Classification projection — one row per `association_classifications`
+junction entry.
+
+Association-side only: concept_arrangement, member_arrangement,
+named_disclosure. Element-side FASB metamodel traits (asset, current,
+operating, …) live in `TraitLite` via `element_traits`.
+
+Carries enough for the envelope caller to render / filter by category +
+identifier without a follow-up lookup. The full `public.classifications`
+vocabulary catalog (name / description / metadata) is available via the
+library GraphQL surface when callers need the details.
+"""
+type InformationBlockClassification {
+  """Classification vocabulary row id."""
+  id: String!
+
+  """
+  One of the 3 association-level categories in the `public.classifications` CHECK constraint: 'concept_arrangement', 'member_arrangement', or 'named_disclosure'.
+  """
+  category: String!
+
+  """
+  Vocabulary identifier within the category — e.g. 'RollUp', 'whole_part', 'AssetsRollUp'.
+  """
+  identifier: String!
+
+  """
+  Whether this is the canonical classification for the (association|element, category) pair. Non-primary rows capture alternates / AI suggestions alongside the chosen primary.
+  """
+  isPrimary: Boolean!
+
+  """
+  AI/adapter-supplied confidence (0.0-1.0). Null for deterministic library-seeded rows.
+  """
+  confidence: Float
+
+  """
+  Provenance — 'arcrole_analysis', 'disclosure_mechanics', 'fac-traits', adapter name, etc.
+  """
+  source: String
+}
+
+"""
+Connection (= Association) projection.
+
+Renamed at the API boundary to match Charlie's ontology vocabulary.
+The underlying storage table is still ``associations``.
+"""
+type InformationBlockConnection {
+  id: String!
+  fromElementId: String!
+  toElementId: String!
+
+  """
+  presentation | calculation | mapping | equivalence | general-special | essence-alias
+  """
+  associationType: String!
+  arcrole: String
+  orderValue: Float
+  weight: Float
+
+  """
+  Association-level classifications — concept_arrangement, member_arrangement, named_disclosure rows from the junction. Empty for library-seeded associations that haven't been classified yet.
+  """
+  classifications: [InformationBlockClassification!]!
+}
+
+"""
+Element projection for bundling inside an Information Block envelope.
+
+Narrower than :class:`LibraryElementResponse` — excludes the heavy fields
+(labels, references, classifications) that library browsing needs but
+block consumers don't. Agents + frontends ask for those on demand via
+the full library GraphQL fields when they need them.
+"""
+type InformationBlockElement {
+  id: String!
+  qname: String
+  name: String!
+  code: String
+
+  """concept | abstract | axis | member | hypercube"""
+  elementType: String!
+  isAbstract: Boolean!
+  isMonetary: Boolean!
+  balanceType: String
+  periodType: String
+
+  """
+  Value-domain vocabulary (monetary | ratio | percent | multiple | days | string | …). None means untyped; fall back to is_monetary.
+  """
+  itemType: String
+
+  """
+  The element's documentation-role label — the catalog's authoritative value semantics (e.g. whether a percent driver is a growth rate or a rate-on-base fraction). None when the element carries no documentation label.
+  """
+  documentation: String
+}
+
+"""Fact projection — just the values the envelope caller cares about."""
+type InformationBlockFact {
+  id: String!
+  elementId: String!
+  elementName: String
+  elementQname: String
+
+  """Numeric value; null for Nonnumeric (text-block) facts."""
+  value: Float
+
+  """Text payload for Nonnumeric facts; null for numeric."""
+  textValue: String
+
+  """Numeric | Nonnumeric"""
+  factType: String!
+
+  """MIME type of text_value (e.g. 'text/markdown')."""
+  contentType: String
+  periodStart: Date
+  periodEnd: Date!
+  periodType: String!
+  unit: String!
+
+  """historical | in_scope"""
+  factScope: String!
+  factSetId: String
+}
+
+"""
+FactSet projection — period-specific instantiation of the Structure.
+
+The envelope carries one ``FactSetLite`` per block when a FactSet row
+exists for the requested period; legacy writes that pre-date FactSet
+stamping leave ``fact_set`` null until the expand pass starts
+populating those rows.
+"""
+type InformationBlockFactSet {
+  id: String!
+  structureId: String
+  periodStart: Date
+  periodEnd: Date!
+
+  """
+  'report' | 'schedule' | 'custom' | 'disclosure' | 'metric'. Enum closure enforced by the ``public.fact_sets`` CHECK constraint.
+  """
+  factsetType: String!
+  entityId: String!
+
+  """
+  Back-pointer to the ``reports`` table while ``report_id`` still lives on facts. Drops out once the retirement migration lands.
+  """
+  reportId: String
+
+  """
+  Scenario axis (the forecast engine). NULL = actuals; non-NULL names the owning forecast block whose parallel universe this set belongs to.
+  """
+  scenarioId: String
+
+  """
+  Typed ``FactProvenance`` descriptor (discriminated on ``origin``: pivot | schedule | derived | asserted) recording how this FactSet's facts were constructed. Surfaced as JSON, mirroring how mechanics is exposed. Null for pre-feature historical FactSets.
+  """
+  provenance: JSON
+}
+
+"""
+Pre-computed rendering projection of an Information Block.
+
+Computed server-side at envelope-build time for blocks where rendering
+is deterministic (the statement family today; future block types add
+their own rendering builders). The frontend's ``BlockView``
+``Rendering`` projection consumes this directly — no client-side
+rollup, depth computation, or calculation walk needed.
+"""
+type InformationBlockRendering {
+  rows: [InformationBlockRenderingRow!]!
+  periods: [InformationBlockRenderingPeriod!]!
+  validation: InformationBlockValidation
+  unmappedCount: Int!
+}
+
+"""One period column in a rendered statement."""
+type InformationBlockRenderingPeriod {
+  start: Date!
+  end: Date!
+  label: String
+
+  """
+  True when this column comes from a forecast scenario's FactSet — the machine-readable seam marker (labels also carry a '(forecast)' suffix, but consumers should key styling off this flag, not label parsing). None/absent = an actuals column.
+  """
+  forecast: Boolean
+}
+
+"""
+One row of a server-side rendered statement.
+
+Mirrors :class:`FactRow` from the legacy
+:mod:`robosystems.operations.roboledger.reports.fact_grid` but lives at
+the API boundary so envelope consumers don't depend on the
+fact-grid module. ``values`` is one entry per period column in
+:class:`RenderingLite.periods`.
+"""
+type InformationBlockRenderingRow {
+  elementId: String!
+  elementQname: String
+  elementName: String!
+
+  """
+  FASB elementsOfFinancialStatements trait identifier — 'asset', 'liability', 'equity', 'revenue', 'expense'. Surfaced so the viewer can color-code or group rows without a follow-up trait lookup.
+  """
+  classification: String
+  balanceType: String
+
+  """
+  Value-domain format family from the element (monetary | ratio | percent | multiple | days | …). Drives per-row value formatting; None falls back to is_monetary on the element.
+  """
+  itemType: String
+  values: [Float]!
+
+  """
+  Narrative payload for text-block disclosure rows (markdown); numeric rows carry values instead.
+  """
+  textValue: String
+  isSubtotal: Boolean!
+  depth: Int!
+}
+
+"""
+Rule projection for the Information Block envelope.
+
+One row per ``public.rules`` entry scoped to this block. The rule
+engine consumes ``rule_expression`` + ``rule_variables`` to evaluate
+against the in-scope fact set; the envelope surfaces the rules so
+the UI can render them as a checklist alongside any persisted
+verification results.
+"""
+type InformationBlockRule {
+  id: String!
+
+  """
+  One of 8 cm:VerificationRule subclasses — AutomatedAccountingAndReportingChecks, FundamentalAccountingConceptRelation, PeerConsistencyRule, PriorPeriodConsistencyRule, ReportLevelModelStructureRule, ReportingSystemSpecificRule, ToDoManualTask, XBRLTechnicalSyntaxRule.
+  """
+  ruleCategory: String!
+
+  """
+  Arithmetic / logical pattern evaluated over fact values. One of 11 cm:BusinessRulePattern mechanisms — Adjustment, CoExists, EqualTo, Exists, GreaterThan, GreaterThanOrEqualToZero, LessThan, RollForward, RollUp, SumEquals, Variance. Null when the rule is a structural check (see rule_check_kind).
+  """
+  rulePattern: String
+
+  """
+  Model-structure check kind evaluated over the association graph. One of 6 kinds — LeafHasClassification, LibraryOriginImmutability, NoCycles, NoOrphanArcs, ParentBeforeChild, UniqueQNameInTaxonomy. Null when the rule is an arithmetic pattern (see rule_pattern). Exactly one of rule_pattern / rule_check_kind is non-null per rule.
+  """
+  ruleCheckKind: String
+  ruleExpression: String!
+  ruleTarget: InformationBlockRuleTarget
+  ruleVariables: [InformationBlockRuleVariable!]!
+  ruleMessage: String
+
+  """
+  Failure severity — 'info' | 'warning' | 'error'. Enum closure enforced by the ``public.rules`` CHECK constraint.
+  """
+  ruleSeverity: String!
+
+  """
+  Provenance — 'forked' (from an upstream artifact, e.g. Seattle Method) or 'native' (authored in this seed or by a tenant). Enum closure enforced by the ``public.rules`` CHECK constraint.
+  """
+  ruleOrigin: String!
+}
+
+"""Polymorphic rule target — points at the atom the rule is scoped to."""
+type InformationBlockRuleTarget {
+  """
+  Which atom type the rule targets — 'structure' | 'element' | 'association' | 'taxonomy'. Enum closure enforced by the ``public.rules`` CHECK constraint.
+  """
+  targetKind: String!
+
+  """
+  UUID of the target atom — structure_id, element_id, association_id, or taxonomy_id depending on ``target_kind``.
+  """
+  targetRefId: String!
+}
+
+"""`$Variable` → concept qname binding for a rule expression."""
+type InformationBlockRuleVariable {
+  """Local name in the rule expression, e.g. 'Assets'."""
+  variableName: String!
+
+  """
+  Concept qname the variable resolves to, e.g. 'fac:Assets'. Null for tenant CoA elements (which key on `code`/`element_id`, not qname) — in that case the binding is carried by `variable_element_id`.
+  """
+  variableQname: String
+
+  """
+  Element id the variable binds to directly. Set for schedule SumEquals rules over CoA-debit elements that have no qname; null otherwise.
+  """
+  variableElementId: String
+}
+
+"""
+Outcome of guard-rail validation on a rendered statement.
+
+Distinct from :class:`VerificationResultLite` (which surfaces the
+rule-engine outcomes from ``public.verification_results``). This lite
+type carries the synchronous guard-rail checks computed at
+envelope-build time — accounting equation, totals foot, etc.
+"""
+type InformationBlockValidation {
+  passed: Boolean!
+  checks: [String!]!
+  failures: [String!]!
+  warnings: [String!]!
+}
+
+"""
+Pass/fail/skip counts for one ``rule_category`` within a block's
+verification results.
+
+Drives the per-category accordions in the Verification Results panel.
+``category`` is the rule's ``rule_category``
+(one of the cm:VerificationRule subclasses), resolved by joining each
+result to its Rule.
+"""
+type InformationBlockVerificationCategorySummary {
+  category: String!
+  total: Int!
+  passed: Int!
+  failed: Int!
+  errored: Int!
+  skipped: Int!
+}
+
+"""
+Persisted outcome of one Rule evaluation.
+
+One row per ``public.verification_results`` entry the rule engine
+writes. The envelope surfaces them so the block viewer's
+"Verification Results" tab and MCP ``list-verification-failures``
+tool can render + aggregate without a second round-trip.
+"""
+type InformationBlockVerificationResult {
+  id: String!
+  ruleId: String!
+  structureId: String
+  factSetId: String
+
+  """
+  'pass' | 'fail' | 'error' | 'skipped'. Enum closure enforced by the ``public.verification_results`` CHECK constraint.
+  """
+  status: String!
+  message: String
+  periodStart: Date
+  periodEnd: Date
+  evaluatedAt: DateTime
+}
+
+"""
+Server-computed aggregate of a block's ``verification_results``.
+
+Overall counts plus a per-``rule_category`` breakdown, so the viewer
+renders the grouped Verification Results panel
+without a client-side results→rules join. Status closure is
+``pass | fail | error | skipped`` (the ``public.verification_results``
+CHECK); ``total`` is their sum.
+"""
+type InformationBlockVerificationSummary {
+  total: Int!
+  passed: Int!
+  failed: Int!
+  errored: Int!
+  skipped: Int!
+  byCategory: [InformationBlockVerificationCategorySummary!]!
+}
+
+"""
+Charlie's six ``type-of View`` arms, surfaced at the envelope boundary.
+
+Each projection is computed server-side at envelope-build time when
+its source data is available. The frontend's ``BlockView`` dispatcher
+routes to the projection component matching the user's selected view
+mode; missing projections (those still in backlog) render as empty
+states without breaking the dispatcher.
+
+Today: ``rendering`` is computed for the statement family, and
+``chart`` (the 7th arm — panel/series config over the rendering's
+rows and periods) for metric blocks.
+Other arms (``fact_table``, ``model_structure``, ``verification_results``,
+``report_elements``, ``business_rules``) come online as their backend
+support lands; ``fact_table`` is trivially derivable from
+``InformationBlockEnvelope.facts`` and may stay as a frontend-only
+projection.
+"""
+type InformationBlockViewProjections {
+  rendering: InformationBlockRendering
+  chart: InformationBlockChart
+}
+
+"""The block's intrinsic shape — concept + member arrangement patterns."""
+type InformationModel {
+  """
+  roll_up | roll_forward | variance | adjustment | set | arithmetic | textblock. Null for block types where the concept arrangement is implicit in their mechanics.
+  """
+  conceptArrangement: String
+
+  """
+  is_a | whole_part | nested_whole_part | two_dimension_aggregation | complex_aggregating_whole_part, or null if non-hypercube.
+  """
+  memberArrangement: String
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
+"""
+scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
+
+"""
+Entity details from the extensions OLTP database.
+
+Returned by entity reads and `update-entity`. Identifiers
+(CIK / ticker / SIC / LEI / tax_id) are present when sourced from
+SEC or registry data; many are null for private companies. The
+address fields are flattened (no nested object) to make them easy
+to project into reporting forms.
+"""
+type LedgerEntity {
+  """Entity identifier (ULID)."""
+  id: String!
+
+  """Display name shown in UI."""
+  name: String!
+
+  """Full registered legal name (when different from `name`)."""
+  legalName: String
+
+  """Canonical URL / external identifier."""
+  uri: String
+
+  """SEC CIK (Central Index Key)."""
+  cik: String
+
+  """Stock ticker symbol."""
+  ticker: String
+
+  """Listing exchange (e.g. 'NASDAQ', 'NYSE')."""
+  exchange: String
+
+  """SIC industry code."""
+  sic: String
+
+  """SIC code description."""
+  sicDescription: String
+
+  """Filer category (e.g. 'Large Accelerated Filer')."""
+  category: String
+
+  """US state or country of incorporation."""
+  stateOfIncorporation: String
+
+  """Fiscal year-end as MM-DD (e.g. '12-31', '06-30')."""
+  fiscalYearEnd: String
+
+  """Tax ID (EIN / SSN)."""
+  taxId: String
+
+  """Legal Entity Identifier (ISO 17442)."""
+  lei: String
+
+  """Free-form industry label."""
+  industry: String
+
+  """Legal form (e.g. 'corporation', 'llc', 'lp')."""
+  entityType: String
+
+  """
+  Active Reporting Style (Structure id) governing this entity's statement layout. Change it via the change-reporting-style operation.
+  """
+  reportingStyleId: String
+  phone: String
+  website: String
+
+  """Operational status: 'active' | 'inactive' | 'dissolved'."""
+  status: String!
+
+  """True for top-level entities; False for subsidiaries."""
+  isParent: Boolean!
+
+  """Parent entity ID for subsidiaries; null for top-level."""
+  parentEntityId: String
+
+  """Provenance: 'native' | 'sec' | 'quickbooks' | 'xero' | 'plaid'."""
+  source: String!
+
+  """Source-system primary key for sync reconciliation."""
+  sourceId: String
+
+  """
+  Origin graph for received entities (cross-graph linking, e.g. RoboInvestor portfolio holdings).
+  """
+  sourceGraphId: String
+
+  """Source connection that ingested this row."""
+  connectionId: String
+  addressLine1: String
+  addressCity: String
+  addressState: String
+  addressPostalCode: String
+  addressCountry: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""
+A journal entry — accounting interpretation of a transaction.
+
+Each transaction has 1+ entries; each entry has 2+ line items that
+must balance. ``status`` is the draft/posted/reversed lifecycle;
+``type`` is the entry classification ('standard' | 'adjusting' |
+'closing' | 'reversing').
+"""
+type LedgerEntry {
+  id: String!
+  number: String
+  type: String!
+  postingDate: Date!
+  memo: String
+  status: String!
+  postedAt: DateTime
+  lineItems: [LedgerLineItem!]!
+}
+
+"""
+One debit/credit line within a journal entry. Always exactly one
+side has a non-zero amount.
+"""
+type LedgerLineItem {
+  id: String!
+  accountId: String!
+  accountName: String
+  accountCode: String
+  debitAmount: Float!
+  creditAmount: Float!
+  description: String
+  lineOrder: Int!
+}
+
+"""
+High-level rollup of a graph's ledger state — counts plus the
+date-range bookends and integration sync timestamp.
+
+Used by dashboards and the onboarding wizard to answer "is this
+graph populated yet?" without walking every transaction. ``connection_count``
+reflects active integrations (QuickBooks / Plaid / etc.); a non-null
+``last_sync_at`` means at least one connection has run.
+"""
+type LedgerSummary {
+  graphId: String!
+  accountCount: Int!
+  transactionCount: Int!
+  entryCount: Int!
+  lineItemCount: Int!
+  earliestTransactionDate: Date
+  latestTransactionDate: Date
+  connectionCount: Int!
+  lastSyncAt: DateTime
+}
+
+"""
+Full transaction detail — header + every journal entry + every
+line item underneath. Used by the transaction detail page.
+"""
+type LedgerTransactionDetail {
+  id: String!
+  number: String
+  type: String!
+  category: String
+  amount: Float!
+  currency: String!
+  date: Date!
+  dueDate: Date
+  merchantName: String
+  referenceNumber: String
+  description: String
+  source: String!
+  sourceId: String
+  status: String!
+  postedAt: DateTime
+  entries: [LedgerEntry!]!
+}
+
+"""Paginated transaction listing — header view."""
+type LedgerTransactionList {
+  transactions: [LedgerTransactionSummary!]!
+  pagination: PaginationInfo!
+}
+
+"""
+Transaction header — list/grid view without entries.
+
+Transaction is the business-event level (what happened in the real
+world). Entries (journal entries) live one level down and are loaded
+in the detail view. ``source`` distinguishes integration-imported
+rows (quickbooks / xero / plaid) from native-created ones.
+"""
+type LedgerTransactionSummary {
+  id: String!
+  number: String
+  type: String!
+  category: String
+  amount: Float!
+  currency: String!
+  date: Date!
+  dueDate: Date
+  merchantName: String
+  referenceNumber: String
+  description: String
+  source: String!
+  status: String!
+}
+
+"""An arc between two library elements (parent-child, equivalence, etc)."""
+type LibraryAssociation {
+  id: String!
+  structureId: String!
+  structureName: String
+  fromElementId: String!
+  fromElementQname: String
+  fromElementName: String
+
+  """Primary elementsOfFinancialStatements trait (for node coloring)"""
+  fromElementTrait: String
+  fromElementIsAbstract: Boolean
+  toElementId: String!
+  toElementQname: String
+  toElementName: String
+
+  """Primary elementsOfFinancialStatements trait (for node coloring)"""
+  toElementTrait: String
+  toElementIsAbstract: Boolean
+
+  """
+  presentation | calculation | mapping | equivalence | general-special | essence-alias
+  """
+  associationType: String!
+  arcrole: String
+  orderValue: Float
+  weight: Float
+}
+
+"""A library element (concept, abstract, axis, member, or hypercube)."""
+type LibraryElement {
+  id: String!
+
+  """Qualified name, e.g. 'fac:Assets'"""
+  qname: String!
+  namespace: String
+  name: String!
+
+  """
+  FASB elementsOfFinancialStatements axis: asset | contraAsset | liability | contraLiability | equity | contraEquity | temporaryEquity | revenue | expense | expenseReversal | gain | loss | comprehensiveIncome | investmentByOwners | distributionToOwners | metric (derived subtotals, not SFAC 6 primary elements). Null for structural rows.
+  """
+  trait: String
+
+  """debit | credit"""
+  balanceType: String!
+
+  """instant | duration"""
+  periodType: String!
+  isAbstract: Boolean!
+  isMonetary: Boolean!
+
+  """concept | abstract | axis | member | hypercube"""
+  elementType: String!
+
+  """fac | us-gaap | rs-gaap | …"""
+  source: String!
+  taxonomyId: String
+  parentId: String
+  labels: [LibraryLabel!]!
+  references: [LibraryReference!]!
+}
+
+"""
+A mapping arc involving a specific element.
+
+Flat row view: one arc, oriented from the perspective of the element
+being inspected. `peer` is the other end; `direction` says whether
+this element is the source ('outgoing') or the target ('incoming').
+
+Scoped to arcs whose structure belongs to a `taxonomy_type='mapping'`
+taxonomy — the cross-taxonomy bridges (equivalence, general-special,
+rs-gaap-type-subtype). Hierarchical arcs inside a single reporting taxonomy
+are out of scope.
+"""
+type LibraryElementArc {
+  id: String!
+
+  """'outgoing' (this element is source) | 'incoming' (target)"""
+  direction: String!
+  associationType: String!
+  arcrole: String
+  taxonomyId: String
+  taxonomyStandard: String
+  taxonomyName: String
+  structureId: String
+  structureName: String
+  peer: LibraryElement!
+}
+
+"""
+One FASB metamodel trait assigned to a library element.
+
+A single element can carry multiple traits across multiple categories
+(e.g. elementsOfFinancialStatements=expense AND
+operatingNonoperating=operating AND liquidity=current).
+"""
+type LibraryElementClassification {
+  """Trait axis (e.g. elementsOfFinancialStatements)"""
+  category: String!
+
+  """Value within the axis (e.g. expense)"""
+  identifier: String!
+
+  """Human-readable name"""
+  name: String
+
+  """True for the element's primary EFS trait assignment"""
+  isPrimary: Boolean!
+}
+
+type LibraryElementTreeNode {
+  element: LibraryElement!
+  children: [LibraryElementTreeNode!]!
+}
+
+"""
+An element and its equivalence peers.
+
+Answers "what other concepts mean the same thing as this one" — the
+FAC→us-gaap collapse pattern rendered as an API shape.
+"""
+type LibraryEquivalence {
+  element: LibraryElement!
+  equivalents: [LibraryElement!]!
+}
+
+"""A label on a library element."""
+type LibraryLabel {
+  """Label role: standard/documentation/verbose/…"""
+  role: String!
+
+  """Language code"""
+  language: String!
+
+  """Label text"""
+  text: String!
+}
+
+"""A cross-reference on a library element (FASB ASC, SEC, etc)."""
+type LibraryReference {
+  """'ASC' | 'SEC' | 'SFAC' | 'IFRS' | 'Other'"""
+  refType: String
+
+  """Full citation text"""
+  citation: String!
+
+  """Dereferenceable URL if available"""
+  uri: String
+}
+
+"""A named structure (extended link role) within a library taxonomy."""
+type LibraryStructure {
+  id: String!
+  name: String!
+
+  """balance_sheet | income_statement | cash_flow_statement | custom | …"""
+  blockType: String!
+  taxonomyId: String!
+
+  """Original XBRL role URI if any"""
+  roleUri: String
+  isActive: Boolean!
+}
+
+"""A library taxonomy (fac, us-gaap, rs-gaap, …)."""
+type LibraryTaxonomy {
+  id: String!
+  name: String!
+  description: String
+
+  """fac | us-gaap | rs-gaap | ifrs"""
+  standard: String
+  version: String
+  namespaceUri: String
+
+  """chart_of_accounts | reporting | mapping | schedule"""
+  taxonomyType: String!
+  isShared: Boolean!
+  isActive: Boolean!
+  isLocked: Boolean!
+
+  """Total elements in this taxonomy (computed on demand)"""
+  elementCount: Int
+}
+
+"""
+Trial balance rolled up to reporting concepts via mapping associations.
+"""
+type MappedTrialBalance {
+  mappingId: String!
+  rows: [MappedTrialBalanceRow!]!
+}
+
+"""One reporting-concept row in the mapped trial balance."""
+type MappedTrialBalanceRow {
+  reportingElementId: String!
+  qname: String!
+  reportingName: String!
+  trait: String
+  balanceType: String
+  totalDebits: Float!
+  totalCredits: Float!
+  netBalance: Float!
+}
+
+"""Coverage stats for a mapping."""
+type MappingCoverage {
+  mappingId: String!
+  totalCoaElements: Int!
+  mappedCount: Int!
+  unmappedCount: Int!
+  coveragePercent: Float!
+  highConfidence: Int!
+  mediumConfidence: Int!
+  lowConfidence: Int!
+  unreachableCount: Int!
+  unreachable: [UnreachableMappingType!]!
+}
+
+"""A mapping structure with all its associations."""
+type MappingDetail {
+  id: String!
+  name: String!
+  blockType: String!
+  taxonomyId: String!
+  associations: [Association!]!
+  totalAssociations: Int!
+}
+
+"""
+Graph-wide open AR or open AP aggregate.
+
+``total_open_cents`` is the sum of unsettled originating-event
+balances; ``counterparty_count`` is the number of distinct agents
+with at least one open invoice or bill. The currency is uniform
+per graph today (mixed-currency books would need a per-currency
+breakdown — out of scope for v1).
+"""
+type OpenBalanceAggregate {
+  """Sum of unsettled balances in minor currency units."""
+  totalOpenCents: Int!
+
+  """Distinct agents with at least one open balance."""
+  counterpartyCount: Int!
+
+  """Distinct originating events with a nonzero open balance."""
+  openEventCount: Int!
+
+  """Currency code (uniform per graph)."""
+  currency: String!
+}
+
+"""
+Per-agent open balance row.
+
+Used for both the aging-by-counterparty list and the per-Agent
+GraphQL field. ``open_balance_cents`` reflects only the unsettled
+remainder (sum of originating amounts minus sum of discharges) so
+partial-payment chains net out correctly.
+"""
+type OpenBalanceByAgent {
+  agentId: String!
+
+  """
+  Unsettled originating-event amounts minus discharges, in minor currency units. Positive for normal AR/AP; negative when overpaid.
+  """
+  openBalanceCents: Int!
+
+  """Number of originating events with nonzero balance for this agent."""
+  openEventCount: Int!
+  currency: String!
+}
+
+"""Pagination information for list responses."""
+type PaginationInfo {
+  """Total number of items available"""
+  total: Int!
+
+  """Maximum number of items returned in this response"""
+  limit: Int!
+
+  """Number of items skipped"""
+  offset: Int!
+
+  """Whether more items are available"""
+  hasMore: Boolean!
+}
+
+"""
+One pending schedule-derived obligation blocking close.
+
+Surfaced on `FiscalCalendarResponse` when `pending_obligations` is in
+the blockers list so callers can name which schedules to promote.
+"""
+type PendingObligationDetail {
+  eventId: String!
+  scheduleId: String
+  scheduleName: String
+
+  """Period in YYYY-MM format"""
+  period: String!
+}
+
+"""
+One schedule's contribution to a period close — drafted closing
+entry plus its reversal (when ``auto_reverse=True``).
+
+``status`` is the closing entry's draft/posted lifecycle. The
+reversal mirrors the same shape with ``reversal_*`` fields.
+"""
+type PeriodCloseItem {
+  structureId: String!
+  structureName: String!
+  amount: Float!
+  status: String!
+  entryId: String
+  reversalEntryId: String
+  reversalStatus: String
+}
+
+"""
+Period-close dashboard view — every schedule in scope for the
+period plus drafted/posted entry totals.
+
+Use to drive the close-period UI: schedules with ``status='draft'``
+are pending close; ``period_status`` reflects the calendar's lock
+state for the period.
+"""
+type PeriodCloseStatus {
+  fiscalPeriodStart: Date!
+  fiscalPeriodEnd: Date!
+  periodStatus: String!
+  schedules: [PeriodCloseItem!]!
+  totalDraft: Int!
+  totalPosted: Int!
+}
+
+"""All draft entries for a fiscal period, ready for review before close."""
+type PeriodDrafts {
+  """YYYY-MM period name"""
+  period: String!
+  periodStart: Date!
+  periodEnd: Date!
+  draftCount: Int!
+
+  """Sum across all drafts, in cents"""
+  totalDebit: Int!
+
+  """Sum across all drafts, in cents"""
+  totalCredit: Int!
+
+  """True if every draft entry has debit == credit"""
+  allBalanced: Boolean!
+
+  """
+  Id of the QuickBooks connection these drafts publish to on close, or null when the graph has no qb_authoritative/hybrid QB connection (the drafts post locally only).
+  """
+  qbWritebackConnectionId: String
+
+  """
+  write_policy of the publishing QB connection ('qb_authoritative' / 'hybrid'), or null when there is no write-back connection.
+  """
+  qbWritePolicy: String
+
+  """Number of drafts that will publish to QuickBooks on close."""
+  qbPublishCount: Int!
+
+  """Number of drafts that post locally only (no QB write-back)."""
+  localOnlyCount: Int!
+  drafts: [DraftEntry!]!
+}
+
+"""
+A single reporting period column.
+
+Reports render facts in N period columns side-by-side. Each
+``PeriodSpec`` is one column — its ``start``/``end`` define the
+window the report's facts roll up into; ``label`` is what the renderer
+prints in the column header. For year-over-year statements, supply two
+PeriodSpecs (current + comparative); for YTD by quarter, supply four.
+"""
+type PeriodSpec {
+  """Period start date (inclusive). Window the column rolls up."""
+  start: Date!
+
+  """Period end date (inclusive). Window the column rolls up."""
+  end: Date!
+
+  """Column header label (e.g. 'FY2025 Q3', '2024', 'YTD')."""
+  label: String!
+}
+
+"""
+Read projection for a single portfolio — core fields only.
+
+Position-level holdings live on the dedicated portfolio-block envelope
+(`PortfolioBlockEnvelope`) returned by molecular operations.
+"""
+type Portfolio {
+  """Portfolio ID (`port_*` ULID)."""
+  id: String!
+
+  """Display name."""
+  name: String!
+
+  """Free-text description."""
+  description: String
+
+  """
+  Free-text strategy classification (e.g. `value`, `growth`, `income`). Open vocabulary.
+  """
+  strategy: String
+
+  """Date the portfolio was established (YYYY-MM-DD)."""
+  inceptionDate: Date
+
+  """ISO 4217 currency code used for portfolio-level aggregates."""
+  baseCurrency: String!
+
+  """Row creation timestamp (UTC)."""
+  createdAt: DateTime!
+
+  """Last-modified timestamp (UTC)."""
+  updatedAt: DateTime!
+}
+
+"""
+Molecular response shape for portfolio-block operations.
+
+Bundles the portfolio core, its embedded positions, and pre-computed
+totals into a single payload — the contract for `create-portfolio-block`,
+`update-portfolio-block`, and the read-side `get-portfolio-block`.
+Cents-precision values aren't surfaced here; use `PositionResponse`
+/ `PortfolioResponse` for those.
+"""
+type PortfolioBlock {
+  """Portfolio ID (`port_*` ULID)."""
+  id: ID!
+
+  """Display name."""
+  name: String!
+
+  """Free-text description."""
+  description: String
+
+  """Free-text strategy classification."""
+  strategy: String
+
+  """Date the portfolio was established."""
+  inceptionDate: Date
+
+  """ISO 4217 currency code for portfolio aggregates."""
+  baseCurrency: String!
+
+  """Embedded owning entity, when set. `null` for unattributed portfolios."""
+  owner: EntityLite
+
+  """
+  All positions in this portfolio, including disposed ones (filter by `status` for active-only display).
+  """
+  positions: [PositionBlock!]!
+
+  """Sum of `cost_basis_dollars` across every position."""
+  totalCostBasisDollars: Float!
+
+  """
+  Sum of `current_value_dollars` across every position. `null` when any active position lacks a mark.
+  """
+  totalCurrentValueDollars: Float
+
+  """Count of positions with `status='active'`."""
+  activePositionCount: Int!
+
+  """Row creation timestamp (UTC)."""
+  createdAt: DateTime!
+
+  """Last-modified timestamp (UTC)."""
+  updatedAt: DateTime!
+}
+
+"""Paginated list of portfolios."""
+type PortfolioList {
+  """Portfolios on this page."""
+  portfolios: [Portfolio!]!
+
+  """Pagination cursor and totals."""
+  pagination: PaginationInfo!
+}
+
+"""
+Read projection for a single position.
+
+Pairs cents-precision fields (`cost_basis`, `current_value`) with
+pre-computed dollar floats (`*_dollars`) to spare clients the
+conversion. The cents fields are authoritative.
+"""
+type Position {
+  """Position ID (`pos_*` ULID)."""
+  id: String!
+
+  """Owning portfolio ID."""
+  portfolioId: String!
+
+  """Held security ID."""
+  securityId: String!
+
+  """
+  Cached display name of the held security, denormalized for list rendering. May lag the security row's current name briefly.
+  """
+  securityName: String
+
+  """Cached display name of the security's issuing entity."""
+  entityName: String
+
+  """Quantity held in units defined by `quantity_type`."""
+  quantity: Float!
+
+  """Unit basis (`shares`, `units`, `principal`)."""
+  quantityType: String!
+
+  """Cost basis in **cents** of `currency`. Authoritative."""
+  costBasis: Int!
+
+  """
+  Cost basis pre-converted to dollars (`cost_basis / 100`). Convenience for display; `cost_basis` is the source of truth.
+  """
+  costBasisDollars: Float!
+
+  """ISO 4217 currency code for `cost_basis` and `current_value`."""
+  currency: String!
+
+  """Latest mark-to-market value in **cents**, or `null` if unmarked."""
+  currentValue: Int
+
+  """
+  Current value in dollars (`current_value / 100`). `null` when `current_value` is null.
+  """
+  currentValueDollars: Float
+
+  """Date `current_value` was sourced (YYYY-MM-DD)."""
+  valuationDate: Date
+
+  """Free-text source attribution for the current valuation."""
+  valuationSource: String
+
+  """Date the position was acquired (YYYY-MM-DD)."""
+  acquisitionDate: Date
+
+  """
+  Date the position was disposed, if `status='disposed'`. `null` for active positions.
+  """
+  dispositionDate: Date
+
+  """
+  Lifecycle state. One of: `active` (currently held), `disposed` (soft-deleted via `update-portfolio-block` dispose), `archived` (historical record only).
+  """
+  status: String!
+
+  """Free-text notes attached to the position."""
+  notes: String
+
+  """Row creation timestamp (UTC)."""
+  createdAt: DateTime!
+
+  """Last-modified timestamp (UTC)."""
+  updatedAt: DateTime!
+}
+
+"""
+Position projection embedded inside a `PortfolioBlockEnvelope`.
+
+Pre-converts cents fields to dollars (`cost_basis_dollars`,
+`current_value_dollars`) for display; the cents-precision fields
+live on the standalone `PositionResponse`. Embeds a `SecurityLite`
+so callers can render the security name without a follow-up fetch.
+"""
+type PositionBlock {
+  """Position ID (`pos_*` ULID)."""
+  id: ID!
+
+  """Quantity held in `quantity_type` units."""
+  quantity: Float!
+
+  """Unit basis (`shares`, `units`, `principal`)."""
+  quantityType: String!
+
+  """Cost basis in dollars (pre-converted from cents)."""
+  costBasisDollars: Float!
+
+  """
+  Latest mark-to-market value in dollars. `null` when the position has not been marked.
+  """
+  currentValueDollars: Float
+
+  """Date the current value was sourced."""
+  valuationDate: Date
+
+  """Free-text source attribution for the valuation."""
+  valuationSource: String
+
+  """Date the position was acquired."""
+  acquisitionDate: Date
+
+  """
+  Lifecycle state (`active`, `disposed`, `archived`). See `PositionResponse.status` for the full vocabulary.
+  """
+  status: String!
+
+  """Free-text notes attached to the position."""
+  notes: String
+
+  """Embedded security details — name, type, issuer."""
+  security: SecurityLite!
+}
+
+"""Paginated list of positions."""
+type PositionList {
+  """Positions on this page."""
+  positions: [Position!]!
+
+  """Pagination cursor and totals."""
+  pagination: PaginationInfo!
+}
+
+"""Publish list summary — header metadata, no members."""
+type PublishList {
+  """List identifier (ULID)."""
+  id: String!
+
+  """Human-readable list name."""
+  name: String!
+
+  """Free-form description."""
+  description: String
+
+  """Number of recipient graphs currently on the list."""
+  memberCount: Int!
+
+  """User ID that created the list."""
+  createdBy: String!
+
+  """When the list was created."""
+  createdAt: DateTime!
+
+  """Last metadata update (name/description)."""
+  updatedAt: DateTime!
+}
+
+"""Full detail including members."""
+type PublishListDetail {
+  """List identifier (ULID)."""
+  id: String!
+
+  """Human-readable list name."""
+  name: String!
+
+  """Free-form description."""
+  description: String
+
+  """Number of recipient graphs currently on the list."""
+  memberCount: Int!
+
+  """User ID that created the list."""
+  createdBy: String!
+
+  """When the list was created."""
+  createdAt: DateTime!
+
+  """Last metadata update (name/description)."""
+  updatedAt: DateTime!
+
+  """All recipient graphs on the list."""
+  members: [PublishListMember!]!
+}
+
+"""Paginated list of publish lists owned by the current graph."""
+type PublishListList {
+  """Publish list summaries, newest first."""
+  publishLists: [PublishList!]!
+  pagination: PaginationInfo!
+}
+
+"""One recipient graph in a publish list."""
+type PublishListMember {
+  """Membership row identifier (ULID)."""
+  id: String!
+
+  """Recipient graph ID."""
+  targetGraphId: String!
+
+  """Display name of the recipient graph (if known)."""
+  targetGraphName: String
+
+  """Display name of the org that owns the recipient graph."""
+  targetOrgName: String
+
+  """User ID that added this member."""
+  addedBy: String!
+
+  """When the member was added."""
+  addedAt: DateTime!
+}
+
+type Query {
+  portfolios(limit: Int = null, offset: Int = null): PortfolioList
+  securities(entityId: String = null, securityType: String = null, isActive: Boolean = null, limit: Int = null, offset: Int = null): SecurityList
+  security(securityId: String!): Security
+  positions(portfolioId: String = null, securityId: String = null, status: String = null, limit: Int = null, offset: Int = null): PositionList
+  position(positionId: String!): Position
+  holdings(portfolioId: String!): HoldingsList
+  portfolioBlock(portfolioId: String!): PortfolioBlock
+  entity: LedgerEntity
+  entities(source: String = null): [LedgerEntity!]!
+  agent(id: String!): Agent
+  agents(agentType: String = null, source: String = null, isActive: Boolean = true, limit: Int = null, offset: Int = null): [Agent!]!
+  openReceivables: OpenBalanceAggregate!
+  openPayables: OpenBalanceAggregate!
+  openReceivablesByAgent: [OpenBalanceByAgent!]!
+  openPayablesByAgent: [OpenBalanceByAgent!]!
+  eventBlock(id: String!): EventBlock
+  eventBlocks(eventType: String = null, eventCategory: String = null, status: String = null, agentId: String = null, source: String = null, limit: Int = null, offset: Int = null): [EventBlock!]!
+  summary: LedgerSummary
+  accounts(classification: String = null, isActive: Boolean = null, limit: Int = null, offset: Int = null): AccountList
+  accountTree(includeInactive: Boolean = null): AccountTree
+  accountRollups(mappingId: String = null, startDate: Date = null, endDate: Date = null): AccountRollups
+  trialBalance(startDate: Date = null, endDate: Date = null): TrialBalance
+  transactions(type: String = null, startDate: Date = null, endDate: Date = null, limit: Int = null, offset: Int = null): LedgerTransactionList
+  transaction(transactionId: String!): LedgerTransactionDetail
+  taxonomies(taxonomyType: String = null): TaxonomyList
+  reportingTaxonomy: Taxonomy
+  elements(taxonomyId: String = null, source: String = null, classification: String = null, isAbstract: Boolean = null, limit: Int = null, offset: Int = null): ElementList
+  mappingCandidates(classification: String!): [Element!]!
+  unmappedElements(mappingId: String = null): [UnmappedElement!]!
+  structures(taxonomyId: String = null, blockType: String = null): StructureList
+  mappings: StructureList
+  mapping(mappingId: String!): MappingDetail
+  mappingCoverage(mappingId: String!): MappingCoverage
+  mappedTrialBalance(mappingId: String!, startDate: Date = null, endDate: Date = null): MappedTrialBalance
+  periodCloseStatus(periodStart: Date!, periodEnd: Date!): PeriodCloseStatus
+  fiscalCalendar: FiscalCalendar
+  periodDrafts(period: String!): PeriodDrafts
+  closingBookStructures: ClosingBookStructures
+  reports: ReportList
+  report(reportId: String!): Report
+  reportPackage(reportId: String!): ReportPackage
+  reportDownloadUrl(reportId: String!, format: ReportDownloadFormat = null, expiresIn: Int = null): ReportBundleDownload
+  statement(reportId: String!, blockType: String!): Statement
+  publishLists(limit: Int = null, offset: Int = null): PublishListList
+  publishList(listId: String!): PublishListDetail
+  informationBlock(id: ID!, scenarioId: String = null, series: Boolean! = false, seriesHistory: Int = null, seriesForecast: Int = null): InformationBlock
+  informationBlocks(blockType: String = null, category: String = null, limit: Int = null, offset: Int = null, scenarioId: String = null): [InformationBlock!]!
+  taxonomyBlock(id: ID!): TaxonomyBlock
+  taxonomyBlocks(taxonomyType: String = null, parentTaxonomyId: ID = null, category: String = null, limit: Int = null, offset: Int = null): [TaxonomyBlock!]!
+  libraryTaxonomies(standard: String = null, includeElementCount: Boolean = null): [LibraryTaxonomy!]!
+  libraryTaxonomy(id: ID = null, standard: String = null, version: String = null, includeElementCount: Boolean = null): LibraryTaxonomy
+  libraryTaxonomyArcs(taxonomyId: ID!, associationType: String = null, structureId: ID = null, limit: Int = null, offset: Int = null): [LibraryAssociation!]!
+  libraryTaxonomyArcCount(taxonomyId: ID!, associationType: String = null, structureId: ID = null): Int!
+  libraryElements(taxonomyId: ID = null, source: String = null, classification: String = null, activityType: String = null, elementType: String = null, isAbstract: Boolean = null, limit: Int = null, offset: Int = null, includeLabels: Boolean = null, includeReferences: Boolean = null): [LibraryElement!]!
+  libraryElement(id: ID = null, qname: String = null): LibraryElement
+  searchLibraryElements(query: String!, source: String = null, limit: Int = null): [LibraryElement!]!
+  libraryElementTree(id: ID!, maxDepth: Int = null, structureId: ID = null): LibraryElementTreeNode
+  libraryElementEquivalents(id: ID!): LibraryEquivalence
+  libraryElementArcs(id: ID!): [LibraryElementArc!]!
+  libraryElementClassifications(id: ID!): [LibraryElementClassification!]!
+  libraryStructures(taxonomyId: ID = null, blockType: String = null): [LibraryStructure!]!
+  libraryStructure(id: ID!): LibraryStructure
+  hello: String!
+}
+
+"""
+Report definition summary — header metadata, no facts.
+
+Returned by ``create-report``, ``regenerate-report``,
+``file-report``, and ``transition-filing-status``. Use the package
+read endpoint to retrieve a Report rehydrated with its rendered
+``InformationBlockEnvelope`` items.
+"""
+type Report {
+  """Report identifier (ULID)."""
+  id: String!
+
+  """Human-readable report name."""
+  name: String!
+
+  """Taxonomy this report renders against."""
+  taxonomyId: String!
+
+  """
+  Computation lifecycle: `generating`, `published`, `failed`. Orthogonal to `filing_status`.
+  """
+  generationStatus: String!
+
+  """Period cadence: `monthly`, `quarterly`, `annual`."""
+  periodType: String!
+
+  """Current-period start."""
+  periodStart: Date
+
+  """Current-period end."""
+  periodEnd: Date
+
+  """True when an auto-generated prior-period column is included."""
+  comparative: Boolean!
+
+  """
+  Explicit period columns when the report was created with a multi-period layout.
+  """
+  periods: [PeriodSpec!]
+
+  """CoA → taxonomy mapping the facts were rolled up through."""
+  mappingId: String
+
+  """True when the report was created by an AI agent rather than a user."""
+  aiGenerated: Boolean!
+
+  """When the report row was created."""
+  createdAt: DateTime!
+
+  """When the facts were last (re)generated."""
+  lastGenerated: DateTime
+
+  """
+  Structures available for this report's taxonomy — renderable sections (BS / IS / CF / Equity / Schedules).
+  """
+  structures: [StructureSummary!]!
+
+  """Display name of the primary entity the report is tagged to."""
+  entityName: String
+
+  """
+  Filing lifecycle (orthogonal to `generation_status`): `draft`, `under_review`, `filed`, `archived`.
+  """
+  filingStatus: String!
+
+  """When the report was transitioned to `filed`."""
+  filedAt: DateTime
+
+  """User ID that transitioned the report to `filed`."""
+  filedBy: String
+
+  """
+  When this report restates an earlier filing, the predecessor's report ID.
+  """
+  supersedesId: String
+
+  """When this report has been restated, the successor's report ID."""
+  supersededById: String
+
+  """
+  Origin graph for received (shared) reports — populated only on the recipient's copy.
+  """
+  sourceGraphId: String
+
+  """
+  Origin report ID for received (shared) reports — populated only on the recipient's copy.
+  """
+  sourceReportId: String
+
+  """When the report was shared into this graph (recipient side)."""
+  sharedAt: DateTime
+
+  """
+  Counts by rule outcome (e.g. `{'passed': 12, 'failed': 1}`) from the most recent evaluation. Null until rules run.
+  """
+  ruleSummary: JSON
+}
+
+"""
+Presigned-URL response for a published Report's serialization bundle.
+
+Every flavor resolves to a short-lived presigned URL pointing at the
+bundle in S3 — JSON-LD is stamped at publish time, XBRL is
+materialized on first download and cached by ``generation_count``.
+The client follows ``download_url`` to fetch the artifact directly
+from S3 (the API never streams the bytes). Mirrors the
+backup-download shape the frontend already consumes.
+"""
+type ReportBundleDownload {
+  """Presigned URL that streams the bundle directly from S3."""
+  downloadUrl: String!
+
+  """UTC timestamp at which the presigned URL stops working."""
+  expiresAt: DateTime!
+
+  """MIME type of the artifact behind the URL."""
+  contentType: String!
+
+  """
+  Serialization flavor delivered by this URL — one of the ``RdfFlavor`` / ``XbrlFlavor`` values (e.g. ``jsonld``, ``xbrl-2.1``).
+  """
+  format: String!
+
+  """Bundle generation number stamped on the Report."""
+  generationCount: Int!
+}
+
+enum ReportDownloadFormat {
+  JSONLD
+  HOLON_JSONLD
+  XBRL_2_1
+}
+
+"""List of report header summaries (used by report list reads)."""
+type ReportList {
+  """Report definitions, newest first."""
+  reports: [Report!]!
+}
+
+type ReportPackage {
+  id: ID!
+  name: String!
+  description: String
+  taxonomyId: String!
+  periodType: String!
+  periodStart: Date
+  periodEnd: Date
+  generationStatus: String!
+  lastGenerated: DateTime
+  filingStatus: String!
+  filedAt: DateTime
+  filedBy: String
+  supersedesId: String
+  supersededById: String
+  sourceGraphId: String
+  sourceReportId: String
+  sharedAt: DateTime
+  entityName: String
+  aiGenerated: Boolean!
+  createdAt: DateTime!
+  createdBy: String!
+  items: [ReportPackageItem!]!
+}
+
+type ReportPackageItem {
+  factSetId: String!
+  structureId: String
+  displayOrder: Int!
+  block: InformationBlock!
+}
+
+type Security {
+  id: ID!
+  entityId: String
+  entityName: String
+  sourceGraphId: String
+  name: String!
+  securityType: String!
+  securitySubtype: String
+  terms: JSON!
+  isActive: Boolean!
+  authorizedShares: Int
+  outstandingShares: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SecurityList {
+  securities: [Security!]!
+  pagination: PaginationInfo!
+}
+
+"""
+Lightweight security projection for embedding in position
+envelopes. Skips `terms`, `outstanding_shares`, etc. — fetch the
+full `SecurityResponse` when those are needed.
+"""
+type SecurityLite {
+  """Security ID (`sec_*` ULID)."""
+  id: ID!
+
+  """Display name of the security."""
+  name: String!
+
+  """Instrument family (e.g. `common_stock`, `preferred_stock`, `warrant`)."""
+  securityType: String!
+
+  """Optional subtype refinement (e.g. `class_a`)."""
+  securitySubtype: String
+
+  """`true` when the security is in active status."""
+  isActive: Boolean!
+
+  """
+  Embedded issuer entity, when one is linked. `null` for pre-issuer securities.
+  """
+  issuer: EntityLite
+
+  """Tenant graph the security is pre-associated to, if any."""
+  sourceGraphId: String
+}
+
+"""
+Rendered financial statement — facts viewed through a structure.
+
+Returned by report read endpoints when a single statement is
+requested. The package mode endpoint returns a list of these
+rehydrated as ``InformationBlockEnvelope`` items instead.
+"""
+type Statement {
+  """The Report this statement was rendered from."""
+  reportId: String!
+
+  """Structure projected for this statement."""
+  structureId: String!
+
+  """Human-readable structure name."""
+  structureName: String!
+
+  """
+  Structure category: `balance_sheet`, `income_statement`, `cash_flow_statement`, `equity_statement`, `schedule`.
+  """
+  blockType: String!
+
+  """Period columns rendered in this statement, in display order."""
+  periods: [PeriodSpec!]!
+
+  """One row per concept in the structure, in tree order."""
+  rows: [FactRow!]!
+
+  """
+  Outcome of running reporting rules over this structure. Null when the structure has no rules attached.
+  """
+  validation: ValidationCheck
+
+  """
+  Number of GL elements that fell through the mapping with no destination concept. Indicates mapping gaps.
+  """
+  unmappedCount: Int!
+}
+
+"""
+One structure header — a renderable section within a taxonomy
+(balance sheet, income statement, schedule, etc.).
+
+``block_type`` drives presentation: 'balance_sheet',
+'income_statement', 'cash_flow_statement', 'equity_statement',
+'schedule', 'chart_of_accounts', 'coa_mapping', 'rollforward', etc.
+"""
+type Structure {
+  id: String!
+  name: String!
+  description: String
+  blockType: String!
+  taxonomyId: String!
+  isActive: Boolean!
+}
+
+"""Flat list of structures within a taxonomy."""
+type StructureList {
+  structures: [Structure!]!
+}
+
+"""
+A structure available within this report's taxonomy.
+
+Each structure is a renderable section (Balance Sheet, Income
+Statement, Cash Flow Statement, Equity, or a Schedule). The Report
+row owns the facts; structures are the lenses that project them.
+"""
+type StructureSummary {
+  """Structure identifier."""
+  id: String!
+
+  """Human-readable structure name."""
+  name: String!
+
+  """
+  Structure category: `balance_sheet`, `income_statement`, `cash_flow_statement`, `equity_statement`, `schedule`.
+  """
+  blockType: String!
+}
+
+"""A suggested mapping target from the reporting taxonomy."""
+type SuggestedTarget {
+  elementId: String!
+  qname: String!
+  name: String!
+  confidence: Float
+}
+
+"""
+One taxonomy header — identity + lifecycle flags. Atoms
+(elements, structures, associations, rules) are exposed via the
+Taxonomy Block envelope.
+
+``taxonomy_type`` discriminates: ``chart_of_accounts``,
+``reporting_standard``, ``reporting_extension``, ``custom_ontology``,
+``mapping``, ``schedule``. ``is_locked=True`` means library-origin
+(immutable for tenants); ``is_shared=True`` means visible to multiple
+graphs from a shared registry.
+"""
+type Taxonomy {
+  id: String!
+  name: String!
+  description: String
+  taxonomyType: String!
+  version: String
+  standard: String
+  namespaceUri: String
+  isShared: Boolean!
+  isActive: Boolean!
+  isLocked: Boolean!
+  sourceTaxonomyId: String
+  targetTaxonomyId: String
+}
+
+type TaxonomyBlock {
+  id: ID!
+  name: String!
+  taxonomyType: String!
+  displayName: String!
+  category: String!
+  parentTaxonomyId: String
+  parentTaxonomyName: String
+  version: String
+  standard: String
+  namespaceUri: String
+  isLocked: Boolean!
+  elements: [TaxonomyBlockElement!]!
+  structures: [TaxonomyBlockStructure!]!
+  associations: [TaxonomyBlockAssociation!]!
+  rules: [TaxonomyBlockRule!]!
+  verificationResults: [JSON!]!
+  elementCount: Int!
+  structureCount: Int!
+  associationCount: Int!
+}
+
+type TaxonomyBlockAssociation {
+  id: String!
+  structureId: String!
+  fromElementQname: String!
+  toElementQname: String!
+  associationType: String!
+  orderValue: Float
+  arcrole: String
+  weight: Float
+}
+
+type TaxonomyBlockElement {
+  id: String!
+  qname: String
+  name: String!
+  trait: String
+  balanceType: String
+  periodType: String
+  elementType: String!
+  isMonetary: Boolean!
+  parentQname: String
+  depth: Int
+  origin: String!
+}
+
+type TaxonomyBlockRule {
+  id: String!
+  name: String!
+  ruleCategory: String!
+  rulePattern: String!
+  ruleExpression: String!
+  severity: String!
+  origin: String!
+  targetKind: String
+  targetRef: String
+}
+
+type TaxonomyBlockStructure {
+  id: String!
+  name: String!
+  blockType: String!
+  description: String
+  roleUri: String
+}
+
+"""Flat list of taxonomy headers. Used by the catalog/picker UIs."""
+type TaxonomyList {
+  taxonomies: [Taxonomy!]!
+}
+
+"""
+Trial balance for posted entries in a date range — every CoA
+account that had activity, plus aggregate totals.
+
+Ledger is balanced when ``total_debits == total_credits``. Used as
+a sanity check before close-period; failure means an unposted /
+malformed entry slipped through.
+"""
+type TrialBalance {
+  rows: [TrialBalanceRow!]!
+  totalDebits: Float!
+  totalCredits: Float!
+}
+
+"""One CoA account's debit/credit totals over the trial-balance window."""
+type TrialBalanceRow {
+  accountId: String!
+  accountCode: String!
+  accountName: String!
+  trait: String
+  accountType: String
+  totalDebits: Float!
+  totalCredits: Float!
+  netBalance: Float!
+}
+
+"""An element not yet mapped to the reporting taxonomy."""
+type UnmappedElement {
+  id: String!
+  code: String
+  name: String!
+  trait: String
+  liquidity: String
+  balanceType: String!
+  externalSource: String
+  suggestedTargets: [SuggestedTarget!]!
+}
+
+"""
+A CoA→rs-gaap mapping whose target doesn't reach a Network root.
+
+The reporting layer is closed: every mapping target must trace upward
+through the rs-gaap calc DAG to one of the canonical roots
+(rs-gaap:Assets, rs-gaap:LiabilitiesAndStockholdersEquity,
+rs-gaap:NetIncomeLoss, rs-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease).
+When it doesn't, the fact will land on a dead branch — visible in the
+trial balance but invisible to any rendered statement. Surfacing
+these as defects lets operators fix the mapping before the report is
+filed.
+"""
+type UnreachableMappingType {
+  coaElementId: String!
+  coaQname: String
+  coaCode: String
+  coaName: String
+  targetElementId: String!
+  targetQname: String
+  targetName: String
+}
+
+"""Aggregate result of running reporting rules over a structure."""
+type ValidationCheck {
+  """True iff every rule produced zero failures."""
+  passed: Boolean!
+
+  """Names of rules that were evaluated."""
+  checks: [String!]!
+
+  """Human-readable descriptions of rule failures."""
+  failures: [String!]!
+
+  """Non-blocking advisories from rule evaluation."""
+  warnings: [String!]!
+}

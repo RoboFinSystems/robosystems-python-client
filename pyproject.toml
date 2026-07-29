@@ -91,3 +91,8 @@ reportOptionalMemberAccess = "none"
 reportReturnType = "none"
 reportInvalidTypeForm = "none"
 reportMissingImports = "none"
+
+[dependency-groups]
+dev = [
+    "graphql-core>=3.2.11",
+]
