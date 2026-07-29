@@ -248,6 +248,7 @@ from ..models.financial_statement_analysis_request import (
   FinancialStatementAnalysisRequest,
 )
 from ..models.live_financial_statement_request import LiveFinancialStatementRequest
+from ..models.live_financial_statement_response import LiveFinancialStatementResponse
 from ..models.update_agent_request import UpdateAgentRequest
 from ..models.update_event_block_request import UpdateEventBlockRequest
 from ..models.update_event_handler_request import UpdateEventHandlerRequest
@@ -1576,7 +1577,7 @@ class LedgerClient:
     self,
     graph_id: str,
     body: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> LiveFinancialStatementResponse:
     """Live financial statement — pulls facts directly from the graph for
     an explicit period window (or fiscal year) and returns the statement
     shape without a persisted Report row. Useful for ad-hoc previews and
@@ -1587,7 +1588,9 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Live financial statement", response)
-    return envelope.result or {}
+    return self._typed_result(
+      "Live financial statement", envelope, LiveFinancialStatementResponse
+    )
 
   def financial_statement_analysis(
     self,
