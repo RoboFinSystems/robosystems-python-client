@@ -9,6 +9,7 @@ from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
 from ...models.o_auth_callback_request import OAuthCallbackRequest
+from ...models.o_auth_callback_response import OAuthCallbackResponse
 from ...types import Response
 
 
@@ -38,9 +39,10 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Any | ErrorResponse | HTTPValidationError | None:
+) -> ErrorResponse | HTTPValidationError | OAuthCallbackResponse | None:
   if response.status_code == 200:
-    response_200 = response.json()
+    response_200 = OAuthCallbackResponse.from_dict(response.json())
+
     return response_200
 
   if response.status_code == 400:
@@ -86,7 +88,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[Any | ErrorResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OAuthCallbackResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -101,7 +103,7 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
-) -> Response[Any | ErrorResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OAuthCallbackResponse]:
   """OAuth Callback
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
@@ -118,7 +120,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | OAuthCallbackResponse]
   """
 
   kwargs = _get_kwargs(
@@ -140,7 +142,7 @@ def sync(
   *,
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
-) -> Any | ErrorResponse | HTTPValidationError | None:
+) -> ErrorResponse | HTTPValidationError | OAuthCallbackResponse | None:
   """OAuth Callback
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
@@ -157,7 +159,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | OAuthCallbackResponse
   """
 
   return sync_detailed(
@@ -174,7 +176,7 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
-) -> Response[Any | ErrorResponse | HTTPValidationError]:
+) -> Response[ErrorResponse | HTTPValidationError | OAuthCallbackResponse]:
   """OAuth Callback
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
@@ -191,7 +193,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[Any | ErrorResponse | HTTPValidationError]
+      Response[ErrorResponse | HTTPValidationError | OAuthCallbackResponse]
   """
 
   kwargs = _get_kwargs(
@@ -211,7 +213,7 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
   body: OAuthCallbackRequest,
-) -> Any | ErrorResponse | HTTPValidationError | None:
+) -> ErrorResponse | HTTPValidationError | OAuthCallbackResponse | None:
   """OAuth Callback
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
@@ -228,7 +230,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Any | ErrorResponse | HTTPValidationError
+      ErrorResponse | HTTPValidationError | OAuthCallbackResponse
   """
 
   return (
