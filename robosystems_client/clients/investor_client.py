@@ -145,19 +145,29 @@ class InvestorClient:
       raise RuntimeError(f"{label} failed: unexpected response shape: {envelope!r}")
     return envelope
 
-  def _typed_result(self, label: str, envelope: Any, expected: type[Any]) -> Any:
+  def _typed_result(
+    self,
+    label: str,
+    envelope: Any,
+    expected: type[Any],
+    *,
+    sentinel_on_empty: bool = False,
+  ) -> Any:
     """Return ``envelope.result`` for typed-envelope facade methods.
 
     See :meth:`LedgerClient._typed_result` for the contract. Briefly: in
     production the SDK gives back the typed attrs class; in tests using
-    dict mocks the result is a plain dict; ``None``/``Unset`` is
-    normalized to ``{"deleted": True}`` for delete-style returns.
+    dict mocks the result is a plain dict. ``None``/``Unset`` raises unless
+    ``sentinel_on_empty`` is set, which delete-style ops pass to preserve
+    their historical ``{"deleted": True}`` return.
     """
     result = envelope.result
     if result is None or (
       hasattr(result, "__class__") and "Unset" in result.__class__.__name__
     ):
-      return {"deleted": True}
+      if sentinel_on_empty:
+        return {"deleted": True}
+      raise RuntimeError(f"{label}: operation envelope had no result")
     return result
 
   # ── Portfolios ──────────────────────────────────────────────────────
@@ -226,7 +236,10 @@ class InvestorClient:
     )
     envelope = self._call_op("Delete portfolio block", response)
     return self._typed_result(
-      "Delete portfolio block", envelope, DeletePortfolioBlockResponse
+      "Delete portfolio block",
+      envelope,
+      DeletePortfolioBlockResponse,
+      sentinel_on_empty=True,
     )
 
   # ── Securities ──────────────────────────────────────────────────────
@@ -290,7 +303,9 @@ class InvestorClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete security", response)
-    return self._typed_result("Delete security", envelope, DeleteResult)
+    return self._typed_result(
+      "Delete security", envelope, DeleteResult, sentinel_on_empty=True
+    )
 
   # ── Positions (read-only — writes go through portfolio block) ────────
 

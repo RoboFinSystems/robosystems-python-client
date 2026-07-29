@@ -458,7 +458,14 @@ class LedgerClient:
       raise RuntimeError(f"{label} failed: {envelope!r}")
     return envelope.result
 
-  def _typed_result(self, label: str, envelope: Any, expected: type[Any]) -> Any:
+  def _typed_result(
+    self,
+    label: str,
+    envelope: Any,
+    expected: type[Any],
+    *,
+    sentinel_on_empty: bool = False,
+  ) -> Any:
     """Return ``envelope.result`` for typed-envelope facade methods.
 
     The calling facade method's return-type annotation advertises the
@@ -482,9 +489,16 @@ class LedgerClient:
     if result is None or (
       hasattr(result, "__class__") and "Unset" in result.__class__.__name__
     ):
-      # Delete-style ops historically returned {"deleted": True} when the
-      # server omitted the result body. Preserve that sentinel for back-compat.
-      return {"deleted": True}
+      if sentinel_on_empty:
+        # Delete-style ops historically returned {"deleted": True} when the
+        # server omitted the result body. Preserve that sentinel for back-compat.
+        return {"deleted": True}
+      # Everything else advertises a real payload type. Returning the delete
+      # sentinel here handed callers a success-shaped dict that satisfies no
+      # field of the declared model — close_period reported {"deleted": True}
+      # while declaring ClosePeriodResponse. Raise instead, matching the
+      # TypeScript client's requireResult.
+      raise RuntimeError(f"{label}: operation envelope had no result")
     return result
 
   def _call_op(self, label: str, response: Any) -> Any:
@@ -806,7 +820,10 @@ class LedgerClient:
     )
     envelope = self._call_op("Delete taxonomy block", response)
     return self._typed_result(
-      "Delete taxonomy block", envelope, DeleteTaxonomyBlockResponse
+      "Delete taxonomy block",
+      envelope,
+      DeleteTaxonomyBlockResponse,
+      sentinel_on_empty=True,
     )
 
   def bind_text_block(
@@ -957,7 +974,9 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete mapping association", response)
-    return self._typed_result("Delete mapping association", envelope, DeleteResult)
+    return self._typed_result(
+      "Delete mapping association", envelope, DeleteResult, sentinel_on_empty=True
+    )
 
   def auto_map_elements(self, graph_id: str, mapping_id: str) -> dict[str, Any]:
     """Trigger the AI MappingAgent (async). Returns an operation ack."""
@@ -1070,7 +1089,10 @@ class LedgerClient:
     )
     envelope = self._call_op("Delete information block", response)
     return self._typed_result(
-      "Delete information block", envelope, DeleteInformationBlockResponse
+      "Delete information block",
+      envelope,
+      DeleteInformationBlockResponse,
+      sentinel_on_empty=True,
     )
 
   # ── Schedules ──────────────────────────────────────────────────────
@@ -1224,7 +1246,10 @@ class LedgerClient:
     )
     envelope = self._call_op("Delete schedule", response)
     return self._typed_result(
-      "Delete schedule", envelope, DeleteInformationBlockResponse
+      "Delete schedule",
+      envelope,
+      DeleteInformationBlockResponse,
+      sentinel_on_empty=True,
     )
 
   def rebuild_schedule(
@@ -1398,7 +1423,9 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete journal entry", response)
-    return self._typed_result("Delete journal entry", envelope, DeleteResult)
+    return self._typed_result(
+      "Delete journal entry", envelope, DeleteResult, sentinel_on_empty=True
+    )
 
   def reverse_journal_entry(
     self,
@@ -1829,7 +1856,9 @@ class LedgerClient:
     body = DeleteReportOperation(report_id=report_id)
     response = op_delete_report(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Delete report", response)
-    return self._typed_result("Delete report", envelope, DeleteResult)
+    return self._typed_result(
+      "Delete report", envelope, DeleteResult, sentinel_on_empty=True
+    )
 
   def share_report(
     self, graph_id: str, report_id: str, publish_list_id: str
@@ -2023,7 +2052,9 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Delete publish list", response)
-    return self._typed_result("Delete publish list", envelope, DeleteResult)
+    return self._typed_result(
+      "Delete publish list", envelope, DeleteResult, sentinel_on_empty=True
+    )
 
   def add_publish_list_members(
     self, graph_id: str, list_id: str, target_graph_ids: list[str]
@@ -2054,4 +2085,6 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Remove publish list member", response)
-    return self._typed_result("Remove publish list member", envelope, DeleteResult)
+    return self._typed_result(
+      "Remove publish list member", envelope, DeleteResult, sentinel_on_empty=True
+    )
