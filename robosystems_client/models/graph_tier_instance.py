@@ -15,7 +15,8 @@ class GraphTierInstance:
 
   Attributes:
       type_ (str): Instance type identifier
-      memory_mb (int): Memory allocated to your graph in megabytes
+      memory_mb (int): LadybugDB memory budget for the whole instance in megabytes (below physical RAM after OS
+          overhead; not a per-graph allocation)
       is_multitenant (bool): Whether this tier shares infrastructure with other graphs
   """
 

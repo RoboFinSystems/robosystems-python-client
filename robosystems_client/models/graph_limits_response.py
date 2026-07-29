@@ -28,7 +28,7 @@ class GraphLimitsResponse:
 
   Attributes:
       graph_id (str): Graph database identifier
-      subscription_tier (str): User's subscription tier
+      subscription_tier (str): Rate-limit tier enforced for requests to this graph
       graph_tier (str): Graph's database tier
       is_shared_repository (bool): Whether this is a shared repository
       storage (StorageLimits): Storage limits information.
