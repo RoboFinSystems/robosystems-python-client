@@ -52,6 +52,14 @@ typecheck:
 generate-sdk url="http://localhost:8000/openapi.json":
     bin/generate-sdk.sh {{url}}
 
+# Refresh the checked-in GraphQL schema snapshot. tests/test_graphql_queries.py
+# validates every hand-written query document against it, so refresh this
+# whenever the backend schema changes. A stale snapshot can only cause a false
+# failure here, never a false pass.
+refresh-schema backend="../robosystems":
+    cd {{backend}} && uv run python -c "from robosystems.graphql.schema import schema; from pathlib import Path; sdl = schema.as_str() if hasattr(schema, 'as_str') else str(schema); Path('{{justfile_directory()}}/robosystems_client/graphql/schema.graphql').write_text(sdl)"
+    @echo "schema.graphql refreshed - re-run 'just test-all'"
+
 # Build python package locally (for testing)
 build-package:
     python -m build
