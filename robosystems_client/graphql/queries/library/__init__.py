@@ -82,8 +82,7 @@ query ListLibraryElements(
   $taxonomyId: ID
   $source: String
   $classification: String
-  $statementContext: String
-  $derivationRole: String
+  $activityType: String
   $elementType: String
   $isAbstract: Boolean
   $limit: Int! = 50
@@ -95,8 +94,7 @@ query ListLibraryElements(
     taxonomyId: $taxonomyId
     source: $source
     classification: $classification
-    statementContext: $statementContext
-    derivationRole: $derivationRole
+    activityType: $activityType
     elementType: $elementType
     isAbstract: $isAbstract
     limit: $limit
@@ -109,8 +107,6 @@ query ListLibraryElements(
     namespace
     name
     trait
-    statementContext
-    derivationRole
     balanceType
     periodType
     isAbstract
@@ -147,8 +143,6 @@ query SearchLibraryElements($query: String!, $source: String, $limit: Int! = 50)
     namespace
     name
     trait
-    statementContext
-    derivationRole
     balanceType
     periodType
     isAbstract
@@ -185,8 +179,6 @@ query GetLibraryElement($id: ID, $qname: String) {
     namespace
     name
     trait
-    statementContext
-    derivationRole
     balanceType
     periodType
     isAbstract
@@ -273,8 +265,6 @@ query GetLibraryElementArcs($id: ID!) {
       qname
       name
       trait
-      statementContext
-      derivationRole
       source
     }
   }
@@ -295,8 +285,6 @@ query GetLibraryElementEquivalents($id: ID!) {
       qname
       name
       trait
-      statementContext
-      derivationRole
       source
     }
     equivalents {
@@ -304,8 +292,6 @@ query GetLibraryElementEquivalents($id: ID!) {
       qname
       name
       trait
-      statementContext
-      derivationRole
       source
     }
   }

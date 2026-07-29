@@ -3,12 +3,15 @@
 Provides comprehensive operation monitoring with SSE support.
 """
 
+import logging
 from dataclasses import dataclass
 from typing import Dict, Any, Optional, Callable, List
 from datetime import datetime
 from enum import Enum
 
 from .sse_client import SSEClient, AsyncSSEClient, SSEConfig, EventType
+
+logger = logging.getLogger(__name__)
 
 
 class OperationStatus(Enum):
@@ -216,11 +219,11 @@ class OperationClient:
     # Use regular Client with headers instead of AuthenticatedClient
     client = Client(base_url=self.base_url, headers=self.headers)
     try:
-      kwargs = {"operation_id": operation_id, "client": client}
-      # Only add token if it's a valid string
-      if self.token and isinstance(self.token, str) and self.token.strip():
-        kwargs["token"] = self.token
-      response = get_operation_status(**kwargs)
+      # Auth travels in self.headers (X-API-Key / Authorization). The generated
+      # function takes no `token` kwarg — passing one raised TypeError, which
+      # the handler below laundered into a fake {"status": "error"} result, so
+      # this call never succeeded whenever a token was configured.
+      response = get_operation_status(operation_id=operation_id, client=client)
       if response.parsed:
         return {
           "operation_id": operation_id,
@@ -230,6 +233,9 @@ class OperationClient:
           "error": getattr(response.parsed, "error", None),
         }
     except Exception as e:
+      # Logged rather than silently shaped into a result: swallowing here is
+      # what hid the TypeError above for as long as it lived.
+      logger.warning("Failed to get status for operation %s: %s", operation_id, e)
       return {"operation_id": operation_id, "status": "error", "error": str(e)}
 
     return {"operation_id": operation_id, "status": "unknown"}
@@ -243,15 +249,12 @@ class OperationClient:
     # Use regular Client with headers instead of AuthenticatedClient
     client = Client(base_url=self.base_url, headers=self.headers)
     try:
-      kwargs = {"operation_id": operation_id, "client": client}
-      # Only add token if it's a valid string
-      if self.token and isinstance(self.token, str) and self.token.strip():
-        kwargs["token"] = self.token
-      response = cancel_operation(**kwargs)
+      # See get_operation_status: no `token` kwarg on the generated function.
+      response = cancel_operation(operation_id=operation_id, client=client)
       if response.parsed:
         return response.parsed.cancelled or False
     except Exception as e:
-      print(f"Failed to cancel operation {operation_id}: {e}")
+      logger.warning("Failed to cancel operation %s: %s", operation_id, e)
       return False
 
     # Also close any active SSE connection with thread safety

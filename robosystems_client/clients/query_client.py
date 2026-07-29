@@ -419,8 +419,10 @@ class QueryClient:
     error = None
     completed = False
 
-    # Set up SSE connection
-    sse_config = SSEConfig(base_url=self.base_url)
+    # Set up SSE connection. Headers carry the auth SSEClient.connect merges in;
+    # omitting them made this stream anonymous, so every queued query 401'd.
+    # (_stream_query_results already passes them.)
+    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
     sse_client = SSEClient(sse_config)
 
     def on_queue_update(data):
