@@ -49,16 +49,15 @@ typecheck:
     uv run basedpyright
 
 # Generate SDK from localhost API
-generate-sdk url="http://localhost:8000/openapi.json":
+generate-sdk url="http://localhost:8000/openapi.json" graphql_url="http://localhost:8000/extensions/kg00000000000000000000/graphql":
     bin/generate-sdk.sh {{url}}
+    @just refresh-schema {{graphql_url}}
 
-# Refresh the checked-in GraphQL schema snapshot. tests/test_graphql_queries.py
-# validates every hand-written query document against it, so refresh this
-# whenever the backend schema changes. A stale snapshot can only cause a false
-# failure here, never a false pass.
-refresh-schema backend="../robosystems":
-    cd {{backend}} && uv run python -c "from robosystems.graphql.schema import schema; from pathlib import Path; sdl = schema.as_str() if hasattr(schema, 'as_str') else str(schema); Path('{{justfile_directory()}}/robosystems_client/graphql/schema.graphql').write_text(sdl)"
-    @echo "schema.graphql refreshed - re-run 'just test-all'"
+# Refresh the checked-in GraphQL SDL snapshot by introspecting a running backend.
+# tests/test_graphql_queries.py validates the hand-written query documents
+# against it. generate-sdk runs this too, so the snapshot can't silently drift.
+refresh-schema url="http://localhost:8000/extensions/kg00000000000000000000/graphql":
+    uv run bin/refresh-schema.py {{url}}
 
 # Build python package locally (for testing)
 build-package:

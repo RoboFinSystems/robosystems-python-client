@@ -9,9 +9,18 @@ Every call raised GraphQLError, so the whole LibraryClient element surface was
 dead, and no test, type check or lint caught it.
 
 Validation runs against a checked-in SDL snapshot rather than a live backend so
-it works offline, in the pre-commit hook, and in CI. Refresh the snapshot with
-`just refresh-schema` when the backend schema changes; a stale snapshot can only
-cause a false failure here, never a false pass on a field that has been removed.
+it works offline, in the pre-commit hook, and in CI.
+
+The snapshot's currency matters in one direction more than the other:
+
+- Backend *adds* a field the snapshot lacks — a query using it fails here.
+  Noisy, but safe.
+- Backend *removes* a field the snapshot still lists — a query using it passes
+  here and fails at runtime. Silent, and exactly the failure this test exists
+  to prevent.
+
+So the snapshot is refreshed as part of `just generate-sdk`, not left to be
+remembered; `just refresh-schema` runs it standalone.
 """
 
 from __future__ import annotations
