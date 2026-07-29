@@ -248,7 +248,11 @@ from ..models.financial_statement_analysis_request import (
   FinancialStatementAnalysisRequest,
 )
 from ..models.live_financial_statement_request import LiveFinancialStatementRequest
+from ..models.financial_statement_analysis_response import (
+  FinancialStatementAnalysisResponse,
+)
 from ..models.live_financial_statement_response import LiveFinancialStatementResponse
+from ..models.view_response import ViewResponse
 from ..models.update_agent_request import UpdateAgentRequest
 from ..models.update_event_block_request import UpdateEventBlockRequest
 from ..models.update_event_handler_request import UpdateEventHandlerRequest
@@ -1596,7 +1600,7 @@ class LedgerClient:
     self,
     graph_id: str,
     body: dict[str, Any],
-  ) -> dict[str, Any]:
+  ) -> FinancialStatementAnalysisResponse:
     """Run a financial statement analysis against an existing report.
 
     On shared-repo graphs (e.g. SEC), ``ticker`` is required; on tenant
@@ -1608,11 +1612,13 @@ class LedgerClient:
       graph_id=graph_id, body=request, client=self._get_client()
     )
     envelope = self._call_op("Financial statement analysis", response)
-    return envelope.result or {}
+    return self._typed_result(
+      "Financial statement analysis", envelope, FinancialStatementAnalysisResponse
+    )
 
   # ── Fact grid (graph-backed analytical query) ─────────────────────
 
-  def build_fact_grid(self, graph_id: str, request: dict[str, Any]) -> dict[str, Any]:
+  def build_fact_grid(self, graph_id: str, request: dict[str, Any]) -> ViewResponse:
     """Build a multi-dimensional fact grid against the graph schema.
 
     This is a graph-database *read* dispatched through the operation
@@ -1635,7 +1641,7 @@ class LedgerClient:
       graph_id=graph_id, body=body, client=self._get_client()
     )
     envelope = self._call_op("Build fact grid", response)
-    return envelope.result or {}
+    return self._typed_result("Build fact grid", envelope, ViewResponse)
 
   # ── Closing book ───────────────────────────────────────────────────
 

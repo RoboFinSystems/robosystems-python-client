@@ -2,6 +2,7 @@
 
 from .account_info import AccountInfo
 from .add_publish_list_members_operation import AddPublishListMembersOperation
+from .analytical_statement_fact_row import AnalyticalStatementFactRow
 from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
 from .artifact_response import ArtifactResponse
@@ -222,6 +223,7 @@ from .file_layer_status import FileLayerStatus
 from .file_report_request import FileReportRequest
 from .file_upload_request import FileUploadRequest
 from .financial_statement_analysis_request import FinancialStatementAnalysisRequest
+from .financial_statement_analysis_response import FinancialStatementAnalysisResponse
 from .fiscal_calendar_response import FiscalCalendarResponse
 from .fiscal_period_summary import FiscalPeriodSummary
 from .forecast_mechanics import ForecastMechanics
@@ -432,6 +434,12 @@ from .operation_envelope_execute_event_block_response import (
 from .operation_envelope_execute_event_block_response_status import (
   OperationEnvelopeExecuteEventBlockResponseStatus,
 )
+from .operation_envelope_financial_statement_analysis_response import (
+  OperationEnvelopeFinancialStatementAnalysisResponse,
+)
+from .operation_envelope_financial_statement_analysis_response_status import (
+  OperationEnvelopeFinancialStatementAnalysisResponseStatus,
+)
 from .operation_envelope_fiscal_calendar_response import (
   OperationEnvelopeFiscalCalendarResponse,
 )
@@ -525,6 +533,8 @@ from .operation_envelope_taxonomy_block_envelope import (
 from .operation_envelope_taxonomy_block_envelope_status import (
   OperationEnvelopeTaxonomyBlockEnvelopeStatus,
 )
+from .operation_envelope_view_response import OperationEnvelopeViewResponse
+from .operation_envelope_view_response_status import OperationEnvelopeViewResponseStatus
 from .operation_envelopelist_publish_list_member_response import (
   OperationEnvelopelistPublishListMemberResponse,
 )
@@ -622,6 +632,7 @@ from .resend_verification_email_response_resendverificationemail import (
 )
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
+from .resolved_report_info import ResolvedReportInfo
 from .response_mode import ResponseMode
 from .restore_backup_op import RestoreBackupOp
 from .rollforward_mechanics import RollforwardMechanics
@@ -811,11 +822,15 @@ from .view_axis_config import ViewAxisConfig
 from .view_axis_config_element_labels_type_0 import ViewAxisConfigElementLabelsType0
 from .view_axis_config_member_labels_type_0 import ViewAxisConfigMemberLabelsType0
 from .view_config import ViewConfig
+from .view_metadata import ViewMetadata
 from .view_projections import ViewProjections
+from .view_response import ViewResponse
+from .view_response_presentations import ViewResponsePresentations
 
 __all__ = (
   "AccountInfo",
   "AddPublishListMembersOperation",
+  "AnalyticalStatementFactRow",
   "APIKeyInfo",
   "APIKeysResponse",
   "ArtifactResponse",
@@ -998,6 +1013,7 @@ __all__ = (
   "FileReportRequest",
   "FileUploadRequest",
   "FinancialStatementAnalysisRequest",
+  "FinancialStatementAnalysisResponse",
   "FiscalCalendarResponse",
   "FiscalPeriodSummary",
   "ForecastMechanics",
@@ -1128,6 +1144,8 @@ __all__ = (
   "OperationEnvelopeEventHandlerResponseStatus",
   "OperationEnvelopeExecuteEventBlockResponse",
   "OperationEnvelopeExecuteEventBlockResponseStatus",
+  "OperationEnvelopeFinancialStatementAnalysisResponse",
+  "OperationEnvelopeFinancialStatementAnalysisResponseStatus",
   "OperationEnvelopeFiscalCalendarResponse",
   "OperationEnvelopeFiscalCalendarResponseStatus",
   "OperationEnvelopeInformationBlockEnvelope",
@@ -1163,6 +1181,8 @@ __all__ = (
   "OperationEnvelopeStatus",
   "OperationEnvelopeTaxonomyBlockEnvelope",
   "OperationEnvelopeTaxonomyBlockEnvelopeStatus",
+  "OperationEnvelopeViewResponse",
+  "OperationEnvelopeViewResponseStatus",
   "OperationError",
   "OperationErrorDetailType1",
   "OperatorListResponse",
@@ -1244,6 +1264,7 @@ __all__ = (
   "ResendVerificationEmailResponseResendverificationemail",
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
+  "ResolvedReportInfo",
   "ResponseMode",
   "RestoreBackupOp",
   "RollforwardMechanics",
@@ -1389,5 +1410,8 @@ __all__ = (
   "ViewAxisConfigElementLabelsType0",
   "ViewAxisConfigMemberLabelsType0",
   "ViewConfig",
+  "ViewMetadata",
   "ViewProjections",
+  "ViewResponse",
+  "ViewResponsePresentations",
 )
