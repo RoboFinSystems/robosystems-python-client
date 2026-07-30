@@ -32,6 +32,8 @@ class ConnectionResponse:
       write_policy (None | str | Unset): Source-of-truth write policy: 'native' (RoboSystems is authoritative; no
           outbound write-back) or 'qb_authoritative' (QuickBooks is authoritative; RoboSystems-originated entries publish
           to QB). Set via the write-policy endpoint.
+      source_name (None | str | Unset): External-provider registered source slug — the value the integration stamps on
+          the events it emits. Null for platform providers.
   """
 
   connection_id: str
@@ -43,6 +45,7 @@ class ConnectionResponse:
   updated_at: datetime.datetime | None | str | Unset = UNSET
   last_sync: datetime.datetime | None | str | Unset = UNSET
   write_policy: None | str | Unset = UNSET
+  source_name: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -88,6 +91,12 @@ class ConnectionResponse:
     else:
       write_policy = self.write_policy
 
+    source_name: None | str | Unset
+    if isinstance(self.source_name, Unset):
+      source_name = UNSET
+    else:
+      source_name = self.source_name
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -107,6 +116,8 @@ class ConnectionResponse:
       field_dict["last_sync"] = last_sync
     if write_policy is not UNSET:
       field_dict["write_policy"] = write_policy
+    if source_name is not UNSET:
+      field_dict["source_name"] = source_name
 
     return field_dict
 
@@ -188,6 +199,15 @@ class ConnectionResponse:
 
     write_policy = _parse_write_policy(d.pop("write_policy", UNSET))
 
+    def _parse_source_name(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    source_name = _parse_source_name(d.pop("source_name", UNSET))
+
     connection_response = cls(
       connection_id=connection_id,
       provider=provider,
@@ -198,6 +218,7 @@ class ConnectionResponse:
       updated_at=updated_at,
       last_sync=last_sync,
       write_policy=write_policy,
+      source_name=source_name,
     )
 
     connection_response.additional_properties = d

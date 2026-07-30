@@ -108,7 +108,9 @@ def sync_detailed(
   """Create Connection
 
    SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
-  activate. One connection allowed per provider per graph.
+  activate. External: registers a source namespace for an integration that writes through the public
+  API. One connection allowed per provider per graph, except 'external' which allows one per
+  source_name.
 
   Args:
       graph_id (str):
@@ -143,7 +145,9 @@ def sync(
   """Create Connection
 
    SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
-  activate. One connection allowed per provider per graph.
+  activate. External: registers a source namespace for an integration that writes through the public
+  API. One connection allowed per provider per graph, except 'external' which allows one per
+  source_name.
 
   Args:
       graph_id (str):
@@ -173,7 +177,9 @@ async def asyncio_detailed(
   """Create Connection
 
    SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
-  activate. One connection allowed per provider per graph.
+  activate. External: registers a source namespace for an integration that writes through the public
+  API. One connection allowed per provider per graph, except 'external' which allows one per
+  source_name.
 
   Args:
       graph_id (str):
@@ -206,7 +212,9 @@ async def asyncio(
   """Create Connection
 
    SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
-  activate. One connection allowed per provider per graph.
+  activate. External: registers a source namespace for an integration that writes through the public
+  API. One connection allowed per provider per graph, except 'external' which allows one per
+  source_name.
 
   Args:
       graph_id (str):

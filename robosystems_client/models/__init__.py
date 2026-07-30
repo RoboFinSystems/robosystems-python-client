@@ -7,6 +7,9 @@ from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
 from .artifact_response import ArtifactResponse
 from .artifact_response_template_type_0 import ArtifactResponseTemplateType0
+from .assert_metrics_request import AssertMetricsRequest
+from .assert_metrics_response import AssertMetricsResponse
+from .asserted_metric_lite import AssertedMetricLite
 from .association_response import AssociationResponse
 from .attribution_filter import AttributionFilter
 from .auth_response import AuthResponse
@@ -215,6 +218,7 @@ from .execute_event_block_response import ExecuteEventBlockResponse
 from .execute_event_block_response_qb_error_type_0 import (
   ExecuteEventBlockResponseQbErrorType0,
 )
+from .external_connection_config import ExternalConnectionConfig
 from .fact_lite import FactLite
 from .fact_set_lite import FactSetLite
 from .fact_set_lite_provenance_type_0 import FactSetLiteProvenanceType0
@@ -329,6 +333,7 @@ from .memory_recall_request import MemoryRecallRequest
 from .memory_record import MemoryRecord
 from .memory_record_provenance_type_0 import MemoryRecordProvenanceType0
 from .metric_mechanics import MetricMechanics
+from .metric_observation import MetricObservation
 from .o_auth_callback_request import OAuthCallbackRequest
 from .o_auth_callback_response import OAuthCallbackResponse
 from .o_auth_init_request import OAuthInitRequest
@@ -344,6 +349,12 @@ from .operation_costs import OperationCosts
 from .operation_costs_ai_operations import OperationCostsAiOperations
 from .operation_costs_token_pricing import OperationCostsTokenPricing
 from .operation_envelope import OperationEnvelope
+from .operation_envelope_assert_metrics_response import (
+  OperationEnvelopeAssertMetricsResponse,
+)
+from .operation_envelope_assert_metrics_response_status import (
+  OperationEnvelopeAssertMetricsResponseStatus,
+)
 from .operation_envelope_association_response import (
   OperationEnvelopeAssociationResponse,
 )
@@ -835,6 +846,9 @@ __all__ = (
   "APIKeysResponse",
   "ArtifactResponse",
   "ArtifactResponseTemplateType0",
+  "AssertedMetricLite",
+  "AssertMetricsRequest",
+  "AssertMetricsResponse",
   "AssociationResponse",
   "AttributionFilter",
   "AuthResponse",
@@ -1005,6 +1019,7 @@ __all__ = (
   "ExecuteEventBlockRequest",
   "ExecuteEventBlockResponse",
   "ExecuteEventBlockResponseQbErrorType0",
+  "ExternalConnectionConfig",
   "FactLite",
   "FactSetLite",
   "FactSetLiteProvenanceType0",
@@ -1101,6 +1116,7 @@ __all__ = (
   "MemoryRecord",
   "MemoryRecordProvenanceType0",
   "MetricMechanics",
+  "MetricObservation",
   "OAuthCallbackRequest",
   "OAuthCallbackResponse",
   "OAuthInitRequest",
@@ -1112,6 +1128,8 @@ __all__ = (
   "OperationCostsAiOperations",
   "OperationCostsTokenPricing",
   "OperationEnvelope",
+  "OperationEnvelopeAssertMetricsResponse",
+  "OperationEnvelopeAssertMetricsResponseStatus",
   "OperationEnvelopeAssociationResponse",
   "OperationEnvelopeAssociationResponseStatus",
   "OperationEnvelopeBackfillPlanHistoryResponse",
