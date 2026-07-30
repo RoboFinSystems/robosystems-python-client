@@ -181,12 +181,15 @@ from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
 )
 from .detailed_transactions_response_summary import DetailedTransactionsResponseSummary
+from .dimension import Dimension
+from .dimension_type import DimensionType
 from .document_detail_response import DocumentDetailResponse
 from .document_list_item import DocumentListItem
 from .document_list_response import DocumentListResponse
 from .document_section import DocumentSection
 from .download_quota import DownloadQuota
 from .element_lite import ElementLite
+from .element_summary import ElementSummary
 from .element_update_patch import ElementUpdatePatch
 from .element_update_patch_metadata_type_0 import ElementUpdatePatchMetadataType0
 from .email_verification_request import EmailVerificationRequest
@@ -220,6 +223,7 @@ from .execute_event_block_response_qb_error_type_0 import (
 )
 from .external_connection_config import ExternalConnectionConfig
 from .fact_lite import FactLite
+from .fact_record import FactRecord
 from .fact_set_lite import FactSetLite
 from .fact_set_lite_provenance_type_0 import FactSetLiteProvenanceType0
 from .file_info import FileInfo
@@ -830,13 +834,11 @@ from .verification_category_summary import VerificationCategorySummary
 from .verification_result_lite import VerificationResultLite
 from .verification_summary import VerificationSummary
 from .view_axis_config import ViewAxisConfig
-from .view_axis_config_element_labels_type_0 import ViewAxisConfigElementLabelsType0
-from .view_axis_config_member_labels_type_0 import ViewAxisConfigMemberLabelsType0
 from .view_config import ViewConfig
 from .view_metadata import ViewMetadata
 from .view_projections import ViewProjections
 from .view_response import ViewResponse
-from .view_response_presentations import ViewResponsePresentations
+from .view_response_summary_type_0 import ViewResponseSummaryType0
 
 __all__ = (
   "AccountInfo",
@@ -990,12 +992,15 @@ __all__ = (
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
+  "Dimension",
+  "DimensionType",
   "DocumentDetailResponse",
   "DocumentListItem",
   "DocumentListResponse",
   "DocumentSection",
   "DownloadQuota",
   "ElementLite",
+  "ElementSummary",
   "ElementUpdatePatch",
   "ElementUpdatePatchMetadataType0",
   "EmailVerificationRequest",
@@ -1021,6 +1026,7 @@ __all__ = (
   "ExecuteEventBlockResponseQbErrorType0",
   "ExternalConnectionConfig",
   "FactLite",
+  "FactRecord",
   "FactSetLite",
   "FactSetLiteProvenanceType0",
   "FileInfo",
@@ -1425,11 +1431,9 @@ __all__ = (
   "VerificationResultLite",
   "VerificationSummary",
   "ViewAxisConfig",
-  "ViewAxisConfigElementLabelsType0",
-  "ViewAxisConfigMemberLabelsType0",
   "ViewConfig",
   "ViewMetadata",
   "ViewProjections",
   "ViewResponse",
-  "ViewResponsePresentations",
+  "ViewResponseSummaryType0",
 )
