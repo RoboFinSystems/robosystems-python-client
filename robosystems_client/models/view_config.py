@@ -21,16 +21,10 @@ class ViewConfig:
   Attributes:
       rows (list[ViewAxisConfig] | Unset): Row axis configuration
       columns (list[ViewAxisConfig] | Unset): Column axis configuration
-      values (str | Unset): Field to use for values (default: numeric_value) Default: 'numeric_value'.
-      aggregation_function (str | Unset): Aggregation function: sum, average, count Default: 'sum'.
-      fill_value (float | Unset): Value to use for missing data Default: 0.0.
   """
 
   rows: list[ViewAxisConfig] | Unset = UNSET
   columns: list[ViewAxisConfig] | Unset = UNSET
-  values: str | Unset = "numeric_value"
-  aggregation_function: str | Unset = "sum"
-  fill_value: float | Unset = 0.0
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -48,12 +42,6 @@ class ViewConfig:
         columns_item = columns_item_data.to_dict()
         columns.append(columns_item)
 
-    values = self.values
-
-    aggregation_function = self.aggregation_function
-
-    fill_value = self.fill_value
-
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
@@ -61,12 +49,6 @@ class ViewConfig:
       field_dict["rows"] = rows
     if columns is not UNSET:
       field_dict["columns"] = columns
-    if values is not UNSET:
-      field_dict["values"] = values
-    if aggregation_function is not UNSET:
-      field_dict["aggregation_function"] = aggregation_function
-    if fill_value is not UNSET:
-      field_dict["fill_value"] = fill_value
 
     return field_dict
 
@@ -93,18 +75,9 @@ class ViewConfig:
 
         columns.append(columns_item)
 
-    values = d.pop("values", UNSET)
-
-    aggregation_function = d.pop("aggregation_function", UNSET)
-
-    fill_value = d.pop("fill_value", UNSET)
-
     view_config = cls(
       rows=rows,
       columns=columns,
-      values=values,
-      aggregation_function=aggregation_function,
-      fill_value=fill_value,
     )
 
     view_config.additional_properties = d

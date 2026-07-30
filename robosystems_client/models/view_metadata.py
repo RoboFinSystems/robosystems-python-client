@@ -21,6 +21,8 @@ class ViewMetadata:
       source (str): Data source type
       period_start (None | str | Unset): Period start date
       period_end (None | str | Unset): Period end date
+      truncated (bool | Unset): True when more facts matched than `limit` allowed. The returned facts are the most
+          recent by period; narrow the filters or raise `limit` to see the rest. Default: False.
   """
 
   view_id: str
@@ -29,6 +31,7 @@ class ViewMetadata:
   source: str
   period_start: None | str | Unset = UNSET
   period_end: None | str | Unset = UNSET
+  truncated: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -52,6 +55,8 @@ class ViewMetadata:
     else:
       period_end = self.period_end
 
+    truncated = self.truncated
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -66,6 +71,8 @@ class ViewMetadata:
       field_dict["period_start"] = period_start
     if period_end is not UNSET:
       field_dict["period_end"] = period_end
+    if truncated is not UNSET:
+      field_dict["truncated"] = truncated
 
     return field_dict
 
@@ -98,6 +105,8 @@ class ViewMetadata:
 
     period_end = _parse_period_end(d.pop("period_end", UNSET))
 
+    truncated = d.pop("truncated", UNSET)
+
     view_metadata = cls(
       view_id=view_id,
       facts_processed=facts_processed,
@@ -105,6 +114,7 @@ class ViewMetadata:
       source=source,
       period_start=period_start,
       period_end=period_end,
+      truncated=truncated,
     )
 
     view_metadata.additional_properties = d

@@ -112,8 +112,10 @@ def sync_detailed(
   """Build Fact Grid
 
    Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
-  entities, form, and fiscal context. Returns a deduplicated pivot table. Works on both roboledger
-  tenant graphs (post-materialization) and the SEC shared repository.
+  entities, form, and fiscal context. Returns deduplicated facts plus the aspects they span —
+  arranging them into a table is the consumer's job, since collapsing cells safely requires the full
+  aspect signature. Works on both roboledger tenant graphs (post-materialization) and the SEC shared
+  repository.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -154,8 +156,10 @@ def sync(
   """Build Fact Grid
 
    Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
-  entities, form, and fiscal context. Returns a deduplicated pivot table. Works on both roboledger
-  tenant graphs (post-materialization) and the SEC shared repository.
+  entities, form, and fiscal context. Returns deduplicated facts plus the aspects they span —
+  arranging them into a table is the consumer's job, since collapsing cells safely requires the full
+  aspect signature. Works on both roboledger tenant graphs (post-materialization) and the SEC shared
+  repository.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -191,8 +195,10 @@ async def asyncio_detailed(
   """Build Fact Grid
 
    Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
-  entities, form, and fiscal context. Returns a deduplicated pivot table. Works on both roboledger
-  tenant graphs (post-materialization) and the SEC shared repository.
+  entities, form, and fiscal context. Returns deduplicated facts plus the aspects they span —
+  arranging them into a table is the consumer's job, since collapsing cells safely requires the full
+  aspect signature. Works on both roboledger tenant graphs (post-materialization) and the SEC shared
+  repository.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -231,8 +237,10 @@ async def asyncio(
   """Build Fact Grid
 
    Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
-  entities, form, and fiscal context. Returns a deduplicated pivot table. Works on both roboledger
-  tenant graphs (post-materialization) and the SEC shared repository.
+  entities, form, and fiscal context. Returns deduplicated facts plus the aspects they span —
+  arranging them into a table is the consumer's job, since collapsing cells safely requires the full
+  aspect signature. Works on both roboledger tenant graphs (post-materialization) and the SEC shared
+  repository.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -30,6 +30,8 @@ class CreateViewRequest:
       fiscal_period (None | str | Unset): Filter by fiscal period (e.g., 'FY', 'Q1', 'Q2', 'Q3')
       period_type (None | str | Unset): Filter by period type: 'annual', 'quarterly', or 'instant'
       include_summary (bool | Unset): Include summary statistics per element Default: False.
+      limit (int | Unset): Maximum facts to return. Applied after deduplication and sorting, so truncation keeps the
+          most recent periods. Check `metadata.truncated` to see whether more facts matched. Default: 250.
       view_config (ViewConfig | Unset):
   """
 
@@ -43,6 +45,7 @@ class CreateViewRequest:
   fiscal_period: None | str | Unset = UNSET
   period_type: None | str | Unset = UNSET
   include_summary: bool | Unset = False
+  limit: int | Unset = 250
   view_config: ViewConfig | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -95,6 +98,8 @@ class CreateViewRequest:
 
     include_summary = self.include_summary
 
+    limit = self.limit
+
     view_config: dict[str, Any] | Unset = UNSET
     if not isinstance(self.view_config, Unset):
       view_config = self.view_config.to_dict()
@@ -122,6 +127,8 @@ class CreateViewRequest:
       field_dict["period_type"] = period_type
     if include_summary is not UNSET:
       field_dict["include_summary"] = include_summary
+    if limit is not UNSET:
+      field_dict["limit"] = limit
     if view_config is not UNSET:
       field_dict["view_config"] = view_config
 
@@ -187,6 +194,8 @@ class CreateViewRequest:
 
     include_summary = d.pop("include_summary", UNSET)
 
+    limit = d.pop("limit", UNSET)
+
     _view_config = d.pop("view_config", UNSET)
     view_config: ViewConfig | Unset
     if isinstance(_view_config, Unset):
@@ -205,6 +214,7 @@ class CreateViewRequest:
       fiscal_period=fiscal_period,
       period_type=period_type,
       include_summary=include_summary,
+      limit=limit,
       view_config=view_config,
     )
 
