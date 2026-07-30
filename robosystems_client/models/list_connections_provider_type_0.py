@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class ListConnectionsProviderType0(str, Enum):
+  EXTERNAL = "external"
   QUICKBOOKS = "quickbooks"
   SEC = "sec"
 

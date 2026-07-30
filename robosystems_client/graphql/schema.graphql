@@ -44,7 +44,7 @@ type Query {
   statement(reportId: String!, blockType: String!): Statement
   publishLists(limit: Int = null, offset: Int = null): PublishListList
   publishList(listId: String!): PublishListDetail
-  informationBlock(id: ID!, scenarioId: String = null, series: Boolean! = false, seriesHistory: Int = null, seriesForecast: Int = null): InformationBlock
+  informationBlock(id: ID!, scenarioId: String = null, series: Boolean = null, seriesHistory: Int = null, seriesForecast: Int = null): InformationBlock
   informationBlocks(blockType: String = null, category: String = null, limit: Int = null, offset: Int = null, scenarioId: String = null): [InformationBlock!]!
   taxonomyBlock(id: ID!): TaxonomyBlock
   taxonomyBlocks(taxonomyType: String = null, parentTaxonomyId: ID = null, category: String = null, limit: Int = null, offset: Int = null): [TaxonomyBlock!]!
