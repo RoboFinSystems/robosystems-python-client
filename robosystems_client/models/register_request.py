@@ -20,12 +20,15 @@ class RegisterRequest:
       email (str): User's email address
       password (str): User's password (must meet security requirements)
       captcha_token (None | str | Unset): CAPTCHA verification token (required in production)
+      invite_token (None | str | Unset): Org invitation token from an invitation email. When present, the new user
+          joins the inviting organization at the invited role instead of receiving a personal organization.
   """
 
   name: str
   email: str
   password: str
   captcha_token: None | str | Unset = UNSET
+  invite_token: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -41,6 +44,12 @@ class RegisterRequest:
     else:
       captcha_token = self.captcha_token
 
+    invite_token: None | str | Unset
+    if isinstance(self.invite_token, Unset):
+      invite_token = UNSET
+    else:
+      invite_token = self.invite_token
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -52,6 +61,8 @@ class RegisterRequest:
     )
     if captcha_token is not UNSET:
       field_dict["captcha_token"] = captcha_token
+    if invite_token is not UNSET:
+      field_dict["invite_token"] = invite_token
 
     return field_dict
 
@@ -73,11 +84,21 @@ class RegisterRequest:
 
     captcha_token = _parse_captcha_token(d.pop("captcha_token", UNSET))
 
+    def _parse_invite_token(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    invite_token = _parse_invite_token(d.pop("invite_token", UNSET))
+
     register_request = cls(
       name=name,
       email=email,
       password=password,
       captcha_token=captcha_token,
+      invite_token=invite_token,
     )
 
     register_request.additional_properties = d

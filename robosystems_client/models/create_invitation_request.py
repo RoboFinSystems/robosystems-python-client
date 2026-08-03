@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -9,32 +9,28 @@ from attrs import field as _attrs_field
 from ..models.org_role import OrgRole
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="InviteMemberRequest")
+T = TypeVar("T", bound="CreateInvitationRequest")
 
 
 @_attrs_define
-class InviteMemberRequest:
-  """Request to invite a member to an organization.
+class CreateInvitationRequest:
+  """Request to invite a new user to an organization by email.
 
   Attributes:
       email (str):
-      role (None | OrgRole | Unset):  Default: OrgRole.MEMBER.
+      role (OrgRole | Unset):
   """
 
   email: str
-  role: None | OrgRole | Unset = OrgRole.MEMBER
+  role: OrgRole | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     email = self.email
 
-    role: None | str | Unset
-    if isinstance(self.role, Unset):
-      role = UNSET
-    elif isinstance(self.role, OrgRole):
+    role: str | Unset = UNSET
+    if not isinstance(self.role, Unset):
       role = self.role.value
-    else:
-      role = self.role
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -53,30 +49,20 @@ class InviteMemberRequest:
     d = dict(src_dict)
     email = d.pop("email")
 
-    def _parse_role(data: object) -> None | OrgRole | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, str):
-          raise TypeError()
-        role_type_0 = OrgRole(data)
+    _role = d.pop("role", UNSET)
+    role: OrgRole | Unset
+    if isinstance(_role, Unset):
+      role = UNSET
+    else:
+      role = OrgRole(_role)
 
-        return role_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(None | OrgRole | Unset, data)
-
-    role = _parse_role(d.pop("role", UNSET))
-
-    invite_member_request = cls(
+    create_invitation_request = cls(
       email=email,
       role=role,
     )
 
-    invite_member_request.additional_properties = d
-    return invite_member_request
+    create_invitation_request.additional_properties = d
+    return create_invitation_request
 
   @property
   def additional_keys(self) -> list[str]:
