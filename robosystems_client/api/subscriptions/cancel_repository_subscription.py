@@ -106,9 +106,9 @@ def sync_detailed(
 
    Cancel a shared repository subscription. Two modes via the `immediate` flag: omit it (default
   `false`) to cancel at period end (access stays until the period closes); pass `true` with
-  `confirm=<repo_id>` to stop access right away. For user graphs, use `POST
-  /v1/graphs/{graph_id}/operations/delete-graph` — this endpoint rejects user graphs. Requires org
-  owner role.
+  `confirm=<repo_id>` to stop access right away. Members cancel their own subscription; org owners and
+  admins can cancel any member's by passing `user_id`. For user graphs, use `POST
+  /v1/graphs/{graph_id}/operations/delete-graph` — this endpoint rejects user graphs.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -149,9 +149,9 @@ def sync(
 
    Cancel a shared repository subscription. Two modes via the `immediate` flag: omit it (default
   `false`) to cancel at period end (access stays until the period closes); pass `true` with
-  `confirm=<repo_id>` to stop access right away. For user graphs, use `POST
-  /v1/graphs/{graph_id}/operations/delete-graph` — this endpoint rejects user graphs. Requires org
-  owner role.
+  `confirm=<repo_id>` to stop access right away. Members cancel their own subscription; org owners and
+  admins can cancel any member's by passing `user_id`. For user graphs, use `POST
+  /v1/graphs/{graph_id}/operations/delete-graph` — this endpoint rejects user graphs.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -187,9 +187,9 @@ async def asyncio_detailed(
 
    Cancel a shared repository subscription. Two modes via the `immediate` flag: omit it (default
   `false`) to cancel at period end (access stays until the period closes); pass `true` with
-  `confirm=<repo_id>` to stop access right away. For user graphs, use `POST
-  /v1/graphs/{graph_id}/operations/delete-graph` — this endpoint rejects user graphs. Requires org
-  owner role.
+  `confirm=<repo_id>` to stop access right away. Members cancel their own subscription; org owners and
+  admins can cancel any member's by passing `user_id`. For user graphs, use `POST
+  /v1/graphs/{graph_id}/operations/delete-graph` — this endpoint rejects user graphs.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -228,9 +228,9 @@ async def asyncio(
 
    Cancel a shared repository subscription. Two modes via the `immediate` flag: omit it (default
   `false`) to cancel at period end (access stays until the period closes); pass `true` with
-  `confirm=<repo_id>` to stop access right away. For user graphs, use `POST
-  /v1/graphs/{graph_id}/operations/delete-graph` — this endpoint rejects user graphs. Requires org
-  owner role.
+  `confirm=<repo_id>` to stop access right away. Members cancel their own subscription; org owners and
+  admins can cancel any member's by passing `user_id`. For user graphs, use `POST
+  /v1/graphs/{graph_id}/operations/delete-graph` — this endpoint rejects user graphs.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')

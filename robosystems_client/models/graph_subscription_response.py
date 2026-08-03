@@ -25,6 +25,8 @@ class GraphSubscriptionResponse:
       status (str): Subscription status
       base_price_cents (int): Base price in cents
       created_at (str): Creation timestamp
+      user_id (None | str | Unset): Organization member the subscription belongs to. Set for repository subscriptions,
+          which are billed to the org but granted per user.
       current_period_start (None | str | Unset): Current billing period start
       current_period_end (None | str | Unset): Current billing period end
       started_at (None | str | Unset): Subscription start date
@@ -43,6 +45,7 @@ class GraphSubscriptionResponse:
   status: str
   base_price_cents: int
   created_at: str
+  user_id: None | str | Unset = UNSET
   current_period_start: None | str | Unset = UNSET
   current_period_end: None | str | Unset = UNSET
   started_at: None | str | Unset = UNSET
@@ -69,6 +72,12 @@ class GraphSubscriptionResponse:
     base_price_cents = self.base_price_cents
 
     created_at = self.created_at
+
+    user_id: None | str | Unset
+    if isinstance(self.user_id, Unset):
+      user_id = UNSET
+    else:
+      user_id = self.user_id
 
     current_period_start: None | str | Unset
     if isinstance(self.current_period_start, Unset):
@@ -121,6 +130,8 @@ class GraphSubscriptionResponse:
         "created_at": created_at,
       }
     )
+    if user_id is not UNSET:
+      field_dict["user_id"] = user_id
     if current_period_start is not UNSET:
       field_dict["current_period_start"] = current_period_start
     if current_period_end is not UNSET:
@@ -156,6 +167,15 @@ class GraphSubscriptionResponse:
     base_price_cents = d.pop("base_price_cents")
 
     created_at = d.pop("created_at")
+
+    def _parse_user_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    user_id = _parse_user_id(d.pop("user_id", UNSET))
 
     def _parse_current_period_start(data: object) -> None | str | Unset:
       if data is None:
@@ -223,6 +243,7 @@ class GraphSubscriptionResponse:
       status=status,
       base_price_cents=base_price_cents,
       created_at=created_at,
+      user_id=user_id,
       current_period_start=current_period_start,
       current_period_end=current_period_end,
       started_at=started_at,

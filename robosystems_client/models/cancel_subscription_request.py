@@ -26,10 +26,13 @@ class CancelSubscriptionRequest:
               False.
           confirm (None | str | Unset): Required when immediate=True. Must equal the subscription's resource_id (e.g.
               graph_id) to confirm intent.
+          user_id (None | str | Unset): Organization member whose subscription to cancel. Defaults to the caller;
+              canceling another member's requires org owner or admin.
   """
 
   immediate: bool | Unset = False
   confirm: None | str | Unset = UNSET
+  user_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -41,6 +44,12 @@ class CancelSubscriptionRequest:
     else:
       confirm = self.confirm
 
+    user_id: None | str | Unset
+    if isinstance(self.user_id, Unset):
+      user_id = UNSET
+    else:
+      user_id = self.user_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
@@ -48,6 +57,8 @@ class CancelSubscriptionRequest:
       field_dict["immediate"] = immediate
     if confirm is not UNSET:
       field_dict["confirm"] = confirm
+    if user_id is not UNSET:
+      field_dict["user_id"] = user_id
 
     return field_dict
 
@@ -65,9 +76,19 @@ class CancelSubscriptionRequest:
 
     confirm = _parse_confirm(d.pop("confirm", UNSET))
 
+    def _parse_user_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    user_id = _parse_user_id(d.pop("user_id", UNSET))
+
     cancel_subscription_request = cls(
       immediate=immediate,
       confirm=confirm,
+      user_id=user_id,
     )
 
     cancel_subscription_request.additional_properties = d
