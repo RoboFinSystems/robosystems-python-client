@@ -255,6 +255,8 @@ uv publish
 
 **Note:** Only maintainers can publish new versions.
 
+**Release notes:** `tag-release.yml` auto-generates the changelog from changes since the last tag (via the Claude API). For milestone releases, commit curated notes to `.github/release-notes/v<version>.md` _before_ dispatching `create-release.yml` — when that file exists at the tagged ref it replaces the generated changelog (and the release statistics section is skipped).
+
 ## Security
 
 ### Security Vulnerabilities
