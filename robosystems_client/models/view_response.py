@@ -33,6 +33,8 @@ class ViewResponse:
           facts (list[FactRecord] | Unset): Deduplicated fact records
           summary (None | Unset | ViewResponseSummaryType0): Per-element aggregates, only when include_summary=true. Note
               that `total` sums across every returned period, which is meaningful for duration facts and not for instants.
+              Overlapping duration windows sharing a period_end (quarter + year-to-date) contribute only the narrowest window,
+              so a quarter is never double-counted inside its own YTD figure.
   """
 
   metadata: ViewMetadata

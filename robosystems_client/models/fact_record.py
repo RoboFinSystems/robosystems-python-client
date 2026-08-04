@@ -17,7 +17,12 @@ class FactRecord:
   Attributes:
       element_id (str): Element qname (e.g., 'us-gaap:Assets')
       element_name (None | str | Unset): Element local name
+      period_start (None | str | Unset): Period start date (YYYY-MM-DD); null for instant facts. A duration fact is
+          identified by (start, end) — two facts for the same element can share an end date and differ only here (e.g. a
+          quarterly and a year-to-date figure from the same 10-Q).
       period_end (None | str | Unset): Period end date (YYYY-MM-DD)
+      duration_type (None | str | Unset): Period duration classification (e.g. 'quarterly', 'nine_months', 'annual');
+          null for instant facts. Use with period_start to tell overlapping windows apart.
       value (float | None | Unset): Numeric fact value
       unit (None | str | Unset): Unit of measure (e.g., 'USD')
       entity_ticker (None | str | Unset): Entity ticker; present only when an entity filter was applied
@@ -26,7 +31,9 @@ class FactRecord:
 
   element_id: str
   element_name: None | str | Unset = UNSET
+  period_start: None | str | Unset = UNSET
   period_end: None | str | Unset = UNSET
+  duration_type: None | str | Unset = UNSET
   value: float | None | Unset = UNSET
   unit: None | str | Unset = UNSET
   entity_ticker: None | str | Unset = UNSET
@@ -42,11 +49,23 @@ class FactRecord:
     else:
       element_name = self.element_name
 
+    period_start: None | str | Unset
+    if isinstance(self.period_start, Unset):
+      period_start = UNSET
+    else:
+      period_start = self.period_start
+
     period_end: None | str | Unset
     if isinstance(self.period_end, Unset):
       period_end = UNSET
     else:
       period_end = self.period_end
+
+    duration_type: None | str | Unset
+    if isinstance(self.duration_type, Unset):
+      duration_type = UNSET
+    else:
+      duration_type = self.duration_type
 
     value: float | None | Unset
     if isinstance(self.value, Unset):
@@ -81,8 +100,12 @@ class FactRecord:
     )
     if element_name is not UNSET:
       field_dict["element_name"] = element_name
+    if period_start is not UNSET:
+      field_dict["period_start"] = period_start
     if period_end is not UNSET:
       field_dict["period_end"] = period_end
+    if duration_type is not UNSET:
+      field_dict["duration_type"] = duration_type
     if value is not UNSET:
       field_dict["value"] = value
     if unit is not UNSET:
@@ -108,6 +131,15 @@ class FactRecord:
 
     element_name = _parse_element_name(d.pop("element_name", UNSET))
 
+    def _parse_period_start(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    period_start = _parse_period_start(d.pop("period_start", UNSET))
+
     def _parse_period_end(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -116,6 +148,15 @@ class FactRecord:
       return cast(None | str | Unset, data)
 
     period_end = _parse_period_end(d.pop("period_end", UNSET))
+
+    def _parse_duration_type(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    duration_type = _parse_duration_type(d.pop("duration_type", UNSET))
 
     def _parse_value(data: object) -> float | None | Unset:
       if data is None:
@@ -156,7 +197,9 @@ class FactRecord:
     fact_record = cls(
       element_id=element_id,
       element_name=element_name,
+      period_start=period_start,
       period_end=period_end,
+      duration_type=duration_type,
       value=value,
       unit=unit,
       entity_ticker=entity_ticker,
