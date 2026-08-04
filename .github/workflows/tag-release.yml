@@ -50,13 +50,15 @@ jobs:
 
       - name: Check If Tag Exists
         id: check-tag
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
         run: |
-          if [ $(git tag -l "v${{ steps.get-version.outputs.version }}") ]; then
+          if [ -n "$(git tag -l "v$VERSION")" ]; then
             echo "tag_exists=true" >> $GITHUB_OUTPUT
-            echo "Tag v${{ steps.get-version.outputs.version }} already exists"
+            echo "Tag v$VERSION already exists"
           else
             echo "tag_exists=false" >> $GITHUB_OUTPUT
-            echo "Tag v${{ steps.get-version.outputs.version }} does not exist yet"
+            echo "Tag v$VERSION does not exist yet"
           fi
 
       - name: Check for curated release notes
@@ -81,11 +83,14 @@ jobs:
       - name: Analyze changes since last release
         if: steps.check-tag.outputs.tag_exists == 'false'
         id: analyze-changes
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
         run: |
-          VERSION="${{ steps.get-version.outputs.version }}"
-
-          # Get the last release tag
-          LAST_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          # Get the last release tag. The pattern is anchored at both ends so
+          # only strict vMAJOR.MINOR.PATCH tags are eligible — a tag that
+          # merely starts with a version (a suffixed or decorated ref) is not
+          # a release and must never be picked as the diff base.
+          LAST_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
 
           if [ -z "$LAST_TAG" ]; then
             echo "No previous release found, analyzing all commits"
@@ -199,13 +204,16 @@ jobs:
       - name: Call Claude API for changelog
         if: steps.check-tag.outputs.tag_exists == 'false' && steps.curated-notes.outputs.found != 'true'
         id: claude-changelog
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL || 'claude-sonnet-4-6' }}
         run: |
           # Call Claude API with the analysis prompt
           PROMPT=$(cat /tmp/changelog_prompt.txt)
 
           # Create a proper JSON payload using jq to handle escaping
           PAYLOAD=$(jq -n \
-            --arg model "${{ vars.CLAUDE_MODEL || 'claude-sonnet-4-6' }}" \
+            --arg model "$CLAUDE_MODEL" \
             --arg content "$PROMPT" \
             '{
               "model": $model,
@@ -218,11 +226,16 @@ jobs:
               ]
             }')
 
-          RESPONSE=$(curl -s --max-time 60 --retry 3 --retry-delay 10 -X POST "https://api.anthropic.com/v1/messages" \
-            -H "Content-Type: application/json" \
-            -H "x-api-key: ${{ secrets.ANTHROPIC_API_KEY }}" \
-            -H "anthropic-version: 2023-06-01" \
-            -d "$PAYLOAD")
+          # The API key is fed to curl over stdin as a config file rather than
+          # as an -H argument. A shell variable in an -H flag is expanded
+          # before exec, so the literal credential would still land in the
+          # curl process's argv, where it is readable by any other process on
+          # the runner; --config keeps it off the command line entirely.
+          RESPONSE=$(printf 'header = "x-api-key: %s"\n' "$ANTHROPIC_API_KEY" \
+            | curl -s --config - --max-time 60 --retry 3 --retry-delay 10 -X POST "https://api.anthropic.com/v1/messages" \
+              -H "Content-Type: application/json" \
+              -H "anthropic-version: 2023-06-01" \
+              -d "$PAYLOAD")
 
           # Check for API errors
           if echo "$RESPONSE" | jq -e '.error' > /dev/null; then
@@ -303,11 +316,13 @@ jobs:
 
       - name: Create Release Tag
         if: steps.check-tag.outputs.tag_exists == 'false'
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "v${{ steps.get-version.outputs.version }}" -m "Release v${{ steps.get-version.outputs.version }}"
-          git push origin "v${{ steps.get-version.outputs.version }}"
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
 
       - name: Create GitHub Release
         if: steps.check-tag.outputs.tag_exists == 'false'
@@ -327,10 +342,13 @@ jobs:
         if: steps.check-tag.outputs.tag_exists == 'false'
         # SECURITY (H2): the changelog (generated or curated) is untrusted;
         # it is read from the file written by the compose step rather than
-        # interpolated with ${{ ... }} into the shell.
+        # interpolated with ${{ ... }} into the shell. The version and the
+        # previous tag are likewise passed via env — both originate outside
+        # this workflow (pyproject.toml and the git tag list).
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
+          LAST_TAG: ${{ steps.analyze-changes.outputs.last_tag }}
         run: |
-          VERSION="${{ steps.get-version.outputs.version }}"
-
           echo "## 🚀 Release v$VERSION Created" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Release URL:** [v$VERSION](https://github.com/RoboFinSystems/robosystems-python-client/releases/tag/v$VERSION)" >> $GITHUB_STEP_SUMMARY
@@ -340,7 +358,7 @@ jobs:
           echo "- **Files Changed:** ${{ steps.analyze-changes.outputs.files_changed }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Lines Added:** ${{ steps.analyze-changes.outputs.additions }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Lines Deleted:** ${{ steps.analyze-changes.outputs.deletions }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Previous Release:** ${{ steps.analyze-changes.outputs.last_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Previous Release:** $LAST_TAG" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📝 Changelog" >> $GITHUB_STEP_SUMMARY
           cat /tmp/release_changelog.md >> $GITHUB_STEP_SUMMARY
