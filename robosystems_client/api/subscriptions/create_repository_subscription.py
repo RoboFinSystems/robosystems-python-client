@@ -114,7 +114,10 @@ def sync_detailed(
   """Create Repository Subscription
 
    For shared repositories only (sec, industry, etc.). User graph subscriptions are created
-  automatically during provisioning.
+  automatically during provisioning. Subscribes the caller by default; org owners and admins may
+  subscribe another member of their organization by passing `user_id`. Billing is charged to the
+  organization either way — repository access is per-user, so the subscriber determines who receives
+  access.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -149,7 +152,10 @@ def sync(
   """Create Repository Subscription
 
    For shared repositories only (sec, industry, etc.). User graph subscriptions are created
-  automatically during provisioning.
+  automatically during provisioning. Subscribes the caller by default; org owners and admins may
+  subscribe another member of their organization by passing `user_id`. Billing is charged to the
+  organization either way — repository access is per-user, so the subscriber determines who receives
+  access.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -179,7 +185,10 @@ async def asyncio_detailed(
   """Create Repository Subscription
 
    For shared repositories only (sec, industry, etc.). User graph subscriptions are created
-  automatically during provisioning.
+  automatically during provisioning. Subscribes the caller by default; org owners and admins may
+  subscribe another member of their organization by passing `user_id`. Billing is charged to the
+  organization either way — repository access is per-user, so the subscriber determines who receives
+  access.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
@@ -212,7 +221,10 @@ async def asyncio(
   """Create Repository Subscription
 
    For shared repositories only (sec, industry, etc.). User graph subscriptions are created
-  automatically during provisioning.
+  automatically during provisioning. Subscribes the caller by default; org owners and admins may
+  subscribe another member of their organization by passing `user_id`. Billing is charged to the
+  organization either way — repository access is per-user, so the subscriber determines who receives
+  access.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec', 'industry')
