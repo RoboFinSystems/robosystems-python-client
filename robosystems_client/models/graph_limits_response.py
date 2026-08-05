@@ -13,6 +13,7 @@ if TYPE_CHECKING:
   from ..models.content_limits import ContentLimits
   from ..models.copy_operation_limits import CopyOperationLimits
   from ..models.credit_limits import CreditLimits
+  from ..models.document_limits import DocumentLimits
   from ..models.instance_usage import InstanceUsage
   from ..models.query_limits import QueryLimits
   from ..models.rate_limits import RateLimits
@@ -37,6 +38,7 @@ class GraphLimitsResponse:
       backups (BackupLimits): Backup operation limits.
       rate_limits (RateLimits): API rate limits.
       credits_ (CreditLimits | None | Unset): AI credit limits (if applicable)
+      documents (DocumentLimits | None | Unset): Knowledge-base document usage and tier cap (user graphs only)
       content (ContentLimits | None | Unset): Per-operation materialization limits (if applicable)
       instance (InstanceUsage | None | Unset): Aggregate instance storage usage (user graphs only)
   """
@@ -51,6 +53,7 @@ class GraphLimitsResponse:
   backups: BackupLimits
   rate_limits: RateLimits
   credits_: CreditLimits | None | Unset = UNSET
+  documents: DocumentLimits | None | Unset = UNSET
   content: ContentLimits | None | Unset = UNSET
   instance: InstanceUsage | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -58,6 +61,7 @@ class GraphLimitsResponse:
   def to_dict(self) -> dict[str, Any]:
     from ..models.content_limits import ContentLimits
     from ..models.credit_limits import CreditLimits
+    from ..models.document_limits import DocumentLimits
     from ..models.instance_usage import InstanceUsage
 
     graph_id = self.graph_id
@@ -85,6 +89,14 @@ class GraphLimitsResponse:
       credits_ = self.credits_.to_dict()
     else:
       credits_ = self.credits_
+
+    documents: dict[str, Any] | None | Unset
+    if isinstance(self.documents, Unset):
+      documents = UNSET
+    elif isinstance(self.documents, DocumentLimits):
+      documents = self.documents.to_dict()
+    else:
+      documents = self.documents
 
     content: dict[str, Any] | None | Unset
     if isinstance(self.content, Unset):
@@ -119,6 +131,8 @@ class GraphLimitsResponse:
     )
     if credits_ is not UNSET:
       field_dict["credits"] = credits_
+    if documents is not UNSET:
+      field_dict["documents"] = documents
     if content is not UNSET:
       field_dict["content"] = content
     if instance is not UNSET:
@@ -132,6 +146,7 @@ class GraphLimitsResponse:
     from ..models.content_limits import ContentLimits
     from ..models.copy_operation_limits import CopyOperationLimits
     from ..models.credit_limits import CreditLimits
+    from ..models.document_limits import DocumentLimits
     from ..models.instance_usage import InstanceUsage
     from ..models.query_limits import QueryLimits
     from ..models.rate_limits import RateLimits
@@ -172,6 +187,23 @@ class GraphLimitsResponse:
       return cast(CreditLimits | None | Unset, data)
 
     credits_ = _parse_credits_(d.pop("credits", UNSET))
+
+    def _parse_documents(data: object) -> DocumentLimits | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        documents_type_0 = DocumentLimits.from_dict(data)
+
+        return documents_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(DocumentLimits | None | Unset, data)
+
+    documents = _parse_documents(d.pop("documents", UNSET))
 
     def _parse_content(data: object) -> ContentLimits | None | Unset:
       if data is None:
@@ -218,6 +250,7 @@ class GraphLimitsResponse:
       backups=backups,
       rate_limits=rate_limits,
       credits_=credits_,
+      documents=documents,
       content=content,
       instance=instance,
     )

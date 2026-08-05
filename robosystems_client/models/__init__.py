@@ -186,6 +186,7 @@ from .detailed_transactions_response_summary import DetailedTransactionsResponse
 from .dimension import Dimension
 from .dimension_type import DimensionType
 from .document_detail_response import DocumentDetailResponse
+from .document_limits import DocumentLimits
 from .document_list_item import DocumentListItem
 from .document_list_response import DocumentListResponse
 from .document_section import DocumentSection
@@ -1006,6 +1007,7 @@ __all__ = (
   "Dimension",
   "DimensionType",
   "DocumentDetailResponse",
+  "DocumentLimits",
   "DocumentListItem",
   "DocumentListResponse",
   "DocumentSection",
