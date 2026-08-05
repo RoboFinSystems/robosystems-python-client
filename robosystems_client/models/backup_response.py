@@ -6,6 +6,8 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
 T = TypeVar("T", bound="BackupResponse")
 
 
@@ -31,6 +33,9 @@ class BackupResponse:
       created_at (str):
       completed_at (None | str):
       expires_at (None | str):
+      download_extension (None | str | Unset): Extension the download will carry, and therefore how to unpack it:
+          '.lbug.zip' is a ZIP holding the LadybugDB database file, '.lbug.zst' is zstd-compressed (`zstd -d`). Null when
+          the backup is encrypted and so cannot be downloaded.
   """
 
   backup_id: str
@@ -50,6 +55,7 @@ class BackupResponse:
   created_at: str
   completed_at: None | str
   expires_at: None | str
+  download_extension: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -89,6 +95,12 @@ class BackupResponse:
     expires_at: None | str
     expires_at = self.expires_at
 
+    download_extension: None | str | Unset
+    if isinstance(self.download_extension, Unset):
+      download_extension = UNSET
+    else:
+      download_extension = self.download_extension
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -112,6 +124,8 @@ class BackupResponse:
         "expires_at": expires_at,
       }
     )
+    if download_extension is not UNSET:
+      field_dict["download_extension"] = download_extension
 
     return field_dict
 
@@ -162,6 +176,15 @@ class BackupResponse:
 
     expires_at = _parse_expires_at(d.pop("expires_at"))
 
+    def _parse_download_extension(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    download_extension = _parse_download_extension(d.pop("download_extension", UNSET))
+
     backup_response = cls(
       backup_id=backup_id,
       graph_id=graph_id,
@@ -180,6 +203,7 @@ class BackupResponse:
       created_at=created_at,
       completed_at=completed_at,
       expires_at=expires_at,
+      download_extension=download_extension,
     )
 
     backup_response.additional_properties = d
