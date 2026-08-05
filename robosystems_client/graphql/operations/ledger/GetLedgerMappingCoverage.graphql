@@ -1,0 +1,6 @@
+query GetLedgerMappingCoverage($mappingId: String!) {
+  mappingCoverage(mappingId: $mappingId) {
+    mappingId totalCoaElements mappedCount unmappedCount
+    coveragePercent highConfidence mediumConfidence lowConfidence
+  }
+}

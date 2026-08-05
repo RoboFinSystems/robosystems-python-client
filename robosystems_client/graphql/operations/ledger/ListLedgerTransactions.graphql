@@ -1,0 +1,21 @@
+query ListLedgerTransactions(
+  $type: String
+  $startDate: Date
+  $endDate: Date
+  $limit: Int! = 100
+  $offset: Int! = 0
+) {
+  transactions(
+    type: $type
+    startDate: $startDate
+    endDate: $endDate
+    limit: $limit
+    offset: $offset
+  ) {
+    transactions {
+      id number type category amount currency date dueDate
+      merchantName referenceNumber description source status
+    }
+    pagination { total limit offset hasMore }
+  }
+}

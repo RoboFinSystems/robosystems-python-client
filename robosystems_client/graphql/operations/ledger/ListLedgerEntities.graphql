@@ -1,0 +1,19 @@
+query ListLedgerEntities($source: String) {
+  entities(source: $source) {
+    id
+    name
+    legalName
+    ticker
+    cik
+    industry
+    entityType
+    status
+    isParent
+    parentEntityId
+    source
+    sourceGraphId
+    connectionId
+    createdAt
+    updatedAt
+  }
+}

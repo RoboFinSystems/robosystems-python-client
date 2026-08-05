@@ -1,0 +1,16 @@
+query GetLedgerTrialBalance($startDate: Date, $endDate: Date) {
+  trialBalance(startDate: $startDate, endDate: $endDate) {
+    totalDebits
+    totalCredits
+    rows {
+      accountId
+      accountCode
+      accountName
+      trait
+      accountType
+      totalDebits
+      totalCredits
+      netBalance
+    }
+  }
+}

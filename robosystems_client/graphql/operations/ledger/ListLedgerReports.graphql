@@ -1,0 +1,12 @@
+query ListLedgerReports {
+  reports {
+    reports {
+      id name taxonomyId generationStatus periodType
+      periodStart periodEnd comparative mappingId aiGenerated
+      createdAt lastGenerated entityName
+      sourceGraphId sourceReportId sharedAt
+      periods { start end label }
+      structures { id name blockType }
+    }
+  }
+}

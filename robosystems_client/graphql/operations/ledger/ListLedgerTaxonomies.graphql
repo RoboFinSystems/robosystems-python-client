@@ -1,0 +1,8 @@
+query ListLedgerTaxonomies($taxonomyType: String) {
+  taxonomies(taxonomyType: $taxonomyType) {
+    taxonomies {
+      id name description taxonomyType version standard namespaceUri
+      isShared isActive isLocked sourceTaxonomyId targetTaxonomyId
+    }
+  }
+}

@@ -1,0 +1,11 @@
+query GetLedgerClosingBookStructures {
+  closingBookStructures {
+    hasData
+    categories {
+      label
+      items {
+        id name itemType blockType reportId status
+      }
+    }
+  }
+}

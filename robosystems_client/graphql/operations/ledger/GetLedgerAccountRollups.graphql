@@ -1,0 +1,32 @@
+query GetLedgerAccountRollups(
+  $mappingId: String
+  $startDate: Date
+  $endDate: Date
+) {
+  accountRollups(
+    mappingId: $mappingId
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    mappingId
+    mappingName
+    totalMapped
+    totalUnmapped
+    groups {
+      reportingElementId
+      reportingName
+      reportingQname
+      trait
+      balanceType
+      total
+      accounts {
+        elementId
+        accountName
+        accountCode
+        totalDebits
+        totalCredits
+        netBalance
+      }
+    }
+  }
+}

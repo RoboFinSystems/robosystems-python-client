@@ -1,0 +1,23 @@
+query GetLedgerMappedTrialBalance(
+  $mappingId: String!
+  $startDate: Date
+  $endDate: Date
+) {
+  mappedTrialBalance(
+    mappingId: $mappingId
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    mappingId
+    rows {
+      reportingElementId
+      qname
+      reportingName
+      trait
+      balanceType
+      totalDebits
+      totalCredits
+      netBalance
+    }
+  }
+}

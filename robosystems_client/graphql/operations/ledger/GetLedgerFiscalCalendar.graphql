@@ -1,0 +1,8 @@
+query GetLedgerFiscalCalendar {
+  fiscalCalendar {
+    graphId fiscalYearStartMonth closedThrough closeTarget
+    gapPeriods catchUpSequence closeableNow blockers
+    lastCloseAt initializedAt lastSyncAt
+    periods { name startDate endDate status closedAt }
+  }
+}

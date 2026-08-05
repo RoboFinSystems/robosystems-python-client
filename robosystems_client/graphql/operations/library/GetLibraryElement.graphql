@@ -1,0 +1,27 @@
+query GetLibraryElement($id: ID, $qname: String) {
+  libraryElement(id: $id, qname: $qname) {
+    id
+    qname
+    namespace
+    name
+    trait
+    balanceType
+    periodType
+    isAbstract
+    isMonetary
+    elementType
+    source
+    taxonomyId
+    parentId
+    labels {
+      role
+      language
+      text
+    }
+    references {
+      refType
+      citation
+      uri
+    }
+  }
+}

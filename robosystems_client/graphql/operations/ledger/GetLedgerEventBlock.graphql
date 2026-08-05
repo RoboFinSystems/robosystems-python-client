@@ -1,0 +1,9 @@
+query GetLedgerEventBlock($id: String!) {
+  eventBlock(id: $id) {
+    id eventType eventCategory eventClass status occurredAt effectiveAt
+    source externalId externalUrl amount currency description metadata
+    dimensionIds agentId resourceType resourceElementId
+    replacedByEventId replacesEventId obligatedByEventId dischargesEventId
+    createdAt createdBy
+  }
+}

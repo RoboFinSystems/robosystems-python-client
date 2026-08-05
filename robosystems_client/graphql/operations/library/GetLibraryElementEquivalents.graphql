@@ -1,0 +1,18 @@
+query GetLibraryElementEquivalents($id: ID!) {
+  libraryElementEquivalents(id: $id) {
+    element {
+      id
+      qname
+      name
+      trait
+      source
+    }
+    equivalents {
+      id
+      qname
+      name
+      trait
+      source
+    }
+  }
+}

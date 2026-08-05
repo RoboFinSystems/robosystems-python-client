@@ -1,0 +1,7 @@
+query GetLedgerAgent($id: String!) {
+  agent(id: $id) {
+    id agentType name legalName taxId registrationNumber duns lei
+    email phone address source externalId
+    isActive is1099Recipient createdAt updatedAt createdBy
+  }
+}

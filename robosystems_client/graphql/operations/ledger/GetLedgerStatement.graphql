@@ -1,0 +1,11 @@
+query GetLedgerStatement($reportId: String!, $blockType: String!) {
+  statement(reportId: $reportId, blockType: $blockType) {
+    reportId structureId structureName blockType unmappedCount
+    periods { start end label }
+    rows {
+      elementId elementQname elementName trait
+      values isSubtotal depth
+    }
+    validation { passed checks failures warnings }
+  }
+}

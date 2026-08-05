@@ -1,0 +1,19 @@
+query ListLedgerAgents(
+  $agentType: String
+  $source: String
+  $isActive: Boolean = true
+  $limit: Int! = 50
+  $offset: Int! = 0
+) {
+  agents(
+    agentType: $agentType
+    source: $source
+    isActive: $isActive
+    limit: $limit
+    offset: $offset
+  ) {
+    id agentType name legalName taxId registrationNumber duns lei
+    email phone address source externalId
+    isActive is1099Recipient createdAt updatedAt createdBy
+  }
+}

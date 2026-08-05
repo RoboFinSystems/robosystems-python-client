@@ -1,0 +1,22 @@
+query GetInvestorPortfolioBlock($portfolioId: String!) {
+  portfolioBlock(portfolioId: $portfolioId) {
+    id name description strategy
+    inceptionDate baseCurrency
+    owner { id name sourceGraphId }
+    positions {
+      id quantity quantityType
+      costBasisDollars currentValueDollars
+      valuationDate valuationSource
+      acquisitionDate
+      status notes
+      security {
+        id name securityType securitySubtype
+        isActive sourceGraphId
+        issuer { id name sourceGraphId }
+      }
+    }
+    totalCostBasisDollars totalCurrentValueDollars
+    activePositionCount
+    createdAt updatedAt
+  }
+}

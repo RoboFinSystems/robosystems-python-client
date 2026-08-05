@@ -1,0 +1,6 @@
+query GetLedgerReportingTaxonomy {
+  reportingTaxonomy {
+    id name description taxonomyType version standard namespaceUri
+    isShared isActive isLocked sourceTaxonomyId targetTaxonomyId
+  }
+}

@@ -1,0 +1,27 @@
+query SearchLibraryElements($query: String!, $source: String, $limit: Int! = 50) {
+  searchLibraryElements(query: $query, source: $source, limit: $limit) {
+    id
+    qname
+    namespace
+    name
+    trait
+    balanceType
+    periodType
+    isAbstract
+    isMonetary
+    elementType
+    source
+    taxonomyId
+    parentId
+    labels {
+      role
+      language
+      text
+    }
+    references {
+      refType
+      citation
+      uri
+    }
+  }
+}

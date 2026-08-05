@@ -1,0 +1,7 @@
+query ListLedgerMappings {
+  mappings {
+    structures {
+      id name description blockType taxonomyId isActive
+    }
+  }
+}

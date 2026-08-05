@@ -1,0 +1,9 @@
+query GetLedgerReportDownloadUrl(
+  $reportId: String!
+  $format: ReportDownloadFormat = JSONLD
+  $expiresIn: Int = 300
+) {
+  reportDownloadUrl(reportId: $reportId, format: $format, expiresIn: $expiresIn) {
+    downloadUrl expiresAt contentType format generationCount
+  }
+}

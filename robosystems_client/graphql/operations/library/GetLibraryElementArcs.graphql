@@ -1,0 +1,20 @@
+query GetLibraryElementArcs($id: ID!) {
+  libraryElementArcs(id: $id) {
+    id
+    direction
+    associationType
+    arcrole
+    taxonomyId
+    taxonomyStandard
+    taxonomyName
+    structureId
+    structureName
+    peer {
+      id
+      qname
+      name
+      trait
+      source
+    }
+  }
+}
