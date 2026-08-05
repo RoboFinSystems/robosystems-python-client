@@ -33,7 +33,21 @@ jobs:
       - name: Run Lint
         run: |
           uv run ruff check .
+          uv run ruff format --check .
 
       - name: Run type checking
         run: |
           uv run basedpyright
+
+      - name: GraphQL codegen drift gate
+        run: |
+          # Regenerate typed models from the checked-in schema + operations
+          # and fail if the result differs from what's committed. Keeps
+          # generated/ honest against schema.graphql and operations/*.graphql.
+          bin/generate-graphql.sh
+          if [ -n "$(git status --porcelain robosystems_client/graphql/generated/)" ]; then
+            git status --porcelain robosystems_client/graphql/generated/
+            git diff robosystems_client/graphql/generated/ | head -100
+            echo "::error::Generated GraphQL models are stale — run 'just generate-graphql' and commit the result."
+            exit 1
+          fi
