@@ -1,0 +1,8 @@
+query MappingCandidates($classification: String!) {
+  mappingCandidates(classification: $classification) {
+    id
+    name
+    qname
+    trait
+  }
+}

@@ -8,6 +8,43 @@ from ..client import Client, AuthenticatedClient
 from .facade import RoboSystemsClients, RoboSystemsClientConfig
 
 
+def _apply_auth_header(headers: Dict[str, str], credential: str) -> None:
+  """Set the correct auth header for a credential, routed by shape.
+
+  The backend accepts two credential formats, and they go in DIFFERENT
+  headers — not interchangeable (see ``graphql/client.py``):
+
+  - Long-lived API keys (``rfs…`` prefix) → ``X-API-Key``. Validated
+    against the api_keys table.
+  - Short-lived JWTs → ``Authorization: Bearer …``. Validated by the
+    JWT middleware.
+
+  Sending a JWT as ``X-API-Key`` (or an API key as Bearer) both fail
+  with 401 "Invalid API key" — so exactly one header is set, never both.
+  """
+  if credential.startswith("rfs"):
+    headers["X-API-Key"] = credential
+  else:
+    headers["Authorization"] = f"Bearer {credential}"
+
+
+def _build_sdk_client(base_url: str, credential: str, headers: Dict[str, str]):
+  """Build an :class:`AuthenticatedClient` with prefix-routed auth.
+
+  Mirrors ``_apply_auth_header``: ``rfs…`` keys ride in ``X-API-Key``
+  (no prefix); anything else rides in ``Authorization: Bearer …``.
+  """
+  if credential.startswith("rfs"):
+    return AuthenticatedClient(
+      base_url=base_url,
+      token=credential,
+      prefix="",
+      auth_header_name="X-API-Key",
+      headers=headers,
+    )
+  return AuthenticatedClient(base_url=base_url, token=credential, headers=headers)
+
+
 class AuthenticatedClients(RoboSystemsClients):
   """Extensions with proper authentication integration"""
 
@@ -30,11 +67,12 @@ class AuthenticatedClients(RoboSystemsClients):
     elif not config.base_url:
       config.base_url = "https://api.robosystems.ai"
 
-    # Add authentication headers
+    # Add the authentication header, routed by credential shape —
+    # rfs… API keys go in X-API-Key, JWTs in Authorization: Bearer.
+    # Never both: the copy in the wrong header is guaranteed-invalid.
     if not config.headers:
       config.headers = {}
-    config.headers["X-API-Key"] = api_key
-    config.headers["Authorization"] = f"Bearer {api_key}"
+    _apply_auth_header(config.headers, api_key)
 
     # Store the token for later use by child clients
     self._token = api_key
@@ -42,8 +80,8 @@ class AuthenticatedClients(RoboSystemsClients):
     super().__init__(config)
 
     # Store authenticated client for SDK operations
-    self._authenticated_client = AuthenticatedClient(
-      base_url=config.base_url, token=api_key, headers=config.headers
+    self._authenticated_client = _build_sdk_client(
+      config.base_url, api_key, config.headers
     )
 
   @property
@@ -142,10 +180,13 @@ class TokenClients(RoboSystemsClients):
     elif not config.base_url:
       config.base_url = "https://api.robosystems.ai"
 
-    # Add authentication headers
+    # Add the authentication header, routed by credential shape.
+    # JWTs (the expected input here) ride in Authorization: Bearer;
+    # if a caller hands this class an rfs… API key anyway, route it
+    # to X-API-Key instead of sending a guaranteed-invalid Bearer.
     if not config.headers:
       config.headers = {}
-    config.headers["Authorization"] = f"Bearer {token}"
+    _apply_auth_header(config.headers, token)
 
     # Store the token for later use by child clients
     self._token = token
@@ -153,8 +194,8 @@ class TokenClients(RoboSystemsClients):
     super().__init__(config)
 
     # Store authenticated client
-    self._authenticated_client = AuthenticatedClient(
-      base_url=config.base_url, token=token, headers=config.headers
+    self._authenticated_client = _build_sdk_client(
+      config.base_url, token, config.headers
     )
 
   @property

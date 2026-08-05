@@ -42,6 +42,7 @@ from ..api.extensions_robo_investor.update_security import (
 )
 from ..client import AuthenticatedClient
 from ..graphql.client import GraphQLClient, strip_none_vars
+from .token_utils import resolve_config_token
 from ..graphql.generated.get_investor_holdings import (
   GetInvestorHoldings,
 )
@@ -116,22 +117,26 @@ class InvestorClient:
     self.timeout = config.get("timeout", 60)
 
   def _get_client(self) -> AuthenticatedClient:
-    if not self.token:
+    # Resolved per call: a configured `token_provider` wins over the
+    # static token, so rotating credentials are picked up per-request.
+    token = resolve_config_token(self.config)
+    if not token:
       raise RuntimeError("No API key provided. Set X-API-Key in headers.")
     return AuthenticatedClient(
       base_url=self.base_url,
-      token=self.token,
+      token=token,
       prefix="",
       auth_header_name="X-API-Key",
       headers=self.headers,
     )
 
   def _get_graphql_client(self) -> GraphQLClient:
-    if not self.token:
+    token = resolve_config_token(self.config)
+    if not token:
       raise RuntimeError("No API key provided. Set X-API-Key in headers.")
     return GraphQLClient(
       base_url=self.base_url,
-      token=self.token,
+      token=token,
       headers=self.headers,
       timeout=self.timeout,
     )

@@ -123,6 +123,7 @@ class GetInformationBlockInformationBlockFactSet(BaseModel):
   factset_type: str = Field(alias="factsetType")
   entity_id: str = Field(alias="entityId")
   report_id: Optional[str] = Field(alias="reportId")
+  scenario_id: Optional[str] = Field(alias="scenarioId")
   provenance: Optional[Any]
 
 
@@ -160,6 +161,7 @@ class GetInformationBlockInformationBlockVerificationSummaryByCategory(BaseModel
 
 class GetInformationBlockInformationBlockView(BaseModel):
   rendering: Optional["GetInformationBlockInformationBlockViewRendering"]
+  chart: Optional["GetInformationBlockInformationBlockViewChart"]
 
 
 class GetInformationBlockInformationBlockViewRendering(BaseModel):
@@ -175,6 +177,7 @@ class GetInformationBlockInformationBlockViewRenderingRows(BaseModel):
   element_name: str = Field(alias="elementName")
   classification: Optional[str]
   balance_type: Optional[str] = Field(alias="balanceType")
+  item_type: Optional[str] = Field(alias="itemType")
   values: list[Optional[float]]
   text_value: Optional[str] = Field(alias="textValue")
   is_subtotal: bool = Field(alias="isSubtotal")
@@ -185,6 +188,7 @@ class GetInformationBlockInformationBlockViewRenderingPeriods(BaseModel):
   start: str
   end: str
   label: Optional[str]
+  forecast: Optional[bool]
 
 
 class GetInformationBlockInformationBlockViewRenderingValidation(BaseModel):
@@ -194,9 +198,28 @@ class GetInformationBlockInformationBlockViewRenderingValidation(BaseModel):
   warnings: list[str]
 
 
+class GetInformationBlockInformationBlockViewChart(BaseModel):
+  panels: list["GetInformationBlockInformationBlockViewChartPanels"]
+
+
+class GetInformationBlockInformationBlockViewChartPanels(BaseModel):
+  label: Optional[str]
+  item_type: Optional[str] = Field(alias="itemType")
+  kind: str
+  series: list["GetInformationBlockInformationBlockViewChartPanelsSeries"]
+
+
+class GetInformationBlockInformationBlockViewChartPanelsSeries(BaseModel):
+  key: str
+  element_id: str = Field(alias="elementId")
+  label: str
+
+
 GetInformationBlock.model_rebuild()
 GetInformationBlockInformationBlock.model_rebuild()
 GetInformationBlockInformationBlockRules.model_rebuild()
 GetInformationBlockInformationBlockVerificationSummary.model_rebuild()
 GetInformationBlockInformationBlockView.model_rebuild()
 GetInformationBlockInformationBlockViewRendering.model_rebuild()
+GetInformationBlockInformationBlockViewChart.model_rebuild()
+GetInformationBlockInformationBlockViewChartPanels.model_rebuild()

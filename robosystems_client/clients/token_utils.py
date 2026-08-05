@@ -7,7 +7,7 @@ import base64
 import json
 import os
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union
 from enum import Enum
 import logging
 
@@ -415,3 +415,31 @@ def extract_token_from_client(client) -> Optional[str]:
         return extract_jwt_from_header(config["headers"])
 
   return None
+
+
+# ── Dynamic credential resolution (token_provider) ─────────────────────
+
+# Zero-arg callable returning the current auth credential (or None for
+# "no credential available right now"). Mirrors the TypeScript client's
+# `TokenProvider`. Use instead of a static `token` when the credential
+# can rotate during the facade's lifetime (short-lived JWTs); it is
+# consulted on every request, so keep it cheap — an in-memory or
+# environment lookup, not a network call.
+TokenProvider = Callable[[], Optional[str]]
+
+
+def resolve_config_token(config: Dict[str, Any]) -> Optional[str]:
+  """Resolve the current auth credential from a facade config dict.
+
+  ``token_provider`` (a :data:`TokenProvider` callable) wins over the
+  static ``token`` when set — the facades call this on every request
+  (each `_get_client` / `_get_graphql_client` builds a fresh client),
+  so JWT refreshes are picked up without rebuilding the facade.
+
+  Pair with :class:`TokenManager` when you need refresh scheduling: keep
+  a manager instance and pass ``token_provider=manager.get_token``.
+  """
+  provider = config.get("token_provider")
+  if provider is not None:
+    return provider()
+  return config.get("token")

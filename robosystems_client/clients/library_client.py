@@ -22,6 +22,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..graphql.client import GraphQLClient, strip_none_vars
+from .token_utils import resolve_config_token
 from ..graphql.generated.get_library_element import (
   GetLibraryElement,
 )
@@ -31,6 +32,10 @@ from ..graphql.generated.get_library_element import (
 from ..graphql.generated.get_library_element_arcs import (
   GetLibraryElementArcs,
   GetLibraryElementArcsLibraryElementArcs,
+)
+from ..graphql.generated.get_library_element_classifications import (
+  GetLibraryElementClassifications,
+  GetLibraryElementClassificationsLibraryElementClassifications,
 )
 from ..graphql.generated.get_library_element_equivalents import (
   GetLibraryElementEquivalents,
@@ -48,6 +53,10 @@ from ..graphql.generated.list_library_elements import (
   ListLibraryElements,
   ListLibraryElementsLibraryElements,
 )
+from ..graphql.generated.list_library_structures import (
+  ListLibraryStructures,
+  ListLibraryStructuresLibraryStructures,
+)
 from ..graphql.generated.list_library_taxonomies import (
   ListLibraryTaxonomies,
   ListLibraryTaxonomiesLibraryTaxonomies,
@@ -57,10 +66,12 @@ from ..graphql.generated.list_library_taxonomy_arcs import (
 )
 from ..graphql.generated.operations import (
   GET_LIBRARY_ELEMENT_ARCS_GQL,
+  GET_LIBRARY_ELEMENT_CLASSIFICATIONS_GQL,
   GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL,
   GET_LIBRARY_ELEMENT_GQL,
   GET_LIBRARY_TAXONOMY_GQL,
   LIST_LIBRARY_ELEMENTS_GQL,
+  LIST_LIBRARY_STRUCTURES_GQL,
   LIST_LIBRARY_TAXONOMIES_GQL,
   LIST_LIBRARY_TAXONOMY_ARCS_GQL,
   SEARCH_LIBRARY_ELEMENTS_GQL,
@@ -89,11 +100,14 @@ class LibraryClient:
     self.timeout = config.get("timeout", 60)
 
   def _get_graphql_client(self) -> GraphQLClient:
-    if not self.token:
+    # Resolved per call: a configured `token_provider` wins over the
+    # static token, so rotating credentials are picked up per-request.
+    token = resolve_config_token(self.config)
+    if not token:
       raise RuntimeError("No API key provided. Set token in config.")
     return GraphQLClient(
       base_url=self.base_url,
-      token=self.token,
+      token=token,
       headers=self.headers,
       timeout=self.timeout,
     )
@@ -221,10 +235,15 @@ class LibraryClient:
     graph_id: str = LIBRARY_GRAPH_ID,
     *,
     association_type: str | None = None,
+    structure_id: str | None = None,
     limit: int = 200,
     offset: int = 0,
   ) -> ListLibraryTaxonomyArcs:
     """All arcs contributed by a taxonomy plus their total count.
+
+    Pass ``structure_id`` to scope both the page and the count to one
+    structure's arcs — pair with :meth:`list_library_structures` to
+    load a single hierarchy at a time.
 
     Returns the typed response carrying both root fields:
     ``library_taxonomy_arcs`` (the page of arcs) and
@@ -236,11 +255,39 @@ class LibraryClient:
       {
         "taxonomyId": taxonomy_id,
         "associationType": association_type,
+        "structureId": structure_id,
         "limit": limit,
         "offset": offset,
       },
     )
     return ListLibraryTaxonomyArcs.model_validate(data)
+
+  # ── Structures ──────────────────────────────────────────────────────
+
+  def list_library_structures(
+    self,
+    graph_id: str = LIBRARY_GRAPH_ID,
+    *,
+    taxonomy_id: str | None = None,
+    block_type: str | None = None,
+  ) -> list[ListLibraryStructuresLibraryStructures]:
+    """List the structures (extended link roles) a taxonomy contributes —
+    the named presentation/calculation hierarchies (BS-classified,
+    IS-multistep, the calc DAG roots, …). Pair a structure's ``id`` with
+    :meth:`list_library_taxonomy_arcs` and its ``structure_id`` filter
+    to load just that hierarchy's arcs — the hierarchy view uses this to
+    scope a tree to one role at a time.
+
+    Pass ``taxonomy_id`` to scope to a single taxonomy; ``block_type``
+    to filter to one statement kind (balance_sheet, income_statement,
+    cash_flow_statement, …).
+    """
+    data = self._query(
+      graph_id,
+      LIST_LIBRARY_STRUCTURES_GQL,
+      {"taxonomyId": taxonomy_id, "blockType": block_type},
+    )
+    return ListLibraryStructures.model_validate(data).library_structures
 
   def get_library_element_arcs(
     self,
@@ -250,6 +297,20 @@ class LibraryClient:
     """All mapping arcs where this element is source or target."""
     data = self._query(graph_id, GET_LIBRARY_ELEMENT_ARCS_GQL, {"id": id})
     return GetLibraryElementArcs.model_validate(data).library_element_arcs
+
+  def get_library_element_classifications(
+    self,
+    id: str,
+    graph_id: str = LIBRARY_GRAPH_ID,
+  ) -> list[GetLibraryElementClassificationsLibraryElementClassifications]:
+    """All classification traits assigned to an element — every
+    category/identifier pair from element_classifications, sorted by
+    category then identifier.
+    """
+    data = self._query(graph_id, GET_LIBRARY_ELEMENT_CLASSIFICATIONS_GQL, {"id": id})
+    return GetLibraryElementClassifications.model_validate(
+      data
+    ).library_element_classifications
 
   def get_library_element_equivalents(
     self,

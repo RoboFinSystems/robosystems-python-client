@@ -1,0 +1,10 @@
+query ListLibraryStructures($taxonomyId: ID, $blockType: String) {
+  libraryStructures(taxonomyId: $taxonomyId, blockType: $blockType) {
+    id
+    name
+    blockType
+    taxonomyId
+    roleUri
+    isActive
+  }
+}

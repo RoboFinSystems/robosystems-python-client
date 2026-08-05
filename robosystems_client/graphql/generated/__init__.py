@@ -25,6 +25,9 @@ from .get_information_block import (
   GetInformationBlockInformationBlockVerificationSummary,
   GetInformationBlockInformationBlockVerificationSummaryByCategory,
   GetInformationBlockInformationBlockView,
+  GetInformationBlockInformationBlockViewChart,
+  GetInformationBlockInformationBlockViewChartPanels,
+  GetInformationBlockInformationBlockViewChartPanelsSeries,
   GetInformationBlockInformationBlockViewRendering,
   GetInformationBlockInformationBlockViewRenderingPeriods,
   GetInformationBlockInformationBlockViewRenderingRows,
@@ -171,6 +174,10 @@ from .get_library_element_arcs import (
   GetLibraryElementArcsLibraryElementArcs,
   GetLibraryElementArcsLibraryElementArcsPeer,
 )
+from .get_library_element_classifications import (
+  GetLibraryElementClassifications,
+  GetLibraryElementClassificationsLibraryElementClassifications,
+)
 from .get_library_element_equivalents import (
   GetLibraryElementEquivalents,
   GetLibraryElementEquivalentsLibraryElementEquivalents,
@@ -280,6 +287,10 @@ from .list_library_elements import (
   ListLibraryElementsLibraryElementsLabels,
   ListLibraryElementsLibraryElementsReferences,
 )
+from .list_library_structures import (
+  ListLibraryStructures,
+  ListLibraryStructuresLibraryStructures,
+)
 from .list_library_taxonomies import (
   ListLibraryTaxonomies,
   ListLibraryTaxonomiesLibraryTaxonomies,
@@ -288,6 +299,7 @@ from .list_library_taxonomy_arcs import (
   ListLibraryTaxonomyArcs,
   ListLibraryTaxonomyArcsLibraryTaxonomyArcs,
 )
+from .mapping_candidates import MappingCandidates, MappingCandidatesMappingCandidates
 from .operations import (
   GET_INFORMATION_BLOCK_GQL,
   GET_INVESTOR_HOLDINGS_GQL,
@@ -316,6 +328,7 @@ from .operations import (
   GET_LEDGER_TRANSACTION_GQL,
   GET_LEDGER_TRIAL_BALANCE_GQL,
   GET_LIBRARY_ELEMENT_ARCS_GQL,
+  GET_LIBRARY_ELEMENT_CLASSIFICATIONS_GQL,
   GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL,
   GET_LIBRARY_ELEMENT_GQL,
   GET_LIBRARY_TAXONOMY_GQL,
@@ -336,8 +349,10 @@ from .operations import (
   LIST_LEDGER_TRANSACTIONS_GQL,
   LIST_LEDGER_UNMAPPED_ELEMENTS_GQL,
   LIST_LIBRARY_ELEMENTS_GQL,
+  LIST_LIBRARY_STRUCTURES_GQL,
   LIST_LIBRARY_TAXONOMIES_GQL,
   LIST_LIBRARY_TAXONOMY_ARCS_GQL,
+  MAPPING_CANDIDATES_GQL,
   SEARCH_LIBRARY_ELEMENTS_GQL,
 )
 from .search_library_elements import (
@@ -378,6 +393,7 @@ __all__ = [
   "GET_LEDGER_TRANSACTION_GQL",
   "GET_LEDGER_TRIAL_BALANCE_GQL",
   "GET_LIBRARY_ELEMENT_ARCS_GQL",
+  "GET_LIBRARY_ELEMENT_CLASSIFICATIONS_GQL",
   "GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL",
   "GET_LIBRARY_ELEMENT_GQL",
   "GET_LIBRARY_TAXONOMY_GQL",
@@ -396,6 +412,9 @@ __all__ = [
   "GetInformationBlockInformationBlockVerificationSummary",
   "GetInformationBlockInformationBlockVerificationSummaryByCategory",
   "GetInformationBlockInformationBlockView",
+  "GetInformationBlockInformationBlockViewChart",
+  "GetInformationBlockInformationBlockViewChartPanels",
+  "GetInformationBlockInformationBlockViewChartPanelsSeries",
   "GetInformationBlockInformationBlockViewRendering",
   "GetInformationBlockInformationBlockViewRenderingPeriods",
   "GetInformationBlockInformationBlockViewRenderingRows",
@@ -502,6 +521,8 @@ __all__ = [
   "GetLibraryElementArcs",
   "GetLibraryElementArcsLibraryElementArcs",
   "GetLibraryElementArcsLibraryElementArcsPeer",
+  "GetLibraryElementClassifications",
+  "GetLibraryElementClassificationsLibraryElementClassifications",
   "GetLibraryElementEquivalents",
   "GetLibraryElementEquivalentsLibraryElementEquivalents",
   "GetLibraryElementEquivalentsLibraryElementEquivalentsElement",
@@ -533,6 +554,7 @@ __all__ = [
   "LIST_LEDGER_TRANSACTIONS_GQL",
   "LIST_LEDGER_UNMAPPED_ELEMENTS_GQL",
   "LIST_LIBRARY_ELEMENTS_GQL",
+  "LIST_LIBRARY_STRUCTURES_GQL",
   "LIST_LIBRARY_TAXONOMIES_GQL",
   "LIST_LIBRARY_TAXONOMY_ARCS_GQL",
   "ListInformationBlocks",
@@ -609,10 +631,15 @@ __all__ = [
   "ListLibraryElementsLibraryElements",
   "ListLibraryElementsLibraryElementsLabels",
   "ListLibraryElementsLibraryElementsReferences",
+  "ListLibraryStructures",
+  "ListLibraryStructuresLibraryStructures",
   "ListLibraryTaxonomies",
   "ListLibraryTaxonomiesLibraryTaxonomies",
   "ListLibraryTaxonomyArcs",
   "ListLibraryTaxonomyArcsLibraryTaxonomyArcs",
+  "MAPPING_CANDIDATES_GQL",
+  "MappingCandidates",
+  "MappingCandidatesMappingCandidates",
   "ReportDownloadFormat",
   "SEARCH_LIBRARY_ELEMENTS_GQL",
   "SearchLibraryElements",
