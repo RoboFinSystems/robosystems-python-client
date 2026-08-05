@@ -44,10 +44,22 @@ class TestAuthenticatedIntegration:
     )
 
   def test_authenticated_extensions_initialization(self, extensions, mock_api_key):
-    """Test that authenticated extensions initialize correctly"""
+    """Credentials route to exactly ONE header by shape — a non-rfs
+    credential rides in Authorization: Bearer, and no guaranteed-invalid
+    X-API-Key copy is sent alongside it."""
     assert extensions.config["base_url"] == "https://api.test.robosystems.ai"
-    assert extensions.config["headers"]["X-API-Key"] == mock_api_key
     assert extensions.config["headers"]["Authorization"] == f"Bearer {mock_api_key}"
+    assert "X-API-Key" not in extensions.config["headers"]
+
+  def test_authenticated_extensions_rfs_key_routes_to_x_api_key(self):
+    """rfs… API keys ride in X-API-Key only — never duplicated into a
+    guaranteed-invalid Authorization: Bearer header."""
+    ext = AuthenticatedClients(
+      api_key="rfs_live_key_123",
+      config=RoboSystemsClientConfig(base_url="https://api.test.robosystems.ai"),
+    )
+    assert ext.config["headers"]["X-API-Key"] == "rfs_live_key_123"
+    assert "Authorization" not in ext.config["headers"]
 
   def test_create_clients_factory(self, mock_api_key):
     """Test the extensions factory function"""

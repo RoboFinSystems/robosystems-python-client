@@ -78,6 +78,7 @@ from .auth_integration import (
 
 # JWT Token utilities
 from .token_utils import (
+  TokenProvider,
   validate_jwt_format,
   extract_jwt_from_header,
   decode_jwt_payload,
@@ -123,6 +124,7 @@ __all__ = [
   "RoboSystemsClients",
   "RoboSystemsClientConfig",
   "AsyncRoboSystemsClients",
+  "get_clients",
   # SSE Client
   "SSEClient",
   "EventType",
@@ -200,40 +202,59 @@ __all__ = [
   "extract_token_from_cookie",
   "find_valid_token",
   "TokenManager",
+  "TokenProvider",
   "TokenSource",
   # DataFrame utilities (optional)
   "HAS_PANDAS",
   "DataFrameQueryClient",
 ]
 
-# Create a default clients instance
-clients = RoboSystemsClients()
+# Lazy default clients instance. Constructed on first use, never at
+# import time — an import-time singleton would bind the default
+# localhost:8000 base URL (and an empty token) before the caller has a
+# chance to configure anything. Mirrors the TypeScript client's
+# `getClients()`.
+_clients: RoboSystemsClients | None = None
+
+
+def get_clients() -> RoboSystemsClients:
+  """Return the shared default :class:`RoboSystemsClients` instance.
+
+  Created lazily on first call with default configuration
+  (``base_url="http://localhost:8000"``, no token). For configured
+  instances, construct :class:`RoboSystemsClients` (or one of the
+  ``auth_integration`` helpers) directly.
+  """
+  global _clients
+  if _clients is None:
+    _clients = RoboSystemsClients()
+  return _clients
 
 
 # Export convenience functions
 def monitor_operation(operation_id: str, on_progress=None):
   """Monitor an operation using the default clients instance"""
-  return clients.monitor_operation(operation_id, on_progress)
+  return get_clients().monitor_operation(operation_id, on_progress)
 
 
 def execute_query(graph_id: str, query: str, parameters=None):
   """Execute a query using the default clients instance"""
-  return clients.query.query(graph_id, query, parameters)
+  return get_clients().query.query(graph_id, query, parameters)
 
 
 def stream_query(graph_id: str, query: str, parameters=None, chunk_size=None):
   """Stream a query using the default clients instance"""
-  return clients.query.stream_query(graph_id, query, parameters, chunk_size)
+  return get_clients().query.stream_query(graph_id, query, parameters, chunk_size)
 
 
 def operator_query(graph_id: str, message: str, context=None):
   """Execute an operator query using the default clients instance"""
-  return clients.operator.query(graph_id, message, context)
+  return get_clients().operator.query(graph_id, message, context)
 
 
 def analyze_financials(graph_id: str, message: str, on_progress=None):
   """Execute financial operator using the default clients instance"""
-  return clients.operator.analyze_financials(graph_id, message, on_progress)
+  return get_clients().operator.analyze_financials(graph_id, message, on_progress)
 
 
 # DataFrame convenience functions (if pandas is available)

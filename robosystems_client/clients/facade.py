@@ -15,6 +15,7 @@ from .table_client import TableClient
 from .graph_client import GraphClient
 from .investor_client import InvestorClient
 from .ledger_client import LedgerClient
+from .library_client import LibraryClient
 from .sse_client import SSEClient
 
 
@@ -28,6 +29,13 @@ class RoboSystemsClientConfig:
   retry_delay: int = 1000
   timeout: int = 30
   s3_endpoint_url: Optional[str] = None  # Override S3 endpoint (e.g., for LocalStack)
+  # Zero-arg callable returning the current auth credential, consulted
+  # on every request by the GraphQL-backed facades (ledger / investor /
+  # library). Wins over the static token when set — use it when the
+  # credential rotates (short-lived JWTs), so refreshes are picked up
+  # without rebuilding the clients. Mirrors the TypeScript client's
+  # `tokenProvider`. See `token_utils.TokenProvider`.
+  token_provider: Optional[Callable[[], Optional[str]]] = None
 
 
 class RoboSystemsClients:
@@ -45,6 +53,7 @@ class RoboSystemsClients:
       "retry_delay": config.retry_delay,
       "timeout": config.timeout,
       "s3_endpoint_url": config.s3_endpoint_url,
+      "token_provider": config.token_provider,
     }
 
     # Extract token from headers if it was set by auth classes
@@ -73,6 +82,10 @@ class RoboSystemsClients:
     self.graphs = GraphClient(self.config)
     self.ledger = LedgerClient(self.config)
     self.investor = InvestorClient(self.config)
+    # Library reads accept graph_id per-call — pass either the
+    # "library" sentinel (canonical) or any tenant graph_id (tenant
+    # library copy + CoA).
+    self.library = LibraryClient(self.config)
     self.reports = self.ledger  # backward compat alias
 
   def monitor_operation(

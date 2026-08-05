@@ -26,6 +26,7 @@ __all__ = [
   "GET_LEDGER_TRANSACTION_GQL",
   "GET_LEDGER_TRIAL_BALANCE_GQL",
   "GET_LIBRARY_ELEMENT_ARCS_GQL",
+  "GET_LIBRARY_ELEMENT_CLASSIFICATIONS_GQL",
   "GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL",
   "GET_LIBRARY_ELEMENT_GQL",
   "GET_LIBRARY_TAXONOMY_GQL",
@@ -46,8 +47,10 @@ __all__ = [
   "LIST_LEDGER_TRANSACTIONS_GQL",
   "LIST_LEDGER_UNMAPPED_ELEMENTS_GQL",
   "LIST_LIBRARY_ELEMENTS_GQL",
+  "LIST_LIBRARY_STRUCTURES_GQL",
   "LIST_LIBRARY_TAXONOMIES_GQL",
   "LIST_LIBRARY_TAXONOMY_ARCS_GQL",
+  "MAPPING_CANDIDATES_GQL",
   "SEARCH_LIBRARY_ELEMENTS_GQL",
 ]
 
@@ -271,8 +274,14 @@ query ListInvestorSecurities($entityId: String, $securityType: String, $isActive
 """
 
 GET_INFORMATION_BLOCK_GQL = """
-query GetInformationBlock($id: ID!) {
-  informationBlock(id: $id) {
+query GetInformationBlock($id: ID!, $scenarioId: String, $series: Boolean! = false, $seriesHistory: Int, $seriesForecast: Int) {
+  informationBlock(
+    id: $id
+    scenarioId: $scenarioId
+    series: $series
+    seriesHistory: $seriesHistory
+    seriesForecast: $seriesForecast
+  ) {
     id
     blockType
     name
@@ -350,6 +359,7 @@ query GetInformationBlock($id: ID!) {
       factsetType
       entityId
       reportId
+      scenarioId
       provenance
     }
     verificationResults {
@@ -386,6 +396,7 @@ query GetInformationBlock($id: ID!) {
           elementName
           classification
           balanceType
+          itemType
           values
           textValue
           isSubtotal
@@ -395,6 +406,7 @@ query GetInformationBlock($id: ID!) {
           start
           end
           label
+          forecast
         }
         validation {
           passed
@@ -403,6 +415,18 @@ query GetInformationBlock($id: ID!) {
           warnings
         }
         unmappedCount
+      }
+      chart {
+        panels {
+          label
+          itemType
+          kind
+          series {
+            key
+            elementId
+            label
+          }
+        }
       }
     }
   }
@@ -1588,6 +1612,17 @@ query ListLedgerUnmappedElements($mappingId: String) {
 }
 """
 
+MAPPING_CANDIDATES_GQL = """
+query MappingCandidates($classification: String!) {
+  mappingCandidates(classification: $classification) {
+    id
+    name
+    qname
+    trait
+  }
+}
+"""
+
 GET_LIBRARY_ELEMENT_GQL = """
 query GetLibraryElement($id: ID, $qname: String) {
   libraryElement(id: $id, qname: $qname) {
@@ -1637,6 +1672,17 @@ query GetLibraryElementArcs($id: ID!) {
       trait
       source
     }
+  }
+}
+"""
+
+GET_LIBRARY_ELEMENT_CLASSIFICATIONS_GQL = """
+query GetLibraryElementClassifications($id: ID!) {
+  libraryElementClassifications(id: $id) {
+    category
+    identifier
+    name
+    isPrimary
   }
 }
 """
@@ -1726,6 +1772,19 @@ query ListLibraryElements($taxonomyId: ID, $source: String, $classification: Str
 }
 """
 
+LIST_LIBRARY_STRUCTURES_GQL = """
+query ListLibraryStructures($taxonomyId: ID, $blockType: String) {
+  libraryStructures(taxonomyId: $taxonomyId, blockType: $blockType) {
+    id
+    name
+    blockType
+    taxonomyId
+    roleUri
+    isActive
+  }
+}
+"""
+
 LIST_LIBRARY_TAXONOMIES_GQL = """
 query ListLibraryTaxonomies($standard: String, $includeElementCount: Boolean! = false) {
   libraryTaxonomies(
@@ -1748,11 +1807,16 @@ query ListLibraryTaxonomies($standard: String, $includeElementCount: Boolean! = 
 """
 
 LIST_LIBRARY_TAXONOMY_ARCS_GQL = """
-query ListLibraryTaxonomyArcs($taxonomyId: ID!, $associationType: String, $limit: Int! = 200, $offset: Int! = 0) {
-  libraryTaxonomyArcCount(taxonomyId: $taxonomyId)
+query ListLibraryTaxonomyArcs($taxonomyId: ID!, $associationType: String, $structureId: ID, $limit: Int! = 200, $offset: Int! = 0) {
+  libraryTaxonomyArcCount(
+    taxonomyId: $taxonomyId
+    associationType: $associationType
+    structureId: $structureId
+  )
   libraryTaxonomyArcs(
     taxonomyId: $taxonomyId
     associationType: $associationType
+    structureId: $structureId
     limit: $limit
     offset: $offset
   ) {
@@ -1762,9 +1826,13 @@ query ListLibraryTaxonomyArcs($taxonomyId: ID!, $associationType: String, $limit
     fromElementId
     fromElementQname
     fromElementName
+    fromElementTrait
+    fromElementIsAbstract
     toElementId
     toElementQname
     toElementName
+    toElementTrait
+    toElementIsAbstract
     associationType
     arcrole
     orderValue

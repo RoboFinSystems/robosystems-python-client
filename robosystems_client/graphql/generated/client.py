@@ -31,6 +31,7 @@ from .get_ledger_transaction import GetLedgerTransaction
 from .get_ledger_trial_balance import GetLedgerTrialBalance
 from .get_library_element import GetLibraryElement
 from .get_library_element_arcs import GetLibraryElementArcs
+from .get_library_element_classifications import GetLibraryElementClassifications
 from .get_library_element_equivalents import GetLibraryElementEquivalents
 from .get_library_taxonomy import GetLibraryTaxonomy
 from .list_information_blocks import ListInformationBlocks
@@ -50,8 +51,10 @@ from .list_ledger_taxonomies import ListLedgerTaxonomies
 from .list_ledger_transactions import ListLedgerTransactions
 from .list_ledger_unmapped_elements import ListLedgerUnmappedElements
 from .list_library_elements import ListLibraryElements
+from .list_library_structures import ListLibraryStructures
 from .list_library_taxonomies import ListLibraryTaxonomies
 from .list_library_taxonomy_arcs import ListLibraryTaxonomyArcs
+from .mapping_candidates import MappingCandidates
 from .operations import (
   GET_INFORMATION_BLOCK_GQL,
   GET_INVESTOR_HOLDINGS_GQL,
@@ -80,6 +83,7 @@ from .operations import (
   GET_LEDGER_TRANSACTION_GQL,
   GET_LEDGER_TRIAL_BALANCE_GQL,
   GET_LIBRARY_ELEMENT_ARCS_GQL,
+  GET_LIBRARY_ELEMENT_CLASSIFICATIONS_GQL,
   GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL,
   GET_LIBRARY_ELEMENT_GQL,
   GET_LIBRARY_TAXONOMY_GQL,
@@ -100,8 +104,10 @@ from .operations import (
   LIST_LEDGER_TRANSACTIONS_GQL,
   LIST_LEDGER_UNMAPPED_ELEMENTS_GQL,
   LIST_LIBRARY_ELEMENTS_GQL,
+  LIST_LIBRARY_STRUCTURES_GQL,
   LIST_LIBRARY_TAXONOMIES_GQL,
   LIST_LIBRARY_TAXONOMY_ARCS_GQL,
+  MAPPING_CANDIDATES_GQL,
   SEARCH_LIBRARY_ELEMENTS_GQL,
 )
 from .search_library_elements import SearchLibraryElements
@@ -227,8 +233,22 @@ class Client(BaseClient):
     data = self.get_data(response)
     return ListInvestorSecurities.model_validate(data)
 
-  def get_information_block(self, id: str, **kwargs: Any) -> GetInformationBlock:
-    variables: dict[str, object] = {"id": id}
+  def get_information_block(
+    self,
+    id: str,
+    series: bool,
+    scenario_id: Union[Optional[str], UnsetType] = UNSET,
+    series_history: Union[Optional[int], UnsetType] = UNSET,
+    series_forecast: Union[Optional[int], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> GetInformationBlock:
+    variables: dict[str, object] = {
+      "id": id,
+      "scenarioId": scenario_id,
+      "series": series,
+      "seriesHistory": series_history,
+      "seriesForecast": series_forecast,
+    }
     response = self.execute(
       query=GET_INFORMATION_BLOCK_GQL,
       operation_name="GetInformationBlock",
@@ -768,6 +788,17 @@ class Client(BaseClient):
     data = self.get_data(response)
     return ListLedgerUnmappedElements.model_validate(data)
 
+  def mapping_candidates(self, classification: str, **kwargs: Any) -> MappingCandidates:
+    variables: dict[str, object] = {"classification": classification}
+    response = self.execute(
+      query=MAPPING_CANDIDATES_GQL,
+      operation_name="MappingCandidates",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return MappingCandidates.model_validate(data)
+
   def get_library_element(
     self,
     id: Union[Optional[str], UnsetType] = UNSET,
@@ -794,6 +825,19 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return GetLibraryElementArcs.model_validate(data)
+
+  def get_library_element_classifications(
+    self, id: str, **kwargs: Any
+  ) -> GetLibraryElementClassifications:
+    variables: dict[str, object] = {"id": id}
+    response = self.execute(
+      query=GET_LIBRARY_ELEMENT_CLASSIFICATIONS_GQL,
+      operation_name="GetLibraryElementClassifications",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return GetLibraryElementClassifications.model_validate(data)
 
   def get_library_element_equivalents(
     self, id: str, **kwargs: Any
@@ -866,6 +910,25 @@ class Client(BaseClient):
     data = self.get_data(response)
     return ListLibraryElements.model_validate(data)
 
+  def list_library_structures(
+    self,
+    taxonomy_id: Union[Optional[str], UnsetType] = UNSET,
+    block_type: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> ListLibraryStructures:
+    variables: dict[str, object] = {
+      "taxonomyId": taxonomy_id,
+      "blockType": block_type,
+    }
+    response = self.execute(
+      query=LIST_LIBRARY_STRUCTURES_GQL,
+      operation_name="ListLibraryStructures",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListLibraryStructures.model_validate(data)
+
   def list_library_taxonomies(
     self,
     include_element_count: bool,
@@ -891,11 +954,13 @@ class Client(BaseClient):
     limit: int,
     offset: int,
     association_type: Union[Optional[str], UnsetType] = UNSET,
+    structure_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> ListLibraryTaxonomyArcs:
     variables: dict[str, object] = {
       "taxonomyId": taxonomy_id,
       "associationType": association_type,
+      "structureId": structure_id,
       "limit": limit,
       "offset": offset,
     }

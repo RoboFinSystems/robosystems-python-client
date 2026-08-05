@@ -40,6 +40,9 @@ from ..api.extensions_robo_ledger.build_fact_grid import (
 from ..api.extensions_robo_ledger.close_period import (
   sync_detailed as op_close_period,
 )
+from ..api.extensions_robo_ledger.compute_metrics import (
+  sync_detailed as op_compute_metrics,
+)
 from ..api.extensions_robo_ledger.create_agent import (
   sync_detailed as op_create_agent,
 )
@@ -156,6 +159,7 @@ from ..api.extensions_robo_ledger.update_journal_entry import (
 )
 from ..client import AuthenticatedClient
 from ..graphql.client import GraphQLClient, strip_none_vars
+from .token_utils import resolve_config_token
 from ..graphql.generated.get_information_block import (
   GetInformationBlock,
 )
@@ -345,6 +349,10 @@ from ..graphql.generated.list_ledger_unmapped_elements import (
   ListLedgerUnmappedElements,
   ListLedgerUnmappedElementsUnmappedElements,
 )
+from ..graphql.generated.mapping_candidates import (
+  MappingCandidates,
+  MappingCandidatesMappingCandidates,
+)
 from ..graphql.generated.operations import (
   GET_INFORMATION_BLOCK_GQL,
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
@@ -381,6 +389,7 @@ from ..graphql.generated.operations import (
   LIST_LEDGER_TAXONOMIES_GQL,
   LIST_LEDGER_TRANSACTIONS_GQL,
   LIST_LEDGER_UNMAPPED_ELEMENTS_GQL,
+  MAPPING_CANDIDATES_GQL,
 )
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
@@ -423,6 +432,8 @@ from ..models.update_journal_entry_request import UpdateJournalEntryRequest
 from ..models.update_schedule_arm import UpdateScheduleArm
 from ..models.update_schedule_request import UpdateScheduleRequest
 from ..models.close_period_operation import ClosePeriodOperation
+from ..models.compute_metrics_request import ComputeMetricsRequest
+from ..models.compute_metrics_response import ComputeMetricsResponse
 from ..models.create_view_request import CreateViewRequest
 from ..models.create_mapping_association_operation import (
   CreateMappingAssociationOperation,
@@ -547,11 +558,14 @@ class LedgerClient:
     self.timeout = config.get("timeout", 60)
 
   def _get_client(self) -> AuthenticatedClient:
-    if not self.token:
+    # Resolved per call: a configured `token_provider` wins over the
+    # static token, so rotating credentials are picked up per-request.
+    token = resolve_config_token(self.config)
+    if not token:
       raise RuntimeError("No API key provided. Set X-API-Key in headers.")
     return AuthenticatedClient(
       base_url=self.base_url,
-      token=self.token,
+      token=token,
       prefix="",
       auth_header_name="X-API-Key",
       headers=self.headers,
@@ -565,11 +579,12 @@ class LedgerClient:
     is passed to `execute()`, not the constructor, because it shapes
     the URL.
     """
-    if not self.token:
+    token = resolve_config_token(self.config)
+    if not token:
       raise RuntimeError("No API key provided. Set X-API-Key in headers.")
     return GraphQLClient(
       base_url=self.base_url,
-      token=self.token,
+      token=token,
       headers=self.headers,
       timeout=self.timeout,
     )
@@ -1103,6 +1118,20 @@ class LedgerClient:
     )
     return GetLedgerMappingCoverage.model_validate(data).mapping_coverage
 
+  def get_mapping_candidates(
+    self, graph_id: str, classification: str
+  ) -> list[MappingCandidatesMappingCandidates]:
+    """rs-gaap concepts a CoA element of the given EFS ``classification``
+    (asset / liability / equity / revenue / expense) may map to — limited
+    to concepts that render under the graph's active Reporting Style,
+    with statement-level subtotals excluded. Use this to populate the
+    mapping picker so it never offers an unreachable target.
+    """
+    data = self._query(
+      graph_id, MAPPING_CANDIDATES_GQL, {"classification": classification}
+    )
+    return MappingCandidates.model_validate(data).mapping_candidates
+
   def create_mapping_association(
     self,
     graph_id: str,
@@ -1156,16 +1185,42 @@ class LedgerClient:
     self,
     graph_id: str,
     block_id: str,
+    *,
+    scenario_id: str | None = None,
+    series: bool | None = None,
+    series_history: int | None = None,
+    series_forecast: int | None = None,
   ) -> InformationBlock | None:
     """Fetch an Information Block envelope by id — the cross-block-type read.
 
     Returns ``None`` when the block doesn't exist or its type isn't
     registered. See ``information-block.md`` for the envelope contract.
+
+    ``scenario_id`` selects the FactSet slice: ``None`` = actuals; a
+    forecast block's structure id = that scenario's parallel universe
+    (statement envelopes bind its latest computed month, metric
+    envelopes extend the series with "(forecast)"-labeled columns).
+
+    ``series`` renders a statement block as its whole report-set time
+    series — one column per period; combined with ``scenario_id`` the
+    columns cross the actuals/forecast seam and forecast columns carry
+    ``periods[].forecast == True``. Non-statement block types ignore it
+    (metric envelopes are always the full series).
+
+    ``series_history`` / ``series_forecast`` window the series to its
+    seam-adjacent columns — the last N actual columns and the first N
+    forecast columns; ``None`` = unbounded.
     """
     data = self._query(
       graph_id,
       GET_INFORMATION_BLOCK_GQL,
-      {"id": block_id},
+      {
+        "id": block_id,
+        "scenarioId": scenario_id,
+        "series": series,
+        "seriesHistory": series_history,
+        "seriesForecast": series_forecast,
+      },
     )
     return GetInformationBlock.model_validate(data).information_block
 
@@ -1385,6 +1440,41 @@ class LedgerClient:
     )
     envelope = self._call_op("Evaluate rules", response)
     return self._typed_result("Evaluate rules", envelope, EvaluateRulesResponse)
+
+  def compute_metrics(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+    *,
+    idempotency_key: str | None = None,
+  ) -> ComputeMetricsResponse:
+    """Compute a metric block's ``Derive`` rules for a period, upserting
+    the standing ``factset_type='metric'`` FactSet (one per structure +
+    entity + period_end; re-running a period replaces its facts).
+
+    Operands bind to the entity's most recent persisted report facts at
+    ``period_end``. Unresolvable metrics come back in ``skipped`` with a
+    reason rather than failing the run.
+
+    ``body`` accepts the fields of
+    :class:`robosystems_client.models.compute_metrics_request.ComputeMetricsRequest`:
+    ``structure_id``, ``period_end``, plus optional ``period_start``,
+    ``entity_id``, and ``scenario_id`` (pass a forecast block's structure
+    id after compute-forecast to extend the metric series into its
+    forward months).
+
+    Supply ``idempotency_key`` to make the call safe to retry — replays
+    within 24 hours return the same envelope.
+    """
+    request = ComputeMetricsRequest.from_dict(body)
+    response = op_compute_metrics(
+      graph_id=graph_id,
+      body=request,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Compute metrics", response)
+    return self._typed_result("Compute metrics", envelope, ComputeMetricsResponse)
 
   def update_schedule(
     self, graph_id: str, structure_id: str, body: dict[str, Any]
@@ -1937,12 +2027,15 @@ class LedgerClient:
     mapping_id: str,
     period_start: str,
     period_end: str,
-    taxonomy_id: str = "tax_usgaap_reporting",
+    taxonomy_id: str = "rs-gaap",
     period_type: str = "quarterly",
     comparative: bool = True,
   ) -> ReportResponse:
     """Generate report facts from the ledger and publish a Report
     definition. Synchronous — returns the published report header.
+
+    ``taxonomy_id`` defaults to ``"rs-gaap"``, the canonical reporting
+    vocabulary (matches the backend's ``CreateReportRequest`` default).
     """
     body = CreateReportRequest(
       name=name,

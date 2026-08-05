@@ -1254,7 +1254,7 @@ class TestLedgerReadsAdditional:
         "factSet": None,
         "verificationResults": [],
         "verificationSummary": None,
-        "view": {"rendering": None},
+        "view": {"rendering": None, "chart": None},
       }
     }
     client = LedgerClient(mock_config)
@@ -2077,3 +2077,119 @@ def test_parse_filename_missing_returns_none():
 
   assert _parse_filename("") is None
   assert _parse_filename("attachment") is None
+
+
+# ── Mapping candidates ─────────────────────────────────────────────────
+
+
+@pytest.mark.unit
+class TestMappingCandidates:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_mapping_candidates(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "mappingCandidates": [
+        {
+          "id": "el_1",
+          "name": "Cash",
+          "qname": "rs-gaap:Cash",
+          "trait": "asset",
+        }
+      ]
+    }
+    client = LedgerClient(mock_config)
+    candidates = client.get_mapping_candidates(graph_id, "asset")
+    assert len(candidates) == 1
+    assert candidates[0].qname == "rs-gaap:Cash"
+    assert mock_execute.call_args[0][0] == graph_id
+    variables = mock_execute.call_args[0][2]
+    assert variables == {"classification": "asset"}
+
+
+# ── Information block read options ─────────────────────────────────────
+
+
+@pytest.mark.unit
+class TestInformationBlockReadOptions:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_information_block_strips_unset_options(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"informationBlock": None}
+    client = LedgerClient(mock_config)
+    assert client.get_information_block(graph_id, "blk_1") is None
+    # Only `id` goes over the wire — unset options are stripped, so the
+    # document's defaults apply (series=false, no scenario, no window).
+    variables = mock_execute.call_args[0][2]
+    assert variables == {"id": "blk_1"}
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_information_block_forwards_scenario_series_window(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"informationBlock": None}
+    client = LedgerClient(mock_config)
+    client.get_information_block(
+      graph_id,
+      "blk_1",
+      scenario_id="struct_fc",
+      series=True,
+      series_history=6,
+      series_forecast=12,
+    )
+    variables = mock_execute.call_args[0][2]
+    assert variables == {
+      "id": "blk_1",
+      "scenarioId": "struct_fc",
+      "series": True,
+      "seriesHistory": 6,
+      "seriesForecast": 12,
+    }
+
+
+# ── Compute metrics ────────────────────────────────────────────────────
+
+
+@pytest.mark.unit
+class TestComputeMetrics:
+  @patch("robosystems_client.clients.ledger_client.op_compute_metrics")
+  def test_compute_metrics(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "compute-metrics",
+      {
+        "structure_id": "struct_m",
+        "period_end": "2026-06-30",
+        "computed": [{"element_id": "el_ratio", "value": 1.5}],
+        "skipped": [],
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.compute_metrics(
+      graph_id, {"structure_id": "struct_m", "period_end": "2026-06-30"}
+    )
+    assert result["computed"][0]["element_id"] == "el_ratio"
+    assert mock_op.call_args.kwargs["graph_id"] == graph_id
+    body = mock_op.call_args.kwargs["body"]
+    assert body.structure_id == "struct_m"
+    assert body.period_end.isoformat() == "2026-06-30"
+    assert mock_op.call_args.kwargs["idempotency_key"] is UNSET
+
+  @patch("robosystems_client.clients.ledger_client.op_compute_metrics")
+  def test_compute_metrics_forwards_scenario_and_idempotency_key(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope("compute-metrics", {"computed": [], "skipped": []})
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.compute_metrics(
+      graph_id,
+      {
+        "structure_id": "struct_m",
+        "period_end": "2026-06-30",
+        "scenario_id": "struct_fc",
+      },
+      idempotency_key="idem-metrics-1",
+    )
+    body = mock_op.call_args.kwargs["body"]
+    assert body.scenario_id == "struct_fc"
+    assert mock_op.call_args.kwargs["idempotency_key"] == "idem-metrics-1"

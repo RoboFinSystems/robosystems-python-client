@@ -1,5 +1,17 @@
-query GetInformationBlock($id: ID!) {
-  informationBlock(id: $id) {
+query GetInformationBlock(
+  $id: ID!
+  $scenarioId: String
+  $series: Boolean! = false
+  $seriesHistory: Int
+  $seriesForecast: Int
+) {
+  informationBlock(
+    id: $id
+    scenarioId: $scenarioId
+    series: $series
+    seriesHistory: $seriesHistory
+    seriesForecast: $seriesForecast
+  ) {
     id blockType name displayName category
     taxonomyId taxonomyName
     informationModel { conceptArrangement memberArrangement }
@@ -24,7 +36,7 @@ query GetInformationBlock($id: ID!) {
     }
     factSet {
       id structureId periodStart periodEnd
-      factsetType entityId reportId provenance
+      factsetType entityId reportId scenarioId provenance
     }
     verificationResults {
       id ruleId structureId factSetId status message
@@ -38,11 +50,17 @@ query GetInformationBlock($id: ID!) {
       rendering {
         rows {
           elementId elementQname elementName classification
-          balanceType values textValue isSubtotal depth
+          balanceType itemType values textValue isSubtotal depth
         }
-        periods { start end label }
+        periods { start end label forecast }
         validation { passed checks failures warnings }
         unmappedCount
+      }
+      chart {
+        panels {
+          label itemType kind
+          series { key elementId label }
+        }
       }
     }
   }

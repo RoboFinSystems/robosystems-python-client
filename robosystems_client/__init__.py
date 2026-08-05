@@ -1,6 +1,15 @@
 """RoboSystems Python Client."""
 
 from .client import AuthenticatedClient, Client
+from .clients import (
+  InvestorClient,
+  LedgerClient,
+  LibraryClient,
+  RoboSystemsClientConfig,
+  RoboSystemsClients,
+  get_clients,
+)
+from .graphql.client import GraphQLError
 
 # Convenience aliases for the main SDK
 RoboSystemsClient = AuthenticatedClient
@@ -9,8 +18,15 @@ RoboSystemsSDK = AuthenticatedClient
 __all__ = (
   "AuthenticatedClient",
   "Client",
+  "GraphQLError",
+  "InvestorClient",
+  "LedgerClient",
+  "LibraryClient",
   "RoboSystemsClient",
+  "RoboSystemsClientConfig",
+  "RoboSystemsClients",
   "RoboSystemsSDK",
+  "get_clients",
 )
 
 

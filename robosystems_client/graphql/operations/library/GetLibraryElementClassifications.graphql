@@ -1,0 +1,8 @@
+query GetLibraryElementClassifications($id: ID!) {
+  libraryElementClassifications(id: $id) {
+    category
+    identifier
+    name
+    isPrimary
+  }
+}
