@@ -94,7 +94,7 @@ def sync_detailed(
   """Get Graph Operational Limits
 
    Limits vary by subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge). Includes
-  storage, query, backup, rate, credit, and instance usage limits.
+  storage, query, backup, rate, credit, document, and instance usage limits.
 
   Args:
       graph_id (str):
@@ -126,7 +126,7 @@ def sync(
   """Get Graph Operational Limits
 
    Limits vary by subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge). Includes
-  storage, query, backup, rate, credit, and instance usage limits.
+  storage, query, backup, rate, credit, document, and instance usage limits.
 
   Args:
       graph_id (str):
@@ -153,7 +153,7 @@ async def asyncio_detailed(
   """Get Graph Operational Limits
 
    Limits vary by subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge). Includes
-  storage, query, backup, rate, credit, and instance usage limits.
+  storage, query, backup, rate, credit, document, and instance usage limits.
 
   Args:
       graph_id (str):
@@ -183,7 +183,7 @@ async def asyncio(
   """Get Graph Operational Limits
 
    Limits vary by subscription tier (ladybug-standard, ladybug-large, ladybug-xlarge). Includes
-  storage, query, backup, rate, credit, and instance usage limits.
+  storage, query, backup, rate, credit, document, and instance usage limits.
 
   Args:
       graph_id (str):

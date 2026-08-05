@@ -119,8 +119,8 @@ def sync_detailed(
   """Sync Connection
 
    SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
-  chart of accounts. Returns an `OperationEnvelope` — monitor progress via SSE at
-  `/v1/operations/{operation_id}/stream`. Supports `Idempotency-Key`.
+  chart of accounts. Async — returns an `OperationEnvelope` with the provider task id; completion is
+  reflected in the connection's `last_sync` timestamp. Supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -161,8 +161,8 @@ def sync(
   """Sync Connection
 
    SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
-  chart of accounts. Returns an `OperationEnvelope` — monitor progress via SSE at
-  `/v1/operations/{operation_id}/stream`. Supports `Idempotency-Key`.
+  chart of accounts. Async — returns an `OperationEnvelope` with the provider task id; completion is
+  reflected in the connection's `last_sync` timestamp. Supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -198,8 +198,8 @@ async def asyncio_detailed(
   """Sync Connection
 
    SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
-  chart of accounts. Returns an `OperationEnvelope` — monitor progress via SSE at
-  `/v1/operations/{operation_id}/stream`. Supports `Idempotency-Key`.
+  chart of accounts. Async — returns an `OperationEnvelope` with the provider task id; completion is
+  reflected in the connection's `last_sync` timestamp. Supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -238,8 +238,8 @@ async def asyncio(
   """Sync Connection
 
    SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
-  chart of accounts. Returns an `OperationEnvelope` — monitor progress via SSE at
-  `/v1/operations/{operation_id}/stream`. Supports `Idempotency-Key`.
+  chart of accounts. Async — returns an `OperationEnvelope` with the provider task id; completion is
+  reflected in the connection's `last_sync` timestamp. Supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
