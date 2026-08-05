@@ -1,0 +1,7 @@
+query ListLedgerStructures($taxonomyId: String, $blockType: String) {
+  structures(taxonomyId: $taxonomyId, blockType: $blockType) {
+    structures {
+      id name description blockType taxonomyId isActive
+    }
+  }
+}

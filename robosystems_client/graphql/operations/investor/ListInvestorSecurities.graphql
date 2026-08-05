@@ -1,0 +1,23 @@
+query ListInvestorSecurities(
+  $entityId: String
+  $securityType: String
+  $isActive: Boolean
+  $limit: Int! = 100
+  $offset: Int! = 0
+) {
+  securities(
+    entityId: $entityId
+    securityType: $securityType
+    isActive: $isActive
+    limit: $limit
+    offset: $offset
+  ) {
+    securities {
+      id entityId entityName sourceGraphId
+      name securityType securitySubtype
+      terms isActive authorizedShares outstandingShares
+      createdAt updatedAt
+    }
+    pagination { total limit offset hasMore }
+  }
+}

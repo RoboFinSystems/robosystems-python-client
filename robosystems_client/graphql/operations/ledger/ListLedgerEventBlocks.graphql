@@ -1,0 +1,25 @@
+query ListLedgerEventBlocks(
+  $eventType: String
+  $eventCategory: String
+  $status: String
+  $agentId: String
+  $source: String
+  $limit: Int! = 50
+  $offset: Int! = 0
+) {
+  eventBlocks(
+    eventType: $eventType
+    eventCategory: $eventCategory
+    status: $status
+    agentId: $agentId
+    source: $source
+    limit: $limit
+    offset: $offset
+  ) {
+    id eventType eventCategory eventClass status occurredAt effectiveAt
+    source externalId externalUrl amount currency description metadata
+    dimensionIds agentId resourceType resourceElementId
+    replacedByEventId replacesEventId obligatedByEventId dischargesEventId
+    createdAt createdBy
+  }
+}

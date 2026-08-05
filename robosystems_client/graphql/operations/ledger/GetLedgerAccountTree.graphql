@@ -1,0 +1,17 @@
+query GetLedgerAccountTree {
+  accountTree {
+    totalAccounts
+    roots {
+      id code name trait accountType balanceType depth isActive
+      children {
+        id code name trait accountType balanceType depth isActive
+        children {
+          id code name trait accountType balanceType depth isActive
+          children {
+            id code name trait accountType balanceType depth isActive
+          }
+        }
+      }
+    }
+  }
+}

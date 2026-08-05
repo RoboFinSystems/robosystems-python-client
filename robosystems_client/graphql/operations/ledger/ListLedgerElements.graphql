@@ -1,0 +1,25 @@
+query ListLedgerElements(
+  $taxonomyId: String
+  $source: String
+  $classification: String
+  $isAbstract: Boolean
+  $limit: Int! = 100
+  $offset: Int! = 0
+) {
+  elements(
+    taxonomyId: $taxonomyId
+    source: $source
+    classification: $classification
+    isAbstract: $isAbstract
+    limit: $limit
+    offset: $offset
+  ) {
+    elements {
+      id code name description qname namespace
+      trait subClassification balanceType periodType
+      isAbstract elementType source taxonomyId parentId depth
+      isActive externalId externalSource
+    }
+    pagination { total limit offset hasMore }
+  }
+}

@@ -1,0 +1,23 @@
+query GetInvestorHoldings($portfolioId: String!) {
+  holdings(portfolioId: $portfolioId) {
+    totalEntities
+    totalPositions
+    holdings {
+      entityId
+      entityName
+      sourceGraphId
+      totalCostBasisDollars
+      totalCurrentValueDollars
+      positionCount
+      securities {
+        securityId
+        securityName
+        securityType
+        quantity
+        quantityType
+        costBasisDollars
+        currentValueDollars
+      }
+    }
+  }
+}

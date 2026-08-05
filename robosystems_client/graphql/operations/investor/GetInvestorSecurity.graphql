@@ -1,0 +1,8 @@
+query GetInvestorSecurity($securityId: String!) {
+  security(securityId: $securityId) {
+    id entityId entityName sourceGraphId
+    name securityType securitySubtype
+    terms isActive authorizedShares outstandingShares
+    createdAt updatedAt
+  }
+}

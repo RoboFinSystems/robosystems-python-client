@@ -1,0 +1,12 @@
+query GetLedgerMapping($mappingId: String!) {
+  mapping(mappingId: $mappingId) {
+    id name blockType taxonomyId totalAssociations
+    associations {
+      id structureId
+      fromElementId fromElementName fromElementQname
+      toElementId toElementName toElementQname
+      associationType orderValue weight confidence
+      suggestedBy approvedBy
+    }
+  }
+}

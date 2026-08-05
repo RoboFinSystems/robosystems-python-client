@@ -1,0 +1,32 @@
+query ListLedgerAccounts(
+  $classification: String
+  $isActive: Boolean
+  $limit: Int! = 100
+  $offset: Int! = 0
+) {
+  accounts(
+    classification: $classification
+    isActive: $isActive
+    limit: $limit
+    offset: $offset
+  ) {
+    accounts {
+      id
+      code
+      name
+      description
+      trait
+      subClassification
+      balanceType
+      parentId
+      depth
+      currency
+      isActive
+      isPlaceholder
+      accountType
+      externalId
+      externalSource
+    }
+    pagination { total limit offset hasMore }
+  }
+}

@@ -81,22 +81,49 @@ class TestLedgerClientInit:
 @pytest.mark.unit
 class TestLedgerReads:
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
-  def test_get_entity_returns_dict(self, mock_execute, mock_config, graph_id):
+  def test_get_entity_returns_typed_model(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
       "entity": {
         "id": "ent_1",
         "name": "ACME Corp",
         "legalName": "ACME Corporation Inc.",
+        "uri": None,
+        "cik": None,
+        "ticker": None,
+        "exchange": None,
+        "sic": None,
+        "sicDescription": None,
+        "category": None,
+        "stateOfIncorporation": None,
+        "fiscalYearEnd": None,
+        "taxId": None,
+        "lei": None,
+        "industry": None,
         "entityType": "corporation",
+        "phone": None,
+        "website": None,
         "status": "active",
+        "isParent": False,
+        "parentEntityId": None,
+        "source": "qb",
+        "sourceId": None,
+        "sourceGraphId": None,
+        "connectionId": None,
+        "addressLine1": None,
+        "addressCity": None,
+        "addressState": None,
+        "addressPostalCode": None,
+        "addressCountry": None,
+        "createdAt": None,
+        "updatedAt": None,
       }
     }
     client = LedgerClient(mock_config)
     entity = client.get_entity(graph_id)
     assert entity is not None
-    assert entity["id"] == "ent_1"
-    assert entity["legal_name"] == "ACME Corporation Inc."
-    assert entity["entity_type"] == "corporation"
+    assert entity.id == "ent_1"
+    assert entity.legal_name == "ACME Corporation Inc."
+    assert entity.entity_type == "corporation"
     # graph_id passed through as first positional arg
     assert mock_execute.call_args[0][0] == graph_id
 
@@ -134,8 +161,8 @@ class TestLedgerReads:
     client = LedgerClient(mock_config)
     entities = client.list_entities(graph_id)
     assert len(entities) == 1
-    assert entities[0]["id"] == "ent_1"
-    assert entities[0]["is_parent"] is True
+    assert entities[0].id == "ent_1"
+    assert entities[0].is_parent is True
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_list_accounts_with_pagination(self, mock_execute, mock_config, graph_id):
@@ -147,7 +174,7 @@ class TestLedgerReads:
             "code": "1000",
             "name": "Cash",
             "description": None,
-            "classification": "asset",
+            "trait": "asset",
             "subClassification": None,
             "balanceType": "debit",
             "parentId": None,
@@ -166,9 +193,9 @@ class TestLedgerReads:
     client = LedgerClient(mock_config)
     result = client.list_accounts(graph_id, classification="asset", limit=50)
     assert result is not None
-    assert len(result["accounts"]) == 1
-    assert result["accounts"][0]["sub_classification"] is None
-    assert result["pagination"]["has_more"] is False
+    assert len(result.accounts) == 1
+    assert result.accounts[0].sub_classification is None
+    assert result.pagination.has_more is False
     # Variables forwarded (positional call from ledger_client._query)
     variables = mock_execute.call_args[0][2]
     assert variables["classification"] == "asset"
@@ -187,7 +214,8 @@ class TestLedgerReads:
     tb = client.get_trial_balance(
       graph_id, start_date="2026-01-01", end_date="2026-03-31"
     )
-    assert tb["total_debits"] == 1000
+    assert tb is not None
+    assert tb.total_debits == 1000
     variables = mock_execute.call_args[0][2]
     assert variables["startDate"] == "2026-01-01"
     assert variables["endDate"] == "2026-03-31"
@@ -211,7 +239,7 @@ class TestLedgerReads:
     client = LedgerClient(mock_config)
     mappings = client.list_mappings(graph_id)
     assert len(mappings) == 1
-    assert mappings[0]["block_type"] == "coa_mapping"
+    assert mappings[0].block_type == "coa_mapping"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_fiscal_calendar(self, mock_execute, mock_config, graph_id):
@@ -233,9 +261,10 @@ class TestLedgerReads:
     }
     client = LedgerClient(mock_config)
     cal = client.get_fiscal_calendar(graph_id)
-    assert cal["closed_through"] == "2026-02"
-    assert cal["closeable_now"] is True
-    assert cal["fiscal_year_start_month"] == 1
+    assert cal is not None
+    assert cal.closed_through == "2026-02"
+    assert cal.closeable_now is True
+    assert cal.fiscal_year_start_month == 1
 
 
 # ── Writes (Operation envelope) ────────────────────────────────────────
@@ -623,8 +652,10 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_summary(graph_id)
     assert result is not None
-    assert result["account_count"] == 120
-    assert result["transaction_count"] == 500
+    assert result.graph_id == graph_id
+    assert result.account_count == 120
+    assert result.transaction_count == 500
+    assert result.last_sync_at is None
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_summary_returns_none_when_missing(
@@ -644,7 +675,7 @@ class TestLedgerReadsAdditional:
             "id": "acc_1",
             "code": "1000",
             "name": "Assets",
-            "classification": "asset",
+            "trait": "asset",
             "accountType": None,
             "balanceType": "debit",
             "depth": 0,
@@ -657,8 +688,8 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_account_tree(graph_id)
     assert result is not None
-    assert result["total_accounts"] == 3
-    assert result["roots"][0]["code"] == "1000"
+    assert result.total_accounts == 3
+    assert result.roots[0].code == "1000"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_account_rollups(self, mock_execute, mock_config, graph_id):
@@ -676,7 +707,7 @@ class TestLedgerReadsAdditional:
       graph_id, mapping_id="map_1", start_date="2026-01-01", end_date="2026-03-31"
     )
     assert result is not None
-    assert result["total_mapped"] == 80
+    assert result.total_mapped == 80
     variables = mock_execute.call_args[0][2]
     assert variables["mappingId"] == "map_1"
     assert variables["startDate"] == "2026-01-01"
@@ -710,8 +741,8 @@ class TestLedgerReadsAdditional:
       graph_id, type="invoice", start_date="2026-01-01", end_date="2026-03-31"
     )
     assert result is not None
-    assert len(result["transactions"]) == 1
-    assert result["transactions"][0]["id"] == "tx_1"
+    assert len(result.transactions) == 1
+    assert result.transactions[0].id == "tx_1"
     variables = mock_execute.call_args[0][2]
     assert variables["type"] == "invoice"
     assert variables["startDate"] == "2026-01-01"
@@ -741,7 +772,7 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_transaction(graph_id, "tx_1")
     assert result is not None
-    assert result["id"] == "tx_1"
+    assert result.id == "tx_1"
     variables = mock_execute.call_args[0][2]
     assert variables["transactionId"] == "tx_1"
 
@@ -782,8 +813,8 @@ class TestLedgerReadsAdditional:
       graph_id, event_type="invoice_issued", status="captured"
     )
     assert len(result) == 1
-    assert result[0]["id"] == "evt_1"
-    assert result[0]["agent_id"] == "agt_1"
+    assert result[0].id == "evt_1"
+    assert result[0].agent_id == "agt_1"
     variables = mock_execute.call_args[0][2]
     assert variables["eventType"] == "invoice_issued"
     assert variables["status"] == "captured"
@@ -821,7 +852,7 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_event_block(graph_id, "evt_1")
     assert result is not None
-    assert result["id"] == "evt_1"
+    assert result.id == "evt_1"
     variables = mock_execute.call_args[0][2]
     assert variables["id"] == "evt_1"
 
@@ -862,7 +893,7 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.list_agents(graph_id, agent_type="customer")
     assert len(result) == 1
-    assert result[0]["agent_type"] == "customer"
+    assert result[0].agent_type == "customer"
     variables = mock_execute.call_args[0][2]
     assert variables["agentType"] == "customer"
     assert variables["isActive"] is True
@@ -894,7 +925,7 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_agent(graph_id, "agt_1")
     assert result is not None
-    assert result["id"] == "agt_1"
+    assert result.id == "agt_1"
     variables = mock_execute.call_args[0][2]
     assert variables["id"] == "agt_1"
 
@@ -908,7 +939,7 @@ class TestLedgerReadsAdditional:
             "reportingElementId": "elem_rev",
             "qname": "us-gaap:Revenues",
             "reportingName": "Revenues",
-            "classification": "income",
+            "trait": "income",
             "balanceType": "credit",
             "totalDebits": 0,
             "totalCredits": 500000,
@@ -922,8 +953,8 @@ class TestLedgerReadsAdditional:
       graph_id, "map_1", start_date="2026-01-01", end_date="2026-03-31"
     )
     assert result is not None
-    assert result["mapping_id"] == "map_1"
-    assert len(result["rows"]) == 1
+    assert result.mapping_id == "map_1"
+    assert len(result.rows) == 1
     variables = mock_execute.call_args[0][2]
     assert variables["mappingId"] == "map_1"
 
@@ -948,8 +979,8 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_reporting_taxonomy(graph_id)
     assert result is not None
-    assert result["standard"] == "us-gaap"
-    assert result["is_locked"] is True
+    assert result.standard == "us-gaap"
+    assert result.is_locked is True
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_list_taxonomies(self, mock_execute, mock_config, graph_id):
@@ -976,7 +1007,7 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.list_taxonomies(graph_id, taxonomy_type="chart_of_accounts")
     assert len(result) == 1
-    assert result[0]["taxonomy_type"] == "chart_of_accounts"
+    assert result[0].taxonomy_type == "chart_of_accounts"
     variables = mock_execute.call_args[0][2]
     assert variables["taxonomyType"] == "chart_of_accounts"
 
@@ -992,10 +1023,10 @@ class TestLedgerReadsAdditional:
             "description": None,
             "qname": None,
             "namespace": None,
-            "classification": "asset",
+            "trait": "asset",
             "subClassification": None,
             "balanceType": "debit",
-            "periodType": None,
+            "periodType": "instant",
             "isAbstract": False,
             "elementType": "account",
             "source": "native",
@@ -1015,8 +1046,8 @@ class TestLedgerReadsAdditional:
       graph_id, taxonomy_id="tax_coa_1", classification="asset"
     )
     assert result is not None
-    assert len(result["elements"]) == 1
-    assert result["elements"][0]["balance_type"] == "debit"
+    assert len(result.elements) == 1
+    assert result.elements[0].balance_type == "debit"
     variables = mock_execute.call_args[0][2]
     assert variables["taxonomyId"] == "tax_coa_1"
     assert variables["classification"] == "asset"
@@ -1029,7 +1060,7 @@ class TestLedgerReadsAdditional:
           "id": "elem_2",
           "code": "4500",
           "name": "Other Revenue",
-          "classification": "income",
+          "trait": "income",
           "balanceType": "credit",
           "externalSource": "qb",
           "suggestedTargets": [
@@ -1046,8 +1077,8 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.list_unmapped_elements(graph_id, mapping_id="map_1")
     assert len(result) == 1
-    assert result[0]["code"] == "4500"
-    assert result[0]["suggested_targets"][0]["confidence"] == 0.9
+    assert result[0].code == "4500"
+    assert result[0].suggested_targets[0].confidence == 0.9
     variables = mock_execute.call_args[0][2]
     assert variables["mappingId"] == "map_1"
 
@@ -1070,7 +1101,7 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.list_structures(graph_id, block_type="income_statement")
     assert len(result) == 1
-    assert result[0]["block_type"] == "income_statement"
+    assert result[0].block_type == "income_statement"
     variables = mock_execute.call_args[0][2]
     assert variables["blockType"] == "income_statement"
 
@@ -1106,8 +1137,8 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_mapping(graph_id, "map_1")
     assert result is not None
-    assert result["total_associations"] == 2
-    assert len(result["associations"]) == 1
+    assert result.total_associations == 2
+    assert len(result.associations) == 1
     variables = mock_execute.call_args[0][2]
     assert variables["mappingId"] == "map_1"
 
@@ -1128,8 +1159,8 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_mapping_coverage(graph_id, "map_1")
     assert result is not None
-    assert result["coverage_percent"] == 80.0
-    assert result["unmapped_count"] == 20
+    assert result.coverage_percent == 80.0
+    assert result.unmapped_count == 20
     variables = mock_execute.call_args[0][2]
     assert variables["mappingId"] == "map_1"
 
@@ -1163,15 +1194,20 @@ class TestLedgerReadsAdditional:
           "elements": [],
           "connections": [],
           "facts": [],
+          "rules": [],
+          "factSet": None,
+          "verificationResults": [],
+          "verificationSummary": None,
+          "view": {"rendering": None},
         }
       ]
     }
     client = LedgerClient(mock_config)
     result = client.list_information_blocks(graph_id, block_type="schedule")
     assert len(result) == 1
-    assert result[0]["id"] == "str_sched_1"
-    assert result[0]["block_type"] == "schedule"
-    assert result[0]["taxonomy_name"] == "My CoA"
+    assert result[0].id == "str_sched_1"
+    assert result[0].block_type == "schedule"
+    assert result[0].taxonomy_name == "My CoA"
     variables = mock_execute.call_args[0][2]
     assert variables["blockType"] == "schedule"
 
@@ -1184,6 +1220,8 @@ class TestLedgerReadsAdditional:
         "name": "Depreciation",
         "displayName": "Schedule",
         "category": "Close",
+        "taxonomyId": None,
+        "taxonomyName": None,
         "informationModel": {
           "conceptArrangement": "roll_forward",
           "memberArrangement": None,
@@ -1201,6 +1239,9 @@ class TestLedgerReadsAdditional:
             "id": "fact_1",
             "elementId": "elem_depr",
             "value": 100000,
+            "textValue": None,
+            "factType": "numeric",
+            "contentType": None,
             "periodStart": "2026-01-01",
             "periodEnd": "2026-01-31",
             "periodType": "duration",
@@ -1209,14 +1250,19 @@ class TestLedgerReadsAdditional:
             "factSetId": None,
           }
         ],
+        "rules": [],
+        "factSet": None,
+        "verificationResults": [],
+        "verificationSummary": None,
+        "view": {"rendering": None},
       }
     }
     client = LedgerClient(mock_config)
     block = client.get_information_block(graph_id, "struct_sched_1")
     assert block is not None
-    assert block["id"] == "struct_sched_1"
-    assert block["block_type"] == "schedule"
-    assert block["facts"][0]["value"] == 100000
+    assert block.id == "struct_sched_1"
+    assert block.block_type == "schedule"
+    assert block.facts[0].value == 100000
     variables = mock_execute.call_args[0][2]
     assert variables["id"] == "struct_sched_1"
 
@@ -1243,8 +1289,8 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_period_close_status(graph_id, "2026-03-01", "2026-03-31")
     assert result is not None
-    assert result["period_status"] == "open"
-    assert result["total_draft"] == 2
+    assert result.period_status == "open"
+    assert result.total_draft == 2
     variables = mock_execute.call_args[0][2]
     assert variables["periodStart"] == "2026-03-01"
     assert variables["periodEnd"] == "2026-03-31"
@@ -1260,14 +1306,18 @@ class TestLedgerReadsAdditional:
         "totalDebit": 100000,
         "totalCredit": 100000,
         "allBalanced": True,
+        "qbWritebackConnectionId": None,
+        "qbWritePolicy": None,
+        "qbPublishCount": 0,
+        "localOnlyCount": 1,
         "drafts": [],
       }
     }
     client = LedgerClient(mock_config)
     result = client.list_period_drafts(graph_id, "2026-03")
     assert result is not None
-    assert result["all_balanced"] is True
-    assert result["draft_count"] == 1
+    assert result.all_balanced is True
+    assert result.draft_count == 1
     variables = mock_execute.call_args[0][2]
     assert variables["period"] == "2026-03"
 
@@ -1296,9 +1346,9 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_closing_book_structures(graph_id)
     assert result is not None
-    assert result["has_data"] is True
-    assert len(result["categories"]) == 1
-    assert result["categories"][0]["label"] == "Schedules"
+    assert result.has_data is True
+    assert len(result.categories) == 1
+    assert result.categories[0].label == "Schedules"
 
 
 # ── Association ops ─────────────────────────────────────────────────────
@@ -1507,7 +1557,12 @@ class TestLedgerQueryNoneStripping:
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_list_accounts_strips_none_filters(self, mock_execute, mock_config, graph_id):
-    mock_execute.return_value = {"accounts": {"accounts": [], "pagination": {}}}
+    mock_execute.return_value = {
+      "accounts": {
+        "accounts": [],
+        "pagination": {"total": 0, "limit": 25, "offset": 0, "hasMore": False},
+      }
+    }
     client = LedgerClient(mock_config)
     client.list_accounts(graph_id, classification=None, is_active=None, limit=25)
     # Only the non-None variables are forwarded
@@ -1520,7 +1575,12 @@ class TestLedgerQueryNoneStripping:
   def test_list_accounts_keeps_explicitly_set_filters(
     self, mock_execute, mock_config, graph_id
   ):
-    mock_execute.return_value = {"accounts": {"accounts": [], "pagination": {}}}
+    mock_execute.return_value = {
+      "accounts": {
+        "accounts": [],
+        "pagination": {"total": 0, "limit": 100, "offset": 0, "hasMore": False},
+      }
+    }
     client = LedgerClient(mock_config)
     client.list_accounts(graph_id, classification="asset", is_active=True)
     variables = mock_execute.call_args[0][2]

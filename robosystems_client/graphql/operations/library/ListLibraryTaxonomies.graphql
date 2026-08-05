@@ -1,0 +1,15 @@
+query ListLibraryTaxonomies($standard: String, $includeElementCount: Boolean! = false) {
+  libraryTaxonomies(standard: $standard, includeElementCount: $includeElementCount) {
+    id
+    name
+    description
+    standard
+    version
+    namespaceUri
+    taxonomyType
+    isShared
+    isActive
+    isLocked
+    elementCount
+  }
+}

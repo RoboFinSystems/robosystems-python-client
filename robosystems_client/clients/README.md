@@ -39,13 +39,12 @@ extensions = create_production_clients("your-api-key-here")
 
 # Execute a simple query
 result = extensions.execute_query(
-    graph_id="your_graph_id",
-    query="MATCH (c:Company) RETURN c.name, c.revenue LIMIT 10"
+  graph_id="your_graph_id", query="MATCH (c:Company) RETURN c.name, c.revenue LIMIT 10"
 )
 
 print(f"Found {result.row_count} companies")
 for company in result.data:
-    print(f"- {company['name']}: ${company['revenue']:,}")
+  print(f"- {company['name']}: ${company['revenue']:,}")
 
 # Clean up
 extensions.close()
@@ -58,8 +57,8 @@ extensions.close()
 query = "MATCH (t:Transaction) RETURN t.id, t.amount, t.timestamp"
 
 for transaction in extensions.stream_query("your_graph_id", query, chunk_size=1000):
-    # Process each transaction as it arrives
-    process_transaction(transaction)
+  # Process each transaction as it arrives
+  process_transaction(transaction)
 ```
 
 ### Async Support
@@ -68,18 +67,20 @@ for transaction in extensions.stream_query("your_graph_id", query, chunk_size=10
 import asyncio
 from robosystems_client.clients import AsyncRoboSystemsClients
 
+
 async def main():
-    extensions = AsyncRoboSystemsClients(config)
-    
-    # Async query execution
-    result = await extensions.execute_query("graph_id", "MATCH (n) RETURN COUNT(n)")
-    print(f"Total nodes: {result.data[0]['COUNT(n)']}")
-    
-    # Async streaming
-    async for row in extensions.stream_query("graph_id", "MATCH (n) RETURN n"):
-        await process_row_async(row)
-    
-    await extensions.close()
+  extensions = AsyncRoboSystemsClients(config)
+
+  # Async query execution
+  result = await extensions.execute_query("graph_id", "MATCH (n) RETURN COUNT(n)")
+  print(f"Total nodes: {result.data[0]['COUNT(n)']}")
+
+  # Async streaming
+  async for row in extensions.stream_query("graph_id", "MATCH (n) RETURN n"):
+    await process_row_async(row)
+
+  await extensions.close()
+
 
 asyncio.run(main())
 ```
@@ -92,8 +93,7 @@ asyncio.run(main())
 from robosystems_client.clients import AuthenticatedClients
 
 extensions = AuthenticatedClients(
-    api_key="your-api-key-here",
-    base_url="https://api.robosystems.ai"
+  api_key="your-api-key-here", base_url="https://api.robosystems.ai"
 )
 ```
 
@@ -103,8 +103,7 @@ extensions = AuthenticatedClients(
 from robosystems_client.clients import CookieAuthClients
 
 extensions = CookieAuthClients(
-    cookies={"auth-token": "your-cookie-token"},
-    base_url="https://api.robosystems.ai"
+  cookies={"auth-token": "your-cookie-token"}, base_url="https://api.robosystems.ai"
 )
 ```
 
@@ -113,10 +112,7 @@ extensions = CookieAuthClients(
 ```python
 from robosystems_client.clients import TokenClients
 
-extensions = TokenClients(
-    token="your-jwt-token",
-    base_url="https://api.robosystems.ai"
-)
+extensions = TokenClients(token="your-jwt-token", base_url="https://api.robosystems.ai")
 ```
 
 ### Environment-Specific Configurations
@@ -126,16 +122,14 @@ from robosystems_client.clients import create_clients
 
 # Production
 prod_ext = create_clients(
-    'api_key', 
-    api_key=os.getenv('ROBOSYSTEMS_API_KEY'),
-    base_url="https://api.robosystems.ai"
+  "api_key",
+  api_key=os.getenv("ROBOSYSTEMS_API_KEY"),
+  base_url="https://api.robosystems.ai",
 )
 
-# Development  
+# Development
 dev_ext = create_clients(
-    'api_key',
-    api_key="dev-key-123",
-    base_url="http://localhost:8000"
+  "api_key", api_key="dev-key-123", base_url="http://localhost:8000"
 )
 ```
 
@@ -149,17 +143,18 @@ Build complex Cypher queries programmatically:
 from robosystems_client.clients import QueryBuilder
 
 builder = QueryBuilder()
-query, params = (builder
-    .match("(c:Company)-[:HAS_TRANSACTION]->(t:Transaction)")
-    .match("(c)-[:LOCATED_IN]->(l:Location)")
-    .where("c.revenue > $min_revenue")
-    .where("l.country = $country")
-    .return_("c.name", "c.revenue", "COUNT(t) as tx_count", "l.city")
-    .order_by("tx_count DESC", "c.revenue DESC")
-    .limit(50)
-    .with_param("min_revenue", 1000000)
-    .with_param("country", "USA")
-    .build())
+query, params = (
+  builder.match("(c:Company)-[:HAS_TRANSACTION]->(t:Transaction)")
+  .match("(c)-[:LOCATED_IN]->(l:Location)")
+  .where("c.revenue > $min_revenue")
+  .where("l.country = $country")
+  .return_("c.name", "c.revenue", "COUNT(t) as tx_count", "l.city")
+  .order_by("tx_count DESC", "c.revenue DESC")
+  .limit(50)
+  .with_param("min_revenue", 1000000)
+  .with_param("country", "USA")
+  .build()
+)
 
 print("Generated Query:")
 print(query)
@@ -173,16 +168,16 @@ from robosystems_client.clients import validate_cypher_query, estimate_query_cos
 
 # Validate syntax
 validation = validate_cypher_query(query)
-if not validation['valid']:
-    print("Query issues:", validation['issues'])
+if not validation["valid"]:
+  print("Query issues:", validation["issues"])
 
 # Estimate complexity
 cost = estimate_query_cost(query, params)
 print(f"Complexity: {cost['complexity_category']} (score: {cost['complexity_score']})")
 
-# Get optimization recommendations  
-for rec in cost['recommendations']:
-    print(f"Tip: {rec}")
+# Get optimization recommendations
+for rec in cost["recommendations"]:
+  print(f"Tip: {rec}")
 ```
 
 ### Result Processing
@@ -200,10 +195,10 @@ csv_output = ResultProcessor.to_csv(result)
 
 # Convert to pandas DataFrame (if pandas installed)
 try:
-    df = ResultProcessor.to_dataframe(result)
-    print(df.head())
+  df = ResultProcessor.to_dataframe(result)
+  print(df.head())
 except ImportError:
-    print("pandas not installed")
+  print("pandas not installed")
 ```
 
 ### Caching
@@ -218,10 +213,10 @@ cache = CacheManager(max_size=100, ttl_seconds=300)  # 5 minute TTL
 # Cache is used automatically by extensions, or manually:
 cached_result = cache.get("graph_id", query, parameters)
 if not cached_result:
-    result = extensions.execute_query("graph_id", query, parameters)
-    cache.set("graph_id", query, result, parameters)
+  result = extensions.execute_query("graph_id", query, parameters)
+  cache.set("graph_id", query, result, parameters)
 else:
-    print("Using cached result!")
+  print("Using cached result!")
 
 # View cache statistics
 print(cache.stats())
@@ -234,10 +229,12 @@ Monitor long-running operations:
 ```python
 from robosystems_client.clients import ProgressTracker
 
+
 def progress_handler(progress):
-    print(f"Step {progress.current_step}/{progress.total_steps}: {progress.message}")
-    if progress.percentage:
-        print(f"Progress: {progress.percentage}%")
+  print(f"Step {progress.current_step}/{progress.total_steps}: {progress.message}")
+  if progress.percentage:
+    print(f"Progress: {progress.percentage}%")
+
 
 # Monitor operation with progress callback
 result = extensions.monitor_operation("operation_id", progress_handler)
@@ -254,12 +251,15 @@ from robosystems_client.clients import SSEClient, SSEConfig, EventType
 config = SSEConfig(base_url="https://api.robosystems.ai")
 client = SSEClient(config)
 
+
 # Set up event handlers
 def handle_progress(data):
-    print(f"Progress: {data['message']}")
+  print(f"Progress: {data['message']}")
+
 
 def handle_data_chunk(data):
-    print(f"Received {len(data.get('rows', []))} rows")
+  print(f"Received {len(data.get('rows', []))} rows")
+
 
 client.on(EventType.OPERATION_PROGRESS.value, handle_progress)
 client.on(EventType.DATA_CHUNK.value, handle_data_chunk)
@@ -282,22 +282,23 @@ extensions = create_production_clients(api_key)
 
 # Find top performing companies by revenue growth
 builder = QueryBuilder()
-query, params = (builder
-    .match("(c:Company)-[:HAS_FINANCIAL_REPORT]->(r:FinancialReport)")
-    .where("r.year >= $start_year")
-    .where("c.revenue > $min_revenue")
-    .return_("c.name", "c.revenue", "r.year", "r.revenue_growth_rate")
-    .order_by("r.revenue_growth_rate DESC")
-    .limit(20)
-    .with_param("start_year", 2020)
-    .with_param("min_revenue", 10000000)
-    .build())
+query, params = (
+  builder.match("(c:Company)-[:HAS_FINANCIAL_REPORT]->(r:FinancialReport)")
+  .where("r.year >= $start_year")
+  .where("c.revenue > $min_revenue")
+  .return_("c.name", "c.revenue", "r.year", "r.revenue_growth_rate")
+  .order_by("r.revenue_growth_rate DESC")
+  .limit(20)
+  .with_param("start_year", 2020)
+  .with_param("min_revenue", 10000000)
+  .build()
+)
 
 result = extensions.execute_query("financial_graph", query, params)
 
 print("Top 20 Companies by Revenue Growth:")
 for company in result.data:
-    print(f"- {company['name']}: {company['revenue_growth_rate']:.1f}% growth")
+  print(f"- {company['name']}: {company['revenue_growth_rate']:.1f}% growth")
 ```
 
 ### Batch Processing with Streaming
@@ -315,22 +316,24 @@ query = "MATCH (t:Transaction) WHERE t.amount > $min_amount RETURN t"
 params = {"min_amount": 1000}
 
 for transaction in extensions.stream_query("transactions_graph", query, params):
-    batch = batcher.add(transaction)
-    
-    if batch:
-        # Process batch
-        process_transaction_batch(batch)
-        total_processed += len(batch)
-        
-        if total_processed % 50000 == 0:
-            elapsed = time.time() - start_time
-            print(f"Processed {total_processed:,} transactions in {format_duration(int(elapsed * 1000))}")
+  batch = batcher.add(transaction)
+
+  if batch:
+    # Process batch
+    process_transaction_batch(batch)
+    total_processed += len(batch)
+
+    if total_processed % 50000 == 0:
+      elapsed = time.time() - start_time
+      print(
+        f"Processed {total_processed:,} transactions in {format_duration(int(elapsed * 1000))}"
+      )
 
 # Process final batch
 final_batch = batcher.flush()
 if final_batch:
-    process_transaction_batch(final_batch)
-    total_processed += len(final_batch)
+  process_transaction_batch(final_batch)
+  total_processed += len(final_batch)
 
 print(f"Processed {total_processed:,} transactions total")
 ```
@@ -341,24 +344,24 @@ print(f"Processed {total_processed:,} transactions total")
 from robosystems_client.clients import QueuedQueryError
 
 try:
-    result = extensions.execute_query("graph_id", "COMPLEX LONG RUNNING QUERY")
-    print(f"Query completed: {len(result.data)} results")
-    
+  result = extensions.execute_query("graph_id", "COMPLEX LONG RUNNING QUERY")
+  print(f"Query completed: {len(result.data)} results")
+
 except QueuedQueryError as e:
-    print(f"Query was queued at position {e.queue_info.queue_position}")
-    print(f"Estimated wait time: {e.queue_info.estimated_wait_seconds}s")
-    
-    # Wait for completion or cancel
-    choice = input("Wait for completion? (y/n): ")
-    if choice.lower() == 'y':
-        result = extensions.monitor_operation(e.queue_info.operation_id)
-        print(f"Query completed: {result.status}")
-    else:
-        cancelled = extensions.cancel_operation(e.queue_info.operation_id)
-        print(f"Query cancelled: {cancelled}")
-        
+  print(f"Query was queued at position {e.queue_info.queue_position}")
+  print(f"Estimated wait time: {e.queue_info.estimated_wait_seconds}s")
+
+  # Wait for completion or cancel
+  choice = input("Wait for completion? (y/n): ")
+  if choice.lower() == "y":
+    result = extensions.monitor_operation(e.queue_info.operation_id)
+    print(f"Query completed: {result.status}")
+  else:
+    cancelled = extensions.cancel_operation(e.queue_info.operation_id)
+    print(f"Query cancelled: {cancelled}")
+
 except Exception as e:
-    print(f"Query failed: {e}")
+  print(f"Query failed: {e}")
 ```
 
 ## Performance Optimization
@@ -370,9 +373,9 @@ Extensions automatically manage SSE connections with pooling:
 ```python
 # Configure connection limits
 config = RoboSystemsClientConfig(
-    max_retries=5,
-    retry_delay=2000,  # 2 seconds
-    timeout=60
+  max_retries=5,
+  retry_delay=2000,  # 2 seconds
+  timeout=60,
 )
 
 extensions = RoboSystemsClients(config)
@@ -390,39 +393,39 @@ query = "MATCH (c:Company) WHERE c.revenue > 1000000 RETURN c"
 
 # Check syntax
 validation = validate_cypher_query(query)
-if not validation['valid']:
-    print("Query has syntax errors:", validation['issues'])
-    
+if not validation["valid"]:
+  print("Query has syntax errors:", validation["issues"])
+
 # Estimate cost
 cost = estimate_query_cost(query)
 print(f"Query complexity: {cost['complexity_category']}")
 
 # Follow recommendations
-for rec in cost['recommendations']:
-    print(f"Optimization tip: {rec}")
+for rec in cost["recommendations"]:
+  print(f"Optimization tip: {rec}")
 
 # Execute only if reasonable complexity
-if cost['complexity_category'] in ['low', 'medium']:
-    result = extensions.execute_query("graph_id", query)
+if cost["complexity_category"] in ["low", "medium"]:
+  result = extensions.execute_query("graph_id", query)
 else:
-    print("Query may be too expensive - consider optimization")
+  print("Query may be too expensive - consider optimization")
 ```
 
 ### Caching Strategy
 
 ```python
 # Set up tiered caching
-schema_cache = CacheManager(max_size=10, ttl_seconds=3600)     # 1 hour for schemas
-query_cache = CacheManager(max_size=100, ttl_seconds=300)     # 5 minutes for queries
-results_cache = CacheManager(max_size=1000, ttl_seconds=60)   # 1 minute for results
+schema_cache = CacheManager(max_size=10, ttl_seconds=3600)  # 1 hour for schemas
+query_cache = CacheManager(max_size=100, ttl_seconds=300)  # 5 minutes for queries
+results_cache = CacheManager(max_size=1000, ttl_seconds=60)  # 1 minute for results
 
 # Use appropriate cache based on query type
 if "SCHEMA" in query.upper():
-    cache = schema_cache
+  cache = schema_cache
 elif any(keyword in query.upper() for keyword in ["COUNT", "SUM", "AVG"]):
-    cache = query_cache  
+  cache = query_cache
 else:
-    cache = results_cache
+  cache = results_cache
 ```
 
 ## Testing
@@ -444,17 +447,18 @@ python -c "from robosystems_client.clients.tests.test_integration import run_int
 from robosystems_client.clients import AuthenticatedClients
 from unittest.mock import Mock, patch
 
+
 def test_query_execution():
-    extensions = AuthenticatedClients("test-key")
-    
-    with patch('robosystems_client.clients.auth_integration.sync_detailed') as mock_query:
-        # Mock successful response
-        mock_response = Mock()
-        mock_response.parsed.data = [{"count": 100}]
-        mock_query.return_value = mock_response
-        
-        result = extensions.execute_cypher_query("test_graph", "MATCH (n) RETURN count(n)")
-        assert result["data"] == [{"count": 100}]
+  extensions = AuthenticatedClients("test-key")
+
+  with patch("robosystems_client.clients.auth_integration.sync_detailed") as mock_query:
+    # Mock successful response
+    mock_response = Mock()
+    mock_response.parsed.data = [{"count": 100}]
+    mock_query.return_value = mock_response
+
+    result = extensions.execute_cypher_query("test_graph", "MATCH (n) RETURN count(n)")
+    assert result["data"] == [{"count": 100}]
 ```
 
 ## Configuration
@@ -479,14 +483,11 @@ export ROBOSYSTEMS_RETRY_DELAY="2000"
 from robosystems_client.clients import RoboSystemsClientConfig
 
 config = RoboSystemsClientConfig(
-    base_url="https://api.robosystems.ai",
-    headers={
-        "X-Custom-Header": "value",
-        "X-Client-Version": "1.0.0"
-    },
-    max_retries=3,
-    retry_delay=1500,
-    timeout=45
+  base_url="https://api.robosystems.ai",
+  headers={"X-Custom-Header": "value", "X-Client-Version": "1.0.0"},
+  max_retries=3,
+  retry_delay=1500,
+  timeout=45,
 )
 
 extensions = RoboSystemsClients(config)
@@ -544,10 +545,10 @@ pip install pandas # For DataFrame conversion (optional)
 # Verify API key is valid
 extensions = AuthenticatedClients("your-api-key")
 try:
-    result = extensions.execute_query("graph_id", "MATCH (n) RETURN count(n) LIMIT 1")
-    print("Authentication successful")
+  result = extensions.execute_query("graph_id", "MATCH (n) RETURN count(n) LIMIT 1")
+  print("Authentication successful")
 except Exception as e:
-    print(f"Auth failed: {e}")
+  print(f"Auth failed: {e}")
 ```
 
 **Connection Issues**
@@ -556,10 +557,10 @@ except Exception as e:
 import httpx
 
 try:
-    response = httpx.get("https://api.robosystems.ai/health", timeout=10)
-    print(f"API Status: {response.status_code}")
+  response = httpx.get("https://api.robosystems.ai/health", timeout=10)
+  print(f"API Status: {response.status_code}")
 except Exception as e:
-    print(f"Connection failed: {e}")
+  print(f"Connection failed: {e}")
 ```
 
 **SSE Streaming Issues**
@@ -568,8 +569,10 @@ except Exception as e:
 config = SSEConfig(base_url="https://api.robosystems.ai")
 client = SSEClient(config)
 
+
 def debug_handler(data):
-    print(f"SSE Event: {data}")
+  print(f"SSE Event: {data}")
+
 
 client.on("event", debug_handler)
 ```
@@ -579,6 +582,7 @@ client.on("event", debug_handler)
 ```python
 # Enable detailed logging
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 # This will show internal HTTP requests and SSE events

@@ -1,0 +1,36 @@
+query GetLedgerEntity {
+  entity {
+    id
+    name
+    legalName
+    uri
+    cik
+    ticker
+    exchange
+    sic
+    sicDescription
+    category
+    stateOfIncorporation
+    fiscalYearEnd
+    taxId
+    lei
+    industry
+    entityType
+    phone
+    website
+    status
+    isParent
+    parentEntityId
+    source
+    sourceId
+    sourceGraphId
+    connectionId
+    addressLine1
+    addressCity
+    addressState
+    addressPostalCode
+    addressCountry
+    createdAt
+    updatedAt
+  }
+}

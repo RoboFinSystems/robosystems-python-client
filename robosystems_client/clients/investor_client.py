@@ -42,21 +42,56 @@ from ..api.extensions_robo_investor.update_security import (
 )
 from ..client import AuthenticatedClient
 from ..graphql.client import GraphQLClient, strip_none_vars
-from ..graphql.queries.investor import (
-  GET_HOLDINGS_QUERY,
-  GET_PORTFOLIO_BLOCK_QUERY,
-  GET_POSITION_QUERY,
-  GET_SECURITY_QUERY,
-  LIST_PORTFOLIOS_QUERY,
-  LIST_POSITIONS_QUERY,
-  LIST_SECURITIES_QUERY,
-  parse_holdings,
-  parse_portfolio_block,
-  parse_portfolios,
-  parse_position,
-  parse_positions,
-  parse_securities,
-  parse_security,
+from ..graphql.generated.get_investor_holdings import (
+  GetInvestorHoldings,
+)
+from ..graphql.generated.get_investor_holdings import (
+  GetInvestorHoldingsHoldings as InvestorHoldings,
+)
+from ..graphql.generated.get_investor_portfolio_block import (
+  GetInvestorPortfolioBlock,
+)
+from ..graphql.generated.get_investor_portfolio_block import (
+  GetInvestorPortfolioBlockPortfolioBlock as PortfolioBlock,
+)
+from ..graphql.generated.get_investor_position import (
+  GetInvestorPosition,
+)
+from ..graphql.generated.get_investor_position import (
+  GetInvestorPositionPosition as InvestorPosition,
+)
+from ..graphql.generated.get_investor_security import (
+  GetInvestorSecurity,
+)
+from ..graphql.generated.get_investor_security import (
+  GetInvestorSecuritySecurity as InvestorSecurity,
+)
+from ..graphql.generated.list_investor_portfolios import (
+  ListInvestorPortfolios,
+)
+from ..graphql.generated.list_investor_portfolios import (
+  ListInvestorPortfoliosPortfolios as PortfoliosPage,
+)
+from ..graphql.generated.list_investor_positions import (
+  ListInvestorPositions,
+)
+from ..graphql.generated.list_investor_positions import (
+  ListInvestorPositionsPositions as PositionsPage,
+)
+from ..graphql.generated.list_investor_securities import (
+  ListInvestorSecurities,
+)
+from ..graphql.generated.list_investor_securities import (
+  ListInvestorSecuritiesSecurities as SecuritiesPage,
+)
+from ..graphql.generated.operations import (
+  GET_INVESTOR_HOLDINGS_GQL,
+  GET_INVESTOR_PORTFOLIO_BLOCK_GQL,
+  GET_INVESTOR_POSITION_GQL,
+  GET_INVESTOR_SECURITY_GQL,
+  LIST_INVESTOR_PORTFOLIOS_GQL,
+  LIST_INVESTOR_POSITIONS_GQL,
+  LIST_INVESTOR_SECURITIES_GQL,
 )
 from ..models.create_portfolio_block_request import CreatePortfolioBlockRequest
 from ..models.create_security_request import CreateSecurityRequest
@@ -174,21 +209,21 @@ class InvestorClient:
 
   def list_portfolios(
     self, graph_id: str, limit: int = 100, offset: int = 0
-  ) -> dict[str, Any] | None:
+  ) -> PortfoliosPage | None:
     """List portfolios with pagination."""
     data = self._query(
-      graph_id, LIST_PORTFOLIOS_QUERY, {"limit": limit, "offset": offset}
+      graph_id, LIST_INVESTOR_PORTFOLIOS_GQL, {"limit": limit, "offset": offset}
     )
-    return parse_portfolios(data)
+    return ListInvestorPortfolios.model_validate(data).portfolios
 
   def get_portfolio_block(
     self, graph_id: str, portfolio_id: str
-  ) -> dict[str, Any] | None:
+  ) -> PortfolioBlock | None:
     """Get the full portfolio block (portfolio + positions + securities). Returns None if not found."""
     data = self._query(
-      graph_id, GET_PORTFOLIO_BLOCK_QUERY, {"portfolioId": portfolio_id}
+      graph_id, GET_INVESTOR_PORTFOLIO_BLOCK_GQL, {"portfolioId": portfolio_id}
     )
-    return parse_portfolio_block(data)
+    return GetInvestorPortfolioBlock.model_validate(data).portfolio_block
 
   def create_portfolio_block(
     self, graph_id: str, body: dict[str, Any]
@@ -252,11 +287,11 @@ class InvestorClient:
     is_active: bool | None = None,
     limit: int = 100,
     offset: int = 0,
-  ) -> dict[str, Any] | None:
+  ) -> SecuritiesPage | None:
     """List securities with pagination and filters."""
     data = self._query(
       graph_id,
-      LIST_SECURITIES_QUERY,
+      LIST_INVESTOR_SECURITIES_GQL,
       {
         "entityId": entity_id,
         "securityType": security_type,
@@ -265,12 +300,12 @@ class InvestorClient:
         "offset": offset,
       },
     )
-    return parse_securities(data)
+    return ListInvestorSecurities.model_validate(data).securities
 
-  def get_security(self, graph_id: str, security_id: str) -> dict[str, Any] | None:
+  def get_security(self, graph_id: str, security_id: str) -> InvestorSecurity | None:
     """Get a single security by id. Returns None if it doesn't exist."""
-    data = self._query(graph_id, GET_SECURITY_QUERY, {"securityId": security_id})
-    return parse_security(data)
+    data = self._query(graph_id, GET_INVESTOR_SECURITY_GQL, {"securityId": security_id})
+    return GetInvestorSecurity.model_validate(data).security
 
   def create_security(self, graph_id: str, body: dict[str, Any]) -> SecurityResponse:
     """Create a new security. Auto-links to an entity when `source_graph_id` is set."""
@@ -317,11 +352,11 @@ class InvestorClient:
     status: str | None = None,
     limit: int = 100,
     offset: int = 0,
-  ) -> dict[str, Any] | None:
+  ) -> PositionsPage | None:
     """List positions with pagination and filters."""
     data = self._query(
       graph_id,
-      LIST_POSITIONS_QUERY,
+      LIST_INVESTOR_POSITIONS_GQL,
       {
         "portfolioId": portfolio_id,
         "securityId": security_id,
@@ -330,16 +365,18 @@ class InvestorClient:
         "offset": offset,
       },
     )
-    return parse_positions(data)
+    return ListInvestorPositions.model_validate(data).positions
 
-  def get_position(self, graph_id: str, position_id: str) -> dict[str, Any] | None:
+  def get_position(self, graph_id: str, position_id: str) -> InvestorPosition | None:
     """Get a single position by id. Returns None if it doesn't exist."""
-    data = self._query(graph_id, GET_POSITION_QUERY, {"positionId": position_id})
-    return parse_position(data)
+    data = self._query(graph_id, GET_INVESTOR_POSITION_GQL, {"positionId": position_id})
+    return GetInvestorPosition.model_validate(data).position
 
   # ── Holdings (aggregation) ─────────────────────────────────────────
 
-  def get_holdings(self, graph_id: str, portfolio_id: str) -> dict[str, Any] | None:
+  def get_holdings(self, graph_id: str, portfolio_id: str) -> InvestorHoldings | None:
     """Get portfolio holdings grouped by entity."""
-    data = self._query(graph_id, GET_HOLDINGS_QUERY, {"portfolioId": portfolio_id})
-    return parse_holdings(data)
+    data = self._query(
+      graph_id, GET_INVESTOR_HOLDINGS_GQL, {"portfolioId": portfolio_id}
+    )
+    return GetInvestorHoldings.model_validate(data).holdings

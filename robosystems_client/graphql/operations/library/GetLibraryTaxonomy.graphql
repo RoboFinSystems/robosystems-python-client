@@ -1,0 +1,25 @@
+query GetLibraryTaxonomy(
+  $id: ID
+  $standard: String
+  $version: String
+  $includeElementCount: Boolean! = false
+) {
+  libraryTaxonomy(
+    id: $id
+    standard: $standard
+    version: $version
+    includeElementCount: $includeElementCount
+  ) {
+    id
+    name
+    description
+    standard
+    version
+    namespaceUri
+    taxonomyType
+    isShared
+    isActive
+    isLocked
+    elementCount
+  }
+}

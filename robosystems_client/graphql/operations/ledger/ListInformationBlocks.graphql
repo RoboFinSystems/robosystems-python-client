@@ -1,0 +1,59 @@
+query ListInformationBlocks(
+  $blockType: String
+  $category: String
+  $limit: Int
+  $offset: Int
+) {
+  informationBlocks(
+    blockType: $blockType
+    category: $category
+    limit: $limit
+    offset: $offset
+  ) {
+    id blockType name displayName category
+    taxonomyId taxonomyName
+    informationModel { conceptArrangement memberArrangement }
+    artifact { topic rendererNote template mechanics }
+    elements {
+      id qname name code elementType
+      isAbstract isMonetary balanceType periodType
+    }
+    connections {
+      id fromElementId toElementId associationType
+      arcrole orderValue weight
+    }
+    facts {
+      id elementId value textValue factType contentType periodStart periodEnd
+      periodType unit factScope factSetId
+    }
+    rules {
+      id ruleCategory rulePattern ruleCheckKind ruleExpression
+      ruleMessage ruleSeverity ruleOrigin
+      ruleTarget { targetKind targetRefId }
+      ruleVariables { variableName variableQname }
+    }
+    factSet {
+      id structureId periodStart periodEnd
+      factsetType entityId reportId provenance
+    }
+    verificationResults {
+      id ruleId structureId factSetId status message
+      periodStart periodEnd evaluatedAt
+    }
+    verificationSummary {
+      total passed failed errored skipped
+      byCategory { category total passed failed errored skipped }
+    }
+    view {
+      rendering {
+        rows {
+          elementId elementQname elementName classification
+          balanceType values textValue isSubtotal depth
+        }
+        periods { start end label }
+        validation { passed checks failures warnings }
+        unmappedCount
+      }
+    }
+  }
+}

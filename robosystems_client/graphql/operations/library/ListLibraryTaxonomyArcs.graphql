@@ -1,0 +1,28 @@
+query ListLibraryTaxonomyArcs(
+  $taxonomyId: ID!
+  $associationType: String
+  $limit: Int! = 200
+  $offset: Int! = 0
+) {
+  libraryTaxonomyArcCount(taxonomyId: $taxonomyId)
+  libraryTaxonomyArcs(
+    taxonomyId: $taxonomyId
+    associationType: $associationType
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    structureId
+    structureName
+    fromElementId
+    fromElementQname
+    fromElementName
+    toElementId
+    toElementQname
+    toElementName
+    associationType
+    arcrole
+    orderValue
+    weight
+  }
+}

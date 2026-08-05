@@ -54,10 +54,16 @@ generate-sdk url="http://localhost:8000/openapi.json" graphql_url="http://localh
     @just refresh-schema {{graphql_url}}
 
 # Refresh the checked-in GraphQL SDL snapshot by introspecting a running backend.
-# tests/test_graphql_queries.py validates the hand-written query documents
+# tests/test_graphql_queries.py validates the operations/*.graphql documents
 # against it. generate-sdk runs this too, so the snapshot can't silently drift.
 refresh-schema url="http://localhost:8000/extensions/kg00000000000000000000/graphql":
     uv run bin/refresh-schema.py {{url}}
+
+# Regenerate typed GraphQL models (ariadne-codegen) from the checked-in schema
+# + operations/*.graphql. Hermetic — no running backend; refresh-schema first
+# if the backend schema changed.
+generate-graphql:
+    bin/generate-graphql.sh
 
 # Build python package locally (for testing)
 build-package:

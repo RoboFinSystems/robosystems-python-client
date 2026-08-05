@@ -1,0 +1,49 @@
+query ListLibraryElements(
+  $taxonomyId: ID
+  $source: String
+  $classification: String
+  $activityType: String
+  $elementType: String
+  $isAbstract: Boolean
+  $limit: Int! = 50
+  $offset: Int! = 0
+  $includeLabels: Boolean! = false
+  $includeReferences: Boolean! = false
+) {
+  libraryElements(
+    taxonomyId: $taxonomyId
+    source: $source
+    classification: $classification
+    activityType: $activityType
+    elementType: $elementType
+    isAbstract: $isAbstract
+    limit: $limit
+    offset: $offset
+    includeLabels: $includeLabels
+    includeReferences: $includeReferences
+  ) {
+    id
+    qname
+    namespace
+    name
+    trait
+    balanceType
+    periodType
+    isAbstract
+    isMonetary
+    elementType
+    source
+    taxonomyId
+    parentId
+    labels @include(if: $includeLabels) {
+      role
+      language
+      text
+    }
+    references @include(if: $includeReferences) {
+      refType
+      citation
+      uri
+    }
+  }
+}
