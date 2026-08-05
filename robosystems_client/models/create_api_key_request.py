@@ -19,11 +19,14 @@ class CreateAPIKeyRequest:
       name (str): Name for the API key
       description (None | str | Unset): Optional description
       expires_at (None | str | Unset): Optional expiration date in ISO format (e.g. 2024-12-31T23:59:59Z)
+      graph_id (None | str | Unset): Optional graph scope. A scoped key works only for this graph (and its subgraphs)
+          and is the only kind of key accepted in an MCP connector URL. Omit for an account-wide key.
   """
 
   name: str
   description: None | str | Unset = UNSET
   expires_at: None | str | Unset = UNSET
+  graph_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -41,6 +44,12 @@ class CreateAPIKeyRequest:
     else:
       expires_at = self.expires_at
 
+    graph_id: None | str | Unset
+    if isinstance(self.graph_id, Unset):
+      graph_id = UNSET
+    else:
+      graph_id = self.graph_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -52,6 +61,8 @@ class CreateAPIKeyRequest:
       field_dict["description"] = description
     if expires_at is not UNSET:
       field_dict["expires_at"] = expires_at
+    if graph_id is not UNSET:
+      field_dict["graph_id"] = graph_id
 
     return field_dict
 
@@ -78,10 +89,20 @@ class CreateAPIKeyRequest:
 
     expires_at = _parse_expires_at(d.pop("expires_at", UNSET))
 
+    def _parse_graph_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    graph_id = _parse_graph_id(d.pop("graph_id", UNSET))
+
     create_api_key_request = cls(
       name=name,
       description=description,
       expires_at=expires_at,
+      graph_id=graph_id,
     )
 
     create_api_key_request.additional_properties = d

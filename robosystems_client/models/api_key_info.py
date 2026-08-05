@@ -24,6 +24,7 @@ class APIKeyInfo:
       description (None | str | Unset): API key description
       last_used_at (None | str | Unset): Last used timestamp
       expires_at (None | str | Unset): Expiration timestamp
+      graph_id (None | str | Unset): Graph scope; null means account-wide
   """
 
   id: str
@@ -34,6 +35,7 @@ class APIKeyInfo:
   description: None | str | Unset = UNSET
   last_used_at: None | str | Unset = UNSET
   expires_at: None | str | Unset = UNSET
+  graph_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -65,6 +67,12 @@ class APIKeyInfo:
     else:
       expires_at = self.expires_at
 
+    graph_id: None | str | Unset
+    if isinstance(self.graph_id, Unset):
+      graph_id = UNSET
+    else:
+      graph_id = self.graph_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -82,6 +90,8 @@ class APIKeyInfo:
       field_dict["last_used_at"] = last_used_at
     if expires_at is not UNSET:
       field_dict["expires_at"] = expires_at
+    if graph_id is not UNSET:
+      field_dict["graph_id"] = graph_id
 
     return field_dict
 
@@ -125,6 +135,15 @@ class APIKeyInfo:
 
     expires_at = _parse_expires_at(d.pop("expires_at", UNSET))
 
+    def _parse_graph_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    graph_id = _parse_graph_id(d.pop("graph_id", UNSET))
+
     api_key_info = cls(
       id=id,
       name=name,
@@ -134,6 +153,7 @@ class APIKeyInfo:
       description=description,
       last_used_at=last_used_at,
       expires_at=expires_at,
+      graph_id=graph_id,
     )
 
     api_key_info.additional_properties = d
