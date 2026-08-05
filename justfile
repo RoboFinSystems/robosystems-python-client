@@ -59,6 +59,12 @@ generate-sdk url="http://localhost:8000/openapi.json" graphql_url="http://localh
 refresh-schema url="http://localhost:8000/extensions/kg00000000000000000000/graphql":
     uv run bin/refresh-schema.py {{url}}
 
+# Regenerate typed GraphQL models (ariadne-codegen) from the checked-in schema
+# + operations/*.graphql. Hermetic — no running backend; refresh-schema first
+# if the backend schema changed.
+generate-graphql:
+    bin/generate-graphql.sh
+
 # Build python package locally (for testing)
 build-package:
     python -m build

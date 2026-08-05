@@ -156,6 +156,13 @@ from ..api.extensions_robo_ledger.update_journal_entry import (
 )
 from ..client import AuthenticatedClient
 from ..graphql.client import GraphQLClient, strip_none_vars
+from ..graphql.generated.get_ledger_summary import (
+  GetLedgerSummary,
+)
+from ..graphql.generated.get_ledger_summary import (
+  GetLedgerSummarySummary as LedgerSummary,
+)
+from ..graphql.generated.operations import GET_LEDGER_SUMMARY_GQL
 from ..graphql.queries.ledger import (
   GET_ACCOUNT_ROLLUPS_QUERY,
   GET_ACCOUNT_TREE_QUERY,
@@ -171,7 +178,6 @@ from ..graphql.queries.ledger import (
   GET_PERIOD_DRAFTS_QUERY,
   GET_INFORMATION_BLOCK_QUERY,
   GET_REPORTING_TAXONOMY_QUERY,
-  GET_SUMMARY_QUERY,
   GET_TRANSACTION_QUERY,
   GET_TRIAL_BALANCE_QUERY,
   LIST_ACCOUNTS_QUERY,
@@ -207,7 +213,6 @@ from ..graphql.queries.ledger import (
   parse_period_drafts,
   parse_reporting_taxonomy,
   parse_structures,
-  parse_summary,
   parse_taxonomies,
   parse_transaction,
   parse_transactions,
@@ -590,10 +595,14 @@ class LedgerClient:
 
   # ── Summary ────────────────────────────────────────────────────────
 
-  def get_summary(self, graph_id: str) -> dict[str, Any] | None:
-    """Ledger rollup counts + QB sync metadata."""
-    data = self._query(graph_id, GET_SUMMARY_QUERY)
-    return parse_summary(data)
+  def get_summary(self, graph_id: str) -> LedgerSummary | None:
+    """Ledger rollup counts + QB sync metadata.
+
+    Returns the codegen-typed ``LedgerSummary`` model (attribute access,
+    snake_case) rather than a dict.
+    """
+    data = self._query(graph_id, GET_LEDGER_SUMMARY_GQL)
+    return GetLedgerSummary.model_validate(data).summary
 
   # ── Accounts ────────────────────────────────────────────────────────
 

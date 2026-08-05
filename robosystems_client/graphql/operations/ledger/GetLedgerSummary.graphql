@@ -1,0 +1,13 @@
+query GetLedgerSummary {
+  summary {
+    graphId
+    accountCount
+    transactionCount
+    entryCount
+    lineItemCount
+    earliestTransactionDate
+    latestTransactionDate
+    connectionCount
+    lastSyncAt
+  }
+}

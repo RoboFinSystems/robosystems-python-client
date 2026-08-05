@@ -94,5 +94,35 @@ reportMissingImports = "none"
 
 [dependency-groups]
 dev = [
+    "ariadne-codegen>=0.14",
     "graphql-core>=3.2.11",
 ]
+
+# GraphQL codegen: reads the checked-in schema + .graphql operation files and
+# emits typed Pydantic models under robosystems_client/graphql/generated/.
+# Run via `just generate-graphql`; regen must be clean in CI.
+[tool.ariadne-codegen]
+schema_path = "robosystems_client/graphql/schema.graphql"
+queries_path = "robosystems_client/graphql/operations"
+target_package_name = "generated"
+target_package_path = "robosystems_client/graphql"
+async_client = false
+include_all_inputs = false
+include_all_enums = false
+include_comments = "none"
+# Emit query strings as importable constants (generated/operations.py) so
+# facades can keep using the existing graph-scoped GraphQLClient transport
+# (per-call graph_id URL, rfs-key/JWT header routing, strip_none_vars)
+# and consume only the typed models + query text from codegen.
+plugins = ["ariadne_codegen.contrib.extract_operations.ExtractOperationsPlugin"]
+
+# Backend serializes Date/DateTime scalars as ISO strings; map to str for
+# exact parity with the previous dict values. JSON stays Any.
+[tool.ariadne-codegen.scalars.Date]
+type = "str"
+
+[tool.ariadne-codegen.scalars.DateTime]
+type = "str"
+
+[tool.ariadne-codegen.scalars.JSON]
+type = "typing.Any"

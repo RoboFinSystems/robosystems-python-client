@@ -623,8 +623,10 @@ class TestLedgerReadsAdditional:
     client = LedgerClient(mock_config)
     result = client.get_summary(graph_id)
     assert result is not None
-    assert result["account_count"] == 120
-    assert result["transaction_count"] == 500
+    assert result.graph_id == graph_id
+    assert result.account_count == 120
+    assert result.transaction_count == 500
+    assert result.last_sync_at is None
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_summary_returns_none_when_missing(
