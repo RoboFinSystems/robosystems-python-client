@@ -22,23 +22,52 @@ from __future__ import annotations
 from typing import Any
 
 from ..graphql.client import GraphQLClient, strip_none_vars
-from ..graphql.queries.library import (
-  GET_LIBRARY_ELEMENT_ARCS_QUERY,
-  GET_LIBRARY_ELEMENT_EQUIVALENTS_QUERY,
-  GET_LIBRARY_ELEMENT_QUERY,
-  GET_LIBRARY_TAXONOMY_QUERY,
-  LIST_LIBRARY_ELEMENTS_QUERY,
-  LIST_LIBRARY_TAXONOMIES_QUERY,
-  LIST_LIBRARY_TAXONOMY_ARCS_QUERY,
-  SEARCH_LIBRARY_ELEMENTS_QUERY,
-  parse_library_element,
-  parse_library_element_arcs,
-  parse_library_element_equivalents,
-  parse_library_elements,
-  parse_library_search_results,
-  parse_library_taxonomies,
-  parse_library_taxonomy,
-  parse_library_taxonomy_arcs,
+from ..graphql.generated.get_library_element import (
+  GetLibraryElement,
+)
+from ..graphql.generated.get_library_element import (
+  GetLibraryElementLibraryElement as LibraryElement,
+)
+from ..graphql.generated.get_library_element_arcs import (
+  GetLibraryElementArcs,
+  GetLibraryElementArcsLibraryElementArcs,
+)
+from ..graphql.generated.get_library_element_equivalents import (
+  GetLibraryElementEquivalents,
+)
+from ..graphql.generated.get_library_element_equivalents import (
+  GetLibraryElementEquivalentsLibraryElementEquivalents as LibraryElementEquivalents,
+)
+from ..graphql.generated.get_library_taxonomy import (
+  GetLibraryTaxonomy,
+)
+from ..graphql.generated.get_library_taxonomy import (
+  GetLibraryTaxonomyLibraryTaxonomy as LibraryTaxonomy,
+)
+from ..graphql.generated.list_library_elements import (
+  ListLibraryElements,
+  ListLibraryElementsLibraryElements,
+)
+from ..graphql.generated.list_library_taxonomies import (
+  ListLibraryTaxonomies,
+  ListLibraryTaxonomiesLibraryTaxonomies,
+)
+from ..graphql.generated.list_library_taxonomy_arcs import (
+  ListLibraryTaxonomyArcs,
+)
+from ..graphql.generated.operations import (
+  GET_LIBRARY_ELEMENT_ARCS_GQL,
+  GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL,
+  GET_LIBRARY_ELEMENT_GQL,
+  GET_LIBRARY_TAXONOMY_GQL,
+  LIST_LIBRARY_ELEMENTS_GQL,
+  LIST_LIBRARY_TAXONOMIES_GQL,
+  LIST_LIBRARY_TAXONOMY_ARCS_GQL,
+  SEARCH_LIBRARY_ELEMENTS_GQL,
+)
+from ..graphql.generated.search_library_elements import (
+  SearchLibraryElements,
+  SearchLibraryElementsSearchLibraryElements,
 )
 
 LIBRARY_GRAPH_ID = "library"
@@ -86,14 +115,14 @@ class LibraryClient:
     *,
     standard: str | None = None,
     include_element_count: bool = False,
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListLibraryTaxonomiesLibraryTaxonomies]:
     """List every taxonomy visible at this graph_id."""
     data = self._query(
       graph_id,
-      LIST_LIBRARY_TAXONOMIES_QUERY,
+      LIST_LIBRARY_TAXONOMIES_GQL,
       {"standard": standard, "includeElementCount": include_element_count},
     )
-    return parse_library_taxonomies(data)
+    return ListLibraryTaxonomies.model_validate(data).library_taxonomies
 
   def get_library_taxonomy(
     self,
@@ -103,11 +132,11 @@ class LibraryClient:
     standard: str | None = None,
     version: str | None = None,
     include_element_count: bool = False,
-  ) -> dict[str, Any] | None:
+  ) -> LibraryTaxonomy | None:
     """Fetch one taxonomy by id or by (standard, version). Returns None if not found."""
     data = self._query(
       graph_id,
-      GET_LIBRARY_TAXONOMY_QUERY,
+      GET_LIBRARY_TAXONOMY_GQL,
       {
         "id": id,
         "standard": standard,
@@ -115,7 +144,7 @@ class LibraryClient:
         "includeElementCount": include_element_count,
       },
     )
-    return parse_library_taxonomy(data)
+    return GetLibraryTaxonomy.model_validate(data).library_taxonomy
 
   # ── Elements ────────────────────────────────────────────────────────
 
@@ -133,11 +162,11 @@ class LibraryClient:
     offset: int = 0,
     include_labels: bool = False,
     include_references: bool = False,
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListLibraryElementsLibraryElements]:
     """List library elements with filters and pagination."""
     data = self._query(
       graph_id,
-      LIST_LIBRARY_ELEMENTS_QUERY,
+      LIST_LIBRARY_ELEMENTS_GQL,
       {
         "taxonomyId": taxonomy_id,
         "source": source,
@@ -151,7 +180,7 @@ class LibraryClient:
         "includeReferences": include_references,
       },
     )
-    return parse_library_elements(data)
+    return ListLibraryElements.model_validate(data).library_elements
 
   def search_library_elements(
     self,
@@ -160,14 +189,14 @@ class LibraryClient:
     *,
     source: str | None = None,
     limit: int = 50,
-  ) -> list[dict[str, Any]]:
+  ) -> list[SearchLibraryElementsSearchLibraryElements]:
     """Substring search across qname, name, and standard label text."""
     data = self._query(
       graph_id,
-      SEARCH_LIBRARY_ELEMENTS_QUERY,
+      SEARCH_LIBRARY_ELEMENTS_GQL,
       {"query": query, "source": source, "limit": limit},
     )
-    return parse_library_search_results(data)
+    return SearchLibraryElements.model_validate(data).search_library_elements
 
   def get_library_element(
     self,
@@ -175,14 +204,14 @@ class LibraryClient:
     *,
     id: str | None = None,
     qname: str | None = None,
-  ) -> dict[str, Any] | None:
+  ) -> LibraryElement | None:
     """Get a single element by id or qname. Returns None if not found."""
     data = self._query(
       graph_id,
-      GET_LIBRARY_ELEMENT_QUERY,
+      GET_LIBRARY_ELEMENT_GQL,
       {"id": id, "qname": qname},
     )
-    return parse_library_element(data)
+    return GetLibraryElement.model_validate(data).library_element
 
   # ── Arcs / Equivalence ──────────────────────────────────────────────
 
@@ -194,11 +223,16 @@ class LibraryClient:
     association_type: str | None = None,
     limit: int = 200,
     offset: int = 0,
-  ) -> dict[str, Any]:
-    """All arcs contributed by a taxonomy plus their total count."""
+  ) -> ListLibraryTaxonomyArcs:
+    """All arcs contributed by a taxonomy plus their total count.
+
+    Returns the typed response carrying both root fields:
+    ``library_taxonomy_arcs`` (the page of arcs) and
+    ``library_taxonomy_arc_count`` (total before pagination).
+    """
     data = self._query(
       graph_id,
-      LIST_LIBRARY_TAXONOMY_ARCS_QUERY,
+      LIST_LIBRARY_TAXONOMY_ARCS_GQL,
       {
         "taxonomyId": taxonomy_id,
         "associationType": association_type,
@@ -206,22 +240,22 @@ class LibraryClient:
         "offset": offset,
       },
     )
-    return parse_library_taxonomy_arcs(data)
+    return ListLibraryTaxonomyArcs.model_validate(data)
 
   def get_library_element_arcs(
     self,
     id: str,
     graph_id: str = LIBRARY_GRAPH_ID,
-  ) -> list[dict[str, Any]]:
+  ) -> list[GetLibraryElementArcsLibraryElementArcs]:
     """All mapping arcs where this element is source or target."""
-    data = self._query(graph_id, GET_LIBRARY_ELEMENT_ARCS_QUERY, {"id": id})
-    return parse_library_element_arcs(data)
+    data = self._query(graph_id, GET_LIBRARY_ELEMENT_ARCS_GQL, {"id": id})
+    return GetLibraryElementArcs.model_validate(data).library_element_arcs
 
   def get_library_element_equivalents(
     self,
     id: str,
     graph_id: str = LIBRARY_GRAPH_ID,
-  ) -> dict[str, Any] | None:
+  ) -> LibraryElementEquivalents | None:
     """Equivalence fan-out (FAC ↔ us-gaap collapse). Returns None if not found."""
-    data = self._query(graph_id, GET_LIBRARY_ELEMENT_EQUIVALENTS_QUERY, {"id": id})
-    return parse_library_element_equivalents(data)
+    data = self._query(graph_id, GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL, {"id": id})
+    return GetLibraryElementEquivalents.model_validate(data).library_element_equivalents

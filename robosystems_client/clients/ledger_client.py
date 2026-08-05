@@ -156,84 +156,231 @@ from ..api.extensions_robo_ledger.update_journal_entry import (
 )
 from ..client import AuthenticatedClient
 from ..graphql.client import GraphQLClient, strip_none_vars
+from ..graphql.generated.get_information_block import (
+  GetInformationBlock,
+)
+from ..graphql.generated.get_information_block import (
+  GetInformationBlockInformationBlock as InformationBlock,
+)
+from ..graphql.generated.get_ledger_account_rollups import (
+  GetLedgerAccountRollups,
+)
+from ..graphql.generated.get_ledger_account_rollups import (
+  GetLedgerAccountRollupsAccountRollups as LedgerAccountRollups,
+)
+from ..graphql.generated.get_ledger_account_tree import (
+  GetLedgerAccountTree,
+)
+from ..graphql.generated.get_ledger_account_tree import (
+  GetLedgerAccountTreeAccountTree as LedgerAccountTree,
+)
+from ..graphql.generated.get_ledger_agent import (
+  GetLedgerAgent,
+)
+from ..graphql.generated.get_ledger_agent import (
+  GetLedgerAgentAgent as LedgerAgent,
+)
+from ..graphql.generated.get_ledger_closing_book_structures import (
+  GetLedgerClosingBookStructures,
+)
+from ..graphql.generated.get_ledger_closing_book_structures import (
+  GetLedgerClosingBookStructuresClosingBookStructures as ClosingBookStructures,
+)
+from ..graphql.generated.get_ledger_entity import (
+  GetLedgerEntity,
+)
+from ..graphql.generated.get_ledger_entity import (
+  GetLedgerEntityEntity as LedgerEntity,
+)
+from ..graphql.generated.get_ledger_event_block import (
+  GetLedgerEventBlock,
+)
+from ..graphql.generated.get_ledger_event_block import (
+  GetLedgerEventBlockEventBlock as LedgerEventBlock,
+)
+from ..graphql.generated.get_ledger_fiscal_calendar import (
+  GetLedgerFiscalCalendar,
+)
+from ..graphql.generated.get_ledger_fiscal_calendar import (
+  GetLedgerFiscalCalendarFiscalCalendar as FiscalCalendar,
+)
+from ..graphql.generated.get_ledger_mapped_trial_balance import (
+  GetLedgerMappedTrialBalance,
+)
+from ..graphql.generated.get_ledger_mapped_trial_balance import (
+  GetLedgerMappedTrialBalanceMappedTrialBalance as MappedTrialBalance,
+)
+from ..graphql.generated.get_ledger_mapping import (
+  GetLedgerMapping,
+)
+from ..graphql.generated.get_ledger_mapping import (
+  GetLedgerMappingMapping as LedgerMapping,
+)
+from ..graphql.generated.get_ledger_mapping_coverage import (
+  GetLedgerMappingCoverage,
+)
+from ..graphql.generated.get_ledger_mapping_coverage import (
+  GetLedgerMappingCoverageMappingCoverage as MappingCoverage,
+)
+from ..graphql.generated.get_ledger_period_close_status import (
+  GetLedgerPeriodCloseStatus,
+)
+from ..graphql.generated.get_ledger_period_close_status import (
+  GetLedgerPeriodCloseStatusPeriodCloseStatus as PeriodCloseStatus,
+)
+from ..graphql.generated.get_ledger_period_drafts import (
+  GetLedgerPeriodDrafts,
+)
+from ..graphql.generated.get_ledger_period_drafts import (
+  GetLedgerPeriodDraftsPeriodDrafts as PeriodDrafts,
+)
+from ..graphql.generated.get_ledger_publish_list import (
+  GetLedgerPublishList,
+)
+from ..graphql.generated.get_ledger_publish_list import (
+  GetLedgerPublishListPublishList as PublishList,
+)
+from ..graphql.generated.get_ledger_report import (
+  GetLedgerReport,
+)
+from ..graphql.generated.get_ledger_report import (
+  GetLedgerReportReport as LedgerReport,
+)
+from ..graphql.generated.get_ledger_report_download_url import (
+  GetLedgerReportDownloadUrl,
+)
+from ..graphql.generated.get_ledger_report_package import (
+  GetLedgerReportPackage,
+)
+from ..graphql.generated.get_ledger_report_package import (
+  GetLedgerReportPackageReportPackage as ReportPackage,
+)
+from ..graphql.generated.get_ledger_reporting_taxonomy import (
+  GetLedgerReportingTaxonomy,
+)
+from ..graphql.generated.get_ledger_reporting_taxonomy import (
+  GetLedgerReportingTaxonomyReportingTaxonomy as ReportingTaxonomy,
+)
+from ..graphql.generated.get_ledger_statement import (
+  GetLedgerStatement,
+)
+from ..graphql.generated.get_ledger_statement import (
+  GetLedgerStatementStatement as LedgerStatement,
+)
 from ..graphql.generated.get_ledger_summary import (
   GetLedgerSummary,
 )
 from ..graphql.generated.get_ledger_summary import (
   GetLedgerSummarySummary as LedgerSummary,
 )
-from ..graphql.generated.operations import GET_LEDGER_SUMMARY_GQL
-from ..graphql.queries.ledger import (
-  GET_ACCOUNT_ROLLUPS_QUERY,
-  GET_ACCOUNT_TREE_QUERY,
-  GET_AGENT_QUERY,
-  GET_CLOSING_BOOK_STRUCTURES_QUERY,
-  GET_ENTITY_QUERY,
-  GET_EVENT_BLOCK_QUERY,
-  GET_FISCAL_CALENDAR_QUERY,
-  GET_MAPPED_TRIAL_BALANCE_QUERY,
-  GET_MAPPING_COVERAGE_QUERY,
-  GET_MAPPING_QUERY,
-  GET_PERIOD_CLOSE_STATUS_QUERY,
-  GET_PERIOD_DRAFTS_QUERY,
-  GET_INFORMATION_BLOCK_QUERY,
-  GET_REPORTING_TAXONOMY_QUERY,
-  GET_TRANSACTION_QUERY,
-  GET_TRIAL_BALANCE_QUERY,
-  LIST_ACCOUNTS_QUERY,
-  LIST_AGENTS_QUERY,
-  LIST_ELEMENTS_QUERY,
-  LIST_ENTITIES_QUERY,
-  LIST_EVENT_BLOCKS_QUERY,
-  LIST_INFORMATION_BLOCKS_QUERY,
-  LIST_MAPPINGS_QUERY,
-  LIST_STRUCTURES_QUERY,
-  LIST_TAXONOMIES_QUERY,
-  LIST_TRANSACTIONS_QUERY,
-  LIST_UNMAPPED_ELEMENTS_QUERY,
-  parse_account_rollups,
-  parse_account_tree,
-  parse_accounts,
-  parse_agent,
-  parse_agents,
-  parse_closing_book_structures,
-  parse_elements,
-  parse_entities,
-  parse_entity,
-  parse_event_block,
-  parse_event_blocks,
-  parse_fiscal_calendar,
-  parse_information_block,
-  parse_information_blocks,
-  parse_mapped_trial_balance,
-  parse_mapping,
-  parse_mapping_coverage,
-  parse_mappings,
-  parse_period_close_status,
-  parse_period_drafts,
-  parse_reporting_taxonomy,
-  parse_structures,
-  parse_taxonomies,
-  parse_transaction,
-  parse_transactions,
-  parse_trial_balance,
-  parse_unmapped_elements,
+from ..graphql.generated.get_ledger_transaction import (
+  GetLedgerTransaction,
 )
-from ..graphql.queries.ledger import (
-  GET_PUBLISH_LIST_QUERY,
-  GET_REPORT_DOWNLOAD_URL_QUERY,
-  GET_REPORT_PACKAGE_QUERY,
-  GET_REPORT_QUERY,
-  GET_STATEMENT_QUERY,
-  LIST_PUBLISH_LISTS_QUERY,
-  LIST_REPORTS_QUERY,
-  parse_publish_list,
-  parse_publish_lists,
-  parse_report,
-  parse_report_download_url,
-  parse_report_package,
-  parse_reports,
-  parse_statement,
+from ..graphql.generated.get_ledger_transaction import (
+  GetLedgerTransactionTransaction as LedgerTransaction,
+)
+from ..graphql.generated.get_ledger_trial_balance import (
+  GetLedgerTrialBalance,
+)
+from ..graphql.generated.get_ledger_trial_balance import (
+  GetLedgerTrialBalanceTrialBalance as TrialBalance,
+)
+from ..graphql.generated.list_information_blocks import (
+  ListInformationBlocks,
+  ListInformationBlocksInformationBlocks,
+)
+from ..graphql.generated.list_ledger_accounts import (
+  ListLedgerAccounts,
+)
+from ..graphql.generated.list_ledger_accounts import (
+  ListLedgerAccountsAccounts as LedgerAccountsPage,
+)
+from ..graphql.generated.list_ledger_agents import (
+  ListLedgerAgents,
+  ListLedgerAgentsAgents,
+)
+from ..graphql.generated.list_ledger_elements import (
+  ListLedgerElements,
+)
+from ..graphql.generated.list_ledger_elements import (
+  ListLedgerElementsElements as LedgerElementsPage,
+)
+from ..graphql.generated.list_ledger_entities import (
+  ListLedgerEntities,
+  ListLedgerEntitiesEntities,
+)
+from ..graphql.generated.list_ledger_event_blocks import (
+  ListLedgerEventBlocks,
+  ListLedgerEventBlocksEventBlocks,
+)
+from ..graphql.generated.list_ledger_mappings import (
+  ListLedgerMappings,
+  ListLedgerMappingsMappingsStructures,
+)
+from ..graphql.generated.list_ledger_publish_lists import (
+  ListLedgerPublishLists,
+)
+from ..graphql.generated.list_ledger_publish_lists import (
+  ListLedgerPublishListsPublishLists as PublishListsPage,
+)
+from ..graphql.generated.list_ledger_reports import (
+  ListLedgerReports,
+  ListLedgerReportsReportsReports,
+)
+from ..graphql.generated.list_ledger_structures import (
+  ListLedgerStructures,
+  ListLedgerStructuresStructuresStructures,
+)
+from ..graphql.generated.list_ledger_taxonomies import (
+  ListLedgerTaxonomies,
+  ListLedgerTaxonomiesTaxonomiesTaxonomies,
+)
+from ..graphql.generated.list_ledger_transactions import (
+  ListLedgerTransactions,
+)
+from ..graphql.generated.list_ledger_transactions import (
+  ListLedgerTransactionsTransactions as LedgerTransactionsPage,
+)
+from ..graphql.generated.list_ledger_unmapped_elements import (
+  ListLedgerUnmappedElements,
+  ListLedgerUnmappedElementsUnmappedElements,
+)
+from ..graphql.generated.operations import (
+  GET_INFORMATION_BLOCK_GQL,
+  GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
+  GET_LEDGER_ACCOUNT_TREE_GQL,
+  GET_LEDGER_AGENT_GQL,
+  GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL,
+  GET_LEDGER_ENTITY_GQL,
+  GET_LEDGER_EVENT_BLOCK_GQL,
+  GET_LEDGER_FISCAL_CALENDAR_GQL,
+  GET_LEDGER_MAPPED_TRIAL_BALANCE_GQL,
+  GET_LEDGER_MAPPING_COVERAGE_GQL,
+  GET_LEDGER_MAPPING_GQL,
+  GET_LEDGER_PERIOD_CLOSE_STATUS_GQL,
+  GET_LEDGER_PERIOD_DRAFTS_GQL,
+  GET_LEDGER_PUBLISH_LIST_GQL,
+  GET_LEDGER_REPORT_DOWNLOAD_URL_GQL,
+  GET_LEDGER_REPORT_GQL,
+  GET_LEDGER_REPORT_PACKAGE_GQL,
+  GET_LEDGER_REPORTING_TAXONOMY_GQL,
+  GET_LEDGER_STATEMENT_GQL,
+  GET_LEDGER_SUMMARY_GQL,
+  GET_LEDGER_TRANSACTION_GQL,
+  GET_LEDGER_TRIAL_BALANCE_GQL,
+  LIST_INFORMATION_BLOCKS_GQL,
+  LIST_LEDGER_ACCOUNTS_GQL,
+  LIST_LEDGER_AGENTS_GQL,
+  LIST_LEDGER_ELEMENTS_GQL,
+  LIST_LEDGER_ENTITIES_GQL,
+  LIST_LEDGER_EVENT_BLOCKS_GQL,
+  LIST_LEDGER_MAPPINGS_GQL,
+  LIST_LEDGER_PUBLISH_LISTS_GQL,
+  LIST_LEDGER_REPORTS_GQL,
+  LIST_LEDGER_STRUCTURES_GQL,
+  LIST_LEDGER_TAXONOMIES_GQL,
+  LIST_LEDGER_TRANSACTIONS_GQL,
+  LIST_LEDGER_UNMAPPED_ELEMENTS_GQL,
 )
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
@@ -569,20 +716,20 @@ class LedgerClient:
 
   # ── Entity ──────────────────────────────────────────────────────────
 
-  def get_entity(self, graph_id: str) -> dict[str, Any] | None:
+  def get_entity(self, graph_id: str) -> LedgerEntity | None:
     """Get the entity (company/organization) for this graph.
 
     Returns None when the ledger has no entity yet.
     """
-    data = self._query(graph_id, GET_ENTITY_QUERY)
-    return parse_entity(data)
+    data = self._query(graph_id, GET_LEDGER_ENTITY_GQL)
+    return GetLedgerEntity.model_validate(data).entity
 
   def list_entities(
     self, graph_id: str, source: str | None = None
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListLedgerEntitiesEntities]:
     """List all entities for this graph, optionally filtered by source system."""
-    data = self._query(graph_id, LIST_ENTITIES_QUERY, {"source": source})
-    return parse_entities(data)
+    data = self._query(graph_id, LIST_LEDGER_ENTITIES_GQL, {"source": source})
+    return ListLedgerEntities.model_validate(data).entities
 
   def update_entity(
     self, graph_id: str, updates: dict[str, Any]
@@ -613,11 +760,11 @@ class LedgerClient:
     is_active: bool | None = None,
     limit: int = 100,
     offset: int = 0,
-  ) -> dict[str, Any] | None:
+  ) -> LedgerAccountsPage | None:
     """List CoA accounts with optional filters and pagination."""
     data = self._query(
       graph_id,
-      LIST_ACCOUNTS_QUERY,
+      LIST_LEDGER_ACCOUNTS_GQL,
       {
         "classification": classification,
         "isActive": is_active,
@@ -625,12 +772,12 @@ class LedgerClient:
         "offset": offset,
       },
     )
-    return parse_accounts(data)
+    return ListLedgerAccounts.model_validate(data).accounts
 
-  def get_account_tree(self, graph_id: str) -> dict[str, Any] | None:
+  def get_account_tree(self, graph_id: str) -> LedgerAccountTree | None:
     """Hierarchical Chart of Accounts (up to 4 levels deep)."""
-    data = self._query(graph_id, GET_ACCOUNT_TREE_QUERY)
-    return parse_account_tree(data)
+    data = self._query(graph_id, GET_LEDGER_ACCOUNT_TREE_GQL)
+    return GetLedgerAccountTree.model_validate(data).account_tree
 
   def get_account_rollups(
     self,
@@ -638,14 +785,14 @@ class LedgerClient:
     mapping_id: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
-  ) -> dict[str, Any] | None:
+  ) -> LedgerAccountRollups | None:
     """Accounts rolled up to reporting concepts via a mapping structure."""
     data = self._query(
       graph_id,
-      GET_ACCOUNT_ROLLUPS_QUERY,
+      GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
       {"mappingId": mapping_id, "startDate": start_date, "endDate": end_date},
     )
-    return parse_account_rollups(data)
+    return GetLedgerAccountRollups.model_validate(data).account_rollups
 
   # ── Transactions ────────────────────────────────────────────────────
 
@@ -657,11 +804,11 @@ class LedgerClient:
     end_date: str | None = None,
     limit: int = 100,
     offset: int = 0,
-  ) -> dict[str, Any] | None:
+  ) -> LedgerTransactionsPage | None:
     """List transactions with optional type + date filters and pagination."""
     data = self._query(
       graph_id,
-      LIST_TRANSACTIONS_QUERY,
+      LIST_LEDGER_TRANSACTIONS_GQL,
       {
         "type": type,
         "startDate": start_date,
@@ -670,16 +817,16 @@ class LedgerClient:
         "offset": offset,
       },
     )
-    return parse_transactions(data)
+    return ListLedgerTransactions.model_validate(data).transactions
 
   def get_transaction(
     self, graph_id: str, transaction_id: str
-  ) -> dict[str, Any] | None:
+  ) -> LedgerTransaction | None:
     """Get transaction detail with entries + line items."""
     data = self._query(
-      graph_id, GET_TRANSACTION_QUERY, {"transactionId": transaction_id}
+      graph_id, GET_LEDGER_TRANSACTION_GQL, {"transactionId": transaction_id}
     )
-    return parse_transaction(data)
+    return GetLedgerTransaction.model_validate(data).transaction
 
   # ── Event blocks (inbox surface) ───────────────────────────────────
 
@@ -693,11 +840,11 @@ class LedgerClient:
     source: str | None = None,
     limit: int = 50,
     offset: int = 0,
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListLedgerEventBlocksEventBlocks]:
     """List captured event blocks (inbox surface)."""
     data = self._query(
       graph_id,
-      LIST_EVENT_BLOCKS_QUERY,
+      LIST_LEDGER_EVENT_BLOCKS_GQL,
       {
         "eventType": event_type,
         "eventCategory": event_category,
@@ -708,12 +855,12 @@ class LedgerClient:
         "offset": offset,
       },
     )
-    return parse_event_blocks(data)
+    return ListLedgerEventBlocks.model_validate(data).event_blocks
 
-  def get_event_block(self, graph_id: str, event_id: str) -> dict[str, Any] | None:
+  def get_event_block(self, graph_id: str, event_id: str) -> LedgerEventBlock | None:
     """Get event block detail by id."""
-    data = self._query(graph_id, GET_EVENT_BLOCK_QUERY, {"id": event_id})
-    return parse_event_block(data)
+    data = self._query(graph_id, GET_LEDGER_EVENT_BLOCK_GQL, {"id": event_id})
+    return GetLedgerEventBlock.model_validate(data).event_block
 
   # ── Agents (REA counterparties) ────────────────────────────────────
 
@@ -725,11 +872,11 @@ class LedgerClient:
     is_active: bool | None = True,
     limit: int = 50,
     offset: int = 0,
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListLedgerAgentsAgents]:
     """List agents (customers, vendors, employees)."""
     data = self._query(
       graph_id,
-      LIST_AGENTS_QUERY,
+      LIST_LEDGER_AGENTS_GQL,
       {
         "agentType": agent_type,
         "source": source,
@@ -738,12 +885,12 @@ class LedgerClient:
         "offset": offset,
       },
     )
-    return parse_agents(data)
+    return ListLedgerAgents.model_validate(data).agents
 
-  def get_agent(self, graph_id: str, agent_id: str) -> dict[str, Any] | None:
+  def get_agent(self, graph_id: str, agent_id: str) -> LedgerAgent | None:
     """Get agent detail by id."""
-    data = self._query(graph_id, GET_AGENT_QUERY, {"id": agent_id})
-    return parse_agent(data)
+    data = self._query(graph_id, GET_LEDGER_AGENT_GQL, {"id": agent_id})
+    return GetLedgerAgent.model_validate(data).agent
 
   # ── Trial balance ──────────────────────────────────────────────────
 
@@ -752,14 +899,14 @@ class LedgerClient:
     graph_id: str,
     start_date: str | None = None,
     end_date: str | None = None,
-  ) -> dict[str, Any] | None:
+  ) -> TrialBalance | None:
     """Trial balance by raw CoA account."""
     data = self._query(
       graph_id,
-      GET_TRIAL_BALANCE_QUERY,
+      GET_LEDGER_TRIAL_BALANCE_GQL,
       {"startDate": start_date, "endDate": end_date},
     )
-    return parse_trial_balance(data)
+    return GetLedgerTrialBalance.model_validate(data).trial_balance
 
   def get_mapped_trial_balance(
     self,
@@ -767,28 +914,31 @@ class LedgerClient:
     mapping_id: str,
     start_date: str | None = None,
     end_date: str | None = None,
-  ) -> dict[str, Any] | None:
+  ) -> MappedTrialBalance | None:
     """Trial balance rolled up to GAAP reporting concepts via a mapping."""
     data = self._query(
       graph_id,
-      GET_MAPPED_TRIAL_BALANCE_QUERY,
+      GET_LEDGER_MAPPED_TRIAL_BALANCE_GQL,
       {"mappingId": mapping_id, "startDate": start_date, "endDate": end_date},
     )
-    return parse_mapped_trial_balance(data)
+    return GetLedgerMappedTrialBalance.model_validate(data).mapped_trial_balance
 
   # ── Taxonomy ────────────────────────────────────────────────────────
 
-  def get_reporting_taxonomy(self, graph_id: str) -> dict[str, Any] | None:
+  def get_reporting_taxonomy(self, graph_id: str) -> ReportingTaxonomy | None:
     """The locked US GAAP reporting taxonomy for this graph."""
-    data = self._query(graph_id, GET_REPORTING_TAXONOMY_QUERY)
-    return parse_reporting_taxonomy(data)
+    data = self._query(graph_id, GET_LEDGER_REPORTING_TAXONOMY_GQL)
+    return GetLedgerReportingTaxonomy.model_validate(data).reporting_taxonomy
 
   def list_taxonomies(
     self, graph_id: str, taxonomy_type: str | None = None
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListLedgerTaxonomiesTaxonomiesTaxonomies]:
     """List active taxonomies with optional type filter."""
-    data = self._query(graph_id, LIST_TAXONOMIES_QUERY, {"taxonomyType": taxonomy_type})
-    return parse_taxonomies(data)
+    data = self._query(
+      graph_id, LIST_LEDGER_TAXONOMIES_GQL, {"taxonomyType": taxonomy_type}
+    )
+    page = ListLedgerTaxonomies.model_validate(data).taxonomies
+    return page.taxonomies if page else []
 
   def create_taxonomy_block(
     self, graph_id: str, body: dict[str, Any], idempotency_key: str | None = None
@@ -891,11 +1041,11 @@ class LedgerClient:
     is_abstract: bool | None = None,
     limit: int = 100,
     offset: int = 0,
-  ) -> dict[str, Any] | None:
+  ) -> LedgerElementsPage | None:
     """List elements (CoA accounts, GAAP concepts, etc.) with filters."""
     data = self._query(
       graph_id,
-      LIST_ELEMENTS_QUERY,
+      LIST_LEDGER_ELEMENTS_GQL,
       {
         "taxonomyId": taxonomy_id,
         "source": source,
@@ -905,16 +1055,16 @@ class LedgerClient:
         "offset": offset,
       },
     )
-    return parse_elements(data)
+    return ListLedgerElements.model_validate(data).elements
 
   def list_unmapped_elements(
     self, graph_id: str, mapping_id: str | None = None
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListLedgerUnmappedElementsUnmappedElements]:
     """CoA elements not yet mapped to a reporting concept."""
     data = self._query(
-      graph_id, LIST_UNMAPPED_ELEMENTS_QUERY, {"mappingId": mapping_id}
+      graph_id, LIST_LEDGER_UNMAPPED_ELEMENTS_GQL, {"mappingId": mapping_id}
     )
-    return parse_unmapped_elements(data)
+    return ListLedgerUnmappedElements.model_validate(data).unmapped_elements
 
   # ── Structures / mappings ──────────────────────────────────────────
 
@@ -923,31 +1073,35 @@ class LedgerClient:
     graph_id: str,
     taxonomy_id: str | None = None,
     block_type: str | None = None,
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListLedgerStructuresStructuresStructures]:
     """List reporting structures (IS, BS, CF, schedules) with optional filters."""
     data = self._query(
       graph_id,
-      LIST_STRUCTURES_QUERY,
+      LIST_LEDGER_STRUCTURES_GQL,
       {"taxonomyId": taxonomy_id, "blockType": block_type},
     )
-    return parse_structures(data)
+    page = ListLedgerStructures.model_validate(data).structures
+    return page.structures if page else []
 
-  def list_mappings(self, graph_id: str) -> list[dict[str, Any]]:
+  def list_mappings(self, graph_id: str) -> list[ListLedgerMappingsMappingsStructures]:
     """List active CoA→reporting mapping structures."""
-    data = self._query(graph_id, LIST_MAPPINGS_QUERY)
-    return parse_mappings(data)
+    data = self._query(graph_id, LIST_LEDGER_MAPPINGS_GQL)
+    page = ListLedgerMappings.model_validate(data).mappings
+    return page.structures if page else []
 
-  def get_mapping(self, graph_id: str, mapping_id: str) -> dict[str, Any] | None:
+  def get_mapping(self, graph_id: str, mapping_id: str) -> LedgerMapping | None:
     """Get a mapping structure with all its associations."""
-    data = self._query(graph_id, GET_MAPPING_QUERY, {"mappingId": mapping_id})
-    return parse_mapping(data)
+    data = self._query(graph_id, GET_LEDGER_MAPPING_GQL, {"mappingId": mapping_id})
+    return GetLedgerMapping.model_validate(data).mapping
 
   def get_mapping_coverage(
     self, graph_id: str, mapping_id: str
-  ) -> dict[str, Any] | None:
+  ) -> MappingCoverage | None:
     """Mapping coverage stats — how many CoA elements are mapped."""
-    data = self._query(graph_id, GET_MAPPING_COVERAGE_QUERY, {"mappingId": mapping_id})
-    return parse_mapping_coverage(data)
+    data = self._query(
+      graph_id, GET_LEDGER_MAPPING_COVERAGE_GQL, {"mappingId": mapping_id}
+    )
+    return GetLedgerMappingCoverage.model_validate(data).mapping_coverage
 
   def create_mapping_association(
     self,
@@ -1002,7 +1156,7 @@ class LedgerClient:
     self,
     graph_id: str,
     block_id: str,
-  ) -> dict[str, Any] | None:
+  ) -> InformationBlock | None:
     """Fetch an Information Block envelope by id — the cross-block-type read.
 
     Returns ``None`` when the block doesn't exist or its type isn't
@@ -1010,10 +1164,10 @@ class LedgerClient:
     """
     data = self._query(
       graph_id,
-      GET_INFORMATION_BLOCK_QUERY,
+      GET_INFORMATION_BLOCK_GQL,
       {"id": block_id},
     )
-    return parse_information_block(data)
+    return GetInformationBlock.model_validate(data).information_block
 
   def list_information_blocks(
     self,
@@ -1023,7 +1177,7 @@ class LedgerClient:
     category: str | None = None,
     limit: int | None = None,
     offset: int | None = None,
-  ) -> list[dict[str, Any]]:
+  ) -> list[ListInformationBlocksInformationBlocks]:
     """List Information Block envelopes, optionally filtered.
 
     Replaces the old ``list_schedules`` method — use
@@ -1031,7 +1185,7 @@ class LedgerClient:
     """
     data = self._query(
       graph_id,
-      LIST_INFORMATION_BLOCKS_QUERY,
+      LIST_INFORMATION_BLOCKS_GQL,
       {
         "blockType": block_type,
         "category": category,
@@ -1039,7 +1193,7 @@ class LedgerClient:
         "offset": offset,
       },
     )
-    return parse_information_blocks(data)
+    return ListInformationBlocks.model_validate(data).information_blocks
 
   def create_information_block(
     self,
@@ -1302,19 +1456,19 @@ class LedgerClient:
     graph_id: str,
     period_start: str,
     period_end: str,
-  ) -> dict[str, Any] | None:
+  ) -> PeriodCloseStatus | None:
     """Close status for all schedules in a fiscal period."""
     data = self._query(
       graph_id,
-      GET_PERIOD_CLOSE_STATUS_QUERY,
+      GET_LEDGER_PERIOD_CLOSE_STATUS_GQL,
       {"periodStart": period_start, "periodEnd": period_end},
     )
-    return parse_period_close_status(data)
+    return GetLedgerPeriodCloseStatus.model_validate(data).period_close_status
 
-  def list_period_drafts(self, graph_id: str, period: str) -> dict[str, Any] | None:
+  def list_period_drafts(self, graph_id: str, period: str) -> PeriodDrafts | None:
     """All draft entries in a period, fully expanded for review pre-close."""
-    data = self._query(graph_id, GET_PERIOD_DRAFTS_QUERY, {"period": period})
-    return parse_period_drafts(data)
+    data = self._query(graph_id, GET_LEDGER_PERIOD_DRAFTS_GQL, {"period": period})
+    return GetLedgerPeriodDrafts.model_validate(data).period_drafts
 
   def create_closing_entry(
     self,
@@ -1681,17 +1835,17 @@ class LedgerClient:
 
   # ── Closing book ───────────────────────────────────────────────────
 
-  def get_closing_book_structures(self, graph_id: str) -> dict[str, Any] | None:
+  def get_closing_book_structures(self, graph_id: str) -> ClosingBookStructures | None:
     """Grouped closing book structures for the close-screen sidebar."""
-    data = self._query(graph_id, GET_CLOSING_BOOK_STRUCTURES_QUERY)
-    return parse_closing_book_structures(data)
+    data = self._query(graph_id, GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL)
+    return GetLedgerClosingBookStructures.model_validate(data).closing_book_structures
 
   # ── Fiscal Calendar ────────────────────────────────────────────────
 
-  def get_fiscal_calendar(self, graph_id: str) -> dict[str, Any] | None:
+  def get_fiscal_calendar(self, graph_id: str) -> FiscalCalendar | None:
     """Current fiscal calendar state — pointers, gap, closeable status."""
-    data = self._query(graph_id, GET_FISCAL_CALENDAR_QUERY)
-    return parse_fiscal_calendar(data)
+    data = self._query(graph_id, GET_LEDGER_FISCAL_CALENDAR_GQL)
+    return GetLedgerFiscalCalendar.model_validate(data).fiscal_calendar
 
   def initialize_ledger(
     self,
@@ -1803,17 +1957,18 @@ class LedgerClient:
     envelope = self._call_op("Create report", response)
     return self._typed_result("Create report", envelope, ReportResponse)
 
-  def list_reports(self, graph_id: str) -> list[dict[str, Any]]:
+  def list_reports(self, graph_id: str) -> list[ListLedgerReportsReportsReports]:
     """List all reports for a graph (includes received shared reports)."""
-    data = self._query(graph_id, LIST_REPORTS_QUERY)
-    return parse_reports(data)
+    data = self._query(graph_id, LIST_LEDGER_REPORTS_GQL)
+    page = ListLedgerReports.model_validate(data).reports
+    return page.reports if page else []
 
-  def get_report(self, graph_id: str, report_id: str) -> dict[str, Any] | None:
+  def get_report(self, graph_id: str, report_id: str) -> LedgerReport | None:
     """Get a single report with its period list + available structures."""
-    data = self._query(graph_id, GET_REPORT_QUERY, {"reportId": report_id})
-    return parse_report(data)
+    data = self._query(graph_id, GET_LEDGER_REPORT_GQL, {"reportId": report_id})
+    return GetLedgerReport.model_validate(data).report
 
-  def get_report_package(self, graph_id: str, report_id: str) -> dict[str, Any] | None:
+  def get_report_package(self, graph_id: str, report_id: str) -> ReportPackage | None:
     """Rehydrate a Report as a package — Report metadata + N rendered
     `InformationBlock` envelopes (one per attached FactSet).
 
@@ -1822,22 +1977,22 @@ class LedgerClient:
     Each item's ``block`` is a fully-rehydrated ``InformationBlock`` envelope
     pinned to its specific FactSet snapshot.
     """
-    data = self._query(graph_id, GET_REPORT_PACKAGE_QUERY, {"reportId": report_id})
-    return parse_report_package(data)
+    data = self._query(graph_id, GET_LEDGER_REPORT_PACKAGE_GQL, {"reportId": report_id})
+    return GetLedgerReportPackage.model_validate(data).report_package
 
   def get_statement(
     self, graph_id: str, report_id: str, block_type: str
-  ) -> dict[str, Any] | None:
+  ) -> LedgerStatement | None:
     """Render a financial statement — facts viewed through a structure.
 
     `block_type`: income_statement, balance_sheet, cash_flow_statement, ...
     """
     data = self._query(
       graph_id,
-      GET_STATEMENT_QUERY,
+      GET_LEDGER_STATEMENT_GQL,
       {"reportId": report_id, "blockType": block_type},
     )
-    return parse_statement(data)
+    return GetLedgerStatement.model_validate(data).statement
 
   def regenerate_report(
     self,
@@ -1932,14 +2087,14 @@ class LedgerClient:
     gql_format = _DOWNLOAD_FORMAT_ALIASES.get(format.lower(), format)
     data = self._query(
       graph_id,
-      GET_REPORT_DOWNLOAD_URL_QUERY,
+      GET_LEDGER_REPORT_DOWNLOAD_URL_GQL,
       {"reportId": report_id, "format": gql_format, "expiresIn": expires_in},
     )
-    info = parse_report_download_url(data)
+    info = GetLedgerReportDownloadUrl.model_validate(data).report_download_url
     if info is None:
       raise RuntimeError(f"Report '{report_id}' not found.")
 
-    download_url = info["download_url"]
+    download_url = info.download_url
     with httpx.Client(timeout=self.timeout) as client:
       # Presigned URL is pre-authorized — no auth headers attached.
       artifact = client.get(download_url)
@@ -1948,7 +2103,7 @@ class LedgerClient:
         f"Failed to follow presigned URL ({artifact.status_code}): {artifact.text}"
       )
 
-    generation_count = info.get("generation_count")
+    generation_count = info.generation_count
     default_ext = {"XBRL_2_1": "zip", "HOLON_JSONLD": "holon.jsonld"}.get(
       gql_format, "jsonld"
     )
@@ -1959,8 +2114,8 @@ class LedgerClient:
     result = ReportBundleDownload(
       content=artifact.content,
       filename=filename,
-      format=str(info.get("format", format)),
-      content_type=str(info.get("content_type", "")),
+      format=info.format,
+      content_type=info.content_type,
       generation_count=generation_count,
     )
     if to is not None:
@@ -2009,17 +2164,17 @@ class LedgerClient:
 
   def list_publish_lists(
     self, graph_id: str, limit: int = 100, offset: int = 0
-  ) -> dict[str, Any] | None:
+  ) -> PublishListsPage | None:
     """List publish lists with pagination."""
     data = self._query(
-      graph_id, LIST_PUBLISH_LISTS_QUERY, {"limit": limit, "offset": offset}
+      graph_id, LIST_LEDGER_PUBLISH_LISTS_GQL, {"limit": limit, "offset": offset}
     )
-    return parse_publish_lists(data)
+    return ListLedgerPublishLists.model_validate(data).publish_lists
 
-  def get_publish_list(self, graph_id: str, list_id: str) -> dict[str, Any] | None:
+  def get_publish_list(self, graph_id: str, list_id: str) -> PublishList | None:
     """Get a single publish list with its full member list."""
-    data = self._query(graph_id, GET_PUBLISH_LIST_QUERY, {"listId": list_id})
-    return parse_publish_list(data)
+    data = self._query(graph_id, GET_LEDGER_PUBLISH_LIST_GQL, {"listId": list_id})
+    return GetLedgerPublishList.model_validate(data).publish_list
 
   def create_publish_list(
     self, graph_id: str, name: str, description: str | None = None

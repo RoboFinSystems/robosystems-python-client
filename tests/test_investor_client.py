@@ -121,9 +121,9 @@ class TestPortfolioReads:
     client = InvestorClient(mock_config)
     result = client.list_portfolios(graph_id)
     assert result is not None
-    assert len(result["portfolios"]) == 1
-    assert result["portfolios"][0]["name"] == "Seed Fund I"
-    assert result["portfolios"][0]["base_currency"] == "USD"
+    assert len(result.portfolios) == 1
+    assert result.portfolios[0].name == "Seed Fund I"
+    assert result.portfolios[0].base_currency == "USD"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_portfolio_block_missing(self, mock_execute, mock_config, graph_id):
@@ -153,9 +153,9 @@ class TestPortfolioReads:
     client = InvestorClient(mock_config)
     result = client.get_portfolio_block(graph_id, "port_1")
     assert result is not None
-    assert result["id"] == "port_1"
-    assert result["owner"]["name"] == "FO"
-    assert result["positions"] == []
+    assert result.id == "port_1"
+    assert result.owner.name == "FO"
+    assert result.positions == []
 
 
 # ── Portfolio block writes ─────────────────────────────────────────────
@@ -332,8 +332,8 @@ class TestPositions:
     client = InvestorClient(mock_config)
     result = client.list_positions(graph_id)
     assert result is not None
-    assert len(result["positions"]) == 1
-    assert result["positions"][0]["cost_basis_dollars"] == 1000
+    assert len(result.positions) == 1
+    assert result.positions[0].cost_basis_dollars == 1000
 
 
 # ── Holdings ───────────────────────────────────────────────────────────
@@ -373,5 +373,5 @@ class TestHoldings:
     client = InvestorClient(mock_config)
     holdings = client.get_holdings(graph_id, "port_1")
     assert holdings is not None
-    assert holdings["total_entities"] == 1
-    assert holdings["holdings"][0]["securities"][0]["security_id"] == "sec_1"
+    assert holdings.total_entities == 1
+    assert holdings.holdings[0].securities[0].security_id == "sec_1"

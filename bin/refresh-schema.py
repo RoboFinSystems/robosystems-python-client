@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Refresh the checked-in GraphQL SDL snapshot by introspecting the backend.
 
-`tests/test_graphql_queries.py` validates every hand-written query document
-against this snapshot. That check is only as good as the snapshot is current:
+`tests/test_graphql_queries.py` validates every query document under
+`robosystems_client/graphql/operations/` against this snapshot (the same
+documents ariadne-codegen generates typed models from). That check is only
+as good as the snapshot is current:
 
 - Backend *adds* a field the snapshot lacks -> a query using it fails
   validation. Noisy, but safe.
