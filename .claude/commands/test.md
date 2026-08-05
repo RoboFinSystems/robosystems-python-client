@@ -1,3 +1,8 @@
+---
+description: Run the full test and code-quality gate, fixing failures to green.
+argument-hint: '[test-file-or-path]'
+---
+
 Run `just test-all` and systematically fix all failures to achieve 100% completion.
 
 ## Timeouts
@@ -40,7 +45,10 @@ For single-layer commands (below), output is short enough that `| tail -20` alon
 
 ## Notes
 
-- The pre-commit hook runs check-only commands (`ruff check`, `ruff format --check`, `basedpyright`, `pytest`) — if the formatter would have changed a file, the hook fails. Run `just format` then re-stage.
+- **`just test-all` mutates the working tree.** It runs `just format` (`ruff format .`, auto-write) between pytest and the lint check, so a green run can still leave modified files. Check `git status` afterwards and stage what it rewrote — the pre-commit hook runs check-only commands (`ruff check`, `ruff format --check`, `basedpyright`, `pytest`) and fails on exactly those files.
+- **Never hand-fix a failure inside generated code.** `robosystems_client/api/`, `robosystems_client/models/`, and `robosystems_client/graphql/generated/` are generation output; an edit there is erased by the next `just generate-sdk` / `just generate-graphql`. The fix belongs in `bin/generate-sdk.sh`'s post-generation patches, in the `[tool.ariadne-codegen]` config in `pyproject.toml`, or in the API's schema.
+- **Regeneration needs a reachable API; the GraphQL half doesn't.** `just generate-sdk` fetches the OpenAPI document from a running backend and also refreshes the checked-in `schema.graphql` snapshot. `just generate-graphql` is hermetic — it runs `ariadne-codegen` against that checked-in snapshot plus the operation documents, so it works offline but only reflects the API as of the last `just refresh-schema`. A GraphQL operation test failing after an API change usually means the snapshot is stale, not that the operation is wrong.
+- **`just test-all` never builds a distribution.** Packaging problems (`pyproject.toml` metadata, missing `py.typed`, a wrong `requires-python`) pass the whole gate and fail at publish time. Use `just build-package` when the change touches packaging.
 
 ## Goal
 

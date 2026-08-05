@@ -1,3 +1,8 @@
+---
+description: Review a pull request — gather metadata, diff, and existing feedback, then give a verdict.
+argument-hint: '[pr-number-or-url]'
+---
+
 Review a pull request by gathering all PR metadata, diff, and review comments, then provide a comprehensive review summary.
 
 ## Instructions
@@ -6,8 +11,8 @@ Review a pull request by gathering all PR metadata, diff, and review comments, t
 
 The user may provide a PR URL, number, or nothing:
 
-- **URL provided** (e.g., `https://github.com/RoboFinSystems/robosystems/pull/577`): Extract the repo and PR number
-- **Number provided** (e.g., `577`): Use the current repository
+- **URL provided** (e.g., `https://github.com/RoboFinSystems/robosystems-python-client/pull/42`): Extract the repo and PR number
+- **Number provided** (e.g., `42`): Use the current repository
 - **Nothing provided**: Detect from the current branch using `gh pr view --json number,url` — if no open PR exists for the current branch, ask the user which PR to review
 
 ### 2. Gather PR Data
@@ -15,23 +20,23 @@ The user may provide a PR URL, number, or nothing:
 Run these `gh` commands to collect all context:
 
 ```bash
-# PR metadata — use only valid fields
-gh pr view <NUMBER> --json title,body,author,state,labels,reviews,reviewRequests,statusCheckRollup,mergeStateStatus,headRefName,baseRefName,additions,deletions,changedFiles,createdAt,updatedAt
+# PR metadata + conversation comments in one call
+gh pr view <NUMBER> --json number,url,title,body,author,state,isDraft,labels,comments,reviews,reviewDecision,latestReviews,reviewRequests,statusCheckRollup,mergeStateStatus,headRefName,headRefOid,baseRefName,additions,deletions,changedFiles,files,closingIssuesReferences,createdAt,updatedAt
 
 # PR diff (the actual code changes)
 gh pr diff <NUMBER>
 
-# Inline review comments (gh api needs owner/repo — use gh repo view to get it)
+# Inline review comments — no --json equivalent exists, so this call is still required
 gh api repos/$(gh repo view --json nameWithOwner -q .nameWithOwner)/pulls/<NUMBER>/comments --paginate
-
-# Top-level PR conversation comments
-gh api repos/$(gh repo view --json nameWithOwner -q .nameWithOwner)/issues/<NUMBER>/comments --paginate
 ```
 
-**Important `gh pr view --json` field reference** (common mistakes to avoid):
-- Use `reviews` not `reviewers` (reviewers is not a valid field)
-- Use `reviewRequests` for pending review requests
-- Use `headRefOid` for the HEAD commit SHA
+**Field notes:**
+
+- `reviews` not `reviewers` — `reviewers` is not a valid field and errors.
+- `reviewDecision` is the single field that answers "has this been approved."
+- `comments` covers the top-level conversation, so no separate `issues/<n>/comments` call is needed.
+- `files` is essential here: a regeneration PR is mostly generated churn, and per-file add/delete counts are how you find the few hand-written files worth reading closely.
+- Keep `--paginate` **bare**. Adding `-q`/`--jq` makes gh emit one JSON document _per page_ instead of a merged array, and `--slurp` can't be combined with `--jq`. Pipe to `jq` after the call, not through it.
 
 ### 3. Categorize Review Feedback
 
@@ -39,21 +44,34 @@ Organize all comments and checks into categories:
 
 - **Human Reviews**: Comments from human reviewers (approve, request changes, general feedback)
 - **AI Reviews**: Comments from Claude, Copilot, or other AI review bots
-- **Code Quality**: Comments from linters, formatters, type checkers (e.g., CodeRabbit, SonarCloud, Codacy)
-- **Security**: Findings from security scanners (e.g., Snyk, Dependabot, CodeQL, GitGuardian)
-- **CI/CD**: Build status, test results, deployment checks
+- **Code Quality**: Comments from linters, formatters, type checkers
+- **Security**: Findings from security scanners (Dependabot, CodeQL)
+- **CI/CD**: Build status, test results
+
+**How feedback actually arrives in this repo** — don't read the categories too literally:
+
+- Formal `reviews` and inline `pulls/<n>/comments` are typically **empty**, and `reviewDecision` is usually blank. That's the norm here, not a signal that review was skipped. Don't report "no review feedback" on the strength of an empty `reviews` array.
+- **AI review is opt-in.** `claude.yml` only fires on an explicit `@claude` mention from an `OWNER`/`MEMBER`/`COLLABORATOR` — there is no automatic review on PR open. When it has run, the findings are a **bot comment in the conversation `comments`**, not a formal review.
+- In `statusCheckRollup`, checks expose `.name` while legacy statuses expose `.context`, and a `conclusion` of `NEUTRAL` or `SKIPPED` is not a failure. Read the conclusion, don't pattern-match on non-`SUCCESS`.
+- Note what CI does **not** cover: it cannot regenerate against a live API, so a stale SDK passes every check. Green CI means "this code is internally consistent," not "this matches the API."
 
 ### 4. Review the Diff
 
 With the full PR diff in hand, perform your own review focusing on:
 
-- **Correctness**: Does the code do what the PR description says?
-- **Patterns**: Does it follow existing codebase patterns (check CLAUDE.md)?
-- **Security**: Any OWASP top 10 concerns?
-- **Multi-tenancy**: Are graph operations scoped to `graph_id`?
-- **Error handling**: Appropriate for the context?
-- **Tests**: Are changes covered by tests?
-- **Missing changes**: Any files that should have been updated but weren't?
+- **Compatibility first.** This is a published post-1.0 package with external integrators. Does the diff remove or rename an export, change a signature or return type, narrow an input type, or change runtime semantics? That's a **major** and needs coordination with the API and every consuming app — an uncoordinated break is a blocking issue, not a note. Additive fields and new optional model fields are free. Check the emitted model and signature surface, not just the diff shape: a regeneration can turn an optional field required, or drop one, without a single hand-written line changing.
+- **Generated vs. hand-written.** Is anything under `robosystems_client/api/`, `robosystems_client/models/`, or `robosystems_client/graphql/generated/` edited by hand? That's always wrong — the next `just generate-sdk` / `just generate-graphql` erases it. The fix belongs in `bin/generate-sdk.sh`'s post-generation patches, in the `[tool.ariadne-codegen]` config in `pyproject.toml`, or in the API's schema. Flag it as blocking.
+- **Schema snapshot drift.** `robosystems_client/graphql/schema.graphql` is a checked-in snapshot that the GraphQL operation tests validate against. If operations changed without a `just refresh-schema`, or the snapshot moved without the operations being re-checked, say so — a stale snapshot makes those tests assert against a schema the API no longer serves.
+- **Does the regeneration match a real API state?** A regeneration PR should say what API version or build it was generated against. Types that don't correspond to any deployed API are worse than stale ones.
+- **Correctness**: does the code do what the PR description says?
+- **Auth and secrets**: token handling, header construction, and anything that could log a credential. A `console.log` of a request object is a credential leak in a consumer's terminal.
+- **Error handling**: are API errors mapped to something a consumer can branch on, or swallowed into a generic throw?
+- **Exports**: is new surface actually exported from the package `__init__.py` files, and are the models importable from where the README says they are? Unexported surface is invisible to consumers regardless of how well it's written.
+- **Sync and async parity**: the client exposes both paths. A fix or a new method applied to only one of them is a half-fix — check that the other got the same treatment and the same test.
+- **Packaging**: changes to `pyproject.toml` — dependency pins, optional extras, `requires-python`, included packages, `py.typed` — affect what ships and who can install it. A dropped `py.typed` or a too-narrow `requires-python` breaks consumers in ways no test here catches.
+- **Tests**: are changes covered? Read the test, don't trust that it's green — a test that asserts the buggy behavior passes just as happily as a correct one.
+- **Disclosure hygiene** (this repo is public): does the PR _text_ over-disclose? A security-fix description should name the area hardened, never the mechanism. Note also that the vulnerable version stays installable from PyPI after the fix merges — flag whether a patch release is needed.
+- **Missing changes**: a new endpoint without an export, a new option without a type, a behavior change without a README update.
 
 ### 5. Output Format
 
@@ -63,9 +81,12 @@ Provide a structured review:
 ## PR Summary
 **Title**: ...
 **Author**: ... | **Branch**: ... → ...
-**Status**: ... | **Changes**: +X / -Y across Z files
+**Status**: ... | **Changes**: +X / -Y across Z files (generated: A / hand-written: B)
 
 <Brief summary of what the PR does>
+
+## Compatibility
+<BREAKING / ADDITIVE / INTERNAL — and for breaking, exactly what a consumer must change>
 
 ## Existing Review Feedback
 
@@ -101,9 +122,9 @@ Provide a structured review:
 
 ### Notes
 
-- If the PR diff is very large (>2000 lines), focus on the most important files and note which files were skimmed
+- For a large regeneration diff, use the `files` array to separate generated paths from hand-written ones and review the latter line by line; summarize the former by net effect on the public surface
 - For security findings, always err on the side of flagging — false positives are better than missed vulnerabilities
-- Cross-reference the PR description with the actual diff to catch scope creep or missing implementation
-- If the PR references an issue, check that the issue requirements are met
+- Cross-reference the PR description with the actual diff to catch scope creep or an unstated break
+- If the PR references an issue (`closingIssuesReferences`), check that the issue requirements are met
 
 $ARGUMENTS
