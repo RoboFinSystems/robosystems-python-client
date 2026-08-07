@@ -14,13 +14,11 @@ class DeleteResult:
   """Shared response shape for delete / soft-delete operations.
 
   ``deleted=True`` means the operation succeeded (a row was deleted or
-  flipped). The handler returns 404 instead when the row didn't exist
-  to begin with — the response shape is never used to communicate "not
-  found".
+  flipped). A row that never existed gets a 404 — this shape never carries
+  "not found".
 
-  Defined once here to avoid OpenAPI components key collisions
-  between roboledger and roboinvestor (both surfaces produced
-  separate ``DeleteResult`` classes before consolidation).
+  Defined once here, and used by both roboledger and roboinvestor, so the
+  OpenAPI components key resolves to a single schema.
 
       Attributes:
           deleted (bool): `true` when the row was deleted in this call. Always `true` today — 404 covers the not-found

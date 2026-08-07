@@ -43,10 +43,9 @@ class AttributionFilter:
               FK; matched lines aggregate signed into the attributed fact for the
               period.
 
-              ``field`` is **legacy and ignored** — the flow tag used to live in
-              ``line_items.metadata[field]`` but has been promoted to the typed
-              ``flow_element_id`` FK. Retained for wire-compatibility; the engine no
-              longer reads it.
+              ``field`` is accepted but ignored: the flow tag lives in the typed
+              ``flow_element_id`` FK, not in JSONB metadata. It stays on the wire so
+              existing request bodies keep validating.
           target_element_id (None | str | Unset): Resolved element id for ``target_qname``. Null at create time; populated
               by the handler before persistence. Round-tripped in the envelope.
   """

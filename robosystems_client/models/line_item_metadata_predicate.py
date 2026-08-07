@@ -23,19 +23,17 @@ class LineItemMetadataPredicate:
   FK; matched lines aggregate signed into the attributed fact for the
   period.
 
-  ``field`` is **legacy and ignored** — the flow tag used to live in
-  ``line_items.metadata[field]`` but has been promoted to the typed
-  ``flow_element_id`` FK. Retained for wire-compatibility; the engine no
-  longer reads it.
+  ``field`` is accepted but ignored: the flow tag lives in the typed
+  ``flow_element_id`` FK, not in JSONB metadata. It stays on the wire so
+  existing request bodies keep validating.
 
       Attributes:
           values (list[str]): Flow-concept qnames that route to this filter's target concept. A LineItem matches when its
               ``flow_element_id`` is one of the elements named here AND the line falls within the rollforward's period.
           kind (Literal['line_item_metadata_field'] | Unset): Discriminator value selecting this predicate shape. Default:
               'line_item_metadata_field'.
-          field (str | Unset): Legacy/ignored. The flow tag now lives in the typed ``flow_element_id`` FK, not JSONB
-              metadata; the engine no longer reads this. Retained for wire-compatibility. Default:
-              'transaction_description_code'.
+          field (str | Unset): Accepted but ignored. The flow tag lives in the typed ``flow_element_id`` FK, not JSONB
+              metadata. Retained for wire-compatibility. Default: 'transaction_description_code'.
   """
 
   values: list[str]

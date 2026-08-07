@@ -20,8 +20,7 @@ T = TypeVar("T", bound="InstanceUsage")
 class InstanceUsage:
   """Aggregate storage usage across the dedicated instance.
 
-  Covers the parent graph, all subgraphs, DuckDB staging, and
-  future LanceDB vector indexes.
+  Covers the parent graph, all subgraphs, DuckDB staging, and vector indexes.
 
       Attributes:
           limit_gb (float): Soft storage limit for this tier in GB

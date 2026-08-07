@@ -15,11 +15,10 @@ T = TypeVar("T", bound="RenderingRowLite")
 class RenderingRowLite:
   """One row of a server-side rendered statement.
 
-  Mirrors :class:`FactRow` from the legacy
-  :mod:`robosystems.operations.roboledger.reports.fact_grid` but lives at
-  the API boundary so envelope consumers don't depend on the
-  fact-grid module. ``values`` is one entry per period column in
-  :class:`RenderingLite.periods`.
+  Mirrors :class:`FactRow` in
+  :mod:`robosystems.operations.roboledger.reports.fact_grid`, restated at the
+  API boundary so envelope consumers don't depend on that module. ``values``
+  holds one entry per period column in :class:`RenderingLite.periods`.
 
       Attributes:
           element_id (str):

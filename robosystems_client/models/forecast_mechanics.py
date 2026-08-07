@@ -20,7 +20,7 @@ T = TypeVar("T", bound="ForecastMechanics")
 
 @_attrs_define
 class ForecastMechanics:
-  """Authored scenario container for ``block_type='forecast'`` (FP&A F-1).
+  """Authored scenario container for ``block_type='forecast'``.
 
   The block IS the scenario: its structure id is the ``scenario_id``
   every derived forward FactSet carries (NULL = actuals). The authored

@@ -26,7 +26,7 @@ T = TypeVar("T", bound="GraphLimitsResponse")
 
 @_attrs_define
 class GraphLimitsResponse:
-  """Response model for comprehensive graph operational limits.
+  """Every operational limit that applies to a graph, and its usage.
 
   Attributes:
       graph_id (str): Graph database identifier
