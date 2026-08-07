@@ -28,10 +28,13 @@ class InstanceUsage:
           status (str): Instance status: 'healthy' (<80%), 'approaching' (80-100%), 'over_limit' (>100%)
           node_count (int | None | Unset): Current node count (informational, no limit enforced)
           total_storage_gb (float | None | Unset): Total storage used across all databases in GB
-          usage_percentage (float | None | Unset): Storage usage as percentage of limit (e.g. 105.2)
+          usage_percentage (float | None | Unset): Storage usage as percentage of limit (e.g. 105.2). Derived from the
+              enforced figure — durable bytes only, excluding `transient` build artifacts — so it can read lower than
+              total_storage_gb/limit_gb while a blue-green rebuild is in flight.
           databases (list[DatabaseStorageEntry] | Unset): Per-database storage breakdown
-          items (list[StorageItem] | Unset): Itemized storage by type — graph, memory, subgraph, vectors, staging. Sums to
-              total_storage_gb.
+          items (list[StorageItem] | Unset): Itemized storage by type — graph, memory, subgraph, vectors, staging,
+              transient, orphan. Sums to total_storage_gb. Only `subgraph` items correspond to live subgraphs, so this is the
+              type to sum when reconciling against the subgraph list.
   """
 
   limit_gb: float
