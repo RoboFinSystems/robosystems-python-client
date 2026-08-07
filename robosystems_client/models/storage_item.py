@@ -14,7 +14,9 @@ class StorageItem:
   """One itemized piece of a graph's on-disk footprint.
 
   Attributes:
-      type_ (str): One of: graph, memory, subgraph, vectors, staging
+      type_ (str): One of: graph, memory, subgraph, vectors, staging, transient (blue-green build artifact), orphan (a
+          `{parent}_*` database, vector index, or staging file with no row in the graph registry — reclaimable leftover of
+          a deleted subgraph)
       id (str): Database or index identifier
       bytes_ (int): Size in bytes
   """

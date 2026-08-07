@@ -27,6 +27,7 @@ class ListSubgraphsResponse:
       subgraph_count (int): Total number of subgraphs
       subgraphs (list[SubgraphSummary]): List of subgraphs
       max_subgraphs (int | None | Unset): Maximum allowed subgraphs for this tier (None = unlimited)
+      total_size_bytes (int | None | Unset): Combined on-disk footprint of all subgraphs in bytes
       total_size_mb (float | None | Unset): Combined size of all subgraphs in megabytes
   """
 
@@ -37,6 +38,7 @@ class ListSubgraphsResponse:
   subgraph_count: int
   subgraphs: list[SubgraphSummary]
   max_subgraphs: int | None | Unset = UNSET
+  total_size_bytes: int | None | Unset = UNSET
   total_size_mb: float | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -62,6 +64,12 @@ class ListSubgraphsResponse:
     else:
       max_subgraphs = self.max_subgraphs
 
+    total_size_bytes: int | None | Unset
+    if isinstance(self.total_size_bytes, Unset):
+      total_size_bytes = UNSET
+    else:
+      total_size_bytes = self.total_size_bytes
+
     total_size_mb: float | None | Unset
     if isinstance(self.total_size_mb, Unset):
       total_size_mb = UNSET
@@ -82,6 +90,8 @@ class ListSubgraphsResponse:
     )
     if max_subgraphs is not UNSET:
       field_dict["max_subgraphs"] = max_subgraphs
+    if total_size_bytes is not UNSET:
+      field_dict["total_size_bytes"] = total_size_bytes
     if total_size_mb is not UNSET:
       field_dict["total_size_mb"] = total_size_mb
 
@@ -118,6 +128,15 @@ class ListSubgraphsResponse:
 
     max_subgraphs = _parse_max_subgraphs(d.pop("max_subgraphs", UNSET))
 
+    def _parse_total_size_bytes(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    total_size_bytes = _parse_total_size_bytes(d.pop("total_size_bytes", UNSET))
+
     def _parse_total_size_mb(data: object) -> float | None | Unset:
       if data is None:
         return data
@@ -135,6 +154,7 @@ class ListSubgraphsResponse:
       subgraph_count=subgraph_count,
       subgraphs=subgraphs,
       max_subgraphs=max_subgraphs,
+      total_size_bytes=total_size_bytes,
       total_size_mb=total_size_mb,
     )
 

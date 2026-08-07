@@ -32,6 +32,8 @@ class SubgraphResponse:
       created_at (datetime.datetime): When the subgraph was created
       updated_at (datetime.datetime): When the subgraph was last updated
       description (None | str | Unset): Description of the subgraph's purpose
+      size_bytes (int | None | Unset): On-disk footprint in bytes — the database, its write-ahead log, and its vector
+          index. Prefer this over size_mb at subgraph scale.
       size_mb (float | None | Unset): Size of the subgraph database in megabytes
       node_count (int | None | Unset): Number of nodes in the subgraph
       edge_count (int | None | Unset): Number of edges in the subgraph
@@ -49,6 +51,7 @@ class SubgraphResponse:
   created_at: datetime.datetime
   updated_at: datetime.datetime
   description: None | str | Unset = UNSET
+  size_bytes: int | None | Unset = UNSET
   size_mb: float | None | Unset = UNSET
   node_count: int | None | Unset = UNSET
   edge_count: int | None | Unset = UNSET
@@ -82,6 +85,12 @@ class SubgraphResponse:
       description = UNSET
     else:
       description = self.description
+
+    size_bytes: int | None | Unset
+    if isinstance(self.size_bytes, Unset):
+      size_bytes = UNSET
+    else:
+      size_bytes = self.size_bytes
 
     size_mb: float | None | Unset
     if isinstance(self.size_mb, Unset):
@@ -134,6 +143,8 @@ class SubgraphResponse:
     )
     if description is not UNSET:
       field_dict["description"] = description
+    if size_bytes is not UNSET:
+      field_dict["size_bytes"] = size_bytes
     if size_mb is not UNSET:
       field_dict["size_mb"] = size_mb
     if node_count is not UNSET:
@@ -178,6 +189,15 @@ class SubgraphResponse:
       return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
+
+    def _parse_size_bytes(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    size_bytes = _parse_size_bytes(d.pop("size_bytes", UNSET))
 
     def _parse_size_mb(data: object) -> float | None | Unset:
       if data is None:
@@ -251,6 +271,7 @@ class SubgraphResponse:
       created_at=created_at,
       updated_at=updated_at,
       description=description,
+      size_bytes=size_bytes,
       size_mb=size_mb,
       node_count=node_count,
       edge_count=edge_count,

@@ -24,7 +24,10 @@ class SubgraphSummary:
       subgraph_type (SubgraphType): Types of subgraphs.
       status (str): Current status
       created_at (datetime.datetime): Creation timestamp
-      size_mb (float | None | Unset): Size in megabytes
+      size_bytes (int | None | Unset): On-disk footprint in bytes — the database, its write-ahead log, and its vector
+          index. Prefer this over size_mb at subgraph scale.
+      size_mb (float | None | Unset): Same footprint in megabytes. Derived from size_bytes; kept for callers that
+          render MB directly.
       last_accessed (datetime.datetime | None | Unset): Last access timestamp
   """
 
@@ -34,6 +37,7 @@ class SubgraphSummary:
   subgraph_type: SubgraphType
   status: str
   created_at: datetime.datetime
+  size_bytes: int | None | Unset = UNSET
   size_mb: float | None | Unset = UNSET
   last_accessed: datetime.datetime | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -50,6 +54,12 @@ class SubgraphSummary:
     status = self.status
 
     created_at = self.created_at.isoformat()
+
+    size_bytes: int | None | Unset
+    if isinstance(self.size_bytes, Unset):
+      size_bytes = UNSET
+    else:
+      size_bytes = self.size_bytes
 
     size_mb: float | None | Unset
     if isinstance(self.size_mb, Unset):
@@ -77,6 +87,8 @@ class SubgraphSummary:
         "created_at": created_at,
       }
     )
+    if size_bytes is not UNSET:
+      field_dict["size_bytes"] = size_bytes
     if size_mb is not UNSET:
       field_dict["size_mb"] = size_mb
     if last_accessed is not UNSET:
@@ -98,6 +110,15 @@ class SubgraphSummary:
     status = d.pop("status")
 
     created_at = datetime.datetime.fromisoformat(d.pop("created_at"))
+
+    def _parse_size_bytes(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    size_bytes = _parse_size_bytes(d.pop("size_bytes", UNSET))
 
     def _parse_size_mb(data: object) -> float | None | Unset:
       if data is None:
@@ -132,6 +153,7 @@ class SubgraphSummary:
       subgraph_type=subgraph_type,
       status=status,
       created_at=created_at,
+      size_bytes=size_bytes,
       size_mb=size_mb,
       last_accessed=last_accessed,
     )
