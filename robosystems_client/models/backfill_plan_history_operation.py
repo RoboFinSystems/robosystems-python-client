@@ -22,6 +22,9 @@ class BackfillPlanHistoryOperation:
           cycle; keep chunks modest and loop on `remaining_periods`. Default: 12.
       allow_stale_sync (bool | Unset): Override the sync-currency gate on each reclose. Historical months predate the
           last sync in the normal case, so this is rarely needed. Default: False.
+      allow_stranded_obligations (bool | Unset): Override the stranded-obligation gate on each reclose. Only needed
+          when a matured classified obligation without a drafted entry exists inside the backfill window and you have
+          decided not to draft or void it first. Default: False.
       restamp (bool | Unset): Also re-derive months that ALREADY have canonical statement sets (default: skip them).
           Use after an engine improvement changes what a stamp produces — each month reruns the full reopen → reclose
           cycle and replaces its sets. A restamp run is not self-resuming (every month in range stays a candidate);
@@ -32,6 +35,7 @@ class BackfillPlanHistoryOperation:
   start_period: None | str | Unset = UNSET
   max_periods: int | Unset = 12
   allow_stale_sync: bool | Unset = False
+  allow_stranded_obligations: bool | Unset = False
   restamp: bool | Unset = False
   note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -46,6 +50,8 @@ class BackfillPlanHistoryOperation:
     max_periods = self.max_periods
 
     allow_stale_sync = self.allow_stale_sync
+
+    allow_stranded_obligations = self.allow_stranded_obligations
 
     restamp = self.restamp
 
@@ -64,6 +70,8 @@ class BackfillPlanHistoryOperation:
       field_dict["max_periods"] = max_periods
     if allow_stale_sync is not UNSET:
       field_dict["allow_stale_sync"] = allow_stale_sync
+    if allow_stranded_obligations is not UNSET:
+      field_dict["allow_stranded_obligations"] = allow_stranded_obligations
     if restamp is not UNSET:
       field_dict["restamp"] = restamp
     if note is not UNSET:
@@ -88,6 +96,8 @@ class BackfillPlanHistoryOperation:
 
     allow_stale_sync = d.pop("allow_stale_sync", UNSET)
 
+    allow_stranded_obligations = d.pop("allow_stranded_obligations", UNSET)
+
     restamp = d.pop("restamp", UNSET)
 
     def _parse_note(data: object) -> None | str | Unset:
@@ -103,6 +113,7 @@ class BackfillPlanHistoryOperation:
       start_period=start_period,
       max_periods=max_periods,
       allow_stale_sync=allow_stale_sync,
+      allow_stranded_obligations=allow_stranded_obligations,
       restamp=restamp,
       note=note,
     )

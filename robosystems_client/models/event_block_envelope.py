@@ -57,6 +57,10 @@ class EventBlockEnvelope:
           amount (int | None | Unset): Economic value in **cents** of `currency`, signed (inflows positive, outflows
               negative). `null` for non-economic events.
           description (None | str | Unset): Free-text human-readable summary.
+          payload_drift (bool | Unset): True when a source re-sync surfaced a changed upstream payload for an event whose
+              GL is already posted (committed/fulfilled are immutable to sync). The live payload and GL are untouched; the
+              incoming payload is stashed in `metadata.drift_payload` with `metadata.drift_detected_at`. Drifted events need
+              operator reconciliation — the local books no longer mirror the source. Default: False.
           event_action (EventBlockEnvelopeEventActionType0 | None | Unset): Canonical action verb refining
               `event_category`. Null when the source adapter or capture path didn't supply one.
           agent_id (None | str | Unset): Counterparty agent ID, when the event involves one.
@@ -90,6 +94,7 @@ class EventBlockEnvelope:
   external_url: None | str | Unset = UNSET
   amount: int | None | Unset = UNSET
   description: None | str | Unset = UNSET
+  payload_drift: bool | Unset = False
   event_action: EventBlockEnvelopeEventActionType0 | None | Unset = UNSET
   agent_id: None | str | Unset = UNSET
   resource_type: None | str | Unset = UNSET
@@ -156,6 +161,8 @@ class EventBlockEnvelope:
       description = UNSET
     else:
       description = self.description
+
+    payload_drift = self.payload_drift
 
     event_action: None | str | Unset
     if isinstance(self.event_action, Unset):
@@ -235,6 +242,8 @@ class EventBlockEnvelope:
       field_dict["amount"] = amount
     if description is not UNSET:
       field_dict["description"] = description
+    if payload_drift is not UNSET:
+      field_dict["payload_drift"] = payload_drift
     if event_action is not UNSET:
       field_dict["event_action"] = event_action
     if agent_id is not UNSET:
@@ -335,6 +344,8 @@ class EventBlockEnvelope:
       return cast(None | str | Unset, data)
 
     description = _parse_description(d.pop("description", UNSET))
+
+    payload_drift = d.pop("payload_drift", UNSET)
 
     def _parse_event_action(
       data: object,
@@ -444,6 +455,7 @@ class EventBlockEnvelope:
       external_url=external_url,
       amount=amount,
       description=description,
+      payload_drift=payload_drift,
       event_action=event_action,
       agent_id=agent_id,
       resource_type=resource_type,
