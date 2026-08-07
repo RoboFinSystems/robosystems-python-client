@@ -75,7 +75,9 @@ from .get_ledger_event_block import GetLedgerEventBlock, GetLedgerEventBlockEven
 from .get_ledger_fiscal_calendar import (
   GetLedgerFiscalCalendar,
   GetLedgerFiscalCalendarFiscalCalendar,
+  GetLedgerFiscalCalendarFiscalCalendarPendingObligationSample,
   GetLedgerFiscalCalendarFiscalCalendarPeriods,
+  GetLedgerFiscalCalendarFiscalCalendarStrandedObligationSample,
 )
 from .get_ledger_mapped_trial_balance import (
   GetLedgerMappedTrialBalance,
@@ -455,7 +457,9 @@ __all__ = [
   "GetLedgerEventBlockEventBlock",
   "GetLedgerFiscalCalendar",
   "GetLedgerFiscalCalendarFiscalCalendar",
+  "GetLedgerFiscalCalendarFiscalCalendarPendingObligationSample",
   "GetLedgerFiscalCalendarFiscalCalendarPeriods",
+  "GetLedgerFiscalCalendarFiscalCalendarStrandedObligationSample",
   "GetLedgerMappedTrialBalance",
   "GetLedgerMappedTrialBalanceMappedTrialBalance",
   "GetLedgerMappedTrialBalanceMappedTrialBalanceRows",

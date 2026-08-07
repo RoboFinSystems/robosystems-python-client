@@ -633,6 +633,22 @@ query GetLedgerFiscalCalendar {
     catchUpSequence
     closeableNow
     blockers
+    pendingObligationCount
+    pendingObligationSample {
+      eventId
+      scheduleId
+      scheduleName
+      period
+    }
+    earliestPendingPeriod
+    strandedObligationCount
+    strandedObligationSample {
+      eventId
+      scheduleId
+      scheduleName
+      period
+    }
+    syncStaleDays
     lastCloseAt
     initializedAt
     lastSyncAt

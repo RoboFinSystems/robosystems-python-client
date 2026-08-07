@@ -15,7 +15,7 @@ type Query {
   openReceivablesByAgent: [OpenBalanceByAgent!]!
   openPayablesByAgent: [OpenBalanceByAgent!]!
   eventBlock(id: String!): EventBlock
-  eventBlocks(eventType: String = null, eventCategory: String = null, status: String = null, agentId: String = null, source: String = null, payloadDrift: Boolean = null, limit: Int = null, offset: Int = null): [EventBlock!]!
+  eventBlocks(eventType: String = null, eventCategory: String = null, status: String = null, agentId: String = null, source: String = null, isReconcilingItem: Boolean = null, limit: Int = null, offset: Int = null): [EventBlock!]!
   summary: LedgerSummary
   accounts(classification: String = null, isActive: Boolean = null, limit: Int = null, offset: Int = null): AccountList
   accountTree(includeInactive: Boolean = null): AccountTree
@@ -636,7 +636,7 @@ type EventBlock {
   currency: String!
   description: String
   metadata: JSON!
-  payloadDrift: Boolean!
+  isReconcilingItem: Boolean!
   dimensionIds: [String!]!
   agentId: String
   resourceType: String
