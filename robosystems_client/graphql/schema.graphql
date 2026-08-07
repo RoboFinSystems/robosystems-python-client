@@ -15,7 +15,7 @@ type Query {
   openReceivablesByAgent: [OpenBalanceByAgent!]!
   openPayablesByAgent: [OpenBalanceByAgent!]!
   eventBlock(id: String!): EventBlock
-  eventBlocks(eventType: String = null, eventCategory: String = null, status: String = null, agentId: String = null, source: String = null, limit: Int = null, offset: Int = null): [EventBlock!]!
+  eventBlocks(eventType: String = null, eventCategory: String = null, status: String = null, agentId: String = null, source: String = null, payloadDrift: Boolean = null, limit: Int = null, offset: Int = null): [EventBlock!]!
   summary: LedgerSummary
   accounts(classification: String = null, isActive: Boolean = null, limit: Int = null, offset: Int = null): AccountList
   accountTree(includeInactive: Boolean = null): AccountTree
@@ -636,6 +636,7 @@ type EventBlock {
   currency: String!
   description: String
   metadata: JSON!
+  payloadDrift: Boolean!
   dimensionIds: [String!]!
   agentId: String
   resourceType: String
@@ -1126,7 +1127,7 @@ type FiscalCalendar {
   closeableNow: Boolean!
 
   """
-  Structured blocker codes when closeable_now is False: 'sequence_violation', 'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations'
+  Structured blocker codes when closeable_now is False: 'sequence_violation', 'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations', 'stranded_obligations'
   """
   blockers: [String!]!
 
@@ -1149,6 +1150,16 @@ type FiscalCalendar {
   Days the most recent sync is stale relative to the period to close. Populated only when `sync_stale` is in `blockers` and last_sync_at exists (null when there's a connection but no sync has ever run).
   """
   syncStaleDays: Int
+
+  """
+  Matured schedule_entry_due events already at 'classified' with no drafted closing entry for their (schedule, period) — adjusting entries a close would silently omit. Resolve by running promote-obligations with dispatch_handlers=true (which reaches them) or voiding the obligation.
+  """
+  strandedObligationCount: Int!
+
+  """
+  Sample of up to 5 stranded obligations (schedule_id, schedule_name, period, event_id) ordered by occurred_at.
+  """
+  strandedObligationSample: [PendingObligationDetail!]!
   lastCloseAt: DateTime
   initializedAt: DateTime
 

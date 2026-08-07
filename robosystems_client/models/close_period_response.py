@@ -31,7 +31,13 @@ class ClosePeriodResponse:
   Attributes:
       fiscal_calendar (FiscalCalendarResponse): Current fiscal calendar state for a graph.
       period (str):
-      entries_posted (int | Unset): Number of draft entries transitioned to posted Default: 0.
+      entries_posted (int | Unset): Total draft entries the close transitioned to posted, across both post paths (QB
+          pre-publish + local bulk transition). See entries_published_to_qb / entries_posted_locally for the split.
+          Default: 0.
+      entries_published_to_qb (int | Unset): Drafts published to QuickBooks by the close's pre-publish step (each is
+          promoted to posted at publish time). Default: 0.
+      entries_posted_locally (int | Unset): Drafts posted by the local bulk transition (entries that don't publish to
+          QuickBooks, e.g. native-only graphs or local-only sources). Default: 0.
       target_auto_advanced (bool | Unset): Whether close_target was auto-advanced because it was reached Default:
           False.
       rule_summary (ClosePeriodResponseRuleSummaryType0 | None | Unset): Aggregated rule-eval outcome across every
@@ -53,6 +59,8 @@ class ClosePeriodResponse:
   fiscal_calendar: FiscalCalendarResponse
   period: str
   entries_posted: int | Unset = 0
+  entries_published_to_qb: int | Unset = 0
+  entries_posted_locally: int | Unset = 0
   target_auto_advanced: bool | Unset = False
   rule_summary: ClosePeriodResponseRuleSummaryType0 | None | Unset = UNSET
   evaluated_structure_ids: list[str] | Unset = UNSET
@@ -77,6 +85,10 @@ class ClosePeriodResponse:
     period = self.period
 
     entries_posted = self.entries_posted
+
+    entries_published_to_qb = self.entries_published_to_qb
+
+    entries_posted_locally = self.entries_posted_locally
 
     target_auto_advanced = self.target_auto_advanced
 
@@ -124,6 +136,10 @@ class ClosePeriodResponse:
     )
     if entries_posted is not UNSET:
       field_dict["entries_posted"] = entries_posted
+    if entries_published_to_qb is not UNSET:
+      field_dict["entries_published_to_qb"] = entries_published_to_qb
+    if entries_posted_locally is not UNSET:
+      field_dict["entries_posted_locally"] = entries_posted_locally
     if target_auto_advanced is not UNSET:
       field_dict["target_auto_advanced"] = target_auto_advanced
     if rule_summary is not UNSET:
@@ -160,6 +176,10 @@ class ClosePeriodResponse:
     period = d.pop("period")
 
     entries_posted = d.pop("entries_posted", UNSET)
+
+    entries_published_to_qb = d.pop("entries_published_to_qb", UNSET)
+
+    entries_posted_locally = d.pop("entries_posted_locally", UNSET)
 
     target_auto_advanced = d.pop("target_auto_advanced", UNSET)
 
@@ -233,6 +253,8 @@ class ClosePeriodResponse:
       fiscal_calendar=fiscal_calendar,
       period=period,
       entries_posted=entries_posted,
+      entries_published_to_qb=entries_published_to_qb,
+      entries_posted_locally=entries_posted_locally,
       target_auto_advanced=target_auto_advanced,
       rule_summary=rule_summary,
       evaluated_structure_ids=evaluated_structure_ids,

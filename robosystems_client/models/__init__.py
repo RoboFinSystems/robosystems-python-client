@@ -33,8 +33,6 @@ from .backup_list_response import BackupListResponse
 from .backup_response import BackupResponse
 from .backup_stats_response import BackupStatsResponse
 from .backup_stats_response_backup_formats import BackupStatsResponseBackupFormats
-from .batch_operator_request import BatchOperatorRequest
-from .batch_operator_response import BatchOperatorResponse
 from .billing_customer import BillingCustomer
 from .bind_text_block_request import BindTextBlockRequest
 from .bind_text_block_response import BindTextBlockResponse
@@ -573,12 +571,6 @@ from .operator_list_response_operators_additional_property import (
 from .operator_message import OperatorMessage
 from .operator_metadata_response import OperatorMetadataResponse
 from .operator_mode import OperatorMode
-from .operator_recommendation import OperatorRecommendation
-from .operator_recommendation_request import OperatorRecommendationRequest
-from .operator_recommendation_request_context_type_0 import (
-  OperatorRecommendationRequestContextType0,
-)
-from .operator_recommendation_response import OperatorRecommendationResponse
 from .operator_request import OperatorRequest
 from .operator_request_context_type_0 import OperatorRequestContextType0
 from .operator_response import OperatorResponse
@@ -720,7 +712,7 @@ from .structure_update_patch_concept_arrangement_type_0 import (
   StructureUpdatePatchConceptArrangementType0,
 )
 from .structure_update_patch_metadata_type_0 import StructureUpdatePatchMetadataType0
-from .subgraph_quota_response import SubgraphQuotaResponse
+from .subgraph_limits import SubgraphLimits
 from .subgraph_response import SubgraphResponse
 from .subgraph_response_metadata_type_0 import SubgraphResponseMetadataType0
 from .subgraph_summary import SubgraphSummary
@@ -882,8 +874,6 @@ __all__ = (
   "BackupResponse",
   "BackupStatsResponse",
   "BackupStatsResponseBackupFormats",
-  "BatchOperatorRequest",
-  "BatchOperatorResponse",
   "BillingCustomer",
   "BindTextBlockRequest",
   "BindTextBlockResponse",
@@ -1232,10 +1222,6 @@ __all__ = (
   "OperatorMessage",
   "OperatorMetadataResponse",
   "OperatorMode",
-  "OperatorRecommendation",
-  "OperatorRecommendationRequest",
-  "OperatorRecommendationRequestContextType0",
-  "OperatorRecommendationResponse",
   "OperatorRequest",
   "OperatorRequestContextType0",
   "OperatorResponse",
@@ -1361,7 +1347,7 @@ __all__ = (
   "StructureUpdatePatch",
   "StructureUpdatePatchConceptArrangementType0",
   "StructureUpdatePatchMetadataType0",
-  "SubgraphQuotaResponse",
+  "SubgraphLimits",
   "SubgraphResponse",
   "SubgraphResponseMetadataType0",
   "SubgraphSummary",

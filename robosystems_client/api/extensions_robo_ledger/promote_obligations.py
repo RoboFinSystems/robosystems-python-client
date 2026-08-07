@@ -117,10 +117,12 @@ def sync_detailed(
 
    Promote matured pending schedule obligations (schedule_entry_due events whose period boundary has
   passed) to 'classified', and — when dispatch_handlers=true (default) — draft their closing entries
-  in the same transaction. This is the on-demand form of the background obligation-promotion sweep;
-  run it before close-period when a schedule was just created or when you can't wait for the Dagster
-  sensor. Idempotent: re-running skips already-classified obligations and reconciles to existing
-  drafts.
+  in the same transaction. Also reaches stranded obligations: events already 'classified' (by an
+  earlier flip-only sweep) whose closing entry was never drafted are dispatched in the same pass, and
+  reported via stranded_count. This is the on-demand form of the background obligation-promotion
+  sweep; run it before close-period when a schedule was just created or when you can't wait for the
+  Dagster sensor. Idempotent: re-running skips already-classified obligations and reconciles to
+  existing drafts.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -137,7 +139,9 @@ def sync_detailed(
           Flips matured ``pending`` ``schedule_entry_due`` events (period boundary
           passed) to ``classified``; with ``dispatch_handlers`` it also drafts the
           closing entries in the same transaction (idempotent — reconciles to an
-          existing draft).
+          existing draft). The sweep also reaches *stranded* obligations —
+          already ``classified`` (by an earlier flip-only sweep) but with no
+          closing entry ever drafted — dispatching them in the same pass.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,10 +175,12 @@ def sync(
 
    Promote matured pending schedule obligations (schedule_entry_due events whose period boundary has
   passed) to 'classified', and — when dispatch_handlers=true (default) — draft their closing entries
-  in the same transaction. This is the on-demand form of the background obligation-promotion sweep;
-  run it before close-period when a schedule was just created or when you can't wait for the Dagster
-  sensor. Idempotent: re-running skips already-classified obligations and reconciles to existing
-  drafts.
+  in the same transaction. Also reaches stranded obligations: events already 'classified' (by an
+  earlier flip-only sweep) whose closing entry was never drafted are dispatched in the same pass, and
+  reported via stranded_count. This is the on-demand form of the background obligation-promotion
+  sweep; run it before close-period when a schedule was just created or when you can't wait for the
+  Dagster sensor. Idempotent: re-running skips already-classified obligations and reconciles to
+  existing drafts.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -191,7 +197,9 @@ def sync(
           Flips matured ``pending`` ``schedule_entry_due`` events (period boundary
           passed) to ``classified``; with ``dispatch_handlers`` it also drafts the
           closing entries in the same transaction (idempotent — reconciles to an
-          existing draft).
+          existing draft). The sweep also reaches *stranded* obligations —
+          already ``classified`` (by an earlier flip-only sweep) but with no
+          closing entry ever drafted — dispatching them in the same pass.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -220,10 +228,12 @@ async def asyncio_detailed(
 
    Promote matured pending schedule obligations (schedule_entry_due events whose period boundary has
   passed) to 'classified', and — when dispatch_handlers=true (default) — draft their closing entries
-  in the same transaction. This is the on-demand form of the background obligation-promotion sweep;
-  run it before close-period when a schedule was just created or when you can't wait for the Dagster
-  sensor. Idempotent: re-running skips already-classified obligations and reconciles to existing
-  drafts.
+  in the same transaction. Also reaches stranded obligations: events already 'classified' (by an
+  earlier flip-only sweep) whose closing entry was never drafted are dispatched in the same pass, and
+  reported via stranded_count. This is the on-demand form of the background obligation-promotion
+  sweep; run it before close-period when a schedule was just created or when you can't wait for the
+  Dagster sensor. Idempotent: re-running skips already-classified obligations and reconciles to
+  existing drafts.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -240,7 +250,9 @@ async def asyncio_detailed(
           Flips matured ``pending`` ``schedule_entry_due`` events (period boundary
           passed) to ``classified``; with ``dispatch_handlers`` it also drafts the
           closing entries in the same transaction (idempotent — reconciles to an
-          existing draft).
+          existing draft). The sweep also reaches *stranded* obligations —
+          already ``classified`` (by an earlier flip-only sweep) but with no
+          closing entry ever drafted — dispatching them in the same pass.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -272,10 +284,12 @@ async def asyncio(
 
    Promote matured pending schedule obligations (schedule_entry_due events whose period boundary has
   passed) to 'classified', and — when dispatch_handlers=true (default) — draft their closing entries
-  in the same transaction. This is the on-demand form of the background obligation-promotion sweep;
-  run it before close-period when a schedule was just created or when you can't wait for the Dagster
-  sensor. Idempotent: re-running skips already-classified obligations and reconciles to existing
-  drafts.
+  in the same transaction. Also reaches stranded obligations: events already 'classified' (by an
+  earlier flip-only sweep) whose closing entry was never drafted are dispatched in the same pass, and
+  reported via stranded_count. This is the on-demand form of the background obligation-promotion
+  sweep; run it before close-period when a schedule was just created or when you can't wait for the
+  Dagster sensor. Idempotent: re-running skips already-classified obligations and reconciles to
+  existing drafts.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -292,7 +306,9 @@ async def asyncio(
           Flips matured ``pending`` ``schedule_entry_due`` events (period boundary
           passed) to ``classified``; with ``dispatch_handlers`` it also drafts the
           closing entries in the same transaction (idempotent — reconciles to an
-          existing draft).
+          existing draft). The sweep also reaches *stranded* obligations —
+          already ``classified`` (by an earlier flip-only sweep) but with no
+          closing entry ever drafted — dispatching them in the same pass.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -22,11 +22,16 @@ class ClosePeriodOperation:
           note (None | str | Unset): Free-form note attached to the close event
           allow_stale_sync (bool | Unset): Override the sync-currency gate. Only use when you have manually verified that
               the source data for the period is complete. Default: False.
+          allow_stranded_obligations (bool | Unset): Override the stranded-obligation gate — close even though matured
+              classified obligations have no drafted closing entry, knowingly omitting those adjusting entries from the
+              period. Prefer running promote-obligations with dispatch_handlers=true (which drafts them) or voiding the
+              obligations instead. The override is recorded in the close audit note. Default: False.
   """
 
   period: str
   note: None | str | Unset = UNSET
   allow_stale_sync: bool | Unset = False
+  allow_stranded_obligations: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -40,6 +45,8 @@ class ClosePeriodOperation:
 
     allow_stale_sync = self.allow_stale_sync
 
+    allow_stranded_obligations = self.allow_stranded_obligations
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -51,6 +58,8 @@ class ClosePeriodOperation:
       field_dict["note"] = note
     if allow_stale_sync is not UNSET:
       field_dict["allow_stale_sync"] = allow_stale_sync
+    if allow_stranded_obligations is not UNSET:
+      field_dict["allow_stranded_obligations"] = allow_stranded_obligations
 
     return field_dict
 
@@ -70,10 +79,13 @@ class ClosePeriodOperation:
 
     allow_stale_sync = d.pop("allow_stale_sync", UNSET)
 
+    allow_stranded_obligations = d.pop("allow_stranded_obligations", UNSET)
+
     close_period_operation = cls(
       period=period,
       note=note,
       allow_stale_sync=allow_stale_sync,
+      allow_stranded_obligations=allow_stranded_obligations,
     )
 
     close_period_operation.additional_properties = d

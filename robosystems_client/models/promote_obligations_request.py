@@ -22,7 +22,9 @@ class PromoteObligationsRequest:
   Flips matured ``pending`` ``schedule_entry_due`` events (period boundary
   passed) to ``classified``; with ``dispatch_handlers`` it also drafts the
   closing entries in the same transaction (idempotent — reconciles to an
-  existing draft).
+  existing draft). The sweep also reaches *stranded* obligations —
+  already ``classified`` (by an earlier flip-only sweep) but with no
+  closing entry ever drafted — dispatching them in the same pass.
 
       Attributes:
           dispatch_handlers (bool | Unset): When True (default), also fire the schedule_entry_due handler for each

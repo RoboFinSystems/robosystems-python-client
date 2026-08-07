@@ -25,7 +25,11 @@ class PromoteObligationsResponse:
       classified_count (int): Matured obligations flipped pending → classified.
       dispatched_count (int): Obligations whose closing entry was drafted this run.
       error_count (int): Per-obligation handler errors (non-fatal).
+      stranded_count (int | Unset): Matured obligations found already at 'classified' with no drafted closing entry.
+          With dispatch_handlers=true they were drafted this run (included in dispatched_count); with
+          dispatch_handlers=false they still have no draft — re-run with dispatch_handlers=true or void them. Default: 0.
       classified_event_ids (list[str] | Unset):
+      stranded_event_ids (list[str] | Unset): Event ids of the stranded obligations found this sweep.
       errors (list[PromoteObligationsResponseErrorsItem] | Unset): Per-obligation errors as {event_id, error}; the
           sweep continues past them.
   """
@@ -33,7 +37,9 @@ class PromoteObligationsResponse:
   classified_count: int
   dispatched_count: int
   error_count: int
+  stranded_count: int | Unset = 0
   classified_event_ids: list[str] | Unset = UNSET
+  stranded_event_ids: list[str] | Unset = UNSET
   errors: list[PromoteObligationsResponseErrorsItem] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -44,9 +50,15 @@ class PromoteObligationsResponse:
 
     error_count = self.error_count
 
+    stranded_count = self.stranded_count
+
     classified_event_ids: list[str] | Unset = UNSET
     if not isinstance(self.classified_event_ids, Unset):
       classified_event_ids = self.classified_event_ids
+
+    stranded_event_ids: list[str] | Unset = UNSET
+    if not isinstance(self.stranded_event_ids, Unset):
+      stranded_event_ids = self.stranded_event_ids
 
     errors: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.errors, Unset):
@@ -64,8 +76,12 @@ class PromoteObligationsResponse:
         "error_count": error_count,
       }
     )
+    if stranded_count is not UNSET:
+      field_dict["stranded_count"] = stranded_count
     if classified_event_ids is not UNSET:
       field_dict["classified_event_ids"] = classified_event_ids
+    if stranded_event_ids is not UNSET:
+      field_dict["stranded_event_ids"] = stranded_event_ids
     if errors is not UNSET:
       field_dict["errors"] = errors
 
@@ -84,7 +100,11 @@ class PromoteObligationsResponse:
 
     error_count = d.pop("error_count")
 
+    stranded_count = d.pop("stranded_count", UNSET)
+
     classified_event_ids = cast(list[str], d.pop("classified_event_ids", UNSET))
+
+    stranded_event_ids = cast(list[str], d.pop("stranded_event_ids", UNSET))
 
     _errors = d.pop("errors", UNSET)
     errors: list[PromoteObligationsResponseErrorsItem] | Unset = UNSET
@@ -99,7 +119,9 @@ class PromoteObligationsResponse:
       classified_count=classified_count,
       dispatched_count=dispatched_count,
       error_count=error_count,
+      stranded_count=stranded_count,
       classified_event_ids=classified_event_ids,
+      stranded_event_ids=stranded_event_ids,
       errors=errors,
     )
 

@@ -18,6 +18,7 @@ if TYPE_CHECKING:
   from ..models.query_limits import QueryLimits
   from ..models.rate_limits import RateLimits
   from ..models.storage_limits import StorageLimits
+  from ..models.subgraph_limits import SubgraphLimits
 
 
 T = TypeVar("T", bound="GraphLimitsResponse")
@@ -39,6 +40,7 @@ class GraphLimitsResponse:
       rate_limits (RateLimits): API rate limits.
       credits_ (CreditLimits | None | Unset): AI credit limits (if applicable)
       documents (DocumentLimits | None | Unset): Knowledge-base document usage and tier cap (user graphs only)
+      subgraphs (None | SubgraphLimits | Unset): Subgraph count and tier cap (parent user graphs only)
       content (ContentLimits | None | Unset): Per-operation materialization limits (if applicable)
       instance (InstanceUsage | None | Unset): Aggregate instance storage usage (user graphs only)
   """
@@ -54,6 +56,7 @@ class GraphLimitsResponse:
   rate_limits: RateLimits
   credits_: CreditLimits | None | Unset = UNSET
   documents: DocumentLimits | None | Unset = UNSET
+  subgraphs: None | SubgraphLimits | Unset = UNSET
   content: ContentLimits | None | Unset = UNSET
   instance: InstanceUsage | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -63,6 +66,7 @@ class GraphLimitsResponse:
     from ..models.credit_limits import CreditLimits
     from ..models.document_limits import DocumentLimits
     from ..models.instance_usage import InstanceUsage
+    from ..models.subgraph_limits import SubgraphLimits
 
     graph_id = self.graph_id
 
@@ -97,6 +101,14 @@ class GraphLimitsResponse:
       documents = self.documents.to_dict()
     else:
       documents = self.documents
+
+    subgraphs: dict[str, Any] | None | Unset
+    if isinstance(self.subgraphs, Unset):
+      subgraphs = UNSET
+    elif isinstance(self.subgraphs, SubgraphLimits):
+      subgraphs = self.subgraphs.to_dict()
+    else:
+      subgraphs = self.subgraphs
 
     content: dict[str, Any] | None | Unset
     if isinstance(self.content, Unset):
@@ -133,6 +145,8 @@ class GraphLimitsResponse:
       field_dict["credits"] = credits_
     if documents is not UNSET:
       field_dict["documents"] = documents
+    if subgraphs is not UNSET:
+      field_dict["subgraphs"] = subgraphs
     if content is not UNSET:
       field_dict["content"] = content
     if instance is not UNSET:
@@ -151,6 +165,7 @@ class GraphLimitsResponse:
     from ..models.query_limits import QueryLimits
     from ..models.rate_limits import RateLimits
     from ..models.storage_limits import StorageLimits
+    from ..models.subgraph_limits import SubgraphLimits
 
     d = dict(src_dict)
     graph_id = d.pop("graph_id")
@@ -205,6 +220,23 @@ class GraphLimitsResponse:
 
     documents = _parse_documents(d.pop("documents", UNSET))
 
+    def _parse_subgraphs(data: object) -> None | SubgraphLimits | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        subgraphs_type_0 = SubgraphLimits.from_dict(data)
+
+        return subgraphs_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | SubgraphLimits | Unset, data)
+
+    subgraphs = _parse_subgraphs(d.pop("subgraphs", UNSET))
+
     def _parse_content(data: object) -> ContentLimits | None | Unset:
       if data is None:
         return data
@@ -251,6 +283,7 @@ class GraphLimitsResponse:
       rate_limits=rate_limits,
       credits_=credits_,
       documents=documents,
+      subgraphs=subgraphs,
       content=content,
       instance=instance,
     )
