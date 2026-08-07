@@ -36,8 +36,9 @@ class FactSetLite:
           scenario_id (None | str | Unset): Scenario axis (the forecast engine). NULL = actuals; non-NULL names the owning
               forecast block whose parallel universe this set belongs to.
           provenance (FactSetLiteProvenanceType0 | None | Unset): Typed ``FactProvenance`` descriptor (discriminated on
-              ``origin``: pivot | schedule | derived | asserted) recording how this FactSet's facts were constructed. Surfaced
-              as JSON, mirroring how mechanics is exposed. Null when the FactSet carries no descriptor.
+              ``origin``: pivot | schedule | derived | asserted | document | forecast | filed) recording how this FactSet's
+              facts were constructed. Surfaced as JSON, mirroring how mechanics is exposed. Null when the FactSet carries no
+              descriptor.
   """
 
   id: str
