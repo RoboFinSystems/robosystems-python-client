@@ -25,18 +25,16 @@ class UpdateRollforwardArm:
           payload (UpdateRollforwardRequest): Update mutable fields on a rollforward block.
 
               Editable: name, default_change_tag_qname, attribution_filters,
-              validation_mode. The BS source is fixed once the block is created
-              (changing it would invalidate every previously rendered period); to
-              change BS source, delete and re-create.
+              validation_mode. The BS source is fixed at creation — changing it would
+              invalidate every period already rendered — so switching BS source means
+              delete and re-create.
 
-              **Partial-update semantics**: omitted (``None``) fields mean "leave
-              unchanged" — there is no wire-level way to *clear* a previously set
-              default change tag or empty the attribution_filters list via this
-              endpoint. To remove the default tag entirely, delete and re-create
-              the rollforward block. The asymmetry is deliberate: an explicit
-              clear-sentinel adds wire-shape complexity for a use case that rarely
-              arises in practice (default tags are typically set during initial
-              authoring and only swapped, not removed).
+              **Partial-update semantics**: an omitted (``None``) field means "leave
+              unchanged". There is no wire-level way to *clear* the default change tag or
+              empty the attribution_filters list; delete and re-create the block instead.
+              The asymmetry is deliberate — a clear-sentinel costs wire-shape complexity
+              for a case that rarely arises, since default tags get swapped rather than
+              removed.
   """
 
   block_type: Literal["rollforward"]

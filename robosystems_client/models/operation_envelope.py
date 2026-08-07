@@ -16,36 +16,20 @@ T = TypeVar("T", bound="OperationEnvelope")
 class OperationEnvelope:
   """Uniform response shape for every operation endpoint.
 
-  Every dispatch through an operation surface returns an envelope carrying
-  an ``op_<ULID>`` operation_id.  That id is the bridge to the platform's
-  monitoring surface: pass it to
+  Every dispatch carries an ``op_<ULID>`` operation_id, which is the bridge
+  to the monitoring surface: pass it to
   ``GET /v1/operations/{operation_id}/stream`` (see ``routers/operations.py``)
-  to subscribe to SSE progress events.  Sync commands complete in the
-  envelope itself; async commands (``status: "pending"``, HTTP 202) hand
-  off to a background worker and stream their tail through the same SSE
-  endpoint until completion.  Failed dispatches still mint an
+  to subscribe to SSE progress events. Sync commands complete in the envelope
+  itself (``status: "completed"``, HTTP 200); async commands
+  (``status: "pending"``, HTTP 202) hand off to a background worker and stream
+  their tail through that SSE endpoint. Failed dispatches still mint an
   ``operation_id`` so the audit log and any partial SSE events stay
   correlatable.
 
-  ``TResult`` parameterizes the ``result`` field so per-op response shapes
-  surface in OpenAPI. Operations that pin ``OperationSpec.result_type`` get
-  ``OperationEnvelope[YourEnvelope]`` as their response model; ops that
-  don't keep the default ``Any`` shape (`result: any | null` on the wire).
-
-  Fields:
-  - ``operation``: kebab-case command name (e.g. ``close-period``)
-  - ``operation_id``: ``op_``-prefixed ULID; always present, usable for
-    audit correlation and — for async commands — SSE subscription via
-    ``/v1/operations/{operation_id}/stream``
-  - ``status``: ``"completed"`` (sync, HTTP 200), ``"pending"``
-    (async, HTTP 202), or ``"failed"`` (error responses)
-  - ``result``: the domain-specific payload (the original Pydantic
-    response) or ``None`` for async/failed cases
-  - ``at``: ISO-8601 UTC timestamp of when the envelope was minted
-  - ``created_by``: user ID of the caller who initiated this operation
-  - ``idempotent_replay``: ``True`` when the dispatcher returned this
-    envelope from the idempotency cache (the underlying command did NOT
-    execute again)
+  ``TResult`` parameterizes ``result`` so per-op response shapes surface in
+  OpenAPI. Operations that pin ``OperationSpec.result_type`` get
+  ``OperationEnvelope[YourEnvelope]`` as their response model; the rest keep
+  the default ``Any`` shape (``result: any | null`` on the wire).
 
       Attributes:
           operation (str): Kebab-case operation name

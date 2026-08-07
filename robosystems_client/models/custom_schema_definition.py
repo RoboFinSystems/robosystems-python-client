@@ -23,11 +23,11 @@ T = TypeVar("T", bound="CustomSchemaDefinition")
 
 @_attrs_define
 class CustomSchemaDefinition:
-  """Custom schema definition for generic graphs.
+  """Custom node and relationship types for a generic graph.
 
-  This model allows you to define custom node types, relationship types, and properties
-  for graphs that don't fit the standard entity-based schema. Perfect for domain-specific
-  applications like inventory systems, org charts, project management, etc.
+  For graphs that don't fit the entity-based schema — inventory, org charts,
+  project management. ``extends`` names a base schema to build on, or is
+  omitted for a bare database.
 
       Attributes:
           name (str): Schema name

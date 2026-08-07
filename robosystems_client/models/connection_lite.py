@@ -19,8 +19,8 @@ T = TypeVar("T", bound="ConnectionLite")
 class ConnectionLite:
   """Connection (= Association) projection.
 
-  Renamed at the API boundary to match Charlie's ontology vocabulary.
-  The underlying storage table is still ``associations``.
+  "Connection" is the ontology term used on the wire; the storage table is
+  ``associations`` (``models/extensions/association.py``).
 
       Attributes:
           id (str):

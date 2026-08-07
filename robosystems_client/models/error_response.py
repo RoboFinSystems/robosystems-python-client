@@ -14,20 +14,17 @@ T = TypeVar("T", bound="ErrorResponse")
 
 @_attrs_define
 class ErrorResponse:
-  """Standard error response format used across all API endpoints.
+  """Error body returned by every endpoint.
 
-  This model ensures consistent error responses for SDK generation
-  and client error handling.
+  Example:
+      {'code': 'RESOURCE_NOT_FOUND', 'detail': 'Resource not found', 'request_id': 'req_1234567890abcdef',
+          'timestamp': '2024-01-01T00:00:00Z'}
 
-      Example:
-          {'code': 'RESOURCE_NOT_FOUND', 'detail': 'Resource not found', 'request_id': 'req_1234567890abcdef',
-              'timestamp': '2024-01-01T00:00:00Z'}
-
-      Attributes:
-          detail (str): Human-readable error message explaining what went wrong
-          code (None | str | Unset): Machine-readable error code for programmatic handling
-          request_id (None | str | Unset): Unique request ID for tracking and debugging
-          timestamp (datetime.datetime | None | Unset): Timestamp when the error occurred
+  Attributes:
+      detail (str): Human-readable error message explaining what went wrong
+      code (None | str | Unset): Machine-readable error code for programmatic handling
+      request_id (None | str | Unset): Unique request ID for tracking and debugging
+      timestamp (datetime.datetime | None | Unset): Timestamp when the error occurred
   """
 
   detail: str

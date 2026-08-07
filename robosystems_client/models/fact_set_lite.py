@@ -20,10 +20,8 @@ T = TypeVar("T", bound="FactSetLite")
 class FactSetLite:
   """FactSet projection — period-specific instantiation of the Structure.
 
-  The envelope carries one ``FactSetLite`` per block when a FactSet row
-  exists for the requested period; legacy writes that pre-date FactSet
-  stamping leave ``fact_set`` null until the expand pass starts
-  populating those rows.
+  The envelope carries one ``FactSetLite`` per block when a FactSet row exists
+  for the requested period, and leaves ``fact_set`` null when none does.
 
       Attributes:
           id (str):
@@ -33,13 +31,13 @@ class FactSetLite:
           entity_id (str):
           structure_id (None | str | Unset):
           period_start (datetime.date | None | Unset):
-          report_id (None | str | Unset): Back-pointer to the ``reports`` table while ``report_id`` still lives on facts.
-              Drops out once the retirement migration lands.
+          report_id (None | str | Unset): Back-pointer to the parent row in ``reports``. Null when the FactSet does not
+              belong to a report package.
           scenario_id (None | str | Unset): Scenario axis (the forecast engine). NULL = actuals; non-NULL names the owning
               forecast block whose parallel universe this set belongs to.
           provenance (FactSetLiteProvenanceType0 | None | Unset): Typed ``FactProvenance`` descriptor (discriminated on
               ``origin``: pivot | schedule | derived | asserted) recording how this FactSet's facts were constructed. Surfaced
-              as JSON, mirroring how mechanics is exposed. Null for pre-feature historical FactSets.
+              as JSON, mirroring how mechanics is exposed. Null when the FactSet carries no descriptor.
   """
 
   id: str
