@@ -20,10 +20,34 @@ class GetLedgerFiscalCalendarFiscalCalendar(BaseModel):
   catch_up_sequence: list[str] = Field(alias="catchUpSequence")
   closeable_now: bool = Field(alias="closeableNow")
   blockers: list[str]
+  pending_obligation_count: int = Field(alias="pendingObligationCount")
+  pending_obligation_sample: list[
+    "GetLedgerFiscalCalendarFiscalCalendarPendingObligationSample"
+  ] = Field(alias="pendingObligationSample")
+  earliest_pending_period: Optional[str] = Field(alias="earliestPendingPeriod")
+  stranded_obligation_count: int = Field(alias="strandedObligationCount")
+  stranded_obligation_sample: list[
+    "GetLedgerFiscalCalendarFiscalCalendarStrandedObligationSample"
+  ] = Field(alias="strandedObligationSample")
+  sync_stale_days: Optional[int] = Field(alias="syncStaleDays")
   last_close_at: Optional[str] = Field(alias="lastCloseAt")
   initialized_at: Optional[str] = Field(alias="initializedAt")
   last_sync_at: Optional[str] = Field(alias="lastSyncAt")
   periods: list["GetLedgerFiscalCalendarFiscalCalendarPeriods"]
+
+
+class GetLedgerFiscalCalendarFiscalCalendarPendingObligationSample(BaseModel):
+  event_id: str = Field(alias="eventId")
+  schedule_id: Optional[str] = Field(alias="scheduleId")
+  schedule_name: Optional[str] = Field(alias="scheduleName")
+  period: str
+
+
+class GetLedgerFiscalCalendarFiscalCalendarStrandedObligationSample(BaseModel):
+  event_id: str = Field(alias="eventId")
+  schedule_id: Optional[str] = Field(alias="scheduleId")
+  schedule_name: Optional[str] = Field(alias="scheduleName")
+  period: str
 
 
 class GetLedgerFiscalCalendarFiscalCalendarPeriods(BaseModel):

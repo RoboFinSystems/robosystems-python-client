@@ -253,6 +253,12 @@ class TestLedgerReads:
         "catchUpSequence": [],
         "closeableNow": True,
         "blockers": [],
+        "pendingObligationCount": 0,
+        "pendingObligationSample": [],
+        "earliestPendingPeriod": None,
+        "strandedObligationCount": 0,
+        "strandedObligationSample": [],
+        "syncStaleDays": None,
         "lastCloseAt": None,
         "initializedAt": "2026-01-01T00:00:00Z",
         "lastSyncAt": None,
@@ -265,6 +271,54 @@ class TestLedgerReads:
     assert cal.closed_through == "2026-02"
     assert cal.closeable_now is True
     assert cal.fiscal_year_start_month == 1
+    assert cal.stranded_obligation_count == 0
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_fiscal_calendar_names_blocking_obligations(
+    self, mock_execute, mock_config, graph_id
+  ):
+    """A blocked calendar carries the detail needed to act on the blocker.
+
+    `blockers` alone says a close is held but not by what; the sample names
+    the schedule so a caller can promote or void it without a second query.
+    """
+    mock_execute.return_value = {
+      "fiscalCalendar": {
+        "graphId": graph_id,
+        "fiscalYearStartMonth": 1,
+        "closedThrough": "2026-02",
+        "closeTarget": "2026-03",
+        "gapPeriods": 1,
+        "catchUpSequence": ["2026-03"],
+        "closeableNow": False,
+        "blockers": ["stranded_obligations"],
+        "pendingObligationCount": 0,
+        "pendingObligationSample": [],
+        "earliestPendingPeriod": None,
+        "strandedObligationCount": 2,
+        "strandedObligationSample": [
+          {
+            "eventId": "evt_1",
+            "scheduleId": "str_prepaid",
+            "scheduleName": "Prepaid Insurance",
+            "period": "2026-03",
+          }
+        ],
+        "syncStaleDays": None,
+        "lastCloseAt": None,
+        "initializedAt": "2026-01-01T00:00:00Z",
+        "lastSyncAt": None,
+        "periods": [],
+      }
+    }
+    client = LedgerClient(mock_config)
+    cal = client.get_fiscal_calendar(graph_id)
+    assert cal is not None
+    assert cal.closeable_now is False
+    assert cal.blockers == ["stranded_obligations"]
+    assert cal.stranded_obligation_count == 2
+    assert cal.stranded_obligation_sample[0].schedule_name == "Prepaid Insurance"
+    assert cal.stranded_obligation_sample[0].period == "2026-03"
 
 
 # ── Writes (Operation envelope) ────────────────────────────────────────
