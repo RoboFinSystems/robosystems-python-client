@@ -21,6 +21,8 @@ class GraphInfo:
       role (str): User's role/access level
       is_selected (bool): Whether this is the currently selected graph
       created_at (str): Creation timestamp
+      description (str | Unset): Free-form description ('' when unset) Default: ''.
+      tags (list[str] | Unset): Organizational tags for the graph
       is_repository (bool | Unset): Whether this is a shared repository (vs user graph) Default: False.
       repository_type (None | str | Unset): Repository type if isRepository=true
       schema_extensions (list[str] | Unset): List of schema extensions installed on this graph
@@ -35,6 +37,8 @@ class GraphInfo:
   role: str
   is_selected: bool
   created_at: str
+  description: str | Unset = ""
+  tags: list[str] | Unset = UNSET
   is_repository: bool | Unset = False
   repository_type: None | str | Unset = UNSET
   schema_extensions: list[str] | Unset = UNSET
@@ -54,6 +58,12 @@ class GraphInfo:
     is_selected = self.is_selected
 
     created_at = self.created_at
+
+    description = self.description
+
+    tags: list[str] | Unset = UNSET
+    if not isinstance(self.tags, Unset):
+      tags = self.tags
 
     is_repository = self.is_repository
 
@@ -90,6 +100,10 @@ class GraphInfo:
         "createdAt": created_at,
       }
     )
+    if description is not UNSET:
+      field_dict["description"] = description
+    if tags is not UNSET:
+      field_dict["tags"] = tags
     if is_repository is not UNSET:
       field_dict["isRepository"] = is_repository
     if repository_type is not UNSET:
@@ -119,6 +133,10 @@ class GraphInfo:
     is_selected = d.pop("isSelected")
 
     created_at = d.pop("createdAt")
+
+    description = d.pop("description", UNSET)
+
+    tags = cast(list[str], d.pop("tags", UNSET))
 
     is_repository = d.pop("isRepository", UNSET)
 
@@ -154,6 +172,8 @@ class GraphInfo:
       role=role,
       is_selected=is_selected,
       created_at=created_at,
+      description=description,
+      tags=tags,
       is_repository=is_repository,
       repository_type=repository_type,
       schema_extensions=schema_extensions,
