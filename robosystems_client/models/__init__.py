@@ -257,6 +257,7 @@ from .graph_member_list_response import GraphMemberListResponse
 from .graph_member_response import GraphMemberResponse
 from .graph_member_response_source import GraphMemberResponseSource
 from .graph_metadata import GraphMetadata
+from .graph_metadata_result import GraphMetadataResult
 from .graph_metrics_response import GraphMetricsResponse
 from .graph_metrics_response_health_status import GraphMetricsResponseHealthStatus
 from .graph_metrics_response_node_counts import GraphMetricsResponseNodeCounts
@@ -465,6 +466,12 @@ from .operation_envelope_fiscal_calendar_response import (
 )
 from .operation_envelope_fiscal_calendar_response_status import (
   OperationEnvelopeFiscalCalendarResponseStatus,
+)
+from .operation_envelope_graph_metadata_result import (
+  OperationEnvelopeGraphMetadataResult,
+)
+from .operation_envelope_graph_metadata_result_status import (
+  OperationEnvelopeGraphMetadataResultStatus,
 )
 from .operation_envelope_information_block_envelope import (
   OperationEnvelopeInformationBlockEnvelope,
@@ -803,6 +810,7 @@ from .update_forecast_request_scenario_kind_type_0 import (
   UpdateForecastRequestScenarioKindType0,
 )
 from .update_graph_member_role_request import UpdateGraphMemberRoleRequest
+from .update_graph_metadata_op import UpdateGraphMetadataOp
 from .update_journal_entry_request import UpdateJournalEntryRequest
 from .update_journal_entry_request_type_type_0 import UpdateJournalEntryRequestTypeType0
 from .update_legacy_arm import UpdateLegacyArm
@@ -1056,6 +1064,7 @@ __all__ = (
   "GraphMemberResponse",
   "GraphMemberResponseSource",
   "GraphMetadata",
+  "GraphMetadataResult",
   "GraphMetricsResponse",
   "GraphMetricsResponseHealthStatus",
   "GraphMetricsResponseNodeCounts",
@@ -1179,6 +1188,8 @@ __all__ = (
   "OperationEnvelopeFinancialStatementAnalysisResponseStatus",
   "OperationEnvelopeFiscalCalendarResponse",
   "OperationEnvelopeFiscalCalendarResponseStatus",
+  "OperationEnvelopeGraphMetadataResult",
+  "OperationEnvelopeGraphMetadataResultStatus",
   "OperationEnvelopeInformationBlockEnvelope",
   "OperationEnvelopeInformationBlockEnvelopeStatus",
   "OperationEnvelopeInitializeLedgerResponse",
@@ -1406,6 +1417,7 @@ __all__ = (
   "UpdateForecastRequest",
   "UpdateForecastRequestScenarioKindType0",
   "UpdateGraphMemberRoleRequest",
+  "UpdateGraphMetadataOp",
   "UpdateJournalEntryRequest",
   "UpdateJournalEntryRequestTypeType0",
   "UpdateLegacyArm",
