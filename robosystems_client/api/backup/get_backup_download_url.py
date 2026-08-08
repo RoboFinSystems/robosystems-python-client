@@ -87,11 +87,11 @@ def sync_detailed(
 ) -> Response[Any | BackupDownloadUrlResponse | HTTPValidationError]:
   """Get temporary download URL for backup
 
-   Generate a temporary download URL for a backup (unencrypted backups only). The filename carries the
-  extension listed as `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB
-  database file `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-
-  compressed database file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first:
-  `brew install zstd`, `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
+   Generate a temporary download URL for a backup. The filename carries the extension listed as
+  `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
+  `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
+  file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first: `brew install zstd`,
+  `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
 
   Args:
       graph_id (str):
@@ -128,11 +128,11 @@ def sync(
 ) -> Any | BackupDownloadUrlResponse | HTTPValidationError | None:
   """Get temporary download URL for backup
 
-   Generate a temporary download URL for a backup (unencrypted backups only). The filename carries the
-  extension listed as `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB
-  database file `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-
-  compressed database file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first:
-  `brew install zstd`, `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
+   Generate a temporary download URL for a backup. The filename carries the extension listed as
+  `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
+  `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
+  file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first: `brew install zstd`,
+  `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
 
   Args:
       graph_id (str):
@@ -164,11 +164,11 @@ async def asyncio_detailed(
 ) -> Response[Any | BackupDownloadUrlResponse | HTTPValidationError]:
   """Get temporary download URL for backup
 
-   Generate a temporary download URL for a backup (unencrypted backups only). The filename carries the
-  extension listed as `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB
-  database file `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-
-  compressed database file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first:
-  `brew install zstd`, `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
+   Generate a temporary download URL for a backup. The filename carries the extension listed as
+  `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
+  `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
+  file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first: `brew install zstd`,
+  `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
 
   Args:
       graph_id (str):
@@ -203,11 +203,11 @@ async def asyncio(
 ) -> Any | BackupDownloadUrlResponse | HTTPValidationError | None:
   """Get temporary download URL for backup
 
-   Generate a temporary download URL for a backup (unencrypted backups only). The filename carries the
-  extension listed as `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB
-  database file `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-
-  compressed database file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first:
-  `brew install zstd`, `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
+   Generate a temporary download URL for a backup. The filename carries the extension listed as
+  `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
+  `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
+  file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first: `brew install zstd`,
+  `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
 
   Args:
       graph_id (str):

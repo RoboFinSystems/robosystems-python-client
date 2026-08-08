@@ -111,8 +111,9 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelope]:
   """Restore Backup
 
-   Only encrypted backups can be restored. Not allowed on entity graphs (use `materialize` instead) or
-  shared repositories.
+   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Destructive: the
+  existing database is snapshotted, then overwritten. Monitor progress via SSE at
+  `/v1/operations/{operation_id}/stream`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -152,8 +153,9 @@ def sync(
 ) -> ErrorResponse | OperationEnvelope | None:
   """Restore Backup
 
-   Only encrypted backups can be restored. Not allowed on entity graphs (use `materialize` instead) or
-  shared repositories.
+   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Destructive: the
+  existing database is snapshotted, then overwritten. Monitor progress via SSE at
+  `/v1/operations/{operation_id}/stream`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -188,8 +190,9 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelope]:
   """Restore Backup
 
-   Only encrypted backups can be restored. Not allowed on entity graphs (use `materialize` instead) or
-  shared repositories.
+   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Destructive: the
+  existing database is snapshotted, then overwritten. Monitor progress via SSE at
+  `/v1/operations/{operation_id}/stream`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -227,8 +230,9 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelope | None:
   """Restore Backup
 
-   Only encrypted backups can be restored. Not allowed on entity graphs (use `materialize` instead) or
-  shared repositories.
+   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Destructive: the
+  existing database is snapshotted, then overwritten. Monitor progress via SSE at
+  `/v1/operations/{operation_id}/stream`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

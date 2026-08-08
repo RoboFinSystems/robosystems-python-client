@@ -25,6 +25,9 @@ class BackupListResponse:
       total_count (int):
       graph_id (str):
       is_shared_repository (bool | Unset): Whether this is a shared repository (limits apply) Default: False.
+      restore_supported (bool | Unset): Whether backups on this graph can be restored. False for entity graphs, which
+          are materialized from the extensions database (use the materialize operation instead), and for shared
+          repositories, which are platform-managed and download-only. Default: True.
       download_quota (DownloadQuota | None | Unset): Download quota for shared repositories
   """
 
@@ -32,6 +35,7 @@ class BackupListResponse:
   total_count: int
   graph_id: str
   is_shared_repository: bool | Unset = False
+  restore_supported: bool | Unset = True
   download_quota: DownloadQuota | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -48,6 +52,8 @@ class BackupListResponse:
     graph_id = self.graph_id
 
     is_shared_repository = self.is_shared_repository
+
+    restore_supported = self.restore_supported
 
     download_quota: dict[str, Any] | None | Unset
     if isinstance(self.download_quota, Unset):
@@ -68,6 +74,8 @@ class BackupListResponse:
     )
     if is_shared_repository is not UNSET:
       field_dict["is_shared_repository"] = is_shared_repository
+    if restore_supported is not UNSET:
+      field_dict["restore_supported"] = restore_supported
     if download_quota is not UNSET:
       field_dict["download_quota"] = download_quota
 
@@ -92,6 +100,8 @@ class BackupListResponse:
 
     is_shared_repository = d.pop("is_shared_repository", UNSET)
 
+    restore_supported = d.pop("restore_supported", UNSET)
+
     def _parse_download_quota(data: object) -> DownloadQuota | None | Unset:
       if data is None:
         return data
@@ -114,6 +124,7 @@ class BackupListResponse:
       total_count=total_count,
       graph_id=graph_id,
       is_shared_repository=is_shared_repository,
+      restore_supported=restore_supported,
       download_quota=download_quota,
     )
 
