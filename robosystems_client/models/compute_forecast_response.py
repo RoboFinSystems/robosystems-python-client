@@ -27,6 +27,11 @@ class ComputeForecastResponse:
       base_period (str): Seed month the walk projected from.
       months (int): Forward months requested.
       months_computed (list[ForecastMonthLite] | Unset):
+      halted_at (None | str | Unset): Month (``YYYY-MM``) where the walk stopped because verification failed, or null
+          if it ran the full horizon. Each month's opening balances are the previous month's closing balances, so
+          computing past a failure yields months derived from a known-wrong one rather than merely unverified months. When
+          set, ``months_computed`` ends at this month and is shorter than ``months``; the failing month's facts are kept
+          so the failure can be inspected.
       skipped (list[SkippedForecastLite] | Unset):
       diagnostics (list[str] | Unset): Articulation notes — a missing cash/earnings anchor, schedule contributions
           with no base-set landing spot, an absent cash-flow structure. Informational; the walk still computed.
@@ -38,6 +43,7 @@ class ComputeForecastResponse:
   base_period: str
   months: int
   months_computed: list[ForecastMonthLite] | Unset = UNSET
+  halted_at: None | str | Unset = UNSET
   skipped: list[SkippedForecastLite] | Unset = UNSET
   diagnostics: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -59,6 +65,12 @@ class ComputeForecastResponse:
       for months_computed_item_data in self.months_computed:
         months_computed_item = months_computed_item_data.to_dict()
         months_computed.append(months_computed_item)
+
+    halted_at: None | str | Unset
+    if isinstance(self.halted_at, Unset):
+      halted_at = UNSET
+    else:
+      halted_at = self.halted_at
 
     skipped: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.skipped, Unset):
@@ -84,6 +96,8 @@ class ComputeForecastResponse:
     )
     if months_computed is not UNSET:
       field_dict["months_computed"] = months_computed
+    if halted_at is not UNSET:
+      field_dict["halted_at"] = halted_at
     if skipped is not UNSET:
       field_dict["skipped"] = skipped
     if diagnostics is not UNSET:
@@ -116,6 +130,15 @@ class ComputeForecastResponse:
 
         months_computed.append(months_computed_item)
 
+    def _parse_halted_at(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    halted_at = _parse_halted_at(d.pop("halted_at", UNSET))
+
     _skipped = d.pop("skipped", UNSET)
     skipped: list[SkippedForecastLite] | Unset = UNSET
     if _skipped is not UNSET:
@@ -134,6 +157,7 @@ class ComputeForecastResponse:
       base_period=base_period,
       months=months,
       months_computed=months_computed,
+      halted_at=halted_at,
       skipped=skipped,
       diagnostics=diagnostics,
     )
