@@ -27,15 +27,13 @@ class BackupResponse:
       node_count (int):
       relationship_count (int):
       backup_duration_seconds (float):
-      encryption_enabled (bool):
       compression_enabled (bool):
-      allow_export (bool):
       created_at (str):
       completed_at (None | str):
       expires_at (None | str):
       download_extension (None | str | Unset): Extension the download will carry, and therefore how to unpack it:
-          '.lbug.zip' is a ZIP holding the LadybugDB database file, '.lbug.zst' is zstd-compressed (`zstd -d`). Null when
-          the backup is encrypted and so cannot be downloaded.
+          '.lbug.zip' is a ZIP holding the LadybugDB database file, '.lbug.zst' is zstd-compressed (`zstd -d`). Null only
+          when the backup has no stored object yet.
   """
 
   backup_id: str
@@ -49,9 +47,7 @@ class BackupResponse:
   node_count: int
   relationship_count: int
   backup_duration_seconds: float
-  encryption_enabled: bool
   compression_enabled: bool
-  allow_export: bool
   created_at: str
   completed_at: None | str
   expires_at: None | str
@@ -81,11 +77,7 @@ class BackupResponse:
 
     backup_duration_seconds = self.backup_duration_seconds
 
-    encryption_enabled = self.encryption_enabled
-
     compression_enabled = self.compression_enabled
-
-    allow_export = self.allow_export
 
     created_at = self.created_at
 
@@ -116,9 +108,7 @@ class BackupResponse:
         "node_count": node_count,
         "relationship_count": relationship_count,
         "backup_duration_seconds": backup_duration_seconds,
-        "encryption_enabled": encryption_enabled,
         "compression_enabled": compression_enabled,
-        "allow_export": allow_export,
         "created_at": created_at,
         "completed_at": completed_at,
         "expires_at": expires_at,
@@ -154,11 +144,7 @@ class BackupResponse:
 
     backup_duration_seconds = d.pop("backup_duration_seconds")
 
-    encryption_enabled = d.pop("encryption_enabled")
-
     compression_enabled = d.pop("compression_enabled")
-
-    allow_export = d.pop("allow_export")
 
     created_at = d.pop("created_at")
 
@@ -197,9 +183,7 @@ class BackupResponse:
       node_count=node_count,
       relationship_count=relationship_count,
       backup_duration_seconds=backup_duration_seconds,
-      encryption_enabled=encryption_enabled,
       compression_enabled=compression_enabled,
-      allow_export=allow_export,
       created_at=created_at,
       completed_at=completed_at,
       expires_at=expires_at,

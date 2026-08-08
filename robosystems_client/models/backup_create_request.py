@@ -23,7 +23,6 @@ class BackupCreateRequest:
           is the hard ceiling: the storage lifecycle expires backup objects then regardless of the requested value.
           Default: 30.
       compression (bool | Unset): Enable compression (always enabled for optimal storage) Default: True.
-      encryption (bool | Unset): Enable encryption (encrypted backups cannot be downloaded) Default: False.
       schedule (None | str | Unset): Optional cron schedule for automated backups
   """
 
@@ -31,7 +30,6 @@ class BackupCreateRequest:
   backup_type: str | Unset = "full"
   retention_days: int | Unset = 30
   compression: bool | Unset = True
-  encryption: bool | Unset = False
   schedule: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -43,8 +41,6 @@ class BackupCreateRequest:
     retention_days = self.retention_days
 
     compression = self.compression
-
-    encryption = self.encryption
 
     schedule: None | str | Unset
     if isinstance(self.schedule, Unset):
@@ -63,8 +59,6 @@ class BackupCreateRequest:
       field_dict["retention_days"] = retention_days
     if compression is not UNSET:
       field_dict["compression"] = compression
-    if encryption is not UNSET:
-      field_dict["encryption"] = encryption
     if schedule is not UNSET:
       field_dict["schedule"] = schedule
 
@@ -81,8 +75,6 @@ class BackupCreateRequest:
 
     compression = d.pop("compression", UNSET)
 
-    encryption = d.pop("encryption", UNSET)
-
     def _parse_schedule(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -97,7 +89,6 @@ class BackupCreateRequest:
       backup_type=backup_type,
       retention_days=retention_days,
       compression=compression,
-      encryption=encryption,
       schedule=schedule,
     )
 
