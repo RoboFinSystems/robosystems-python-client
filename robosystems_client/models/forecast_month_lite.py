@@ -27,8 +27,10 @@ class ForecastMonthLite:
       cash_flow_fact_set_id (None | str | Unset): Scenario CF FactSet upserted for the month — indirect-method,
           derived from BS deltas + NI, reconciled to the balancing ΔCash.
       computed_count (int | Unset): Number of facts emitted for the month across all sets. Default: 0.
-      verification_passed (bool | None | Unset): Whether every rule evaluated against the month's scenario sets passed
-          (None = no rules ran for the month).
+      verification_passed (bool | None | Unset): Whether every rule evaluated against the month's scenario sets
+          passed. Three states, and the third is not the first: ``true`` = rules ran and all passed; ``false`` = at least
+          one failed or errored, which halts the walk (see ``halted_at``); ``null`` = **no rules ran**, so the month is
+          unverified rather than verified. Treat null as absence of evidence, never as a pass.
       verification_failures (list[str] | Unset): Failed/errored rule messages for the month (capped).
   """
 
