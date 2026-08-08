@@ -27,7 +27,8 @@ class BackupListResponse:
       is_shared_repository (bool | Unset): Whether this is a shared repository (limits apply) Default: False.
       restore_supported (bool | Unset): Whether backups on this graph can be restored. False for entity graphs, which
           are materialized from the extensions database (use the materialize operation instead), and for shared
-          repositories, which are platform-managed and download-only. Default: True.
+          repositories, which are platform-managed and download-only. True for subgraphs of an entity graph: only the
+          parent is materialized, so a subgraph has no other recovery path. Default: True.
       download_quota (DownloadQuota | None | Unset): Download quota for shared repositories
   """
 

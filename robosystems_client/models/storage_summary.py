@@ -15,10 +15,9 @@ class StorageSummary:
 
   Attributes:
       graph_tier (str): Subscription tier
-      avg_storage_gb (float): Average storage in GB
+      avg_storage_gb (float): Time-weighted average storage in GB over the period
       max_storage_gb (float): Peak storage in GB
       min_storage_gb (float): Minimum storage in GB
-      total_gb_hours (float): Total GB-hours for billing
       measurement_count (int): Number of measurements taken
   """
 
@@ -26,7 +25,6 @@ class StorageSummary:
   avg_storage_gb: float
   max_storage_gb: float
   min_storage_gb: float
-  total_gb_hours: float
   measurement_count: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -39,8 +37,6 @@ class StorageSummary:
 
     min_storage_gb = self.min_storage_gb
 
-    total_gb_hours = self.total_gb_hours
-
     measurement_count = self.measurement_count
 
     field_dict: dict[str, Any] = {}
@@ -51,7 +47,6 @@ class StorageSummary:
         "avg_storage_gb": avg_storage_gb,
         "max_storage_gb": max_storage_gb,
         "min_storage_gb": min_storage_gb,
-        "total_gb_hours": total_gb_hours,
         "measurement_count": measurement_count,
       }
     )
@@ -69,8 +64,6 @@ class StorageSummary:
 
     min_storage_gb = d.pop("min_storage_gb")
 
-    total_gb_hours = d.pop("total_gb_hours")
-
     measurement_count = d.pop("measurement_count")
 
     storage_summary = cls(
@@ -78,7 +71,6 @@ class StorageSummary:
       avg_storage_gb=avg_storage_gb,
       max_storage_gb=max_storage_gb,
       min_storage_gb=min_storage_gb,
-      total_gb_hours=total_gb_hours,
       measurement_count=measurement_count,
     )
 
