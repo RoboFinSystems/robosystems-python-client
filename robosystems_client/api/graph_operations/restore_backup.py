@@ -111,7 +111,8 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelope]:
   """Restore Backup
 
-   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Destructive: the
+   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Entity *subgraphs*
+  are restorable — they are written directly and have no materialization path. Destructive: the
   existing database is snapshotted, then overwritten. Monitor progress via SSE at
   `/v1/operations/{operation_id}/stream`.
 
@@ -153,7 +154,8 @@ def sync(
 ) -> ErrorResponse | OperationEnvelope | None:
   """Restore Backup
 
-   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Destructive: the
+   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Entity *subgraphs*
+  are restorable — they are written directly and have no materialization path. Destructive: the
   existing database is snapshotted, then overwritten. Monitor progress via SSE at
   `/v1/operations/{operation_id}/stream`.
 
@@ -190,7 +192,8 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelope]:
   """Restore Backup
 
-   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Destructive: the
+   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Entity *subgraphs*
+  are restorable — they are written directly and have no materialization path. Destructive: the
   existing database is snapshotted, then overwritten. Monitor progress via SSE at
   `/v1/operations/{operation_id}/stream`.
 
@@ -230,7 +233,8 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelope | None:
   """Restore Backup
 
-   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Destructive: the
+   Not allowed on entity graphs (use `materialize` instead) or shared repositories. Entity *subgraphs*
+  are restorable — they are written directly and have no materialization path. Destructive: the
   existing database is snapshotted, then overwritten. Monitor progress via SSE at
   `/v1/operations/{operation_id}/stream`.
 
