@@ -24,7 +24,7 @@ pip install robosystems-client
 
 This client is `1.x` and follows semantic versioning, with one distinction worth knowing before you pin.
 
-The **stable surface** is the facades (`robosystems_client.clients`), the root exports, the error classes, the auth configuration, and every symbol used by [`robosystems-integration-template`](https://github.com/RoboFinSystems/robosystems-integration-template) — the emit path most integrations are built on. It is frozen for the life of `1.x`; breaking any of it costs a major version. CI enforces this on every change by building the template against the candidate client.
+The **stable surface** is the facades (`robosystems_client.clients`), the root exports, the error classes, the auth configuration, and every symbol used by [`robosystems-integration-template`](https://github.com/RoboFinSystems/robosystems-integration-template) — the emit path most integrations are built on. It is frozen for the life of `1.x`; breaking any of it costs a major version.
 
 The **generated surface** — the rest of `robosystems_client.api.*` and `models.*` — is regenerated from the platform's OpenAPI spec and tracks it. Operations there can be added, renamed, or removed on a minor release, and every such removal is named in that release's notes.
 
