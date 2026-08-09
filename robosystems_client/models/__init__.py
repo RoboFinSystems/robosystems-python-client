@@ -657,7 +657,6 @@ from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .resolved_report_info import ResolvedReportInfo
 from .response_mode import ResponseMode
-from .restore_backup_op import RestoreBackupOp
 from .rollforward_mechanics import RollforwardMechanics
 from .rollforward_mechanics_validation_mode import RollforwardMechanicsValidationMode
 from .rule_lite import RuleLite
@@ -1306,7 +1305,6 @@ __all__ = (
   "ResetPasswordValidateResponse",
   "ResolvedReportInfo",
   "ResponseMode",
-  "RestoreBackupOp",
   "RollforwardMechanics",
   "RollforwardMechanicsValidationMode",
   "RuleLite",

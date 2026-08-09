@@ -5,9 +5,14 @@ automatic operation monitoring. Supports both SSE (Server-Sent Events)
 for real-time updates and polling fallback.
 
 Graph lifecycle operations (create-subgraph, delete-subgraph, create-backup,
-restore-backup, change-tier, materialize) all go through the operations
-surface at ``POST /v1/graphs/{graph_id}/operations/{op_name}`` and return
-an ``OperationEnvelope``.
+change-tier, materialize) all go through the operations surface at
+``POST /v1/graphs/{graph_id}/operations/{op_name}`` and return an
+``OperationEnvelope``.
+
+Backups are a download capability: there is no customer-facing restore.
+Graphs with an upstream rebuild from it — entity graphs re-materialize,
+generic graphs rebuild from their staged sources — and recovery for anything
+else is downloading the archive.
 """
 
 from dataclasses import dataclass
