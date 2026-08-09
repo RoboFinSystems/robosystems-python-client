@@ -6,16 +6,18 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.delete_report_operation import DeleteReportOperation
 from ...models.error_response import ErrorResponse
-from ...models.operation_envelope_delete_result import OperationEnvelopeDeleteResult
+from ...models.operation_envelope_revoke_report_share_response import (
+  OperationEnvelopeRevokeReportShareResponse,
+)
+from ...models.revoke_report_share_operation import RevokeReportShareOperation
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: DeleteReportOperation,
+  body: RevokeReportShareOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -24,7 +26,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/delete-report".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/revoke-report-share".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -39,9 +41,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | OperationEnvelopeDeleteResult | None:
+) -> ErrorResponse | OperationEnvelopeRevokeReportShareResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelopeDeleteResult.from_dict(response.json())
+    response_200 = OperationEnvelopeRevokeReportShareResponse.from_dict(response.json())
 
     return response_200
 
@@ -93,7 +95,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | OperationEnvelopeDeleteResult]:
+) -> Response[ErrorResponse | OperationEnvelopeRevokeReportShareResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -106,15 +108,16 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteReportOperation,
+  body: RevokeReportShareOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeDeleteResult]:
-  """Delete Report
+) -> Response[ErrorResponse | OperationEnvelopeRevokeReportShareResponse]:
+  """Revoke Report Share
 
-   Deletes the report definition and all generated facts. Normally restricted to the report's creator.
-  A report shared in from another graph carries the sender's user id in `created_by`, so those may be
-  deleted by any admin of the receiving graph — the recipient's exit from an unsolicited share.
-  Deleting a shared copy does not affect the sender's record that they sent it.
+   Withdraws a report previously shared to one recipient graph: deletes the copy from that recipient's
+  schema and stamps the share record revoked. Scoped to a single recipient — withdrawing a
+  distribution to a whole publish list is one call per member. A recipient who already deleted the
+  copy is not an error; the share is still marked revoked and `copy_deleted` returns false. The linked
+  entity in the recipient's graph is left in place, so an investor's declared holding survives.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -122,14 +125,14 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteReportOperation): Delete a Report definition and all its facts.
+      body (RevokeReportShareOperation): Withdraw a shared Report from one recipient graph.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeDeleteResult]
+      Response[ErrorResponse | OperationEnvelopeRevokeReportShareResponse]
   """
 
   kwargs = _get_kwargs(
@@ -149,15 +152,16 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteReportOperation,
+  body: RevokeReportShareOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeDeleteResult | None:
-  """Delete Report
+) -> ErrorResponse | OperationEnvelopeRevokeReportShareResponse | None:
+  """Revoke Report Share
 
-   Deletes the report definition and all generated facts. Normally restricted to the report's creator.
-  A report shared in from another graph carries the sender's user id in `created_by`, so those may be
-  deleted by any admin of the receiving graph — the recipient's exit from an unsolicited share.
-  Deleting a shared copy does not affect the sender's record that they sent it.
+   Withdraws a report previously shared to one recipient graph: deletes the copy from that recipient's
+  schema and stamps the share record revoked. Scoped to a single recipient — withdrawing a
+  distribution to a whole publish list is one call per member. A recipient who already deleted the
+  copy is not an error; the share is still marked revoked and `copy_deleted` returns false. The linked
+  entity in the recipient's graph is left in place, so an investor's declared holding survives.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -165,14 +169,14 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteReportOperation): Delete a Report definition and all its facts.
+      body (RevokeReportShareOperation): Withdraw a shared Report from one recipient graph.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeDeleteResult
+      ErrorResponse | OperationEnvelopeRevokeReportShareResponse
   """
 
   return sync_detailed(
@@ -187,15 +191,16 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteReportOperation,
+  body: RevokeReportShareOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeDeleteResult]:
-  """Delete Report
+) -> Response[ErrorResponse | OperationEnvelopeRevokeReportShareResponse]:
+  """Revoke Report Share
 
-   Deletes the report definition and all generated facts. Normally restricted to the report's creator.
-  A report shared in from another graph carries the sender's user id in `created_by`, so those may be
-  deleted by any admin of the receiving graph — the recipient's exit from an unsolicited share.
-  Deleting a shared copy does not affect the sender's record that they sent it.
+   Withdraws a report previously shared to one recipient graph: deletes the copy from that recipient's
+  schema and stamps the share record revoked. Scoped to a single recipient — withdrawing a
+  distribution to a whole publish list is one call per member. A recipient who already deleted the
+  copy is not an error; the share is still marked revoked and `copy_deleted` returns false. The linked
+  entity in the recipient's graph is left in place, so an investor's declared holding survives.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -203,14 +208,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteReportOperation): Delete a Report definition and all its facts.
+      body (RevokeReportShareOperation): Withdraw a shared Report from one recipient graph.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeDeleteResult]
+      Response[ErrorResponse | OperationEnvelopeRevokeReportShareResponse]
   """
 
   kwargs = _get_kwargs(
@@ -228,15 +233,16 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: DeleteReportOperation,
+  body: RevokeReportShareOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeDeleteResult | None:
-  """Delete Report
+) -> ErrorResponse | OperationEnvelopeRevokeReportShareResponse | None:
+  """Revoke Report Share
 
-   Deletes the report definition and all generated facts. Normally restricted to the report's creator.
-  A report shared in from another graph carries the sender's user id in `created_by`, so those may be
-  deleted by any admin of the receiving graph — the recipient's exit from an unsolicited share.
-  Deleting a shared copy does not affect the sender's record that they sent it.
+   Withdraws a report previously shared to one recipient graph: deletes the copy from that recipient's
+  schema and stamps the share record revoked. Scoped to a single recipient — withdrawing a
+  distribution to a whole publish list is one call per member. A recipient who already deleted the
+  copy is not an error; the share is still marked revoked and `copy_deleted` returns false. The linked
+  entity in the recipient's graph is left in place, so an investor's declared holding survives.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -244,14 +250,14 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteReportOperation): Delete a Report definition and all its facts.
+      body (RevokeReportShareOperation): Withdraw a shared Report from one recipient graph.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeDeleteResult
+      ErrorResponse | OperationEnvelopeRevokeReportShareResponse
   """
 
   return (

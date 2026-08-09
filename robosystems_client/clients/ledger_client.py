@@ -115,6 +115,9 @@ from ..api.extensions_robo_ledger.rebuild_schedule import (
 from ..api.extensions_robo_ledger.add_publish_list_members import (
   sync_detailed as op_add_publish_list_members,
 )
+from ..api.extensions_robo_ledger.block_source_graph import (
+  sync_detailed as op_block_source_graph,
+)
 from ..api.extensions_robo_ledger.create_publish_list import (
   sync_detailed as op_create_publish_list,
 )
@@ -136,11 +139,17 @@ from ..api.extensions_robo_ledger.regenerate_report import (
 from ..api.extensions_robo_ledger.remove_publish_list_member import (
   sync_detailed as op_remove_publish_list_member,
 )
+from ..api.extensions_robo_ledger.revoke_report_share import (
+  sync_detailed as op_revoke_report_share,
+)
 from ..api.extensions_robo_ledger.share_report import (
   sync_detailed as op_share_report,
 )
 from ..api.extensions_robo_ledger.transition_filing_status import (
   sync_detailed as op_transition_filing_status,
+)
+from ..api.extensions_robo_ledger.unblock_source_graph import (
+  sync_detailed as op_unblock_source_graph,
 )
 from ..api.extensions_robo_ledger.update_publish_list import (
   sync_detailed as op_update_publish_list,
@@ -299,6 +308,12 @@ from ..graphql.generated.list_ledger_accounts import (
 from ..graphql.generated.list_ledger_accounts import (
   ListLedgerAccountsAccounts as LedgerAccountsPage,
 )
+from ..graphql.generated.list_ledger_blocked_source_graphs import (
+  ListLedgerBlockedSourceGraphs,
+)
+from ..graphql.generated.list_ledger_blocked_source_graphs import (
+  ListLedgerBlockedSourceGraphsBlockedSourceGraphs as BlockedSourceGraphsPage,
+)
 from ..graphql.generated.list_ledger_agents import (
   ListLedgerAgents,
   ListLedgerAgentsAgents,
@@ -378,6 +393,7 @@ from ..graphql.generated.operations import (
   GET_LEDGER_TRIAL_BALANCE_GQL,
   LIST_INFORMATION_BLOCKS_GQL,
   LIST_LEDGER_ACCOUNTS_GQL,
+  LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
   LIST_LEDGER_AGENTS_GQL,
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
@@ -455,6 +471,9 @@ from ..models.remove_publish_list_member_operation import (
   RemovePublishListMemberOperation,
 )
 from ..models.share_report_operation import ShareReportOperation
+from ..models.block_source_graph_operation import BlockSourceGraphOperation
+from ..models.unblock_source_graph_operation import UnblockSourceGraphOperation
+from ..models.revoke_report_share_operation import RevokeReportShareOperation
 from ..models.update_publish_list_operation import UpdatePublishListOperation
 from ..models.reopen_period_operation import ReopenPeriodOperation
 from ..models.set_close_target_operation import SetCloseTargetOperation
@@ -488,6 +507,9 @@ from ..models.publish_list_response import PublishListResponse
 from ..models.report_response import ReportResponse
 from ..models.schedule_created_response import ScheduleCreatedResponse
 from ..models.share_report_response import ShareReportResponse
+from ..models.block_source_graph_result import BlockSourceGraphResult
+from ..models.blocked_source_graph_response import BlockedSourceGraphResponse
+from ..models.revoke_report_share_response import RevokeReportShareResponse
 from ..models.taxonomy_block_envelope import TaxonomyBlockEnvelope
 
 from ..types import UNSET
@@ -2252,6 +2274,95 @@ class LedgerClient:
     if isinstance(report, dict):
       return report.get("source_graph_id") is not None
     return getattr(report, "source_graph_id", None) is not None
+
+  def revoke_report_share(
+    self, graph_id: str, report_id: str, target_graph_id: str
+  ) -> RevokeReportShareResponse:
+    """Withdraw a report previously shared to one recipient graph.
+
+    The sender's half of the share controls: deletes the copy from that
+    recipient's schema and marks the share revoked. Scoped to a single
+    recipient, so withdrawing a distribution to a whole publish list is
+    one call per member.
+
+    A recipient who already deleted the copy themselves is not an error —
+    the share is still marked revoked and ``copy_deleted`` comes back
+    False. The linked entity in the recipient's graph is left in place, so
+    an investor's declared holding survives the withdrawal.
+    """
+    body = RevokeReportShareOperation(
+      report_id=report_id, target_graph_id=target_graph_id
+    )
+    response = op_revoke_report_share(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Revoke report share", response)
+    return self._typed_result(
+      "Revoke report share", envelope, RevokeReportShareResponse
+    )
+
+  # ── Blocked source graphs ────────────────────────────────────────────
+  #
+  # Sharing is authorized capability-style: whoever holds this graph's id
+  # can copy a published report into it. These are the recipient's exit.
+
+  def list_blocked_source_graphs(
+    self, graph_id: str, limit: int = 100, offset: int = 0
+  ) -> BlockedSourceGraphsPage | None:
+    """List source graphs barred from sharing reports into this graph."""
+    data = self._query(
+      graph_id,
+      LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
+      {"limit": limit, "offset": offset},
+    )
+    return ListLedgerBlockedSourceGraphs.model_validate(data).blocked_source_graphs
+
+  def block_source_graph(
+    self,
+    graph_id: str,
+    source_graph_id: str,
+    reason: str | None = None,
+    purge: bool = False,
+  ) -> BlockSourceGraphResult:
+    """Bar ``source_graph_id`` from sharing reports into ``graph_id``.
+
+    Read the sender's id off the ``source_graph_id`` provenance field of a
+    report that was shared to you. Blocking is idempotent: re-blocking
+    returns ``already_blocked=True`` and preserves the original
+    ``blocked_at``.
+
+    With ``purge``, every report already shared in from that source is
+    deleted along with its fact sets and facts; reports this graph
+    authored are never touched. ``reason`` is a note for your own records
+    and is never disclosed to the sender.
+    """
+    body = BlockSourceGraphOperation(
+      source_graph_id=source_graph_id,
+      reason=reason if reason is not None else UNSET,
+      purge=purge,
+    )
+    response = op_block_source_graph(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Block source graph", response)
+    return self._typed_result("Block source graph", envelope, BlockSourceGraphResult)
+
+  def unblock_source_graph(
+    self, graph_id: str, source_graph_id: str
+  ) -> BlockedSourceGraphResponse:
+    """Lift a block, allowing that source to share in again.
+
+    Reports removed by an earlier purge are not restored — unblocking
+    reopens the channel, it does not undo.
+    """
+    body = UnblockSourceGraphOperation(source_graph_id=source_graph_id)
+    response = op_unblock_source_graph(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Unblock source graph", response)
+    return self._typed_result(
+      "Unblock source graph", envelope, BlockedSourceGraphResponse
+    )
 
   # ── Publish Lists ────────────────────────────────────────────────────
 

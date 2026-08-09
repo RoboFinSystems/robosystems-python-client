@@ -17,26 +17,18 @@ class OrgUsageSummary:
       total_credits_used (float):
       total_ai_operations (int):
       total_storage_gb (float):
-      total_api_calls (int):
       daily_avg_credits (float):
-      daily_avg_api_calls (float):
       projected_monthly_credits (float):
-      projected_monthly_api_calls (int):
       credits_limit (int | None):
-      api_calls_limit (int | None):
       storage_limit_gb (int | None):
   """
 
   total_credits_used: float
   total_ai_operations: int
   total_storage_gb: float
-  total_api_calls: int
   daily_avg_credits: float
-  daily_avg_api_calls: float
   projected_monthly_credits: float
-  projected_monthly_api_calls: int
   credits_limit: int | None
-  api_calls_limit: int | None
   storage_limit_gb: int | None
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -47,21 +39,12 @@ class OrgUsageSummary:
 
     total_storage_gb = self.total_storage_gb
 
-    total_api_calls = self.total_api_calls
-
     daily_avg_credits = self.daily_avg_credits
-
-    daily_avg_api_calls = self.daily_avg_api_calls
 
     projected_monthly_credits = self.projected_monthly_credits
 
-    projected_monthly_api_calls = self.projected_monthly_api_calls
-
     credits_limit: int | None
     credits_limit = self.credits_limit
-
-    api_calls_limit: int | None
-    api_calls_limit = self.api_calls_limit
 
     storage_limit_gb: int | None
     storage_limit_gb = self.storage_limit_gb
@@ -73,13 +56,9 @@ class OrgUsageSummary:
         "total_credits_used": total_credits_used,
         "total_ai_operations": total_ai_operations,
         "total_storage_gb": total_storage_gb,
-        "total_api_calls": total_api_calls,
         "daily_avg_credits": daily_avg_credits,
-        "daily_avg_api_calls": daily_avg_api_calls,
         "projected_monthly_credits": projected_monthly_credits,
-        "projected_monthly_api_calls": projected_monthly_api_calls,
         "credits_limit": credits_limit,
-        "api_calls_limit": api_calls_limit,
         "storage_limit_gb": storage_limit_gb,
       }
     )
@@ -95,15 +74,9 @@ class OrgUsageSummary:
 
     total_storage_gb = d.pop("total_storage_gb")
 
-    total_api_calls = d.pop("total_api_calls")
-
     daily_avg_credits = d.pop("daily_avg_credits")
 
-    daily_avg_api_calls = d.pop("daily_avg_api_calls")
-
     projected_monthly_credits = d.pop("projected_monthly_credits")
-
-    projected_monthly_api_calls = d.pop("projected_monthly_api_calls")
 
     def _parse_credits_limit(data: object) -> int | None:
       if data is None:
@@ -111,13 +84,6 @@ class OrgUsageSummary:
       return cast(int | None, data)
 
     credits_limit = _parse_credits_limit(d.pop("credits_limit"))
-
-    def _parse_api_calls_limit(data: object) -> int | None:
-      if data is None:
-        return data
-      return cast(int | None, data)
-
-    api_calls_limit = _parse_api_calls_limit(d.pop("api_calls_limit"))
 
     def _parse_storage_limit_gb(data: object) -> int | None:
       if data is None:
@@ -130,13 +96,9 @@ class OrgUsageSummary:
       total_credits_used=total_credits_used,
       total_ai_operations=total_ai_operations,
       total_storage_gb=total_storage_gb,
-      total_api_calls=total_api_calls,
       daily_avg_credits=daily_avg_credits,
-      daily_avg_api_calls=daily_avg_api_calls,
       projected_monthly_credits=projected_monthly_credits,
-      projected_monthly_api_calls=projected_monthly_api_calls,
       credits_limit=credits_limit,
-      api_calls_limit=api_calls_limit,
       storage_limit_gb=storage_limit_gb,
     )
 

@@ -36,6 +36,9 @@ from .backup_stats_response_backup_formats import BackupStatsResponseBackupForma
 from .billing_customer import BillingCustomer
 from .bind_text_block_request import BindTextBlockRequest
 from .bind_text_block_response import BindTextBlockResponse
+from .block_source_graph_operation import BlockSourceGraphOperation
+from .block_source_graph_result import BlockSourceGraphResult
+from .blocked_source_graph_response import BlockedSourceGraphResponse
 from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -383,6 +386,18 @@ from .operation_envelope_bind_text_block_response import (
 from .operation_envelope_bind_text_block_response_status import (
   OperationEnvelopeBindTextBlockResponseStatus,
 )
+from .operation_envelope_block_source_graph_result import (
+  OperationEnvelopeBlockSourceGraphResult,
+)
+from .operation_envelope_block_source_graph_result_status import (
+  OperationEnvelopeBlockSourceGraphResultStatus,
+)
+from .operation_envelope_blocked_source_graph_response import (
+  OperationEnvelopeBlockedSourceGraphResponse,
+)
+from .operation_envelope_blocked_source_graph_response_status import (
+  OperationEnvelopeBlockedSourceGraphResponseStatus,
+)
 from .operation_envelope_change_reporting_style_response import (
   OperationEnvelopeChangeReportingStyleResponse,
 )
@@ -537,6 +552,12 @@ from .operation_envelope_report_response import OperationEnvelopeReportResponse
 from .operation_envelope_report_response_status import (
   OperationEnvelopeReportResponseStatus,
 )
+from .operation_envelope_revoke_report_share_response import (
+  OperationEnvelopeRevokeReportShareResponse,
+)
+from .operation_envelope_revoke_report_share_response_status import (
+  OperationEnvelopeRevokeReportShareResponseStatus,
+)
 from .operation_envelope_schedule_created_response import (
   OperationEnvelopeScheduleCreatedResponse,
 )
@@ -657,6 +678,8 @@ from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
 from .resolved_report_info import ResolvedReportInfo
 from .response_mode import ResponseMode
+from .revoke_report_share_operation import RevokeReportShareOperation
+from .revoke_report_share_response import RevokeReportShareResponse
 from .rollforward_mechanics import RollforwardMechanics
 from .rollforward_mechanics_validation_mode import RollforwardMechanicsValidationMode
 from .rule_lite import RuleLite
@@ -780,6 +803,7 @@ from .transaction_template_entry import TransactionTemplateEntry
 from .transaction_template_item import TransactionTemplateItem
 from .transaction_template_leg import TransactionTemplateLeg
 from .transition_filing_status_request import TransitionFilingStatusRequest
+from .unblock_source_graph_operation import UnblockSourceGraphOperation
 from .upcoming_invoice import UpcomingInvoice
 from .update_agent_request import UpdateAgentRequest
 from .update_agent_request_address_type_0 import UpdateAgentRequestAddressType0
@@ -884,6 +908,9 @@ __all__ = (
   "BillingCustomer",
   "BindTextBlockRequest",
   "BindTextBlockResponse",
+  "BlockedSourceGraphResponse",
+  "BlockSourceGraphOperation",
+  "BlockSourceGraphResult",
   "CancelOperationResponseCanceloperation",
   "CancelSubscriptionRequest",
   "ChangeReportingStyleRequest",
@@ -1157,6 +1184,10 @@ __all__ = (
   "OperationEnvelopeBackfillPlanHistoryResponseStatus",
   "OperationEnvelopeBindTextBlockResponse",
   "OperationEnvelopeBindTextBlockResponseStatus",
+  "OperationEnvelopeBlockedSourceGraphResponse",
+  "OperationEnvelopeBlockedSourceGraphResponseStatus",
+  "OperationEnvelopeBlockSourceGraphResult",
+  "OperationEnvelopeBlockSourceGraphResultStatus",
   "OperationEnvelopeChangeReportingStyleResponse",
   "OperationEnvelopeChangeReportingStyleResponseStatus",
   "OperationEnvelopeClosePeriodResponse",
@@ -1213,6 +1244,8 @@ __all__ = (
   "OperationEnvelopePublishListResponseStatus",
   "OperationEnvelopeReportResponse",
   "OperationEnvelopeReportResponseStatus",
+  "OperationEnvelopeRevokeReportShareResponse",
+  "OperationEnvelopeRevokeReportShareResponseStatus",
   "OperationEnvelopeScheduleCreatedResponse",
   "OperationEnvelopeScheduleCreatedResponseStatus",
   "OperationEnvelopeSecurityResponse",
@@ -1305,6 +1338,8 @@ __all__ = (
   "ResetPasswordValidateResponse",
   "ResolvedReportInfo",
   "ResponseMode",
+  "RevokeReportShareOperation",
+  "RevokeReportShareResponse",
   "RollforwardMechanics",
   "RollforwardMechanicsValidationMode",
   "RuleLite",
@@ -1398,6 +1433,7 @@ __all__ = (
   "TransactionTemplateItem",
   "TransactionTemplateLeg",
   "TransitionFilingStatusRequest",
+  "UnblockSourceGraphOperation",
   "UpcomingInvoice",
   "UpdateAgentRequest",
   "UpdateAgentRequestAddressType0",
