@@ -31,6 +31,11 @@ class BackupResponse:
       created_at (str):
       completed_at (None | str):
       expires_at (None | str):
+      initiated_by (str | Unset): Who started this backup. 'user' is one you requested and it counts against the
+          tier's daily backup limit; 'scheduled' is taken nightly on your behalf and does not. Default: 'user'.
+      memory_included (bool | None | Unset): Whether the archive carries this graph's semantic memory store. Null for
+          backups taken before memory was included, which make no claim either way — distinct from false, which means the
+          graph had none.
       download_extension (None | str | Unset): Extension the download will carry, and therefore how to unpack it:
           '.lbug.zip' is a ZIP holding the LadybugDB database file, '.lbug.zst' is zstd-compressed (`zstd -d`). Null only
           when the backup has no stored object yet.
@@ -51,6 +56,8 @@ class BackupResponse:
   created_at: str
   completed_at: None | str
   expires_at: None | str
+  initiated_by: str | Unset = "user"
+  memory_included: bool | None | Unset = UNSET
   download_extension: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -87,6 +94,14 @@ class BackupResponse:
     expires_at: None | str
     expires_at = self.expires_at
 
+    initiated_by = self.initiated_by
+
+    memory_included: bool | None | Unset
+    if isinstance(self.memory_included, Unset):
+      memory_included = UNSET
+    else:
+      memory_included = self.memory_included
+
     download_extension: None | str | Unset
     if isinstance(self.download_extension, Unset):
       download_extension = UNSET
@@ -114,6 +129,10 @@ class BackupResponse:
         "expires_at": expires_at,
       }
     )
+    if initiated_by is not UNSET:
+      field_dict["initiated_by"] = initiated_by
+    if memory_included is not UNSET:
+      field_dict["memory_included"] = memory_included
     if download_extension is not UNSET:
       field_dict["download_extension"] = download_extension
 
@@ -162,6 +181,17 @@ class BackupResponse:
 
     expires_at = _parse_expires_at(d.pop("expires_at"))
 
+    initiated_by = d.pop("initiated_by", UNSET)
+
+    def _parse_memory_included(data: object) -> bool | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(bool | None | Unset, data)
+
+    memory_included = _parse_memory_included(d.pop("memory_included", UNSET))
+
     def _parse_download_extension(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -187,6 +217,8 @@ class BackupResponse:
       created_at=created_at,
       completed_at=completed_at,
       expires_at=expires_at,
+      initiated_by=initiated_by,
+      memory_included=memory_included,
       download_extension=download_extension,
     )
 
