@@ -40,6 +40,7 @@ from .list_investor_positions import ListInvestorPositions
 from .list_investor_securities import ListInvestorSecurities
 from .list_ledger_accounts import ListLedgerAccounts
 from .list_ledger_agents import ListLedgerAgents
+from .list_ledger_blocked_source_graphs import ListLedgerBlockedSourceGraphs
 from .list_ledger_elements import ListLedgerElements
 from .list_ledger_entities import ListLedgerEntities
 from .list_ledger_event_blocks import ListLedgerEventBlocks
@@ -93,6 +94,7 @@ from .operations import (
   LIST_INVESTOR_SECURITIES_GQL,
   LIST_LEDGER_ACCOUNTS_GQL,
   LIST_LEDGER_AGENTS_GQL,
+  LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
   LIST_LEDGER_EVENT_BLOCKS_GQL,
@@ -613,6 +615,19 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListLedgerAgents.model_validate(data)
+
+  def list_ledger_blocked_source_graphs(
+    self, limit: int, offset: int, **kwargs: Any
+  ) -> ListLedgerBlockedSourceGraphs:
+    variables: dict[str, object] = {"limit": limit, "offset": offset}
+    response = self.execute(
+      query=LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
+      operation_name="ListLedgerBlockedSourceGraphs",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListLedgerBlockedSourceGraphs.model_validate(data)
 
   def list_ledger_elements(
     self,

@@ -2247,3 +2247,154 @@ class TestComputeMetrics:
     body = mock_op.call_args.kwargs["body"]
     assert body.scenario_id == "struct_fc"
     assert mock_op.call_args.kwargs["idempotency_key"] == "idem-metrics-1"
+
+
+# ── Cross-graph share controls ─────────────────────────────────────────
+#
+# Sharing is authorized capability-style — whoever holds a graph's id can
+# copy a published report into it — so the recipient's exit (block, purge)
+# and the sender's (revoke) are what make the model sound.
+
+
+@pytest.mark.unit
+class TestShareControls:
+  @patch("robosystems_client.clients.ledger_client.op_block_source_graph")
+  def test_block_source_graph_unwraps_envelope(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "block-source-graph",
+      {
+        "block": {
+          "id": "blk_1",
+          "source_graph_id": "kg_sender",
+          "source_graph_name": "Acme Inc",
+          "blocked_by": "usr_1",
+          "blocked_at": "2026-08-09T12:00:00Z",
+          "reason": None,
+        },
+        "already_blocked": False,
+        "purged_report_count": 0,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.block_source_graph(graph_id, "kg_sender")
+    assert result["block"]["source_graph_id"] == "kg_sender"
+    assert result["already_blocked"] is False
+    assert result["purged_report_count"] == 0
+    body = mock_op.call_args.kwargs["body"]
+    assert body.source_graph_id == "kg_sender"
+    assert body.purge is False
+    # An omitted reason must not be sent as an explicit null.
+    assert body.reason is UNSET
+
+  @patch("robosystems_client.clients.ledger_client.op_block_source_graph")
+  def test_block_source_graph_forwards_purge_and_reason(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope(
+      "block-source-graph",
+      {
+        "block": {
+          "id": "blk_1",
+          "source_graph_id": "kg_sender",
+          "source_graph_name": None,
+          "blocked_by": "usr_1",
+          "blocked_at": "2026-08-09T12:00:00Z",
+          "reason": "No longer a shareholder.",
+        },
+        "already_blocked": True,
+        "purged_report_count": 3,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.block_source_graph(
+      graph_id, "kg_sender", reason="No longer a shareholder.", purge=True
+    )
+    assert result["already_blocked"] is True
+    assert result["purged_report_count"] == 3
+    body = mock_op.call_args.kwargs["body"]
+    assert body.purge is True
+    assert body.reason == "No longer a shareholder."
+
+  @patch("robosystems_client.clients.ledger_client.op_unblock_source_graph")
+  def test_unblock_source_graph(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "unblock-source-graph",
+      {
+        "id": "blk_1",
+        "source_graph_id": "kg_sender",
+        "source_graph_name": "Acme Inc",
+        "blocked_by": "usr_1",
+        "blocked_at": "2026-08-09T12:00:00Z",
+        "reason": None,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.unblock_source_graph(graph_id, "kg_sender")
+    assert result["source_graph_id"] == "kg_sender"
+    assert mock_op.call_args.kwargs["body"].source_graph_id == "kg_sender"
+
+  @patch("robosystems_client.clients.ledger_client.op_revoke_report_share")
+  def test_revoke_report_share(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "revoke-report-share",
+      {
+        "report_id": "rpt_1",
+        "target_graph_id": "kg_recipient",
+        "revoked_at": "2026-08-09T12:00:00Z",
+        "copy_deleted": True,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.revoke_report_share(graph_id, "rpt_1", "kg_recipient")
+    assert result["copy_deleted"] is True
+    assert result["target_graph_id"] == "kg_recipient"
+    body = mock_op.call_args.kwargs["body"]
+    assert body.report_id == "rpt_1"
+    assert body.target_graph_id == "kg_recipient"
+
+  @patch("robosystems_client.clients.ledger_client.op_revoke_report_share")
+  def test_revoke_report_share_when_recipient_already_deleted(
+    self, mock_op, mock_config, graph_id
+  ):
+    """Not an error — the recipient exercising their own exit first still
+    leaves the sender's record honest."""
+    envelope = _envelope(
+      "revoke-report-share",
+      {
+        "report_id": "rpt_1",
+        "target_graph_id": "kg_recipient",
+        "revoked_at": "2026-08-09T12:00:00Z",
+        "copy_deleted": False,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.revoke_report_share(graph_id, "rpt_1", "kg_recipient")
+    assert result["copy_deleted"] is False
+
+  @patch("robosystems_client.clients.ledger_client.LedgerClient._query")
+  def test_list_blocked_source_graphs(self, mock_query, mock_config, graph_id):
+    mock_query.return_value = {
+      "blockedSourceGraphs": {
+        "blockedSourceGraphs": [
+          {
+            "id": "blk_1",
+            "sourceGraphId": "kg_sender",
+            "sourceGraphName": "Acme Inc",
+            "blockedBy": "usr_1",
+            "blockedAt": "2026-08-09T12:00:00Z",
+            "reason": None,
+          }
+        ],
+        "pagination": {"total": 1, "limit": 100, "offset": 0, "hasMore": False},
+      }
+    }
+    client = LedgerClient(mock_config)
+    page = client.list_blocked_source_graphs(graph_id)
+    assert page is not None
+    assert page.blocked_source_graphs[0].source_graph_id == "kg_sender"
+    assert page.pagination.total == 1

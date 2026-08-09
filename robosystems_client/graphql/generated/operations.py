@@ -36,6 +36,7 @@ __all__ = [
   "LIST_INVESTOR_SECURITIES_GQL",
   "LIST_LEDGER_ACCOUNTS_GQL",
   "LIST_LEDGER_AGENTS_GQL",
+  "LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL",
   "LIST_LEDGER_ELEMENTS_GQL",
   "LIST_LEDGER_ENTITIES_GQL",
   "LIST_LEDGER_EVENT_BLOCKS_GQL",
@@ -1361,6 +1362,27 @@ query ListLedgerAgents($agentType: String, $source: String, $isActive: Boolean =
     createdAt
     updatedAt
     createdBy
+  }
+}
+"""
+
+LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL = """
+query ListLedgerBlockedSourceGraphs($limit: Int! = 100, $offset: Int! = 0) {
+  blockedSourceGraphs(limit: $limit, offset: $offset) {
+    blockedSourceGraphs {
+      id
+      sourceGraphId
+      sourceGraphName
+      blockedBy
+      blockedAt
+      reason
+    }
+    pagination {
+      total
+      limit
+      offset
+      hasMore
+    }
   }
 }
 """

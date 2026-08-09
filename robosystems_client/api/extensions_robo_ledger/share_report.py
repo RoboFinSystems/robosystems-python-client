@@ -116,7 +116,9 @@ def sync_detailed(
    Pushes a published report to every member of the target publish list. Each share is an independent
   copy: the report row + all its facts are cloned into the recipient's tenant schema with
   `source_graph_id` / `source_report_id` provenance fields populated. Per-target outcomes (success or
-  error) surface in the response — share does not fail-fast across targets.
+  error) surface in the response — share does not fail-fast across targets. Recipients that have
+  blocked this graph come back as an error for that target; withdraw a delivered copy with `revoke-
+  report-share`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -159,7 +161,9 @@ def sync(
    Pushes a published report to every member of the target publish list. Each share is an independent
   copy: the report row + all its facts are cloned into the recipient's tenant schema with
   `source_graph_id` / `source_report_id` provenance fields populated. Per-target outcomes (success or
-  error) surface in the response — share does not fail-fast across targets.
+  error) surface in the response — share does not fail-fast across targets. Recipients that have
+  blocked this graph come back as an error for that target; withdraw a delivered copy with `revoke-
+  report-share`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -197,7 +201,9 @@ async def asyncio_detailed(
    Pushes a published report to every member of the target publish list. Each share is an independent
   copy: the report row + all its facts are cloned into the recipient's tenant schema with
   `source_graph_id` / `source_report_id` provenance fields populated. Per-target outcomes (success or
-  error) surface in the response — share does not fail-fast across targets.
+  error) surface in the response — share does not fail-fast across targets. Recipients that have
+  blocked this graph come back as an error for that target; withdraw a delivered copy with `revoke-
+  report-share`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -238,7 +244,9 @@ async def asyncio(
    Pushes a published report to every member of the target publish list. Each share is an independent
   copy: the report row + all its facts are cloned into the recipient's tenant schema with
   `source_graph_id` / `source_report_id` provenance fields populated. Per-target outcomes (success or
-  error) surface in the response — share does not fail-fast across targets.
+  error) surface in the response — share does not fail-fast across targets. Recipients that have
+  blocked this graph come back as an error for that target; withdraw a delivered copy with `revoke-
+  report-share`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

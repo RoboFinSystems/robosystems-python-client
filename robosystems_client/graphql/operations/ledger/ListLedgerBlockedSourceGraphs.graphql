@@ -1,0 +1,9 @@
+query ListLedgerBlockedSourceGraphs($limit: Int! = 100, $offset: Int! = 0) {
+  blockedSourceGraphs(limit: $limit, offset: $offset) {
+    blockedSourceGraphs {
+      id sourceGraphId sourceGraphName
+      blockedBy blockedAt reason
+    }
+    pagination { total limit offset hasMore }
+  }
+}

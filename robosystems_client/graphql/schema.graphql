@@ -44,6 +44,7 @@ type Query {
   statement(reportId: String!, blockType: String!): Statement
   publishLists(limit: Int = null, offset: Int = null): PublishListList
   publishList(listId: String!): PublishListDetail
+  blockedSourceGraphs(limit: Int = null, offset: Int = null): BlockedSourceGraphList
   informationBlock(id: ID!, scenarioId: String = null, series: Boolean = null, seriesHistory: Int = null, seriesForecast: Int = null): InformationBlock
   informationBlocks(blockType: String = null, category: String = null, limit: Int = null, offset: Int = null, scenarioId: String = null): [InformationBlock!]!
   taxonomyBlock(id: ID!): TaxonomyBlock
@@ -2187,6 +2188,36 @@ type PublishListMember {
 
   """When the member was added."""
   addedAt: DateTime!
+}
+
+"""Paginated list of blocked source graphs."""
+type BlockedSourceGraphList {
+  """Blocked source graphs."""
+  blockedSourceGraphs: [BlockedSourceGraph!]!
+
+  """Pagination metadata."""
+  pagination: PaginationInfo!
+}
+
+"""One blocked source graph."""
+type BlockedSourceGraph {
+  """Block row identifier (ULID)."""
+  id: String!
+
+  """The blocked sender's graph ID."""
+  sourceGraphId: String!
+
+  """Display name of the blocked graph (if known)."""
+  sourceGraphName: String
+
+  """User ID that created the block."""
+  blockedBy: String!
+
+  """When the block was created."""
+  blockedAt: DateTime!
+
+  """Recipient's own note, if given."""
+  reason: String
 }
 
 type TaxonomyBlock {
