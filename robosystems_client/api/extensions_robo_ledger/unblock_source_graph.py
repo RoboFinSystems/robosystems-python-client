@@ -116,8 +116,9 @@ def sync_detailed(
   """Unblock Source Graph
 
    Lifts a block, allowing that graph to share reports into this one again. Reports removed by an
-  earlier purge are not restored — unblocking reopens the channel, it does not undo. Returns 404 when
-  the source was not blocked.
+  earlier purge are not restored — unblocking reopens the channel, it does not undo. Requires the
+  graph admin role: a block is a standing decision about who may write into this graph, so a member
+  cannot reverse it over an admin's head. Returns 404 when the source was not blocked.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -158,8 +159,9 @@ def sync(
   """Unblock Source Graph
 
    Lifts a block, allowing that graph to share reports into this one again. Reports removed by an
-  earlier purge are not restored — unblocking reopens the channel, it does not undo. Returns 404 when
-  the source was not blocked.
+  earlier purge are not restored — unblocking reopens the channel, it does not undo. Requires the
+  graph admin role: a block is a standing decision about who may write into this graph, so a member
+  cannot reverse it over an admin's head. Returns 404 when the source was not blocked.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -195,8 +197,9 @@ async def asyncio_detailed(
   """Unblock Source Graph
 
    Lifts a block, allowing that graph to share reports into this one again. Reports removed by an
-  earlier purge are not restored — unblocking reopens the channel, it does not undo. Returns 404 when
-  the source was not blocked.
+  earlier purge are not restored — unblocking reopens the channel, it does not undo. Requires the
+  graph admin role: a block is a standing decision about who may write into this graph, so a member
+  cannot reverse it over an admin's head. Returns 404 when the source was not blocked.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -235,8 +238,9 @@ async def asyncio(
   """Unblock Source Graph
 
    Lifts a block, allowing that graph to share reports into this one again. Reports removed by an
-  earlier purge are not restored — unblocking reopens the channel, it does not undo. Returns 404 when
-  the source was not blocked.
+  earlier purge are not restored — unblocking reopens the channel, it does not undo. Requires the
+  graph admin role: a block is a standing decision about who may write into this graph, so a member
+  cannot reverse it over an admin's head. Returns 404 when the source was not blocked.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
