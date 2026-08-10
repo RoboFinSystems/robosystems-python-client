@@ -131,8 +131,10 @@ def sync_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
   """Execute Specific Operator
 
-   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
-  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
+   Available: `cypher` (natural-language questions answered by querying the graph; RAG retrieval is one
+  of its capabilities, not a separate operator) and `mapping` (Chart of Accounts → rs-gaap mapping,
+  roboledger graphs only). `GET /v1/graphs/{graph_id}/operator` lists what is registered. Execution
+  strategy auto-selected; override with `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -172,8 +174,10 @@ def sync(
 ) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
   """Execute Specific Operator
 
-   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
-  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
+   Available: `cypher` (natural-language questions answered by querying the graph; RAG retrieval is one
+  of its capabilities, not a separate operator) and `mapping` (Chart of Accounts → rs-gaap mapping,
+  roboledger graphs only). `GET /v1/graphs/{graph_id}/operator` lists what is registered. Execution
+  strategy auto-selected; override with `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -208,8 +212,10 @@ async def asyncio_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
   """Execute Specific Operator
 
-   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
-  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
+   Available: `cypher` (natural-language questions answered by querying the graph; RAG retrieval is one
+  of its capabilities, not a separate operator) and `mapping` (Chart of Accounts → rs-gaap mapping,
+  roboledger graphs only). `GET /v1/graphs/{graph_id}/operator` lists what is registered. Execution
+  strategy auto-selected; override with `?mode=sync|async`.
 
   Args:
       graph_id (str):
@@ -247,8 +253,10 @@ async def asyncio(
 ) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
   """Execute Specific Operator
 
-   Available: `financial` (SEC filings, accounting), `research` (deep analysis), `rag` (retrieval, no
-  credits). Execution strategy auto-selected; override with `?mode=sync|async`.
+   Available: `cypher` (natural-language questions answered by querying the graph; RAG retrieval is one
+  of its capabilities, not a separate operator) and `mapping` (Chart of Accounts → rs-gaap mapping,
+  roboledger graphs only). `GET /v1/graphs/{graph_id}/operator` lists what is registered. Execution
+  strategy auto-selected; override with `?mode=sync|async`.
 
   Args:
       graph_id (str):

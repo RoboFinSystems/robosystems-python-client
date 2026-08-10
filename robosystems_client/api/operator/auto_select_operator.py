@@ -128,9 +128,11 @@ def sync_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
   """Auto-select Operator for Query
 
-   Routes to the best operator for your query. Operators: `financial` (SEC, accounting), `research`
-  (deep analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
-  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+   Routes to the best operator for your query. Operators: `cypher` (answers natural-language questions
+  by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
+  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
+  /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
+  usage, not a fixed price per mode. Execution strategy (sync/SSE/async) auto-selected; override with
   `?mode=sync|async`.
 
   Args:
@@ -168,9 +170,11 @@ def sync(
 ) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
   """Auto-select Operator for Query
 
-   Routes to the best operator for your query. Operators: `financial` (SEC, accounting), `research`
-  (deep analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
-  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+   Routes to the best operator for your query. Operators: `cypher` (answers natural-language questions
+  by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
+  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
+  /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
+  usage, not a fixed price per mode. Execution strategy (sync/SSE/async) auto-selected; override with
   `?mode=sync|async`.
 
   Args:
@@ -203,9 +207,11 @@ async def asyncio_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
   """Auto-select Operator for Query
 
-   Routes to the best operator for your query. Operators: `financial` (SEC, accounting), `research`
-  (deep analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
-  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+   Routes to the best operator for your query. Operators: `cypher` (answers natural-language questions
+  by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
+  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
+  /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
+  usage, not a fixed price per mode. Execution strategy (sync/SSE/async) auto-selected; override with
   `?mode=sync|async`.
 
   Args:
@@ -241,9 +247,11 @@ async def asyncio(
 ) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
   """Auto-select Operator for Query
 
-   Routes to the best operator for your query. Operators: `financial` (SEC, accounting), `research`
-  (deep analysis), `rag` (knowledge base, free). Credit cost by mode: `quick` 5-10, `standard` 15-25,
-  `extended` 30-75. Execution strategy (sync/SSE/async) auto-selected; override with
+   Routes to the best operator for your query. Operators: `cypher` (answers natural-language questions
+  by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
+  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
+  /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
+  usage, not a fixed price per mode. Execution strategy (sync/SSE/async) auto-selected; override with
   `?mode=sync|async`.
 
   Args:
