@@ -17,7 +17,7 @@ class LiveFinancialStatementRequest:
   """Request for live-financial-statement (OLTP, entity graphs only).
 
   Attributes:
-      statement_type (str): income_statement | balance_sheet | equity_statement
+      statement_type (str): income_statement | balance_sheet | cash_flow_statement | equity_statement
       period_start (datetime.date | None | Unset): Explicit window start. Overrides period_type/fiscal_year.
       period_end (datetime.date | None | Unset): Explicit window end. Overrides period_type/fiscal_year.
       period_type (None | str | Unset): annual | quarterly | instant (ignored when dates supplied)

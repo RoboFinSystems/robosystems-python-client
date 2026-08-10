@@ -726,6 +726,7 @@ from .share_result_item import ShareResultItem
 from .skipped_forecast_lite import SkippedForecastLite
 from .skipped_metric_lite import SkippedMetricLite
 from .sql_statement_request import SqlStatementRequest
+from .sql_statement_request_parameters_type_1 import SqlStatementRequestParametersType1
 from .sql_statement_response import SqlStatementResponse
 from .sso_complete_request import SSOCompleteRequest
 from .sso_exchange_request import SSOExchangeRequest
@@ -1378,6 +1379,7 @@ __all__ = (
   "SkippedForecastLite",
   "SkippedMetricLite",
   "SqlStatementRequest",
+  "SqlStatementRequestParametersType1",
   "SqlStatementResponse",
   "SSOCompleteRequest",
   "SSOExchangeRequest",
