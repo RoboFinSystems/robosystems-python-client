@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -25,11 +25,14 @@ class BlockSourceGraphResult:
           any purge. Default: False.
       purged_report_count (int | Unset): Number of previously-shared reports deleted from this graph. Zero unless
           `purge` was set. Default: 0.
+      purged_report_ids (list[str] | Unset): Ids of the previously-shared reports deleted from this graph. Empty
+          unless `purge` was set.
   """
 
   block: BlockedSourceGraphResponse
   already_blocked: bool | Unset = False
   purged_report_count: int | Unset = 0
+  purged_report_ids: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -38,6 +41,10 @@ class BlockSourceGraphResult:
     already_blocked = self.already_blocked
 
     purged_report_count = self.purged_report_count
+
+    purged_report_ids: list[str] | Unset = UNSET
+    if not isinstance(self.purged_report_ids, Unset):
+      purged_report_ids = self.purged_report_ids
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -50,6 +57,8 @@ class BlockSourceGraphResult:
       field_dict["already_blocked"] = already_blocked
     if purged_report_count is not UNSET:
       field_dict["purged_report_count"] = purged_report_count
+    if purged_report_ids is not UNSET:
+      field_dict["purged_report_ids"] = purged_report_ids
 
     return field_dict
 
@@ -64,10 +73,13 @@ class BlockSourceGraphResult:
 
     purged_report_count = d.pop("purged_report_count", UNSET)
 
+    purged_report_ids = cast(list[str], d.pop("purged_report_ids", UNSET))
+
     block_source_graph_result = cls(
       block=block,
       already_blocked=already_blocked,
       purged_report_count=purged_report_count,
+      purged_report_ids=purged_report_ids,
     )
 
     block_source_graph_result.additional_properties = d
