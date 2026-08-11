@@ -13,6 +13,7 @@ from .assert_metrics_response import AssertMetricsResponse
 from .asserted_metric_lite import AssertedMetricLite
 from .association_response import AssociationResponse
 from .attribution_filter import AttributionFilter
+from .auth_providers_response import AuthProvidersResponse
 from .auth_response import AuthResponse
 from .auth_response_org_type_0 import AuthResponseOrgType0
 from .auth_response_user import AuthResponseUser
@@ -358,6 +359,7 @@ from .offering_repository_plan import OfferingRepositoryPlan
 from .offering_repository_plan_rate_limits_type_0 import (
   OfferingRepositoryPlanRateLimitsType0,
 )
+from .oidc_provider_info import OIDCProviderInfo
 from .operation_costs import OperationCosts
 from .operation_costs_ai_operations import OperationCostsAiOperations
 from .operation_costs_token_pricing import OperationCostsTokenPricing
@@ -888,6 +890,7 @@ __all__ = (
   "AssertMetricsResponse",
   "AssociationResponse",
   "AttributionFilter",
+  "AuthProvidersResponse",
   "AuthResponse",
   "AuthResponseOrgType0",
   "AuthResponseUser",
@@ -1173,6 +1176,7 @@ __all__ = (
   "OAuthInitResponse",
   "OfferingRepositoryPlan",
   "OfferingRepositoryPlanRateLimitsType0",
+  "OIDCProviderInfo",
   "OperationCosts",
   "OperationCostsAiOperations",
   "OperationCostsTokenPricing",
