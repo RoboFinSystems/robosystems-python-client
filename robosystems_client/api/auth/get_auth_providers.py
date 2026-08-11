@@ -5,25 +5,16 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.auth_providers_response import AuthProvidersResponse
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
-from ...models.sso_token_response import SSOTokenResponse
-from ...types import UNSET, Response, Unset
+from ...types import Response
 
 
-def _get_kwargs(
-  *,
-  auth_token: None | str | Unset = UNSET,
-) -> dict[str, Any]:
-
-  cookies = {}
-  if auth_token is not UNSET:
-    cookies["auth-token"] = auth_token
+def _get_kwargs() -> dict[str, Any]:
 
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": "/v1/auth/sso-token",
-    "cookies": cookies,
+    "method": "get",
+    "url": "/v1/auth/providers",
   }
 
   return _kwargs
@@ -31,9 +22,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | SSOTokenResponse | None:
+) -> AuthProvidersResponse | ErrorResponse | None:
   if response.status_code == 200:
-    response_200 = SSOTokenResponse.from_dict(response.json())
+    response_200 = AuthProvidersResponse.from_dict(response.json())
 
     return response_200
 
@@ -41,11 +32,6 @@ def _parse_response(
     response_400 = ErrorResponse.from_dict(response.json())
 
     return response_400
-
-  if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
-
-    return response_422
 
   if response.status_code == 429:
     response_429 = ErrorResponse.from_dict(response.json())
@@ -65,7 +51,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]:
+) -> Response[AuthProvidersResponse | ErrorResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -77,27 +63,21 @@ def _build_response(
 def sync_detailed(
   *,
   client: AuthenticatedClient | Client,
-  auth_token: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]:
-  """Generate SSO Token
+) -> Response[AuthProvidersResponse | ErrorResponse]:
+  """Get Auth Providers
 
-   Step 1 of 3 in the cross-app SSO flow. Issues a single-use token (5 minute TTL) for handoff to a
-  target application.
-
-  Args:
-      auth_token (None | str | Unset):
+   Returns which authentication methods this deployment offers. The login surface renders its posture
+  from this instead of hardcoding methods.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]
+      Response[AuthProvidersResponse | ErrorResponse]
   """
 
-  kwargs = _get_kwargs(
-    auth_token=auth_token,
-  )
+  kwargs = _get_kwargs()
 
   response = client.get_httpx_client().request(
     **kwargs,
@@ -109,54 +89,43 @@ def sync_detailed(
 def sync(
   *,
   client: AuthenticatedClient | Client,
-  auth_token: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | SSOTokenResponse | None:
-  """Generate SSO Token
+) -> AuthProvidersResponse | ErrorResponse | None:
+  """Get Auth Providers
 
-   Step 1 of 3 in the cross-app SSO flow. Issues a single-use token (5 minute TTL) for handoff to a
-  target application.
-
-  Args:
-      auth_token (None | str | Unset):
+   Returns which authentication methods this deployment offers. The login surface renders its posture
+  from this instead of hardcoding methods.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | SSOTokenResponse
+      AuthProvidersResponse | ErrorResponse
   """
 
   return sync_detailed(
     client=client,
-    auth_token=auth_token,
   ).parsed
 
 
 async def asyncio_detailed(
   *,
   client: AuthenticatedClient | Client,
-  auth_token: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]:
-  """Generate SSO Token
+) -> Response[AuthProvidersResponse | ErrorResponse]:
+  """Get Auth Providers
 
-   Step 1 of 3 in the cross-app SSO flow. Issues a single-use token (5 minute TTL) for handoff to a
-  target application.
-
-  Args:
-      auth_token (None | str | Unset):
+   Returns which authentication methods this deployment offers. The login surface renders its posture
+  from this instead of hardcoding methods.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | SSOTokenResponse]
+      Response[AuthProvidersResponse | ErrorResponse]
   """
 
-  kwargs = _get_kwargs(
-    auth_token=auth_token,
-  )
+  kwargs = _get_kwargs()
 
   response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -166,27 +135,22 @@ async def asyncio_detailed(
 async def asyncio(
   *,
   client: AuthenticatedClient | Client,
-  auth_token: None | str | Unset = UNSET,
-) -> ErrorResponse | HTTPValidationError | SSOTokenResponse | None:
-  """Generate SSO Token
+) -> AuthProvidersResponse | ErrorResponse | None:
+  """Get Auth Providers
 
-   Step 1 of 3 in the cross-app SSO flow. Issues a single-use token (5 minute TTL) for handoff to a
-  target application.
-
-  Args:
-      auth_token (None | str | Unset):
+   Returns which authentication methods this deployment offers. The login surface renders its posture
+  from this instead of hardcoding methods.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | SSOTokenResponse
+      AuthProvidersResponse | ErrorResponse
   """
 
   return (
     await asyncio_detailed(
       client=client,
-      auth_token=auth_token,
     )
   ).parsed
