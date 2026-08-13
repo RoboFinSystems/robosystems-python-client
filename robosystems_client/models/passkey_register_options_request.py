@@ -8,39 +8,33 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="PortalSessionResponse")
+T = TypeVar("T", bound="PasskeyRegisterOptionsRequest")
 
 
 @_attrs_define
-class PortalSessionResponse:
-  """Response for customer portal session creation.
+class PasskeyRegisterOptionsRequest:
+  """Begin enrollment. mfa_token is the forced-enrollment lane; omitted for
+  an authenticated settings-flow enrollment.
 
-  Attributes:
-      portal_url (None | str | Unset): Stripe Customer Portal URL where user can manage payment methods
-      billing_disabled (bool | Unset): True when billing is disabled on this deployment (no portal exists) Default:
-          False.
+      Attributes:
+          mfa_token (None | str | Unset): Enrollment token from a login that returned mfa_enrollment_required
   """
 
-  portal_url: None | str | Unset = UNSET
-  billing_disabled: bool | Unset = False
+  mfa_token: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    portal_url: None | str | Unset
-    if isinstance(self.portal_url, Unset):
-      portal_url = UNSET
+    mfa_token: None | str | Unset
+    if isinstance(self.mfa_token, Unset):
+      mfa_token = UNSET
     else:
-      portal_url = self.portal_url
-
-    billing_disabled = self.billing_disabled
+      mfa_token = self.mfa_token
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
-    if portal_url is not UNSET:
-      field_dict["portal_url"] = portal_url
-    if billing_disabled is not UNSET:
-      field_dict["billing_disabled"] = billing_disabled
+    if mfa_token is not UNSET:
+      field_dict["mfa_token"] = mfa_token
 
     return field_dict
 
@@ -48,24 +42,21 @@ class PortalSessionResponse:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
 
-    def _parse_portal_url(data: object) -> None | str | Unset:
+    def _parse_mfa_token(data: object) -> None | str | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
       return cast(None | str | Unset, data)
 
-    portal_url = _parse_portal_url(d.pop("portal_url", UNSET))
+    mfa_token = _parse_mfa_token(d.pop("mfa_token", UNSET))
 
-    billing_disabled = d.pop("billing_disabled", UNSET)
-
-    portal_session_response = cls(
-      portal_url=portal_url,
-      billing_disabled=billing_disabled,
+    passkey_register_options_request = cls(
+      mfa_token=mfa_token,
     )
 
-    portal_session_response.additional_properties = d
-    return portal_session_response
+    passkey_register_options_request.additional_properties = d
+    return passkey_register_options_request
 
   @property
   def additional_keys(self) -> list[str]:
