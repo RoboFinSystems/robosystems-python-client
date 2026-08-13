@@ -8,6 +8,7 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.org_role import OrgRole
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="OrgInvitationResponse")
 
@@ -27,6 +28,9 @@ class OrgInvitationResponse:
       created_at (datetime.datetime):
       expires_at (datetime.datetime):
       is_expired (bool):
+      token (None | str | Unset): Test-support only: the raw invite token. Populated ONLY when
+          AUTH_INVITE_TOKEN_IN_RESPONSE is enabled in a non-production environment; always null in production. Lets
+          automated authorization tests complete the invite -> register flow without email interception.
   """
 
   id: str
@@ -39,6 +43,7 @@ class OrgInvitationResponse:
   created_at: datetime.datetime
   expires_at: datetime.datetime
   is_expired: bool
+  token: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -63,6 +68,12 @@ class OrgInvitationResponse:
 
     is_expired = self.is_expired
 
+    token: None | str | Unset
+    if isinstance(self.token, Unset):
+      token = UNSET
+    else:
+      token = self.token
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -79,6 +90,8 @@ class OrgInvitationResponse:
         "is_expired": is_expired,
       }
     )
+    if token is not UNSET:
+      field_dict["token"] = token
 
     return field_dict
 
@@ -110,6 +123,15 @@ class OrgInvitationResponse:
 
     is_expired = d.pop("is_expired")
 
+    def _parse_token(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    token = _parse_token(d.pop("token", UNSET))
+
     org_invitation_response = cls(
       id=id,
       org_id=org_id,
@@ -121,6 +143,7 @@ class OrgInvitationResponse:
       created_at=created_at,
       expires_at=expires_at,
       is_expired=is_expired,
+      token=token,
     )
 
     org_invitation_response.additional_properties = d
