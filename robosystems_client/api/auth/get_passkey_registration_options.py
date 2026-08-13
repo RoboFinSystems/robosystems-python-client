@@ -83,17 +83,22 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyRegisterOptionsRequest,
 ) -> Response[CeremonyOptionsResponse | ErrorResponse | HTTPValidationError]:
   """Passkey Registration Options
 
-   Begin a passkey enrollment ceremony.
+   Begin a passkey enrollment ceremony. The settings lane requires a fresh re-auth proof (password or
+  assertion); the forced lane presents its enrollment token.
 
   Args:
-      body (PasskeyRegisterOptionsRequest): Begin enrollment. mfa_token is the forced-enrollment
-          lane; omitted for
-          an authenticated settings-flow enrollment.
+      body (PasskeyRegisterOptionsRequest): Begin enrollment.
+
+          Two disjoint lanes: ``mfa_token`` (forced enrollment — the token was minted
+          seconds after a password verify, so it is its own freshness proof) or an
+          authenticated settings-flow enrollment, which must carry a fresh re-auth
+          proof — ``password``, or a ``reauth``-ceremony ``assertion`` when adding a
+          passkey beside an existing one.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -116,17 +121,22 @@ def sync_detailed(
 
 def sync(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyRegisterOptionsRequest,
 ) -> CeremonyOptionsResponse | ErrorResponse | HTTPValidationError | None:
   """Passkey Registration Options
 
-   Begin a passkey enrollment ceremony.
+   Begin a passkey enrollment ceremony. The settings lane requires a fresh re-auth proof (password or
+  assertion); the forced lane presents its enrollment token.
 
   Args:
-      body (PasskeyRegisterOptionsRequest): Begin enrollment. mfa_token is the forced-enrollment
-          lane; omitted for
-          an authenticated settings-flow enrollment.
+      body (PasskeyRegisterOptionsRequest): Begin enrollment.
+
+          Two disjoint lanes: ``mfa_token`` (forced enrollment — the token was minted
+          seconds after a password verify, so it is its own freshness proof) or an
+          authenticated settings-flow enrollment, which must carry a fresh re-auth
+          proof — ``password``, or a ``reauth``-ceremony ``assertion`` when adding a
+          passkey beside an existing one.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -144,17 +154,22 @@ def sync(
 
 async def asyncio_detailed(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyRegisterOptionsRequest,
 ) -> Response[CeremonyOptionsResponse | ErrorResponse | HTTPValidationError]:
   """Passkey Registration Options
 
-   Begin a passkey enrollment ceremony.
+   Begin a passkey enrollment ceremony. The settings lane requires a fresh re-auth proof (password or
+  assertion); the forced lane presents its enrollment token.
 
   Args:
-      body (PasskeyRegisterOptionsRequest): Begin enrollment. mfa_token is the forced-enrollment
-          lane; omitted for
-          an authenticated settings-flow enrollment.
+      body (PasskeyRegisterOptionsRequest): Begin enrollment.
+
+          Two disjoint lanes: ``mfa_token`` (forced enrollment — the token was minted
+          seconds after a password verify, so it is its own freshness proof) or an
+          authenticated settings-flow enrollment, which must carry a fresh re-auth
+          proof — ``password``, or a ``reauth``-ceremony ``assertion`` when adding a
+          passkey beside an existing one.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -175,17 +190,22 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyRegisterOptionsRequest,
 ) -> CeremonyOptionsResponse | ErrorResponse | HTTPValidationError | None:
   """Passkey Registration Options
 
-   Begin a passkey enrollment ceremony.
+   Begin a passkey enrollment ceremony. The settings lane requires a fresh re-auth proof (password or
+  assertion); the forced lane presents its enrollment token.
 
   Args:
-      body (PasskeyRegisterOptionsRequest): Begin enrollment. mfa_token is the forced-enrollment
-          lane; omitted for
-          an authenticated settings-flow enrollment.
+      body (PasskeyRegisterOptionsRequest): Begin enrollment.
+
+          Two disjoint lanes: ``mfa_token`` (forced enrollment — the token was minted
+          seconds after a password verify, so it is its own freshness proof) or an
+          authenticated settings-flow enrollment, which must carry a fresh re-auth
+          proof — ``password``, or a ``reauth``-ceremony ``assertion`` when adding a
+          passkey beside an existing one.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
