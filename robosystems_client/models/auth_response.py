@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.auth_response_status import AuthResponseStatus
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
@@ -25,6 +26,10 @@ class AuthResponse:
       message (str): Success message
       org (AuthResponseOrgType0 | None | Unset): Organization information (personal org created automatically on
           registration)
+      status (AuthResponseStatus | Unset): Login flow state: authenticated (token present), or a passkey MFA step is
+          required before a session is issued (mfa_token present) Default: AuthResponseStatus.AUTHENTICATED.
+      mfa_token (None | str | Unset): Short-lived token authorizing the MFA second step or forced enrollment; present
+          only when status is not 'authenticated'
       token (None | str | Unset): JWT authentication token (optional for cookie-based auth)
       expires_in (int | None | Unset): Token expiry time in seconds from now
       refresh_threshold (int | None | Unset): Recommended refresh threshold in seconds before expiry
@@ -33,6 +38,8 @@ class AuthResponse:
   user: AuthResponseUser
   message: str
   org: AuthResponseOrgType0 | None | Unset = UNSET
+  status: AuthResponseStatus | Unset = AuthResponseStatus.AUTHENTICATED
+  mfa_token: None | str | Unset = UNSET
   token: None | str | Unset = UNSET
   expires_in: int | None | Unset = UNSET
   refresh_threshold: int | None | Unset = UNSET
@@ -52,6 +59,16 @@ class AuthResponse:
       org = self.org.to_dict()
     else:
       org = self.org
+
+    status: str | Unset = UNSET
+    if not isinstance(self.status, Unset):
+      status = self.status.value
+
+    mfa_token: None | str | Unset
+    if isinstance(self.mfa_token, Unset):
+      mfa_token = UNSET
+    else:
+      mfa_token = self.mfa_token
 
     token: None | str | Unset
     if isinstance(self.token, Unset):
@@ -81,6 +98,10 @@ class AuthResponse:
     )
     if org is not UNSET:
       field_dict["org"] = org
+    if status is not UNSET:
+      field_dict["status"] = status
+    if mfa_token is not UNSET:
+      field_dict["mfa_token"] = mfa_token
     if token is not UNSET:
       field_dict["token"] = token
     if expires_in is not UNSET:
@@ -117,6 +138,22 @@ class AuthResponse:
 
     org = _parse_org(d.pop("org", UNSET))
 
+    _status = d.pop("status", UNSET)
+    status: AuthResponseStatus | Unset
+    if isinstance(_status, Unset):
+      status = UNSET
+    else:
+      status = AuthResponseStatus(_status)
+
+    def _parse_mfa_token(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    mfa_token = _parse_mfa_token(d.pop("mfa_token", UNSET))
+
     def _parse_token(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -148,6 +185,8 @@ class AuthResponse:
       user=user,
       message=message,
       org=org,
+      status=status,
+      mfa_token=mfa_token,
       token=token,
       expires_in=expires_in,
       refresh_threshold=refresh_threshold,

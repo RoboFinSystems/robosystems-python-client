@@ -16,6 +16,7 @@ from .attribution_filter import AttributionFilter
 from .auth_providers_response import AuthProvidersResponse
 from .auth_response import AuthResponse
 from .auth_response_org_type_0 import AuthResponseOrgType0
+from .auth_response_status import AuthResponseStatus
 from .auth_response_user import AuthResponseUser
 from .auto_map_elements_operation import AutoMapElementsOperation
 from .available_extension import AvailableExtension
@@ -44,6 +45,8 @@ from .cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
 from .cancel_subscription_request import CancelSubscriptionRequest
+from .ceremony_options_response import CeremonyOptionsResponse
+from .ceremony_options_response_options import CeremonyOptionsResponseOptions
 from .change_reporting_style_request import ChangeReportingStyleRequest
 from .change_reporting_style_response import ChangeReportingStyleResponse
 from .change_tier_op import ChangeTierOp
@@ -348,6 +351,10 @@ from .memory_record import MemoryRecord
 from .memory_record_provenance_type_0 import MemoryRecordProvenanceType0
 from .metric_mechanics import MetricMechanics
 from .metric_observation import MetricObservation
+from .mfa_options_request import MfaOptionsRequest
+from .mfa_status_response import MfaStatusResponse
+from .mfa_verify_request import MfaVerifyRequest
+from .mfa_verify_request_assertion_type_0 import MfaVerifyRequestAssertionType0
 from .o_auth_callback_request import OAuthCallbackRequest
 from .o_auth_callback_response import OAuthCallbackResponse
 from .o_auth_init_request import OAuthInitRequest
@@ -625,6 +632,18 @@ from .org_usage_response import OrgUsageResponse
 from .org_usage_response_daily_trend_item import OrgUsageResponseDailyTrendItem
 from .org_usage_response_graph_details_item import OrgUsageResponseGraphDetailsItem
 from .org_usage_summary import OrgUsageSummary
+from .passkey_delete_request import PasskeyDeleteRequest
+from .passkey_delete_request_assertion_type_0 import PasskeyDeleteRequestAssertionType0
+from .passkey_info import PasskeyInfo
+from .passkey_list_response import PasskeyListResponse
+from .passkey_login_verify_request import PasskeyLoginVerifyRequest
+from .passkey_login_verify_request_assertion import PasskeyLoginVerifyRequestAssertion
+from .passkey_register_options_request import PasskeyRegisterOptionsRequest
+from .passkey_register_verify_request import PasskeyRegisterVerifyRequest
+from .passkey_register_verify_request_credential import (
+  PasskeyRegisterVerifyRequestCredential,
+)
+from .passkey_register_verify_response import PasskeyRegisterVerifyResponse
 from .password_check_request import PasswordCheckRequest
 from .password_check_response import PasswordCheckResponse
 from .password_check_response_character_types import PasswordCheckResponseCharacterTypes
@@ -660,6 +679,9 @@ from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
 from .rebuild_schedule_request import RebuildScheduleRequest
+from .recovery_codes_request import RecoveryCodesRequest
+from .recovery_codes_request_assertion_type_0 import RecoveryCodesRequestAssertionType0
+from .recovery_codes_response import RecoveryCodesResponse
 from .regenerate_report_operation import RegenerateReportOperation
 from .register_request import RegisterRequest
 from .remember_op import RememberOp
@@ -893,6 +915,7 @@ __all__ = (
   "AuthProvidersResponse",
   "AuthResponse",
   "AuthResponseOrgType0",
+  "AuthResponseStatus",
   "AuthResponseUser",
   "AutoMapElementsOperation",
   "AvailableExtension",
@@ -917,6 +940,8 @@ __all__ = (
   "BlockSourceGraphResult",
   "CancelOperationResponseCanceloperation",
   "CancelSubscriptionRequest",
+  "CeremonyOptionsResponse",
+  "CeremonyOptionsResponseOptions",
   "ChangeReportingStyleRequest",
   "ChangeReportingStyleResponse",
   "ChangeTierOp",
@@ -1169,6 +1194,10 @@ __all__ = (
   "MemoryRecordProvenanceType0",
   "MetricMechanics",
   "MetricObservation",
+  "MfaOptionsRequest",
+  "MfaStatusResponse",
+  "MfaVerifyRequest",
+  "MfaVerifyRequestAssertionType0",
   "OAuthCallbackRequest",
   "OAuthCallbackResponse",
   "OAuthInitRequest",
@@ -1294,6 +1323,16 @@ __all__ = (
   "OrgUsageResponseDailyTrendItem",
   "OrgUsageResponseGraphDetailsItem",
   "OrgUsageSummary",
+  "PasskeyDeleteRequest",
+  "PasskeyDeleteRequestAssertionType0",
+  "PasskeyInfo",
+  "PasskeyListResponse",
+  "PasskeyLoginVerifyRequest",
+  "PasskeyLoginVerifyRequestAssertion",
+  "PasskeyRegisterOptionsRequest",
+  "PasskeyRegisterVerifyRequest",
+  "PasskeyRegisterVerifyRequestCredential",
+  "PasskeyRegisterVerifyResponse",
   "PasswordCheckRequest",
   "PasswordCheckResponse",
   "PasswordCheckResponseCharacterTypes",
@@ -1325,6 +1364,9 @@ __all__ = (
   "QuickBooksConnectionConfig",
   "RateLimits",
   "RebuildScheduleRequest",
+  "RecoveryCodesRequest",
+  "RecoveryCodesRequestAssertionType0",
+  "RecoveryCodesResponse",
   "RegenerateReportOperation",
   "RegisterRequest",
   "RememberOp",
