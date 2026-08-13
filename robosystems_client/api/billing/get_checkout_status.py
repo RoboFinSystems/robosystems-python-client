@@ -94,8 +94,8 @@ def sync_detailed(
   """Get Checkout Session Status
 
    Poll after returning from Stripe Checkout. Status progresses: pending_payment → provisioning →
-  active. When active, resource_id is populated; for graphs, operation_id tracks SSE provisioning
-  progress.
+  active. When active, resource_id is populated. `operation_id` is always null for webhook-driven
+  provisioning and cannot be used to follow progress — poll this endpoint instead.
 
   Args:
       session_id (str):
@@ -127,8 +127,8 @@ def sync(
   """Get Checkout Session Status
 
    Poll after returning from Stripe Checkout. Status progresses: pending_payment → provisioning →
-  active. When active, resource_id is populated; for graphs, operation_id tracks SSE provisioning
-  progress.
+  active. When active, resource_id is populated. `operation_id` is always null for webhook-driven
+  provisioning and cannot be used to follow progress — poll this endpoint instead.
 
   Args:
       session_id (str):
@@ -155,8 +155,8 @@ async def asyncio_detailed(
   """Get Checkout Session Status
 
    Poll after returning from Stripe Checkout. Status progresses: pending_payment → provisioning →
-  active. When active, resource_id is populated; for graphs, operation_id tracks SSE provisioning
-  progress.
+  active. When active, resource_id is populated. `operation_id` is always null for webhook-driven
+  provisioning and cannot be used to follow progress — poll this endpoint instead.
 
   Args:
       session_id (str):
@@ -186,8 +186,8 @@ async def asyncio(
   """Get Checkout Session Status
 
    Poll after returning from Stripe Checkout. Status progresses: pending_payment → provisioning →
-  active. When active, resource_id is populated; for graphs, operation_id tracks SSE provisioning
-  progress.
+  active. When active, resource_id is populated. `operation_id` is always null for webhook-driven
+  provisioning and cannot be used to follow progress — poll this endpoint instead.
 
   Args:
       session_id (str):

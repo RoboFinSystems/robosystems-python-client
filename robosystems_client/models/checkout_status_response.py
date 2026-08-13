@@ -20,7 +20,10 @@ class CheckoutStatusResponse:
       subscription_id (str): Internal subscription ID
       resource_id (None | str | Unset): Resource ID (graph_id for both graphs and repositories) once provisioned. For
           repositories, this is the repository slug (e.g., 'sec')
-      operation_id (None | str | Unset): SSE operation ID for monitoring provisioning progress
+      operation_id (None | str | Unset): Always null. Webhook-driven provisioning passes no operation id
+          (`_trigger_resource_provisioning` calls `run_graph_provisioning` with `operation_id=None`), so there is no SSE
+          stream to follow — poll the status endpoint instead. Retained rather than removed because it is on a published
+          response shape; wiring it is a feature, not a fix.
       error (None | str | Unset): Error message if checkout failed
   """
 

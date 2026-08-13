@@ -83,7 +83,7 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyRegisterVerifyRequest,
 ) -> Response[ErrorResponse | HTTPValidationError | PasskeyRegisterVerifyResponse]:
   """Passkey Registration Verify
@@ -116,7 +116,7 @@ def sync_detailed(
 
 def sync(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyRegisterVerifyRequest,
 ) -> ErrorResponse | HTTPValidationError | PasskeyRegisterVerifyResponse | None:
   """Passkey Registration Verify
@@ -144,7 +144,7 @@ def sync(
 
 async def asyncio_detailed(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyRegisterVerifyRequest,
 ) -> Response[ErrorResponse | HTTPValidationError | PasskeyRegisterVerifyResponse]:
   """Passkey Registration Verify
@@ -175,7 +175,7 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyRegisterVerifyRequest,
 ) -> ErrorResponse | HTTPValidationError | PasskeyRegisterVerifyResponse | None:
   """Passkey Registration Verify

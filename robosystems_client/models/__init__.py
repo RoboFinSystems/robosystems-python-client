@@ -639,6 +639,9 @@ from .passkey_list_response import PasskeyListResponse
 from .passkey_login_verify_request import PasskeyLoginVerifyRequest
 from .passkey_login_verify_request_assertion import PasskeyLoginVerifyRequestAssertion
 from .passkey_register_options_request import PasskeyRegisterOptionsRequest
+from .passkey_register_options_request_assertion_type_0 import (
+  PasskeyRegisterOptionsRequestAssertionType0,
+)
 from .passkey_register_verify_request import PasskeyRegisterVerifyRequest
 from .passkey_register_verify_request_credential import (
   PasskeyRegisterVerifyRequestCredential,
@@ -1330,6 +1333,7 @@ __all__ = (
   "PasskeyLoginVerifyRequest",
   "PasskeyLoginVerifyRequestAssertion",
   "PasskeyRegisterOptionsRequest",
+  "PasskeyRegisterOptionsRequestAssertionType0",
   "PasskeyRegisterVerifyRequest",
   "PasskeyRegisterVerifyRequestCredential",
   "PasskeyRegisterVerifyResponse",
