@@ -109,7 +109,7 @@ def sync_detailed(
 
    SQL over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric data,
   often ahead of the materialized graph. Use `?` placeholders with the `parameters` array to prevent
-  injection. Read-only (SELECT only), 30s timeout, 10K row limit. Not available on shared
+  injection. Read-only (SELECT only), 30s timeout, 10,000 row limit. Not available on shared
   repositories.
 
   Args:
@@ -146,7 +146,7 @@ def sync(
 
    SQL over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric data,
   often ahead of the materialized graph. Use `?` placeholders with the `parameters` array to prevent
-  injection. Read-only (SELECT only), 30s timeout, 10K row limit. Not available on shared
+  injection. Read-only (SELECT only), 30s timeout, 10,000 row limit. Not available on shared
   repositories.
 
   Args:
@@ -178,7 +178,7 @@ async def asyncio_detailed(
 
    SQL over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric data,
   often ahead of the materialized graph. Use `?` placeholders with the `parameters` array to prevent
-  injection. Read-only (SELECT only), 30s timeout, 10K row limit. Not available on shared
+  injection. Read-only (SELECT only), 30s timeout, 10,000 row limit. Not available on shared
   repositories.
 
   Args:
@@ -213,7 +213,7 @@ async def asyncio(
 
    SQL over the graph's columnar tables (DuckDB) — a relational lens on the same graph-centric data,
   often ahead of the materialized graph. Use `?` placeholders with the `parameters` array to prevent
-  injection. Read-only (SELECT only), 30s timeout, 10K row limit. Not available on shared
+  injection. Read-only (SELECT only), 30s timeout, 10,000 row limit. Not available on shared
   repositories.
 
   Args:

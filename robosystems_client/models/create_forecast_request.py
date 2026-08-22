@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.create_forecast_request_base_anchor import CreateForecastRequestBaseAnchor
 from ..models.create_forecast_request_scenario_kind import (
   CreateForecastRequestScenarioKind,
 )
@@ -38,7 +39,14 @@ class CreateForecastRequest:
           horizon_months (int | Unset): Forward months to project past the base period. Default: 12.
           base_period (None | str | Unset): Seed month (``YYYY-MM``) the walk projects forward from. Defaults to the
               fiscal calendar's closed-through period, else the newest actual report month. Resolved and stored at create
-              time.
+              time, and it never moves afterwards — every lever is keyed to a month inside ``base_period + 1 … +
+              horizon_months``, so moving it would mean restating all of them. ``base_anchor`` decides whether the walk still
+              *seeds* here once months close under it.
+          base_anchor (CreateForecastRequestBaseAnchor | Unset): Where the walk takes its opening balances as periods
+              close. ``seam`` (default) re-anchors on the newest closed month inside the horizon, so the scenario survives a
+              close untouched and its first forward month rolls off real balances. ``fixed`` pins the walk to ``base_period``
+              — the deliberate counterfactual, whose balances are meant to diverge from actuals. Default:
+              CreateForecastRequestBaseAnchor.SEAM.
           line_assertions (list[LineAssertionRequest] | Unset): Direct statement-line assertions (manual overrides). Each
               names a calc-DAG leaf and wins over driver rules and carry-forward for the months it asserts.
           line_growth (list[LineGrowthRequest] | Unset): Per-line growth trajectories. Each names an income-statement leaf
@@ -55,6 +63,9 @@ class CreateForecastRequest:
   )
   horizon_months: int | Unset = 12
   base_period: None | str | Unset = UNSET
+  base_anchor: CreateForecastRequestBaseAnchor | Unset = (
+    CreateForecastRequestBaseAnchor.SEAM
+  )
   line_assertions: list[LineAssertionRequest] | Unset = UNSET
   line_growth: list[LineGrowthRequest] | Unset = UNSET
   entity_id: None | str | Unset = UNSET
@@ -79,6 +90,10 @@ class CreateForecastRequest:
       base_period = UNSET
     else:
       base_period = self.base_period
+
+    base_anchor: str | Unset = UNSET
+    if not isinstance(self.base_anchor, Unset):
+      base_anchor = self.base_anchor.value
 
     line_assertions: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.line_assertions, Unset):
@@ -114,6 +129,8 @@ class CreateForecastRequest:
       field_dict["horizon_months"] = horizon_months
     if base_period is not UNSET:
       field_dict["base_period"] = base_period
+    if base_anchor is not UNSET:
+      field_dict["base_anchor"] = base_anchor
     if line_assertions is not UNSET:
       field_dict["line_assertions"] = line_assertions
     if line_growth is not UNSET:
@@ -157,6 +174,13 @@ class CreateForecastRequest:
 
     base_period = _parse_base_period(d.pop("base_period", UNSET))
 
+    _base_anchor = d.pop("base_anchor", UNSET)
+    base_anchor: CreateForecastRequestBaseAnchor | Unset
+    if isinstance(_base_anchor, Unset):
+      base_anchor = UNSET
+    else:
+      base_anchor = CreateForecastRequestBaseAnchor(_base_anchor)
+
     _line_assertions = d.pop("line_assertions", UNSET)
     line_assertions: list[LineAssertionRequest] | Unset = UNSET
     if _line_assertions is not UNSET:
@@ -190,6 +214,7 @@ class CreateForecastRequest:
       scenario_kind=scenario_kind,
       horizon_months=horizon_months,
       base_period=base_period,
+      base_anchor=base_anchor,
       line_assertions=line_assertions,
       line_growth=line_growth,
       entity_id=entity_id,

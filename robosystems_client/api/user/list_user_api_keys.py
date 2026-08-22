@@ -76,6 +76,9 @@ def sync_detailed(
 ) -> Response[APIKeysResponse | ErrorResponse]:
   """List API Keys
 
+   Lists active keys only. Revoked keys are omitted — revocation is permanent, so a revoked key never
+  returns to this list.
+
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -99,6 +102,9 @@ def sync(
 ) -> APIKeysResponse | ErrorResponse | None:
   """List API Keys
 
+   Lists active keys only. Revoked keys are omitted — revocation is permanent, so a revoked key never
+  returns to this list.
+
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -117,6 +123,9 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
 ) -> Response[APIKeysResponse | ErrorResponse]:
   """List API Keys
+
+   Lists active keys only. Revoked keys are omitted — revocation is permanent, so a revoked key never
+  returns to this list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -138,6 +147,9 @@ async def asyncio(
   client: AuthenticatedClient,
 ) -> APIKeysResponse | ErrorResponse | None:
   """List API Keys
+
+   Lists active keys only. Revoked keys are omitted — revocation is permanent, so a revoked key never
+  returns to this list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -32,7 +32,8 @@ class BackupResponse:
       completed_at (None | str):
       expires_at (None | str):
       initiated_by (str | Unset): Who started this backup. 'user' is one you requested and it counts against the
-          tier's daily backup limit; 'scheduled' is taken nightly on your behalf and does not. Default: 'user'.
+          tier's daily backup limit; 'scheduled' is taken nightly on your behalf and does not; 'final' is the copy taken
+          when a graph is deprovisioned, so you can still retrieve your data afterwards. Default: 'user'.
       memory_included (bool | None | Unset): Whether the archive carries this graph's semantic memory store. Null for
           backups taken before memory was included, which make no claim either way — distinct from false, which means the
           graph had none.

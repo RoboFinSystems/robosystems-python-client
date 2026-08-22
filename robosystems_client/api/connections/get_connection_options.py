@@ -94,7 +94,7 @@ def sync_detailed(
   """List Connection Options
 
    Returns available providers and their requirements. Only enabled providers are included (gated by
-  feature flags). SEC requires no auth; QuickBooks requires OAuth 2.0.
+  feature flags). QuickBooks requires OAuth 2.0; external connections require no auth.
 
   Args:
       graph_id (str):
@@ -126,7 +126,7 @@ def sync(
   """List Connection Options
 
    Returns available providers and their requirements. Only enabled providers are included (gated by
-  feature flags). SEC requires no auth; QuickBooks requires OAuth 2.0.
+  feature flags). QuickBooks requires OAuth 2.0; external connections require no auth.
 
   Args:
       graph_id (str):
@@ -153,7 +153,7 @@ async def asyncio_detailed(
   """List Connection Options
 
    Returns available providers and their requirements. Only enabled providers are included (gated by
-  feature flags). SEC requires no auth; QuickBooks requires OAuth 2.0.
+  feature flags). QuickBooks requires OAuth 2.0; external connections require no auth.
 
   Args:
       graph_id (str):
@@ -183,7 +183,7 @@ async def asyncio(
   """List Connection Options
 
    Returns available providers and their requirements. Only enabled providers are included (gated by
-  feature flags). SEC requires no auth; QuickBooks requires OAuth 2.0.
+  feature flags). QuickBooks requires OAuth 2.0; external connections require no auth.
 
   Args:
       graph_id (str):

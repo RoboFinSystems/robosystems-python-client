@@ -20,6 +20,7 @@ class AnalyticalStatementFactRow:
       name (str):
       canonical_concept (None | str | Unset):
       value (float | None | Unset):
+      start_date (None | str | Unset):
       end_date (None | str | Unset):
       period_type (None | str | Unset):
       duration_type (None | str | Unset):
@@ -29,6 +30,7 @@ class AnalyticalStatementFactRow:
   name: str
   canonical_concept: None | str | Unset = UNSET
   value: float | None | Unset = UNSET
+  start_date: None | str | Unset = UNSET
   end_date: None | str | Unset = UNSET
   period_type: None | str | Unset = UNSET
   duration_type: None | str | Unset = UNSET
@@ -50,6 +52,12 @@ class AnalyticalStatementFactRow:
       value = UNSET
     else:
       value = self.value
+
+    start_date: None | str | Unset
+    if isinstance(self.start_date, Unset):
+      start_date = UNSET
+    else:
+      start_date = self.start_date
 
     end_date: None | str | Unset
     if isinstance(self.end_date, Unset):
@@ -81,6 +89,8 @@ class AnalyticalStatementFactRow:
       field_dict["canonical_concept"] = canonical_concept
     if value is not UNSET:
       field_dict["value"] = value
+    if start_date is not UNSET:
+      field_dict["start_date"] = start_date
     if end_date is not UNSET:
       field_dict["end_date"] = end_date
     if period_type is not UNSET:
@@ -115,6 +125,15 @@ class AnalyticalStatementFactRow:
 
     value = _parse_value(d.pop("value", UNSET))
 
+    def _parse_start_date(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    start_date = _parse_start_date(d.pop("start_date", UNSET))
+
     def _parse_end_date(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -147,6 +166,7 @@ class AnalyticalStatementFactRow:
       name=name,
       canonical_concept=canonical_concept,
       value=value,
+      start_date=start_date,
       end_date=end_date,
       period_type=period_type,
       duration_type=duration_type,

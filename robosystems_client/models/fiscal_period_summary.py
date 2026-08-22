@@ -26,6 +26,9 @@ class FiscalPeriodSummary:
           end_date (datetime.date):
           status (str): 'open' | 'closing' | 'closed'
           closed_at (datetime.datetime | None | Unset):
+          has_close_receipt (bool | Unset): Whether this period carries a close receipt. A flag rather than the receipt
+              itself keeps the calendar listing compact; fetch the receipt from `get-period-close-status` for the period.
+              False on open periods and on periods closed before receipts shipped. Default: False.
   """
 
   name: str
@@ -33,6 +36,7 @@ class FiscalPeriodSummary:
   end_date: datetime.date
   status: str
   closed_at: datetime.datetime | None | Unset = UNSET
+  has_close_receipt: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -52,6 +56,8 @@ class FiscalPeriodSummary:
     else:
       closed_at = self.closed_at
 
+    has_close_receipt = self.has_close_receipt
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -64,6 +70,8 @@ class FiscalPeriodSummary:
     )
     if closed_at is not UNSET:
       field_dict["closed_at"] = closed_at
+    if has_close_receipt is not UNSET:
+      field_dict["has_close_receipt"] = has_close_receipt
 
     return field_dict
 
@@ -95,12 +103,15 @@ class FiscalPeriodSummary:
 
     closed_at = _parse_closed_at(d.pop("closed_at", UNSET))
 
+    has_close_receipt = d.pop("has_close_receipt", UNSET)
+
     fiscal_period_summary = cls(
       name=name,
       start_date=start_date,
       end_date=end_date,
       status=status,
       closed_at=closed_at,
+      has_close_receipt=has_close_receipt,
     )
 
     fiscal_period_summary.additional_properties = d

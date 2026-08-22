@@ -76,8 +76,7 @@ def sync_detailed(
 ) -> Response[ErrorResponse | GraphCapacityResponse]:
   """Get Graph Tier Capacity
 
-   Status per tier: `ready` (slot available), `scalable` (can provision, 3-5 min), `at_capacity`
-  (contact support). Cached 60s.
+   Status per tier: `ready` (slot available) or `at_capacity` (contact support).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -102,8 +101,7 @@ def sync(
 ) -> ErrorResponse | GraphCapacityResponse | None:
   """Get Graph Tier Capacity
 
-   Status per tier: `ready` (slot available), `scalable` (can provision, 3-5 min), `at_capacity`
-  (contact support). Cached 60s.
+   Status per tier: `ready` (slot available) or `at_capacity` (contact support).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -124,8 +122,7 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | GraphCapacityResponse]:
   """Get Graph Tier Capacity
 
-   Status per tier: `ready` (slot available), `scalable` (can provision, 3-5 min), `at_capacity`
-  (contact support). Cached 60s.
+   Status per tier: `ready` (slot available) or `at_capacity` (contact support).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -148,8 +145,7 @@ async def asyncio(
 ) -> ErrorResponse | GraphCapacityResponse | None:
   """Get Graph Tier Capacity
 
-   Status per tier: `ready` (slot available), `scalable` (can provision, 3-5 min), `at_capacity`
-  (contact support). Cached 60s.
+   Status per tier: `ready` (slot available) or `at_capacity` (contact support).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

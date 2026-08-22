@@ -6,44 +6,29 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="SECConnectionConfig")
+T = TypeVar("T", bound="UpdateUserRequestReauthAssertionType0")
 
 
 @_attrs_define
-class SECConnectionConfig:
-  """SEC-specific connection configuration.
+class UpdateUserRequestReauthAssertionType0:
+  """ """
 
-  Attributes:
-      cik (str): SEC Central Index Key
-  """
-
-  cik: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    cik = self.cik
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update(
-      {
-        "cik": cik,
-      }
-    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    cik = d.pop("cik")
+    update_user_request_reauth_assertion_type_0 = cls()
 
-    sec_connection_config = cls(
-      cik=cik,
-    )
-
-    sec_connection_config.additional_properties = d
-    return sec_connection_config
+    update_user_request_reauth_assertion_type_0.additional_properties = d
+    return update_user_request_reauth_assertion_type_0
 
   @property
   def additional_keys(self) -> list[str]:

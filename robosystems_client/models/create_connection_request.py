@@ -12,7 +12,6 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
   from ..models.external_connection_config import ExternalConnectionConfig
   from ..models.quick_books_connection_config import QuickBooksConnectionConfig
-  from ..models.sec_connection_config import SECConnectionConfig
 
 
 T = TypeVar("T", bound="CreateConnectionRequest")
@@ -24,16 +23,13 @@ class CreateConnectionRequest:
 
   Attributes:
       provider (CreateConnectionRequestProvider): Connection provider type
-      entity_id (None | str | Unset): Entity identifier. Required for QuickBooks, optional for SEC (SEC creates the
-          entity from filing data).
-      sec_config (None | SECConnectionConfig | Unset):
+      entity_id (None | str | Unset): Entity identifier. Required for QuickBooks.
       quickbooks_config (None | QuickBooksConnectionConfig | Unset):
       external_config (ExternalConnectionConfig | None | Unset):
   """
 
   provider: CreateConnectionRequestProvider
   entity_id: None | str | Unset = UNSET
-  sec_config: None | SECConnectionConfig | Unset = UNSET
   quickbooks_config: None | QuickBooksConnectionConfig | Unset = UNSET
   external_config: ExternalConnectionConfig | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -41,7 +37,6 @@ class CreateConnectionRequest:
   def to_dict(self) -> dict[str, Any]:
     from ..models.external_connection_config import ExternalConnectionConfig
     from ..models.quick_books_connection_config import QuickBooksConnectionConfig
-    from ..models.sec_connection_config import SECConnectionConfig
 
     provider = self.provider.value
 
@@ -50,14 +45,6 @@ class CreateConnectionRequest:
       entity_id = UNSET
     else:
       entity_id = self.entity_id
-
-    sec_config: dict[str, Any] | None | Unset
-    if isinstance(self.sec_config, Unset):
-      sec_config = UNSET
-    elif isinstance(self.sec_config, SECConnectionConfig):
-      sec_config = self.sec_config.to_dict()
-    else:
-      sec_config = self.sec_config
 
     quickbooks_config: dict[str, Any] | None | Unset
     if isinstance(self.quickbooks_config, Unset):
@@ -84,8 +71,6 @@ class CreateConnectionRequest:
     )
     if entity_id is not UNSET:
       field_dict["entity_id"] = entity_id
-    if sec_config is not UNSET:
-      field_dict["sec_config"] = sec_config
     if quickbooks_config is not UNSET:
       field_dict["quickbooks_config"] = quickbooks_config
     if external_config is not UNSET:
@@ -97,7 +82,6 @@ class CreateConnectionRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.external_connection_config import ExternalConnectionConfig
     from ..models.quick_books_connection_config import QuickBooksConnectionConfig
-    from ..models.sec_connection_config import SECConnectionConfig
 
     d = dict(src_dict)
     provider = CreateConnectionRequestProvider(d.pop("provider"))
@@ -110,23 +94,6 @@ class CreateConnectionRequest:
       return cast(None | str | Unset, data)
 
     entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
-
-    def _parse_sec_config(data: object) -> None | SECConnectionConfig | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      try:
-        if not isinstance(data, dict):
-          raise TypeError()
-        sec_config_type_0 = SECConnectionConfig.from_dict(data)
-
-        return sec_config_type_0
-      except (TypeError, ValueError, AttributeError, KeyError):
-        pass
-      return cast(None | SECConnectionConfig | Unset, data)
-
-    sec_config = _parse_sec_config(d.pop("sec_config", UNSET))
 
     def _parse_quickbooks_config(
       data: object,
@@ -167,7 +134,6 @@ class CreateConnectionRequest:
     create_connection_request = cls(
       provider=provider,
       entity_id=entity_id,
-      sec_config=sec_config,
       quickbooks_config=quickbooks_config,
       external_config=external_config,
     )

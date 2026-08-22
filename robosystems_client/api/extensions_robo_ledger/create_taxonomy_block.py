@@ -137,8 +137,7 @@ def sync_detailed(
           extends a library taxonomy) and ignored otherwise.
 
           The library path (seeding ``reporting_standard`` rows) does NOT flow
-          through this envelope — it uses a dedicated library writer that bypasses
-          these caps and tenant scoping.
+          through this envelope; library content is not tenant-writable here.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -194,8 +193,7 @@ def sync(
           extends a library taxonomy) and ignored otherwise.
 
           The library path (seeding ``reporting_standard`` rows) does NOT flow
-          through this envelope — it uses a dedicated library writer that bypasses
-          these caps and tenant scoping.
+          through this envelope; library content is not tenant-writable here.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -246,8 +244,7 @@ async def asyncio_detailed(
           extends a library taxonomy) and ignored otherwise.
 
           The library path (seeding ``reporting_standard`` rows) does NOT flow
-          through this envelope — it uses a dedicated library writer that bypasses
-          these caps and tenant scoping.
+          through this envelope; library content is not tenant-writable here.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -301,8 +298,7 @@ async def asyncio(
           extends a library taxonomy) and ignored otherwise.
 
           The library path (seeding ``reporting_standard`` rows) does NOT flow
-          through this envelope — it uses a dedicated library writer that bypasses
-          these caps and tenant scoping.
+          through this envelope; library content is not tenant-writable here.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

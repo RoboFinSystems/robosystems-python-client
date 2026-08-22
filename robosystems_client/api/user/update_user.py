@@ -101,6 +101,10 @@ def sync_detailed(
   Args:
       body (UpdateUserRequest): Request model for updating user profile.
 
+          Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
+          ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+          passkey enrollment and removal require. Name-only updates need no proof.
+
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -130,6 +134,10 @@ def sync(
   Args:
       body (UpdateUserRequest): Request model for updating user profile.
 
+          Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
+          ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+          passkey enrollment and removal require. Name-only updates need no proof.
+
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -153,6 +161,10 @@ async def asyncio_detailed(
 
   Args:
       body (UpdateUserRequest): Request model for updating user profile.
+
+          Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
+          ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+          passkey enrollment and removal require. Name-only updates need no proof.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -180,6 +192,10 @@ async def asyncio(
 
   Args:
       body (UpdateUserRequest): Request model for updating user profile.
+
+          Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
+          ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+          passkey enrollment and removal require. Name-only updates need no proof.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

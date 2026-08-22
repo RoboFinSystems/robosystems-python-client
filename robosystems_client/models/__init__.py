@@ -111,6 +111,7 @@ from .create_event_handler_request_metadata import CreateEventHandlerRequestMeta
 from .create_event_handler_request_origin import CreateEventHandlerRequestOrigin
 from .create_forecast_arm import CreateForecastArm
 from .create_forecast_request import CreateForecastRequest
+from .create_forecast_request_base_anchor import CreateForecastRequestBaseAnchor
 from .create_forecast_request_scenario_kind import CreateForecastRequestScenarioKind
 from .create_graph_request import CreateGraphRequest
 from .create_invitation_request import CreateInvitationRequest
@@ -243,6 +244,7 @@ from .financial_statement_analysis_response import FinancialStatementAnalysisRes
 from .fiscal_calendar_response import FiscalCalendarResponse
 from .fiscal_period_summary import FiscalPeriodSummary
 from .forecast_mechanics import ForecastMechanics
+from .forecast_mechanics_base_anchor import ForecastMechanicsBaseAnchor
 from .forecast_mechanics_scenario_kind import ForecastMechanicsScenarioKind
 from .forecast_month_lite import ForecastMonthLite
 from .forget_op import ForgetOp
@@ -590,6 +592,12 @@ from .operation_envelope_taxonomy_block_envelope import (
 from .operation_envelope_taxonomy_block_envelope_status import (
   OperationEnvelopeTaxonomyBlockEnvelopeStatus,
 )
+from .operation_envelope_terminate_schedule_response import (
+  OperationEnvelopeTerminateScheduleResponse,
+)
+from .operation_envelope_terminate_schedule_response_status import (
+  OperationEnvelopeTerminateScheduleResponseStatus,
+)
 from .operation_envelope_view_response import OperationEnvelopeViewResponse
 from .operation_envelope_view_response_status import OperationEnvelopeViewResponseStatus
 from .operation_envelopelist_publish_list_member_response import (
@@ -737,7 +745,6 @@ from .schema_validation_response_stats_type_0 import SchemaValidationResponseSta
 from .search_hit import SearchHit
 from .search_request import SearchRequest
 from .search_response import SearchResponse
-from .sec_connection_config import SECConnectionConfig
 from .security_lite import SecurityLite
 from .security_response import SecurityResponse
 from .security_response_terms import SecurityResponseTerms
@@ -822,6 +829,8 @@ from .taxonomy_block_structure_request_concept_arrangement_type_0 import (
 from .taxonomy_block_structure_request_metadata import (
   TaxonomyBlockStructureRequestMetadata,
 )
+from .terminate_schedule_request import TerminateScheduleRequest
+from .terminate_schedule_response import TerminateScheduleResponse
 from .tier_capacity import TierCapacity
 from .token_pricing import TokenPricing
 from .transaction_preview import TransactionPreview
@@ -857,6 +866,9 @@ from .update_event_handler_request_metadata_patch import (
 )
 from .update_forecast_arm import UpdateForecastArm
 from .update_forecast_request import UpdateForecastRequest
+from .update_forecast_request_base_anchor_type_0 import (
+  UpdateForecastRequestBaseAnchorType0,
+)
 from .update_forecast_request_scenario_kind_type_0 import (
   UpdateForecastRequestScenarioKindType0,
 )
@@ -885,6 +897,9 @@ from .update_security_operation import UpdateSecurityOperation
 from .update_security_operation_terms_type_0 import UpdateSecurityOperationTermsType0
 from .update_taxonomy_block_request import UpdateTaxonomyBlockRequest
 from .update_user_request import UpdateUserRequest
+from .update_user_request_reauth_assertion_type_0 import (
+  UpdateUserRequestReauthAssertionType0,
+)
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
@@ -995,6 +1010,7 @@ __all__ = (
   "CreateEventHandlerRequestOrigin",
   "CreateForecastArm",
   "CreateForecastRequest",
+  "CreateForecastRequestBaseAnchor",
   "CreateForecastRequestScenarioKind",
   "CreateGraphRequest",
   "CreateInvitationRequest",
@@ -1107,6 +1123,7 @@ __all__ = (
   "FiscalCalendarResponse",
   "FiscalPeriodSummary",
   "ForecastMechanics",
+  "ForecastMechanicsBaseAnchor",
   "ForecastMechanicsScenarioKind",
   "ForecastMonthLite",
   "ForgetOp",
@@ -1292,6 +1309,8 @@ __all__ = (
   "OperationEnvelopeStatus",
   "OperationEnvelopeTaxonomyBlockEnvelope",
   "OperationEnvelopeTaxonomyBlockEnvelopeStatus",
+  "OperationEnvelopeTerminateScheduleResponse",
+  "OperationEnvelopeTerminateScheduleResponseStatus",
   "OperationEnvelopeViewResponse",
   "OperationEnvelopeViewResponseStatus",
   "OperationError",
@@ -1413,7 +1432,6 @@ __all__ = (
   "SearchHit",
   "SearchRequest",
   "SearchResponse",
-  "SECConnectionConfig",
   "SecurityLite",
   "SecurityResponse",
   "SecurityResponseTerms",
@@ -1476,6 +1494,8 @@ __all__ = (
   "TaxonomyBlockStructureRequestBlockType",
   "TaxonomyBlockStructureRequestConceptArrangementType0",
   "TaxonomyBlockStructureRequestMetadata",
+  "TerminateScheduleRequest",
+  "TerminateScheduleResponse",
   "TierCapacity",
   "TokenPricing",
   "TransactionPreview",
@@ -1501,6 +1521,7 @@ __all__ = (
   "UpdateEventHandlerRequestMetadataPatch",
   "UpdateForecastArm",
   "UpdateForecastRequest",
+  "UpdateForecastRequestBaseAnchorType0",
   "UpdateForecastRequestScenarioKindType0",
   "UpdateGraphMemberRoleRequest",
   "UpdateGraphMetadataOp",
@@ -1525,6 +1546,7 @@ __all__ = (
   "UpdateSecurityOperationTermsType0",
   "UpdateTaxonomyBlockRequest",
   "UpdateUserRequest",
+  "UpdateUserRequestReauthAssertionType0",
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",
   "UserResponse",

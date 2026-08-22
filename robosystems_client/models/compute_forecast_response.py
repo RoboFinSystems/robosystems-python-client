@@ -24,7 +24,11 @@ class ComputeForecastResponse:
       structure_id (str):
       scenario_id (str): The scenario key every emitted FactSet carries — the forecast block's own structure id.
       entity_id (str):
-      base_period (str): Seed month the walk projected from.
+      base_period (str): Origin month of the block's authored horizon window — where its levers are keyed from. Equal
+          to ``anchor_period`` unless the walk re-anchored at the seam.
+      anchor_period (str): Month the walk actually seeded its opening balances from. With ``base_anchor='seam'`` this
+          advances to the newest closed month as periods close, so the first forward month rolls off real balances instead
+          of a stale base; with ``'fixed'`` it always equals ``base_period``.
       months (int): Forward months requested.
       months_computed (list[ForecastMonthLite] | Unset):
       halted_at (None | str | Unset): Month (``YYYY-MM``) where the walk stopped because verification failed, or null
@@ -41,6 +45,7 @@ class ComputeForecastResponse:
   scenario_id: str
   entity_id: str
   base_period: str
+  anchor_period: str
   months: int
   months_computed: list[ForecastMonthLite] | Unset = UNSET
   halted_at: None | str | Unset = UNSET
@@ -56,6 +61,8 @@ class ComputeForecastResponse:
     entity_id = self.entity_id
 
     base_period = self.base_period
+
+    anchor_period = self.anchor_period
 
     months = self.months
 
@@ -91,6 +98,7 @@ class ComputeForecastResponse:
         "scenario_id": scenario_id,
         "entity_id": entity_id,
         "base_period": base_period,
+        "anchor_period": anchor_period,
         "months": months,
       }
     )
@@ -118,6 +126,8 @@ class ComputeForecastResponse:
     entity_id = d.pop("entity_id")
 
     base_period = d.pop("base_period")
+
+    anchor_period = d.pop("anchor_period")
 
     months = d.pop("months")
 
@@ -155,6 +165,7 @@ class ComputeForecastResponse:
       scenario_id=scenario_id,
       entity_id=entity_id,
       base_period=base_period,
+      anchor_period=anchor_period,
       months=months,
       months_computed=months_computed,
       halted_at=halted_at,

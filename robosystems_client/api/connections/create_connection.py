@@ -107,10 +107,9 @@ def sync_detailed(
 ) -> Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Create Connection
 
-   SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
-  activate. External: registers a source namespace for an integration that writes through the public
-  API. One connection allowed per provider per graph, except 'external' which allows one per
-  source_name.
+   QuickBooks: returns an OAuth URL — complete the flow to activate. External: registers a source
+  namespace for an integration that writes through the public API. One connection allowed per provider
+  per graph, except 'external' which allows one per source_name.
 
   Args:
       graph_id (str):
@@ -144,10 +143,9 @@ def sync(
 ) -> Any | ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Create Connection
 
-   SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
-  activate. External: registers a source namespace for an integration that writes through the public
-  API. One connection allowed per provider per graph, except 'external' which allows one per
-  source_name.
+   QuickBooks: returns an OAuth URL — complete the flow to activate. External: registers a source
+  namespace for an integration that writes through the public API. One connection allowed per provider
+  per graph, except 'external' which allows one per source_name.
 
   Args:
       graph_id (str):
@@ -176,10 +174,9 @@ async def asyncio_detailed(
 ) -> Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Create Connection
 
-   SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
-  activate. External: registers a source namespace for an integration that writes through the public
-  API. One connection allowed per provider per graph, except 'external' which allows one per
-  source_name.
+   QuickBooks: returns an OAuth URL — complete the flow to activate. External: registers a source
+  namespace for an integration that writes through the public API. One connection allowed per provider
+  per graph, except 'external' which allows one per source_name.
 
   Args:
       graph_id (str):
@@ -211,10 +208,9 @@ async def asyncio(
 ) -> Any | ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Create Connection
 
-   SEC: provide entity CIK, no auth needed. QuickBooks: returns an OAuth URL — complete the flow to
-  activate. External: registers a source namespace for an integration that writes through the public
-  API. One connection allowed per provider per graph, except 'external' which allows one per
-  source_name.
+   QuickBooks: returns an OAuth URL — complete the flow to activate. External: registers a source
+  namespace for an integration that writes through the public API. One connection allowed per provider
+  per graph, except 'external' which allows one per source_name.
 
   Args:
       graph_id (str):
