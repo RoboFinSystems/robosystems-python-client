@@ -15,9 +15,11 @@ class DeleteScheduleRequest:
 
   Hard deletes the Structure, all Facts tied to it, and all
   Associations tied to it. This is a permanent, irreversible
-  operation. For ending a schedule early without removing history,
-  fire `create-event-block(event_type='asset_disposed')` instead — the
-  handler truncates the schedule + posts the disposal entry atomically.
+  operation. For ending a schedule early without removing history, use
+  `terminate-schedule` (no entry) or
+  `create-event-block(event_type='asset_disposed')` (the handler voids
+  the remaining obligation chain + posts the disposal entry atomically;
+  recognized facts stay as history).
 
       Attributes:
           structure_id (str):

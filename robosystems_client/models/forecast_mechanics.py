@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.forecast_mechanics_base_anchor import ForecastMechanicsBaseAnchor
 from ..models.forecast_mechanics_scenario_kind import ForecastMechanicsScenarioKind
 from ..types import UNSET, Unset
 
@@ -34,12 +35,19 @@ class ForecastMechanics:
 
       Attributes:
           horizon_months (int): Forward months projected past the base period.
-          base_period (str): Seed month (``YYYY-MM``) the walk projects forward from — resolved at create time (request →
-              fiscal calendar closed-through → newest actual report month) and stored so recompute is deterministic.
+          base_period (str): Origin month (``YYYY-MM``) of the authored horizon window — resolved at create time (request
+              → fiscal calendar closed-through → newest actual report month) and stored so recompute is deterministic. Every
+              lever, line assertion and growth rate is keyed to a month in ``base_period + 1 … base_period + horizon_months``,
+              so this never moves on its own; ``base_anchor`` decides whether the *walk* still seeds here.
           levers (list[LeverAssertionLite]): Expanded lever assertions (authoring order).
           kind (Literal['forecast'] | Unset):  Default: 'forecast'.
           scenario_kind (ForecastMechanicsScenarioKind | Unset): Scenario kind — display/filter metadata, not machinery.
               Default: ForecastMechanicsScenarioKind.FORECAST.
+          base_anchor (ForecastMechanicsBaseAnchor | Unset): Where the walk takes its opening balances. ``seam`` (default)
+              re-anchors on the newest closed month at or after ``base_period``, so a scenario survives a period close without
+              being rebuilt and its first forward month rolls off real balances. ``fixed`` pins the walk to ``base_period`` —
+              the deliberate counterfactual (“if we had restarted in July”), whose balances diverge from actuals on purpose.
+              Default: ForecastMechanicsBaseAnchor.SEAM.
           line_assertions (list[LineAssertionLite] | Unset): Direct statement-line assertions (authoring order) — manual
               overrides that win over driver rules and carry-forward for the months they name.
           line_growth (list[LineGrowthLite] | Unset): Per-line growth trajectories (authoring order) — each grows an
@@ -55,6 +63,7 @@ class ForecastMechanics:
   scenario_kind: ForecastMechanicsScenarioKind | Unset = (
     ForecastMechanicsScenarioKind.FORECAST
   )
+  base_anchor: ForecastMechanicsBaseAnchor | Unset = ForecastMechanicsBaseAnchor.SEAM
   line_assertions: list[LineAssertionLite] | Unset = UNSET
   line_growth: list[LineGrowthLite] | Unset = UNSET
   computed_months: int | Unset = 0
@@ -75,6 +84,10 @@ class ForecastMechanics:
     scenario_kind: str | Unset = UNSET
     if not isinstance(self.scenario_kind, Unset):
       scenario_kind = self.scenario_kind.value
+
+    base_anchor: str | Unset = UNSET
+    if not isinstance(self.base_anchor, Unset):
+      base_anchor = self.base_anchor.value
 
     line_assertions: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.line_assertions, Unset):
@@ -105,6 +118,8 @@ class ForecastMechanics:
       field_dict["kind"] = kind
     if scenario_kind is not UNSET:
       field_dict["scenario_kind"] = scenario_kind
+    if base_anchor is not UNSET:
+      field_dict["base_anchor"] = base_anchor
     if line_assertions is not UNSET:
       field_dict["line_assertions"] = line_assertions
     if line_growth is not UNSET:
@@ -143,6 +158,13 @@ class ForecastMechanics:
     else:
       scenario_kind = ForecastMechanicsScenarioKind(_scenario_kind)
 
+    _base_anchor = d.pop("base_anchor", UNSET)
+    base_anchor: ForecastMechanicsBaseAnchor | Unset
+    if isinstance(_base_anchor, Unset):
+      base_anchor = UNSET
+    else:
+      base_anchor = ForecastMechanicsBaseAnchor(_base_anchor)
+
     _line_assertions = d.pop("line_assertions", UNSET)
     line_assertions: list[LineAssertionLite] | Unset = UNSET
     if _line_assertions is not UNSET:
@@ -169,6 +191,7 @@ class ForecastMechanics:
       levers=levers,
       kind=kind,
       scenario_kind=scenario_kind,
+      base_anchor=base_anchor,
       line_assertions=line_assertions,
       line_growth=line_growth,
       computed_months=computed_months,

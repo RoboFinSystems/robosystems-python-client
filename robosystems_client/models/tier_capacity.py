@@ -16,7 +16,7 @@ class TierCapacity:
   Attributes:
       tier (str): Tier identifier (e.g. ladybug-standard)
       display_name (str): Human-readable tier name
-      status (str): Capacity status: ready, scalable, or at_capacity
+      status (str): Capacity status: ready or at_capacity
       message (str): Human-readable status message for frontend display
   """
 

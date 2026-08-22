@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.update_forecast_request_base_anchor_type_0 import (
+  UpdateForecastRequestBaseAnchorType0,
+)
 from ..models.update_forecast_request_scenario_kind_type_0 import (
   UpdateForecastRequestScenarioKindType0,
 )
@@ -38,6 +41,9 @@ class UpdateForecastRequest:
           scenario_kind (None | Unset | UpdateForecastRequestScenarioKindType0):
           horizon_months (int | None | Unset):
           base_period (None | str | Unset):
+          base_anchor (None | Unset | UpdateForecastRequestBaseAnchorType0): Switch the walk between seam-anchored
+              (default) and pinned to ``base_period``. Changes nothing about the authored window, so unlike ``base_period`` it
+              needs no levers re-supplied.
           levers (list[LeverAssertionRequest] | None | Unset): Full replacement of the lever set when provided.
           line_assertions (list[LineAssertionRequest] | None | Unset): Full replacement of the line-assertion set when
               provided. Pass an empty list to clear every assertion.
@@ -50,6 +56,7 @@ class UpdateForecastRequest:
   scenario_kind: None | Unset | UpdateForecastRequestScenarioKindType0 = UNSET
   horizon_months: int | None | Unset = UNSET
   base_period: None | str | Unset = UNSET
+  base_anchor: None | Unset | UpdateForecastRequestBaseAnchorType0 = UNSET
   levers: list[LeverAssertionRequest] | None | Unset = UNSET
   line_assertions: list[LineAssertionRequest] | None | Unset = UNSET
   line_growth: list[LineGrowthRequest] | None | Unset = UNSET
@@ -83,6 +90,14 @@ class UpdateForecastRequest:
       base_period = UNSET
     else:
       base_period = self.base_period
+
+    base_anchor: None | str | Unset
+    if isinstance(self.base_anchor, Unset):
+      base_anchor = UNSET
+    elif isinstance(self.base_anchor, UpdateForecastRequestBaseAnchorType0):
+      base_anchor = self.base_anchor.value
+    else:
+      base_anchor = self.base_anchor
 
     levers: list[dict[str, Any]] | None | Unset
     if isinstance(self.levers, Unset):
@@ -135,6 +150,8 @@ class UpdateForecastRequest:
       field_dict["horizon_months"] = horizon_months
     if base_period is not UNSET:
       field_dict["base_period"] = base_period
+    if base_anchor is not UNSET:
+      field_dict["base_anchor"] = base_anchor
     if levers is not UNSET:
       field_dict["levers"] = levers
     if line_assertions is not UNSET:
@@ -198,6 +215,25 @@ class UpdateForecastRequest:
       return cast(None | str | Unset, data)
 
     base_period = _parse_base_period(d.pop("base_period", UNSET))
+
+    def _parse_base_anchor(
+      data: object,
+    ) -> None | Unset | UpdateForecastRequestBaseAnchorType0:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        base_anchor_type_0 = UpdateForecastRequestBaseAnchorType0(data)
+
+        return base_anchor_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | Unset | UpdateForecastRequestBaseAnchorType0, data)
+
+    base_anchor = _parse_base_anchor(d.pop("base_anchor", UNSET))
 
     def _parse_levers(data: object) -> list[LeverAssertionRequest] | None | Unset:
       if data is None:
@@ -277,6 +313,7 @@ class UpdateForecastRequest:
       scenario_kind=scenario_kind,
       horizon_months=horizon_months,
       base_period=base_period,
+      base_anchor=base_anchor,
       levers=levers,
       line_assertions=line_assertions,
       line_growth=line_growth,

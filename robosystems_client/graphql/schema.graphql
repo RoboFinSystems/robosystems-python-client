@@ -1084,6 +1084,11 @@ type PeriodCloseStatus {
   schedules: [PeriodCloseItem!]!
   totalDraft: Int!
   totalPosted: Int!
+
+  """
+  Receipt stamped by the close that locked this period: entries_posted, the entries_published_to_qb / entries_posted_locally split, statement stamping and rule summaries, closed_at/closed_by. Null while the period is open, and null for periods closed before receipts shipped (a closed period without a receipt is not a failed close). This is the authoritative record of what a close did — read it rather than retrying when a close's response was lost in transport.
+  """
+  closeReceipt: CloseReceipt
 }
 
 """
@@ -1101,6 +1106,55 @@ type PeriodCloseItem {
   entryId: String
   reversalEntryId: String
   reversalStatus: String
+}
+
+"""
+What a close actually did, stamped on the period row that close locked.
+
+The close result used to exist only in the HTTP response, so a close
+that SUCCEEDED but whose transport failed left no record and the
+operator reconstructed it from separate state reads. This is that
+record. Written in the same transaction as the period's `status='closed'`
+flip, so a closed period and its receipt can never disagree.
+
+Typed rather than a free dict because it is a contract: the GraphQL
+schema and both SDKs derive from it, and an opaque blob would push the
+shape onto every reader to rediscover.
+"""
+type CloseReceipt {
+  """Receipt schema version; 1 is the first shipped shape"""
+  version: Int!
+
+  """Period this receipt is for (YYYY-MM)"""
+  period: String!
+  closedAt: DateTime!
+
+  """Actor id that ran the close"""
+  closedBy: String!
+
+  """'user' for REST callers, 'agent' for MCP-driven closes"""
+  actorType: String!
+
+  """Whether this close re-closed a previously closed period"""
+  wasReclose: Boolean!
+
+  """
+  Total entries the close transitioned to posted, across both post paths — the sum of the two fields below
+  """
+  entriesPosted: Int!
+  entriesPublishedToQb: Int!
+  entriesPostedLocally: Int!
+  targetAutoAdvanced: Boolean!
+
+  """Schedule rule outcomes: pass/fail/error/skipped counts"""
+  ruleSummary: JSON
+  evaluatedStructureIds: [String!]!
+  statementsStamped: Boolean!
+  statementStampNote: String
+
+  """structure_id -> minted fact_set_id"""
+  stampedStatementSets: JSON!
+  statementRuleSummary: JSON
 }
 
 """Current fiscal calendar state for a graph."""
@@ -1202,6 +1256,11 @@ type FiscalPeriodSummary {
   """'open' | 'closing' | 'closed'"""
   status: String!
   closedAt: DateTime
+
+  """
+  Whether this period carries a close receipt. A flag rather than the receipt itself keeps the calendar listing compact; fetch the receipt from `get-period-close-status` for the period. False on open periods and on periods closed before receipts shipped.
+  """
+  hasCloseReceipt: Boolean!
 }
 
 """All draft entries for a fiscal period, ready for review before close."""

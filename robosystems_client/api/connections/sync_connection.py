@@ -118,9 +118,11 @@ def sync_detailed(
 ) -> Response[Any | ErrorResponse | OperationEnvelope]:
   """Sync Connection
 
-   SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
-  chart of accounts. Async — returns an `OperationEnvelope` with the provider task id; completion is
-  reflected in the connection's `last_sync` timestamp. Supports `Idempotency-Key`.
+   QuickBooks: fetches transactions, balances, and chart of accounts; the envelope is `pending` with
+  the run's `task_id`, and completion is reflected in the connection's `last_sync` timestamp. External
+  connections are push-based and have nothing to pull; the envelope is `completed` with a null
+  `task_id` and a message saying so — there is nothing to poll. Returns an `OperationEnvelope`;
+  supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -160,9 +162,11 @@ def sync(
 ) -> Any | ErrorResponse | OperationEnvelope | None:
   """Sync Connection
 
-   SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
-  chart of accounts. Async — returns an `OperationEnvelope` with the provider task id; completion is
-  reflected in the connection's `last_sync` timestamp. Supports `Idempotency-Key`.
+   QuickBooks: fetches transactions, balances, and chart of accounts; the envelope is `pending` with
+  the run's `task_id`, and completion is reflected in the connection's `last_sync` timestamp. External
+  connections are push-based and have nothing to pull; the envelope is `completed` with a null
+  `task_id` and a message saying so — there is nothing to poll. Returns an `OperationEnvelope`;
+  supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -197,9 +201,11 @@ async def asyncio_detailed(
 ) -> Response[Any | ErrorResponse | OperationEnvelope]:
   """Sync Connection
 
-   SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
-  chart of accounts. Async — returns an `OperationEnvelope` with the provider task id; completion is
-  reflected in the connection's `last_sync` timestamp. Supports `Idempotency-Key`.
+   QuickBooks: fetches transactions, balances, and chart of accounts; the envelope is `pending` with
+  the run's `task_id`, and completion is reflected in the connection's `last_sync` timestamp. External
+  connections are push-based and have nothing to pull; the envelope is `completed` with a null
+  `task_id` and a message saying so — there is nothing to poll. Returns an `OperationEnvelope`;
+  supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -237,9 +243,11 @@ async def asyncio(
 ) -> Any | ErrorResponse | OperationEnvelope | None:
   """Sync Connection
 
-   SEC: downloads latest EDGAR filings (5-10 min). QuickBooks: fetches transactions, balances, and
-  chart of accounts. Async — returns an `OperationEnvelope` with the provider task id; completion is
-  reflected in the connection's `last_sync` timestamp. Supports `Idempotency-Key`.
+   QuickBooks: fetches transactions, balances, and chart of accounts; the envelope is `pending` with
+  the run's `task_id`, and completion is reflected in the connection's `last_sync` timestamp. External
+  connections are push-based and have nothing to pull; the envelope is `completed` with a null
+  `task_id` and a message saying so — there is nothing to poll. Returns an `OperationEnvelope`;
+  supports `Idempotency-Key`.
 
   Args:
       graph_id (str):

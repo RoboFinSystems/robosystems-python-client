@@ -24,9 +24,11 @@ class UpdateScheduleRequest:
   Structure row / its metadata_ JSONB column).
 
   NOT editable via this op: period_start, period_end, monthly_amount.
-  Those require fact regeneration — fire an event block that terminates
-  the schedule (e.g., `asset_disposed`) and create a fresh schedule via
-  `create-information-block` (`block_type='schedule'`).
+  Those require fact regeneration — end the schedule early via
+  `terminate-schedule` (no entry) or
+  `create-event-block(event_type='asset_disposed')` (with a disposal
+  entry), then create a fresh schedule via `create-information-block`
+  (`block_type='schedule'`).
 
   Omitted fields are left unchanged.
 

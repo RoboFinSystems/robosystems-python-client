@@ -36,8 +36,7 @@ class CreateTaxonomyBlockRequest:
   extends a library taxonomy) and ignored otherwise.
 
   The library path (seeding ``reporting_standard`` rows) does NOT flow
-  through this envelope — it uses a dedicated library writer that bypasses
-  these caps and tenant scoping.
+  through this envelope; library content is not tenant-writable here.
 
       Attributes:
           name (str): Taxonomy display name.
