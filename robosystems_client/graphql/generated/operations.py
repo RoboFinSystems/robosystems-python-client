@@ -649,6 +649,8 @@ query GetLedgerFiscalCalendar {
       scheduleName
       period
     }
+    reconcilingItemCount
+    reconcilingItemSample
     syncStaleDays
     lastCloseAt
     initializedAt

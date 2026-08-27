@@ -258,6 +258,8 @@ class TestLedgerReads:
         "earliestPendingPeriod": None,
         "strandedObligationCount": 0,
         "strandedObligationSample": [],
+        "reconcilingItemCount": 0,
+        "reconcilingItemSample": [],
         "syncStaleDays": None,
         "lastCloseAt": None,
         "initializedAt": "2026-01-01T00:00:00Z",
@@ -272,6 +274,8 @@ class TestLedgerReads:
     assert cal.closeable_now is True
     assert cal.fiscal_year_start_month == 1
     assert cal.stranded_obligation_count == 0
+    assert cal.reconciling_item_count == 0
+    assert cal.reconciling_item_sample == []
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_fiscal_calendar_names_blocking_obligations(
@@ -304,6 +308,8 @@ class TestLedgerReads:
             "period": "2026-03",
           }
         ],
+        "reconcilingItemCount": 1,
+        "reconcilingItemSample": ["ri_bank_fee_2026-03"],
         "syncStaleDays": None,
         "lastCloseAt": None,
         "initializedAt": "2026-01-01T00:00:00Z",
@@ -319,6 +325,8 @@ class TestLedgerReads:
     assert cal.stranded_obligation_count == 2
     assert cal.stranded_obligation_sample[0].schedule_name == "Prepaid Insurance"
     assert cal.stranded_obligation_sample[0].period == "2026-03"
+    assert cal.reconciling_item_count == 1
+    assert cal.reconciling_item_sample == ["ri_bank_fee_2026-03"]
 
 
 # ── Writes (Operation envelope) ────────────────────────────────────────
