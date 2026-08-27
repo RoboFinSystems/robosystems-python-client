@@ -25,6 +25,9 @@ class BackfillPlanHistoryOperation:
       allow_stranded_obligations (bool | Unset): Override the stranded-obligation gate on each reclose. Only needed
           when a matured classified obligation without a drafted entry exists inside the backfill window and you have
           decided not to draft or void it first. Default: False.
+      allow_reconciling_items (bool | Unset): Override the reconciling-item gate on each reclose. Only needed when an
+          event inside the backfill window is still flagged as changed upstream and you have decided not to resolve it
+          first. Default: False.
       restamp (bool | Unset): Also re-derive months that ALREADY have canonical statement sets (default: skip them).
           Use after an engine improvement changes what a stamp produces — each month reruns the full reopen → reclose
           cycle and replaces its sets. A restamp run is not self-resuming (every month in range stays a candidate);
@@ -36,6 +39,7 @@ class BackfillPlanHistoryOperation:
   max_periods: int | Unset = 12
   allow_stale_sync: bool | Unset = False
   allow_stranded_obligations: bool | Unset = False
+  allow_reconciling_items: bool | Unset = False
   restamp: bool | Unset = False
   note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -52,6 +56,8 @@ class BackfillPlanHistoryOperation:
     allow_stale_sync = self.allow_stale_sync
 
     allow_stranded_obligations = self.allow_stranded_obligations
+
+    allow_reconciling_items = self.allow_reconciling_items
 
     restamp = self.restamp
 
@@ -72,6 +78,8 @@ class BackfillPlanHistoryOperation:
       field_dict["allow_stale_sync"] = allow_stale_sync
     if allow_stranded_obligations is not UNSET:
       field_dict["allow_stranded_obligations"] = allow_stranded_obligations
+    if allow_reconciling_items is not UNSET:
+      field_dict["allow_reconciling_items"] = allow_reconciling_items
     if restamp is not UNSET:
       field_dict["restamp"] = restamp
     if note is not UNSET:
@@ -98,6 +106,8 @@ class BackfillPlanHistoryOperation:
 
     allow_stranded_obligations = d.pop("allow_stranded_obligations", UNSET)
 
+    allow_reconciling_items = d.pop("allow_reconciling_items", UNSET)
+
     restamp = d.pop("restamp", UNSET)
 
     def _parse_note(data: object) -> None | str | Unset:
@@ -114,6 +124,7 @@ class BackfillPlanHistoryOperation:
       max_periods=max_periods,
       allow_stale_sync=allow_stale_sync,
       allow_stranded_obligations=allow_stranded_obligations,
+      allow_reconciling_items=allow_reconciling_items,
       restamp=restamp,
       note=note,
     )

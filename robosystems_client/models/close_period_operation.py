@@ -26,12 +26,17 @@ class ClosePeriodOperation:
               classified obligations have no drafted closing entry, knowingly omitting those adjusting entries from the
               period. Prefer running promote-obligations with dispatch_handlers=true (which drafts them) or voiding the
               obligations instead. The override is recorded in the close audit note. Default: False.
+          allow_reconciling_items (bool | Unset): Override the reconciling-item gate — close even though posted events in
+              the period are still flagged as changed in the source system, leaving those differences undecided. The next sync
+              will still report them, and the statements stamped by this close may disagree with the source. Prefer resolve-
+              reconciling-item on each first. The override is recorded in the close audit note. Default: False.
   """
 
   period: str
   note: None | str | Unset = UNSET
   allow_stale_sync: bool | Unset = False
   allow_stranded_obligations: bool | Unset = False
+  allow_reconciling_items: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -47,6 +52,8 @@ class ClosePeriodOperation:
 
     allow_stranded_obligations = self.allow_stranded_obligations
 
+    allow_reconciling_items = self.allow_reconciling_items
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -60,6 +67,8 @@ class ClosePeriodOperation:
       field_dict["allow_stale_sync"] = allow_stale_sync
     if allow_stranded_obligations is not UNSET:
       field_dict["allow_stranded_obligations"] = allow_stranded_obligations
+    if allow_reconciling_items is not UNSET:
+      field_dict["allow_reconciling_items"] = allow_reconciling_items
 
     return field_dict
 
@@ -81,11 +90,14 @@ class ClosePeriodOperation:
 
     allow_stranded_obligations = d.pop("allow_stranded_obligations", UNSET)
 
+    allow_reconciling_items = d.pop("allow_reconciling_items", UNSET)
+
     close_period_operation = cls(
       period=period,
       note=note,
       allow_stale_sync=allow_stale_sync,
       allow_stranded_obligations=allow_stranded_obligations,
+      allow_reconciling_items=allow_reconciling_items,
     )
 
     close_period_operation.additional_properties = d

@@ -6,18 +6,18 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.create_event_block_request import CreateEventBlockRequest
 from ...models.error_response import ErrorResponse
-from ...models.operation_envelope_event_block_envelope import (
-  OperationEnvelopeEventBlockEnvelope,
+from ...models.operation_envelope_reconciling_item_plan import (
+  OperationEnvelopeReconcilingItemPlan,
 )
+from ...models.preview_reconciling_item_request import PreviewReconcilingItemRequest
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: CreateEventBlockRequest,
+  body: PreviewReconcilingItemRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -26,7 +26,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/create-event-block".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/preview-reconciling-item".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -41,9 +41,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | OperationEnvelopeEventBlockEnvelope | None:
+) -> ErrorResponse | OperationEnvelopeReconcilingItemPlan | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelopeEventBlockEnvelope.from_dict(response.json())
+    response_200 = OperationEnvelopeReconcilingItemPlan.from_dict(response.json())
 
     return response_200
 
@@ -95,7 +95,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | OperationEnvelopeEventBlockEnvelope]:
+) -> Response[ErrorResponse | OperationEnvelopeReconcilingItemPlan]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -108,18 +108,16 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateEventBlockRequest,
+  body: PreviewReconcilingItemRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeEventBlockEnvelope]:
-  """Create Event Block
+) -> Response[ErrorResponse | OperationEnvelopeReconcilingItemPlan]:
+  """Preview Reconciling Item
 
-   Persist a real-world business event. apply_handlers=False (default): capture-only,
-  status='captured'. apply_handlers=True: resolves an event_handler, fires the template, creates GL
-  entries atomically, status='classified'. Use preview-event-block to dry-run before committing. For
-  journal_entry_recorded, whether the entry writes back to a connected source system follows `source`
-  (schedule/manual publish; system does not) unless metadata.publish_to_source says otherwise — set it
-  false for an alignment entry mirroring a change already made upstream, which would otherwise be
-  applied twice.
+   Read what changed on a reconciling item — an event whose source-system payload changed after it was
+  posted (list them with list-event-blocks is_reconciling_item=true). Returns the posted entries
+  against the accepted payload, the per-account net difference, which disposition applies by default,
+  and anything blocking the others. Writes nothing. Run this before resolve-reconciling-item and agree
+  the treatment with the user — restate moves prior months' figures, catch_up does not.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -127,14 +125,15 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateEventBlockRequest): Write surface for a single business event.
+      body (PreviewReconcilingItemRequest): Read what changed on a reconciling item, and what
+          resolving it would do.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeEventBlockEnvelope]
+      Response[ErrorResponse | OperationEnvelopeReconcilingItemPlan]
   """
 
   kwargs = _get_kwargs(
@@ -154,18 +153,16 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateEventBlockRequest,
+  body: PreviewReconcilingItemRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeEventBlockEnvelope | None:
-  """Create Event Block
+) -> ErrorResponse | OperationEnvelopeReconcilingItemPlan | None:
+  """Preview Reconciling Item
 
-   Persist a real-world business event. apply_handlers=False (default): capture-only,
-  status='captured'. apply_handlers=True: resolves an event_handler, fires the template, creates GL
-  entries atomically, status='classified'. Use preview-event-block to dry-run before committing. For
-  journal_entry_recorded, whether the entry writes back to a connected source system follows `source`
-  (schedule/manual publish; system does not) unless metadata.publish_to_source says otherwise — set it
-  false for an alignment entry mirroring a change already made upstream, which would otherwise be
-  applied twice.
+   Read what changed on a reconciling item — an event whose source-system payload changed after it was
+  posted (list them with list-event-blocks is_reconciling_item=true). Returns the posted entries
+  against the accepted payload, the per-account net difference, which disposition applies by default,
+  and anything blocking the others. Writes nothing. Run this before resolve-reconciling-item and agree
+  the treatment with the user — restate moves prior months' figures, catch_up does not.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -173,14 +170,15 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateEventBlockRequest): Write surface for a single business event.
+      body (PreviewReconcilingItemRequest): Read what changed on a reconciling item, and what
+          resolving it would do.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeEventBlockEnvelope
+      ErrorResponse | OperationEnvelopeReconcilingItemPlan
   """
 
   return sync_detailed(
@@ -195,18 +193,16 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateEventBlockRequest,
+  body: PreviewReconcilingItemRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeEventBlockEnvelope]:
-  """Create Event Block
+) -> Response[ErrorResponse | OperationEnvelopeReconcilingItemPlan]:
+  """Preview Reconciling Item
 
-   Persist a real-world business event. apply_handlers=False (default): capture-only,
-  status='captured'. apply_handlers=True: resolves an event_handler, fires the template, creates GL
-  entries atomically, status='classified'. Use preview-event-block to dry-run before committing. For
-  journal_entry_recorded, whether the entry writes back to a connected source system follows `source`
-  (schedule/manual publish; system does not) unless metadata.publish_to_source says otherwise — set it
-  false for an alignment entry mirroring a change already made upstream, which would otherwise be
-  applied twice.
+   Read what changed on a reconciling item — an event whose source-system payload changed after it was
+  posted (list them with list-event-blocks is_reconciling_item=true). Returns the posted entries
+  against the accepted payload, the per-account net difference, which disposition applies by default,
+  and anything blocking the others. Writes nothing. Run this before resolve-reconciling-item and agree
+  the treatment with the user — restate moves prior months' figures, catch_up does not.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -214,14 +210,15 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateEventBlockRequest): Write surface for a single business event.
+      body (PreviewReconcilingItemRequest): Read what changed on a reconciling item, and what
+          resolving it would do.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeEventBlockEnvelope]
+      Response[ErrorResponse | OperationEnvelopeReconcilingItemPlan]
   """
 
   kwargs = _get_kwargs(
@@ -239,18 +236,16 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: CreateEventBlockRequest,
+  body: PreviewReconcilingItemRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeEventBlockEnvelope | None:
-  """Create Event Block
+) -> ErrorResponse | OperationEnvelopeReconcilingItemPlan | None:
+  """Preview Reconciling Item
 
-   Persist a real-world business event. apply_handlers=False (default): capture-only,
-  status='captured'. apply_handlers=True: resolves an event_handler, fires the template, creates GL
-  entries atomically, status='classified'. Use preview-event-block to dry-run before committing. For
-  journal_entry_recorded, whether the entry writes back to a connected source system follows `source`
-  (schedule/manual publish; system does not) unless metadata.publish_to_source says otherwise — set it
-  false for an alignment entry mirroring a change already made upstream, which would otherwise be
-  applied twice.
+   Read what changed on a reconciling item — an event whose source-system payload changed after it was
+  posted (list them with list-event-blocks is_reconciling_item=true). Returns the posted entries
+  against the accepted payload, the per-account net difference, which disposition applies by default,
+  and anything blocking the others. Writes nothing. Run this before resolve-reconciling-item and agree
+  the treatment with the user — restate moves prior months' figures, catch_up does not.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -258,14 +253,15 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateEventBlockRequest): Write surface for a single business event.
+      body (PreviewReconcilingItemRequest): Read what changed on a reconciling item, and what
+          resolving it would do.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeEventBlockEnvelope
+      ErrorResponse | OperationEnvelopeReconcilingItemPlan
   """
 
   return (

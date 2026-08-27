@@ -1215,6 +1215,16 @@ type FiscalCalendar {
   Sample of up to 5 stranded obligations (schedule_id, schedule_name, period, event_id) ordered by occurred_at.
   """
   strandedObligationSample: [PendingObligationDetail!]!
+
+  """
+  Posted events in or before this period whose source payload changed afterwards and that nobody has dispositioned — differences between the books and the source system. Resolve each with resolve-reconciling-item, or close over them knowingly with allow_reconciling_items.
+  """
+  reconcilingItemCount: Int!
+
+  """
+  Source identifiers (or event ids) of up to 5 unresolved reconciling items, so the blocker names what is holding the close.
+  """
+  reconcilingItemSample: [String!]!
   lastCloseAt: DateTime
   initializedAt: DateTime
 

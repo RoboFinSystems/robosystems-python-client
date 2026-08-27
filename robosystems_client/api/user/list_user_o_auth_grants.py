@@ -1,26 +1,20 @@
 from http import HTTPStatus
 from typing import Any
-from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.http_validation_error import HTTPValidationError
-from ...models.mcp_tools_response import MCPToolsResponse
+from ...models.o_auth_grants_response import OAuthGrantsResponse
 from ...types import Response
 
 
-def _get_kwargs(
-  graph_id: str,
-) -> dict[str, Any]:
+def _get_kwargs() -> dict[str, Any]:
 
   _kwargs: dict[str, Any] = {
     "method": "get",
-    "url": "/v1/graphs/{graph_id}/mcp/tools".format(
-      graph_id=quote(str(graph_id), safe=""),
-    ),
+    "url": "/v1/user/oauth/grants",
   }
 
   return _kwargs
@@ -28,9 +22,9 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | HTTPValidationError | MCPToolsResponse | None:
+) -> ErrorResponse | OAuthGrantsResponse | None:
   if response.status_code == 200:
-    response_200 = MCPToolsResponse.from_dict(response.json())
+    response_200 = OAuthGrantsResponse.from_dict(response.json())
 
     return response_200
 
@@ -48,16 +42,6 @@ def _parse_response(
     response_403 = ErrorResponse.from_dict(response.json())
 
     return response_403
-
-  if response.status_code == 404:
-    response_404 = ErrorResponse.from_dict(response.json())
-
-    return response_404
-
-  if response.status_code == 422:
-    response_422 = HTTPValidationError.from_dict(response.json())
-
-    return response_422
 
   if response.status_code == 429:
     response_429 = ErrorResponse.from_dict(response.json())
@@ -77,7 +61,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | HTTPValidationError | MCPToolsResponse]:
+) -> Response[ErrorResponse | OAuthGrantsResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -87,29 +71,23 @@ def _build_response(
 
 
 def sync_detailed(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[ErrorResponse | HTTPValidationError | MCPToolsResponse]:
-  """List MCP Tools
+) -> Response[ErrorResponse | OAuthGrantsResponse]:
+  """List Connected Apps
 
-   Returns tool schemas with capability hints (streaming, caching, timeouts) per tool. Tool list is
-  context-aware by graph type; identical for parent graphs and subgraphs.
-
-  Args:
-      graph_id (str):
+   Every MCP client the user has authorized through OAuth, with the one graph each connection reaches.
+  Active grants only: a revoked grant cannot be reinstated, so it leaves the list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | MCPToolsResponse]
+      Response[ErrorResponse | OAuthGrantsResponse]
   """
 
-  kwargs = _get_kwargs(
-    graph_id=graph_id,
-  )
+  kwargs = _get_kwargs()
 
   response = client.get_httpx_client().request(
     **kwargs,
@@ -119,56 +97,45 @@ def sync_detailed(
 
 
 def sync(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> ErrorResponse | HTTPValidationError | MCPToolsResponse | None:
-  """List MCP Tools
+) -> ErrorResponse | OAuthGrantsResponse | None:
+  """List Connected Apps
 
-   Returns tool schemas with capability hints (streaming, caching, timeouts) per tool. Tool list is
-  context-aware by graph type; identical for parent graphs and subgraphs.
-
-  Args:
-      graph_id (str):
+   Every MCP client the user has authorized through OAuth, with the one graph each connection reaches.
+  Active grants only: a revoked grant cannot be reinstated, so it leaves the list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | MCPToolsResponse
+      ErrorResponse | OAuthGrantsResponse
   """
 
   return sync_detailed(
-    graph_id=graph_id,
     client=client,
   ).parsed
 
 
 async def asyncio_detailed(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> Response[ErrorResponse | HTTPValidationError | MCPToolsResponse]:
-  """List MCP Tools
+) -> Response[ErrorResponse | OAuthGrantsResponse]:
+  """List Connected Apps
 
-   Returns tool schemas with capability hints (streaming, caching, timeouts) per tool. Tool list is
-  context-aware by graph type; identical for parent graphs and subgraphs.
-
-  Args:
-      graph_id (str):
+   Every MCP client the user has authorized through OAuth, with the one graph each connection reaches.
+  Active grants only: a revoked grant cannot be reinstated, so it leaves the list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | HTTPValidationError | MCPToolsResponse]
+      Response[ErrorResponse | OAuthGrantsResponse]
   """
 
-  kwargs = _get_kwargs(
-    graph_id=graph_id,
-  )
+  kwargs = _get_kwargs()
 
   response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -176,29 +143,24 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
-) -> ErrorResponse | HTTPValidationError | MCPToolsResponse | None:
-  """List MCP Tools
+) -> ErrorResponse | OAuthGrantsResponse | None:
+  """List Connected Apps
 
-   Returns tool schemas with capability hints (streaming, caching, timeouts) per tool. Tool list is
-  context-aware by graph type; identical for parent graphs and subgraphs.
-
-  Args:
-      graph_id (str):
+   Every MCP client the user has authorized through OAuth, with the one graph each connection reaches.
+  Active grants only: a revoked grant cannot be reinstated, so it leaves the list.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | HTTPValidationError | MCPToolsResponse
+      ErrorResponse | OAuthGrantsResponse
   """
 
   return (
     await asyncio_detailed(
-      graph_id=graph_id,
       client=client,
     )
   ).parsed

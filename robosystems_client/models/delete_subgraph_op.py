@@ -18,7 +18,9 @@ class DeleteSubgraphOp:
   Attributes:
       subgraph_name (str): Subgraph name to delete (e.g., 'dev', 'staging')
       force (bool | Unset): Delete even if subgraph contains data Default: False.
-      backup_first (bool | Unset): Create a backup before deleting Default: True.
+      backup_first (bool | Unset): Take a full backup of the subgraph before deleting it. The backup is registered on
+          the parent graph's backup list, where it can be listed and downloaded after the subgraph is gone. If the backup
+          fails the subgraph is not deleted. Default: True.
   """
 
   subgraph_name: str

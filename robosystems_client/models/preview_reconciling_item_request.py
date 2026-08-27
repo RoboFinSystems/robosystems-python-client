@@ -6,29 +6,44 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="MCPToolsResponseToolsItem")
+T = TypeVar("T", bound="PreviewReconcilingItemRequest")
 
 
 @_attrs_define
-class MCPToolsResponseToolsItem:
-  """ """
+class PreviewReconcilingItemRequest:
+  """Read what changed on a reconciling item, and what resolving it would do.
 
+  Attributes:
+      event_id (str): Event id (evt_ prefixed) to inspect
+  """
+
+  event_id: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    event_id = self.event_id
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "event_id": event_id,
+      }
+    )
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    mcp_tools_response_tools_item = cls()
+    event_id = d.pop("event_id")
 
-    mcp_tools_response_tools_item.additional_properties = d
-    return mcp_tools_response_tools_item
+    preview_reconciling_item_request = cls(
+      event_id=event_id,
+    )
+
+    preview_reconciling_item_request.additional_properties = d
+    return preview_reconciling_item_request
 
   @property
   def additional_keys(self) -> list[str]:
