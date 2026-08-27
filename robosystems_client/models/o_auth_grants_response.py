@@ -6,68 +6,58 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..types import UNSET, Unset
-
 if TYPE_CHECKING:
-  from ..models.mcp_tool_call_arguments import MCPToolCallArguments
+  from ..models.o_auth_grant_info import OAuthGrantInfo
 
 
-T = TypeVar("T", bound="MCPToolCall")
+T = TypeVar("T", bound="OAuthGrantsResponse")
 
 
 @_attrs_define
-class MCPToolCall:
-  """Request model for MCP tool execution.
+class OAuthGrantsResponse:
+  """Response model for listing connected apps.
 
   Attributes:
-      name (str): Name of the MCP tool to execute
-      arguments (MCPToolCallArguments | Unset): Arguments to pass to the tool
+      grants (list[OAuthGrantInfo]): Active OAuth grants, newest first
   """
 
-  name: str
-  arguments: MCPToolCallArguments | Unset = UNSET
+  grants: list[OAuthGrantInfo]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    name = self.name
-
-    arguments: dict[str, Any] | Unset = UNSET
-    if not isinstance(self.arguments, Unset):
-      arguments = self.arguments.to_dict()
+    grants = []
+    for grants_item_data in self.grants:
+      grants_item = grants_item_data.to_dict()
+      grants.append(grants_item)
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "name": name,
+        "grants": grants,
       }
     )
-    if arguments is not UNSET:
-      field_dict["arguments"] = arguments
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-    from ..models.mcp_tool_call_arguments import MCPToolCallArguments
+    from ..models.o_auth_grant_info import OAuthGrantInfo
 
     d = dict(src_dict)
-    name = d.pop("name")
+    grants = []
+    _grants = d.pop("grants")
+    for grants_item_data in _grants:
+      grants_item = OAuthGrantInfo.from_dict(grants_item_data)
 
-    _arguments = d.pop("arguments", UNSET)
-    arguments: MCPToolCallArguments | Unset
-    if isinstance(_arguments, Unset):
-      arguments = UNSET
-    else:
-      arguments = MCPToolCallArguments.from_dict(_arguments)
+      grants.append(grants_item)
 
-    mcp_tool_call = cls(
-      name=name,
-      arguments=arguments,
+    o_auth_grants_response = cls(
+      grants=grants,
     )
 
-    mcp_tool_call.additional_properties = d
-    return mcp_tool_call
+    o_auth_grants_response.additional_properties = d
+    return o_auth_grants_response
 
   @property
   def additional_keys(self) -> list[str]:

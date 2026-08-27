@@ -343,10 +343,6 @@ from .live_statement_fact_row import LiveStatementFactRow
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .materialize_op import MaterializeOp
-from .mcp_tool_call import MCPToolCall
-from .mcp_tool_call_arguments import MCPToolCallArguments
-from .mcp_tools_response import MCPToolsResponse
-from .mcp_tools_response_tools_item import MCPToolsResponseToolsItem
 from .memory_list_response import MemoryListResponse
 from .memory_recall_request import MemoryRecallRequest
 from .memory_record import MemoryRecord
@@ -359,6 +355,8 @@ from .mfa_verify_request import MfaVerifyRequest
 from .mfa_verify_request_assertion_type_0 import MfaVerifyRequestAssertionType0
 from .o_auth_callback_request import OAuthCallbackRequest
 from .o_auth_callback_response import OAuthCallbackResponse
+from .o_auth_grant_info import OAuthGrantInfo
+from .o_auth_grants_response import OAuthGrantsResponse
 from .o_auth_init_request import OAuthInitRequest
 from .o_auth_init_request_additional_params_type_0 import (
   OAuthInitRequestAdditionalParamsType0,
@@ -559,9 +557,21 @@ from .operation_envelope_publish_list_response import (
 from .operation_envelope_publish_list_response_status import (
   OperationEnvelopePublishListResponseStatus,
 )
+from .operation_envelope_reconciling_item_plan import (
+  OperationEnvelopeReconcilingItemPlan,
+)
+from .operation_envelope_reconciling_item_plan_status import (
+  OperationEnvelopeReconcilingItemPlanStatus,
+)
 from .operation_envelope_report_response import OperationEnvelopeReportResponse
 from .operation_envelope_report_response_status import (
   OperationEnvelopeReportResponseStatus,
+)
+from .operation_envelope_resolve_reconciling_item_response import (
+  OperationEnvelopeResolveReconcilingItemResponse,
+)
+from .operation_envelope_resolve_reconciling_item_response_status import (
+  OperationEnvelopeResolveReconcilingItemResponseStatus,
 )
 from .operation_envelope_revoke_report_share_response import (
   OperationEnvelopeRevokeReportShareResponse,
@@ -679,6 +689,7 @@ from .preview_event_block_response import PreviewEventBlockResponse
 from .preview_event_block_response_handler_metadata import (
   PreviewEventBlockResponseHandlerMetadata,
 )
+from .preview_reconciling_item_request import PreviewReconcilingItemRequest
 from .promote_obligations_request import PromoteObligationsRequest
 from .promote_obligations_response import PromoteObligationsResponse
 from .promote_obligations_response_errors_item import (
@@ -690,6 +701,14 @@ from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
 from .rebuild_schedule_request import RebuildScheduleRequest
+from .reconciling_item_catch_up import ReconcilingItemCatchUp
+from .reconciling_item_delta_line import ReconcilingItemDeltaLine
+from .reconciling_item_entry_summary import ReconcilingItemEntrySummary
+from .reconciling_item_plan import ReconcilingItemPlan
+from .reconciling_item_plan_default_disposition import (
+  ReconcilingItemPlanDefaultDisposition,
+)
+from .reconciling_item_regenerated import ReconcilingItemRegenerated
 from .recovery_codes_request import RecoveryCodesRequest
 from .recovery_codes_request_assertion_type_0 import RecoveryCodesRequestAssertionType0
 from .recovery_codes_response import RecoveryCodesResponse
@@ -711,6 +730,15 @@ from .resend_verification_email_response_resendverificationemail import (
 )
 from .reset_password_request import ResetPasswordRequest
 from .reset_password_validate_response import ResetPasswordValidateResponse
+from .resolve_reconciling_item_request import ResolveReconcilingItemRequest
+from .resolve_reconciling_item_request_disposition_type_0 import (
+  ResolveReconcilingItemRequestDispositionType0,
+)
+from .resolve_reconciling_item_request_status import ResolveReconcilingItemRequestStatus
+from .resolve_reconciling_item_response import ResolveReconcilingItemResponse
+from .resolve_reconciling_item_response_disposition import (
+  ResolveReconcilingItemResponseDisposition,
+)
 from .resolved_report_info import ResolvedReportInfo
 from .response_mode import ResponseMode
 from .revoke_report_share_operation import RevokeReportShareOperation
@@ -1204,10 +1232,6 @@ __all__ = (
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "MaterializeOp",
-  "MCPToolCall",
-  "MCPToolCallArguments",
-  "MCPToolsResponse",
-  "MCPToolsResponseToolsItem",
   "MemoryListResponse",
   "MemoryRecallRequest",
   "MemoryRecord",
@@ -1220,6 +1244,8 @@ __all__ = (
   "MfaVerifyRequestAssertionType0",
   "OAuthCallbackRequest",
   "OAuthCallbackResponse",
+  "OAuthGrantInfo",
+  "OAuthGrantsResponse",
   "OAuthInitRequest",
   "OAuthInitRequestAdditionalParamsType0",
   "OAuthInitResponse",
@@ -1296,8 +1322,12 @@ __all__ = (
   "OperationEnvelopePromoteObligationsResponseStatus",
   "OperationEnvelopePublishListResponse",
   "OperationEnvelopePublishListResponseStatus",
+  "OperationEnvelopeReconcilingItemPlan",
+  "OperationEnvelopeReconcilingItemPlanStatus",
   "OperationEnvelopeReportResponse",
   "OperationEnvelopeReportResponseStatus",
+  "OperationEnvelopeResolveReconcilingItemResponse",
+  "OperationEnvelopeResolveReconcilingItemResponseStatus",
   "OperationEnvelopeRevokeReportShareResponse",
   "OperationEnvelopeRevokeReportShareResponseStatus",
   "OperationEnvelopeScheduleCreatedResponse",
@@ -1378,6 +1408,7 @@ __all__ = (
   "PositionBlock",
   "PreviewEventBlockResponse",
   "PreviewEventBlockResponseHandlerMetadata",
+  "PreviewReconcilingItemRequest",
   "PromoteObligationsRequest",
   "PromoteObligationsResponse",
   "PromoteObligationsResponseErrorsItem",
@@ -1387,6 +1418,12 @@ __all__ = (
   "QuickBooksConnectionConfig",
   "RateLimits",
   "RebuildScheduleRequest",
+  "ReconcilingItemCatchUp",
+  "ReconcilingItemDeltaLine",
+  "ReconcilingItemEntrySummary",
+  "ReconcilingItemPlan",
+  "ReconcilingItemPlanDefaultDisposition",
+  "ReconcilingItemRegenerated",
   "RecoveryCodesRequest",
   "RecoveryCodesRequestAssertionType0",
   "RecoveryCodesResponse",
@@ -1407,6 +1444,11 @@ __all__ = (
   "ResetPasswordRequest",
   "ResetPasswordValidateResponse",
   "ResolvedReportInfo",
+  "ResolveReconcilingItemRequest",
+  "ResolveReconcilingItemRequestDispositionType0",
+  "ResolveReconcilingItemRequestStatus",
+  "ResolveReconcilingItemResponse",
+  "ResolveReconcilingItemResponseDisposition",
   "ResponseMode",
   "RevokeReportShareOperation",
   "RevokeReportShareResponse",
