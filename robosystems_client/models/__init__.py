@@ -618,6 +618,8 @@ from .operation_envelopelist_publish_list_member_response_status import (
 )
 from .operation_error import OperationError
 from .operation_error_detail_type_1 import OperationErrorDetailType1
+from .operation_resume_request import OperationResumeRequest
+from .operation_resume_request_input import OperationResumeRequestInput
 from .operator_list_response import OperatorListResponse
 from .operator_list_response_operators import OperatorListResponseOperators
 from .operator_list_response_operators_additional_property import (
@@ -741,6 +743,9 @@ from .resolve_reconciling_item_response_disposition import (
 )
 from .resolved_report_info import ResolvedReportInfo
 from .response_mode import ResponseMode
+from .resume_operation_response_resumeoperation import (
+  ResumeOperationResponseResumeoperation,
+)
 from .revoke_report_share_operation import RevokeReportShareOperation
 from .revoke_report_share_response import RevokeReportShareResponse
 from .rollforward_mechanics import RollforwardMechanics
@@ -931,6 +936,7 @@ from .update_user_request_reauth_assertion_type_0 import (
 from .upgrade_subscription_request import UpgradeSubscriptionRequest
 from .user_graphs_response import UserGraphsResponse
 from .user_response import UserResponse
+from .validation_check_response import ValidationCheckResponse
 from .validation_error import ValidationError
 from .validation_error_context import ValidationErrorContext
 from .validation_lite import ValidationLite
@@ -1345,6 +1351,8 @@ __all__ = (
   "OperationEnvelopeViewResponseStatus",
   "OperationError",
   "OperationErrorDetailType1",
+  "OperationResumeRequest",
+  "OperationResumeRequestInput",
   "OperatorListResponse",
   "OperatorListResponseOperators",
   "OperatorListResponseOperatorsAdditionalProperty",
@@ -1450,6 +1458,7 @@ __all__ = (
   "ResolveReconcilingItemResponse",
   "ResolveReconcilingItemResponseDisposition",
   "ResponseMode",
+  "ResumeOperationResponseResumeoperation",
   "RevokeReportShareOperation",
   "RevokeReportShareResponse",
   "RollforwardMechanics",
@@ -1592,6 +1601,7 @@ __all__ = (
   "UpgradeSubscriptionRequest",
   "UserGraphsResponse",
   "UserResponse",
+  "ValidationCheckResponse",
   "ValidationError",
   "ValidationErrorContext",
   "ValidationLite",

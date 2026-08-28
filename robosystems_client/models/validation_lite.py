@@ -22,12 +22,14 @@ class ValidationLite:
 
       Attributes:
           passed (bool | Unset):  Default: True.
+          status (str | Unset):  Default: 'passed'.
           checks (list[str] | Unset):
           failures (list[str] | Unset):
           warnings (list[str] | Unset):
   """
 
   passed: bool | Unset = True
+  status: str | Unset = "passed"
   checks: list[str] | Unset = UNSET
   failures: list[str] | Unset = UNSET
   warnings: list[str] | Unset = UNSET
@@ -35,6 +37,8 @@ class ValidationLite:
 
   def to_dict(self) -> dict[str, Any]:
     passed = self.passed
+
+    status = self.status
 
     checks: list[str] | Unset = UNSET
     if not isinstance(self.checks, Unset):
@@ -53,6 +57,8 @@ class ValidationLite:
     field_dict.update({})
     if passed is not UNSET:
       field_dict["passed"] = passed
+    if status is not UNSET:
+      field_dict["status"] = status
     if checks is not UNSET:
       field_dict["checks"] = checks
     if failures is not UNSET:
@@ -67,6 +73,8 @@ class ValidationLite:
     d = dict(src_dict)
     passed = d.pop("passed", UNSET)
 
+    status = d.pop("status", UNSET)
+
     checks = cast(list[str], d.pop("checks", UNSET))
 
     failures = cast(list[str], d.pop("failures", UNSET))
@@ -75,6 +83,7 @@ class ValidationLite:
 
     validation_lite = cls(
       passed=passed,
+      status=status,
       checks=checks,
       failures=failures,
       warnings=warnings,

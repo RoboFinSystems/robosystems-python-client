@@ -33,6 +33,9 @@ class OperatorRequest:
       force_extended_analysis (bool | Unset): Force extended analysis mode with comprehensive research Default: False.
       enable_rag (bool | Unset): Enable RAG context enrichment Default: True.
       stream (bool | Unset): Enable streaming response Default: False.
+      max_credits (float | None | Unset): Per-question credit ceiling. Once the run's consumed credits reach this
+          number, no further tool step starts and the operator answers from what it has (the wrap-up itself may carry the
+          total slightly past the ceiling). Omit for the mode's default step-bounded behavior.
   """
 
   message: str
@@ -44,6 +47,7 @@ class OperatorRequest:
   force_extended_analysis: bool | Unset = False
   enable_rag: bool | Unset = True
   stream: bool | Unset = False
+  max_credits: float | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -95,6 +99,12 @@ class OperatorRequest:
 
     stream = self.stream
 
+    max_credits: float | None | Unset
+    if isinstance(self.max_credits, Unset):
+      max_credits = UNSET
+    else:
+      max_credits = self.max_credits
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -118,6 +128,8 @@ class OperatorRequest:
       field_dict["enable_rag"] = enable_rag
     if stream is not UNSET:
       field_dict["stream"] = stream
+    if max_credits is not UNSET:
+      field_dict["max_credits"] = max_credits
 
     return field_dict
 
@@ -205,6 +217,15 @@ class OperatorRequest:
 
     stream = d.pop("stream", UNSET)
 
+    def _parse_max_credits(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    max_credits = _parse_max_credits(d.pop("max_credits", UNSET))
+
     operator_request = cls(
       message=message,
       history=history,
@@ -215,6 +236,7 @@ class OperatorRequest:
       force_extended_analysis=force_extended_analysis,
       enable_rag=enable_rag,
       stream=stream,
+      max_credits=max_credits,
     )
 
     operator_request.additional_properties = d
