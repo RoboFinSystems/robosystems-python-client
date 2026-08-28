@@ -2001,6 +2001,7 @@ envelope-build time — accounting equation, totals foot, etc.
 """
 type InformationBlockValidation {
   passed: Boolean!
+  status: String!
   checks: [String!]!
   failures: [String!]!
   warnings: [String!]!
@@ -2085,6 +2086,11 @@ type ReportBundleDownload {
 
   """Bundle generation number stamped on the Report."""
   generationCount: Int!
+
+  """
+  Content the Report carries that this flavor does not. ``disclosure_notes``: the XBRL 2.1 zip ships statements only — tenant-authored disclosure notes render on screen and ride the JSON-LD and holon flavors, but are excluded from this file.
+  """
+  omittedContent: [String!]!
 }
 
 enum ReportDownloadFormat {
@@ -2165,10 +2171,23 @@ type FactRow {
   depth: Int!
 }
 
-"""Aggregate result of running reporting rules over a structure."""
+"""
+Aggregate result of running reporting rules over a structure.
+
+Every rule runs once per rendered period column; on a multi-column
+statement each failure and warning is prefixed with the column it was
+found in (``[Prior] …``).
+"""
 type ValidationCheck {
-  """True iff every rule produced zero failures."""
+  """
+  True iff at least one rule ran and every rule produced zero failures on every rendered column. False when nothing was checked (`status == 'inconclusive'`).
+  """
   passed: Boolean!
+
+  """
+  `passed` — every rule ran on every column with zero failures; `failed` — at least one rule failed; `inconclusive` — no validation rules exist for this block type, so nothing was checked.
+  """
+  status: String!
 
   """Names of rules that were evaluated."""
   checks: [String!]!

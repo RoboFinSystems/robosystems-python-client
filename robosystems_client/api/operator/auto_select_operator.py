@@ -132,12 +132,16 @@ def sync_detailed(
   by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
   Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
   /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
-  usage, not a fixed price per mode. Execution strategy (sync/SSE/async) auto-selected; override with
-  `?mode=sync|async`.
+  usage, not a fixed price per mode. The run executes on the background worker: the default answer is
+  202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits up to 50s and answers
+  200 with the result.
 
   Args:
       graph_id (str):
-      mode (None | ResponseMode | Unset): Override execution mode: sync, async, stream, or auto
+      mode (None | ResponseMode | Unset): `sync` waits up to 50s for the answer and returns 200
+          with it (202 with the operation links if the worker is still busy). Anything else —
+          `async`, `stream`, `auto` or unset — queues the run and returns 202; follow
+          `_links.stream` for progress and the result.
       body (OperatorRequest): Request model for operator interactions.
 
   Raises:
@@ -174,12 +178,16 @@ def sync(
   by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
   Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
   /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
-  usage, not a fixed price per mode. Execution strategy (sync/SSE/async) auto-selected; override with
-  `?mode=sync|async`.
+  usage, not a fixed price per mode. The run executes on the background worker: the default answer is
+  202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits up to 50s and answers
+  200 with the result.
 
   Args:
       graph_id (str):
-      mode (None | ResponseMode | Unset): Override execution mode: sync, async, stream, or auto
+      mode (None | ResponseMode | Unset): `sync` waits up to 50s for the answer and returns 200
+          with it (202 with the operation links if the worker is still busy). Anything else —
+          `async`, `stream`, `auto` or unset — queues the run and returns 202; follow
+          `_links.stream` for progress and the result.
       body (OperatorRequest): Request model for operator interactions.
 
   Raises:
@@ -211,12 +219,16 @@ async def asyncio_detailed(
   by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
   Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
   /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
-  usage, not a fixed price per mode. Execution strategy (sync/SSE/async) auto-selected; override with
-  `?mode=sync|async`.
+  usage, not a fixed price per mode. The run executes on the background worker: the default answer is
+  202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits up to 50s and answers
+  200 with the result.
 
   Args:
       graph_id (str):
-      mode (None | ResponseMode | Unset): Override execution mode: sync, async, stream, or auto
+      mode (None | ResponseMode | Unset): `sync` waits up to 50s for the answer and returns 200
+          with it (202 with the operation links if the worker is still busy). Anything else —
+          `async`, `stream`, `auto` or unset — queues the run and returns 202; follow
+          `_links.stream` for progress and the result.
       body (OperatorRequest): Request model for operator interactions.
 
   Raises:
@@ -251,12 +263,16 @@ async def asyncio(
   by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
   Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
   /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
-  usage, not a fixed price per mode. Execution strategy (sync/SSE/async) auto-selected; override with
-  `?mode=sync|async`.
+  usage, not a fixed price per mode. The run executes on the background worker: the default answer is
+  202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits up to 50s and answers
+  200 with the result.
 
   Args:
       graph_id (str):
-      mode (None | ResponseMode | Unset): Override execution mode: sync, async, stream, or auto
+      mode (None | ResponseMode | Unset): `sync` waits up to 50s for the answer and returns 200
+          with it (202 with the operation links if the worker is still busy). Anything else —
+          `async`, `stream`, `auto` or unset — queues the run and returns 202; follow
+          `_links.stream` for progress and the result.
       body (OperatorRequest): Request model for operator interactions.
 
   Raises:

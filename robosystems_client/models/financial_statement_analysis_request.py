@@ -22,7 +22,7 @@ class FinancialStatementAnalysisRequest:
           filters.
       fiscal_year (int | None | Unset): Filter by fiscal year focus when auto-resolving the report
       period_type (None | str | Unset): annual | quarterly | instant
-      limit (int | Unset):  Default: 50.
+      limit (int | Unset):  Default: 1000.
   """
 
   statement_type: str
@@ -30,7 +30,7 @@ class FinancialStatementAnalysisRequest:
   report_id: None | str | Unset = UNSET
   fiscal_year: int | None | Unset = UNSET
   period_type: None | str | Unset = UNSET
-  limit: int | Unset = 50
+  limit: int | Unset = 1000
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:

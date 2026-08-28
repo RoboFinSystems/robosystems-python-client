@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="ElementSummary")
 
@@ -14,41 +16,53 @@ class ElementSummary:
   """
   Attributes:
       count (int): Number of facts for this element
-      total (float): Sum of values across the returned facts
-      average (float): Mean value across the returned facts
       min_ (float): Minimum value across the returned facts
       max_ (float): Maximum value across the returned facts
+      total (float | None | Unset): Sum of values across the returned facts. Duration elements only — a balance summed
+          across periods is not a balance, so instants omit it.
+      average (float | None | Unset): Mean value across the returned facts. Duration elements only; omitted for
+          instants.
   """
 
   count: int
-  total: float
-  average: float
   min_: float
   max_: float
+  total: float | None | Unset = UNSET
+  average: float | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     count = self.count
 
-    total = self.total
-
-    average = self.average
-
     min_ = self.min_
 
     max_ = self.max_
+
+    total: float | None | Unset
+    if isinstance(self.total, Unset):
+      total = UNSET
+    else:
+      total = self.total
+
+    average: float | None | Unset
+    if isinstance(self.average, Unset):
+      average = UNSET
+    else:
+      average = self.average
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
         "count": count,
-        "total": total,
-        "average": average,
         "min": min_,
         "max": max_,
       }
     )
+    if total is not UNSET:
+      field_dict["total"] = total
+    if average is not UNSET:
+      field_dict["average"] = average
 
     return field_dict
 
@@ -57,20 +71,34 @@ class ElementSummary:
     d = dict(src_dict)
     count = d.pop("count")
 
-    total = d.pop("total")
-
-    average = d.pop("average")
-
     min_ = d.pop("min")
 
     max_ = d.pop("max")
 
+    def _parse_total(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    total = _parse_total(d.pop("total", UNSET))
+
+    def _parse_average(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    average = _parse_average(d.pop("average", UNSET))
+
     element_summary = cls(
       count=count,
-      total=total,
-      average=average,
       min_=min_,
       max_=max_,
+      total=total,
+      average=average,
     )
 
     element_summary.additional_properties = d

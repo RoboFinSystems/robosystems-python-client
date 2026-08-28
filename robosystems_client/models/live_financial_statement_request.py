@@ -17,12 +17,15 @@ class LiveFinancialStatementRequest:
   """Request for live-financial-statement (OLTP, entity graphs only).
 
   Attributes:
-      statement_type (str): income_statement | balance_sheet | cash_flow_statement | equity_statement
+      statement_type (str): income_statement | balance_sheet | cash_flow_statement | equity_statement.
+          ``equity_statement`` is provisional — equity balances, not a rollforward — and is not offered on the MCP surface
+          until it articulates.
       period_start (datetime.date | None | Unset): Explicit window start. Overrides period_type/fiscal_year.
       period_end (datetime.date | None | Unset): Explicit window end. Overrides period_type/fiscal_year.
       period_type (None | str | Unset): annual | quarterly | instant (ignored when dates supplied)
       fiscal_year (int | None | Unset): Fiscal year for annual window (anchored on FiscalCalendar)
-      limit (int | Unset): Max fact rows returned Default: 50.
+      limit (int | Unset): Max fact rows returned. Defaults to the ceiling so a statement is never cut mid-section —
+          visible rows would stop footing to visible subtotals. Lower it only for a preview. Default: 1000.
   """
 
   statement_type: str
@@ -30,7 +33,7 @@ class LiveFinancialStatementRequest:
   period_end: datetime.date | None | Unset = UNSET
   period_type: None | str | Unset = UNSET
   fiscal_year: int | None | Unset = UNSET
-  limit: int | Unset = 50
+  limit: int | Unset = 1000
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
