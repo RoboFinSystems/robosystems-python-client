@@ -6,26 +6,16 @@ Provides proper integration with the generated Client authentication system.
 from typing import Dict, Any
 from ..client import Client, AuthenticatedClient
 from .facade import RoboSystemsClients, RoboSystemsClientConfig
+from .token_utils import apply_auth_header
 
 
 def _apply_auth_header(headers: Dict[str, str], credential: str) -> None:
   """Set the correct auth header for a credential, routed by shape.
 
-  The backend accepts two credential formats, and they go in DIFFERENT
-  headers — not interchangeable (see ``graphql/client.py``):
-
-  - Long-lived API keys (``rfs…`` prefix) → ``X-API-Key``. Validated
-    against the api_keys table.
-  - Short-lived JWTs → ``Authorization: Bearer …``. Validated by the
-    JWT middleware.
-
-  Sending a JWT as ``X-API-Key`` (or an API key as Bearer) both fail
-  with 401 "Invalid API key" — so exactly one header is set, never both.
+  Thin alias of :func:`token_utils.apply_auth_header`, which the per-call
+  header resolver in the SSE-backed clients shares — one routing rule.
   """
-  if credential.startswith("rfs"):
-    headers["X-API-Key"] = credential
-  else:
-    headers["Authorization"] = f"Bearer {credential}"
+  apply_auth_header(headers, credential)
 
 
 def _build_sdk_client(base_url: str, credential: str, headers: Dict[str, str]):

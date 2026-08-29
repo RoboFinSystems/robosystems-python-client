@@ -74,6 +74,20 @@ class EventType(Enum):
   QUEUE_UPDATE = "queue_update"
 
 
+def event_error_message(err: Any) -> str:
+  """Text of an ``error`` payload, whichever shape the stream emitted.
+
+  The stream's own terminal events carry dicts (``{"message": …}`` /
+  ``{"error": …}``); a stream that could not open, or whose reconnects ran
+  out, emits the transport ``Exception`` itself. Handlers that assumed a
+  dict raised inside ``emit`` — which only logs — and left their wait loop
+  spinning with no verdict.
+  """
+  if isinstance(err, dict):
+    return str(err.get("message", err.get("error", "Unknown error")))
+  return str(err)
+
+
 class SSEClient:
   """SSE client for RoboSystems API with automatic reconnection"""
 

@@ -115,6 +115,33 @@ from robosystems_client.clients import TokenClients
 extensions = TokenClients(token="your-jwt-token", base_url="https://api.robosystems.ai")
 ```
 
+### Rotating Credentials (`token_provider`)
+
+Short-lived JWTs rotate, and the backend revokes the previous token on every
+session refresh — a credential captured when the facade was built stops
+working the moment the session rotates. Pass a zero-arg callable instead and
+every client resolves the credential fresh: the GraphQL facades (`ledger` /
+`investor` / `library`) on each request, and the SSE-backed clients
+(`operator` / `operations` / `query`) on each REST call _and_ each stream
+connect. It wins over any static `token` or auth header in `headers`, and is
+routed by shape (`rfs…` keys as `X-API-Key`, anything else as a Bearer JWT).
+
+```python
+from robosystems_client.clients import RoboSystemsClients, RoboSystemsClientConfig
+
+extensions = RoboSystemsClients(
+  RoboSystemsClientConfig(
+    base_url="https://api.robosystems.ai",
+    token_provider=lambda: load_current_jwt(),  # or `lambda: manager.token`
+  )
+)
+```
+
+`OperatorClient` also follows a queued run over `/v1/operations/{id}/status`
+whenever its stream gives no verdict — it could not open, its reconnects ran
+out, or it ended before a terminal event — so a run that is already executing
+is never lost. `OperatorOptions.poll_interval` (seconds) tunes the interval.
+
 ### Environment-Specific Configurations
 
 ```python

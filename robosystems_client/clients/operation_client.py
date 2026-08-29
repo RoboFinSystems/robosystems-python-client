@@ -10,6 +10,7 @@ from datetime import datetime
 from enum import Enum
 
 from .sse_client import SSEClient, AsyncSSEClient, SSEConfig, EventType
+from .token_utils import resolve_auth_headers
 
 logger = logging.getLogger(__name__)
 
@@ -105,8 +106,11 @@ class OperationClient:
     error = None
 
     # Set up SSE connection with event replay from the beginning
-    # This handles the race condition where the operation may have already completed
-    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
+    # This handles the race condition where the operation may have already completed.
+    # Headers are resolved per connect so a rotated JWT reaches the stream.
+    sse_config = SSEConfig(
+      base_url=self.base_url, headers=resolve_auth_headers(self.config)
+    )
     sse_client = SSEClient(sse_config)
 
     def on_operation_started(data):
@@ -216,8 +220,8 @@ class OperationClient:
     )
     from ..client import Client
 
-    # Use regular Client with headers instead of AuthenticatedClient
-    client = Client(base_url=self.base_url, headers=self.headers)
+    # Plain Client with the headers current now (`token_provider` wins).
+    client = Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
     try:
       # Auth travels in self.headers (X-API-Key / Authorization). The generated
       # function takes no `token` kwarg — passing one raised TypeError, which
@@ -246,8 +250,8 @@ class OperationClient:
     from ..api.operations.cancel_operation import sync_detailed as cancel_operation
     from ..client import Client
 
-    # Use regular Client with headers instead of AuthenticatedClient
-    client = Client(base_url=self.base_url, headers=self.headers)
+    # Plain Client with the headers current now (`token_provider` wins).
+    client = Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
     try:
       # See get_operation_status: no `token` kwarg on the generated function.
       response = cancel_operation(operation_id=operation_id, client=client)
@@ -308,8 +312,11 @@ class AsyncOperationClient:
     completed = False
     error = None
 
-    # Set up SSE connection
-    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
+    # Set up SSE connection; headers resolved per connect so a rotated JWT
+    # reaches the stream.
+    sse_config = SSEConfig(
+      base_url=self.base_url, headers=resolve_auth_headers(self.config)
+    )
     sse_client = AsyncSSEClient(sse_config)
 
     def on_operation_started(data):
