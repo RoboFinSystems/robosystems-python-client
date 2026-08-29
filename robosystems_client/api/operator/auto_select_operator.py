@@ -128,8 +128,9 @@ def sync_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
   """Auto-select Operator for Query
 
-   Routes to the best operator for your query. Operators: `cypher` (answers natural-language questions
-  by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
+   Routes to the best operator for your query. Operators: `analyst` (answers natural-language questions
+  over the graph — curated financial reads, documents, memory, and read-only Cypher; supports `quick`,
+  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (autonomous Chart of
   Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
   /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
   usage, not a fixed price per mode. The run executes on the background worker: the default answer is
@@ -174,8 +175,9 @@ def sync(
 ) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
   """Auto-select Operator for Query
 
-   Routes to the best operator for your query. Operators: `cypher` (answers natural-language questions
-  by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
+   Routes to the best operator for your query. Operators: `analyst` (answers natural-language questions
+  over the graph — curated financial reads, documents, memory, and read-only Cypher; supports `quick`,
+  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (autonomous Chart of
   Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
   /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
   usage, not a fixed price per mode. The run executes on the background worker: the default answer is
@@ -215,8 +217,9 @@ async def asyncio_detailed(
 ) -> Response[Any | ErrorResponse | HTTPValidationError | OperatorResponse]:
   """Auto-select Operator for Query
 
-   Routes to the best operator for your query. Operators: `cypher` (answers natural-language questions
-  by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
+   Routes to the best operator for your query. Operators: `analyst` (answers natural-language questions
+  over the graph — curated financial reads, documents, memory, and read-only Cypher; supports `quick`,
+  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (autonomous Chart of
   Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
   /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
   usage, not a fixed price per mode. The run executes on the background worker: the default answer is
@@ -259,8 +262,9 @@ async def asyncio(
 ) -> Any | ErrorResponse | HTTPValidationError | OperatorResponse | None:
   """Auto-select Operator for Query
 
-   Routes to the best operator for your query. Operators: `cypher` (answers natural-language questions
-  by querying the graph; supports `quick`, `standard`, `extended`) and `mapping` (autonomous Chart of
+   Routes to the best operator for your query. Operators: `analyst` (answers natural-language questions
+  over the graph — curated financial reads, documents, memory, and read-only Cypher; supports `quick`,
+  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (autonomous Chart of
   Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
   /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
   usage, not a fixed price per mode. The run executes on the background worker: the default answer is

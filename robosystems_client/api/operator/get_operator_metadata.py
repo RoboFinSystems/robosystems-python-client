@@ -98,7 +98,7 @@ def sync_detailed(
 
   Args:
       graph_id (str):
-      operator_type (str): Operator type identifier (e.g., 'financial', 'research', 'rag')
+      operator_type (str): Operator type identifier (e.g., 'analyst', 'mapping')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -130,7 +130,7 @@ def sync(
 
   Args:
       graph_id (str):
-      operator_type (str): Operator type identifier (e.g., 'financial', 'research', 'rag')
+      operator_type (str): Operator type identifier (e.g., 'analyst', 'mapping')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -157,7 +157,7 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str):
-      operator_type (str): Operator type identifier (e.g., 'financial', 'research', 'rag')
+      operator_type (str): Operator type identifier (e.g., 'analyst', 'mapping')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -187,7 +187,7 @@ async def asyncio(
 
   Args:
       graph_id (str):
-      operator_type (str): Operator type identifier (e.g., 'financial', 'research', 'rag')
+      operator_type (str): Operator type identifier (e.g., 'analyst', 'mapping')
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
