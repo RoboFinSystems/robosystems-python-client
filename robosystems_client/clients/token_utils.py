@@ -437,9 +437,62 @@ def resolve_config_token(config: Dict[str, Any]) -> Optional[str]:
   so JWT refreshes are picked up without rebuilding the facade.
 
   Pair with :class:`TokenManager` when you need refresh scheduling: keep
-  a manager instance and pass ``token_provider=manager.get_token``.
+  a manager instance and pass ``token_provider=lambda: manager.token``
+  (the property refreshes on read when the token is near expiry).
   """
   provider = config.get("token_provider")
   if provider is not None:
     return provider()
   return config.get("token")
+
+
+_AUTH_HEADER_NAMES = ("x-api-key", "authorization")
+
+
+def apply_auth_header(headers: Dict[str, str], credential: str) -> None:
+  """Set the correct auth header for a credential, routed by shape.
+
+  The backend accepts two credential formats, and they go in DIFFERENT
+  headers — not interchangeable (see ``graphql/client.py``):
+
+  - Long-lived API keys (``rfs…`` prefix) → ``X-API-Key``. Validated
+    against the api_keys table.
+  - Short-lived JWTs → ``Authorization: Bearer …``. Validated by the
+    JWT middleware.
+
+  Sending a JWT as ``X-API-Key`` (or an API key as Bearer) both fail
+  with 401 "Invalid API key" — so exactly one header is set, never both.
+  """
+  if credential.startswith("rfs"):
+    headers["X-API-Key"] = credential
+  else:
+    headers["Authorization"] = f"Bearer {credential}"
+
+
+def resolve_auth_headers(config: Dict[str, Any]) -> Dict[str, str]:
+  """Headers for one request or stream, carrying the credential current *now*.
+
+  Without a ``token_provider`` this is the configured static ``headers``
+  unchanged (plus the static ``token``, routed by shape, when those headers
+  carry no credential of their own). With a provider, any ``X-API-Key`` /
+  ``Authorization`` the static headers hold is replaced by the provider's
+  current credential — a header captured at facade construction must not
+  outlive a rotation. The SSE-backed clients build their stream headers
+  from this on every connect; the REST paths build a fresh client from it
+  per call, the same way the GraphQL facades do.
+  """
+  static = dict(config.get("headers") or {})
+  provider = config.get("token_provider")
+  if provider is None:
+    if any(k.lower() in _AUTH_HEADER_NAMES for k in static):
+      return static
+    token = config.get("token")
+    if token:
+      apply_auth_header(static, token)
+    return static
+
+  headers = {k: v for k, v in static.items() if k.lower() not in _AUTH_HEADER_NAMES}
+  credential = provider()
+  if credential:
+    apply_auth_header(headers, credential)
+  return headers

@@ -19,7 +19,15 @@ from datetime import datetime
 
 from ..api.query.execute_cypher import sync_detailed as execute_cypher_query
 from ..models.cypher_statement_request import CypherStatementRequest
-from .sse_client import SSEClient, AsyncSSEClient, SSEConfig, EventType
+from ..client import Client
+from .sse_client import (
+  SSEClient,
+  AsyncSSEClient,
+  SSEConfig,
+  EventType,
+  event_error_message,
+)
+from .token_utils import resolve_auth_headers, resolve_config_token
 
 
 @dataclass
@@ -85,6 +93,16 @@ class QueryClient:
     self.token = config.get("token")
     self.sse_client: Optional[SSEClient] = None
 
+  def _rest_client(self) -> Client:
+    """A REST client for one call, carrying the credential current now."""
+    if not resolve_config_token(self.config):
+      raise Exception("No API key provided. Set X-API-Key in headers.")
+    return Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+
+  def _sse_config(self) -> SSEConfig:
+    """Stream config for one connect; headers carry the credential current now."""
+    return SSEConfig(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+
   def execute_query(
     self, graph_id: str, request: QueryRequest, options: QueryOptions = None
   ) -> Union[QueryResult, Iterator[Any]]:
@@ -97,20 +115,9 @@ class QueryClient:
       query=request.query, parameters=request.parameters or {}
     )
 
-    # Execute the query through the generated client
-    from ..client import AuthenticatedClient
-
-    # Create authenticated client with X-API-Key
-    if not self.token:
-      raise Exception("No API key provided. Set X-API-Key in headers.")
-
-    client = AuthenticatedClient(
-      base_url=self.base_url,
-      token=self.token,
-      prefix="",
-      auth_header_name="X-API-Key",
-      headers=self.headers,
-    )
+    # Execute the query through the generated client, with the credential
+    # current now (`token_provider` wins over the static token).
+    client = self._rest_client()
 
     try:
       kwargs = {
@@ -346,9 +353,9 @@ class QueryClient:
     completed = False
     error = None
 
-    # Set up SSE connection
-    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
-    self.sse_client = SSEClient(sse_config)
+    # Set up SSE connection; headers resolved per connect so a rotated JWT
+    # reaches the stream.
+    self.sse_client = SSEClient(self._sse_config())
 
     # Set up event handlers
     def on_data_chunk(data):
@@ -375,8 +382,10 @@ class QueryClient:
       completed = True
 
     def on_error(err):
+      # Terminal events carry dicts; a stream that could not open (or whose
+      # reconnects ran out) emits the transport Exception itself.
       nonlocal error, completed
-      error = Exception(err.get("message", err.get("error", "Unknown error")))
+      error = err if isinstance(err, Exception) else Exception(event_error_message(err))
       completed = True
 
     # Register event handlers
@@ -385,9 +394,24 @@ class QueryClient:
     self.sse_client.on(EventType.OPERATION_PROGRESS.value, on_progress)
     self.sse_client.on(EventType.OPERATION_COMPLETED.value, on_completed)
     self.sse_client.on(EventType.OPERATION_ERROR.value, on_error)
+    # Transport failures (bad status, retries exhausted) must end the wait too.
+    self.sse_client.on("error", on_error)
+    self.sse_client.on("max_retries_exceeded", on_error)
 
-    # Connect and start streaming
+    # Connect and start streaming. connect() is blocking: the stream has
+    # ended (or never opened) by the time it returns.
     self.sse_client.connect(operation_id)
+
+    # No terminal event means no verdict — say so rather than spin below.
+    if not completed and error is None:
+      error = Exception(
+        f"Query stream for operation {operation_id} ended before a result"
+      )
+      completed = True
+    if error is not None:
+      self.sse_client.close()
+      self.sse_client = None
+      raise error
 
     # Yield buffered results
     while not completed or buffer:
@@ -421,9 +445,8 @@ class QueryClient:
 
     # Set up SSE connection. Headers carry the auth SSEClient.connect merges in;
     # omitting them made this stream anonymous, so every queued query 401'd.
-    # (_stream_query_results already passes them.)
-    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
-    sse_client = SSEClient(sse_config)
+    # Resolved per connect so a rotated JWT reaches the stream.
+    sse_client = SSEClient(self._sse_config())
 
     def on_queue_update(data):
       if options.on_queue_update:
@@ -449,11 +472,13 @@ class QueryClient:
       completed = True
 
     def on_error(err):
+      # Terminal events carry dicts; a stream that could not open (or whose
+      # reconnects ran out) emits the transport Exception itself.
       nonlocal error, completed
-      error = Exception(err.get("message", err.get("error", "Unknown error")))
+      error = err if isinstance(err, Exception) else Exception(event_error_message(err))
       completed = True
 
-    def on_cancelled():
+    def on_cancelled(_data=None):
       nonlocal error, completed
       error = Exception("Query cancelled")
       completed = True
@@ -464,20 +489,24 @@ class QueryClient:
     sse_client.on(EventType.OPERATION_COMPLETED.value, on_completed)
     sse_client.on(EventType.OPERATION_ERROR.value, on_error)
     sse_client.on(EventType.OPERATION_CANCELLED.value, on_cancelled)
+    # Transport failures (bad status, retries exhausted) must end the wait too.
+    sse_client.on("error", on_error)
+    sse_client.on("max_retries_exceeded", on_error)
 
-    # Connect and wait
-    sse_client.connect(operation_id)
+    # Connect and wait. connect() is blocking: the stream has ended (or
+    # never opened) by the time it returns, so the verdict is in by now.
+    try:
+      sse_client.connect(operation_id)
+    finally:
+      sse_client.close()
 
-    # Wait for completion
-    import time
-
-    while not completed:
-      if error:
-        sse_client.close()
-        raise error
-      time.sleep(0.1)
-
-    sse_client.close()
+    if error is not None:
+      raise error
+    if result is None:
+      # No terminal event means no verdict — say so rather than return None.
+      raise Exception(
+        f"Query stream for operation {operation_id} ended before a result"
+      )
     return result
 
   def query(

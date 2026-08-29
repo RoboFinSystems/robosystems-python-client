@@ -3,17 +3,32 @@
 Provides intelligent operator execution with automatic strategy selection.
 """
 
+import time
 from dataclasses import dataclass
-from typing import Dict, Any, Optional, Callable
+from typing import Dict, Any, Optional, Callable, cast
 from datetime import datetime
 
 from ..api.operator.auto_select_operator import sync_detailed as auto_select_operator
 from ..api.operator.execute_specific_operator import (
   sync_detailed as execute_specific_operator,
 )
+from ..api.operations.get_operation_status import (
+  sync_detailed as get_operation_status,
+)
+from ..client import Client
 from ..models.operator_request import OperatorRequest
 from ..models.operator_message import OperatorMessage
-from .sse_client import SSEClient, SSEConfig, EventType
+from ..types import UNSET
+from .sse_client import SSEClient, SSEConfig, EventType, event_error_message
+from .token_utils import resolve_auth_headers, resolve_config_token
+
+# Seconds between `/status` polls while following a run whose stream gave
+# no verdict. Mirrors the TypeScript client's `pollIntervalMs` default.
+DEFAULT_POLL_INTERVAL_SECONDS = 2.0
+
+# Consecutive `/status` failures tolerated before the fallback gives up: one
+# transient network error must not lose a run that is still going.
+MAX_CONSECUTIVE_POLL_FAILURES = 3
 
 
 @dataclass
@@ -35,6 +50,10 @@ class OperatorOptions:
   mode: Optional[str] = "auto"  # 'auto', 'sync', 'async'
   max_wait: Optional[int] = None
   on_progress: Optional[Callable[[str, Optional[int]], None]] = None
+  # Seconds between `/v1/operations/{id}/status` polls while the client
+  # follows a queued run its stream gave no verdict for. Only the fallback
+  # path uses it; defaults to DEFAULT_POLL_INTERVAL_SECONDS.
+  poll_interval: Optional[float] = None
 
 
 @dataclass
@@ -49,6 +68,40 @@ class OperatorResult:
   confidence_score: Optional[float] = None
   execution_time: Optional[float] = None
   timestamp: Optional[str] = None
+  # Present when the API reports a failed run inside an otherwise successful
+  # response (credit pre-flight, operator timeouts, cancelled runs); `content`
+  # then carries the explanation rather than an answer.
+  error_details: Optional[Dict[str, Any]] = None
+
+
+def _operator_result(data: Dict[str, Any]) -> OperatorResult:
+  """Shape an operator payload into the public result.
+
+  The `operator_completed` event, the generic completion event's `result`,
+  and the `/status` `result` all carry the same fields — one mapper keeps
+  them consistent.
+  """
+  return OperatorResult(
+    content=data.get("content") or "",
+    operator_used=data.get("operator_used") or "unknown",
+    mode_used=data.get("mode_used") or "standard",
+    metadata=data.get("metadata"),
+    tokens_used=data.get("tokens_used"),
+    confidence_score=data.get("confidence_score"),
+    execution_time=data.get("execution_time"),
+    timestamp=data.get("timestamp") or datetime.now().isoformat(),
+    error_details=data.get("error_details"),
+  )
+
+
+def _attr_or_none(data: Any, name: str) -> Any:
+  """An attrs-model field as a plain value: UNSET → None, models → dicts."""
+  value = getattr(data, name, None)
+  if value is UNSET:
+    return None
+  if hasattr(value, "to_dict"):
+    return value.to_dict()
+  return value
 
 
 @dataclass
@@ -59,6 +112,24 @@ class QueuedOperatorResponse:
   operation_id: str
   message: str
   sse_endpoint: Optional[str] = None
+
+
+class _PollAbort(Exception):
+  """Internal: a `/status` verdict that must not be retried."""
+
+
+def _response_detail(response: Any) -> str:
+  """Human-readable detail of a non-200 generated-client response."""
+  parsed = getattr(response, "parsed", None)
+  detail = getattr(parsed, "detail", None)
+  if isinstance(detail, str) and detail:
+    return detail
+  content = getattr(response, "content", b"")
+  if isinstance(content, bytes):
+    text = content.decode("utf-8", errors="replace")
+  else:
+    text = str(content or "")
+  return text[:200] or "empty response"
 
 
 class QueuedOperatorError(Exception):
@@ -78,6 +149,21 @@ class OperatorClient:
     self.headers = config.get("headers", {})
     self.token = config.get("token")
     self.sse_client: Optional[SSEClient] = None
+
+  def _rest_client(self) -> Client:
+    """A REST client for one call, carrying the credential current now.
+
+    Resolved per call — `token_provider` wins over the static token — so a
+    rotated JWT is picked up without rebuilding the facade, the same way the
+    GraphQL facades do it.
+    """
+    if not resolve_config_token(self.config):
+      raise Exception("No API key provided. Set X-API-Key in headers.")
+    return Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+
+  def _sse_config(self) -> SSEConfig:
+    """Stream config for one connect; headers carry the credential current now."""
+    return SSEConfig(base_url=self.base_url, headers=resolve_auth_headers(self.config))
 
   def execute_query(
     self,
@@ -102,19 +188,8 @@ class OperatorClient:
       force_extended_analysis=request.force_extended_analysis,
     )
 
-    # Execute through the generated client
-    from ..client import AuthenticatedClient
-
-    if not self.token:
-      raise Exception("No API key provided. Set X-API-Key in headers.")
-
-    client = AuthenticatedClient(
-      base_url=self.base_url,
-      token=self.token,
-      prefix="",
-      auth_header_name="X-API-Key",
-      headers=self.headers,
-    )
+    # Execute through the generated client, with the credential current now
+    client = self._rest_client()
 
     try:
       response = auto_select_operator(
@@ -153,11 +228,10 @@ class OperatorClient:
               confidence_score=data.get("confidence_score"),
               execution_time=data.get("execution_time"),
               timestamp=data.get("timestamp", datetime.now().isoformat()),
+              error_details=data.get("error_details"),
             )
           else:
             # attrs object - access attributes directly
-            from ..types import UNSET
-
             return OperatorResult(
               content=data.content if data.content is not UNSET else "",
               operator_used=data.operator_used
@@ -179,6 +253,7 @@ class OperatorClient:
               timestamp=data.timestamp
               if hasattr(data, "timestamp") and data.timestamp is not UNSET
               else datetime.now().isoformat(),
+              error_details=_attr_or_none(data, "error_details"),
             )
 
         # Check if this is a queued response (async background task execution)
@@ -197,8 +272,6 @@ class OperatorClient:
         else:
           is_queued = hasattr(data, "operation_id")
           if is_queued:
-            from ..types import UNSET
-
             queued_response = QueuedOperatorResponse(
               status=data.status if hasattr(data, "status") else "queued",
               operation_id=data.operation_id,
@@ -260,19 +333,8 @@ class OperatorClient:
       force_extended_analysis=request.force_extended_analysis,
     )
 
-    # Execute through the generated client
-    from ..client import AuthenticatedClient
-
-    if not self.token:
-      raise Exception("No API key provided. Set X-API-Key in headers.")
-
-    client = AuthenticatedClient(
-      base_url=self.base_url,
-      token=self.token,
-      prefix="",
-      auth_header_name="X-API-Key",
-      headers=self.headers,
-    )
+    # Execute through the generated client, with the credential current now
+    client = self._rest_client()
 
     try:
       response = execute_specific_operator(
@@ -311,11 +373,10 @@ class OperatorClient:
               confidence_score=data.get("confidence_score"),
               execution_time=data.get("execution_time"),
               timestamp=data.get("timestamp", datetime.now().isoformat()),
+              error_details=data.get("error_details"),
             )
           else:
             # attrs object
-            from ..types import UNSET
-
             return OperatorResult(
               content=data.content if data.content is not UNSET else "",
               operator_used=data.operator_used
@@ -337,6 +398,7 @@ class OperatorClient:
               timestamp=data.timestamp
               if hasattr(data, "timestamp") and data.timestamp is not UNSET
               else datetime.now().isoformat(),
+              error_details=_attr_or_none(data, "error_details"),
             )
 
         # Check if this is a queued response
@@ -355,8 +417,6 @@ class OperatorClient:
         else:
           is_queued = hasattr(data, "operation_id")
           if is_queued:
-            from ..types import UNSET
-
             queued_response = QueuedOperatorResponse(
               status=data.status if hasattr(data, "status") else "queued",
               operation_id=data.operation_id,
@@ -396,14 +456,15 @@ class OperatorClient:
   def _wait_for_operator_completion(
     self, operation_id: str, options: OperatorOptions
   ) -> OperatorResult:
-    """Wait for operator completion and return final result"""
-    result = None
-    error = None
+    """Follow a queued run to its result: over the stream, else over `/status`."""
+    result: Optional[OperatorResult] = None
+    error: Optional[Exception] = None
     completed = False
+    transport_error: Optional[Exception] = None
 
-    # Set up SSE connection
-    sse_config = SSEConfig(base_url=self.base_url, headers=self.headers)
-    sse_client = SSEClient(sse_config)
+    # Headers are resolved per connect so a rotated JWT reaches the stream.
+    sse_client = SSEClient(self._sse_config())
+    self.sse_client = sse_client
 
     def on_progress(data):
       if options.on_progress:
@@ -421,44 +482,34 @@ class OperatorClient:
 
     def on_operator_completed(data):
       nonlocal result, completed
-      result = OperatorResult(
-        content=data.get("content", ""),
-        operator_used=data.get("operator_used", "unknown"),
-        mode_used=data.get("mode_used", "standard"),
-        metadata=data.get("metadata"),
-        tokens_used=data.get("tokens_used"),
-        confidence_score=data.get("confidence_score"),
-        execution_time=data.get("execution_time"),
-        timestamp=data.get("timestamp", datetime.now().isoformat()),
-      )
+      result = _operator_result(data)
       completed = True
 
     def on_completed(data):
       nonlocal result, completed
       if not result:
         # Fallback to generic completion event
-        operator_result = data.get("result", data)
-        result = OperatorResult(
-          content=operator_result.get("content", ""),
-          operator_used=operator_result.get("operator_used", "unknown"),
-          mode_used=operator_result.get("mode_used", "standard"),
-          metadata=operator_result.get("metadata"),
-          tokens_used=operator_result.get("tokens_used"),
-          confidence_score=operator_result.get("confidence_score"),
-          execution_time=operator_result.get("execution_time"),
-          timestamp=operator_result.get("timestamp", datetime.now().isoformat()),
-        )
+        result = _operator_result(data.get("result") or data)
         completed = True
 
     def on_error(err):
+      # The run itself failed — a verdict, not a transport problem.
       nonlocal error, completed
-      error = Exception(err.get("message", err.get("error", "Unknown error")))
+      error = Exception(event_error_message(err))
       completed = True
 
-    def on_cancelled():
+    def on_cancelled(_data=None):
       nonlocal error, completed
       error = Exception("Operator execution cancelled")
       completed = True
+
+    def on_transport_error(err):
+      # The stream could not open (401/403/404/429) or its reconnects ran
+      # out. That is not a verdict on the run; `/status` gives one below.
+      nonlocal transport_error
+      transport_error = (
+        err if isinstance(err, Exception) else Exception(event_error_message(err))
+      )
 
     # Register event handlers
     sse_client.on(EventType.OPERATION_PROGRESS.value, on_progress)
@@ -468,23 +519,100 @@ class OperatorClient:
     sse_client.on("operator_completed", on_operator_completed)
     sse_client.on(EventType.OPERATION_COMPLETED.value, on_completed)
     sse_client.on(EventType.OPERATION_ERROR.value, on_error)
-    sse_client.on("error", on_error)
     sse_client.on(EventType.OPERATION_CANCELLED.value, on_cancelled)
+    sse_client.on("error", on_transport_error)
+    sse_client.on("max_retries_exceeded", on_transport_error)
 
-    # Connect and wait
-    sse_client.connect(operation_id)
+    # connect() is blocking: it returns once the stream has ended, or right
+    # away when the stream never opened.
+    try:
+      sse_client.connect(operation_id)
+    finally:
+      sse_client.close()
+      if self.sse_client is sse_client:
+        self.sse_client = None
 
-    # Wait for completion
-    import time
+    if completed and error is not None:
+      raise error
+    if result is not None:
+      return result
 
-    while not completed:
-      if error:
-        sse_client.close()
-        raise error
-      time.sleep(0.1)
+    # No verdict from the stream: it never opened, its reconnects ran out, or
+    # it ended before a terminal event. The run is already queued and
+    # finishes regardless, so follow it over `/status` instead of losing it.
+    return self._poll_for_completion(operation_id, options, transport_error)
 
-    sse_client.close()
-    return result
+  def _poll_for_completion(
+    self,
+    operation_id: str,
+    options: OperatorOptions,
+    stream_error: Optional[Exception],
+  ) -> OperatorResult:
+    """Follow a queued run over `/v1/operations/{id}/status` until it settles.
+
+    Used when the stream gave no verdict; `stream_error` is folded into the
+    failure message if polling cannot reach one either.
+    """
+    interval = (
+      options.poll_interval
+      if options.poll_interval is not None
+      else DEFAULT_POLL_INTERVAL_SECONDS
+    )
+    stream_detail = (
+      str(stream_error) if stream_error else "stream ended before a terminal event"
+    )
+    consecutive_failures = 0
+
+    if options.on_progress:
+      options.on_progress("Live progress unavailable — waiting for the result", None)
+
+    while True:
+      try:
+        response = get_operation_status(
+          operation_id=operation_id, client=self._rest_client()
+        )
+        code = int(response.status_code)
+        parsed = response.parsed
+        if code != 200 or parsed is None:
+          detail = _response_detail(response)
+          # A definitive 4xx (expired, not ours, unauthenticated) ends the
+          # wait; anything else is treated as transient and retried below.
+          if 400 <= code < 500 and code != 429:
+            raise _PollAbort(
+              f"Operator stream failed ({stream_detail}); "
+              f"status check failed ({code}: {detail})"
+            )
+          raise RuntimeError(f"{code}: {detail}")
+        status: Dict[str, Any] = (
+          parsed.to_dict()
+          if hasattr(parsed, "to_dict")
+          else cast(Dict[str, Any], parsed)
+        )
+        consecutive_failures = 0
+      except _PollAbort as abort:
+        raise Exception(str(abort)) from None
+      except Exception as poll_error:
+        consecutive_failures += 1
+        if consecutive_failures >= MAX_CONSECUTIVE_POLL_FAILURES:
+          raise Exception(
+            f"Operator stream failed ({stream_detail}); "
+            f"status polling failed ({poll_error})"
+          ) from poll_error
+        time.sleep(interval)
+        continue
+
+      state = status.get("status")
+      if state == "completed":
+        return _operator_result(status.get("result") or {})
+      if state == "failed":
+        raise Exception(
+          status.get("error") or status.get("message") or "Operator run failed"
+        )
+      if state == "cancelled":
+        raise Exception("Operator execution cancelled")
+      if options.on_progress and status.get("message"):
+        options.on_progress(status["message"], None)
+      time.sleep(interval)
 
   def query(
     self, graph_id: str, message: str, context: Dict[str, Any] = None
