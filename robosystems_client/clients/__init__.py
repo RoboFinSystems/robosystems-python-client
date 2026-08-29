@@ -252,11 +252,6 @@ def operator_query(graph_id: str, message: str, context=None):
   return get_clients().operator.query(graph_id, message, context)
 
 
-def analyze_financials(graph_id: str, message: str, on_progress=None):
-  """Execute financial operator using the default clients instance"""
-  return get_clients().operator.analyze_financials(graph_id, message, on_progress)
-
-
 # DataFrame convenience functions (if pandas is available)
 if (
   HAS_PANDAS
