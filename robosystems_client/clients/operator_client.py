@@ -493,42 +493,6 @@ class OperatorClient:
     request = OperatorQueryRequest(message=message, context=context)
     return self.execute_query(graph_id, request, OperatorOptions(mode="auto"))
 
-  def analyze_financials(
-    self,
-    graph_id: str,
-    message: str,
-    on_progress: Optional[Callable[[str, Optional[int]], None]] = None,
-  ) -> OperatorResult:
-    """Execute financial operator for financial analysis"""
-    request = OperatorQueryRequest(message=message)
-    return self.execute_operator(
-      graph_id, "financial", request, OperatorOptions(on_progress=on_progress)
-    )
-
-  def research(
-    self,
-    graph_id: str,
-    message: str,
-    on_progress: Optional[Callable[[str, Optional[int]], None]] = None,
-  ) -> OperatorResult:
-    """Execute research operator for deep research"""
-    request = OperatorQueryRequest(message=message)
-    return self.execute_operator(
-      graph_id, "research", request, OperatorOptions(on_progress=on_progress)
-    )
-
-  def rag(
-    self,
-    graph_id: str,
-    message: str,
-    on_progress: Optional[Callable[[str, Optional[int]], None]] = None,
-  ) -> OperatorResult:
-    """Execute RAG operator for fast retrieval"""
-    request = OperatorQueryRequest(message=message)
-    return self.execute_operator(
-      graph_id, "rag", request, OperatorOptions(on_progress=on_progress)
-    )
-
   def close(self):
     """Cancel any active SSE connections"""
     if self.sse_client:
