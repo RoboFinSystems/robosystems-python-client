@@ -244,14 +244,6 @@ class TestUnauthenticatedFacadeWiring:
   def test_operation_status_poll_survives_a_rate_limit_burst(self, stub: _Stub):
     # Polling a long-running operation in a loop is exactly the shape
     # that exhausts a category budget.
-    #
-    # Asserts the replay, not the returned payload: `get_operation_status`
-    # reads `parsed.status` off a model that only carries
-    # `additional_properties`, so it raises AttributeError on every
-    # response and its `except Exception` shapes that into
-    # `{"status": "error"}`. That defect predates this change and is
-    # deliberately untouched here — `operator_client._poll_for_completion`
-    # shows the working pattern (`parsed.to_dict()`).
     stub.fail_first = 2
     stub.body = b'{"operation_id": "op_1", "status": "completed", "progress": 100}'
     client = OperationClient(
@@ -264,10 +256,11 @@ class TestUnauthenticatedFacadeWiring:
       }
     )
 
-    client.get_operation_status("op_1")
+    result = client.get_operation_status("op_1")
 
     assert stub.calls == 3
     assert all(p.endswith("/v1/operations/op_1/status") for p in stub.paths)
+    assert result["status"] == "completed"
 
   def test_query_client_builds_a_retrying_rest_client(self, stub: _Stub):
     client = QueryClient(
