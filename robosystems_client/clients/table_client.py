@@ -62,17 +62,16 @@ class TableClient:
         List of TableInfo objects with metadata
     """
     try:
-      from ..client import AuthenticatedClient
+      from .retry import retrying_authenticated_client
 
       if not self.token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
-      client = AuthenticatedClient(
+      client = retrying_authenticated_client(
         base_url=self.base_url,
         token=self.token,
-        prefix="",
-        auth_header_name="X-API-Key",
         headers=self.headers,
+        config=self.config,
       )
 
       kwargs = {
@@ -133,17 +132,16 @@ class TableClient:
 
       request = SqlStatementRequest(sql=final_query)
 
-      from ..client import AuthenticatedClient
+      from .retry import retrying_authenticated_client
 
       if not self.token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
-      client = AuthenticatedClient(
+      client = retrying_authenticated_client(
         base_url=self.base_url,
         token=self.token,
-        prefix="",
-        auth_header_name="X-API-Key",
         headers=self.headers,
+        config=self.config,
       )
 
       kwargs = {

@@ -137,17 +137,16 @@ class FileClient:
         table_name=table_name,
       )
 
-      from ..client import AuthenticatedClient
+      from .retry import retrying_authenticated_client
 
       if not self.token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
-      client = AuthenticatedClient(
+      client = retrying_authenticated_client(
         base_url=self.base_url,
         token=self.token,
-        prefix="",
-        auth_header_name="X-API-Key",
         headers=self.headers,
+        config=self.config,
       )
 
       kwargs = {
@@ -294,17 +293,16 @@ class FileClient:
         List of FileInfo objects
     """
     try:
-      from ..client import AuthenticatedClient
+      from .retry import retrying_authenticated_client
 
       if not self.token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
-      client = AuthenticatedClient(
+      client = retrying_authenticated_client(
         base_url=self.base_url,
         token=self.token,
-        prefix="",
-        auth_header_name="X-API-Key",
         headers=self.headers,
+        config=self.config,
       )
 
       kwargs = {
@@ -357,17 +355,16 @@ class FileClient:
         FileInfo with multi-layer status tracking, or None if not found
     """
     try:
-      from ..client import AuthenticatedClient
+      from .retry import retrying_authenticated_client
 
       if not self.token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
-      client = AuthenticatedClient(
+      client = retrying_authenticated_client(
         base_url=self.base_url,
         token=self.token,
-        prefix="",
-        auth_header_name="X-API-Key",
         headers=self.headers,
+        config=self.config,
       )
 
       kwargs = {
@@ -414,17 +411,16 @@ class FileClient:
         True if deletion succeeded, False otherwise
     """
     try:
-      from ..client import AuthenticatedClient
+      from .retry import retrying_authenticated_client
 
       if not self.token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
-      client = AuthenticatedClient(
+      client = retrying_authenticated_client(
         base_url=self.base_url,
         token=self.token,
-        prefix="",
-        auth_header_name="X-API-Key",
         headers=self.headers,
+        config=self.config,
       )
 
       delete_op = DeleteFileOp(file_id=file_id, cascade=cascade)

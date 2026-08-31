@@ -20,6 +20,7 @@ from ..api.documents.list_documents import sync_detailed as list_documents
 from ..api.search.get_document_section import sync_detailed as get_document_section
 from ..api.search.search_documents import sync_detailed as search_documents
 from ..client import AuthenticatedClient
+from .retry import retrying_authenticated_client
 from ..models.delete_document_op import DeleteDocumentOp
 from ..models.document_detail_response import DocumentDetailResponse
 from ..models.document_list_response import DocumentListResponse
@@ -44,12 +45,11 @@ class DocumentClient:
   def _get_client(self) -> AuthenticatedClient:
     if not self.token:
       raise Exception("No API key provided. Set X-API-Key in headers.")
-    return AuthenticatedClient(
+    return retrying_authenticated_client(
       base_url=self.base_url,
       token=self.token,
-      prefix="",
-      auth_header_name="X-API-Key",
       headers=self.headers,
+      config=self.config,
     )
 
   def upload(
