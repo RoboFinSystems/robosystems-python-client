@@ -16,6 +16,7 @@ from ..api.operations.get_operation_status import (
   sync_detailed as get_operation_status,
 )
 from ..client import Client
+from .retry import retrying_client
 from ..models.operator_request import OperatorRequest
 from ..models.operator_message import OperatorMessage
 from ..types import UNSET
@@ -159,7 +160,11 @@ class OperatorClient:
     """
     if not resolve_config_token(self.config):
       raise Exception("No API key provided. Set X-API-Key in headers.")
-    return Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+    return retrying_client(
+      base_url=self.base_url,
+      headers=resolve_auth_headers(self.config),
+      config=self.config,
+    )
 
   def _sse_config(self) -> SSEConfig:
     """Stream config for one connect; headers carry the credential current now."""

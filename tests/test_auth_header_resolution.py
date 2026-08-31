@@ -13,6 +13,7 @@ import pytest
 
 from robosystems_client.clients.auth_integration import _apply_auth_header
 from robosystems_client.clients.operation_client import OperationClient
+from robosystems_client.clients.retry import RetryingClient
 from robosystems_client.clients.sse_client import SSEClient, event_error_message
 from robosystems_client.clients.token_utils import (
   apply_auth_header,
@@ -137,9 +138,11 @@ class TestOperationClientHeaders:
 
     assert MockSSE.call_args[0][0].headers == {"Authorization": "Bearer jwt-rotated"}
 
-  # `Client` is imported inside the method, so patch it at its source module.
-  @patch("robosystems_client.client.Client")
-  def test_status_call_uses_provider_credential(self, MockClient, mock_config):
+  def test_status_call_uses_provider_credential(self, mock_config):
+    # Asserts the credential on the client actually handed to the
+    # generated op, rather than on a patched constructor — the status
+    # call now builds its client through `retrying_client`, and a
+    # constructor patch would only pin today's construction path.
     config = {**mock_config, "token_provider": lambda: "rfs_fresh"}
     with patch(
       "robosystems_client.api.operations.get_operation_status.sync_detailed"
@@ -147,4 +150,6 @@ class TestOperationClientHeaders:
       mock_get.return_value.parsed = None
       OperationClient(config).get_operation_status("op-1")
 
-    assert MockClient.call_args.kwargs["headers"] == {"X-API-Key": "rfs_fresh"}
+    passed = mock_get.call_args.kwargs["client"]
+    assert passed.get_httpx_client().headers["X-API-Key"] == "rfs_fresh"
+    assert isinstance(passed.get_httpx_client(), RetryingClient)

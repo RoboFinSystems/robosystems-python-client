@@ -16,11 +16,14 @@ import httpx
 import pytest
 
 from robosystems_client.clients.ledger_client import LedgerClient
+from robosystems_client.clients.operation_client import OperationClient
+from robosystems_client.clients.query_client import QueryClient
 from robosystems_client.clients.retry import (
   RetryingClient,
   backoff_seconds,
   retry_after_seconds,
   retrying_authenticated_client,
+  retrying_client,
 )
 
 
@@ -211,3 +214,65 @@ class TestFacadeWiring:
     assert stub.calls == 3
     assert result.id == "evt_1"
     assert all(p.endswith("/operations/create-event-block") for p in stub.paths)
+
+
+@pytest.mark.unit
+class TestUnauthenticatedFacadeWiring:
+  """The facades that resolve their own credential and pass it in headers.
+
+  query / operator / operations build a plain ``Client`` rather than an
+  ``AuthenticatedClient``, so they were missed by the first pass. Their
+  endpoints carry their own category budgets — Cypher queries, operator
+  runs, operation-status polls — and need the same replay.
+  """
+
+  def test_plain_client_retries_and_keeps_its_headers(self, stub: _Stub):
+    stub.fail_first = 2
+    client = retrying_client(
+      base_url=stub.base_url,
+      headers={"X-API-Key": "rfs_test", "X-Trace": "1"},
+      config={"max_retries": 5, "retry_delay": 1},
+    )
+    http = client.get_httpx_client()
+    response = http.post("/x", json={})
+
+    assert response.status_code == 200
+    assert stub.calls == 3
+    assert http.headers["X-API-Key"] == "rfs_test"
+    assert http.headers["X-Trace"] == "1"
+
+  def test_operation_status_poll_survives_a_rate_limit_burst(self, stub: _Stub):
+    # Polling a long-running operation in a loop is exactly the shape
+    # that exhausts a category budget.
+    stub.fail_first = 2
+    stub.body = b'{"operation_id": "op_1", "status": "completed", "progress": 100}'
+    client = OperationClient(
+      {
+        "base_url": stub.base_url,
+        "token": "rfs_test",
+        "headers": {},
+        "max_retries": 5,
+        "retry_delay": 1,
+      }
+    )
+
+    result = client.get_operation_status("op_1")
+
+    assert stub.calls == 3
+    assert all(p.endswith("/v1/operations/op_1/status") for p in stub.paths)
+    assert result["status"] == "completed"
+
+  def test_query_client_builds_a_retrying_rest_client(self, stub: _Stub):
+    client = QueryClient(
+      {
+        "base_url": stub.base_url,
+        "token": "rfs_test",
+        "headers": {},
+        "max_retries": 3,
+        "retry_delay": 1,
+      }
+    )
+    http = client._rest_client().get_httpx_client()
+
+    assert isinstance(http, RetryingClient)
+    assert http.headers["X-API-Key"] == "rfs_test"

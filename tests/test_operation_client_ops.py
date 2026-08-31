@@ -16,6 +16,12 @@ from robosystems_client.clients.operation_client import (
   MonitorOptions,
 )
 from robosystems_client.clients.sse_client import SSEClient
+from robosystems_client.models.cancel_operation_response_canceloperation import (
+  CancelOperationResponseCanceloperation,
+)
+from robosystems_client.models.get_operation_status_response_getoperationstatus import (
+  GetOperationStatusResponseGetoperationstatus,
+)
 
 
 # ── Helpers ──────────────────────────────────────────────────────────
@@ -243,12 +249,14 @@ class TestGetOperationStatus:
   @patch("robosystems_client.api.operations.get_operation_status.sync_detailed")
   def test_get_status_success(self, mock_get, mock_config):
     """Test successful status retrieval."""
+    # The real model, not a bare Mock: the endpoint is a free-form object,
+    # so the generated model carries only `additional_properties` and
+    # attribute access on it raises. A Mock makes `.status` work and let
+    # this test pass against code that could never work in production.
     mock_resp = Mock()
-    mock_resp.parsed = Mock()
-    mock_resp.parsed.status = "running"
-    mock_resp.parsed.progress = 50
-    mock_resp.parsed.result = None
-    mock_resp.parsed.error = None
+    mock_resp.parsed = GetOperationStatusResponseGetoperationstatus.from_dict(
+      {"status": "running", "progress": 50, "result": None, "error": None}
+    )
     mock_get.return_value = mock_resp
 
     client = OperationClient(mock_config)
@@ -292,8 +300,9 @@ class TestCancelOperation:
   def test_cancel_success(self, mock_cancel, mock_config):
     """Test successful cancellation."""
     mock_resp = Mock()
-    mock_resp.parsed = Mock()
-    mock_resp.parsed.cancelled = True
+    mock_resp.parsed = CancelOperationResponseCanceloperation.from_dict(
+      {"cancelled": True}
+    )
     mock_cancel.return_value = mock_resp
 
     client = OperationClient(mock_config)

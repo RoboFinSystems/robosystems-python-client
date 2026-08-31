@@ -5,7 +5,7 @@ Provides comprehensive operation monitoring with SSE support.
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Any, Optional, Callable, List
+from typing import Dict, Any, Optional, Callable, List, cast
 from datetime import datetime
 from enum import Enum
 
@@ -67,6 +67,24 @@ class MonitorOptions:
   on_queue_update: Optional[Callable[[int, int], None]] = None
   timeout: Optional[int] = None
   poll_interval: Optional[int] = None
+
+
+def _parsed_dict(parsed: Any) -> Dict[str, Any] | None:
+  """Body of a generated operations response as a plain dict.
+
+  The operations endpoints are declared as free-form objects, so the
+  generator emits models whose only field is ``additional_properties``
+  — attribute access on them raises, whatever the payload contained.
+  ``to_dict()`` is the accessor that works, and is what
+  ``operator_client._poll_for_completion`` already uses.
+  """
+  if parsed is None:
+    return None
+  if hasattr(parsed, "to_dict"):
+    return cast(Dict[str, Any], parsed.to_dict())
+  if isinstance(parsed, dict):
+    return cast(Dict[str, Any], parsed)
+  return None
 
 
 class OperationClient:
@@ -218,23 +236,33 @@ class OperationClient:
     from ..api.operations.get_operation_status import (
       sync_detailed as get_operation_status,
     )
-    from ..client import Client
+    from .retry import retrying_client
 
     # Plain Client with the headers current now (`token_provider` wins).
-    client = Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+    client = retrying_client(
+      base_url=self.base_url,
+      headers=resolve_auth_headers(self.config),
+      config=self.config,
+    )
     try:
       # Auth travels in self.headers (X-API-Key / Authorization). The generated
       # function takes no `token` kwarg — passing one raised TypeError, which
       # the handler below laundered into a fake {"status": "error"} result, so
       # this call never succeeded whenever a token was configured.
+      #
+      # Read through `to_dict()`, not attributes: the second incarnation of
+      # that same bug was `response.parsed.status` raising AttributeError on
+      # an additional-properties model, laundered into the same fake result
+      # for *every* response — including successful ones.
       response = get_operation_status(operation_id=operation_id, client=client)
-      if response.parsed:
+      payload = _parsed_dict(response.parsed)
+      if payload is not None:
         return {
           "operation_id": operation_id,
-          "status": response.parsed.status,
-          "progress": getattr(response.parsed, "progress", None),
-          "result": getattr(response.parsed, "result", None),
-          "error": getattr(response.parsed, "error", None),
+          "status": payload.get("status", "unknown"),
+          "progress": payload.get("progress"),
+          "result": payload.get("result"),
+          "error": payload.get("error"),
         }
     except Exception as e:
       # Logged rather than silently shaped into a result: swallowing here is
@@ -248,26 +276,34 @@ class OperationClient:
     """Cancel an operation"""
     # This would use the generated SDK to call /v1/operations/{operation_id}/cancel
     from ..api.operations.cancel_operation import sync_detailed as cancel_operation
-    from ..client import Client
+    from .retry import retrying_client
 
     # Plain Client with the headers current now (`token_provider` wins).
-    client = Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+    client = retrying_client(
+      base_url=self.base_url,
+      headers=resolve_auth_headers(self.config),
+      config=self.config,
+    )
     try:
-      # See get_operation_status: no `token` kwarg on the generated function.
+      # See get_operation_status: no `token` kwarg, and the body is read
+      # through `to_dict()` because attribute access always raises.
       response = cancel_operation(operation_id=operation_id, client=client)
-      if response.parsed:
-        return response.parsed.cancelled or False
+      payload = _parsed_dict(response.parsed)
+      cancelled = bool(payload.get("cancelled")) if payload is not None else False
     except Exception as e:
       logger.warning("Failed to cancel operation %s: %s", operation_id, e)
       return False
 
-    # Also close any active SSE connection with thread safety
+    # Close any active SSE connection with thread safety. This used to sit
+    # after an early `return` on the success path, so the one case that
+    # needs it — the cancel actually landed — was the one case that skipped
+    # it, leaking the stream.
     with self._lock:
       if operation_id in self.active_operations:
         self.active_operations[operation_id].close()
         del self.active_operations[operation_id]
 
-    return False
+    return cancelled
 
   def list_operations(self) -> List[Dict[str, Any]]:
     """List all operations (if supported by the API)"""

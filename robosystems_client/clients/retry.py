@@ -22,7 +22,7 @@ from typing import Any
 
 import httpx
 
-from ..client import AuthenticatedClient
+from ..client import AuthenticatedClient, Client
 
 RETRY_STATUS_CODES = frozenset({429})
 
@@ -172,5 +172,30 @@ def retrying_authenticated_client(
   return client.set_httpx_client(
     build_httpx_client(
       base_url=base_url, headers=request_headers, timeout=None, config=config
+    )
+  )
+
+
+def retrying_client(
+  *,
+  base_url: str,
+  headers: dict[str, str] | None = None,
+  config: dict[str, Any] | None = None,
+) -> Client:
+  """A plain :class:`Client` whose transport replays 429s.
+
+  The unauthenticated sibling of :func:`retrying_authenticated_client`,
+  for the facades that resolve their credential themselves and pass it
+  in ``headers`` (query / operator / operations) rather than letting
+  ``AuthenticatedClient`` stamp it. Those paths are rate-limited like
+  any other — Cypher queries, operator runs and operation-status polls
+  each draw on their own category budget — so they need the same replay.
+  """
+  return Client(
+    base_url=base_url,
+    headers=dict(headers or {}),
+  ).set_httpx_client(
+    build_httpx_client(
+      base_url=base_url, headers=headers or {}, timeout=None, config=config
     )
   )
