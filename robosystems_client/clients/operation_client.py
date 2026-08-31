@@ -218,10 +218,14 @@ class OperationClient:
     from ..api.operations.get_operation_status import (
       sync_detailed as get_operation_status,
     )
-    from ..client import Client
+    from .retry import retrying_client
 
     # Plain Client with the headers current now (`token_provider` wins).
-    client = Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+    client = retrying_client(
+      base_url=self.base_url,
+      headers=resolve_auth_headers(self.config),
+      config=self.config,
+    )
     try:
       # Auth travels in self.headers (X-API-Key / Authorization). The generated
       # function takes no `token` kwarg — passing one raised TypeError, which
@@ -248,10 +252,14 @@ class OperationClient:
     """Cancel an operation"""
     # This would use the generated SDK to call /v1/operations/{operation_id}/cancel
     from ..api.operations.cancel_operation import sync_detailed as cancel_operation
-    from ..client import Client
+    from .retry import retrying_client
 
     # Plain Client with the headers current now (`token_provider` wins).
-    client = Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+    client = retrying_client(
+      base_url=self.base_url,
+      headers=resolve_auth_headers(self.config),
+      config=self.config,
+    )
     try:
       # See get_operation_status: no `token` kwarg on the generated function.
       response = cancel_operation(operation_id=operation_id, client=client)
