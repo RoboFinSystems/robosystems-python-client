@@ -20,7 +20,12 @@ from __future__ import annotations
 import re
 from typing import Any
 
-import httpx
+
+from ..clients.retry import (
+  DEFAULT_MAX_RETRIES,
+  DEFAULT_RETRY_DELAY_MS,
+  RetryingClient,
+)
 
 
 class GraphQLError(Exception):
@@ -60,9 +65,13 @@ class GraphQLClient:
     token: str | None = None,
     headers: dict[str, str] | None = None,
     timeout: float = 60.0,
+    max_retries: int = DEFAULT_MAX_RETRIES,
+    retry_delay_ms: int = DEFAULT_RETRY_DELAY_MS,
   ):
     self.base_url = base_url.rstrip("/")
     self.timeout = timeout
+    self.max_retries = max_retries
+    self.retry_delay_ms = retry_delay_ms
     self._headers: dict[str, str] = {"Content-Type": "application/json"}
     if headers:
       self._headers.update(headers)
@@ -112,7 +121,11 @@ class GraphQLClient:
       payload["operationName"] = operation_name
 
     url = self._url_for(graph_id)
-    with httpx.Client(timeout=self.timeout) as client:
+    with RetryingClient(
+      timeout=self.timeout,
+      max_retries=self.max_retries,
+      retry_delay_ms=self.retry_delay_ms,
+    ) as client:
       response = client.post(url, json=payload, headers=self._headers)
 
     if response.status_code >= 400:

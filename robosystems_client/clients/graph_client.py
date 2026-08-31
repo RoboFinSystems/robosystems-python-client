@@ -116,17 +116,16 @@ class GraphClient:
 
   def _get_authenticated_client(self):
     """Build an AuthenticatedClient for API calls."""
-    from ..client import AuthenticatedClient
+    from .retry import retrying_authenticated_client
 
     if not self.token:
       raise ValueError("No API key provided. Set X-API-Key in headers.")
 
-    return AuthenticatedClient(
+    return retrying_authenticated_client(
       base_url=self.base_url,
       token=self.token,
-      prefix="",
-      auth_header_name="X-API-Key",
       headers=self.headers,
+      config=self.config,
     )
 
   # ---------------------------------------------------------------------------

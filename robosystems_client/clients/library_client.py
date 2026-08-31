@@ -22,6 +22,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..graphql.client import GraphQLClient, strip_none_vars
+from .retry import DEFAULT_MAX_RETRIES, DEFAULT_RETRY_DELAY_MS
 from .token_utils import resolve_config_token
 from ..graphql.generated.get_library_element import (
   GetLibraryElement,
@@ -110,6 +111,8 @@ class LibraryClient:
       token=token,
       headers=self.headers,
       timeout=self.timeout,
+      max_retries=self.config.get("max_retries", DEFAULT_MAX_RETRIES),
+      retry_delay_ms=self.config.get("retry_delay", DEFAULT_RETRY_DELAY_MS),
     )
 
   def _query(

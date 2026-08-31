@@ -167,6 +167,11 @@ from ..api.extensions_robo_ledger.update_journal_entry import (
   sync_detailed as op_update_journal_entry,
 )
 from ..client import AuthenticatedClient
+from .retry import (
+  DEFAULT_MAX_RETRIES,
+  DEFAULT_RETRY_DELAY_MS,
+  retrying_authenticated_client,
+)
 from ..graphql.client import GraphQLClient, strip_none_vars
 from .token_utils import resolve_config_token
 from ..graphql.generated.get_information_block import (
@@ -585,12 +590,11 @@ class LedgerClient:
     token = resolve_config_token(self.config)
     if not token:
       raise RuntimeError("No API key provided. Set X-API-Key in headers.")
-    return AuthenticatedClient(
+    return retrying_authenticated_client(
       base_url=self.base_url,
       token=token,
-      prefix="",
-      auth_header_name="X-API-Key",
       headers=self.headers,
+      config=self.config,
     )
 
   def _get_graphql_client(self) -> GraphQLClient:
@@ -609,6 +613,8 @@ class LedgerClient:
       token=token,
       headers=self.headers,
       timeout=self.timeout,
+      max_retries=self.config.get("max_retries", DEFAULT_MAX_RETRIES),
+      retry_delay_ms=self.config.get("retry_delay", DEFAULT_RETRY_DELAY_MS),
     )
 
   # ── Helpers ─────────────────────────────────────────────────────────
