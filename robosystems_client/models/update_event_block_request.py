@@ -35,8 +35,10 @@ class UpdateEventBlockRequest:
           transition_to (None | Unset | UpdateEventBlockRequestTransitionToType0): Status transition. Valid moves depend
               on current status: captured → committed | voided | superseded; classified → committed | pending | fulfilled |
               voided | superseded; committed → pending | fulfilled | voided | superseded; pending → fulfilled | voided |
-              superseded. Terminal states (fulfilled, voided, superseded) accept no further transitions. Note: classified and
-              fulfilled are usually set by handlers, not by callers, but the transition is allowed for corrections.
+              superseded; fulfilled → voided | superseded. A retraction (voided, superseded) is final and is refused from any
+              status once the event's ledger rows have posted or it has published to QuickBooks — reverse the posted entries
+              instead. Note: classified and fulfilled are usually set by handlers, not by callers, but the transition is
+              allowed for corrections.
           superseded_by_id (None | str | Unset): New event id that replaces this one. Required when
               transition_to='superseded'.
           description (None | str | Unset): Replacement free-text summary. Unset = unchanged; pass an empty string to

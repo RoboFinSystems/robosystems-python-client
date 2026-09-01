@@ -35,8 +35,9 @@ class EventBlockEnvelope:
               `adjustment`, `recognition`, `other`) or support (`control`, `approval`, `reconciliation`, `inquiry`).
           status (str): Lifecycle state. One of: `captured` (raw, pre-classification), `classified` (handler ran, GL
               pending), `committed` (GL entries posted), `pending` (committed but awaiting fulfillment of an obligation),
-              `fulfilled` (obligation discharged), `voided` (canceled — terminal), `superseded` (replaced by a corrected event
-              — terminal). See `UpdateEventBlockRequest.transition_to` for the valid transition graph.
+              `fulfilled` (obligation discharged — retractable while its ledger rows are still drafts), `voided` (canceled —
+              terminal), `superseded` (replaced by a corrected event — terminal). See `UpdateEventBlockRequest.transition_to`
+              for the valid transition graph.
           occurred_at (datetime.datetime): When the event happened in the real world (UTC).
           source (str): Capture source: `manual`, `system`, `schedule`, a connected provider name (e.g. `quickbooks`), or
               a registered external source_name. Used for adapter routing.
