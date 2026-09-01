@@ -1,5 +1,20 @@
 version: 2
+
 updates:
+  # Python — uv dependencies in pyproject.toml and uv.lock
+  - package-ecosystem: 'uv'
+    directory: '/'
+    schedule:
+      interval: 'monthly'
+    labels:
+      - 'dependencies'
+    # No groups: the runtime dependency set is small and the packages are
+    # unrelated to each other (httpx, pydantic, attrs, typing-extensions), so
+    # there is no version-coupled family to keep in lockstep the way the
+    # robosystems backend has to for opentelemetry, dagster and dbt.
+    # Majors on the runtime deps land on consumers of the published package,
+    # so they are left ungrouped for individual triage.
+
   # GitHub Actions — pinned action versions
   - package-ecosystem: 'github-actions'
     directory: '/'
@@ -7,3 +22,23 @@ updates:
       interval: 'monthly'
     labels:
       - 'dependencies'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+    ignore:
+      # Held across the fleet: the robosystems backend pins v8.3.2 and ignores
+      # majors because v9 flipped `prune-cache` to false and would grow its uv
+      # cache. This repo sits on v9.0.0 and stays there — it is pinned by SHA
+      # now, and neither v9's nor v10's breaking change actually bites here
+      # (no workflow triggers on release, pull_request_target or workflow_run,
+      # which is the only surface v10's cache guard touches). Downgrading to
+      # match the backend's exact pin would be churn for no security gain, so
+      # what is shared is the rule, not the version. Drop this entry when the
+      # backend takes a setup-uv major, and move in step with it.
+      - dependency-name: 'astral-sh/setup-uv'
+        update-types:
+          - 'version-update:semver-major'
