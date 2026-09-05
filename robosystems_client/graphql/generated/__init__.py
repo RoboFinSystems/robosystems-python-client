@@ -250,6 +250,13 @@ from .list_ledger_event_blocks import (
   ListLedgerEventBlocks,
   ListLedgerEventBlocksEventBlocks,
 )
+from .list_ledger_journal_entries import (
+  ListLedgerJournalEntries,
+  ListLedgerJournalEntriesJournalEntries,
+  ListLedgerJournalEntriesJournalEntriesEntries,
+  ListLedgerJournalEntriesJournalEntriesEntriesLineItems,
+  ListLedgerJournalEntriesJournalEntriesPagination,
+)
 from .list_ledger_mappings import (
   ListLedgerMappings,
   ListLedgerMappingsMappings,
@@ -350,6 +357,7 @@ from .operations import (
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
   LIST_LEDGER_EVENT_BLOCKS_GQL,
+  LIST_LEDGER_JOURNAL_ENTRIES_GQL,
   LIST_LEDGER_MAPPINGS_GQL,
   LIST_LEDGER_PUBLISH_LISTS_GQL,
   LIST_LEDGER_REPORTS_GQL,
@@ -558,6 +566,7 @@ __all__ = [
   "LIST_LEDGER_ELEMENTS_GQL",
   "LIST_LEDGER_ENTITIES_GQL",
   "LIST_LEDGER_EVENT_BLOCKS_GQL",
+  "LIST_LEDGER_JOURNAL_ENTRIES_GQL",
   "LIST_LEDGER_MAPPINGS_GQL",
   "LIST_LEDGER_PUBLISH_LISTS_GQL",
   "LIST_LEDGER_REPORTS_GQL",
@@ -618,6 +627,11 @@ __all__ = [
   "ListLedgerEntitiesEntities",
   "ListLedgerEventBlocks",
   "ListLedgerEventBlocksEventBlocks",
+  "ListLedgerJournalEntries",
+  "ListLedgerJournalEntriesJournalEntries",
+  "ListLedgerJournalEntriesJournalEntriesEntries",
+  "ListLedgerJournalEntriesJournalEntriesEntriesLineItems",
+  "ListLedgerJournalEntriesJournalEntriesPagination",
   "ListLedgerMappings",
   "ListLedgerMappingsMappings",
   "ListLedgerMappingsMappingsStructures",

@@ -810,6 +810,97 @@ class TestLedgerReadsAdditional:
     assert variables["startDate"] == "2026-01-01"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_journal_entries_returns_standalone_entries(
+    self, mock_execute, mock_config, graph_id
+  ):
+    """An entry with no parent transaction round-trips through the facade.
+
+    That shape is why the read exists: schedule-derived closing entries
+    carry no `transaction_id`, so they appear in no transaction listing.
+    """
+    mock_execute.return_value = {
+      "journalEntries": {
+        "entries": [
+          {
+            "id": "je_1",
+            "number": None,
+            "transactionId": None,
+            "type": "adjusting",
+            "status": "posted",
+            "postingDate": "2026-07-31",
+            "memo": "MacBook depreciation",
+            "provenance": "schedule_derived",
+            "sourceStructureId": "struct_1",
+            "sourceStructureName": "MacBook Pro Depreciation",
+            "triggeredByEventId": None,
+            "reversalOf": None,
+            "postedAt": "2026-08-01T12:00:00",
+            "totalDebit": 42.41,
+            "totalCredit": 42.41,
+            "balanced": True,
+            "lineItems": [
+              {
+                "id": "li_1",
+                "accountId": "el_1",
+                "accountName": "Depreciation Expense",
+                "accountCode": "6100",
+                "debitAmount": 42.41,
+                "creditAmount": 0.0,
+                "description": None,
+                "lineOrder": 1,
+              }
+            ],
+          }
+        ],
+        "pagination": {"total": 1, "limit": 100, "offset": 0, "hasMore": False},
+      }
+    }
+    client = LedgerClient(mock_config)
+    result = client.list_journal_entries(
+      graph_id, start_date="2026-07-01", end_date="2026-07-31", status="posted"
+    )
+    assert result is not None
+    assert len(result.entries) == 1
+    entry = result.entries[0]
+    assert entry.id == "je_1"
+    # None means standalone, not missing data.
+    assert entry.transaction_id is None
+    assert entry.source_structure_name == "MacBook Pro Depreciation"
+    assert entry.balanced is True
+    variables = mock_execute.call_args[0][2]
+    assert variables["startDate"] == "2026-07-01"
+    assert variables["status"] == "posted"
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_journal_entries_binds_every_filter(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {
+      "journalEntries": {
+        "entries": [],
+        "pagination": {"total": 0, "limit": 25, "offset": 50, "hasMore": False},
+      }
+    }
+    client = LedgerClient(mock_config)
+    client.list_journal_entries(
+      graph_id,
+      start_date="2026-07-01",
+      end_date="2026-07-31",
+      status="posted",
+      type="closing",
+      provenance="schedule_derived",
+      transaction_id="txn_1",
+      limit=25,
+      offset=50,
+    )
+    variables = mock_execute.call_args[0][2]
+    assert variables["type"] == "closing"
+    assert variables["provenance"] == "schedule_derived"
+    assert variables["transactionId"] == "txn_1"
+    assert variables["limit"] == 25
+    assert variables["offset"] == 50
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_transaction(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
       "transaction": {

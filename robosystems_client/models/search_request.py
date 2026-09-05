@@ -19,7 +19,8 @@ class SearchRequest:
       query (str): Search query
       entity (None | str | Unset): Filter by ticker, CIK, or entity name
       form_type (None | str | Unset): Filter by SEC form type (10-K, 10-Q)
-      section (None | str | Unset): Filter by section ID (item_1, item_1a, item_7, etc.)
+      section (None | str | Unset): Filter by section ID: an Item (item_1, item_1a, item_7, ...) or, for iXBRL
+          disclosures, the element qname (us-gaap:GoodwillDisclosureTextBlock)
       element (None | str | Unset): Filter by XBRL element qname (e.g., us-gaap:Goodwill)
       source_type (None | str | Unset): Filter by source type (xbrl_textblock, narrative_section, ixbrl_disclosure,
           uploaded_doc, connection_doc)

@@ -13,36 +13,45 @@ T = TypeVar("T", bound="DocumentSection")
 
 @_attrs_define
 class DocumentSection:
-  """Full document section retrieved by ID.
+  """Full document section retrieved by ID — one part of it when the section
+  is long; ``next_document_id`` continues it.
 
-  Attributes:
-      document_id (str):
-      graph_id (str):
-      source_type (str):
-      content (str):
-      entity_ticker (None | str | Unset):
-      entity_name (None | str | Unset):
-      entity_cik (None | str | Unset):
-      section_label (None | str | Unset):
-      section_id (None | str | Unset):
-      element_qname (None | str | Unset):
-      filing_date (None | str | Unset):
-      fiscal_year (int | None | Unset):
-      fiscal_period (None | str | Unset):
-      form_type (None | str | Unset):
-      accession_number (None | str | Unset):
-      xbrl_elements (list[str] | None | Unset):
-      content_url (None | str | Unset):
-      content_length (int | Unset):  Default: 0.
-      document_title (None | str | Unset):
-      tags (list[str] | None | Unset):
-      folder (None | str | Unset):
+      Attributes:
+          document_id (str):
+          graph_id (str):
+          source_type (str):
+          content (str):
+          parent_document_id (None | str | Unset):
+          part (int | Unset):  Default: 1.
+          part_count (int | Unset):  Default: 1.
+          next_document_id (None | str | Unset):
+          entity_ticker (None | str | Unset):
+          entity_name (None | str | Unset):
+          entity_cik (None | str | Unset):
+          section_label (None | str | Unset):
+          section_id (None | str | Unset):
+          element_qname (None | str | Unset):
+          filing_date (None | str | Unset):
+          fiscal_year (int | None | Unset):
+          fiscal_period (None | str | Unset):
+          form_type (None | str | Unset):
+          accession_number (None | str | Unset):
+          xbrl_elements (list[str] | None | Unset):
+          content_url (None | str | Unset):
+          content_length (int | Unset):  Default: 0.
+          document_title (None | str | Unset):
+          tags (list[str] | None | Unset):
+          folder (None | str | Unset):
   """
 
   document_id: str
   graph_id: str
   source_type: str
   content: str
+  parent_document_id: None | str | Unset = UNSET
+  part: int | Unset = 1
+  part_count: int | Unset = 1
+  next_document_id: None | str | Unset = UNSET
   entity_ticker: None | str | Unset = UNSET
   entity_name: None | str | Unset = UNSET
   entity_cik: None | str | Unset = UNSET
@@ -70,6 +79,22 @@ class DocumentSection:
     source_type = self.source_type
 
     content = self.content
+
+    parent_document_id: None | str | Unset
+    if isinstance(self.parent_document_id, Unset):
+      parent_document_id = UNSET
+    else:
+      parent_document_id = self.parent_document_id
+
+    part = self.part
+
+    part_count = self.part_count
+
+    next_document_id: None | str | Unset
+    if isinstance(self.next_document_id, Unset):
+      next_document_id = UNSET
+    else:
+      next_document_id = self.next_document_id
 
     entity_ticker: None | str | Unset
     if isinstance(self.entity_ticker, Unset):
@@ -185,6 +210,14 @@ class DocumentSection:
         "content": content,
       }
     )
+    if parent_document_id is not UNSET:
+      field_dict["parent_document_id"] = parent_document_id
+    if part is not UNSET:
+      field_dict["part"] = part
+    if part_count is not UNSET:
+      field_dict["part_count"] = part_count
+    if next_document_id is not UNSET:
+      field_dict["next_document_id"] = next_document_id
     if entity_ticker is not UNSET:
       field_dict["entity_ticker"] = entity_ticker
     if entity_name is not UNSET:
@@ -232,6 +265,28 @@ class DocumentSection:
     source_type = d.pop("source_type")
 
     content = d.pop("content")
+
+    def _parse_parent_document_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    parent_document_id = _parse_parent_document_id(d.pop("parent_document_id", UNSET))
+
+    part = d.pop("part", UNSET)
+
+    part_count = d.pop("part_count", UNSET)
+
+    def _parse_next_document_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    next_document_id = _parse_next_document_id(d.pop("next_document_id", UNSET))
 
     def _parse_entity_ticker(data: object) -> None | str | Unset:
       if data is None:
@@ -400,6 +455,10 @@ class DocumentSection:
       graph_id=graph_id,
       source_type=source_type,
       content=content,
+      parent_document_id=parent_document_id,
+      part=part,
+      part_count=part_count,
+      next_document_id=next_document_id,
       entity_ticker=entity_ticker,
       entity_name=entity_name,
       entity_cik=entity_cik,
