@@ -23,6 +23,7 @@ type Query {
   trialBalance(startDate: Date = null, endDate: Date = null): TrialBalance
   transactions(type: String = null, startDate: Date = null, endDate: Date = null, limit: Int = null, offset: Int = null): LedgerTransactionList
   transaction(transactionId: String!): LedgerTransactionDetail
+  journalEntries(startDate: Date = null, endDate: Date = null, status: String = null, type: String = null, provenance: String = null, transactionId: String = null, limit: Int = null, offset: Int = null): LedgerJournalEntryList
   taxonomies(taxonomyType: String = null): TaxonomyList
   reportingTaxonomy: Taxonomy
   elements(taxonomyId: String = null, source: String = null, classification: String = null, isAbstract: Boolean = null, limit: Int = null, offset: Int = null): ElementList
@@ -872,6 +873,70 @@ type LedgerLineItem {
   creditAmount: Float!
   description: String
   lineOrder: Int!
+}
+
+"""
+Paginated journal listing — entries with their line items expanded.
+
+Pagination counts *entries*, not line-item rows.
+"""
+type LedgerJournalEntryList {
+  entries: [LedgerJournalEntry!]!
+  pagination: PaginationInfo!
+}
+
+"""
+A posted or draft journal entry, read on its own terms.
+
+Distinct from `LedgerEntryResponse`, which is an entry *underneath* a
+transaction in the detail view. An entry does not need a parent:
+`Entry.transaction_id` is nullable by design (see the model comment on
+`Entry.triggered_by_event_id`), and the schedule engine and event
+handlers create entries with no transaction at all. Those entries are
+invisible to the transaction-centric reads, which is what this shape
+exists to fix — so `transaction_id` is projected explicitly, and a
+`None` here means a standalone entry rather than missing data.
+"""
+type LedgerJournalEntry {
+  id: String!
+  number: String
+
+  """
+  Parent transaction, or null for a standalone entry (schedule-derived closing entries and event-handler entries have no parent)
+  """
+  transactionId: String
+
+  """'standard' | 'adjusting' | 'closing' | 'reversing'"""
+  type: String!
+
+  """'draft' | 'posted' | 'reversed'"""
+  status: String!
+  postingDate: Date!
+  memo: String
+
+  """
+  Where the entry came from (ENTRY_PROVENANCE_VALUES): source_sync, ai_generated, manual_entry, schedule_derived, system_computed, event_handler
+  """
+  provenance: String
+
+  """Schedule structure that generated this entry (if any)"""
+  sourceStructureId: String
+
+  """Human-readable name of the source schedule"""
+  sourceStructureName: String
+
+  """Business event that caused this entry (if any)"""
+  triggeredByEventId: String
+
+  """The entry this one reverses (if any)"""
+  reversalOf: String
+  postedAt: DateTime
+  lineItems: [LedgerLineItem!]!
+  totalDebit: Float!
+  totalCredit: Float!
+
+  """True if total_debit == total_credit"""
+  balanced: Boolean!
 }
 
 """Flat list of taxonomy headers. Used by the catalog/picker UIs."""

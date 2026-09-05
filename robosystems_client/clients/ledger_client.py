@@ -351,6 +351,12 @@ from ..graphql.generated.list_ledger_reports import (
   ListLedgerReports,
   ListLedgerReportsReportsReports,
 )
+from ..graphql.generated.list_ledger_journal_entries import (
+  ListLedgerJournalEntries,
+)
+from ..graphql.generated.list_ledger_journal_entries import (
+  ListLedgerJournalEntriesJournalEntries as LedgerJournalEntriesPage,
+)
 from ..graphql.generated.list_ledger_structures import (
   ListLedgerStructures,
   ListLedgerStructuresStructuresStructures,
@@ -403,6 +409,7 @@ from ..graphql.generated.operations import (
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
   LIST_LEDGER_EVENT_BLOCKS_GQL,
+  LIST_LEDGER_JOURNAL_ENTRIES_GQL,
   LIST_LEDGER_MAPPINGS_GQL,
   LIST_LEDGER_PUBLISH_LISTS_GQL,
   LIST_LEDGER_REPORTS_GQL,
@@ -870,6 +877,49 @@ class LedgerClient:
       graph_id, GET_LEDGER_TRANSACTION_GQL, {"transactionId": transaction_id}
     )
     return GetLedgerTransaction.model_validate(data).transaction
+
+  # ── Journal entries ─────────────────────────────────────────────────
+
+  def list_journal_entries(
+    self,
+    graph_id: str,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    status: str | None = None,
+    type: str | None = None,  # noqa: A002 — matches backend arg name
+    provenance: str | None = None,
+    transaction_id: str | None = None,
+    limit: int = 100,
+    offset: int = 0,
+  ) -> LedgerJournalEntriesPage | None:
+    """List journal entries with their line items, newest first.
+
+    The entry-centric read. Unlike :meth:`list_transactions`, which walks
+    transactions and hangs entries off them, this returns an entry
+    whether or not it has a parent transaction — and entries created by
+    the schedule engine and the event handlers have none, so they appear
+    in no transaction-based listing. ``transaction_id`` on each result is
+    ``None`` for such a standalone entry rather than absent data.
+
+    Filter by ``provenance`` (``schedule_derived`` for what a period
+    close posted), ``type`` (``adjusting`` / ``closing``), ``status``, or
+    a parent ``transaction_id``.
+    """
+    data = self._query(
+      graph_id,
+      LIST_LEDGER_JOURNAL_ENTRIES_GQL,
+      {
+        "startDate": start_date,
+        "endDate": end_date,
+        "status": status,
+        "type": type,
+        "provenance": provenance,
+        "transactionId": transaction_id,
+        "limit": limit,
+        "offset": offset,
+      },
+    )
+    return ListLedgerJournalEntries.model_validate(data).journal_entries
 
   # ── Event blocks (inbox surface) ───────────────────────────────────
 

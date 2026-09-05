@@ -40,6 +40,7 @@ __all__ = [
   "LIST_LEDGER_ELEMENTS_GQL",
   "LIST_LEDGER_ENTITIES_GQL",
   "LIST_LEDGER_EVENT_BLOCKS_GQL",
+  "LIST_LEDGER_JOURNAL_ENTRIES_GQL",
   "LIST_LEDGER_MAPPINGS_GQL",
   "LIST_LEDGER_PUBLISH_LISTS_GQL",
   "LIST_LEDGER_REPORTS_GQL",
@@ -1487,6 +1488,56 @@ query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status:
     dischargesEventId
     createdAt
     createdBy
+  }
+}
+"""
+
+LIST_LEDGER_JOURNAL_ENTRIES_GQL = """
+query ListLedgerJournalEntries($startDate: Date, $endDate: Date, $status: String, $type: String, $provenance: String, $transactionId: String, $limit: Int! = 100, $offset: Int! = 0) {
+  journalEntries(
+    startDate: $startDate
+    endDate: $endDate
+    status: $status
+    type: $type
+    provenance: $provenance
+    transactionId: $transactionId
+    limit: $limit
+    offset: $offset
+  ) {
+    entries {
+      id
+      number
+      transactionId
+      type
+      status
+      postingDate
+      memo
+      provenance
+      sourceStructureId
+      sourceStructureName
+      triggeredByEventId
+      reversalOf
+      postedAt
+      totalDebit
+      totalCredit
+      balanced
+      lineItems {
+        id
+        accountId
+        accountName
+        accountCode
+        debitAmount
+        creditAmount
+        description
+        lineOrder
+      }
+    }
+    pagination {
+      total
+      limit
+      offset
+      hasMore
+    }
   }
 }
 """

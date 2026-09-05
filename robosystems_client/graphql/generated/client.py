@@ -44,6 +44,7 @@ from .list_ledger_blocked_source_graphs import ListLedgerBlockedSourceGraphs
 from .list_ledger_elements import ListLedgerElements
 from .list_ledger_entities import ListLedgerEntities
 from .list_ledger_event_blocks import ListLedgerEventBlocks
+from .list_ledger_journal_entries import ListLedgerJournalEntries
 from .list_ledger_mappings import ListLedgerMappings
 from .list_ledger_publish_lists import ListLedgerPublishLists
 from .list_ledger_reports import ListLedgerReports
@@ -98,6 +99,7 @@ from .operations import (
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
   LIST_LEDGER_EVENT_BLOCKS_GQL,
+  LIST_LEDGER_JOURNAL_ENTRIES_GQL,
   LIST_LEDGER_MAPPINGS_GQL,
   LIST_LEDGER_PUBLISH_LISTS_GQL,
   LIST_LEDGER_REPORTS_GQL,
@@ -697,6 +699,37 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListLedgerEventBlocks.model_validate(data)
+
+  def list_ledger_journal_entries(
+    self,
+    limit: int,
+    offset: int,
+    start_date: Union[Optional[str], UnsetType] = UNSET,
+    end_date: Union[Optional[str], UnsetType] = UNSET,
+    status: Union[Optional[str], UnsetType] = UNSET,
+    type_: Union[Optional[str], UnsetType] = UNSET,
+    provenance: Union[Optional[str], UnsetType] = UNSET,
+    transaction_id: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> ListLedgerJournalEntries:
+    variables: dict[str, object] = {
+      "startDate": start_date,
+      "endDate": end_date,
+      "status": status,
+      "type": type_,
+      "provenance": provenance,
+      "transactionId": transaction_id,
+      "limit": limit,
+      "offset": offset,
+    }
+    response = self.execute(
+      query=LIST_LEDGER_JOURNAL_ENTRIES_GQL,
+      operation_name="ListLedgerJournalEntries",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListLedgerJournalEntries.model_validate(data)
 
   def list_ledger_mappings(self, **kwargs: Any) -> ListLedgerMappings:
     variables: dict[str, object] = {}
