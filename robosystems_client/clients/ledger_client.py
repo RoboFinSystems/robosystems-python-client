@@ -538,6 +538,7 @@ _DOWNLOAD_FORMAT_ALIASES = {
   "jsonld": "JSONLD",
   "holon-jsonld": "HOLON_JSONLD",
   "xbrl-2.1": "XBRL_2_1",
+  "tavi": "TAVI",
 }
 
 
@@ -2216,22 +2217,24 @@ class LedgerClient:
     to: str | Path | None = None,
     expires_in: int = 300,
   ) -> ReportBundleDownload:
-    """Download a published Report's serialization bundle (JSON-LD or XBRL 2.1).
+    """Download a published Report's serialization bundle.
 
     A download is a read, so the presigned URL is resolved through the
     GraphQL ``reportDownloadUrl`` field (the REST download route was
     retired). Every flavor resolves to a short-lived presigned S3 URL —
-    JSON-LD is stamped at publish time; XBRL is materialized + cached on
-    first request. The client follows the URL and pulls the bytes.
+    JSON-LD is stamped at publish time; XBRL, the holon and the Tavi
+    model are materialized + cached on first request. The client follows
+    the URL and pulls the bytes.
 
     Args:
         graph_id: Graph identifier owning the Report.
         report_id: Report identifier (``rpt_``-prefixed ULID).
         format: Serialization flavor — ``"jsonld"`` (default, the flat
             canonical bundle), ``"holon-jsonld"`` (the dataset-form
-            scene/boundary/projection holon), or ``"xbrl-2.1"``. The enum
-            names ``"JSONLD"`` / ``"HOLON_JSONLD"`` / ``"XBRL_2_1"`` are
-            also accepted.
+            scene/boundary/projection holon), ``"xbrl-2.1"``, or
+            ``"tavi"`` (the Project Tavi compiled model, compact JSON).
+            The enum names ``"JSONLD"`` / ``"HOLON_JSONLD"`` /
+            ``"XBRL_2_1"`` / ``"TAVI"`` are also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
             written file.
@@ -2275,9 +2278,11 @@ class LedgerClient:
       )
 
     generation_count = info.generation_count
-    default_ext = {"XBRL_2_1": "zip", "HOLON_JSONLD": "holon.jsonld"}.get(
-      gql_format, "jsonld"
-    )
+    default_ext = {
+      "XBRL_2_1": "zip",
+      "HOLON_JSONLD": "holon.jsonld",
+      "TAVI": "tavi.json",
+    }.get(gql_format, "jsonld")
     filename = (
       _parse_filename(artifact.headers.get("content-disposition", ""))
       or f"{report_id}-g{generation_count or 1}.{default_ext}"
