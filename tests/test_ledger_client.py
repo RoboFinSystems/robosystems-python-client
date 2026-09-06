@@ -2163,6 +2163,29 @@ class TestDownloadReportBundle:
     assert mock_query.call_args.args[2]["format"] == "XBRL_2_1"
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_tavi_download_maps_the_alias_and_names_the_file(
+    self, mock_client_cls, mock_config, graph_id
+  ):
+    """Tavi: ``"tavi"`` maps to ``TAVI``; without a content-disposition the
+    filename falls back to ``{report}-g{n}.tavi.json``."""
+    artifact = self._mock_artifact(b'{"documentInfo":{}}', "unused")
+    artifact.headers = {}
+    self._patch_httpx(mock_client_cls, artifact)
+    with patch.object(
+      LedgerClient,
+      "_query",
+      return_value=self._gql_data("application/json", "tavi", gen=4),
+    ) as mock_query:
+      result = LedgerClient(mock_config).download_report_bundle(
+        graph_id, "rpt_01", format="tavi"
+      )
+
+    assert result.filename == "rpt_01-g4.tavi.json"
+    assert result.format == "tavi"
+    assert result.content_type == "application/json"
+    assert mock_query.call_args.args[2]["format"] == "TAVI"
+
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
   def test_to_arg_writes_bytes_to_disk(
     self, mock_client_cls, mock_config, graph_id, tmp_path
   ):
