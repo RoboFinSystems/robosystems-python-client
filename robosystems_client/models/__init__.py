@@ -160,6 +160,7 @@ from .cypher_statement_request_parameters_type_0 import (
 from .database_health_response import DatabaseHealthResponse
 from .database_info_response import DatabaseInfoResponse
 from .database_storage_entry import DatabaseStorageEntry
+from .delete_connection_disposition import DeleteConnectionDisposition
 from .delete_document_op import DeleteDocumentOp
 from .delete_file_op import DeleteFileOp
 from .delete_forecast_arm import DeleteForecastArm
@@ -296,6 +297,14 @@ from .information_block_envelope_dimensions_item import (
 from .information_model_response import InformationModelResponse
 from .ingest_file_op import IngestFileOp
 from .initial_entity_data import InitialEntityData
+from .initialize_chart_of_accounts_request import InitializeChartOfAccountsRequest
+from .initialize_chart_of_accounts_request_template import (
+  InitializeChartOfAccountsRequestTemplate,
+)
+from .initialize_chart_of_accounts_response import InitializeChartOfAccountsResponse
+from .initialize_chart_of_accounts_response_template import (
+  InitializeChartOfAccountsResponseTemplate,
+)
 from .initialize_ledger_request import InitializeLedgerRequest
 from .initialize_ledger_response import InitializeLedgerResponse
 from .instance_usage import InstanceUsage
@@ -502,6 +511,12 @@ from .operation_envelope_information_block_envelope import (
 )
 from .operation_envelope_information_block_envelope_status import (
   OperationEnvelopeInformationBlockEnvelopeStatus,
+)
+from .operation_envelope_initialize_chart_of_accounts_response import (
+  OperationEnvelopeInitializeChartOfAccountsResponse,
+)
+from .operation_envelope_initialize_chart_of_accounts_response_status import (
+  OperationEnvelopeInitializeChartOfAccountsResponseStatus,
 )
 from .operation_envelope_initialize_ledger_response import (
   OperationEnvelopeInitializeLedgerResponse,
@@ -1083,6 +1098,7 @@ __all__ = (
   "DatabaseHealthResponse",
   "DatabaseInfoResponse",
   "DatabaseStorageEntry",
+  "DeleteConnectionDisposition",
   "DeleteDocumentOp",
   "DeleteFileOp",
   "DeleteForecastArm",
@@ -1199,6 +1215,10 @@ __all__ = (
   "InformationModelResponse",
   "IngestFileOp",
   "InitialEntityData",
+  "InitializeChartOfAccountsRequest",
+  "InitializeChartOfAccountsRequestTemplate",
+  "InitializeChartOfAccountsResponse",
+  "InitializeChartOfAccountsResponseTemplate",
   "InitializeLedgerRequest",
   "InitializeLedgerResponse",
   "InstanceUsage",
@@ -1308,6 +1328,8 @@ __all__ = (
   "OperationEnvelopeGraphMetadataResultStatus",
   "OperationEnvelopeInformationBlockEnvelope",
   "OperationEnvelopeInformationBlockEnvelopeStatus",
+  "OperationEnvelopeInitializeChartOfAccountsResponse",
+  "OperationEnvelopeInitializeChartOfAccountsResponseStatus",
   "OperationEnvelopeInitializeLedgerResponse",
   "OperationEnvelopeInitializeLedgerResponseStatus",
   "OperationEnvelopeJournalEntryResponse",

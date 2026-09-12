@@ -34,6 +34,7 @@ from .get_library_element_arcs import GetLibraryElementArcs
 from .get_library_element_classifications import GetLibraryElementClassifications
 from .get_library_element_equivalents import GetLibraryElementEquivalents
 from .get_library_taxonomy import GetLibraryTaxonomy
+from .list_chart_templates import ListChartTemplates
 from .list_information_blocks import ListInformationBlocks
 from .list_investor_portfolios import ListInvestorPortfolios
 from .list_investor_positions import ListInvestorPositions
@@ -89,6 +90,7 @@ from .operations import (
   GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL,
   GET_LIBRARY_ELEMENT_GQL,
   GET_LIBRARY_TAXONOMY_GQL,
+  LIST_CHART_TEMPLATES_GQL,
   LIST_INFORMATION_BLOCKS_GQL,
   LIST_INVESTOR_PORTFOLIOS_GQL,
   LIST_INVESTOR_POSITIONS_GQL,
@@ -546,6 +548,17 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return GetLedgerTrialBalance.model_validate(data)
+
+  def list_chart_templates(self, **kwargs: Any) -> ListChartTemplates:
+    variables: dict[str, object] = {}
+    response = self.execute(
+      query=LIST_CHART_TEMPLATES_GQL,
+      operation_name="ListChartTemplates",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListChartTemplates.model_validate(data)
 
   def list_information_blocks(
     self,

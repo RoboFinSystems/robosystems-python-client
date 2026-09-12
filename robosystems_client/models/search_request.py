@@ -31,6 +31,8 @@ class SearchRequest:
           False.
       size (int | Unset): Max results to return Default: 10.
       offset (int | Unset): Pagination offset Default: 0.
+      snippet_chars (int | None | Unset): Approximate snippet budget per hit in characters; the default is three
+          highlight fragments of about 200
   """
 
   query: str
@@ -45,6 +47,7 @@ class SearchRequest:
   semantic: bool | Unset = False
   size: int | Unset = 10
   offset: int | Unset = 0
+  snippet_chars: int | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -104,6 +107,12 @@ class SearchRequest:
 
     offset = self.offset
 
+    snippet_chars: int | None | Unset
+    if isinstance(self.snippet_chars, Unset):
+      snippet_chars = UNSET
+    else:
+      snippet_chars = self.snippet_chars
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -133,6 +142,8 @@ class SearchRequest:
       field_dict["size"] = size
     if offset is not UNSET:
       field_dict["offset"] = offset
+    if snippet_chars is not UNSET:
+      field_dict["snippet_chars"] = snippet_chars
 
     return field_dict
 
@@ -219,6 +230,15 @@ class SearchRequest:
 
     offset = d.pop("offset", UNSET)
 
+    def _parse_snippet_chars(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    snippet_chars = _parse_snippet_chars(d.pop("snippet_chars", UNSET))
+
     search_request = cls(
       query=query,
       entity=entity,
@@ -232,6 +252,7 @@ class SearchRequest:
       semantic=semantic,
       size=size,
       offset=offset,
+      snippet_chars=snippet_chars,
     )
 
     search_request.additional_properties = d
