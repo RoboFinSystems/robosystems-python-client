@@ -30,6 +30,7 @@ __all__ = [
   "GET_LIBRARY_ELEMENT_EQUIVALENTS_GQL",
   "GET_LIBRARY_ELEMENT_GQL",
   "GET_LIBRARY_TAXONOMY_GQL",
+  "LIST_CHART_TEMPLATES_GQL",
   "LIST_INFORMATION_BLOCKS_GQL",
   "LIST_INVESTOR_PORTFOLIOS_GQL",
   "LIST_INVESTOR_POSITIONS_GQL",
@@ -1155,6 +1156,17 @@ query GetLedgerTrialBalance($startDate: Date, $endDate: Date) {
       totalCredits
       netBalance
     }
+  }
+}
+"""
+
+LIST_CHART_TEMPLATES_GQL = """
+query ListChartTemplates {
+  chartTemplates {
+    key
+    displayName
+    description
+    accountCount
   }
 }
 """

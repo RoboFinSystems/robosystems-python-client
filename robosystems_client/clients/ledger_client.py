@@ -79,6 +79,9 @@ from ..api.extensions_robo_ledger.create_information_block import (
 from ..api.extensions_robo_ledger.delete_mapping_association import (
   sync_detailed as op_delete_mapping_association,
 )
+from ..api.extensions_robo_ledger.initialize_chart_of_accounts import (
+  sync_detailed as op_initialize_chart_of_accounts,
+)
 from ..api.extensions_robo_ledger.initialize_ledger import (
   sync_detailed as op_initialize_ledger,
 )
@@ -221,6 +224,12 @@ from ..graphql.generated.get_ledger_fiscal_calendar import (
 )
 from ..graphql.generated.get_ledger_fiscal_calendar import (
   GetLedgerFiscalCalendarFiscalCalendar as FiscalCalendar,
+)
+from ..graphql.generated.list_chart_templates import (
+  ListChartTemplates,
+)
+from ..graphql.generated.list_chart_templates import (
+  ListChartTemplatesChartTemplates as ChartTemplate,
 )
 from ..graphql.generated.get_ledger_mapped_trial_balance import (
   GetLedgerMappedTrialBalance,
@@ -388,6 +397,7 @@ from ..graphql.generated.operations import (
   GET_LEDGER_ENTITY_GQL,
   GET_LEDGER_EVENT_BLOCK_GQL,
   GET_LEDGER_FISCAL_CALENDAR_GQL,
+  LIST_CHART_TEMPLATES_GQL,
   GET_LEDGER_MAPPED_TRIAL_BALANCE_GQL,
   GET_LEDGER_MAPPING_COVERAGE_GQL,
   GET_LEDGER_MAPPING_GQL,
@@ -471,6 +481,12 @@ from ..models.create_schedule_request import CreateScheduleRequest
 from ..models.delete_mapping_association_operation import (
   DeleteMappingAssociationOperation,
 )
+from ..models.initialize_chart_of_accounts_request import (
+  InitializeChartOfAccountsRequest,
+)
+from ..models.initialize_chart_of_accounts_request_template import (
+  InitializeChartOfAccountsRequestTemplate,
+)
 from ..models.initialize_ledger_request import InitializeLedgerRequest
 from ..models.create_publish_list_request import CreatePublishListRequest
 from ..models.create_report_request import CreateReportRequest
@@ -509,6 +525,9 @@ from ..models.event_block_envelope import EventBlockEnvelope
 from ..models.event_handler_response import EventHandlerResponse
 from ..models.fiscal_calendar_response import FiscalCalendarResponse
 from ..models.information_block_envelope import InformationBlockEnvelope
+from ..models.initialize_chart_of_accounts_response import (
+  InitializeChartOfAccountsResponse,
+)
 from ..models.initialize_ledger_response import InitializeLedgerResponse
 from ..models.journal_entry_response import JournalEntryResponse
 from ..models.ledger_agent_response import LedgerAgentResponse
@@ -2045,6 +2064,43 @@ class LedgerClient:
     )
     envelope = self._call_op("Initialize ledger", response)
     return self._typed_result("Initialize ledger", envelope, InitializeLedgerResponse)
+
+  # ── Chart of accounts ───────────────────────────────────────────────────
+
+  def list_chart_templates(self, graph_id: str) -> list[ChartTemplate]:
+    """Shipped chart-of-accounts templates for `initialize_chart_of_accounts`."""
+    data = self._query(graph_id, LIST_CHART_TEMPLATES_GQL)
+    return ListChartTemplates.model_validate(data).chart_templates
+
+  def initialize_chart_of_accounts(
+    self,
+    graph_id: str,
+    template: InitializeChartOfAccountsRequestTemplate | str,
+    *,
+    entity_type: str | None = None,
+    name: str | None = None,
+  ) -> InitializeChartOfAccountsResponse:
+    """One-time chart of accounts from a shipped template — the fresh-company
+    path to native books.
+
+    ``template`` is one of `list_chart_templates` (``saas`` / ``services`` /
+    ``product``). Refused (409) once the graph has any chart of accounts — a
+    QuickBooks-synced tenant never needs this. ``entity_type`` (corporation /
+    llc / partnership) picks the equity mapping; it defaults to the graph's
+    primary entity, then corporation.
+    """
+    body = InitializeChartOfAccountsRequest(
+      template=InitializeChartOfAccountsRequestTemplate(template),
+      entity_type=entity_type if entity_type is not None else UNSET,
+      name=name if name is not None else UNSET,
+    )
+    response = op_initialize_chart_of_accounts(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Initialize chart of accounts", response)
+    return self._typed_result(
+      "Initialize chart of accounts", envelope, InitializeChartOfAccountsResponse
+    )
 
   def set_close_target(
     self,

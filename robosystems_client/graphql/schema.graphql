@@ -35,6 +35,7 @@ type Query {
   mappingCoverage(mappingId: String!): MappingCoverage
   mappedTrialBalance(mappingId: String!, startDate: Date = null, endDate: Date = null): MappedTrialBalance
   periodCloseStatus(periodStart: Date!, periodEnd: Date!): PeriodCloseStatus
+  chartTemplates: [ChartTemplate!]!
   fiscalCalendar: FiscalCalendar
   periodDrafts(period: String!): PeriodDrafts
   closingBookStructures: ClosingBookStructures
@@ -1220,6 +1221,16 @@ type CloseReceipt {
   """structure_id -> minted fact_set_id"""
   stampedStatementSets: JSON!
   statementRuleSummary: JSON
+}
+
+"""
+A shipped chart-of-accounts template for `initialize-chart-of-accounts` — the fresh-company path to native books.
+"""
+type ChartTemplate {
+  key: String!
+  displayName: String!
+  description: String!
+  accountCount: Int!
 }
 
 """Current fiscal calendar state for a graph."""

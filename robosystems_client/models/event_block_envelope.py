@@ -31,8 +31,10 @@ class EventBlockEnvelope:
       Attributes:
           id (str): Event ID (`evt_*` ULID).
           event_type (str): Open-vocabulary event type (e.g. `invoice_issued`, `bank_transaction`, `control_executed`).
-          event_category (str): REA category — economic (`sales`, `purchase`, `financing`, `payroll`, `treasury`,
-              `adjustment`, `recognition`, `other`) or support (`control`, `approval`, `reconciliation`, `inquiry`).
+          event_category (str): REA category, scoped by `event_class` — economic (`sales`, `purchase`, `financing`,
+              `payroll`, `treasury`, `adjustment`, `recognition`, `other`), support (`control`, `approval`, `reconciliation`,
+              `inquiry`), or operational (`pipeline`, `engagement`, `schedule`, `other`) for occurrences that drive no GL — a
+              lead, a lifecycle change, an outreach, a schedule setup.
           status (str): Lifecycle state. One of: `captured` (raw, pre-classification), `classified` (handler ran, GL
               pending), `committed` (GL entries posted), `pending` (committed but awaiting fulfillment of an obligation),
               `fulfilled` (obligation discharged — retractable while its ledger rows are still drafts), `voided` (canceled —

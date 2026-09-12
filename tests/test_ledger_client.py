@@ -2520,3 +2520,68 @@ class TestShareControls:
     assert page is not None
     assert page.blocked_source_graphs[0].source_graph_id == "kg_sender"
     assert page.pagination.total == 1
+
+
+# ── Chart of accounts ─────────────────────────────────────────────────
+
+
+@pytest.mark.unit
+class TestChartOfAccountsOps:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_chart_templates(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "chartTemplates": [
+        {
+          "key": "saas",
+          "displayName": "SaaS / subscription software",
+          "description": "Recurring revenue …",
+          "accountCount": 20,
+        },
+        {
+          "key": "product",
+          "displayName": "Product business (inventory and COGS)",
+          "description": "Goods sold …",
+          "accountCount": 27,
+        },
+      ]
+    }
+    client = LedgerClient(mock_config)
+    templates = client.list_chart_templates(graph_id)
+    assert [t.key for t in templates] == ["saas", "product"]
+    assert templates[0].display_name == "SaaS / subscription software"
+    assert templates[1].account_count == 27
+
+  @patch("robosystems_client.clients.ledger_client.op_initialize_chart_of_accounts")
+  def test_initialize_chart_of_accounts(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "initialize-chart-of-accounts",
+      {
+        "taxonomy_id": "tax_new",
+        "name": "Chart of Accounts",
+        "template": "saas",
+        "entity_type": "llc",
+        "elements_created": 20,
+        "mappings_created": 20,
+        "frameworks": ["rs-gaap"],
+        "unresolved": [],
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+
+    result = client.initialize_chart_of_accounts(graph_id, "saas", entity_type="llc")
+
+    body = mock_op.call_args.kwargs["body"]
+    assert body.template.value == "saas"
+    assert body.entity_type == "llc"
+    # dict mocks come back as a plain dict (see LedgerClient._typed_result)
+    assert result["taxonomy_id"] == "tax_new"
+    assert result["frameworks"] == ["rs-gaap"]
+    assert result["mappings_created"] == 20
+
+  def test_initialize_chart_of_accounts_rejects_unknown_template(
+    self, mock_config, graph_id
+  ):
+    client = LedgerClient(mock_config)
+    with pytest.raises(ValueError):
+      client.initialize_chart_of_accounts(graph_id, "retail")

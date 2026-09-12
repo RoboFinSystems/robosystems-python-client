@@ -1,0 +1,5 @@
+query ListChartTemplates {
+  chartTemplates {
+    key displayName description accountCount
+  }
+}
