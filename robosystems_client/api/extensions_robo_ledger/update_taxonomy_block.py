@@ -114,9 +114,13 @@ def sync_detailed(
   """Update Taxonomy Block
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
-  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
-  block types (`reporting_standard`) surface 501. `reporting_extension` / `custom_ontology` authoring
-  may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403.
+  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. For a chart of
+  accounts: add, rename and reclassify accounts freely; an account with facts or line items is never
+  removed — retire it with `elements_to_update[].is_active=false` (history stays, new postings are
+  refused, pickers hide it; `true` reactivates). Removal and whole-chart delete work only with no
+  activity. Library-origin block types (`reporting_standard`) surface 501. `reporting_extension` /
+  `custom_ontology` authoring may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled
+  surfaces 403.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -163,9 +167,13 @@ def sync(
   """Update Taxonomy Block
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
-  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
-  block types (`reporting_standard`) surface 501. `reporting_extension` / `custom_ontology` authoring
-  may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403.
+  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. For a chart of
+  accounts: add, rename and reclassify accounts freely; an account with facts or line items is never
+  removed — retire it with `elements_to_update[].is_active=false` (history stays, new postings are
+  refused, pickers hide it; `true` reactivates). Removal and whole-chart delete work only with no
+  activity. Library-origin block types (`reporting_standard`) surface 501. `reporting_extension` /
+  `custom_ontology` authoring may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled
+  surfaces 403.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -207,9 +215,13 @@ async def asyncio_detailed(
   """Update Taxonomy Block
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
-  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
-  block types (`reporting_standard`) surface 501. `reporting_extension` / `custom_ontology` authoring
-  may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403.
+  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. For a chart of
+  accounts: add, rename and reclassify accounts freely; an account with facts or line items is never
+  removed — retire it with `elements_to_update[].is_active=false` (history stays, new postings are
+  refused, pickers hide it; `true` reactivates). Removal and whole-chart delete work only with no
+  activity. Library-origin block types (`reporting_standard`) surface 501. `reporting_extension` /
+  `custom_ontology` authoring may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled
+  surfaces 403.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -254,9 +266,13 @@ async def asyncio(
   """Update Taxonomy Block
 
    Incrementally mutate a taxonomy block via typed delta lists (elements/structures/associations/rules
-  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. Library-origin
-  block types (`reporting_standard`) surface 501. `reporting_extension` / `custom_ontology` authoring
-  may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403.
+  to add, update, remove). Dispatches by the target taxonomy's stored `taxonomy_type`. For a chart of
+  accounts: add, rename and reclassify accounts freely; an account with facts or line items is never
+  removed — retire it with `elements_to_update[].is_active=false` (history stays, new postings are
+  refused, pickers hide it; `true` reactivates). Removal and whole-chart delete work only with no
+  activity. Library-origin block types (`reporting_standard`) surface 501. `reporting_extension` /
+  `custom_ontology` authoring may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled
+  surfaces 403.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

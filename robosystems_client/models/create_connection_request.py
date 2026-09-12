@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.external_connection_config import ExternalConnectionConfig
+  from ..models.mercury_connection_config import MercuryConnectionConfig
   from ..models.quick_books_connection_config import QuickBooksConnectionConfig
 
 
@@ -26,16 +27,19 @@ class CreateConnectionRequest:
       entity_id (None | str | Unset): Entity identifier. Required for QuickBooks.
       quickbooks_config (None | QuickBooksConnectionConfig | Unset):
       external_config (ExternalConnectionConfig | None | Unset):
+      mercury_config (MercuryConnectionConfig | None | Unset):
   """
 
   provider: CreateConnectionRequestProvider
   entity_id: None | str | Unset = UNSET
   quickbooks_config: None | QuickBooksConnectionConfig | Unset = UNSET
   external_config: ExternalConnectionConfig | None | Unset = UNSET
+  mercury_config: MercuryConnectionConfig | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     from ..models.external_connection_config import ExternalConnectionConfig
+    from ..models.mercury_connection_config import MercuryConnectionConfig
     from ..models.quick_books_connection_config import QuickBooksConnectionConfig
 
     provider = self.provider.value
@@ -62,6 +66,14 @@ class CreateConnectionRequest:
     else:
       external_config = self.external_config
 
+    mercury_config: dict[str, Any] | None | Unset
+    if isinstance(self.mercury_config, Unset):
+      mercury_config = UNSET
+    elif isinstance(self.mercury_config, MercuryConnectionConfig):
+      mercury_config = self.mercury_config.to_dict()
+    else:
+      mercury_config = self.mercury_config
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -75,12 +87,15 @@ class CreateConnectionRequest:
       field_dict["quickbooks_config"] = quickbooks_config
     if external_config is not UNSET:
       field_dict["external_config"] = external_config
+    if mercury_config is not UNSET:
+      field_dict["mercury_config"] = mercury_config
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.external_connection_config import ExternalConnectionConfig
+    from ..models.mercury_connection_config import MercuryConnectionConfig
     from ..models.quick_books_connection_config import QuickBooksConnectionConfig
 
     d = dict(src_dict)
@@ -131,11 +146,29 @@ class CreateConnectionRequest:
 
     external_config = _parse_external_config(d.pop("external_config", UNSET))
 
+    def _parse_mercury_config(data: object) -> MercuryConnectionConfig | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        mercury_config_type_0 = MercuryConnectionConfig.from_dict(data)
+
+        return mercury_config_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(MercuryConnectionConfig | None | Unset, data)
+
+    mercury_config = _parse_mercury_config(d.pop("mercury_config", UNSET))
+
     create_connection_request = cls(
       provider=provider,
       entity_id=entity_id,
       quickbooks_config=quickbooks_config,
       external_config=external_config,
+      mercury_config=mercury_config,
     )
 
     create_connection_request.additional_properties = d

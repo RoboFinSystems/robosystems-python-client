@@ -107,9 +107,12 @@ def sync_detailed(
 ) -> Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Create Connection
 
-   QuickBooks: returns an OAuth URL — complete the flow to activate. External: registers a source
-  namespace for an integration that writes through the public API. One connection allowed per provider
-  per graph, except 'external' which allows one per source_name.
+   QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
+  may instead connect at once with a personal API token where the deployment allows it). External:
+  registers a source namespace for an integration that writes through the public API. One connection
+  allowed per provider per graph, except 'external' which allows one per source_name. A bank feed
+  (Mercury) is refused (409) beside a live QuickBooks connection or on a graph with no chart of
+  accounts.
 
   Args:
       graph_id (str):
@@ -143,9 +146,12 @@ def sync(
 ) -> Any | ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Create Connection
 
-   QuickBooks: returns an OAuth URL — complete the flow to activate. External: registers a source
-  namespace for an integration that writes through the public API. One connection allowed per provider
-  per graph, except 'external' which allows one per source_name.
+   QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
+  may instead connect at once with a personal API token where the deployment allows it). External:
+  registers a source namespace for an integration that writes through the public API. One connection
+  allowed per provider per graph, except 'external' which allows one per source_name. A bank feed
+  (Mercury) is refused (409) beside a live QuickBooks connection or on a graph with no chart of
+  accounts.
 
   Args:
       graph_id (str):
@@ -174,9 +180,12 @@ async def asyncio_detailed(
 ) -> Response[Any | ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Create Connection
 
-   QuickBooks: returns an OAuth URL — complete the flow to activate. External: registers a source
-  namespace for an integration that writes through the public API. One connection allowed per provider
-  per graph, except 'external' which allows one per source_name.
+   QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
+  may instead connect at once with a personal API token where the deployment allows it). External:
+  registers a source namespace for an integration that writes through the public API. One connection
+  allowed per provider per graph, except 'external' which allows one per source_name. A bank feed
+  (Mercury) is refused (409) beside a live QuickBooks connection or on a graph with no chart of
+  accounts.
 
   Args:
       graph_id (str):
@@ -208,9 +217,12 @@ async def asyncio(
 ) -> Any | ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Create Connection
 
-   QuickBooks: returns an OAuth URL — complete the flow to activate. External: registers a source
-  namespace for an integration that writes through the public API. One connection allowed per provider
-  per graph, except 'external' which allows one per source_name.
+   QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
+  may instead connect at once with a personal API token where the deployment allows it). External:
+  registers a source namespace for an integration that writes through the public API. One connection
+  allowed per provider per graph, except 'external' which allows one per source_name. A bank feed
+  (Mercury) is refused (409) beside a live QuickBooks connection or on a graph with no chart of
+  accounts.
 
   Args:
       graph_id (str):
