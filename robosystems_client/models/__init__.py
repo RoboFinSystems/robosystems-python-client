@@ -356,6 +356,7 @@ from .memory_list_response import MemoryListResponse
 from .memory_recall_request import MemoryRecallRequest
 from .memory_record import MemoryRecord
 from .memory_record_provenance_type_0 import MemoryRecordProvenanceType0
+from .mercury_connection_config import MercuryConnectionConfig
 from .metric_mechanics import MetricMechanics
 from .metric_observation import MetricObservation
 from .mfa_options_request import MfaOptionsRequest
@@ -1262,6 +1263,7 @@ __all__ = (
   "MemoryRecallRequest",
   "MemoryRecord",
   "MemoryRecordProvenanceType0",
+  "MercuryConnectionConfig",
   "MetricMechanics",
   "MetricObservation",
   "MfaOptionsRequest",

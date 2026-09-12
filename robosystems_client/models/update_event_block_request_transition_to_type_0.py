@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class UpdateEventBlockRequestTransitionToType0(str, Enum):
+  CLASSIFIED = "classified"
   COMMITTED = "committed"
   FULFILLED = "fulfilled"
   PENDING = "pending"

@@ -32,6 +32,9 @@ class ElementUpdatePatch:
       code (None | str | Unset):
       parent_ref (None | str | Unset):
       metadata (ElementUpdatePatchMetadataType0 | None | Unset):
+      is_active (bool | None | Unset): Retire (`false`) or reactivate (`true`) a chart account. Retiring keeps its
+          history and hides it from account pickers and the chart tree, and new line items on it are refused — the way to
+          take an account with activity out of use, since removal needs no facts and no line items.
   """
 
   qname: str
@@ -44,6 +47,7 @@ class ElementUpdatePatch:
   code: None | str | Unset = UNSET
   parent_ref: None | str | Unset = UNSET
   metadata: ElementUpdatePatchMetadataType0 | None | Unset = UNSET
+  is_active: bool | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -109,6 +113,12 @@ class ElementUpdatePatch:
     else:
       metadata = self.metadata
 
+    is_active: bool | None | Unset
+    if isinstance(self.is_active, Unset):
+      is_active = UNSET
+    else:
+      is_active = self.is_active
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -134,6 +144,8 @@ class ElementUpdatePatch:
       field_dict["parent_ref"] = parent_ref
     if metadata is not UNSET:
       field_dict["metadata"] = metadata
+    if is_active is not UNSET:
+      field_dict["is_active"] = is_active
 
     return field_dict
 
@@ -235,6 +247,15 @@ class ElementUpdatePatch:
 
     metadata = _parse_metadata(d.pop("metadata", UNSET))
 
+    def _parse_is_active(data: object) -> bool | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(bool | None | Unset, data)
+
+    is_active = _parse_is_active(d.pop("is_active", UNSET))
+
     element_update_patch = cls(
       qname=qname,
       name=name,
@@ -246,6 +267,7 @@ class ElementUpdatePatch:
       code=code,
       parent_ref=parent_ref,
       metadata=metadata,
+      is_active=is_active,
     )
 
     element_update_patch.additional_properties = d
