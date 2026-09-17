@@ -40,7 +40,7 @@ So `robosystems-client>=1,<2` is the right pin if you build on the stable surfac
 ## Support
 
 - [Issues](https://github.com/RoboFinSystems/robosystems-python-client/issues)
-- [Wiki](https://github.com/RoboFinSystems/robosystems/wiki)
+- [Documentation](https://robosystems.ai/docs/technical)
 - [Projects](https://github.com/orgs/RoboFinSystems/projects)
 - [Discussions](https://github.com/orgs/RoboFinSystems/discussions)
 
