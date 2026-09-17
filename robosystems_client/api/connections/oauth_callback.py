@@ -108,7 +108,8 @@ def sync_detailed(
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
   tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
-  directly.
+  directly. Plaid: pass Link's public_token as `code`; a bank already connected to the graph is
+  refused (409 DUPLICATE_BANK_CONNECTION).
 
   Args:
       graph_id (str):
@@ -147,7 +148,8 @@ def sync(
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
   tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
-  directly.
+  directly. Plaid: pass Link's public_token as `code`; a bank already connected to the graph is
+  refused (409 DUPLICATE_BANK_CONNECTION).
 
   Args:
       graph_id (str):
@@ -181,7 +183,8 @@ async def asyncio_detailed(
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
   tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
-  directly.
+  directly. Plaid: pass Link's public_token as `code`; a bank already connected to the graph is
+  refused (409 DUPLICATE_BANK_CONNECTION).
 
   Args:
       graph_id (str):
@@ -218,7 +221,8 @@ async def asyncio(
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
   tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
-  directly.
+  directly. Plaid: pass Link's public_token as `code`; a bank already connected to the graph is
+  refused (409 DUPLICATE_BANK_CONNECTION).
 
   Args:
       graph_id (str):

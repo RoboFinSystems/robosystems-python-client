@@ -113,13 +113,14 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]:
   """Reopen Fiscal Period
 
-   Reopen a closed period for adjustment. Reopening the current `closed_through` decrements it by one;
-  reopening an earlier period is a prior-period adjustment and leaves `closed_through` unchanged — re-
-  closing it restores the period without advancing the pointer. Either way the period's entries become
-  writable again. Retracts the month's canonical statement FactSets (a reopened month is no longer a
-  closed assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
-  sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
-  filings).
+   Reopen a closed period for adjustment. Only the latest closed period (`closed_through`) can be
+  reopened; it decrements by one and the period's entries become writable again. To reach an earlier
+  month, reopen latest-first down to it, then re-close forward — an out-of-order reopen is refused
+  (422) with the ordered list, because every later closed month carries statements stamped from the
+  earlier month's numbers. Retracts the month's canonical statement FactSets (a reopened month is no
+  longer a closed assertion; re-closing restamps them). The required `reason` is captured in the audit
+  log. Use sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports,
+  shared filings).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -159,13 +160,14 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeFiscalCalendarResponse | None:
   """Reopen Fiscal Period
 
-   Reopen a closed period for adjustment. Reopening the current `closed_through` decrements it by one;
-  reopening an earlier period is a prior-period adjustment and leaves `closed_through` unchanged — re-
-  closing it restores the period without advancing the pointer. Either way the period's entries become
-  writable again. Retracts the month's canonical statement FactSets (a reopened month is no longer a
-  closed assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
-  sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
-  filings).
+   Reopen a closed period for adjustment. Only the latest closed period (`closed_through`) can be
+  reopened; it decrements by one and the period's entries become writable again. To reach an earlier
+  month, reopen latest-first down to it, then re-close forward — an out-of-order reopen is refused
+  (422) with the ordered list, because every later closed month carries statements stamped from the
+  earlier month's numbers. Retracts the month's canonical statement FactSets (a reopened month is no
+  longer a closed assertion; re-closing restamps them). The required `reason` is captured in the audit
+  log. Use sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports,
+  shared filings).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -200,13 +202,14 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeFiscalCalendarResponse]:
   """Reopen Fiscal Period
 
-   Reopen a closed period for adjustment. Reopening the current `closed_through` decrements it by one;
-  reopening an earlier period is a prior-period adjustment and leaves `closed_through` unchanged — re-
-  closing it restores the period without advancing the pointer. Either way the period's entries become
-  writable again. Retracts the month's canonical statement FactSets (a reopened month is no longer a
-  closed assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
-  sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
-  filings).
+   Reopen a closed period for adjustment. Only the latest closed period (`closed_through`) can be
+  reopened; it decrements by one and the period's entries become writable again. To reach an earlier
+  month, reopen latest-first down to it, then re-close forward — an out-of-order reopen is refused
+  (422) with the ordered list, because every later closed month carries statements stamped from the
+  earlier month's numbers. Retracts the month's canonical statement FactSets (a reopened month is no
+  longer a closed assertion; re-closing restamps them). The required `reason` is captured in the audit
+  log. Use sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports,
+  shared filings).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -244,13 +247,14 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeFiscalCalendarResponse | None:
   """Reopen Fiscal Period
 
-   Reopen a closed period for adjustment. Reopening the current `closed_through` decrements it by one;
-  reopening an earlier period is a prior-period adjustment and leaves `closed_through` unchanged — re-
-  closing it restores the period without advancing the pointer. Either way the period's entries become
-  writable again. Retracts the month's canonical statement FactSets (a reopened month is no longer a
-  closed assertion; re-closing restamps them). The required `reason` is captured in the audit log. Use
-  sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports, shared
-  filings).
+   Reopen a closed period for adjustment. Only the latest closed period (`closed_through`) can be
+  reopened; it decrements by one and the period's entries become writable again. To reach an earlier
+  month, reopen latest-first down to it, then re-close forward — an out-of-order reopen is refused
+  (422) with the ordered list, because every later closed month carries statements stamped from the
+  earlier month's numbers. Retracts the month's canonical statement FactSets (a reopened month is no
+  longer a closed assertion; re-closing restamps them). The required `reason` is captured in the audit
+  log. Use sparingly — reopen invalidates downstream artifacts that trusted the closed state (reports,
+  shared filings).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -192,6 +192,12 @@ from .detailed_transactions_response_date_range import (
 from .detailed_transactions_response_summary import DetailedTransactionsResponseSummary
 from .dimension import Dimension
 from .dimension_type import DimensionType
+from .disclosures_request import DisclosuresRequest
+from .disclosures_response import DisclosuresResponse
+from .disclosures_response_blocks_type_0_item import DisclosuresResponseBlocksType0Item
+from .disclosures_response_disclosures_type_0_item import (
+  DisclosuresResponseDisclosuresType0Item,
+)
 from .document_detail_response import DocumentDetailResponse
 from .document_limits import DocumentLimits
 from .document_list_item import DocumentListItem
@@ -293,6 +299,23 @@ from .index_document_op import IndexDocumentOp
 from .information_block_envelope import InformationBlockEnvelope
 from .information_block_envelope_dimensions_item import (
   InformationBlockEnvelopeDimensionsItem,
+)
+from .information_block_request import InformationBlockRequest
+from .information_block_response import InformationBlockResponse
+from .information_block_response_ancestors_type_0_item import (
+  InformationBlockResponseAncestorsType0Item,
+)
+from .information_block_response_axes_type_0_item import (
+  InformationBlockResponseAxesType0Item,
+)
+from .information_block_response_block import InformationBlockResponseBlock
+from .information_block_response_calculation_type_0_item import (
+  InformationBlockResponseCalculationType0Item,
+)
+from .information_block_response_columns_item import InformationBlockResponseColumnsItem
+from .information_block_response_rows_item import InformationBlockResponseRowsItem
+from .information_block_response_text_type_0_item import (
+  InformationBlockResponseTextType0Item,
 )
 from .information_model_response import InformationModelResponse
 from .ingest_file_op import IngestFileOp
@@ -461,6 +484,12 @@ from .operation_envelope_delete_taxonomy_block_response import (
 from .operation_envelope_delete_taxonomy_block_response_status import (
   OperationEnvelopeDeleteTaxonomyBlockResponseStatus,
 )
+from .operation_envelope_disclosures_response import (
+  OperationEnvelopeDisclosuresResponse,
+)
+from .operation_envelope_disclosures_response_status import (
+  OperationEnvelopeDisclosuresResponseStatus,
+)
 from .operation_envelope_entity_taxonomy_response import (
   OperationEnvelopeEntityTaxonomyResponse,
 )
@@ -512,6 +541,12 @@ from .operation_envelope_information_block_envelope import (
 )
 from .operation_envelope_information_block_envelope_status import (
   OperationEnvelopeInformationBlockEnvelopeStatus,
+)
+from .operation_envelope_information_block_response import (
+  OperationEnvelopeInformationBlockResponse,
+)
+from .operation_envelope_information_block_response_status import (
+  OperationEnvelopeInformationBlockResponseStatus,
 )
 from .operation_envelope_initialize_chart_of_accounts_response import (
   OperationEnvelopeInitializeChartOfAccountsResponse,
@@ -694,6 +729,7 @@ from .performance_insights import PerformanceInsights
 from .performance_insights_operation_stats import PerformanceInsightsOperationStats
 from .performance_insights_slow_queries_item import PerformanceInsightsSlowQueriesItem
 from .period_spec import PeriodSpec
+from .plaid_connection_config import PlaidConnectionConfig
 from .portal_session_response import PortalSessionResponse
 from .portfolio_block_envelope import PortfolioBlockEnvelope
 from .portfolio_block_portfolio_fields import PortfolioBlockPortfolioFields
@@ -1129,6 +1165,10 @@ __all__ = (
   "DetailedTransactionsResponseSummary",
   "Dimension",
   "DimensionType",
+  "DisclosuresRequest",
+  "DisclosuresResponse",
+  "DisclosuresResponseBlocksType0Item",
+  "DisclosuresResponseDisclosuresType0Item",
   "DocumentDetailResponse",
   "DocumentLimits",
   "DocumentListItem",
@@ -1213,6 +1253,15 @@ __all__ = (
   "IndexDocumentOp",
   "InformationBlockEnvelope",
   "InformationBlockEnvelopeDimensionsItem",
+  "InformationBlockRequest",
+  "InformationBlockResponse",
+  "InformationBlockResponseAncestorsType0Item",
+  "InformationBlockResponseAxesType0Item",
+  "InformationBlockResponseBlock",
+  "InformationBlockResponseCalculationType0Item",
+  "InformationBlockResponseColumnsItem",
+  "InformationBlockResponseRowsItem",
+  "InformationBlockResponseTextType0Item",
   "InformationModelResponse",
   "IngestFileOp",
   "InitialEntityData",
@@ -1312,6 +1361,8 @@ __all__ = (
   "OperationEnvelopeDeleteResultStatus",
   "OperationEnvelopeDeleteTaxonomyBlockResponse",
   "OperationEnvelopeDeleteTaxonomyBlockResponseStatus",
+  "OperationEnvelopeDisclosuresResponse",
+  "OperationEnvelopeDisclosuresResponseStatus",
   "OperationEnvelopeEntityTaxonomyResponse",
   "OperationEnvelopeEntityTaxonomyResponseStatus",
   "OperationEnvelopeEvaluateRulesResponse",
@@ -1330,6 +1381,8 @@ __all__ = (
   "OperationEnvelopeGraphMetadataResultStatus",
   "OperationEnvelopeInformationBlockEnvelope",
   "OperationEnvelopeInformationBlockEnvelopeStatus",
+  "OperationEnvelopeInformationBlockResponse",
+  "OperationEnvelopeInformationBlockResponseStatus",
   "OperationEnvelopeInitializeChartOfAccountsResponse",
   "OperationEnvelopeInitializeChartOfAccountsResponseStatus",
   "OperationEnvelopeInitializeLedgerResponse",
@@ -1429,6 +1482,7 @@ __all__ = (
   "PerformanceInsightsOperationStats",
   "PerformanceInsightsSlowQueriesItem",
   "PeriodSpec",
+  "PlaidConnectionConfig",
   "PortalSessionResponse",
   "PortfolioBlockEnvelope",
   "PortfolioBlockPortfolioFields",

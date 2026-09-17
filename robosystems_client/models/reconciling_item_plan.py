@@ -30,7 +30,7 @@ class ReconcilingItemPlan:
       event_type (str):
       event_status (str):
       default_disposition (ReconcilingItemPlanDefaultDisposition): What resolve would do with no disposition given:
-          restate while every affected period is open, catch_up once one is closed.
+          restate while every affected period is open and nothing blocks it, catch_up otherwise.
       external_id (None | str | Unset):
       drift_detected_at (datetime.datetime | None | Unset): When the sync first saw this difference
       default_posting_date (datetime.date | None | Unset): Where a catch-up entry would land by default

@@ -120,10 +120,12 @@ def sync_detailed(
 
    QuickBooks: fetches transactions, balances, and chart of accounts. Mercury: pulls the bank feed (a
   60-day window by default, or from `since_date` / the full backfill on `full_rebuild`) and captures
-  it into the inbox. For both the envelope is `pending` with the run's `task_id`, and completion is
-  reflected in the connection's `last_sync` timestamp and `last_sync_result`. External connections are
-  push-based and have nothing to pull; the envelope is `completed` with a null `task_id` and a message
-  saying so — there is nothing to poll. Returns an `OperationEnvelope`; supports `Idempotency-Key`.
+  it into the inbox. Plaid: continues from the Item's stored cursor (added, modified and removed
+  transactions), or replays its history on `full_rebuild` / `since_date`. For all three the envelope
+  is `pending` with the run's `task_id`, and completion is reflected in the connection's `last_sync`
+  timestamp and `last_sync_result`. External connections are push-based and have nothing to pull; the
+  envelope is `completed` with a null `task_id` and a message saying so — there is nothing to poll.
+  Returns an `OperationEnvelope`; supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -165,10 +167,12 @@ def sync(
 
    QuickBooks: fetches transactions, balances, and chart of accounts. Mercury: pulls the bank feed (a
   60-day window by default, or from `since_date` / the full backfill on `full_rebuild`) and captures
-  it into the inbox. For both the envelope is `pending` with the run's `task_id`, and completion is
-  reflected in the connection's `last_sync` timestamp and `last_sync_result`. External connections are
-  push-based and have nothing to pull; the envelope is `completed` with a null `task_id` and a message
-  saying so — there is nothing to poll. Returns an `OperationEnvelope`; supports `Idempotency-Key`.
+  it into the inbox. Plaid: continues from the Item's stored cursor (added, modified and removed
+  transactions), or replays its history on `full_rebuild` / `since_date`. For all three the envelope
+  is `pending` with the run's `task_id`, and completion is reflected in the connection's `last_sync`
+  timestamp and `last_sync_result`. External connections are push-based and have nothing to pull; the
+  envelope is `completed` with a null `task_id` and a message saying so — there is nothing to poll.
+  Returns an `OperationEnvelope`; supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -205,10 +209,12 @@ async def asyncio_detailed(
 
    QuickBooks: fetches transactions, balances, and chart of accounts. Mercury: pulls the bank feed (a
   60-day window by default, or from `since_date` / the full backfill on `full_rebuild`) and captures
-  it into the inbox. For both the envelope is `pending` with the run's `task_id`, and completion is
-  reflected in the connection's `last_sync` timestamp and `last_sync_result`. External connections are
-  push-based and have nothing to pull; the envelope is `completed` with a null `task_id` and a message
-  saying so — there is nothing to poll. Returns an `OperationEnvelope`; supports `Idempotency-Key`.
+  it into the inbox. Plaid: continues from the Item's stored cursor (added, modified and removed
+  transactions), or replays its history on `full_rebuild` / `since_date`. For all three the envelope
+  is `pending` with the run's `task_id`, and completion is reflected in the connection's `last_sync`
+  timestamp and `last_sync_result`. External connections are push-based and have nothing to pull; the
+  envelope is `completed` with a null `task_id` and a message saying so — there is nothing to poll.
+  Returns an `OperationEnvelope`; supports `Idempotency-Key`.
 
   Args:
       graph_id (str):
@@ -248,10 +254,12 @@ async def asyncio(
 
    QuickBooks: fetches transactions, balances, and chart of accounts. Mercury: pulls the bank feed (a
   60-day window by default, or from `since_date` / the full backfill on `full_rebuild`) and captures
-  it into the inbox. For both the envelope is `pending` with the run's `task_id`, and completion is
-  reflected in the connection's `last_sync` timestamp and `last_sync_result`. External connections are
-  push-based and have nothing to pull; the envelope is `completed` with a null `task_id` and a message
-  saying so — there is nothing to poll. Returns an `OperationEnvelope`; supports `Idempotency-Key`.
+  it into the inbox. Plaid: continues from the Item's stored cursor (added, modified and removed
+  transactions), or replays its history on `full_rebuild` / `since_date`. For all three the envelope
+  is `pending` with the run's `task_id`, and completion is reflected in the connection's `last_sync`
+  timestamp and `last_sync_result`. External connections are push-based and have nothing to pull; the
+  envelope is `completed` with a null `task_id` and a message saying so — there is nothing to poll.
+  Returns an `OperationEnvelope`; supports `Idempotency-Key`.
 
   Args:
       graph_id (str):

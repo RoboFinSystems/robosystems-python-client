@@ -18,7 +18,8 @@ class SearchResponse:
   """Response model for document search.
 
   Attributes:
-      total (int):
+      total (int): Matching documents before any grouping, as OpenSearch counts them (it stops counting at 10,000).
+          Not the number of distinct results a grouped search can page through.
       hits (list[SearchHit]):
       query (str):
       graph_id (str):

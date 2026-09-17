@@ -16,7 +16,7 @@ class OAuthCallbackRequest:
   """OAuth callback parameters.
 
   Attributes:
-      code (str): Authorization code from OAuth provider
+      code (str): Authorization code from the OAuth provider (Plaid: the public_token Link returned)
       state (str): OAuth state for verification
       realm_id (None | str | Unset): QuickBooks-specific realm ID
       error (None | str | Unset): OAuth error if authorization failed

@@ -17,7 +17,8 @@ class SearchRequest:
 
   Attributes:
       query (str): Search query
-      entity (None | str | Unset): Filter by ticker, CIK, or entity name
+      entity (None | str | Unset): Filter by CIK (exactly one filer), ticker, or entity name. A name, or a ticker that
+          is also a word, is a loose word match that can include other filers
       form_type (None | str | Unset): Filter by SEC form type (10-K, 10-Q)
       section (None | str | Unset): Filter by section ID: an Item (item_1, item_1a, item_7, ...) or, for iXBRL
           disclosures, the element qname (us-gaap:GoodwillDisclosureTextBlock)
@@ -29,6 +30,9 @@ class SearchRequest:
       date_to (None | str | Unset): Filter filings on or before date (YYYY-MM-DD)
       semantic (bool | Unset): Enable hybrid semantic search (BM25 + KNN). Default is BM25-only for speed. Default:
           False.
+      group (bool | Unset): Fold hits from successive filings of the same filer and section into the best-ranked one;
+          also_in_filings counts the others. Ignored when entity is set, where a filer's filing history is the point. A
+          grouped page is drawn from the first 100 hits. Default: False.
       size (int | Unset): Max results to return Default: 10.
       offset (int | Unset): Pagination offset Default: 0.
       snippet_chars (int | None | Unset): Approximate snippet budget per hit in characters; the default is three
@@ -45,6 +49,7 @@ class SearchRequest:
   date_from: None | str | Unset = UNSET
   date_to: None | str | Unset = UNSET
   semantic: bool | Unset = False
+  group: bool | Unset = False
   size: int | Unset = 10
   offset: int | Unset = 0
   snippet_chars: int | None | Unset = UNSET
@@ -103,6 +108,8 @@ class SearchRequest:
 
     semantic = self.semantic
 
+    group = self.group
+
     size = self.size
 
     offset = self.offset
@@ -138,6 +145,8 @@ class SearchRequest:
       field_dict["date_to"] = date_to
     if semantic is not UNSET:
       field_dict["semantic"] = semantic
+    if group is not UNSET:
+      field_dict["group"] = group
     if size is not UNSET:
       field_dict["size"] = size
     if offset is not UNSET:
@@ -226,6 +235,8 @@ class SearchRequest:
 
     semantic = d.pop("semantic", UNSET)
 
+    group = d.pop("group", UNSET)
+
     size = d.pop("size", UNSET)
 
     offset = d.pop("offset", UNSET)
@@ -250,6 +261,7 @@ class SearchRequest:
       date_from=date_from,
       date_to=date_to,
       semantic=semantic,
+      group=group,
       size=size,
       offset=offset,
       snippet_chars=snippet_chars,

@@ -110,9 +110,11 @@ def sync_detailed(
    QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
   may instead connect at once with a personal API token where the deployment allows it). External:
   registers a source namespace for an integration that writes through the public API. One connection
-  allowed per provider per graph, except 'external' which allows one per source_name. A bank feed
-  (Mercury) is refused (409) beside a live QuickBooks connection or on a graph with no chart of
-  accounts.
+  allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
+  allows one per bank login (a connection still waiting on Link is returned instead of a second).
+  Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
+  bank feed (Mercury, Plaid) is refused (409) beside a live QuickBooks connection or on a graph with
+  no chart of accounts.
 
   Args:
       graph_id (str):
@@ -149,9 +151,11 @@ def sync(
    QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
   may instead connect at once with a personal API token where the deployment allows it). External:
   registers a source namespace for an integration that writes through the public API. One connection
-  allowed per provider per graph, except 'external' which allows one per source_name. A bank feed
-  (Mercury) is refused (409) beside a live QuickBooks connection or on a graph with no chart of
-  accounts.
+  allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
+  allows one per bank login (a connection still waiting on Link is returned instead of a second).
+  Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
+  bank feed (Mercury, Plaid) is refused (409) beside a live QuickBooks connection or on a graph with
+  no chart of accounts.
 
   Args:
       graph_id (str):
@@ -183,9 +187,11 @@ async def asyncio_detailed(
    QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
   may instead connect at once with a personal API token where the deployment allows it). External:
   registers a source namespace for an integration that writes through the public API. One connection
-  allowed per provider per graph, except 'external' which allows one per source_name. A bank feed
-  (Mercury) is refused (409) beside a live QuickBooks connection or on a graph with no chart of
-  accounts.
+  allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
+  allows one per bank login (a connection still waiting on Link is returned instead of a second).
+  Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
+  bank feed (Mercury, Plaid) is refused (409) beside a live QuickBooks connection or on a graph with
+  no chart of accounts.
 
   Args:
       graph_id (str):
@@ -220,9 +226,11 @@ async def asyncio(
    QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
   may instead connect at once with a personal API token where the deployment allows it). External:
   registers a source namespace for an integration that writes through the public API. One connection
-  allowed per provider per graph, except 'external' which allows one per source_name. A bank feed
-  (Mercury) is refused (409) beside a live QuickBooks connection or on a graph with no chart of
-  accounts.
+  allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
+  allows one per bank login (a connection still waiting on Link is returned instead of a second).
+  Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
+  bank feed (Mercury, Plaid) is refused (409) beside a live QuickBooks connection or on a graph with
+  no chart of accounts.
 
   Args:
       graph_id (str):

@@ -12,6 +12,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
   from ..models.external_connection_config import ExternalConnectionConfig
   from ..models.mercury_connection_config import MercuryConnectionConfig
+  from ..models.plaid_connection_config import PlaidConnectionConfig
   from ..models.quick_books_connection_config import QuickBooksConnectionConfig
 
 
@@ -28,6 +29,7 @@ class CreateConnectionRequest:
       quickbooks_config (None | QuickBooksConnectionConfig | Unset):
       external_config (ExternalConnectionConfig | None | Unset):
       mercury_config (MercuryConnectionConfig | None | Unset):
+      plaid_config (None | PlaidConnectionConfig | Unset):
   """
 
   provider: CreateConnectionRequestProvider
@@ -35,11 +37,13 @@ class CreateConnectionRequest:
   quickbooks_config: None | QuickBooksConnectionConfig | Unset = UNSET
   external_config: ExternalConnectionConfig | None | Unset = UNSET
   mercury_config: MercuryConnectionConfig | None | Unset = UNSET
+  plaid_config: None | PlaidConnectionConfig | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     from ..models.external_connection_config import ExternalConnectionConfig
     from ..models.mercury_connection_config import MercuryConnectionConfig
+    from ..models.plaid_connection_config import PlaidConnectionConfig
     from ..models.quick_books_connection_config import QuickBooksConnectionConfig
 
     provider = self.provider.value
@@ -74,6 +78,14 @@ class CreateConnectionRequest:
     else:
       mercury_config = self.mercury_config
 
+    plaid_config: dict[str, Any] | None | Unset
+    if isinstance(self.plaid_config, Unset):
+      plaid_config = UNSET
+    elif isinstance(self.plaid_config, PlaidConnectionConfig):
+      plaid_config = self.plaid_config.to_dict()
+    else:
+      plaid_config = self.plaid_config
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -89,6 +101,8 @@ class CreateConnectionRequest:
       field_dict["external_config"] = external_config
     if mercury_config is not UNSET:
       field_dict["mercury_config"] = mercury_config
+    if plaid_config is not UNSET:
+      field_dict["plaid_config"] = plaid_config
 
     return field_dict
 
@@ -96,6 +110,7 @@ class CreateConnectionRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.external_connection_config import ExternalConnectionConfig
     from ..models.mercury_connection_config import MercuryConnectionConfig
+    from ..models.plaid_connection_config import PlaidConnectionConfig
     from ..models.quick_books_connection_config import QuickBooksConnectionConfig
 
     d = dict(src_dict)
@@ -163,12 +178,30 @@ class CreateConnectionRequest:
 
     mercury_config = _parse_mercury_config(d.pop("mercury_config", UNSET))
 
+    def _parse_plaid_config(data: object) -> None | PlaidConnectionConfig | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        plaid_config_type_0 = PlaidConnectionConfig.from_dict(data)
+
+        return plaid_config_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | PlaidConnectionConfig | Unset, data)
+
+    plaid_config = _parse_plaid_config(d.pop("plaid_config", UNSET))
+
     create_connection_request = cls(
       provider=provider,
       entity_id=entity_id,
       quickbooks_config=quickbooks_config,
       external_config=external_config,
       mercury_config=mercury_config,
+      plaid_config=plaid_config,
     )
 
     create_connection_request.additional_properties = d
