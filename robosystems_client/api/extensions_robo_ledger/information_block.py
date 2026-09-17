@@ -1,0 +1,294 @@
+from http import HTTPStatus
+from typing import Any
+from urllib.parse import quote
+
+import httpx
+
+from ... import errors
+from ...client import AuthenticatedClient, Client
+from ...models.error_response import ErrorResponse
+from ...models.information_block_request import InformationBlockRequest
+from ...models.operation_envelope_information_block_response import (
+  OperationEnvelopeInformationBlockResponse,
+)
+from ...types import UNSET, Response, Unset
+
+
+def _get_kwargs(
+  graph_id: str,
+  *,
+  body: InformationBlockRequest,
+  idempotency_key: None | str | Unset = UNSET,
+) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
+  if not isinstance(idempotency_key, Unset):
+    headers["Idempotency-Key"] = idempotency_key
+
+  _kwargs: dict[str, Any] = {
+    "method": "post",
+    "url": "/extensions/roboledger/{graph_id}/operations/information-block".format(
+      graph_id=quote(str(graph_id), safe=""),
+    ),
+  }
+
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
+
+  _kwargs["headers"] = headers
+  return _kwargs
+
+
+def _parse_response(
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorResponse | OperationEnvelopeInformationBlockResponse | None:
+  if response.status_code == 200:
+    response_200 = OperationEnvelopeInformationBlockResponse.from_dict(response.json())
+
+    return response_200
+
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
+  if response.status_code == 409:
+    response_409 = ErrorResponse.from_dict(response.json())
+
+    return response_409
+
+  if response.status_code == 422:
+    response_422 = ErrorResponse.from_dict(response.json())
+
+    return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
+  if client.raise_on_unexpected_status:
+    raise errors.UnexpectedStatus(response.status_code, response.content)
+  else:
+    return None
+
+
+def _build_response(
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorResponse | OperationEnvelopeInformationBlockResponse]:
+  return Response(
+    status_code=HTTPStatus(response.status_code),
+    content=response.content,
+    headers=response.headers,
+    parsed=_parse_response(client=client, response=response),
+  )
+
+
+def sync_detailed(
+  graph_id: str,
+  *,
+  client: AuthenticatedClient,
+  body: InformationBlockRequest,
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelopeInformationBlockResponse]:
+  """Information Block
+
+   One section of a report read whole — the expensive call: rows in presentation order with the
+  consolidated value per period column, the same rows broken out by the section's own axes, the axes
+  with the members that carry facts, every total's calculation children with a footing check, and the
+  section's text blocks. Member breakdowns and period columns are kept most-reported / most-recent
+  first up to a response budget; a row is never left blank by a cut, and `members_omitted` /
+  `periods_omitted` say what was. A block longer than `max_rows` is `truncated`; pass its
+  `next_offset` as `offset` for the next page. Take `block` from `disclosures`. Same resolution as
+  `disclosures`: `ticker` or `report_id` on shared-repo graphs, `report_id` on tenant graphs. On a
+  tenant graph this reads the section as the ledger's report holds it; `get-information-block` returns
+  one authored block's envelope with its rules and verification.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
+
+  Args:
+      graph_id (str):
+      idempotency_key (None | str | Unset):
+      body (InformationBlockRequest): Request for the information-block view op — one section
+          read whole.
+
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+  Returns:
+      Response[ErrorResponse | OperationEnvelopeInformationBlockResponse]
+  """
+
+  kwargs = _get_kwargs(
+    graph_id=graph_id,
+    body=body,
+    idempotency_key=idempotency_key,
+  )
+
+  response = client.get_httpx_client().request(
+    **kwargs,
+  )
+
+  return _build_response(client=client, response=response)
+
+
+def sync(
+  graph_id: str,
+  *,
+  client: AuthenticatedClient,
+  body: InformationBlockRequest,
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelopeInformationBlockResponse | None:
+  """Information Block
+
+   One section of a report read whole — the expensive call: rows in presentation order with the
+  consolidated value per period column, the same rows broken out by the section's own axes, the axes
+  with the members that carry facts, every total's calculation children with a footing check, and the
+  section's text blocks. Member breakdowns and period columns are kept most-reported / most-recent
+  first up to a response budget; a row is never left blank by a cut, and `members_omitted` /
+  `periods_omitted` say what was. A block longer than `max_rows` is `truncated`; pass its
+  `next_offset` as `offset` for the next page. Take `block` from `disclosures`. Same resolution as
+  `disclosures`: `ticker` or `report_id` on shared-repo graphs, `report_id` on tenant graphs. On a
+  tenant graph this reads the section as the ledger's report holds it; `get-information-block` returns
+  one authored block's envelope with its rules and verification.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
+
+  Args:
+      graph_id (str):
+      idempotency_key (None | str | Unset):
+      body (InformationBlockRequest): Request for the information-block view op — one section
+          read whole.
+
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+  Returns:
+      ErrorResponse | OperationEnvelopeInformationBlockResponse
+  """
+
+  return sync_detailed(
+    graph_id=graph_id,
+    client=client,
+    body=body,
+    idempotency_key=idempotency_key,
+  ).parsed
+
+
+async def asyncio_detailed(
+  graph_id: str,
+  *,
+  client: AuthenticatedClient,
+  body: InformationBlockRequest,
+  idempotency_key: None | str | Unset = UNSET,
+) -> Response[ErrorResponse | OperationEnvelopeInformationBlockResponse]:
+  """Information Block
+
+   One section of a report read whole — the expensive call: rows in presentation order with the
+  consolidated value per period column, the same rows broken out by the section's own axes, the axes
+  with the members that carry facts, every total's calculation children with a footing check, and the
+  section's text blocks. Member breakdowns and period columns are kept most-reported / most-recent
+  first up to a response budget; a row is never left blank by a cut, and `members_omitted` /
+  `periods_omitted` say what was. A block longer than `max_rows` is `truncated`; pass its
+  `next_offset` as `offset` for the next page. Take `block` from `disclosures`. Same resolution as
+  `disclosures`: `ticker` or `report_id` on shared-repo graphs, `report_id` on tenant graphs. On a
+  tenant graph this reads the section as the ledger's report holds it; `get-information-block` returns
+  one authored block's envelope with its rules and verification.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
+
+  Args:
+      graph_id (str):
+      idempotency_key (None | str | Unset):
+      body (InformationBlockRequest): Request for the information-block view op — one section
+          read whole.
+
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+  Returns:
+      Response[ErrorResponse | OperationEnvelopeInformationBlockResponse]
+  """
+
+  kwargs = _get_kwargs(
+    graph_id=graph_id,
+    body=body,
+    idempotency_key=idempotency_key,
+  )
+
+  response = await client.get_async_httpx_client().request(**kwargs)
+
+  return _build_response(client=client, response=response)
+
+
+async def asyncio(
+  graph_id: str,
+  *,
+  client: AuthenticatedClient,
+  body: InformationBlockRequest,
+  idempotency_key: None | str | Unset = UNSET,
+) -> ErrorResponse | OperationEnvelopeInformationBlockResponse | None:
+  """Information Block
+
+   One section of a report read whole — the expensive call: rows in presentation order with the
+  consolidated value per period column, the same rows broken out by the section's own axes, the axes
+  with the members that carry facts, every total's calculation children with a footing check, and the
+  section's text blocks. Member breakdowns and period columns are kept most-reported / most-recent
+  first up to a response budget; a row is never left blank by a cut, and `members_omitted` /
+  `periods_omitted` say what was. A block longer than `max_rows` is `truncated`; pass its
+  `next_offset` as `offset` for the next page. Take `block` from `disclosures`. Same resolution as
+  `disclosures`: `ticker` or `report_id` on shared-repo graphs, `report_id` on tenant graphs. On a
+  tenant graph this reads the section as the ledger's report holds it; `get-information-block` returns
+  one authored block's envelope with its rules and verification.
+
+  **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
+  return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
+
+  Args:
+      graph_id (str):
+      idempotency_key (None | str | Unset):
+      body (InformationBlockRequest): Request for the information-block view op — one section
+          read whole.
+
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+  Returns:
+      ErrorResponse | OperationEnvelopeInformationBlockResponse
+  """
+
+  return (
+    await asyncio_detailed(
+      graph_id=graph_id,
+      client=client,
+      body=body,
+      idempotency_key=idempotency_key,
+    )
+  ).parsed

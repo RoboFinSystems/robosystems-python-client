@@ -50,8 +50,12 @@ class ReportResponse:
           entity_name (None | str | Unset): Display name of the primary entity the report is tagged to.
           filing_status (str | Unset): Filing lifecycle (orthogonal to `generation_status`): `draft`, `under_review`,
               `filed`, `archived`. Default: 'draft'.
-          filed_at (datetime.datetime | None | Unset): When the report was transitioned to `filed`.
-          filed_by (None | str | Unset): User ID that transitioned the report to `filed`.
+          filed_at (datetime.datetime | None | Unset): When the report was transitioned to `filed`. On a report shared in
+              from another graph this is the sender's filing time, carried over with `filing_status` so a recipient can tell a
+              draft they were sent from final statements.
+          filed_by (None | str | Unset): User ID that transitioned the report to `filed`. Always null on a report shared
+              in from another graph: the sender's user id resolves to nobody in the recipient's graph, so it is deliberately
+              not carried across with `filing_status` and `filed_at`.
           supersedes_id (None | str | Unset): When this report restates an earlier filing, the predecessor's report ID.
           superseded_by_id (None | str | Unset): When this report has been restated, the successor's report ID.
           source_graph_id (None | str | Unset): Origin graph for received (shared) reports — populated only on the

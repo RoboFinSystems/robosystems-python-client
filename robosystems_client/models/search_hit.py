@@ -19,6 +19,10 @@ class SearchHit:
   a document of its own: ``part`` of ``part_count``, ``parent_document_id``
   shared by the section's parts, ``next_document_id`` to read on.
 
+  On a grouped search, ``also_in_filings`` counts the other filings of the
+  same filer whose same section (and part) matched and were folded into
+  this hit.
+
       Attributes:
           document_id (str):
           score (float):
@@ -42,6 +46,7 @@ class SearchHit:
           document_title (None | str | Unset):
           tags (list[str] | None | Unset):
           folder (None | str | Unset):
+          also_in_filings (int | None | Unset):
   """
 
   document_id: str
@@ -66,6 +71,7 @@ class SearchHit:
   document_title: None | str | Unset = UNSET
   tags: list[str] | None | Unset = UNSET
   folder: None | str | Unset = UNSET
+  also_in_filings: int | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -179,6 +185,12 @@ class SearchHit:
     else:
       folder = self.folder
 
+    also_in_filings: int | None | Unset
+    if isinstance(self.also_in_filings, Unset):
+      also_in_filings = UNSET
+    else:
+      also_in_filings = self.also_in_filings
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -225,6 +237,8 @@ class SearchHit:
       field_dict["tags"] = tags
     if folder is not UNSET:
       field_dict["folder"] = folder
+    if also_in_filings is not UNSET:
+      field_dict["also_in_filings"] = also_in_filings
 
     return field_dict
 
@@ -396,6 +410,15 @@ class SearchHit:
 
     folder = _parse_folder(d.pop("folder", UNSET))
 
+    def _parse_also_in_filings(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    also_in_filings = _parse_also_in_filings(d.pop("also_in_filings", UNSET))
+
     search_hit = cls(
       document_id=document_id,
       score=score,
@@ -419,6 +442,7 @@ class SearchHit:
       document_title=document_title,
       tags=tags,
       folder=folder,
+      also_in_filings=also_in_filings,
     )
 
     search_hit.additional_properties = d

@@ -120,7 +120,9 @@ def sync_detailed(
   refused, pickers hide it; `true` reactivates). Removal and whole-chart delete work only with no
   activity. Library-origin block types (`reporting_standard`) surface 501. `reporting_extension` /
   `custom_ontology` authoring may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled
-  surfaces 403.
+  surfaces 403. Closed months are immutable against curation: a mapping arc added or removed for an
+  account with landed history in a closed month, or a `balance_type` / `period_type` / `trait` change
+  on such an account, is refused (422, `protected_facts`) naming the months to reopen first.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -173,7 +175,9 @@ def sync(
   refused, pickers hide it; `true` reactivates). Removal and whole-chart delete work only with no
   activity. Library-origin block types (`reporting_standard`) surface 501. `reporting_extension` /
   `custom_ontology` authoring may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled
-  surfaces 403.
+  surfaces 403. Closed months are immutable against curation: a mapping arc added or removed for an
+  account with landed history in a closed month, or a `balance_type` / `period_type` / `trait` change
+  on such an account, is refused (422, `protected_facts`) naming the months to reopen first.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -221,7 +225,9 @@ async def asyncio_detailed(
   refused, pickers hide it; `true` reactivates). Removal and whole-chart delete work only with no
   activity. Library-origin block types (`reporting_standard`) surface 501. `reporting_extension` /
   `custom_ontology` authoring may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled
-  surfaces 403.
+  surfaces 403. Closed months are immutable against curation: a mapping arc added or removed for an
+  account with landed history in a closed month, or a `balance_type` / `period_type` / `trait` change
+  on such an account, is refused (422, `protected_facts`) naming the months to reopen first.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -272,7 +278,9 @@ async def asyncio(
   refused, pickers hide it; `true` reactivates). Removal and whole-chart delete work only with no
   activity. Library-origin block types (`reporting_standard`) surface 501. `reporting_extension` /
   `custom_ontology` authoring may be disabled per environment (TAXONOMY_AUTHORING_ENABLED) — disabled
-  surfaces 403.
+  surfaces 403. Closed months are immutable against curation: a mapping arc added or removed for an
+  account with landed history in a closed month, or a `balance_type` / `period_type` / `trait` change
+  on such an account, is refused (422, `protected_facts`) naming the months to reopen first.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
