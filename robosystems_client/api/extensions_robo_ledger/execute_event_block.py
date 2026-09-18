@@ -111,7 +111,7 @@ def sync_detailed(
   body: ExecuteEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeExecuteEventBlockResponse]:
-  """Execute Event Block (publish to source-of-truth system)
+  """Execute Event Block
 
    For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the captured GL
   plan to the source-of-truth system (QuickBooks). Captures qb_txn_id on
@@ -166,7 +166,7 @@ def sync(
   body: ExecuteEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeExecuteEventBlockResponse | None:
-  """Execute Event Block (publish to source-of-truth system)
+  """Execute Event Block
 
    For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the captured GL
   plan to the source-of-truth system (QuickBooks). Captures qb_txn_id on
@@ -216,7 +216,7 @@ async def asyncio_detailed(
   body: ExecuteEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeExecuteEventBlockResponse]:
-  """Execute Event Block (publish to source-of-truth system)
+  """Execute Event Block
 
    For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the captured GL
   plan to the source-of-truth system (QuickBooks). Captures qb_txn_id on
@@ -269,7 +269,7 @@ async def asyncio(
   body: ExecuteEventBlockRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeExecuteEventBlockResponse | None:
-  """Execute Event Block (publish to source-of-truth system)
+  """Execute Event Block
 
    For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the captured GL
   plan to the source-of-truth system (QuickBooks). Captures qb_txn_id on
