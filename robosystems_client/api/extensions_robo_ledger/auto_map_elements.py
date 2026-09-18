@@ -109,7 +109,7 @@ def sync_detailed(
   body: AutoMapElementsOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Auto-Map Elements via AI (async)
+  """Auto-Map Elements via AI
 
    Dispatches to the background worker — returns a `pending` envelope immediately. Monitor via SSE at
   `/v1/operations/{operation_id}/stream`. Confidence thresholds: ≥0.90 auto-approved, 0.70–0.89
@@ -158,7 +158,7 @@ def sync(
   body: AutoMapElementsOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Auto-Map Elements via AI (async)
+  """Auto-Map Elements via AI
 
    Dispatches to the background worker — returns a `pending` envelope immediately. Monitor via SSE at
   `/v1/operations/{operation_id}/stream`. Confidence thresholds: ≥0.90 auto-approved, 0.70–0.89
@@ -202,7 +202,7 @@ async def asyncio_detailed(
   body: AutoMapElementsOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelope]:
-  """Auto-Map Elements via AI (async)
+  """Auto-Map Elements via AI
 
    Dispatches to the background worker — returns a `pending` envelope immediately. Monitor via SSE at
   `/v1/operations/{operation_id}/stream`. Confidence thresholds: ≥0.90 auto-approved, 0.70–0.89
@@ -249,7 +249,7 @@ async def asyncio(
   body: AutoMapElementsOperation,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelope | None:
-  """Auto-Map Elements via AI (async)
+  """Auto-Map Elements via AI
 
    Dispatches to the background worker — returns a `pending` envelope immediately. Monitor via SSE at
   `/v1/operations/{operation_id}/stream`. Confidence thresholds: ≥0.90 auto-approved, 0.70–0.89

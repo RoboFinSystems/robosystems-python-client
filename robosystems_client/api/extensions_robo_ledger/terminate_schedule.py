@@ -111,7 +111,7 @@ def sync_detailed(
   body: TerminateScheduleRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeTerminateScheduleResponse]:
-  """Terminate Schedule Early (No Entry)
+  """Terminate Schedule Early
 
    End a schedule early at a month-end cutoff without booking any entry. In one transaction: deletes
   forward facts past the cutoff (refusing when posted entries exist past it; stale drafts past it are
@@ -173,7 +173,7 @@ def sync(
   body: TerminateScheduleRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeTerminateScheduleResponse | None:
-  """Terminate Schedule Early (No Entry)
+  """Terminate Schedule Early
 
    End a schedule early at a month-end cutoff without booking any entry. In one transaction: deletes
   forward facts past the cutoff (refusing when posted entries exist past it; stale drafts past it are
@@ -230,7 +230,7 @@ async def asyncio_detailed(
   body: TerminateScheduleRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeTerminateScheduleResponse]:
-  """Terminate Schedule Early (No Entry)
+  """Terminate Schedule Early
 
    End a schedule early at a month-end cutoff without booking any entry. In one transaction: deletes
   forward facts past the cutoff (refusing when posted entries exist past it; stale drafts past it are
@@ -290,7 +290,7 @@ async def asyncio(
   body: TerminateScheduleRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeTerminateScheduleResponse | None:
-  """Terminate Schedule Early (No Entry)
+  """Terminate Schedule Early
 
    End a schedule early at a month-end cutoff without booking any entry. In one transaction: deletes
   forward facts past the cutoff (refusing when posted entries exist past it; stale drafts past it are
