@@ -34,7 +34,7 @@ So `robosystems-client>=1,<2` is the right pin if you build on the stable surfac
 
 - [RoboSystems Platform](https://robosystems.ai)
 - [GitHub Repository](https://github.com/RoboFinSystems/robosystems)
-- [API Documentation](https://api.robosystems.ai/docs)
+- [API Reference](https://robosystems.ai/docs/api)
 - [OpenAPI Specification](https://api.robosystems.ai/openapi.json)
 
 ## Support
