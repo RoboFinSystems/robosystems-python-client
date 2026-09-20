@@ -21,32 +21,32 @@ class AttributionFilter:
 
   Pairs a target concept (the flow leaf the matched amount counts
   toward) with a predicate (which LineItems match). The rollforward's
-  ``attribution_filters: list[AttributionFilter]`` declares every flow
+  `attribution_filters: list[AttributionFilter]` declares every flow
   the BS source decomposes into; the renderer evaluates them all per
   period.
 
-  ``target_element_id`` is resolved at create time from ``target_qname``
+  `target_element_id` is resolved at create time from `target_qname`
   via the rs-gaap library + tenant taxonomy lookup. Authors only need
   to provide the qname; the element_id is filled in by the create
   handler and the resolved value is what the envelope round-trips.
 
       Attributes:
-          target_qname (str): QName of the flow concept this filter produces facts for — e.g. ``rs-
-              gaap:ProceedsFromIssuanceOfCommonStock``. Resolved to ``target_element_id`` at create time.
+          target_qname (str): QName of the flow concept this filter produces facts for — e.g. `rs-
+              gaap:ProceedsFromIssuanceOfCommonStock`. Resolved to `target_element_id` at create time.
           predicate (LineItemMetadataPredicate): Filter ledger LineItems by flow concept.
 
-              The single predicate kind shipped to date. ``values`` are flow-concept
-              qnames — mini's ``TransactionDescriptionCode`` values, rs-gaap flow
+              The single predicate kind shipped to date. `values` are flow-concept
+              qnames — mini's `TransactionDescriptionCode` values, rs-gaap flow
               concepts (what the enrichment classifier emits for QuickBooks data),
-              future XBRL GL ``GenericFlowCategory`` codes. The engine resolves them
-              to element_ids and matches the first-class ``LineItem.flow_element_id``
+              future XBRL GL `GenericFlowCategory` codes. The engine resolves them
+              to element_ids and matches the first-class `LineItem.flow_element_id`
               FK; matched lines aggregate signed into the attributed fact for the
               period.
 
-              ``field`` is accepted but ignored: the flow tag lives in the typed
-              ``flow_element_id`` FK, not in JSONB metadata. It stays on the wire so
+              `field` is accepted but ignored: the flow tag lives in the typed
+              `flow_element_id` FK, not in JSONB metadata. It stays on the wire so
               existing request bodies keep validating.
-          target_element_id (None | str | Unset): Resolved element id for ``target_qname``. Null at create time; populated
+          target_element_id (None | str | Unset): Resolved element id for `target_qname`. Null at create time; populated
               by the handler before persistence. Round-tripped in the envelope.
   """
 

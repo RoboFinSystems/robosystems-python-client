@@ -18,9 +18,9 @@ class PlaidConnectionConfig:
 
   A bank feed is native accounting: the graph must already have a chart of
   accounts and no live QuickBooks connection. The connection is created
-  ``pending_oauth``; ``POST /oauth/init`` returns a ``link_token`` for Plaid
-  Link, and the ``public_token`` Link hands back completes it through
-  ``POST /oauth/callback/plaid`` (as ``code``). One connection per institution
+  `pending_oauth`; `POST /oauth/init` returns a `link_token` for Plaid
+  Link, and the `public_token` Link hands back completes it through
+  `POST /oauth/callback/plaid` (as `code`). One connection per institution
   login; a graph can hold several.
 
       Attributes:

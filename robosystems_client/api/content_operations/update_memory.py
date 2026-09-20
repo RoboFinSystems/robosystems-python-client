@@ -123,7 +123,7 @@ def sync_detailed(
       body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
           memory).
 
-          Only supplied fields are changed; the memory is re-embedded when ``text``
+          Only supplied fields are changed; the memory is re-embedded when `text`
           changes.
 
   Raises:
@@ -168,7 +168,7 @@ def sync(
       body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
           memory).
 
-          Only supplied fields are changed; the memory is re-embedded when ``text``
+          Only supplied fields are changed; the memory is re-embedded when `text`
           changes.
 
   Raises:
@@ -208,7 +208,7 @@ async def asyncio_detailed(
       body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
           memory).
 
-          Only supplied fields are changed; the memory is re-embedded when ``text``
+          Only supplied fields are changed; the memory is re-embedded when `text`
           changes.
 
   Raises:
@@ -251,7 +251,7 @@ async def asyncio(
       body (UpdateMemoryOp): Body for the update-memory operation (partial update of a stored
           memory).
 
-          Only supplied fields are changed; the memory is re-embedded when ``text``
+          Only supplied fields are changed; the memory is re-embedded when `text`
           changes.
 
   Raises:

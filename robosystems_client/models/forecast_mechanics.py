@@ -21,32 +21,32 @@ T = TypeVar("T", bound="ForecastMechanics")
 
 @_attrs_define
 class ForecastMechanics:
-  """Authored scenario container for ``block_type='forecast'``.
+  """Authored scenario container for `block_type='forecast'`.
 
-  The block IS the scenario: its structure id is the ``scenario_id``
+  The block IS the scenario: its structure id is the `scenario_id`
   every derived forward FactSet carries (NULL = actuals). The authored
   surface is exactly this — scenario identity, horizon, base period,
   lever assertions; everything downstream is derived by
-  ``compute-forecast`` (levers → driven rs-gaap anchors via the
+  `compute-forecast` (levers → driven rs-gaap anchors via the
   rs-driver Derive rules → carry-forward for unmodeled IS lines →
   calc-DAG subtotals), landing in the EXISTING statement/metric block
   types stamped with the scenario. Reads directly from the typed
-  ``structures.artifact_mechanics`` JSONB column.
+  `structures.artifact_mechanics` JSONB column.
 
       Attributes:
           horizon_months (int): Forward months projected past the base period.
-          base_period (str): Origin month (``YYYY-MM``) of the authored horizon window — resolved at create time (request
-              → fiscal calendar closed-through → newest actual report month) and stored so recompute is deterministic. Every
-              lever, line assertion and growth rate is keyed to a month in ``base_period + 1 … base_period + horizon_months``,
-              so this never moves on its own; ``base_anchor`` decides whether the *walk* still seeds here.
+          base_period (str): Origin month (`YYYY-MM`) of the authored horizon window — resolved at create time (request →
+              fiscal calendar closed-through → newest actual report month) and stored so recompute is deterministic. Every
+              lever, line assertion and growth rate is keyed to a month in `base_period + 1 … base_period + horizon_months`,
+              so this never moves on its own; `base_anchor` decides whether the *walk* still seeds here.
           levers (list[LeverAssertionLite]): Expanded lever assertions (authoring order).
           kind (Literal['forecast'] | Unset):  Default: 'forecast'.
           scenario_kind (ForecastMechanicsScenarioKind | Unset): Scenario kind — display/filter metadata, not machinery.
               Default: ForecastMechanicsScenarioKind.FORECAST.
-          base_anchor (ForecastMechanicsBaseAnchor | Unset): Where the walk takes its opening balances. ``seam`` (default)
-              re-anchors on the newest closed month at or after ``base_period``, so a scenario survives a period close without
-              being rebuilt and its first forward month rolls off real balances. ``fixed`` pins the walk to ``base_period`` —
-              the deliberate counterfactual (“if we had restarted in July”), whose balances diverge from actuals on purpose.
+          base_anchor (ForecastMechanicsBaseAnchor | Unset): Where the walk takes its opening balances. `seam` (default)
+              re-anchors on the newest closed month at or after `base_period`, so a scenario survives a period close without
+              being rebuilt and its first forward month rolls off real balances. `fixed` pins the walk to `base_period` — the
+              deliberate counterfactual (“if we had restarted in July”), whose balances diverge from actuals on purpose.
               Default: ForecastMechanicsBaseAnchor.SEAM.
           line_assertions (list[LineAssertionLite] | Unset): Direct statement-line assertions (authoring order) — manual
               overrides that win over driver rules and carry-forward for the months they name.

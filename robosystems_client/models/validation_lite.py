@@ -16,7 +16,7 @@ class ValidationLite:
   """Outcome of guard-rail validation on a rendered statement.
 
   Distinct from :class:`VerificationResultLite` (which surfaces the
-  rule-engine outcomes from ``public.verification_results``). This lite
+  rule-engine outcomes from `public.verification_results`). This lite
   type carries the synchronous guard-rail checks computed at
   envelope-build time — accounting equation, totals foot, etc.
 

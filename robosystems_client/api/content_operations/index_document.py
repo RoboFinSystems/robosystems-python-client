@@ -122,7 +122,7 @@ def sync_detailed(
       idempotency_key (None | str | Unset):
       body (IndexDocumentOp): Body for index-document (corpus content-op).
 
-          Create a new document when ``document_id`` is absent; update the named
+          Create a new document when `document_id` is absent; update the named
           document (partial — only supplied fields) when present.
 
   Raises:
@@ -166,7 +166,7 @@ def sync(
       idempotency_key (None | str | Unset):
       body (IndexDocumentOp): Body for index-document (corpus content-op).
 
-          Create a new document when ``document_id`` is absent; update the named
+          Create a new document when `document_id` is absent; update the named
           document (partial — only supplied fields) when present.
 
   Raises:
@@ -205,7 +205,7 @@ async def asyncio_detailed(
       idempotency_key (None | str | Unset):
       body (IndexDocumentOp): Body for index-document (corpus content-op).
 
-          Create a new document when ``document_id`` is absent; update the named
+          Create a new document when `document_id` is absent; update the named
           document (partial — only supplied fields) when present.
 
   Raises:
@@ -247,7 +247,7 @@ async def asyncio(
       idempotency_key (None | str | Unset):
       body (IndexDocumentOp): Body for index-document (corpus content-op).
 
-          Create a new document when ``document_id`` is absent; update the named
+          Create a new document when `document_id` is absent; update the named
           document (partial — only supplied fields) when present.
 
   Raises:

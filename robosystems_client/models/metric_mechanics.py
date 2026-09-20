@@ -13,7 +13,7 @@ T = TypeVar("T", bound="MetricMechanics")
 
 @_attrs_define
 class MetricMechanics:
-  """Derivative mechanics for ``block_type='metric'``.
+  """Derivative mechanics for `block_type='metric'`.
 
   A metric block composes its facts from one or more source blocks at
   read time — covenant tests, ratios, KPI trend computations. The typed
@@ -22,10 +22,10 @@ class MetricMechanics:
   derivation evaluator that actually computes facts from source-block
   FactSets is not yet implemented.
 
-  ``source_block_ids`` is the ordered list of Structure ids this metric
-  derives from; ``derivation_type`` names the kind of computation
-  (``ratio``, ``trailing_twelve_month``, ``covenant_test``, …), and
-  ``expression`` carries the agent-authored derivation string that the
+  `source_block_ids` is the ordered list of Structure ids this metric
+  derives from; `derivation_type` names the kind of computation
+  (`ratio`, `trailing_twelve_month`, `covenant_test`, …), and
+  `expression` carries the agent-authored derivation string that the
   evaluator will consume at envelope build time.
 
       Attributes:

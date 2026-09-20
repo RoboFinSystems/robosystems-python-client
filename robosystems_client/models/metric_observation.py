@@ -11,7 +11,7 @@ T = TypeVar("T", bound="MetricObservation")
 
 @_attrs_define
 class MetricObservation:
-  """One externally-observed value in an ``assert-metrics`` request.
+  """One externally-observed value in an `assert-metrics` request.
 
   Attributes:
       qname (str): Metric element qname (e.g. rsx:GithubStars). Must resolve to a concept on the structure's

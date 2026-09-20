@@ -20,7 +20,7 @@ T = TypeVar("T", bound="RollforwardMechanics")
 
 @_attrs_define
 class RollforwardMechanics:
-  """Filter-based attribution mechanics for ``block_type='rollforward'``.
+  """Filter-based attribution mechanics for `block_type='rollforward'`.
 
   Filter-based attribution: each block decomposes one BS source
   element's period delta into a list of flow concepts via declared
@@ -29,30 +29,29 @@ class RollforwardMechanics:
   attributed fact per filter per period, and arbitrates any residual
   against the default change tag fallback.
 
-  Reads directly from the typed ``structures.artifact_mechanics`` JSONB
-  column. ``attribution_filters`` rides as nested JSON; the predicate
+  Reads directly from the typed `structures.artifact_mechanics` JSONB
+  column. `attribution_filters` rides as nested JSON; the predicate
   union widens as new predicate shapes are added — currently only
-  ``line_item_metadata_field`` is carried.
+  `line_item_metadata_field` is carried.
 
       Attributes:
           bs_source_element_id (str): Element id of the balance-sheet source whose period delta this block decomposes.
-              Resolved from ``bs_source_qname`` at create time.
-          bs_source_qname (str): QName of the BS source element (e.g. ``mini:CashAndCashEquivalents``). Round-tripped for
-              caller convenience; ``bs_source_element_id`` is authoritative.
+              Resolved from `bs_source_qname` at create time.
+          bs_source_qname (str): QName of the BS source element (e.g. `mini:CashAndCashEquivalents`). Round-tripped for
+              caller convenience; `bs_source_element_id` is authoritative.
           kind (Literal['rollforward'] | Unset):  Default: 'rollforward'.
           default_change_tag_element_id (None | str | Unset): Element id of the default change tag — the fallback flow
               concept that receives any residual (Δ BS − Σ filter matches). Null when no default is declared; behavior on
-              residual then follows ``validation_mode``.
-          default_change_tag_qname (None | str | Unset): QName of the default change tag (e.g. ``rs-
-              gaap:IncreaseDecreaseInCashAndCashEquivalents``). Round-tripped for caller convenience and operator-readable
-              envelopes; ``default_change_tag_element_id`` is authoritative. Null iff ``default_change_tag_element_id`` is
-              null.
+              residual then follows `validation_mode`.
+          default_change_tag_qname (None | str | Unset): QName of the default change tag (e.g. `rs-
+              gaap:IncreaseDecreaseInCashAndCashEquivalents`). Round-tripped for caller convenience and operator-readable
+              envelopes; `default_change_tag_element_id` is authoritative. Null iff `default_change_tag_element_id` is null.
           attribution_filters (list[AttributionFilter] | Unset): Filter predicates routing LineItems to flow concepts. The
               renderer evaluates each filter against the period's LineItems, aggregates signed amounts, and emits one fact per
               filter per period.
           validation_mode (RollforwardMechanicsValidationMode | Unset): Renderer arbitration policy when Σ filter matches
-              != Δ BS. ``strict`` raises; ``residual_as_default`` emits the residual as a default-tag fact (the common case);
-              ``warn_only`` logs and lets the imbalance pass. Default: RollforwardMechanicsValidationMode.RESIDUAL_AS_DEFAULT.
+              != Δ BS. `strict` raises; `residual_as_default` emits the residual as a default-tag fact (the common case);
+              `warn_only` logs and lets the imbalance pass. Default: RollforwardMechanicsValidationMode.RESIDUAL_AS_DEFAULT.
   """
 
   bs_source_element_id: str

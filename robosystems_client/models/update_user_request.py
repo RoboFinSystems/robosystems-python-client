@@ -21,8 +21,8 @@ T = TypeVar("T", bound="UpdateUserRequest")
 class UpdateUserRequest:
   """Request model for updating user profile.
 
-  Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
-  ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+  Changing `email` re-authenticates: a fresh proof (password re-entry or a
+  `mgmt`-flow passkey assertion) must accompany the request, exactly as
   passkey enrollment and removal require. Name-only updates need no proof.
 
       Attributes:

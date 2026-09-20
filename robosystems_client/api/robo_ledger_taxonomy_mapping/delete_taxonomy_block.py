@@ -125,13 +125,12 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteTaxonomyBlockRequest): Request body for the ``delete-taxonomy-block``
-          operation.
+      body (DeleteTaxonomyBlockRequest): Request body for the `delete-taxonomy-block` operation.
 
-          ``cascade_facts=False`` (default) fails the delete if any Fact rows
-          reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+          `cascade_facts=False` (default) fails the delete if any Fact rows
+          reference elements in this taxonomy. `cascade_facts=True` deletes the
           referencing facts alongside the taxonomy; the response reports
-          ``facts_deleted``.
+          `facts_deleted`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -173,13 +172,12 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteTaxonomyBlockRequest): Request body for the ``delete-taxonomy-block``
-          operation.
+      body (DeleteTaxonomyBlockRequest): Request body for the `delete-taxonomy-block` operation.
 
-          ``cascade_facts=False`` (default) fails the delete if any Fact rows
-          reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+          `cascade_facts=False` (default) fails the delete if any Fact rows
+          reference elements in this taxonomy. `cascade_facts=True` deletes the
           referencing facts alongside the taxonomy; the response reports
-          ``facts_deleted``.
+          `facts_deleted`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -216,13 +214,12 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteTaxonomyBlockRequest): Request body for the ``delete-taxonomy-block``
-          operation.
+      body (DeleteTaxonomyBlockRequest): Request body for the `delete-taxonomy-block` operation.
 
-          ``cascade_facts=False`` (default) fails the delete if any Fact rows
-          reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+          `cascade_facts=False` (default) fails the delete if any Fact rows
+          reference elements in this taxonomy. `cascade_facts=True` deletes the
           referencing facts alongside the taxonomy; the response reports
-          ``facts_deleted``.
+          `facts_deleted`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -262,13 +259,12 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (DeleteTaxonomyBlockRequest): Request body for the ``delete-taxonomy-block``
-          operation.
+      body (DeleteTaxonomyBlockRequest): Request body for the `delete-taxonomy-block` operation.
 
-          ``cascade_facts=False`` (default) fails the delete if any Fact rows
-          reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+          `cascade_facts=False` (default) fails the delete if any Fact rows
+          reference elements in this taxonomy. `cascade_facts=True` deletes the
           referencing facts alongside the taxonomy; the response reports
-          ``facts_deleted``.
+          `facts_deleted`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

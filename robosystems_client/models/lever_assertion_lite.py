@@ -19,20 +19,20 @@ T = TypeVar("T", bound="LeverAssertionLite")
 
 @_attrs_define
 class LeverAssertionLite:
-  """One lever's persisted assertion inside ``ForecastMechanics``.
+  """One lever's persisted assertion inside `ForecastMechanics`.
 
-  The create handler expands the wire-level assertion (uniform ``value``
-  + per-month overrides) into the explicit ``values_by_period`` map so
+  The create handler expands the wire-level assertion (uniform `value`
+  + per-month overrides) into the explicit `values_by_period` map so
   compute never interpolates — every asserted month is stated. The
   values are duplicated as authored facts in the scenario's lever
   FactSet (rules for mechanics, **facts for values** — the facts are
-  what ``compute-forecast`` binds); this mechanics copy is the
+  what `compute-forecast` binds); this mechanics copy is the
   operator-legible round-trip shape.
 
       Attributes:
           qname (str): rs-driver lever element qname.
           element_id (str): Resolved tenant element id.
-          values_by_period (LeverAssertionLiteValuesByPeriod): Expanded per-month assertions keyed by ``YYYY-MM``.
+          values_by_period (LeverAssertionLiteValuesByPeriod): Expanded per-month assertions keyed by `YYYY-MM`.
           item_type (None | str | Unset): Format family from the catalog (percent | days | ...).
   """
 

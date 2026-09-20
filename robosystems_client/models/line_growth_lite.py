@@ -18,25 +18,25 @@ T = TypeVar("T", bound="LineGrowthLite")
 @_attrs_define
 class LineGrowthLite:
   """One statement line's persisted growth trajectory inside
-  ``ForecastMechanics``.
+  `ForecastMechanics`.
 
   The generic per-line form of the revenue growth lever: grows an
   income-statement leaf month-over-month at the asserted rate
-  (``line[t] = line[t-1] * (1 + rate[t])``), compounding from the base
+  (`line[t] = line[t-1] * (1 + rate[t])`), compounding from the base
   month's value. Months without a rate keep the engine's carry-forward.
-  Duration leaves only; disjoint from ``line_assertions`` and from any
+  Duration leaves only; disjoint from `line_assertions` and from any
   active catalog rule's target (one owner per line).
 
   Persistence deviates from levers/assertions deliberately: rates are
   NOT duplicated as facts in the scenario FactSet — a growth rate on a
   monetary statement element would be a unit-lying fact. This mechanics
-  copy is the single authored store; ``compute-forecast`` binds rates
+  copy is the single authored store; `compute-forecast` binds rates
   from here.
 
       Attributes:
           qname (str): Grown statement-leaf qname.
           element_id (str): Resolved tenant element id.
-          values_by_period (LineGrowthLiteValuesByPeriod): Expanded per-month growth rates keyed by ``YYYY-MM``.
+          values_by_period (LineGrowthLiteValuesByPeriod): Expanded per-month growth rates keyed by `YYYY-MM`.
           item_type (str | Unset): Always 'percent' — the grid row renders rates, not values. Default: 'percent'.
   """
 

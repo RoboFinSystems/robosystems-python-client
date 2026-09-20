@@ -18,17 +18,17 @@ T = TypeVar("T", bound="EvaluateRulesResponse")
 
 @_attrs_define
 class EvaluateRulesResponse:
-  """Response for the ``evaluate-rules`` operation.
+  """Response for the `evaluate-rules` operation.
 
-  ``results`` is the full list of :class:`VerificationResultLite` rows
-  written by this evaluation run. ``summary`` gives counts keyed by
+  `results` is the full list of :class:`VerificationResultLite` rows
+  written by this evaluation run. `summary` gives counts keyed by
   status for quick display without iterating the list.
 
       Attributes:
           structure_id (str):
           results (list[VerificationResultLite]):
-          summary (EvaluateRulesResponseSummary | Unset): Status counts keyed by outcome string: ``{'pass': N, 'fail': N,
-              'error': N, 'skipped': N}``.
+          summary (EvaluateRulesResponseSummary | Unset): Status counts keyed by outcome string: `{'pass': N, 'fail': N,
+              'error': N, 'skipped': N}`.
   """
 
   structure_id: str

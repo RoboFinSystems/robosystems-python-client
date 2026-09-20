@@ -13,7 +13,7 @@ T = TypeVar("T", bound="SkippedMetricLite")
 
 @_attrs_define
 class SkippedMetricLite:
-  """One metric a ``compute-metrics`` run could not compute.
+  """One metric a `compute-metrics` run could not compute.
 
   Soft-fail by design: a missing operand fact (e.g. InterestExpense for a
   debt-free entity) or an undefined ratio (division by zero) skips the

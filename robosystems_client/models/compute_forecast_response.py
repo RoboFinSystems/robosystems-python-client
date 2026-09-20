@@ -18,24 +18,24 @@ T = TypeVar("T", bound="ComputeForecastResponse")
 
 @_attrs_define
 class ComputeForecastResponse:
-  """Response for the ``compute-forecast`` operation.
+  """Response for the `compute-forecast` operation.
 
   Attributes:
       structure_id (str):
       scenario_id (str): The scenario key every emitted FactSet carries — the forecast block's own structure id.
       entity_id (str):
       base_period (str): Origin month of the block's authored horizon window — where its levers are keyed from. Equal
-          to ``anchor_period`` unless the walk re-anchored at the seam.
-      anchor_period (str): Month the walk actually seeded its opening balances from. With ``base_anchor='seam'`` this
+          to `anchor_period` unless the walk re-anchored at the seam.
+      anchor_period (str): Month the walk actually seeded its opening balances from. With `base_anchor='seam'` this
           advances to the newest closed month as periods close, so the first forward month rolls off real balances instead
-          of a stale base; with ``'fixed'`` it always equals ``base_period``.
+          of a stale base; with `'fixed'` it always equals `base_period`.
       months (int): Forward months requested.
       months_computed (list[ForecastMonthLite] | Unset):
-      halted_at (None | str | Unset): Month (``YYYY-MM``) where the walk stopped because verification failed, or null
-          if it ran the full horizon. Each month's opening balances are the previous month's closing balances, so
-          computing past a failure yields months derived from a known-wrong one rather than merely unverified months. When
-          set, ``months_computed`` ends at this month and is shorter than ``months``; the failing month's facts are kept
-          so the failure can be inspected.
+      halted_at (None | str | Unset): Month (`YYYY-MM`) where the walk stopped because verification failed, or null if
+          it ran the full horizon. Each month's opening balances are the previous month's closing balances, so computing
+          past a failure yields months derived from a known-wrong one rather than merely unverified months. When set,
+          `months_computed` ends at this month and is shorter than `months`; the failing month's facts are kept so the
+          failure can be inspected.
       skipped (list[SkippedForecastLite] | Unset):
       diagnostics (list[str] | Unset): Articulation notes — a missing cash/earnings anchor, schedule contributions
           with no base-set landing spot, an absent cash-flow structure. Informational; the walk still computed.

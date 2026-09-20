@@ -13,7 +13,7 @@ T = TypeVar("T", bound="DeleteInformationBlockResponse")
 
 @_attrs_define
 class DeleteInformationBlockResponse:
-  """Response for ``delete-information-block``.
+  """Response for `delete-information-block`.
 
   The envelope is gone once the block is deleted, so the response is a
   thin confirmation instead — structure_id + block_type + name for

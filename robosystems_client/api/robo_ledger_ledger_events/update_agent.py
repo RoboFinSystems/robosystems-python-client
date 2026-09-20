@@ -122,8 +122,8 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest): Patch an agent. All fields except ``agent_id`` are optional —
-          pass only what changes. ``metadata_patch`` is deep-merged into the
+      body (UpdateAgentRequest): Patch an agent. All fields except `agent_id` are optional —
+          pass only what changes. `metadata_patch` is deep-merged into the
           existing metadata dict.
 
   Raises:
@@ -165,8 +165,8 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest): Patch an agent. All fields except ``agent_id`` are optional —
-          pass only what changes. ``metadata_patch`` is deep-merged into the
+      body (UpdateAgentRequest): Patch an agent. All fields except `agent_id` are optional —
+          pass only what changes. `metadata_patch` is deep-merged into the
           existing metadata dict.
 
   Raises:
@@ -203,8 +203,8 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest): Patch an agent. All fields except ``agent_id`` are optional —
-          pass only what changes. ``metadata_patch`` is deep-merged into the
+      body (UpdateAgentRequest): Patch an agent. All fields except `agent_id` are optional —
+          pass only what changes. `metadata_patch` is deep-merged into the
           existing metadata dict.
 
   Raises:
@@ -244,8 +244,8 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest): Patch an agent. All fields except ``agent_id`` are optional —
-          pass only what changes. ``metadata_patch`` is deep-merged into the
+      body (UpdateAgentRequest): Patch an agent. All fields except `agent_id` are optional —
+          pass only what changes. `metadata_patch` is deep-merged into the
           existing metadata dict.
 
   Raises:

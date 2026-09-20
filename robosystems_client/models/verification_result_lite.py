@@ -16,16 +16,16 @@ T = TypeVar("T", bound="VerificationResultLite")
 class VerificationResultLite:
   """Persisted outcome of one Rule evaluation.
 
-  One row per ``public.verification_results`` entry the rule engine
+  One row per `public.verification_results` entry the rule engine
   writes. The envelope surfaces them so the block viewer's
-  "Verification Results" tab and MCP ``list-verification-failures``
+  "Verification Results" tab and MCP `list-verification-failures`
   tool can render + aggregate without a second round-trip.
 
       Attributes:
           id (str):
           rule_id (str):
-          status (str): 'pass' | 'fail' | 'error' | 'skipped'. Enum closure enforced by the
-              ``public.verification_results`` CHECK constraint.
+          status (str): 'pass' | 'fail' | 'error' | 'skipped'. Enum closure enforced by the `public.verification_results`
+              CHECK constraint.
           structure_id (None | str | Unset):
           fact_set_id (None | str | Unset):
           message (None | str | Unset):

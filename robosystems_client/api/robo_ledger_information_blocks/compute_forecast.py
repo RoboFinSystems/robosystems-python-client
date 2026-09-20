@@ -127,14 +127,14 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ComputeForecastRequest): Request body for the ``compute-forecast`` operation.
+      body (ComputeForecastRequest): Request body for the `compute-forecast` operation.
 
           Walks the scenario's driver cascade month-by-month forward from the
-          forecast block's ``base_period``: lever-driven Derive rules in
+          forecast block's `base_period`: lever-driven Derive rules in
           dependency order, carry-forward for unmodeled IS lines, calc-DAG
           subtotals — upserting one scenario IS FactSet (+ a working-capital BS
           set) per forward month, all keyed by the forecast block's
-          ``scenario_id``. Re-running replaces each month's values (the
+          `scenario_id`. Re-running replaces each month's values (the
           compute-metrics drift semantics). Deterministic and non-AI — no
           credits consumed.
 
@@ -182,14 +182,14 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ComputeForecastRequest): Request body for the ``compute-forecast`` operation.
+      body (ComputeForecastRequest): Request body for the `compute-forecast` operation.
 
           Walks the scenario's driver cascade month-by-month forward from the
-          forecast block's ``base_period``: lever-driven Derive rules in
+          forecast block's `base_period`: lever-driven Derive rules in
           dependency order, carry-forward for unmodeled IS lines, calc-DAG
           subtotals — upserting one scenario IS FactSet (+ a working-capital BS
           set) per forward month, all keyed by the forecast block's
-          ``scenario_id``. Re-running replaces each month's values (the
+          `scenario_id`. Re-running replaces each month's values (the
           compute-metrics drift semantics). Deterministic and non-AI — no
           credits consumed.
 
@@ -232,14 +232,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ComputeForecastRequest): Request body for the ``compute-forecast`` operation.
+      body (ComputeForecastRequest): Request body for the `compute-forecast` operation.
 
           Walks the scenario's driver cascade month-by-month forward from the
-          forecast block's ``base_period``: lever-driven Derive rules in
+          forecast block's `base_period`: lever-driven Derive rules in
           dependency order, carry-forward for unmodeled IS lines, calc-DAG
           subtotals — upserting one scenario IS FactSet (+ a working-capital BS
           set) per forward month, all keyed by the forecast block's
-          ``scenario_id``. Re-running replaces each month's values (the
+          `scenario_id`. Re-running replaces each month's values (the
           compute-metrics drift semantics). Deterministic and non-AI — no
           credits consumed.
 
@@ -285,14 +285,14 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ComputeForecastRequest): Request body for the ``compute-forecast`` operation.
+      body (ComputeForecastRequest): Request body for the `compute-forecast` operation.
 
           Walks the scenario's driver cascade month-by-month forward from the
-          forecast block's ``base_period``: lever-driven Derive rules in
+          forecast block's `base_period`: lever-driven Derive rules in
           dependency order, carry-forward for unmodeled IS lines, calc-DAG
           subtotals — upserting one scenario IS FactSet (+ a working-capital BS
           set) per forward month, all keyed by the forecast block's
-          ``scenario_id``. Re-running replaces each month's values (the
+          `scenario_id`. Re-running replaces each month's values (the
           compute-metrics drift semantics). Deterministic and non-AI — no
           credits consumed.
 

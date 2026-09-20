@@ -28,23 +28,23 @@ T = TypeVar("T", bound="CreateTaxonomyBlockRequest")
 
 @_attrs_define
 class CreateTaxonomyBlockRequest:
-  """Request body for the ``create-taxonomy-block`` operation.
+  """Request body for the `create-taxonomy-block` operation.
 
-  One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+  One envelope per taxonomy instance. `taxonomy_type` discriminates
   which block-type handler the command dispatcher routes to.
-  ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+  `parent_taxonomy_id` is required for `reporting_extension` (which
   extends a library taxonomy) and ignored otherwise.
 
-  The library path (seeding ``reporting_standard`` rows) does NOT flow
+  The library path (seeding `reporting_standard` rows) does NOT flow
   through this envelope; library content is not tenant-writable here.
 
       Attributes:
           name (str): Taxonomy display name.
-          taxonomy_type (CreateTaxonomyBlockRequestTaxonomyType): Block-type discriminator. ``chart_of_accounts`` and
-              ``custom_ontology`` construct from scratch; ``reporting_extension`` extends an existing library
-              ``reporting_standard``.
-          parent_taxonomy_id (None | str | Unset): Required when ``taxonomy_type == 'reporting_extension'`` — the id of
-              the library ``reporting_standard`` being extended.
+          taxonomy_type (CreateTaxonomyBlockRequestTaxonomyType): Block-type discriminator. `chart_of_accounts` and
+              `custom_ontology` construct from scratch; `reporting_extension` extends an existing library
+              `reporting_standard`.
+          parent_taxonomy_id (None | str | Unset): Required when `taxonomy_type == 'reporting_extension'` — the id of the
+              library `reporting_standard` being extended.
           version (None | str | Unset):
           description (None | str | Unset):
           standard (None | str | Unset):

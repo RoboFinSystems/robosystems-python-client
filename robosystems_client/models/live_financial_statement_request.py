@@ -18,7 +18,7 @@ class LiveFinancialStatementRequest:
 
   Attributes:
       statement_type (str): income_statement | balance_sheet | cash_flow_statement | equity_statement.
-          ``equity_statement`` is provisional — equity balances, not a rollforward — and is not offered on the MCP surface
+          `equity_statement` is provisional — equity balances, not a rollforward — and is not offered on the MCP surface
           until it articulates.
       period_start (datetime.date | None | Unset): Explicit window start. Overrides period_type/fiscal_year.
       period_end (datetime.date | None | Unset): Explicit window end. Overrides period_type/fiscal_year.

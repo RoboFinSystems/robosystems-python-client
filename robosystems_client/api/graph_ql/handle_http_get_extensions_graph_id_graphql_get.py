@@ -15,7 +15,7 @@ def _get_kwargs(
 ) -> dict[str, Any]:
 
   _kwargs: dict[str, Any] = {
-    "method": "post",
+    "method": "get",
     "url": "/extensions/{graph_id}/graphql".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
@@ -38,6 +38,10 @@ def _parse_response(
   if response.status_code == 403:
     response_403 = cast(Any, None)
     return response_403
+
+  if response.status_code == 404:
+    response_404 = cast(Any, None)
+    return response_404
 
   if response.status_code == 422:
     response_422 = HTTPValidationError.from_dict(response.json())
@@ -70,16 +74,28 @@ def sync_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Any | HTTPValidationError]:
-  """Handle Http Post
+  """GraphQL explorer (development only)
 
+   Serves the in-browser GraphiQL explorer on deployments that enable it, which is development only —
+  it is not mounted on the hosted API. Run queries with `POST` to the same URL.
 
+  Queries are scoped by the URL: `graph_id` is a path parameter and never a query argument, so a
+  document cannot name a graph that disagrees with the path it was sent to. Reads hit the operational
+  (OLTP) extensions database, so they reflect the books as they stand now; the analytical projection
+  is Cypher at `POST /v1/graphs/{graph_id}/query/cypher`.
+
+  The schema is composed per deployment: ledger fields require RoboLedger and investor fields require
+  RoboInvestor, and a disabled domain is absent from introspection rather than failing at runtime.
+  Every field carries a description, so introspection is the authoritative, deployment-specific
+  reference.
 
   **Auth**: pass `X-API-Key` (or a JWT `Authorization: Bearer` header). Unauthenticated introspection
   queries are deliberately allowed for SDK codegen; data queries require credentials and raise
   `UNAUTHENTICATED`.
 
   **Error codes**: `LEDGER_NOT_INITIALIZED`, `INVESTOR_NOT_INITIALIZED`, and `UNAUTHENTICATED` surface
-  in the GraphQL `errors[].extensions.code` field — see `graphql/README.md` for the full vocabulary.
+  in the GraphQL `errors[].extensions.code` field. GraphQL reports errors with HTTP 200 and a
+  populated `errors[]`, so check that array rather than the status code.
 
   Args:
       graph_id (str):
@@ -108,16 +124,28 @@ def sync(
   *,
   client: AuthenticatedClient,
 ) -> Any | HTTPValidationError | None:
-  """Handle Http Post
+  """GraphQL explorer (development only)
 
+   Serves the in-browser GraphiQL explorer on deployments that enable it, which is development only —
+  it is not mounted on the hosted API. Run queries with `POST` to the same URL.
 
+  Queries are scoped by the URL: `graph_id` is a path parameter and never a query argument, so a
+  document cannot name a graph that disagrees with the path it was sent to. Reads hit the operational
+  (OLTP) extensions database, so they reflect the books as they stand now; the analytical projection
+  is Cypher at `POST /v1/graphs/{graph_id}/query/cypher`.
+
+  The schema is composed per deployment: ledger fields require RoboLedger and investor fields require
+  RoboInvestor, and a disabled domain is absent from introspection rather than failing at runtime.
+  Every field carries a description, so introspection is the authoritative, deployment-specific
+  reference.
 
   **Auth**: pass `X-API-Key` (or a JWT `Authorization: Bearer` header). Unauthenticated introspection
   queries are deliberately allowed for SDK codegen; data queries require credentials and raise
   `UNAUTHENTICATED`.
 
   **Error codes**: `LEDGER_NOT_INITIALIZED`, `INVESTOR_NOT_INITIALIZED`, and `UNAUTHENTICATED` surface
-  in the GraphQL `errors[].extensions.code` field — see `graphql/README.md` for the full vocabulary.
+  in the GraphQL `errors[].extensions.code` field. GraphQL reports errors with HTTP 200 and a
+  populated `errors[]`, so check that array rather than the status code.
 
   Args:
       graph_id (str):
@@ -141,16 +169,28 @@ async def asyncio_detailed(
   *,
   client: AuthenticatedClient,
 ) -> Response[Any | HTTPValidationError]:
-  """Handle Http Post
+  """GraphQL explorer (development only)
 
+   Serves the in-browser GraphiQL explorer on deployments that enable it, which is development only —
+  it is not mounted on the hosted API. Run queries with `POST` to the same URL.
 
+  Queries are scoped by the URL: `graph_id` is a path parameter and never a query argument, so a
+  document cannot name a graph that disagrees with the path it was sent to. Reads hit the operational
+  (OLTP) extensions database, so they reflect the books as they stand now; the analytical projection
+  is Cypher at `POST /v1/graphs/{graph_id}/query/cypher`.
+
+  The schema is composed per deployment: ledger fields require RoboLedger and investor fields require
+  RoboInvestor, and a disabled domain is absent from introspection rather than failing at runtime.
+  Every field carries a description, so introspection is the authoritative, deployment-specific
+  reference.
 
   **Auth**: pass `X-API-Key` (or a JWT `Authorization: Bearer` header). Unauthenticated introspection
   queries are deliberately allowed for SDK codegen; data queries require credentials and raise
   `UNAUTHENTICATED`.
 
   **Error codes**: `LEDGER_NOT_INITIALIZED`, `INVESTOR_NOT_INITIALIZED`, and `UNAUTHENTICATED` surface
-  in the GraphQL `errors[].extensions.code` field — see `graphql/README.md` for the full vocabulary.
+  in the GraphQL `errors[].extensions.code` field. GraphQL reports errors with HTTP 200 and a
+  populated `errors[]`, so check that array rather than the status code.
 
   Args:
       graph_id (str):
@@ -177,16 +217,28 @@ async def asyncio(
   *,
   client: AuthenticatedClient,
 ) -> Any | HTTPValidationError | None:
-  """Handle Http Post
+  """GraphQL explorer (development only)
 
+   Serves the in-browser GraphiQL explorer on deployments that enable it, which is development only —
+  it is not mounted on the hosted API. Run queries with `POST` to the same URL.
 
+  Queries are scoped by the URL: `graph_id` is a path parameter and never a query argument, so a
+  document cannot name a graph that disagrees with the path it was sent to. Reads hit the operational
+  (OLTP) extensions database, so they reflect the books as they stand now; the analytical projection
+  is Cypher at `POST /v1/graphs/{graph_id}/query/cypher`.
+
+  The schema is composed per deployment: ledger fields require RoboLedger and investor fields require
+  RoboInvestor, and a disabled domain is absent from introspection rather than failing at runtime.
+  Every field carries a description, so introspection is the authoritative, deployment-specific
+  reference.
 
   **Auth**: pass `X-API-Key` (or a JWT `Authorization: Bearer` header). Unauthenticated introspection
   queries are deliberately allowed for SDK codegen; data queries require credentials and raise
   `UNAUTHENTICATED`.
 
   **Error codes**: `LEDGER_NOT_INITIALIZED`, `INVESTOR_NOT_INITIALIZED`, and `UNAUTHENTICATED` surface
-  in the GraphQL `errors[].extensions.code` field — see `graphql/README.md` for the full vocabulary.
+  in the GraphQL `errors[].extensions.code` field. GraphQL reports errors with HTTP 200 and a
+  populated `errors[]`, so check that array rather than the status code.
 
   Args:
       graph_id (str):

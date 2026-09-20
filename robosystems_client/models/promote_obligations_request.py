@@ -15,15 +15,15 @@ T = TypeVar("T", bound="PromoteObligationsRequest")
 class PromoteObligationsRequest:
   """On-demand trigger for the obligation-promotion sweep.
 
-  Mirrors what the ``scheduled_obligation_promoter`` Dagster sensor does
+  Mirrors what the `scheduled_obligation_promoter` Dagster sensor does
   on its tick, but lets an interactive caller or an MCP close co-pilot
   run it now instead of waiting for the background cadence — required to
   drive a schedule-driven close to completion in a single session.
-  Flips matured ``pending`` ``schedule_entry_due`` events (period boundary
-  passed) to ``classified``; with ``dispatch_handlers`` it also drafts the
+  Flips matured `pending` `schedule_entry_due` events (period boundary
+  passed) to `classified`; with `dispatch_handlers` it also drafts the
   closing entries in the same transaction (idempotent — reconciles to an
   existing draft). The sweep also reaches *stranded* obligations —
-  already ``classified`` (by an earlier flip-only sweep) but with no
+  already `classified` (by an earlier flip-only sweep) but with no
   closing entry ever drafted — dispatching them in the same pass.
 
       Attributes:

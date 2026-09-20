@@ -137,10 +137,10 @@ def sync_detailed(
       body (InitializeChartOfAccountsRequest): Create the graph's chart of accounts from a
           shipped template.
 
-          Refused (409) when the graph already has an active ``chart_of_accounts``
+          Refused (409) when the graph already has an active `chart_of_accounts`
           taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
           never replaced. The template's equity rows are mapped by the entity's
-          legal form (``entity_type``: corporation / llc / partnership); omit it
+          legal form (`entity_type`: corporation / llc / partnership); omit it
           to use the graph's primary entity, falling back to corporation.
 
   Raises:
@@ -193,10 +193,10 @@ def sync(
       body (InitializeChartOfAccountsRequest): Create the graph's chart of accounts from a
           shipped template.
 
-          Refused (409) when the graph already has an active ``chart_of_accounts``
+          Refused (409) when the graph already has an active `chart_of_accounts`
           taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
           never replaced. The template's equity rows are mapped by the entity's
-          legal form (``entity_type``: corporation / llc / partnership); omit it
+          legal form (`entity_type`: corporation / llc / partnership); omit it
           to use the graph's primary entity, falling back to corporation.
 
   Raises:
@@ -244,10 +244,10 @@ async def asyncio_detailed(
       body (InitializeChartOfAccountsRequest): Create the graph's chart of accounts from a
           shipped template.
 
-          Refused (409) when the graph already has an active ``chart_of_accounts``
+          Refused (409) when the graph already has an active `chart_of_accounts`
           taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
           never replaced. The template's equity rows are mapped by the entity's
-          legal form (``entity_type``: corporation / llc / partnership); omit it
+          legal form (`entity_type`: corporation / llc / partnership); omit it
           to use the graph's primary entity, falling back to corporation.
 
   Raises:
@@ -298,10 +298,10 @@ async def asyncio(
       body (InitializeChartOfAccountsRequest): Create the graph's chart of accounts from a
           shipped template.
 
-          Refused (409) when the graph already has an active ``chart_of_accounts``
+          Refused (409) when the graph already has an active `chart_of_accounts`
           taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
           never replaced. The template's equity rows are mapped by the entity's
-          legal form (``entity_type``: corporation / llc / partnership); omit it
+          legal form (`entity_type`: corporation / llc / partnership); omit it
           to use the graph's primary entity, falling back to corporation.
 
   Raises:

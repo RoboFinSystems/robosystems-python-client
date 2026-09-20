@@ -15,7 +15,7 @@ T = TypeVar("T", bound="DeleteForecastArm")
 
 @_attrs_define
 class DeleteForecastArm:
-  """Delete-information-block body for ``block_type="forecast"``.
+  """Delete-information-block body for `block_type="forecast"`.
 
   Removes the scenario's entire parallel universe — the lever FactSet
   and every computed scenario FactSet. Actuals are never touched.

@@ -13,13 +13,13 @@ T = TypeVar("T", bound="SkippedForecastLite")
 
 @_attrs_define
 class SkippedForecastLite:
-  """One rule/month soft-skip in a ``compute-forecast`` response.
+  """One rule/month soft-skip in a `compute-forecast` response.
 
   A skipped rule never aborts the walk — its target falls back to the
   carry-forward value for that month (when a prior value exists).
 
       Attributes:
-          period (str): Month key (``YYYY-MM``) of the skip.
+          period (str): Month key (`YYYY-MM`) of the skip.
           reason (str):
           rule_id (None | str | Unset):
           element_qname (None | str | Unset):

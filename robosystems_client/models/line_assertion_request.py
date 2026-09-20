@@ -26,7 +26,7 @@ class LineAssertionRequest:
   line assertion asserts the **line itself** — an rs-gaap (or tenant
   extension) statement leaf pinned to typed values for the months it
   names. Assertions win over driver rules and carry-forward for those
-  months (a displaced rule lands in ``skipped``, legibly); months the
+  months (a displaced rule lands in `skipped`, legibly); months the
   assertion doesn't name keep the engine's normal derivation.
 
   **Leaves only** — subtotals stay calc-DAG-derived, so a manually set
@@ -34,18 +34,18 @@ class LineAssertionRequest:
   derived CF, and stays verification-gated (the whole pitch vs a
   spreadsheet cell). The create handler rejects calc-parent qnames.
 
-  Value/period grammar is identical to levers: ``value`` is a uniform
-  fill across the horizon, ``values_by_period`` overrides individual
+  Value/period grammar is identical to levers: `value` is a uniform
+  fill across the horizon, `values_by_period` overrides individual
   months. The canonical uses: zero out a base-month one-off so
   carry-forward stops replicating it, or hold a line at a known budget
   number no driver models.
 
       Attributes:
-          qname (str): QName of the statement leaf to assert (e.g. ``rs-gaap:NonoperatingIncomeExpense``). Must be a calc-
-              DAG leaf; rs-driver concepts belong in ``levers``.
+          qname (str): QName of the statement leaf to assert (e.g. `rs-gaap:NonoperatingIncomeExpense`). Must be a calc-
+              DAG leaf; rs-driver concepts belong in `levers`.
           value (float | None | Unset): Uniform value asserted for every month of the horizon.
-          values_by_period (LineAssertionRequestValuesByPeriodType0 | None | Unset): Per-month overrides keyed by ``YYYY-
-              MM``. Wins over ``value`` for the months it names.
+          values_by_period (LineAssertionRequestValuesByPeriodType0 | None | Unset): Per-month overrides keyed by `YYYY-
+              MM`. Wins over `value` for the months it names.
   """
 
   qname: str

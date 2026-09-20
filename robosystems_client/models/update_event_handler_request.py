@@ -24,12 +24,12 @@ T = TypeVar("T", bound="UpdateEventHandlerRequest")
 @_attrs_define
 class UpdateEventHandlerRequest:
   """Update an existing event handler. All fields except
-  ``event_handler_id`` are optional — pass only what changes.
+  `event_handler_id` are optional — pass only what changes.
 
-  ``transaction_template`` is **fully replaced** when supplied (no
-  partial template patches). ``metadata_patch`` does deep-merge into
-  the existing metadata. ``approve=true`` sets ``approved_by`` and
-  ``approved_at``; ``approve=false`` clears them.
+  `transaction_template` is **fully replaced** when supplied (no
+  partial template patches). `metadata_patch` does deep-merge into
+  the existing metadata. `approve=true` sets `approved_by` and
+  `approved_at`; `approve=false` clears them.
 
       Attributes:
           event_handler_id (str): The handler to update.

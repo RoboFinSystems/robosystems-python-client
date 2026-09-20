@@ -130,8 +130,7 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateTaxonomyBlockRequest): Request body for the ``update-taxonomy-block``
-          operation.
+      body (UpdateTaxonomyBlockRequest): Request body for the `update-taxonomy-block` operation.
 
           Top-level fields (name / description / version) apply to the taxonomy
           row itself. The delta lists mutate atoms incrementally — the validator
@@ -185,8 +184,7 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateTaxonomyBlockRequest): Request body for the ``update-taxonomy-block``
-          operation.
+      body (UpdateTaxonomyBlockRequest): Request body for the `update-taxonomy-block` operation.
 
           Top-level fields (name / description / version) apply to the taxonomy
           row itself. The delta lists mutate atoms incrementally — the validator
@@ -235,8 +233,7 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateTaxonomyBlockRequest): Request body for the ``update-taxonomy-block``
-          operation.
+      body (UpdateTaxonomyBlockRequest): Request body for the `update-taxonomy-block` operation.
 
           Top-level fields (name / description / version) apply to the taxonomy
           row itself. The delta lists mutate atoms incrementally — the validator
@@ -288,8 +285,7 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateTaxonomyBlockRequest): Request body for the ``update-taxonomy-block``
-          operation.
+      body (UpdateTaxonomyBlockRequest): Request body for the `update-taxonomy-block` operation.
 
           Top-level fields (name / description / version) apply to the taxonomy
           row itself. The delta lists mutate atoms incrementally — the validator

@@ -292,6 +292,12 @@ from .graph_tier_instance import GraphTierInstance
 from .graph_tier_limits import GraphTierLimits
 from .graph_usage_response import GraphUsageResponse
 from .graph_usage_response_recent_events_item import GraphUsageResponseRecentEventsItem
+from .handle_http_post_extensions_graph_id_graphql_post_body import (
+  HandleHttpPostExtensionsGraphIdGraphqlPostBody,
+)
+from .handle_http_post_extensions_graph_id_graphql_post_body_variables import (
+  HandleHttpPostExtensionsGraphIdGraphqlPostBodyVariables,
+)
 from .health_status import HealthStatus
 from .health_status_details_type_0 import HealthStatusDetailsType0
 from .http_validation_error import HTTPValidationError
@@ -1247,6 +1253,8 @@ __all__ = (
   "GraphTierLimits",
   "GraphUsageResponse",
   "GraphUsageResponseRecentEventsItem",
+  "HandleHttpPostExtensionsGraphIdGraphqlPostBody",
+  "HandleHttpPostExtensionsGraphIdGraphqlPostBodyVariables",
   "HealthStatus",
   "HealthStatusDetailsType0",
   "HTTPValidationError",

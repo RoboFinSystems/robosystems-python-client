@@ -16,10 +16,10 @@ class AssociationResponse:
   """One edge between two elements within a structure (parent/child
   presentation, calculation rollup, mapping, equivalence).
 
-  ``association_type`` discriminates the edge semantics. Mapping edges
+  `association_type` discriminates the edge semantics. Mapping edges
   are the user-facing path (CoA → reporting concept); presentation /
   calculation edges express structure layout and roll-ups.
-  ``confidence`` is set on AI-suggested mappings (≥0.90 auto-approved,
+  `confidence` is set on AI-suggested mappings (≥0.90 auto-approved,
   0.70-0.89 flagged for review).
 
       Attributes:

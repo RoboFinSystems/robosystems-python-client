@@ -27,7 +27,7 @@ class TaxonomyBlockEnvelope:
 
   One envelope per taxonomy instance. Carries identity + type,
   registry-sourced display metadata, the parent taxonomy pointer (for
-  ``reporting_extension`` blocks), and bundled atoms (elements,
+  `reporting_extension` blocks), and bundled atoms (elements,
   structures, associations, rules, verification results).
 
       Attributes:

@@ -20,8 +20,8 @@ T = TypeVar("T", bound="RuleLite")
 class RuleLite:
   """Rule projection for the Information Block envelope.
 
-  One row per ``public.rules`` entry scoped to this block. The rule
-  engine consumes ``rule_expression`` + ``rule_variables`` to evaluate
+  One row per `public.rules` entry scoped to this block. The rule
+  engine consumes `rule_expression` + `rule_variables` to evaluate
   against the in-scope fact set; the envelope surfaces the rules so
   the UI can render them as a checklist alongside any persisted
   verification results.
@@ -44,9 +44,9 @@ class RuleLite:
           rule_variables (list[RuleVariableLite] | Unset):
           rule_message (None | str | Unset):
           rule_severity (str | Unset): Failure severity — 'info' | 'warning' | 'error'. Enum closure enforced by the
-              ``public.rules`` CHECK constraint. Default: 'error'.
+              `public.rules` CHECK constraint. Default: 'error'.
           rule_origin (str | Unset): Provenance — 'forked' (from an upstream artifact, e.g. Seattle Method) or 'native'
-              (authored in this seed or by a tenant). Enum closure enforced by the ``public.rules`` CHECK constraint. Default:
+              (authored in this seed or by a tenant). Enum closure enforced by the `public.rules` CHECK constraint. Default:
               'native'.
   """
 

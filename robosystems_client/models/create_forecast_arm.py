@@ -15,19 +15,19 @@ T = TypeVar("T", bound="CreateForecastArm")
 
 @_attrs_define
 class CreateForecastArm:
-  """Create-information-block body for ``block_type="forecast"``.
+  """Create-information-block body for `block_type="forecast"`.
 
   Carries a typed forecast payload — the authored scenario container:
   scenario identity, horizon, base period, lever assertions on
-  ``rs-driver:*`` catalog elements. Run ``compute-forecast`` after
+  `rs-driver:*` catalog elements. Run `compute-forecast` after
   creating to derive the forward months.
 
       Attributes:
           block_type (Literal['forecast']): Discriminator value selecting this arm.
           payload (CreateForecastRequest): Create a forecast block — the authored scenario container.
 
-              ``base_period`` defaults to the fiscal calendar's
-              ``closed_through_period`` (else the newest actual report month) —
+              `base_period` defaults to the fiscal calendar's
+              `closed_through_period` (else the newest actual report month) —
               the walk projects forward from the last closed actuals. The resolved
               value is stored in the mechanics so recompute is deterministic.
   """

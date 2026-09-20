@@ -21,30 +21,29 @@ T = TypeVar("T", bound="LineGrowthRequest")
 class LineGrowthRequest:
   """One statement line's asserted growth trajectory for the scenario.
 
-  The generic per-line sibling of ``rs-driver:RevenueGrowthRate``: where
+  The generic per-line sibling of `rs-driver:RevenueGrowthRate`: where
   the catalog lever grows *revenue* through its seeded rule, a line
   growth entry grows **any income-statement leaf** at a month-over-month
-  rate — ``value`` -0.05 cuts the line 5% per month, compounding from
+  rate — `value` -0.05 cuts the line 5% per month, compounding from
   the base month's value. This is what expense trajectories ("opex +2%/mo
   with inflation", "cut costs 5%/mo starting October") use; without it
   every unmodeled line just carries flat.
 
-  Semantics per month: ``line[t] = line[t-1] * (1 + rate[t])``. Months
+  Semantics per month: `line[t] = line[t-1] * (1 + rate[t])`. Months
   the entry doesn't name keep the engine's carry-forward (grow-then-hold
-  ramps fall out of ``values_by_period`` naturally). **Duration leaves
+  ramps fall out of `values_by_period` naturally). **Duration leaves
   only**: balance-sheet lines roll from the IS and the working-capital
   levers — grow the driving IS line instead. A line already driven by an
-  active catalog rule (e.g. Revenues with ``RevenueGrowthRate`` set) or
-  named by a ``line_assertions`` entry is rejected — one owner per line.
+  active catalog rule (e.g. Revenues with `RevenueGrowthRate` set) or
+  named by a `line_assertions` entry is rejected — one owner per line.
 
       Attributes:
-          qname (str): QName of the income-statement leaf to grow (e.g. ``rs-gaap:ResearchAndDevelopmentExpense``). Must
-              be a calc-DAG duration leaf.
+          qname (str): QName of the income-statement leaf to grow (e.g. `rs-gaap:ResearchAndDevelopmentExpense`). Must be
+              a calc-DAG duration leaf.
           value (float | None | Unset): Uniform month-over-month growth rate for every month of the horizon (decimal: 0.02
               = +2%/mo, -0.05 = -5%/mo).
-          values_by_period (LineGrowthRequestValuesByPeriodType0 | None | Unset): Per-month rate overrides keyed by
-              ``YYYY-MM``. Wins over ``value`` for the months it names; months named by neither carry the line's prior value
-              (rate 0).
+          values_by_period (LineGrowthRequestValuesByPeriodType0 | None | Unset): Per-month rate overrides keyed by `YYYY-
+              MM`. Wins over `value` for the months it names; months named by neither carry the line's prior value (rate 0).
   """
 
   qname: str

@@ -15,7 +15,7 @@ T = TypeVar("T", bound="DeleteRollforwardArm")
 
 @_attrs_define
 class DeleteRollforwardArm:
-  """Delete-information-block body for ``block_type="rollforward"``.
+  """Delete-information-block body for `block_type="rollforward"`.
 
   Cascades through any synthetic facts produced by this block's filter
   evaluations. The underlying ledger LineItems are not touched.

@@ -14,7 +14,7 @@ T = TypeVar("T", bound="DocumentSection")
 @_attrs_define
 class DocumentSection:
   """Full document section retrieved by ID — one part of it when the section
-  is long; ``next_document_id`` continues it.
+  is long; `next_document_id` continues it.
 
       Attributes:
           document_id (str):

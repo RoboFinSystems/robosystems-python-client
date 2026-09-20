@@ -15,9 +15,9 @@ class RuleTargetLite:
 
   Attributes:
       target_kind (str): Which atom type the rule targets — 'structure' | 'element' | 'association' | 'taxonomy'. Enum
-          closure enforced by the ``public.rules`` CHECK constraint.
+          closure enforced by the `public.rules` CHECK constraint.
       target_ref_id (str): UUID of the target atom — structure_id, element_id, association_id, or taxonomy_id
-          depending on ``target_kind``.
+          depending on `target_kind`.
   """
 
   target_kind: str

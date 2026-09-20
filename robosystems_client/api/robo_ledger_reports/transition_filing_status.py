@@ -123,9 +123,9 @@ def sync_detailed(
       body (TransitionFilingStatusRequest): Generic filing-status transition — escape hatch for
           non-file moves.
 
-          Used for ``draft → under_review`` (submit for review) and
-          ``filed → archived`` (supersede / retire). Filing the package goes
-          through :class:`FileReportRequest` so ``filed_at`` / ``filed_by``
+          Used for `draft → under_review` (submit for review) and
+          `filed → archived` (supersede / retire). Filing the package goes
+          through :class:`FileReportRequest` so `filed_at` / `filed_by`
           audit fields land cleanly.
 
   Raises:
@@ -170,9 +170,9 @@ def sync(
       body (TransitionFilingStatusRequest): Generic filing-status transition — escape hatch for
           non-file moves.
 
-          Used for ``draft → under_review`` (submit for review) and
-          ``filed → archived`` (supersede / retire). Filing the package goes
-          through :class:`FileReportRequest` so ``filed_at`` / ``filed_by``
+          Used for `draft → under_review` (submit for review) and
+          `filed → archived` (supersede / retire). Filing the package goes
+          through :class:`FileReportRequest` so `filed_at` / `filed_by`
           audit fields land cleanly.
 
   Raises:
@@ -212,9 +212,9 @@ async def asyncio_detailed(
       body (TransitionFilingStatusRequest): Generic filing-status transition — escape hatch for
           non-file moves.
 
-          Used for ``draft → under_review`` (submit for review) and
-          ``filed → archived`` (supersede / retire). Filing the package goes
-          through :class:`FileReportRequest` so ``filed_at`` / ``filed_by``
+          Used for `draft → under_review` (submit for review) and
+          `filed → archived` (supersede / retire). Filing the package goes
+          through :class:`FileReportRequest` so `filed_at` / `filed_by`
           audit fields land cleanly.
 
   Raises:
@@ -257,9 +257,9 @@ async def asyncio(
       body (TransitionFilingStatusRequest): Generic filing-status transition — escape hatch for
           non-file moves.
 
-          Used for ``draft → under_review`` (submit for review) and
-          ``filed → archived`` (supersede / retire). Filing the package goes
-          through :class:`FileReportRequest` so ``filed_at`` / ``filed_by``
+          Used for `draft → under_review` (submit for review) and
+          `filed → archived` (supersede / retire). Filing the package goes
+          through :class:`FileReportRequest` so `filed_at` / `filed_by`
           audit fields land cleanly.
 
   Raises:

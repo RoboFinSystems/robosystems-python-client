@@ -15,7 +15,7 @@ T = TypeVar("T", bound="CreateRollforwardArm")
 
 @_attrs_define
 class CreateRollforwardArm:
-  """Create-information-block body for ``block_type="rollforward"``.
+  """Create-information-block body for `block_type="rollforward"`.
 
   Carries a typed rollforward payload. The block decomposes the period
   change in a BS source element across the declared attribution
@@ -26,7 +26,7 @@ class CreateRollforwardArm:
           payload (CreateRollforwardRequest): Create a rollforward Information Block.
 
               Mirrors :class:`CreateScheduleRequest` in shape. The block decomposes
-              the period change in ``bs_source_qname`` across the declared
+              the period change in `bs_source_qname` across the declared
               attribution filters. Residual (Δ BS - Σ filter matches) falls back to
               the default change tag — or, if no default is declared, surfaces as
               an unattributed fact tagged with a synthetic residual concept.

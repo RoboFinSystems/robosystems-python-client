@@ -16,20 +16,20 @@ T = TypeVar("T", bound="OperationEnvelope")
 class OperationEnvelope:
   """Uniform response shape for every operation endpoint.
 
-  Every dispatch carries an ``op_<ULID>`` operation_id, which is the bridge
+  Every dispatch carries an `op_<ULID>` operation_id, which is the bridge
   to the monitoring surface: pass it to
-  ``GET /v1/operations/{operation_id}/stream`` (see ``routers/operations.py``)
+  `GET /v1/operations/{operation_id}/stream` (see `routers/operations.py`)
   to subscribe to SSE progress events. Sync commands complete in the envelope
-  itself (``status: "completed"``, HTTP 200); async commands
-  (``status: "pending"``, HTTP 202) hand off to a background worker and stream
+  itself (`status: "completed"`, HTTP 200); async commands
+  (`status: "pending"`, HTTP 202) hand off to a background worker and stream
   their tail through that SSE endpoint. Failed dispatches still mint an
-  ``operation_id`` so the audit log and any partial SSE events stay
+  `operation_id` so the audit log and any partial SSE events stay
   correlatable.
 
-  ``TResult`` parameterizes ``result`` so per-op response shapes surface in
-  OpenAPI. Operations that pin ``OperationSpec.result_type`` get
-  ``OperationEnvelope[YourEnvelope]`` as their response model; the rest keep
-  the default ``Any`` shape (``result: any | null`` on the wire).
+  `TResult` parameterizes `result` so per-op response shapes surface in
+  OpenAPI. Operations that pin `OperationSpec.result_type` get
+  `OperationEnvelope[YourEnvelope]` as their response model; the rest keep
+  the default `Any` shape (`result: any | null` on the wire).
 
       Attributes:
           operation (str): Kebab-case operation name

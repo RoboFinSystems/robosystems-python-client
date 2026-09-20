@@ -13,12 +13,12 @@ T = TypeVar("T", bound="DeleteTaxonomyBlockRequest")
 
 @_attrs_define
 class DeleteTaxonomyBlockRequest:
-  """Request body for the ``delete-taxonomy-block`` operation.
+  """Request body for the `delete-taxonomy-block` operation.
 
-  ``cascade_facts=False`` (default) fails the delete if any Fact rows
-  reference elements in this taxonomy. ``cascade_facts=True`` deletes the
+  `cascade_facts=False` (default) fails the delete if any Fact rows
+  reference elements in this taxonomy. `cascade_facts=True` deletes the
   referencing facts alongside the taxonomy; the response reports
-  ``facts_deleted``.
+  `facts_deleted`.
 
       Attributes:
           taxonomy_id (str): The taxonomy to delete.

@@ -15,7 +15,7 @@ class ValidationCheckResponse:
 
   Every rule runs once per rendered period column; on a multi-column
   statement each failure and warning is prefixed with the column it was
-  found in (``[Prior] …``).
+  found in (`[Prior] …`).
 
       Attributes:
           passed (bool): True iff at least one rule ran and every rule produced zero failures on every rendered column.

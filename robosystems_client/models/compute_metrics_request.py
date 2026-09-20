@@ -14,12 +14,12 @@ T = TypeVar("T", bound="ComputeMetricsRequest")
 
 @_attrs_define
 class ComputeMetricsRequest:
-  """Request body for the ``compute-metrics`` operation.
+  """Request body for the `compute-metrics` operation.
 
-  Resolves the ``Derive`` rules scoped to the metric block, binds each
+  Resolves the `Derive` rules scoped to the metric block, binds each
   rule's operands to the entity's most recent persisted report facts at
-  ``period_end``, evaluates, and upserts the period's standing
-  ``factset_type='metric'`` FactSet (re-running a period replaces its
+  `period_end`, evaluates, and upserts the period's standing
+  `factset_type='metric'` FactSet (re-running a period replaces its
   facts). One standing FactSet per (structure, entity, period_end) — the
   accumulating time series.
 

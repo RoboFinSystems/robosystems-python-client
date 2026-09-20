@@ -124,11 +124,11 @@ def sync_detailed(
       idempotency_key (None | str | Unset):
       body (CreateAgentRequest): Create a new economic counterparty.
 
-          ``agent_type`` is the relationship category (customer, vendor,
+          `agent_type` is the relationship category (customer, vendor,
           employee, etc.) — the same legal entity may have multiple Agent rows
           if they play multiple roles (e.g. a vendor who also became a
-          customer). ``source`` distinguishes integration-imported rows from
-          native-created ones; ``external_id`` carries the source-system's
+          customer). `source` distinguishes integration-imported rows from
+          native-created ones; `external_id` carries the source-system's
           primary key for sync.
 
   Raises:
@@ -172,11 +172,11 @@ def sync(
       idempotency_key (None | str | Unset):
       body (CreateAgentRequest): Create a new economic counterparty.
 
-          ``agent_type`` is the relationship category (customer, vendor,
+          `agent_type` is the relationship category (customer, vendor,
           employee, etc.) — the same legal entity may have multiple Agent rows
           if they play multiple roles (e.g. a vendor who also became a
-          customer). ``source`` distinguishes integration-imported rows from
-          native-created ones; ``external_id`` carries the source-system's
+          customer). `source` distinguishes integration-imported rows from
+          native-created ones; `external_id` carries the source-system's
           primary key for sync.
 
   Raises:
@@ -215,11 +215,11 @@ async def asyncio_detailed(
       idempotency_key (None | str | Unset):
       body (CreateAgentRequest): Create a new economic counterparty.
 
-          ``agent_type`` is the relationship category (customer, vendor,
+          `agent_type` is the relationship category (customer, vendor,
           employee, etc.) — the same legal entity may have multiple Agent rows
           if they play multiple roles (e.g. a vendor who also became a
-          customer). ``source`` distinguishes integration-imported rows from
-          native-created ones; ``external_id`` carries the source-system's
+          customer). `source` distinguishes integration-imported rows from
+          native-created ones; `external_id` carries the source-system's
           primary key for sync.
 
   Raises:
@@ -261,11 +261,11 @@ async def asyncio(
       idempotency_key (None | str | Unset):
       body (CreateAgentRequest): Create a new economic counterparty.
 
-          ``agent_type`` is the relationship category (customer, vendor,
+          `agent_type` is the relationship category (customer, vendor,
           employee, etc.) — the same legal entity may have multiple Agent rows
           if they play multiple roles (e.g. a vendor who also became a
-          customer). ``source`` distinguishes integration-imported rows from
-          native-created ones; ``external_id`` carries the source-system's
+          customer). `source` distinguishes integration-imported rows from
+          native-created ones; `external_id` carries the source-system's
           primary key for sync.
 
   Raises:

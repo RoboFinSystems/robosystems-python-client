@@ -15,8 +15,8 @@ class PeriodSpec:
   """A single reporting period column.
 
   Reports render facts in N period columns side-by-side. Each
-  ``PeriodSpec`` is one column — its ``start``/``end`` define the
-  window the report's facts roll up into; ``label`` is what the renderer
+  `PeriodSpec` is one column — its `start`/`end` define the
+  window the report's facts roll up into; `label` is what the renderer
   prints in the column header. For year-over-year statements, supply two
   PeriodSpecs (current + comparative); for YTD by quarter, supply four.
 

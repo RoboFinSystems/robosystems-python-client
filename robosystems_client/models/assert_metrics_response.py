@@ -18,7 +18,7 @@ T = TypeVar("T", bound="AssertMetricsResponse")
 
 @_attrs_define
 class AssertMetricsResponse:
-  """Response for the ``assert-metrics`` operation.
+  """Response for the `assert-metrics` operation.
 
   Attributes:
       structure_id (str):

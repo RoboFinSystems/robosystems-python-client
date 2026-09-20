@@ -21,18 +21,18 @@ T = TypeVar("T", bound="TaxonomyBlockElementRequest")
 class TaxonomyBlockElementRequest:
   """Element definition inside a Taxonomy Block envelope.
 
-  ``qname`` is the envelope-local identifier — must be unique within the
-  envelope's ``elements`` list and is used by association / rule / patch
-  payloads as the reference token. ``parent_ref`` may reference another
-  envelope-local qname or, for ``reporting_extension`` blocks, a library
+  `qname` is the envelope-local identifier — must be unique within the
+  envelope's `elements` list and is used by association / rule / patch
+  payloads as the reference token. `parent_ref` may reference another
+  envelope-local qname or, for `reporting_extension` blocks, a library
   element qname.
 
       Attributes:
-          qname (str): Envelope-local element identifier. Must be unique within the envelope's ``elements`` list. Used as
+          qname (str): Envelope-local element identifier. Must be unique within the envelope's `elements` list. Used as
               the reference token for associations, rules, and update patches.
           name (str): Human-readable element name (e.g. 'Total Assets').
-          trait (None | str | Unset): FASB metamodel trait for the element. Required for ``chart_of_accounts`` blocks;
-              optional for ``custom_ontology``.
+          trait (None | str | Unset): FASB metamodel trait for the element. Required for `chart_of_accounts` blocks;
+              optional for `custom_ontology`.
           balance_type (None | str | Unset): 'debit' | 'credit' | null for non-monetary concepts.
           element_type (str | Unset): 'concept' | 'abstract' | 'axis' | 'member' | 'hypercube'. Default: 'concept'.
           period_type (None | str | Unset): 'instant' | 'duration' | null (null = derive from classification during
@@ -40,10 +40,10 @@ class TaxonomyBlockElementRequest:
           is_monetary (bool | Unset): True for dollar-denominated concepts. Default: True.
           description (None | str | Unset):
           code (None | str | Unset): Optional chart-of-accounts code (e.g. '1000', '4100-02'). Only meaningful for
-              ``chart_of_accounts`` blocks.
+              `chart_of_accounts` blocks.
           sub_classification (None | str | Unset):
           parent_ref (None | str | Unset): qname of the parent element — either another envelope-local qname or, for
-              ``reporting_extension`` blocks, a library element qname.
+              `reporting_extension` blocks, a library element qname.
           metadata (TaxonomyBlockElementRequestMetadata | Unset):
   """
 

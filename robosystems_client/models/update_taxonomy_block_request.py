@@ -24,7 +24,7 @@ T = TypeVar("T", bound="UpdateTaxonomyBlockRequest")
 
 @_attrs_define
 class UpdateTaxonomyBlockRequest:
-  """Request body for the ``update-taxonomy-block`` operation.
+  """Request body for the `update-taxonomy-block` operation.
 
   Top-level fields (name / description / version) apply to the taxonomy
   row itself. The delta lists mutate atoms incrementally — the validator

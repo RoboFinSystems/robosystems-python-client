@@ -26,7 +26,7 @@ class CustomSchemaDefinition:
   """Custom node and relationship types for a generic graph.
 
   For graphs that don't fit the entity-based schema — inventory, org charts,
-  project management. ``extends`` names a base schema to build on, or is
+  project management. `extends` names a base schema to build on, or is
   omitted for a bare database.
 
       Attributes:

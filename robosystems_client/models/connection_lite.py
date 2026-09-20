@@ -20,7 +20,7 @@ class ConnectionLite:
   """Connection (= Association) projection.
 
   "Connection" is the ontology term used on the wire; the storage table is
-  ``associations`` (``models/extensions/association.py``).
+  `associations` (`models/extensions/association.py`).
 
       Attributes:
           id (str):

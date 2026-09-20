@@ -124,16 +124,16 @@ def sync_detailed(
       body (InitializeLedgerRequest): One-time setup for a graph's fiscal calendar.
 
           Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
-          ``earliest_data_period`` (or 24 months ago) through the current month,
-          and stamps periods on or before ``closed_through`` as already closed.
+          `earliest_data_period` (or 24 months ago) through the current month,
+          and stamps periods on or before `closed_through` as already closed.
           Subsequent calls return 409 — there's no re-initialize.
 
           The two pointers it sets up:
 
-          - ``closed_through`` (system-maintained): the latest period whose
+          - `closed_through` (system-maintained): the latest period whose
             books are locked. Set on init for businesses with prior close
             history; null for a fresh start.
-          - ``close_target`` (user-controlled): the goal date the user is
+          - `close_target` (user-controlled): the goal date the user is
             closing toward. Set independently via `set-close-target`.
 
   Raises:
@@ -177,16 +177,16 @@ def sync(
       body (InitializeLedgerRequest): One-time setup for a graph's fiscal calendar.
 
           Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
-          ``earliest_data_period`` (or 24 months ago) through the current month,
-          and stamps periods on or before ``closed_through`` as already closed.
+          `earliest_data_period` (or 24 months ago) through the current month,
+          and stamps periods on or before `closed_through` as already closed.
           Subsequent calls return 409 — there's no re-initialize.
 
           The two pointers it sets up:
 
-          - ``closed_through`` (system-maintained): the latest period whose
+          - `closed_through` (system-maintained): the latest period whose
             books are locked. Set on init for businesses with prior close
             history; null for a fresh start.
-          - ``close_target`` (user-controlled): the goal date the user is
+          - `close_target` (user-controlled): the goal date the user is
             closing toward. Set independently via `set-close-target`.
 
   Raises:
@@ -225,16 +225,16 @@ async def asyncio_detailed(
       body (InitializeLedgerRequest): One-time setup for a graph's fiscal calendar.
 
           Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
-          ``earliest_data_period`` (or 24 months ago) through the current month,
-          and stamps periods on or before ``closed_through`` as already closed.
+          `earliest_data_period` (or 24 months ago) through the current month,
+          and stamps periods on or before `closed_through` as already closed.
           Subsequent calls return 409 — there's no re-initialize.
 
           The two pointers it sets up:
 
-          - ``closed_through`` (system-maintained): the latest period whose
+          - `closed_through` (system-maintained): the latest period whose
             books are locked. Set on init for businesses with prior close
             history; null for a fresh start.
-          - ``close_target`` (user-controlled): the goal date the user is
+          - `close_target` (user-controlled): the goal date the user is
             closing toward. Set independently via `set-close-target`.
 
   Raises:
@@ -276,16 +276,16 @@ async def asyncio(
       body (InitializeLedgerRequest): One-time setup for a graph's fiscal calendar.
 
           Creates the `FiscalCalendar` row, seeds `FiscalPeriod` rows from
-          ``earliest_data_period`` (or 24 months ago) through the current month,
-          and stamps periods on or before ``closed_through`` as already closed.
+          `earliest_data_period` (or 24 months ago) through the current month,
+          and stamps periods on or before `closed_through` as already closed.
           Subsequent calls return 409 — there's no re-initialize.
 
           The two pointers it sets up:
 
-          - ``closed_through`` (system-maintained): the latest period whose
+          - `closed_through` (system-maintained): the latest period whose
             books are locked. Set on init for businesses with prior close
             history; null for a fresh start.
-          - ``close_target`` (user-controlled): the goal date the user is
+          - `close_target` (user-controlled): the goal date the user is
             closing toward. Set independently via `set-close-target`.
 
   Raises:

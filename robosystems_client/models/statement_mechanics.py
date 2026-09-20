@@ -15,10 +15,10 @@ T = TypeVar("T", bound="StatementMechanics")
 class StatementMechanics:
   """Renderer mechanics for the statement family of block types.
 
-  Covers ``balance_sheet``, ``income_statement``, ``cash_flow_statement``,
-  and ``equity_statement``. All fields are optional so library-seeded
+  Covers `balance_sheet`, `income_statement`, `cash_flow_statement`,
+  and `equity_statement`. All fields are optional so library-seeded
   rows that haven't been enriched yet still validate against an empty
-  tagged body. The existing ``statement(...)`` GraphQL field continues
+  tagged body. The existing `statement(...)` GraphQL field continues
   to serve rendered output; this mechanics model is the source of truth
   for future renderer configuration.
 

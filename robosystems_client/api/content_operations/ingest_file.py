@@ -124,7 +124,7 @@ def sync_detailed(
       body (IngestFileOp): Body for ingest-file (raw→staging content flow).
 
           Marks an uploaded file ready and triggers DuckDB staging. Set
-          ``ingest_to_graph`` to auto-chain graph materialization after staging.
+          `ingest_to_graph` to auto-chain graph materialization after staging.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -169,7 +169,7 @@ def sync(
       body (IngestFileOp): Body for ingest-file (raw→staging content flow).
 
           Marks an uploaded file ready and triggers DuckDB staging. Set
-          ``ingest_to_graph`` to auto-chain graph materialization after staging.
+          `ingest_to_graph` to auto-chain graph materialization after staging.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -209,7 +209,7 @@ async def asyncio_detailed(
       body (IngestFileOp): Body for ingest-file (raw→staging content flow).
 
           Marks an uploaded file ready and triggers DuckDB staging. Set
-          ``ingest_to_graph`` to auto-chain graph materialization after staging.
+          `ingest_to_graph` to auto-chain graph materialization after staging.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -252,7 +252,7 @@ async def asyncio(
       body (IngestFileOp): Body for ingest-file (raw→staging content flow).
 
           Marks an uploaded file ready and triggers DuckDB staging. Set
-          ``ingest_to_graph`` to auto-chain graph materialization after staging.
+          `ingest_to_graph` to auto-chain graph materialization after staging.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

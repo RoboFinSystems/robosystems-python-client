@@ -13,9 +13,9 @@ T = TypeVar("T", bound="TransitionFilingStatusRequest")
 class TransitionFilingStatusRequest:
   """Generic filing-status transition — escape hatch for non-file moves.
 
-  Used for ``draft → under_review`` (submit for review) and
-  ``filed → archived`` (supersede / retire). Filing the package goes
-  through :class:`FileReportRequest` so ``filed_at`` / ``filed_by``
+  Used for `draft → under_review` (submit for review) and
+  `filed → archived` (supersede / retire). Filing the package goes
+  through :class:`FileReportRequest` so `filed_at` / `filed_by`
   audit fields land cleanly.
 
       Attributes:

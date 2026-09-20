@@ -28,11 +28,11 @@ class UpdateForecastRequest:
   """Update a forecast block in place.
 
   Mutable: name, scenario_kind, horizon_months, base_period, levers,
-  line_assertions. ``levers`` and ``line_assertions`` are each a
+  line_assertions. `levers` and `line_assertions` are each a
   **full replace** when provided (partial edits would make the asserted
   set ambiguous); replacing one leaves the other as stored. Updating
   does NOT recompute — previously computed scenario months go stale
-  until the next ``compute-forecast`` run (the compute-metrics drift
+  until the next `compute-forecast` run (the compute-metrics drift
   semantics).
 
       Attributes:
@@ -42,7 +42,7 @@ class UpdateForecastRequest:
           horizon_months (int | None | Unset):
           base_period (None | str | Unset):
           base_anchor (None | Unset | UpdateForecastRequestBaseAnchorType0): Switch the walk between seam-anchored
-              (default) and pinned to ``base_period``. Changes nothing about the authored window, so unlike ``base_period`` it
+              (default) and pinned to `base_period`. Changes nothing about the authored window, so unlike `base_period` it
               needs no levers re-supplied.
           levers (list[LeverAssertionRequest] | None | Unset): Full replacement of the lever set when provided.
           line_assertions (list[LineAssertionRequest] | None | Unset): Full replacement of the line-assertion set when

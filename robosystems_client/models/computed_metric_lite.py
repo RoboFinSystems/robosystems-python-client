@@ -13,7 +13,7 @@ T = TypeVar("T", bound="ComputedMetricLite")
 
 @_attrs_define
 class ComputedMetricLite:
-  """One metric computed by a ``compute-metrics`` run.
+  """One metric computed by a `compute-metrics` run.
 
   Attributes:
       rule_id (str): Derive rule that produced the value.

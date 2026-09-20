@@ -128,15 +128,14 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateTaxonomyBlockRequest): Request body for the ``create-taxonomy-block``
-          operation.
+      body (CreateTaxonomyBlockRequest): Request body for the `create-taxonomy-block` operation.
 
-          One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+          One envelope per taxonomy instance. `taxonomy_type` discriminates
           which block-type handler the command dispatcher routes to.
-          ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+          `parent_taxonomy_id` is required for `reporting_extension` (which
           extends a library taxonomy) and ignored otherwise.
 
-          The library path (seeding ``reporting_standard`` rows) does NOT flow
+          The library path (seeding `reporting_standard` rows) does NOT flow
           through this envelope; library content is not tenant-writable here.
 
   Raises:
@@ -184,15 +183,14 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateTaxonomyBlockRequest): Request body for the ``create-taxonomy-block``
-          operation.
+      body (CreateTaxonomyBlockRequest): Request body for the `create-taxonomy-block` operation.
 
-          One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+          One envelope per taxonomy instance. `taxonomy_type` discriminates
           which block-type handler the command dispatcher routes to.
-          ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+          `parent_taxonomy_id` is required for `reporting_extension` (which
           extends a library taxonomy) and ignored otherwise.
 
-          The library path (seeding ``reporting_standard`` rows) does NOT flow
+          The library path (seeding `reporting_standard` rows) does NOT flow
           through this envelope; library content is not tenant-writable here.
 
   Raises:
@@ -235,15 +233,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateTaxonomyBlockRequest): Request body for the ``create-taxonomy-block``
-          operation.
+      body (CreateTaxonomyBlockRequest): Request body for the `create-taxonomy-block` operation.
 
-          One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+          One envelope per taxonomy instance. `taxonomy_type` discriminates
           which block-type handler the command dispatcher routes to.
-          ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+          `parent_taxonomy_id` is required for `reporting_extension` (which
           extends a library taxonomy) and ignored otherwise.
 
-          The library path (seeding ``reporting_standard`` rows) does NOT flow
+          The library path (seeding `reporting_standard` rows) does NOT flow
           through this envelope; library content is not tenant-writable here.
 
   Raises:
@@ -289,15 +286,14 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (CreateTaxonomyBlockRequest): Request body for the ``create-taxonomy-block``
-          operation.
+      body (CreateTaxonomyBlockRequest): Request body for the `create-taxonomy-block` operation.
 
-          One envelope per taxonomy instance. ``taxonomy_type`` discriminates
+          One envelope per taxonomy instance. `taxonomy_type` discriminates
           which block-type handler the command dispatcher routes to.
-          ``parent_taxonomy_id`` is required for ``reporting_extension`` (which
+          `parent_taxonomy_id` is required for `reporting_extension` (which
           extends a library taxonomy) and ignored otherwise.
 
-          The library path (seeding ``reporting_standard`` rows) does NOT flow
+          The library path (seeding `reporting_standard` rows) does NOT flow
           through this envelope; library content is not tenant-writable here.
 
   Raises:
