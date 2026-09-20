@@ -118,9 +118,10 @@ def sync_detailed(
   updated. captured → classified records an account choice without posting — for a bank-feed line,
   patch metadata.classified_element_id (or accept_suggestion: true) in the same call. When the
   transition is captured/classified → committed, the registered Python handler fires against the
-  captured metadata to produce the GL rows; a bank-feed line with no account chosen and no matching
-  rule is refused. Errors from the handler (validation, element resolution, closed period, unbalanced
-  lines) surface as 422 here so the inbox UI can display the failure reason without retry.
+  captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
+  bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
+  (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
+  UI can display the failure reason without retry.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -168,9 +169,10 @@ def sync(
   updated. captured → classified records an account choice without posting — for a bank-feed line,
   patch metadata.classified_element_id (or accept_suggestion: true) in the same call. When the
   transition is captured/classified → committed, the registered Python handler fires against the
-  captured metadata to produce the GL rows; a bank-feed line with no account chosen and no matching
-  rule is refused. Errors from the handler (validation, element resolution, closed period, unbalanced
-  lines) surface as 422 here so the inbox UI can display the failure reason without retry.
+  captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
+  bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
+  (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
+  UI can display the failure reason without retry.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -213,9 +215,10 @@ async def asyncio_detailed(
   updated. captured → classified records an account choice without posting — for a bank-feed line,
   patch metadata.classified_element_id (or accept_suggestion: true) in the same call. When the
   transition is captured/classified → committed, the registered Python handler fires against the
-  captured metadata to produce the GL rows; a bank-feed line with no account chosen and no matching
-  rule is refused. Errors from the handler (validation, element resolution, closed period, unbalanced
-  lines) surface as 422 here so the inbox UI can display the failure reason without retry.
+  captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
+  bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
+  (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
+  UI can display the failure reason without retry.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -261,9 +264,10 @@ async def asyncio(
   updated. captured → classified records an account choice without posting — for a bank-feed line,
   patch metadata.classified_element_id (or accept_suggestion: true) in the same call. When the
   transition is captured/classified → committed, the registered Python handler fires against the
-  captured metadata to produce the GL rows; a bank-feed line with no account chosen and no matching
-  rule is refused. Errors from the handler (validation, element resolution, closed period, unbalanced
-  lines) surface as 422 here so the inbox UI can display the failure reason without retry.
+  captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
+  bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
+  (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
+  UI can display the failure reason without retry.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
