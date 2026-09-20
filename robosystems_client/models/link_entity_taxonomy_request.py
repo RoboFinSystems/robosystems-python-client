@@ -17,7 +17,7 @@ class LinkEntityTaxonomyRequest:
   """Link an entity to a taxonomy (creates the ENTITY_HAS_TAXONOMY edge).
 
   This is how a graph declares "this entity reports under this taxonomy."
-  For ``chart_of_accounts`` taxonomies, this tells the platform which CoA
+  For `chart_of_accounts` taxonomies, this tells the platform which CoA
   the entity uses. For reporting taxonomies, which standard (us-gaap,
   ifrs). Idempotent — re-linking returns the existing edge unchanged.
 

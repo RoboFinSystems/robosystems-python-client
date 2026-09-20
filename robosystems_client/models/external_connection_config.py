@@ -19,7 +19,7 @@ class ExternalConnectionConfig:
   run: the connection is registration + telemetry, not execution config.
   The platform holds no credentials for the external source — the
   integration authenticates to its own source and writes here through
-  the public API, stamping ``source_name`` on everything it emits.
+  the public API, stamping `source_name` on everything it emits.
 
       Attributes:
           source_name (str): Source slug the integration stamps on the events it emits (lowercase letters, digits, '-',

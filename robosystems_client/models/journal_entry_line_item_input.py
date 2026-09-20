@@ -30,10 +30,10 @@ class JournalEntryLineItemInput:
           credit_amount (int | Unset): Credit amount in cents. Must be 0 if `debit_amount` > 0. Default: 0.
           description (None | str | Unset): Per-line memo (overrides the entry-level memo on this line).
           metadata (JournalEntryLineItemInputMetadataType0 | None | Unset): Optional per-line metadata stamped on
-              ``LineItem.metadata_``. Used to carry source-system fields the standard columns don't cover — e.g. an external
-              flow-tag code that drives rollforward attribution (``transaction_description_code``), an external memo, or a
-              cost-center hint. Pass-through is non-validating; the renderer / filter engine reads keys it knows about and
-              ignores the rest. ``None`` is normalized to ``{}`` at persist time.
+              `LineItem.metadata_`. Used to carry source-system fields the standard columns don't cover — e.g. an external
+              flow-tag code that drives rollforward attribution (`transaction_description_code`), an external memo, or a cost-
+              center hint. Pass-through is non-validating; the renderer / filter engine reads keys it knows about and ignores
+              the rest. `None` is normalized to `{}` at persist time.
   """
 
   element_id: str

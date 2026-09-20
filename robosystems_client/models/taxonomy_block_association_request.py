@@ -28,8 +28,8 @@ class TaxonomyBlockAssociationRequest:
       structure_ref (str): Envelope-local structure name (references a structure declared in the same envelope).
       from_ref (str): qname of the source element.
       to_ref (str): qname of the target element.
-      association_type (TaxonomyBlockAssociationRequestAssociationType): DB ``associations.association_type`` enum.
-          ``presentation`` = parent-child hierarchy; ``calculation`` = summation arc.
+      association_type (TaxonomyBlockAssociationRequestAssociationType): DB `associations.association_type` enum.
+          `presentation` = parent-child hierarchy; `calculation` = summation arc.
       order_value (float | None | Unset):
       arcrole (None | str | Unset):
       weight (float | None | Unset): Calculation-arc coefficient (+1 / -1 for summation, other values for weighted

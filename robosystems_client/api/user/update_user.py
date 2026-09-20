@@ -101,8 +101,8 @@ def sync_detailed(
   Args:
       body (UpdateUserRequest): Request model for updating user profile.
 
-          Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
-          ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+          Changing `email` re-authenticates: a fresh proof (password re-entry or a
+          `mgmt`-flow passkey assertion) must accompany the request, exactly as
           passkey enrollment and removal require. Name-only updates need no proof.
 
   Raises:
@@ -134,8 +134,8 @@ def sync(
   Args:
       body (UpdateUserRequest): Request model for updating user profile.
 
-          Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
-          ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+          Changing `email` re-authenticates: a fresh proof (password re-entry or a
+          `mgmt`-flow passkey assertion) must accompany the request, exactly as
           passkey enrollment and removal require. Name-only updates need no proof.
 
   Raises:
@@ -162,8 +162,8 @@ async def asyncio_detailed(
   Args:
       body (UpdateUserRequest): Request model for updating user profile.
 
-          Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
-          ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+          Changing `email` re-authenticates: a fresh proof (password re-entry or a
+          `mgmt`-flow passkey assertion) must accompany the request, exactly as
           passkey enrollment and removal require. Name-only updates need no proof.
 
   Raises:
@@ -193,8 +193,8 @@ async def asyncio(
   Args:
       body (UpdateUserRequest): Request model for updating user profile.
 
-          Changing ``email`` re-authenticates: a fresh proof (password re-entry or a
-          ``mgmt``-flow passkey assertion) must accompany the request, exactly as
+          Changing `email` re-authenticates: a fresh proof (password re-entry or a
+          `mgmt`-flow passkey assertion) must accompany the request, exactly as
           passkey enrollment and removal require. Name-only updates need no proof.
 
   Raises:

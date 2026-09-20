@@ -23,7 +23,7 @@ class CreateRollforwardRequest:
   """Create a rollforward Information Block.
 
   Mirrors :class:`CreateScheduleRequest` in shape. The block decomposes
-  the period change in ``bs_source_qname`` across the declared
+  the period change in `bs_source_qname` across the declared
   attribution filters. Residual (Δ BS - Σ filter matches) falls back to
   the default change tag — or, if no default is declared, surfaces as
   an unattributed fact tagged with a synthetic residual concept.
@@ -31,16 +31,16 @@ class CreateRollforwardRequest:
       Attributes:
           name (str): Human-readable block name.
           bs_source_qname (str): QName of the balance-sheet element whose period delta this block decomposes. Resolved to
-              ``bs_source_element_id`` at create time.
+              `bs_source_element_id` at create time.
           default_change_tag_qname (None | str | Unset): QName of the fallback flow concept (Tier 1 default change tag).
               Residual amount — Δ BS minus the sum of filter-matched amounts — is attributed to this concept. When omitted,
               residual surfaces unattributed; the validation_mode setting governs whether that's a hard error.
           attribution_filters (list[AttributionFilter] | Unset): Filter predicates routing LineItems to flow concepts.
           validation_mode (CreateRollforwardRequestValidationMode | Unset): How the renderer arbitrates when Σ filter
-              matches != Δ BS. ``strict`` raises; ``residual_as_default`` emits the residual as a default-tag fact (the common
-              case); ``warn_only`` logs and lets the imbalance pass. Default:
+              matches != Δ BS. `strict` raises; `residual_as_default` emits the residual as a default-tag fact (the common
+              case); `warn_only` logs and lets the imbalance pass. Default:
               CreateRollforwardRequestValidationMode.RESIDUAL_AS_DEFAULT.
-          taxonomy_id (None | str | Unset): Owning taxonomy id (auto-resolved from ``bs_source_qname`` when omitted).
+          taxonomy_id (None | str | Unset): Owning taxonomy id (auto-resolved from `bs_source_qname` when omitted).
   """
 
   name: str

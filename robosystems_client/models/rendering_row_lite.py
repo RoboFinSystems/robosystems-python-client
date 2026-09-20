@@ -17,7 +17,7 @@ class RenderingRowLite:
 
   Mirrors :class:`FactRow` in
   :mod:`robosystems.operations.roboledger.reports.fact_grid`, restated at the
-  API boundary so envelope consumers don't depend on that module. ``values``
+  API boundary so envelope consumers don't depend on that module. `values`
   holds one entry per period column in :class:`RenderingLite.periods`.
 
       Attributes:

@@ -14,9 +14,9 @@ class ChartSeriesLite:
   """One plottable series in a chart panel.
 
   Carries structure and identity only — the values live in the sibling
-  ``rendering.rows`` (join on ``element_id``), so the chart arm never
-  duplicates the value matrix. ``key`` is the stable series identity for
-  client state (colors, toggles); today it equals ``element_id``, and
+  `rendering.rows` (join on `element_id`), so the chart arm never
+  duplicates the value matrix. `key` is the stable series identity for
+  client state (colors, toggles); today it equals `element_id`, and
   future axes (the forecast scenario) arrive as new fields on this
   model, never a new arm shape.
 

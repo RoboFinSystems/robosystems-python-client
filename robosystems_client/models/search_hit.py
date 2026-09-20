@@ -16,10 +16,10 @@ class SearchHit:
   """A single search result with snippet.
 
   A long SEC section (an MD&A, a commitments note) is indexed in parts, each
-  a document of its own: ``part`` of ``part_count``, ``parent_document_id``
-  shared by the section's parts, ``next_document_id`` to read on.
+  a document of its own: `part` of `part_count`, `parent_document_id`
+  shared by the section's parts, `next_document_id` to read on.
 
-  On a grouped search, ``also_in_filings`` counts the other filings of the
+  On a grouped search, `also_in_filings` counts the other filings of the
   same filer whose same section (and part) matched and were folded into
   this hit.
 

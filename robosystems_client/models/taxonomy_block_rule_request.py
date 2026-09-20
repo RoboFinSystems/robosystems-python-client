@@ -33,17 +33,17 @@ T = TypeVar("T", bound="TaxonomyBlockRuleRequest")
 class TaxonomyBlockRuleRequest:
   """Rule definition inside a Taxonomy Block envelope.
 
-  Exactly one of ``target_structure_ref``, ``target_element_qname``, or
-  ``target_taxonomy_self`` must be set (or all null for a global rule).
-  The ``model_validator`` enforces this contract at the Pydantic layer.
+  Exactly one of `target_structure_ref`, `target_element_qname`, or
+  `target_taxonomy_self` must be set (or all null for a global rule).
+  The `model_validator` enforces this contract at the Pydantic layer.
 
   Only **arithmetic** rule patterns are user-creatable via this API
-  (the ``rule_pattern`` Literal below). The 6 model-structure check
-  kinds (``NoCycles``, ``NoOrphanArcs``, ``ParentBeforeChild``,
-  ``LeafHasClassification``, ``LibraryOriginImmutability``,
-  ``UniqueQNameInTaxonomy``) are system-managed — they're auto-emitted
+  (the `rule_pattern` Literal below). The 6 model-structure check
+  kinds (`NoCycles`, `NoOrphanArcs`, `ParentBeforeChild`,
+  `LeafHasClassification`, `LibraryOriginImmutability`,
+  `UniqueQNameInTaxonomy`) are system-managed — they're auto-emitted
   by :func:`emit_auto_rules` at taxonomy-block creation time and
-  populate ``rules.rule_check_kind`` instead of ``rule_pattern``.
+  populate `rules.rule_check_kind` instead of `rule_pattern`.
 
       Attributes:
           name (str): Rule identifier, unique within envelope.
@@ -53,15 +53,15 @@ class TaxonomyBlockRuleRequest:
               pattern.
           expression (str): XPath-flavored predicate body (the rule expression).
           description (None | str | Unset):
-          variables (list[TaxonomyBlockRuleRequestVariablesItem] | Unset): ``$Variable`` → qname bindings. Each entry is
-              ``{'variable_name': str, 'variable_qname': str}``.
+          variables (list[TaxonomyBlockRuleRequestVariablesItem] | Unset): `$Variable` → qname bindings. Each entry is
+              `{'variable_name': str, 'variable_qname': str}`.
           severity (TaxonomyBlockRuleRequestSeverity | Unset):  Default: TaxonomyBlockRuleRequestSeverity.ERROR.
           target_structure_ref (None | str | Unset): Envelope-local structure name this rule targets (for structure-scoped
               rules). Mutually exclusive with the other target_* fields.
           target_element_qname (None | str | Unset): qname of the element this rule targets. Mutually exclusive with the
               other target_* fields.
           target_taxonomy_self (bool | Unset): True iff the rule targets the envelope's own taxonomy row
-              (``target_kind='taxonomy'``). Mutually exclusive with the other target_* fields. Default: False.
+              (`target_kind='taxonomy'`). Mutually exclusive with the other target_* fields. Default: False.
           message (None | str | Unset):
           metadata (TaxonomyBlockRuleRequestMetadata | Unset):
   """

@@ -125,12 +125,12 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ComputeMetricsRequest): Request body for the ``compute-metrics`` operation.
+      body (ComputeMetricsRequest): Request body for the `compute-metrics` operation.
 
-          Resolves the ``Derive`` rules scoped to the metric block, binds each
+          Resolves the `Derive` rules scoped to the metric block, binds each
           rule's operands to the entity's most recent persisted report facts at
-          ``period_end``, evaluates, and upserts the period's standing
-          ``factset_type='metric'`` FactSet (re-running a period replaces its
+          `period_end`, evaluates, and upserts the period's standing
+          `factset_type='metric'` FactSet (re-running a period replaces its
           facts). One standing FactSet per (structure, entity, period_end) — the
           accumulating time series.
 
@@ -176,12 +176,12 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ComputeMetricsRequest): Request body for the ``compute-metrics`` operation.
+      body (ComputeMetricsRequest): Request body for the `compute-metrics` operation.
 
-          Resolves the ``Derive`` rules scoped to the metric block, binds each
+          Resolves the `Derive` rules scoped to the metric block, binds each
           rule's operands to the entity's most recent persisted report facts at
-          ``period_end``, evaluates, and upserts the period's standing
-          ``factset_type='metric'`` FactSet (re-running a period replaces its
+          `period_end`, evaluates, and upserts the period's standing
+          `factset_type='metric'` FactSet (re-running a period replaces its
           facts). One standing FactSet per (structure, entity, period_end) — the
           accumulating time series.
 
@@ -222,12 +222,12 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ComputeMetricsRequest): Request body for the ``compute-metrics`` operation.
+      body (ComputeMetricsRequest): Request body for the `compute-metrics` operation.
 
-          Resolves the ``Derive`` rules scoped to the metric block, binds each
+          Resolves the `Derive` rules scoped to the metric block, binds each
           rule's operands to the entity's most recent persisted report facts at
-          ``period_end``, evaluates, and upserts the period's standing
-          ``factset_type='metric'`` FactSet (re-running a period replaces its
+          `period_end`, evaluates, and upserts the period's standing
+          `factset_type='metric'` FactSet (re-running a period replaces its
           facts). One standing FactSet per (structure, entity, period_end) — the
           accumulating time series.
 
@@ -271,12 +271,12 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (ComputeMetricsRequest): Request body for the ``compute-metrics`` operation.
+      body (ComputeMetricsRequest): Request body for the `compute-metrics` operation.
 
-          Resolves the ``Derive`` rules scoped to the metric block, binds each
+          Resolves the `Derive` rules scoped to the metric block, binds each
           rule's operands to the entity's most recent persisted report facts at
-          ``period_end``, evaluates, and upserts the period's standing
-          ``factset_type='metric'`` FactSet (re-running a period replaces its
+          `period_end`, evaluates, and upserts the period's standing
+          `factset_type='metric'` FactSet (re-running a period replaces its
           facts). One standing FactSet per (structure, entity, period_end) — the
           accumulating time series.
 

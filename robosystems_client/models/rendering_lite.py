@@ -23,8 +23,8 @@ class RenderingLite:
 
   Computed server-side at envelope-build time for blocks where rendering
   is deterministic (the statement family today; future block types add
-  their own rendering builders). The frontend's ``BlockView``
-  ``Rendering`` projection consumes this directly — no client-side
+  their own rendering builders). The frontend's `BlockView`
+  `Rendering` projection consumes this directly — no client-side
   rollup, depth computation, or calculation walk needed.
 
       Attributes:

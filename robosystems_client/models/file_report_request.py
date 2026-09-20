@@ -11,13 +11,13 @@ T = TypeVar("T", bound="FileReportRequest")
 
 @_attrs_define
 class FileReportRequest:
-  """Transition a Report to ``filed`` — locks the package.
+  """Transition a Report to `filed` — locks the package.
 
-  Acceptable from ``draft`` or ``under_review``. ``filed_by`` and
-  ``filed_at`` are stamped from the auth context + server clock; the
+  Acceptable from `draft` or `under_review`. `filed_by` and
+  `filed_at` are stamped from the auth context + server clock; the
   request itself carries no fields today (kept as a model for OpenAPI
   shape consistency and to avoid breaking changes if we add fields).
-  Use ``transition-filing-status`` for the non-file legs of the
+  Use `transition-filing-status` for the non-file legs of the
   lifecycle (`draft ↔ under_review`, `filed → archived`).
 
       Attributes:

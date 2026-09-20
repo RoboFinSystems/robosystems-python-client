@@ -22,15 +22,15 @@ class CreateReportRequest:
 
   The report is materialized synchronously: we resolve the taxonomy +
   CoA mapping, roll up GL facts into reportable concepts, attach them
-  to a fresh ``Report`` row, evaluate any reporting-rule structures
-  (cell-level checks), and stamp ``generation_status='published'``.
-  Subsequent ``regenerate-report`` calls re-run the same pipeline against
+  to a fresh `Report` row, evaluate any reporting-rule structures
+  (cell-level checks), and stamp `generation_status='published'`.
+  Subsequent `regenerate-report` calls re-run the same pipeline against
   the latest ledger state without creating a new Report row.
 
-  ``period_start``/``period_end``/``comparative`` is the simple path
+  `period_start`/`period_end`/`comparative` is the simple path
   (auto-derives current + prior period). For multi-column reports
-  (YTD-by-quarter, multi-year) supply ``periods`` explicitly — when
-  set, ``period_start``/``period_end``/``comparative`` are ignored as
+  (YTD-by-quarter, multi-year) supply `periods` explicitly — when
+  set, `period_start`/`period_end`/`comparative` are ignored as
   inputs to period generation.
 
       Attributes:

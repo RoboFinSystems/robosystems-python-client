@@ -20,8 +20,8 @@ class ChartPanelLite:
   """One chart panel — series sharing a y-axis format family.
 
   Mixed-unit catalogs are unplottable on one axis, so the server groups
-  rows into panels by ``item_type`` family (NULL falls back to
-  ``is_monetary``). The x-axis is always ``rendering.periods``.
+  rows into panels by `item_type` family (NULL falls back to
+  `is_monetary`). The x-axis is always `rendering.periods`.
 
       Attributes:
           label (None | str | Unset): Panel heading — e.g. 'Monetary', 'Ratios'.

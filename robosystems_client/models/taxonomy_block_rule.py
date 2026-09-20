@@ -15,9 +15,9 @@ T = TypeVar("T", bound="TaxonomyBlockRule")
 class TaxonomyBlockRule:
   """Rule projection for the Taxonomy Block envelope.
 
-  Exactly one of ``rule_pattern`` (arithmetic) or ``rule_check_kind``
+  Exactly one of `rule_pattern` (arithmetic) or `rule_check_kind`
   (model-structure) is non-null per row, enforced by the
-  ``check_rule_pattern_kind_xor`` DB constraint.
+  `check_rule_pattern_kind_xor` DB constraint.
 
       Attributes:
           id (str):
@@ -30,7 +30,7 @@ class TaxonomyBlockRule:
           origin (str | Unset): 'forked' | 'native' | 'auto' — matches DB CHECK. Default: 'native'.
           target_kind (None | str | Unset):
           target_ref (None | str | Unset): Polymorphic display string — structure_id, element qname, association_id, or
-              taxonomy_id depending on ``target_kind``.
+              taxonomy_id depending on `target_kind`.
   """
 
   id: str

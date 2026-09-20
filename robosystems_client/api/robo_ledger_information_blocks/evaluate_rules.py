@@ -124,15 +124,15 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
+      body (EvaluateRulesRequest): Request body for the `evaluate-rules` operation.
 
-          Runs every rule scoped to ``structure_id`` (plus element/association-
-          scoped rules for the structure's atoms), binds ``$Variable`` references
+          Runs every rule scoped to `structure_id` (plus element/association-
+          scoped rules for the structure's atoms), binds `$Variable` references
           to facts via qname lookup, and writes one
           :class:`VerificationResult` row per rule.
 
-          Optional ``period_start`` / ``period_end`` narrow the fact-binding
-          window; without them the engine uses the most recent ``in_scope`` fact
+          Optional `period_start` / `period_end` narrow the fact-binding
+          window; without them the engine uses the most recent `in_scope` fact
           for each element regardless of period.
 
   Raises:
@@ -176,15 +176,15 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
+      body (EvaluateRulesRequest): Request body for the `evaluate-rules` operation.
 
-          Runs every rule scoped to ``structure_id`` (plus element/association-
-          scoped rules for the structure's atoms), binds ``$Variable`` references
+          Runs every rule scoped to `structure_id` (plus element/association-
+          scoped rules for the structure's atoms), binds `$Variable` references
           to facts via qname lookup, and writes one
           :class:`VerificationResult` row per rule.
 
-          Optional ``period_start`` / ``period_end`` narrow the fact-binding
-          window; without them the engine uses the most recent ``in_scope`` fact
+          Optional `period_start` / `period_end` narrow the fact-binding
+          window; without them the engine uses the most recent `in_scope` fact
           for each element regardless of period.
 
   Raises:
@@ -223,15 +223,15 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
+      body (EvaluateRulesRequest): Request body for the `evaluate-rules` operation.
 
-          Runs every rule scoped to ``structure_id`` (plus element/association-
-          scoped rules for the structure's atoms), binds ``$Variable`` references
+          Runs every rule scoped to `structure_id` (plus element/association-
+          scoped rules for the structure's atoms), binds `$Variable` references
           to facts via qname lookup, and writes one
           :class:`VerificationResult` row per rule.
 
-          Optional ``period_start`` / ``period_end`` narrow the fact-binding
-          window; without them the engine uses the most recent ``in_scope`` fact
+          Optional `period_start` / `period_end` narrow the fact-binding
+          window; without them the engine uses the most recent `in_scope` fact
           for each element regardless of period.
 
   Raises:
@@ -273,15 +273,15 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (EvaluateRulesRequest): Request body for the ``evaluate-rules`` operation.
+      body (EvaluateRulesRequest): Request body for the `evaluate-rules` operation.
 
-          Runs every rule scoped to ``structure_id`` (plus element/association-
-          scoped rules for the structure's atoms), binds ``$Variable`` references
+          Runs every rule scoped to `structure_id` (plus element/association-
+          scoped rules for the structure's atoms), binds `$Variable` references
           to facts via qname lookup, and writes one
           :class:`VerificationResult` row per rule.
 
-          Optional ``period_start`` / ``period_end`` narrow the fact-binding
-          window; without them the engine uses the most recent ``in_scope`` fact
+          Optional `period_start` / `period_end` narrow the fact-binding
+          window; without them the engine uses the most recent `in_scope` fact
           for each element regardless of period.
 
   Raises:

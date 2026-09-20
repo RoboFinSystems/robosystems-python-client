@@ -13,11 +13,11 @@ T = TypeVar("T", bound="VerificationCategorySummary")
 
 @_attrs_define
 class VerificationCategorySummary:
-  """Pass/fail/skip counts for one ``rule_category`` within a block's
+  """Pass/fail/skip counts for one `rule_category` within a block's
   verification results.
 
   Drives the per-category accordions in the Verification Results panel.
-  ``category`` is the rule's ``rule_category``
+  `category` is the rule's `rule_category`
   (one of the cm:VerificationRule subclasses), resolved by joining each
   result to its Rule.
 

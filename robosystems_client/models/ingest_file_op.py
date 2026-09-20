@@ -16,7 +16,7 @@ class IngestFileOp:
   """Body for ingest-file (raw→staging content flow).
 
   Marks an uploaded file ready and triggers DuckDB staging. Set
-  ``ingest_to_graph`` to auto-chain graph materialization after staging.
+  `ingest_to_graph` to auto-chain graph materialization after staging.
 
       Attributes:
           file_id (str): Uploaded file id to ingest

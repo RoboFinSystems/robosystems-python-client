@@ -16,7 +16,7 @@ class ReconcilingItemDeltaLine:
   """One account's net change between the posted entries and the new payload.
 
   Amounts are signed minor units in debit-positive convention: a positive
-  figure is a net debit, a negative one a net credit. ``delta`` is what a
+  figure is a net debit, a negative one a net credit. `delta` is what a
   catch-up entry would post to bring the books level.
 
       Attributes:

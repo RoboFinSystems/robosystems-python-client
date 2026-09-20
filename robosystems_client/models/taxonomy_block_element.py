@@ -20,7 +20,7 @@ class TaxonomyBlockElement:
       id (str):
       name (str):
       origin (TaxonomyBlockElementOrigin): Provenance — 'library' if the element's taxonomy is locked
-          (``is_locked=true``), else 'tenant'.
+          (`is_locked=true`), else 'tenant'.
       qname (None | str | Unset):
       trait (None | str | Unset):
       balance_type (None | str | Unset):

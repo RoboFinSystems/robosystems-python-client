@@ -26,16 +26,16 @@ T = TypeVar("T", bound="CreateEventHandlerRequest")
 class CreateEventHandlerRequest:
   """Register a new event-type → transaction-template rule.
 
-  When ``create-event-block`` runs with ``apply_handlers=True``, the
+  When `create-event-block` runs with `apply_handlers=True`, the
   registry resolves the *highest-priority active* handler whose match
   criteria all match the event, then evaluates the
-  ``transaction_template`` to produce GL rows. Match precedence: among
-  active handlers for the same ``event_type``, the one with the most
+  `transaction_template` to produce GL rows. Match precedence: among
+  active handlers for the same `event_type`, the one with the most
   specific match (more match fields satisfied) wins; ties broken by
-  ``priority`` desc, then ``created_at`` asc.
+  `priority` desc, then `created_at` asc.
 
-  All match fields except ``event_type`` are optional — leaving them
-  unset matches anything. Use ``match_metadata_expression`` for
+  All match fields except `event_type` are optional — leaving them
+  unset matches anything. Use `match_metadata_expression` for
   fine-grained discrimination (e.g. only payroll categories).
 
       Attributes:

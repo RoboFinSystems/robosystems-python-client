@@ -24,10 +24,10 @@ T = TypeVar("T", bound="ReportResponse")
 class ReportResponse:
   """Report definition summary — header metadata, no facts.
 
-  Returned by ``create-report``, ``regenerate-report``,
-  ``file-report``, and ``transition-filing-status``. Use the package
+  Returned by `create-report`, `regenerate-report`,
+  `file-report`, and `transition-filing-status`. Use the package
   read endpoint to retrieve a Report rehydrated with its rendered
-  ``InformationBlockEnvelope`` items.
+  `InformationBlockEnvelope` items.
 
       Attributes:
           id (str): Report identifier (ULID).

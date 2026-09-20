@@ -63,24 +63,24 @@ class InformationBlockEnvelope:
               underlying block has no FactSet row yet — typically library-seeded statement Structures with no tenant-generated
               facts, or Schedule rows written before the create-side FactSet stamping was added.
           verification_results (list[VerificationResultLite] | Unset):
-          verification_summary (None | Unset | VerificationSummary): Server-computed aggregate over
-              ``verification_results`` — overall pass/fail/error/skip counts plus a per-rule_category breakdown for the
-              grouped Verification Results panel. Null when the block has no verification results.
-          view (ViewProjections | Unset): Charlie's six ``type-of View`` arms, surfaced at the envelope boundary.
+          verification_summary (None | Unset | VerificationSummary): Server-computed aggregate over `verification_results`
+              — overall pass/fail/error/skip counts plus a per-rule_category breakdown for the grouped Verification Results
+              panel. Null when the block has no verification results.
+          view (ViewProjections | Unset): Charlie's six `type-of View` arms, surfaced at the envelope boundary.
 
               Each projection is computed server-side at envelope-build time when
-              its source data is available. The frontend's ``BlockView`` dispatcher
+              its source data is available. The frontend's `BlockView` dispatcher
               routes to the projection component matching the user's selected view
               mode; missing projections (those still in backlog) render as empty
               states without breaking the dispatcher.
 
-              Today: ``rendering`` is computed for the statement family, and
-              ``chart`` (the 7th arm — panel/series config over the rendering's
+              Today: `rendering` is computed for the statement family, and
+              `chart` (the 7th arm — panel/series config over the rendering's
               rows and periods) for metric blocks.
-              Other arms (``fact_table``, ``model_structure``, ``verification_results``,
-              ``report_elements``, ``business_rules``) come online as their backend
-              support lands; ``fact_table`` is trivially derivable from
-              ``InformationBlockEnvelope.facts`` and may stay as a frontend-only
+              Other arms (`fact_table`, `model_structure`, `verification_results`,
+              `report_elements`, `business_rules`) come online as their backend
+              support lands; `fact_table` is trivially derivable from
+              `InformationBlockEnvelope.facts` and may stay as a frontend-only
               projection.
   """
 

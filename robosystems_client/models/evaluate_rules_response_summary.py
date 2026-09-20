@@ -11,7 +11,7 @@ T = TypeVar("T", bound="EvaluateRulesResponseSummary")
 
 @_attrs_define
 class EvaluateRulesResponseSummary:
-  """Status counts keyed by outcome string: ``{'pass': N, 'fail': N, 'error': N, 'skipped': N}``."""
+  """Status counts keyed by outcome string: `{'pass': N, 'fail': N, 'error': N, 'skipped': N}`."""
 
   additional_properties: dict[str, int] = _attrs_field(init=False, factory=dict)
 

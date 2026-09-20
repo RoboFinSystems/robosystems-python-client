@@ -13,14 +13,14 @@ T = TypeVar("T", bound="ComputeForecastRequest")
 
 @_attrs_define
 class ComputeForecastRequest:
-  """Request body for the ``compute-forecast`` operation.
+  """Request body for the `compute-forecast` operation.
 
   Walks the scenario's driver cascade month-by-month forward from the
-  forecast block's ``base_period``: lever-driven Derive rules in
+  forecast block's `base_period`: lever-driven Derive rules in
   dependency order, carry-forward for unmodeled IS lines, calc-DAG
   subtotals — upserting one scenario IS FactSet (+ a working-capital BS
   set) per forward month, all keyed by the forecast block's
-  ``scenario_id``. Re-running replaces each month's values (the
+  `scenario_id`. Re-running replaces each month's values (the
   compute-metrics drift semantics). Deterministic and non-AI — no
   credits consumed.
 

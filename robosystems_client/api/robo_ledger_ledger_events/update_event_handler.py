@@ -123,12 +123,12 @@ def sync_detailed(
       graph_id (str):
       idempotency_key (None | str | Unset):
       body (UpdateEventHandlerRequest): Update an existing event handler. All fields except
-          ``event_handler_id`` are optional — pass only what changes.
+          `event_handler_id` are optional — pass only what changes.
 
-          ``transaction_template`` is **fully replaced** when supplied (no
-          partial template patches). ``metadata_patch`` does deep-merge into
-          the existing metadata. ``approve=true`` sets ``approved_by`` and
-          ``approved_at``; ``approve=false`` clears them.
+          `transaction_template` is **fully replaced** when supplied (no
+          partial template patches). `metadata_patch` does deep-merge into
+          the existing metadata. `approve=true` sets `approved_by` and
+          `approved_at`; `approve=false` clears them.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -170,12 +170,12 @@ def sync(
       graph_id (str):
       idempotency_key (None | str | Unset):
       body (UpdateEventHandlerRequest): Update an existing event handler. All fields except
-          ``event_handler_id`` are optional — pass only what changes.
+          `event_handler_id` are optional — pass only what changes.
 
-          ``transaction_template`` is **fully replaced** when supplied (no
-          partial template patches). ``metadata_patch`` does deep-merge into
-          the existing metadata. ``approve=true`` sets ``approved_by`` and
-          ``approved_at``; ``approve=false`` clears them.
+          `transaction_template` is **fully replaced** when supplied (no
+          partial template patches). `metadata_patch` does deep-merge into
+          the existing metadata. `approve=true` sets `approved_by` and
+          `approved_at`; `approve=false` clears them.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -212,12 +212,12 @@ async def asyncio_detailed(
       graph_id (str):
       idempotency_key (None | str | Unset):
       body (UpdateEventHandlerRequest): Update an existing event handler. All fields except
-          ``event_handler_id`` are optional — pass only what changes.
+          `event_handler_id` are optional — pass only what changes.
 
-          ``transaction_template`` is **fully replaced** when supplied (no
-          partial template patches). ``metadata_patch`` does deep-merge into
-          the existing metadata. ``approve=true`` sets ``approved_by`` and
-          ``approved_at``; ``approve=false`` clears them.
+          `transaction_template` is **fully replaced** when supplied (no
+          partial template patches). `metadata_patch` does deep-merge into
+          the existing metadata. `approve=true` sets `approved_by` and
+          `approved_at`; `approve=false` clears them.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -257,12 +257,12 @@ async def asyncio(
       graph_id (str):
       idempotency_key (None | str | Unset):
       body (UpdateEventHandlerRequest): Update an existing event handler. All fields except
-          ``event_handler_id`` are optional — pass only what changes.
+          `event_handler_id` are optional — pass only what changes.
 
-          ``transaction_template`` is **fully replaced** when supplied (no
-          partial template patches). ``metadata_patch`` does deep-merge into
-          the existing metadata. ``approve=true`` sets ``approved_by`` and
-          ``approved_at``; ``approve=false`` clears them.
+          `transaction_template` is **fully replaced** when supplied (no
+          partial template patches). `metadata_patch` does deep-merge into
+          the existing metadata. `approve=true` sets `approved_by` and
+          `approved_at`; `approve=false` clears them.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

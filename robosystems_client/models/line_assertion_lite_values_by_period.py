@@ -11,7 +11,7 @@ T = TypeVar("T", bound="LineAssertionLiteValuesByPeriod")
 
 @_attrs_define
 class LineAssertionLiteValuesByPeriod:
-  """Expanded per-month assertions keyed by ``YYYY-MM``."""
+  """Expanded per-month assertions keyed by `YYYY-MM`."""
 
   additional_properties: dict[str, float] = _attrs_field(init=False, factory=dict)
 

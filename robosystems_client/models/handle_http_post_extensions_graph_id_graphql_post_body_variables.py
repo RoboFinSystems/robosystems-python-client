@@ -6,14 +6,14 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="LeverAssertionLiteValuesByPeriod")
+T = TypeVar("T", bound="HandleHttpPostExtensionsGraphIdGraphqlPostBodyVariables")
 
 
 @_attrs_define
-class LeverAssertionLiteValuesByPeriod:
-  """Expanded per-month assertions keyed by `YYYY-MM`."""
+class HandleHttpPostExtensionsGraphIdGraphqlPostBodyVariables:
+  """Values for the document's variables."""
 
-  additional_properties: dict[str, float] = _attrs_field(init=False, factory=dict)
+  additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
 
@@ -25,19 +25,19 @@ class LeverAssertionLiteValuesByPeriod:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    lever_assertion_lite_values_by_period = cls()
+    handle_http_post_extensions_graph_id_graphql_post_body_variables = cls()
 
-    lever_assertion_lite_values_by_period.additional_properties = d
-    return lever_assertion_lite_values_by_period
+    handle_http_post_extensions_graph_id_graphql_post_body_variables.additional_properties = d
+    return handle_http_post_extensions_graph_id_graphql_post_body_variables
 
   @property
   def additional_keys(self) -> list[str]:
     return list(self.additional_properties.keys())
 
-  def __getitem__(self, key: str) -> float:
+  def __getitem__(self, key: str) -> Any:
     return self.additional_properties[key]
 
-  def __setitem__(self, key: str, value: float) -> None:
+  def __setitem__(self, key: str, value: Any) -> None:
     self.additional_properties[key] = value
 
   def __delitem__(self, key: str) -> None:

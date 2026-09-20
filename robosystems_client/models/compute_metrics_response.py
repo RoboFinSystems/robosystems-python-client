@@ -19,7 +19,7 @@ T = TypeVar("T", bound="ComputeMetricsResponse")
 
 @_attrs_define
 class ComputeMetricsResponse:
-  """Response for the ``compute-metrics`` operation.
+  """Response for the `compute-metrics` operation.
 
   Attributes:
       structure_id (str):

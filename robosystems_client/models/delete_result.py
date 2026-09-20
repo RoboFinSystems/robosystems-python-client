@@ -13,7 +13,7 @@ T = TypeVar("T", bound="DeleteResult")
 class DeleteResult:
   """Shared response shape for delete / soft-delete operations.
 
-  ``deleted=True`` means the operation succeeded (a row was deleted or
+  `deleted=True` means the operation succeeded (a row was deleted or
   flipped). A row that never existed gets a 404 — this shape never carries
   "not found".
 

@@ -24,9 +24,9 @@ T = TypeVar("T", bound="StructureUpdatePatch")
 class StructureUpdatePatch:
   """Partial-update patch for a single structure, keyed by structure_id.
 
-  ``concept_arrangement`` makes a mis-CAP'd structure repairable in
-  place (e.g. promoting a ``set`` note to ``roll_up`` so it gains a
-  footing rule); ``block_type`` stays immutable — it drives block-type
+  `concept_arrangement` makes a mis-CAP'd structure repairable in
+  place (e.g. promoting a `set` note to `roll_up` so it gains a
+  footing rule); `block_type` stays immutable — it drives block-type
   routing, so changing it is a re-create, not an edit.
 
       Attributes:

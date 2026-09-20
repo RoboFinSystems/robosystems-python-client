@@ -29,12 +29,12 @@ class TaxonomyBlockStructureRequest:
 
   Attributes:
       name (str): Envelope-local structure name (unique within envelope).
-      block_type (TaxonomyBlockStructureRequestBlockType): DB ``structures.block_type`` enum. CoA blocks use
-          ``chart_of_accounts``; reporting extensions use the statement family, ``regulatory_disclosure`` (disclosure
-          notes), or ``custom``; custom ontology uses ``custom``.
+      block_type (TaxonomyBlockStructureRequestBlockType): DB `structures.block_type` enum. CoA blocks use
+          `chart_of_accounts`; reporting extensions use the statement family, `regulatory_disclosure` (disclosure notes),
+          or `custom`; custom ontology uses `custom`.
       concept_arrangement (None | TaxonomyBlockStructureRequestConceptArrangementType0 | Unset): Concept Arrangement
-          Pattern (CAP) — how the structure's concepts relate (mirrors the ``structures.concept_arrangement`` CHECK
-          vocabulary). A disclosure note footing members to a total is ``roll_up``. Null leaves the pattern unset.
+          Pattern (CAP) — how the structure's concepts relate (mirrors the `structures.concept_arrangement` CHECK
+          vocabulary). A disclosure note footing members to a total is `roll_up`. Null leaves the pattern unset.
       description (None | str | Unset):
       role_uri (None | str | Unset):
       metadata (TaxonomyBlockStructureRequestMetadata | Unset):

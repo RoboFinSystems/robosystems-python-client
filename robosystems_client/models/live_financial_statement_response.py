@@ -24,7 +24,7 @@ class LiveFinancialStatementResponse:
   Attributes:
       graph_id (str):
       statement_type (str):
-      periods (list[PeriodSpec]): Rendered columns, aligned with each row's ``values``. Current and prior for
+      periods (list[PeriodSpec]): Rendered columns, aligned with each row's `values`. Current and prior for
           income_statement and balance_sheet; current only for cash_flow_statement — the prior period is pivoted as the
           indirect-method delta basis and not rendered.
       facts (list[LiveStatementFactRow]):

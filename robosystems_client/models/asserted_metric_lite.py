@@ -13,7 +13,7 @@ T = TypeVar("T", bound="AssertedMetricLite")
 
 @_attrs_define
 class AssertedMetricLite:
-  """One metric written by an ``assert-metrics`` run.
+  """One metric written by an `assert-metrics` run.
 
   Attributes:
       element_id (str): Metric element the fact was written for.

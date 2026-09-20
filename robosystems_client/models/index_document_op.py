@@ -15,7 +15,7 @@ T = TypeVar("T", bound="IndexDocumentOp")
 class IndexDocumentOp:
   """Body for index-document (corpus content-op).
 
-  Create a new document when ``document_id`` is absent; update the named
+  Create a new document when `document_id` is absent; update the named
   document (partial — only supplied fields) when present.
 
       Attributes:

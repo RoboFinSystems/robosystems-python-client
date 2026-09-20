@@ -26,8 +26,8 @@ class DisclosuresResponse:
   """The disclosures view op's result: xbrlkit's map, stamped with the graph
   and report it was read from.
 
-  Without ``topic``: ``disclosures`` / ``count``. With ``topic``:
-  ``disclosure`` / ``category`` / ``blocks`` / ``block_count``.
+  Without `topic`: `disclosures` / `count`. With `topic`:
+  `disclosure` / `category` / `blocks` / `block_count`.
 
       Attributes:
           graph_id (str):

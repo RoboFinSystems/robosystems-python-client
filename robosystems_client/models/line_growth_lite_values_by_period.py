@@ -11,7 +11,7 @@ T = TypeVar("T", bound="LineGrowthLiteValuesByPeriod")
 
 @_attrs_define
 class LineGrowthLiteValuesByPeriod:
-  """Expanded per-month growth rates keyed by ``YYYY-MM``."""
+  """Expanded per-month growth rates keyed by `YYYY-MM`."""
 
   additional_properties: dict[str, float] = _attrs_field(init=False, factory=dict)
 

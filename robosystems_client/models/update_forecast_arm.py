@@ -15,10 +15,10 @@ T = TypeVar("T", bound="UpdateForecastArm")
 
 @_attrs_define
 class UpdateForecastArm:
-  """Update-information-block body for ``block_type="forecast"``.
+  """Update-information-block body for `block_type="forecast"`.
 
   Mutable: name, scenario_kind, horizon_months, base_period, levers
-  (full replace). Updating does not recompute — run ``compute-forecast``
+  (full replace). Updating does not recompute — run `compute-forecast`
   to refresh the scenario's derived months.
 
       Attributes:
@@ -26,11 +26,11 @@ class UpdateForecastArm:
           payload (UpdateForecastRequest): Update a forecast block in place.
 
               Mutable: name, scenario_kind, horizon_months, base_period, levers,
-              line_assertions. ``levers`` and ``line_assertions`` are each a
+              line_assertions. `levers` and `line_assertions` are each a
               **full replace** when provided (partial edits would make the asserted
               set ambiguous); replacing one leaves the other as stored. Updating
               does NOT recompute — previously computed scenario months go stale
-              until the next ``compute-forecast`` run (the compute-metrics drift
+              until the next `compute-forecast` run (the compute-metrics drift
               semantics).
   """
 

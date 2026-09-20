@@ -18,17 +18,17 @@ T = TypeVar("T", bound="AssertMetricsRequest")
 
 @_attrs_define
 class AssertMetricsRequest:
-  """Request body for the ``assert-metrics`` operation.
+  """Request body for the `assert-metrics` operation.
 
-  The observation sibling of ``compute-metrics``: writes externally-
+  The observation sibling of `compute-metrics`: writes externally-
   observed values (usage counts, marketing numbers, hand-carried
-  figures) into the period's standing ``factset_type='metric'`` FactSet
-  with ``AssertedProvenance``. Re-asserting a period replaces its facts
+  figures) into the period's standing `factset_type='metric'` FactSet
+  with `AssertedProvenance`. Re-asserting a period replaces its facts
   — one standing FactSet per (structure, entity, period_end), the
   accumulating time series.
 
-  Structures carrying ``Derive`` rules are compute-owned
-  (``compute-metrics``) and rejected — asserted and derived metric
+  Structures carrying `Derive` rules are compute-owned
+  (`compute-metrics`) and rejected — asserted and derived metric
   series keep disjoint structures. Asserted series are actuals; there
   is no scenario axis.
 

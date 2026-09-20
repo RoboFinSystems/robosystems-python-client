@@ -15,24 +15,24 @@ T = TypeVar("T", bound="LineItemMetadataPredicate")
 class LineItemMetadataPredicate:
   """Filter ledger LineItems by flow concept.
 
-  The single predicate kind shipped to date. ``values`` are flow-concept
-  qnames — mini's ``TransactionDescriptionCode`` values, rs-gaap flow
+  The single predicate kind shipped to date. `values` are flow-concept
+  qnames — mini's `TransactionDescriptionCode` values, rs-gaap flow
   concepts (what the enrichment classifier emits for QuickBooks data),
-  future XBRL GL ``GenericFlowCategory`` codes. The engine resolves them
-  to element_ids and matches the first-class ``LineItem.flow_element_id``
+  future XBRL GL `GenericFlowCategory` codes. The engine resolves them
+  to element_ids and matches the first-class `LineItem.flow_element_id`
   FK; matched lines aggregate signed into the attributed fact for the
   period.
 
-  ``field`` is accepted but ignored: the flow tag lives in the typed
-  ``flow_element_id`` FK, not in JSONB metadata. It stays on the wire so
+  `field` is accepted but ignored: the flow tag lives in the typed
+  `flow_element_id` FK, not in JSONB metadata. It stays on the wire so
   existing request bodies keep validating.
 
       Attributes:
           values (list[str]): Flow-concept qnames that route to this filter's target concept. A LineItem matches when its
-              ``flow_element_id`` is one of the elements named here AND the line falls within the rollforward's period.
+              `flow_element_id` is one of the elements named here AND the line falls within the rollforward's period.
           kind (Literal['line_item_metadata_field'] | Unset): Discriminator value selecting this predicate shape. Default:
               'line_item_metadata_field'.
-          field (str | Unset): Accepted but ignored. The flow tag lives in the typed ``flow_element_id`` FK, not JSONB
+          field (str | Unset): Accepted but ignored. The flow tag lives in the typed `flow_element_id` FK, not JSONB
               metadata. Retained for wire-compatibility. Default: 'transaction_description_code'.
   """
 

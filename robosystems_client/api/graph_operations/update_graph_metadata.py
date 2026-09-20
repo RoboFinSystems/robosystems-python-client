@@ -128,14 +128,14 @@ def sync_detailed(
 
           Partial update — only supplied (non-null) fields change, so a caller
           editing just the display name need not resend the description and tags.
-          Because ``None`` means "leave alone", clearing a field uses its empty
-          value instead: pass ``""`` to clear the description and ``[]`` to clear
-          the tags. ``graph_name`` cannot be cleared; it is the graph's label
+          Because `None` means "leave alone", clearing a field uses its empty
+          value instead: pass `""` to clear the description and `[]` to clear
+          the tags. `graph_name` cannot be cleared; it is the graph's label
           everywhere it is listed.
 
           This is the platform-level label for the graph, independent of the
           entity name shown on financial statements — change that through
-          ``POST /extensions/roboledger/{graph_id}/operations/update-entity``.
+          `POST /extensions/roboledger/{graph_id}/operations/update-entity`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -182,14 +182,14 @@ def sync(
 
           Partial update — only supplied (non-null) fields change, so a caller
           editing just the display name need not resend the description and tags.
-          Because ``None`` means "leave alone", clearing a field uses its empty
-          value instead: pass ``""`` to clear the description and ``[]`` to clear
-          the tags. ``graph_name`` cannot be cleared; it is the graph's label
+          Because `None` means "leave alone", clearing a field uses its empty
+          value instead: pass `""` to clear the description and `[]` to clear
+          the tags. `graph_name` cannot be cleared; it is the graph's label
           everywhere it is listed.
 
           This is the platform-level label for the graph, independent of the
           entity name shown on financial statements — change that through
-          ``POST /extensions/roboledger/{graph_id}/operations/update-entity``.
+          `POST /extensions/roboledger/{graph_id}/operations/update-entity`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -231,14 +231,14 @@ async def asyncio_detailed(
 
           Partial update — only supplied (non-null) fields change, so a caller
           editing just the display name need not resend the description and tags.
-          Because ``None`` means "leave alone", clearing a field uses its empty
-          value instead: pass ``""`` to clear the description and ``[]`` to clear
-          the tags. ``graph_name`` cannot be cleared; it is the graph's label
+          Because `None` means "leave alone", clearing a field uses its empty
+          value instead: pass `""` to clear the description and `[]` to clear
+          the tags. `graph_name` cannot be cleared; it is the graph's label
           everywhere it is listed.
 
           This is the platform-level label for the graph, independent of the
           entity name shown on financial statements — change that through
-          ``POST /extensions/roboledger/{graph_id}/operations/update-entity``.
+          `POST /extensions/roboledger/{graph_id}/operations/update-entity`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -283,14 +283,14 @@ async def asyncio(
 
           Partial update — only supplied (non-null) fields change, so a caller
           editing just the display name need not resend the description and tags.
-          Because ``None`` means "leave alone", clearing a field uses its empty
-          value instead: pass ``""`` to clear the description and ``[]`` to clear
-          the tags. ``graph_name`` cannot be cleared; it is the graph's label
+          Because `None` means "leave alone", clearing a field uses its empty
+          value instead: pass `""` to clear the description and `[]` to clear
+          the tags. `graph_name` cannot be cleared; it is the graph's label
           everywhere it is listed.
 
           This is the platform-level label for the graph, independent of the
           entity name shown on financial statements — change that through
-          ``POST /extensions/roboledger/{graph_id}/operations/update-entity``.
+          `POST /extensions/roboledger/{graph_id}/operations/update-entity`.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

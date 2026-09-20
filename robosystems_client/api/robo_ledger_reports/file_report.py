@@ -120,13 +120,13 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (FileReportRequest): Transition a Report to ``filed`` — locks the package.
+      body (FileReportRequest): Transition a Report to `filed` — locks the package.
 
-          Acceptable from ``draft`` or ``under_review``. ``filed_by`` and
-          ``filed_at`` are stamped from the auth context + server clock; the
+          Acceptable from `draft` or `under_review`. `filed_by` and
+          `filed_at` are stamped from the auth context + server clock; the
           request itself carries no fields today (kept as a model for OpenAPI
           shape consistency and to avoid breaking changes if we add fields).
-          Use ``transition-filing-status`` for the non-file legs of the
+          Use `transition-filing-status` for the non-file legs of the
           lifecycle (`draft ↔ under_review`, `filed → archived`).
 
   Raises:
@@ -168,13 +168,13 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (FileReportRequest): Transition a Report to ``filed`` — locks the package.
+      body (FileReportRequest): Transition a Report to `filed` — locks the package.
 
-          Acceptable from ``draft`` or ``under_review``. ``filed_by`` and
-          ``filed_at`` are stamped from the auth context + server clock; the
+          Acceptable from `draft` or `under_review`. `filed_by` and
+          `filed_at` are stamped from the auth context + server clock; the
           request itself carries no fields today (kept as a model for OpenAPI
           shape consistency and to avoid breaking changes if we add fields).
-          Use ``transition-filing-status`` for the non-file legs of the
+          Use `transition-filing-status` for the non-file legs of the
           lifecycle (`draft ↔ under_review`, `filed → archived`).
 
   Raises:
@@ -211,13 +211,13 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (FileReportRequest): Transition a Report to ``filed`` — locks the package.
+      body (FileReportRequest): Transition a Report to `filed` — locks the package.
 
-          Acceptable from ``draft`` or ``under_review``. ``filed_by`` and
-          ``filed_at`` are stamped from the auth context + server clock; the
+          Acceptable from `draft` or `under_review`. `filed_by` and
+          `filed_at` are stamped from the auth context + server clock; the
           request itself carries no fields today (kept as a model for OpenAPI
           shape consistency and to avoid breaking changes if we add fields).
-          Use ``transition-filing-status`` for the non-file legs of the
+          Use `transition-filing-status` for the non-file legs of the
           lifecycle (`draft ↔ under_review`, `filed → archived`).
 
   Raises:
@@ -257,13 +257,13 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (FileReportRequest): Transition a Report to ``filed`` — locks the package.
+      body (FileReportRequest): Transition a Report to `filed` — locks the package.
 
-          Acceptable from ``draft`` or ``under_review``. ``filed_by`` and
-          ``filed_at`` are stamped from the auth context + server clock; the
+          Acceptable from `draft` or `under_review`. `filed_by` and
+          `filed_at` are stamped from the auth context + server clock; the
           request itself carries no fields today (kept as a model for OpenAPI
           shape consistency and to avoid breaking changes if we add fields).
-          Use ``transition-filing-status`` for the non-file legs of the
+          Use `transition-filing-status` for the non-file legs of the
           lifecycle (`draft ↔ under_review`, `filed → archived`).
 
   Raises:

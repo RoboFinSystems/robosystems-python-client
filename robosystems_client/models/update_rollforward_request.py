@@ -27,7 +27,7 @@ class UpdateRollforwardRequest:
   invalidate every period already rendered — so switching BS source means
   delete and re-create.
 
-  **Partial-update semantics**: an omitted (``None``) field means "leave
+  **Partial-update semantics**: an omitted (`None`) field means "leave
   unchanged". There is no wire-level way to *clear* the default change tag or
   empty the attribution_filters list; delete and re-create the block instead.
   The asymmetry is deliberate — a clear-sentinel costs wire-shape complexity
@@ -38,7 +38,7 @@ class UpdateRollforwardRequest:
           structure_id (str): Structure ID of the rollforward block.
           name (None | str | Unset):
           default_change_tag_qname (None | str | Unset): New default change tag qname. Pass a value to *change* the
-              default; omit (``None``) to leave unchanged. There is no wire-level way to clear the default — see the class
+              default; omit (`None`) to leave unchanged. There is no wire-level way to clear the default — see the class
               docstring.
           attribution_filters (list[AttributionFilter] | None | Unset):
           validation_mode (None | Unset | UpdateRollforwardRequestValidationModeType0):

@@ -94,10 +94,10 @@ def sync_detailed(
   Args:
       body (PasskeyRegisterOptionsRequest): Begin enrollment.
 
-          Two disjoint lanes: ``mfa_token`` (forced enrollment — the token was minted
+          Two disjoint lanes: `mfa_token` (forced enrollment — the token was minted
           seconds after a password verify, so it is its own freshness proof) or an
           authenticated settings-flow enrollment, which must carry a fresh re-auth
-          proof — ``password``, or a ``reauth``-ceremony ``assertion`` when adding a
+          proof — `password`, or a `reauth`-ceremony `assertion` when adding a
           passkey beside an existing one.
 
   Raises:
@@ -132,10 +132,10 @@ def sync(
   Args:
       body (PasskeyRegisterOptionsRequest): Begin enrollment.
 
-          Two disjoint lanes: ``mfa_token`` (forced enrollment — the token was minted
+          Two disjoint lanes: `mfa_token` (forced enrollment — the token was minted
           seconds after a password verify, so it is its own freshness proof) or an
           authenticated settings-flow enrollment, which must carry a fresh re-auth
-          proof — ``password``, or a ``reauth``-ceremony ``assertion`` when adding a
+          proof — `password`, or a `reauth`-ceremony `assertion` when adding a
           passkey beside an existing one.
 
   Raises:
@@ -165,10 +165,10 @@ async def asyncio_detailed(
   Args:
       body (PasskeyRegisterOptionsRequest): Begin enrollment.
 
-          Two disjoint lanes: ``mfa_token`` (forced enrollment — the token was minted
+          Two disjoint lanes: `mfa_token` (forced enrollment — the token was minted
           seconds after a password verify, so it is its own freshness proof) or an
           authenticated settings-flow enrollment, which must carry a fresh re-auth
-          proof — ``password``, or a ``reauth``-ceremony ``assertion`` when adding a
+          proof — `password`, or a `reauth`-ceremony `assertion` when adding a
           passkey beside an existing one.
 
   Raises:
@@ -201,10 +201,10 @@ async def asyncio(
   Args:
       body (PasskeyRegisterOptionsRequest): Begin enrollment.
 
-          Two disjoint lanes: ``mfa_token`` (forced enrollment — the token was minted
+          Two disjoint lanes: `mfa_token` (forced enrollment — the token was minted
           seconds after a password verify, so it is its own freshness proof) or an
           authenticated settings-flow enrollment, which must carry a fresh re-auth
-          proof — ``password``, or a ``reauth``-ceremony ``assertion`` when adding a
+          proof — `password`, or a `reauth`-ceremony `assertion` when adding a
           passkey beside an existing one.
 
   Raises:

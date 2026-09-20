@@ -13,7 +13,7 @@ T = TypeVar("T", bound="DeleteTaxonomyBlockResponse")
 
 @_attrs_define
 class DeleteTaxonomyBlockResponse:
-  """Response for ``delete-taxonomy-block``.
+  """Response for `delete-taxonomy-block`.
 
   Attributes:
       taxonomy_id (str):

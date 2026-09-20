@@ -20,26 +20,26 @@ T = TypeVar("T", bound="LineAssertionLite")
 @_attrs_define
 class LineAssertionLite:
   """One statement line's persisted direct assertion inside
-  ``ForecastMechanics``.
+  `ForecastMechanics`.
 
   The manual-override sibling of :class:`LeverAssertionLite`: a lever
   asserts a *driver* whose rule derives a line; a line assertion pins
   the **line itself** (a calc-DAG leaf) to typed values for the months
   it names — winning over driver rules and carry-forward for exactly
   those months (a displaced rule surfaces in the compute response's
-  ``skipped`` list). Subtotals stay calc-DAG-derived, so a manual line
+  `skipped` list). Subtotals stay calc-DAG-derived, so a manual line
   still articulates through RollUps, RE, balancing cash, and derived
   CF, and stays verification-gated.
 
   Same persistence doctrine as levers: values are duplicated as
   authored facts in the scenario's lever FactSet (facts are what
-  ``compute-forecast`` binds); this mechanics copy is the
+  `compute-forecast` binds); this mechanics copy is the
   operator-legible round-trip shape.
 
       Attributes:
           qname (str): Asserted statement-leaf qname.
           element_id (str): Resolved tenant element id.
-          values_by_period (LineAssertionLiteValuesByPeriod): Expanded per-month assertions keyed by ``YYYY-MM``.
+          values_by_period (LineAssertionLiteValuesByPeriod): Expanded per-month assertions keyed by `YYYY-MM`.
           item_type (None | str | Unset): Format family from the element (monetary | ...).
           period_type (str | Unset): The element's period type — duration assertions pin IS lines; instant assertions pin
               BS lines through the roll. Default: 'duration'.

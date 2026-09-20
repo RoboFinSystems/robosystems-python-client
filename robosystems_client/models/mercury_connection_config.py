@@ -18,10 +18,10 @@ class MercuryConnectionConfig:
 
   A bank feed is native accounting: the graph must already have a chart of
   accounts and no live QuickBooks connection. Over OAuth (the hosted
-  default) the connection is created ``pending_oauth`` and activated by the
-  callback. ``api_key`` — a personal **read-only** Mercury token — connects
+  default) the connection is created `pending_oauth` and activated by the
+  callback. `api_key` — a personal **read-only** Mercury token — connects
   at once without a browser round-trip, but only on deployments that turn
-  on ``MERCURY_API_KEY_CONNECTIONS_ENABLED`` (self-hosted and local); the
+  on `MERCURY_API_KEY_CONNECTIONS_ENABLED` (self-hosted and local); the
   hosted product refuses it.
 
       Attributes:

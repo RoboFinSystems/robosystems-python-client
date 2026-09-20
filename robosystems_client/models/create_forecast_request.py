@@ -25,8 +25,8 @@ T = TypeVar("T", bound="CreateForecastRequest")
 class CreateForecastRequest:
   """Create a forecast block — the authored scenario container.
 
-  ``base_period`` defaults to the fiscal calendar's
-  ``closed_through_period`` (else the newest actual report month) —
+  `base_period` defaults to the fiscal calendar's
+  `closed_through_period` (else the newest actual report month) —
   the walk projects forward from the last closed actuals. The resolved
   value is stored in the mechanics so recompute is deterministic.
 
@@ -37,15 +37,15 @@ class CreateForecastRequest:
               display/filtering, not machinery. All kinds compute identically. Default:
               CreateForecastRequestScenarioKind.FORECAST.
           horizon_months (int | Unset): Forward months to project past the base period. Default: 12.
-          base_period (None | str | Unset): Seed month (``YYYY-MM``) the walk projects forward from. Defaults to the
-              fiscal calendar's closed-through period, else the newest actual report month. Resolved and stored at create
-              time, and it never moves afterwards — every lever is keyed to a month inside ``base_period + 1 … +
-              horizon_months``, so moving it would mean restating all of them. ``base_anchor`` decides whether the walk still
-              *seeds* here once months close under it.
+          base_period (None | str | Unset): Seed month (`YYYY-MM`) the walk projects forward from. Defaults to the fiscal
+              calendar's closed-through period, else the newest actual report month. Resolved and stored at create time, and
+              it never moves afterwards — every lever is keyed to a month inside `base_period + 1 … + horizon_months`, so
+              moving it would mean restating all of them. `base_anchor` decides whether the walk still *seeds* here once
+              months close under it.
           base_anchor (CreateForecastRequestBaseAnchor | Unset): Where the walk takes its opening balances as periods
-              close. ``seam`` (default) re-anchors on the newest closed month inside the horizon, so the scenario survives a
-              close untouched and its first forward month rolls off real balances. ``fixed`` pins the walk to ``base_period``
-              — the deliberate counterfactual, whose balances are meant to diverge from actuals. Default:
+              close. `seam` (default) re-anchors on the newest closed month inside the horizon, so the scenario survives a
+              close untouched and its first forward month rolls off real balances. `fixed` pins the walk to `base_period` —
+              the deliberate counterfactual, whose balances are meant to diverge from actuals. Default:
               CreateForecastRequestBaseAnchor.SEAM.
           line_assertions (list[LineAssertionRequest] | Unset): Direct statement-line assertions (manual overrides). Each
               names a calc-DAG leaf and wins over driver rules and carry-forward for the months it asserts.

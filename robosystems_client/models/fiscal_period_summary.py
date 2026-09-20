@@ -16,8 +16,8 @@ T = TypeVar("T", bound="FiscalPeriodSummary")
 class FiscalPeriodSummary:
   """One fiscal period row — header view used in calendar listings.
 
-  Status lifecycle: ``open`` → ``closing`` → ``closed``. ``closing``
-  is the transient state during a close run; ``closed_at`` stamps when
+  Status lifecycle: `open` → `closing` → `closed`. `closing`
+  is the transient state during a close run; `closed_at` stamps when
   the lock landed.
 
       Attributes:

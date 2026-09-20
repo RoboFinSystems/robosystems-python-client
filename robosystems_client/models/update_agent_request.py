@@ -22,8 +22,8 @@ T = TypeVar("T", bound="UpdateAgentRequest")
 
 @_attrs_define
 class UpdateAgentRequest:
-  """Patch an agent. All fields except ``agent_id`` are optional —
-  pass only what changes. ``metadata_patch`` is deep-merged into the
+  """Patch an agent. All fields except `agent_id` are optional —
+  pass only what changes. `metadata_patch` is deep-merged into the
   existing metadata dict.
 
       Attributes:

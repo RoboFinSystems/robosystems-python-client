@@ -15,7 +15,7 @@ T = TypeVar("T", bound="UpdateRollforwardArm")
 
 @_attrs_define
 class UpdateRollforwardArm:
-  """Update-information-block body for ``block_type="rollforward"``.
+  """Update-information-block body for `block_type="rollforward"`.
 
   Carries a typed rollforward update payload. Mutable fields: name,
   default_change_tag_qname, attribution_filters, validation_mode.
@@ -29,7 +29,7 @@ class UpdateRollforwardArm:
               invalidate every period already rendered — so switching BS source means
               delete and re-create.
 
-              **Partial-update semantics**: an omitted (``None``) field means "leave
+              **Partial-update semantics**: an omitted (`None`) field means "leave
               unchanged". There is no wire-level way to *clear* the default change tag or
               empty the attribution_filters list; delete and re-create the block instead.
               The asymmetry is deliberate — a clear-sentinel costs wire-shape complexity

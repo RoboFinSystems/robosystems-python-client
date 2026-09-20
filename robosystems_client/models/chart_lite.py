@@ -19,9 +19,9 @@ T = TypeVar("T", bound="ChartLite")
 class ChartLite:
   """Server-shaped chart projection — panel/series CONFIG, never values.
 
-  The second real server-computed View arm (after ``rendering``). Values
-  come from ``rendering.rows`` joined by ``element_id``; the x-axis is
-  ``rendering.periods``. Renderers (report-components) turn one panel
+  The second real server-computed View arm (after `rendering`). Values
+  come from `rendering.rows` joined by `element_id`; the x-axis is
+  `rendering.periods`. Renderers (report-components) turn one panel
   into one chart.
 
       Attributes:

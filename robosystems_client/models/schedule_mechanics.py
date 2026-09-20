@@ -18,11 +18,11 @@ T = TypeVar("T", bound="ScheduleMechanics")
 
 @_attrs_define
 class ScheduleMechanics:
-  """Closing-entry generator mechanics for ``block_type='schedule'``.
+  """Closing-entry generator mechanics for `block_type='schedule'`.
 
-  Reads the typed ``structures.artifact_mechanics`` JSONB column, falling back
-  to ``structures.metadata_`` for Schedule rows that lack it.
-  ``entry_template`` and ``schedule_metadata`` reuse the wire-level request
+  Reads the typed `structures.artifact_mechanics` JSONB column, falling back
+  to `structures.metadata_` for Schedule rows that lack it.
+  `entry_template` and `schedule_metadata` reuse the wire-level request
   shapes so OpenAPI emits one canonical type per concept.
 
       Attributes:
