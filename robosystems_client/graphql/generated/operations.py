@@ -855,7 +855,7 @@ query GetLedgerReport($reportId: String!) {
 """
 
 GET_LEDGER_REPORT_DOWNLOAD_URL_GQL = """
-query GetLedgerReportDownloadUrl($reportId: String!, $format: ReportDownloadFormat = JSONLD, $expiresIn: Int = 300) {
+query GetLedgerReportDownloadUrl($reportId: String!, $format: ReportDownloadFormat = TAVI, $expiresIn: Int = 300) {
   reportDownloadUrl(reportId: $reportId, format: $format, expiresIn: $expiresIn) {
     downloadUrl
     expiresAt

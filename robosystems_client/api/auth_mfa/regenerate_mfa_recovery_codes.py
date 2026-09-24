@@ -83,7 +83,7 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: RecoveryCodesRequest,
 ) -> Response[ErrorResponse | HTTPValidationError | RecoveryCodesResponse]:
   """Regenerate Recovery Codes
@@ -114,7 +114,7 @@ def sync_detailed(
 
 def sync(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: RecoveryCodesRequest,
 ) -> ErrorResponse | HTTPValidationError | RecoveryCodesResponse | None:
   """Regenerate Recovery Codes
@@ -140,7 +140,7 @@ def sync(
 
 async def asyncio_detailed(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: RecoveryCodesRequest,
 ) -> Response[ErrorResponse | HTTPValidationError | RecoveryCodesResponse]:
   """Regenerate Recovery Codes
@@ -169,7 +169,7 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: RecoveryCodesRequest,
 ) -> ErrorResponse | HTTPValidationError | RecoveryCodesResponse | None:
   """Regenerate Recovery Codes

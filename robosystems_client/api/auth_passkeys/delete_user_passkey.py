@@ -93,7 +93,7 @@ def _build_response(
 def sync_detailed(
   passkey_id: str,
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyDeleteRequest,
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Remove Passkey
@@ -128,7 +128,7 @@ def sync_detailed(
 def sync(
   passkey_id: str,
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyDeleteRequest,
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Remove Passkey
@@ -158,7 +158,7 @@ def sync(
 async def asyncio_detailed(
   passkey_id: str,
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyDeleteRequest,
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
   """Remove Passkey
@@ -191,7 +191,7 @@ async def asyncio_detailed(
 async def asyncio(
   passkey_id: str,
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
   body: PasskeyDeleteRequest,
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
   """Remove Passkey

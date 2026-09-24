@@ -489,8 +489,9 @@ type Query {
   
   The only way to download a report's bundle. Every format resolves to a
   short-lived presigned S3 URL which the client follows directly — the
-  field returns the URL, never the bytes. JSON-LD is stamped at publish
-  time; XBRL is materialized and cached on first request. `expiresIn`
+  field returns the URL, never the bytes. The Tavi model is stamped at
+  publish time; the holon and XBRL are materialized and cached on first
+  request. `expiresIn`
   is the URL's lifetime in seconds, bounded 60-3600.
   
   Returns null when the report doesn't exist; raises
@@ -501,7 +502,7 @@ type Query {
     """The published report whose bundle to link."""
     reportId: String!
 
-    """Serialization flavor. Defaults to JSON-LD."""
+    """Serialization flavor. Defaults to the Tavi model."""
     format: ReportDownloadFormat = null
 
     """
@@ -2691,7 +2692,7 @@ type InformationBlockRule {
   ruleSeverity: String!
 
   """
-  Provenance — 'forked' (from an upstream artifact, e.g. Seattle Method) or 'native' (authored in this seed or by a tenant). Enum closure enforced by the `public.rules` CHECK constraint.
+  Provenance — 'forked' (from an upstream artifact, e.g. an external XBRL taxonomy) or 'native' (authored in this seed or by a tenant). Enum closure enforced by the `public.rules` CHECK constraint.
   """
   ruleOrigin: String!
 }
@@ -2820,22 +2821,20 @@ type InformationBlockVerificationCategorySummary {
 }
 
 """
-Charlie's six `type-of View` arms, surfaced at the envelope boundary.
+The six `type-of` View projections of an Information Block (Rendering,
+FactTable, ModelStructure, VerificationResults, ReportElements,
+BusinessRules), surfaced at the envelope boundary.
 
 Each projection is computed server-side at envelope-build time when
 its source data is available. The frontend's `BlockView` dispatcher
 routes to the projection component matching the user's selected view
-mode; missing projections (those still in backlog) render as empty
-states without breaking the dispatcher.
+mode; missing projections render as empty states without breaking the
+dispatcher.
 
 Today: `rendering` is computed for the statement family, and
-`chart` (the 7th arm — panel/series config over the rendering's
-rows and periods) for metric blocks.
-Other arms (`fact_table`, `model_structure`, `verification_results`,
-`report_elements`, `business_rules`) come online as their backend
-support lands; `fact_table` is trivially derivable from
-`InformationBlockEnvelope.facts` and may stay as a frontend-only
-projection.
+`chart` (panel/series config over the rendering's rows and periods)
+for metric blocks. Projections without backend support yet are empty;
+`fact_table` is derivable from `InformationBlockEnvelope.facts`.
 """
 type InformationBlockViewProjections {
   rendering: InformationBlockRendering
@@ -2975,8 +2974,9 @@ type InformationBlockChartSeries {
 Presigned-URL response for a published Report's serialization bundle.
 
 Every flavor resolves to a short-lived presigned URL pointing at the
-bundle in S3 — JSON-LD is stamped at publish time, XBRL is
-materialized on first download and cached by `generationCount`.
+bundle in S3 — the Tavi model is stamped at publish time; the holon and
+XBRL 2.1 are materialized on first download and cached by
+`generationCount`.
 The client follows `downloadUrl` to fetch the artifact directly
 from S3 (the API never streams the bytes). Mirrors the
 backup-download shape the frontend already consumes.
@@ -2992,7 +2992,7 @@ type ReportBundleDownload {
   contentType: String!
 
   """
-  Serialization flavor delivered by this URL — one of the `RdfFlavor` / `XbrlFlavor` values (e.g. `jsonld`, `xbrl-2.1`).
+  Serialization flavor delivered by this URL — one of the `RdfFlavor` / `XbrlFlavor` values (e.g. `tavi`, `xbrl-2.1`).
   """
   format: String!
 
@@ -3000,13 +3000,12 @@ type ReportBundleDownload {
   generationCount: Int!
 
   """
-  Content the Report carries that this flavor does not. `disclosure_notes`: the XBRL 2.1 zip ships statements only — tenant-authored disclosure notes render on screen and ride the JSON-LD and holon flavors, but are excluded from this file. The Tavi compiled model carries the statements and notes but has no home for `ib_envelopes` (the per-Network Information Block payloads), `definition_links` (equivalence, general-special, essence-alias and mapping arcs), `reporting_style`, `framework_pins`, `fact_sets` (the FactSet partition and each fact's structure pin) or `filing_lifecycle` (filing status, supersession, share provenance); all of it rides the JSON-LD and holon flavors.
+  Content the Report carries that this flavor does not. `disclosure_notes`: the XBRL 2.1 zip ships statements only — tenant-authored disclosure notes render on screen and ride the Tavi and holon flavors, but are excluded from this file. The Tavi compiled model carries the statements and notes but has no home for `ib_envelopes` (the per-Network Information Block payloads), `definition_links` (equivalence, general-special, essence-alias and mapping arcs), `reporting_style`, `framework_pins`, `fact_sets` (the FactSet partition and each fact's structure pin) or `filing_lifecycle` (filing status, supersession, share provenance); all of it rides the holon flavor.
   """
   omittedContent: [String!]!
 }
 
 enum ReportDownloadFormat {
-  JSONLD
   HOLON_JSONLD
   XBRL_2_1
   TAVI

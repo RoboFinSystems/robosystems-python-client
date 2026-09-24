@@ -556,7 +556,6 @@ _FILENAME_PATTERN = re.compile(r'filename="?([^";]+)"?', re.IGNORECASE)
 # Map the wire flavor strings the facade accepts to the GraphQL
 # ``ReportDownloadFormat`` enum names used as query variables.
 _DOWNLOAD_FORMAT_ALIASES = {
-  "jsonld": "JSONLD",
   "holon-jsonld": "HOLON_JSONLD",
   "xbrl-2.1": "XBRL_2_1",
   "tavi": "TAVI",
@@ -2271,7 +2270,7 @@ class LedgerClient:
     graph_id: str,
     report_id: str,
     *,
-    format: str = "jsonld",
+    format: str = "tavi",
     to: str | Path | None = None,
     expires_in: int = 300,
   ) -> ReportBundleDownload:
@@ -2280,19 +2279,18 @@ class LedgerClient:
     A download is a read, so the presigned URL is resolved through the
     GraphQL ``reportDownloadUrl`` field (the REST download route was
     retired). Every flavor resolves to a short-lived presigned S3 URL —
-    JSON-LD is stamped at publish time; XBRL, the holon and the Tavi
-    model are materialized + cached on first request. The client follows
-    the URL and pulls the bytes.
+    the Tavi model is stamped at publish time; the holon and XBRL are
+    materialized + cached on first request. The client follows the URL
+    and pulls the bytes.
 
     Args:
         graph_id: Graph identifier owning the Report.
         report_id: Report identifier (``rpt_``-prefixed ULID).
-        format: Serialization flavor — ``"jsonld"`` (default, the flat
-            canonical bundle), ``"holon-jsonld"`` (the dataset-form
-            scene/boundary/projection holon), ``"xbrl-2.1"``, or
-            ``"tavi"`` (the Project Tavi compiled model, compact JSON).
-            The enum names ``"JSONLD"`` / ``"HOLON_JSONLD"`` /
-            ``"XBRL_2_1"`` / ``"TAVI"`` are also accepted.
+        format: Serialization flavor — ``"tavi"`` (default, the Project
+            Tavi compiled model stamped at publish), ``"holon-jsonld"``
+            (the dataset-form scene/boundary/projection holon), or
+            ``"xbrl-2.1"``. The enum names ``"TAVI"`` /
+            ``"HOLON_JSONLD"`` / ``"XBRL_2_1"`` are also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
             written file.
@@ -2339,8 +2337,7 @@ class LedgerClient:
     default_ext = {
       "XBRL_2_1": "zip",
       "HOLON_JSONLD": "holon.jsonld",
-      "TAVI": "tavi.json",
-    }.get(gql_format, "jsonld")
+    }.get(gql_format, "tavi.json")
     filename = (
       _parse_filename(artifact.headers.get("content-disposition", ""))
       or f"{report_id}-g{generation_count or 1}.{default_ext}"

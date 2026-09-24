@@ -20,14 +20,16 @@ class ScheduleMetadataRequest:
           those values verbatim instead of computing. Other strings are labels only; fact values still come from
           `monthly_amount` or `periodic_amounts`. Default: 'straight_line'.
       original_amount (int | Unset): Cost basis in cents Default: 0.
-      residual_value (int | Unset): Salvage value in cents Default: 0.
+      residual_value (int | Unset): Salvage value in cents. The schedule expenses `original_amount` less this; net
+          book value ends at it. Default: 0.
       useful_life_months (int | Unset): Useful life in months Default: 0.
       asset_element_id (None | str | Unset): BS asset element for net book value
       periodic_amounts (list[int] | None | Unset): Explicit per-period amounts in cents. When set, the generator uses
           these values instead of `monthly_amount` — enabling non-straight-line schedules (effective-interest bond
           discount amortization, day-count interest accrual, variable lease payments, pre-computed effective-yield curves,
           etc.). Length must match the number of monthly periods between `period_start` and `period_end`; sum must equal
-          `original_amount` exactly. The auto-generated SumEquals rule proves Σ = original regardless of the curve shape.
+          `original_amount` less `residual_value` exactly. The auto-generated SumEquals rule proves that total regardless
+          of the curve shape.
   """
 
   method: str | Unset = "straight_line"

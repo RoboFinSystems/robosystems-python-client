@@ -234,6 +234,9 @@ from .event_handler_response_transaction_template import (
 )
 from .execute_event_block_request import ExecuteEventBlockRequest
 from .execute_event_block_response import ExecuteEventBlockResponse
+from .execute_event_block_response_qb_entry_ids_type_0 import (
+  ExecuteEventBlockResponseQbEntryIdsType0,
+)
 from .execute_event_block_response_qb_error_type_0 import (
   ExecuteEventBlockResponseQbErrorType0,
 )
@@ -1205,6 +1208,7 @@ __all__ = (
   "EventHandlerResponseTransactionTemplate",
   "ExecuteEventBlockRequest",
   "ExecuteEventBlockResponse",
+  "ExecuteEventBlockResponseQbEntryIdsType0",
   "ExecuteEventBlockResponseQbErrorType0",
   "ExternalConnectionConfig",
   "FactLite",
