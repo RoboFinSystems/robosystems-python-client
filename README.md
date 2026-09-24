@@ -11,7 +11,7 @@ Official Python client for the RoboSystems financial intelligence platform — a
 - **Async/await support** for high-performance applications
 - **Parquet file uploads** for table ingestion
 - **Streaming support** for memory-efficient processing of large result sets
-- **Financial AI Agent** integration for natural language queries
+- **AI Operator** integration for natural language financial analysis
 - **Comprehensive error handling** with typed exceptions
 
 ## Installation
