@@ -27,7 +27,7 @@ class OperationEnvelopeReportResponse:
       status (OperationEnvelopeReportResponseStatus): Operation lifecycle state
       at (str): ISO-8601 UTC timestamp
       result (None | ReportResponse | Unset): Command-specific result payload
-      created_by (None | str | Unset): User ID that initiated the operation (null for legacy callers)
+      created_by (None | str | Unset): User ID that initiated the operation
       idempotent_replay (bool | Unset): True when this envelope came from the idempotency cache — the underlying
           command did not execute again. False on fresh executions. Default: False.
   """

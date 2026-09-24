@@ -45,9 +45,9 @@ class RuleLite:
           rule_message (None | str | Unset):
           rule_severity (str | Unset): Failure severity — 'info' | 'warning' | 'error'. Enum closure enforced by the
               `public.rules` CHECK constraint. Default: 'error'.
-          rule_origin (str | Unset): Provenance — 'forked' (from an upstream artifact, e.g. Seattle Method) or 'native'
-              (authored in this seed or by a tenant). Enum closure enforced by the `public.rules` CHECK constraint. Default:
-              'native'.
+          rule_origin (str | Unset): Provenance — 'forked' (from an upstream artifact, e.g. an external XBRL taxonomy) or
+              'native' (authored in this seed or by a tenant). Enum closure enforced by the `public.rules` CHECK constraint.
+              Default: 'native'.
   """
 
   id: str

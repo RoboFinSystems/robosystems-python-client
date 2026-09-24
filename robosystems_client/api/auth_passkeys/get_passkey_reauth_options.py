@@ -62,7 +62,7 @@ def _build_response(
 
 def sync_detailed(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
 ) -> Response[CeremonyOptionsResponse | ErrorResponse]:
   """Re-authentication Options
 
@@ -87,7 +87,7 @@ def sync_detailed(
 
 def sync(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
 ) -> CeremonyOptionsResponse | ErrorResponse | None:
   """Re-authentication Options
 
@@ -108,7 +108,7 @@ def sync(
 
 async def asyncio_detailed(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
 ) -> Response[CeremonyOptionsResponse | ErrorResponse]:
   """Re-authentication Options
 
@@ -131,7 +131,7 @@ async def asyncio_detailed(
 
 async def asyncio(
   *,
-  client: AuthenticatedClient,
+  client: AuthenticatedClient | Client,
 ) -> CeremonyOptionsResponse | ErrorResponse | None:
   """Re-authentication Options
 

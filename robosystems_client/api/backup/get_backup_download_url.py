@@ -90,8 +90,7 @@ def sync_detailed(
    Generate a temporary download URL for a backup. The filename carries the extension listed as
   `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
   `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
-  file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first: `brew install zstd`,
-  `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
+  file; decompress it with `zstd -d`.
 
   Args:
       graph_id (str):
@@ -131,8 +130,7 @@ def sync(
    Generate a temporary download URL for a backup. The filename carries the extension listed as
   `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
   `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
-  file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first: `brew install zstd`,
-  `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
+  file; decompress it with `zstd -d`.
 
   Args:
       graph_id (str):
@@ -167,8 +165,7 @@ async def asyncio_detailed(
    Generate a temporary download URL for a backup. The filename carries the extension listed as
   `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
   `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
-  file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first: `brew install zstd`,
-  `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
+  file; decompress it with `zstd -d`.
 
   Args:
       graph_id (str):
@@ -206,8 +203,7 @@ async def asyncio(
    Generate a temporary download URL for a backup. The filename carries the extension listed as
   `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
   `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
-  file. Decompress the latter with `zstd -d <file>.lbug.zst` (install zstd first: `brew install zstd`,
-  `apt-get install zstd`, or `dnf install zstd`) — no `--long` flag is needed.
+  file; decompress it with `zstd -d`.
 
   Args:
       graph_id (str):
