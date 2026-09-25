@@ -202,6 +202,31 @@ class TestLedgerReads:
     assert variables["limit"] == 50
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_reports_default_leaves_lifecycle_to_the_server(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"reports": {"reports": []}}
+    client = LedgerClient(mock_config)
+    assert client.list_reports(graph_id) == []
+    query, variables = mock_execute.call_args[0][1], mock_execute.call_args[0][2]
+    assert "reports(lifecycle: $lifecycle)" in query
+    assert "filingStatus" in query
+    assert not variables
+
+  @pytest.mark.parametrize(
+    ("lifecycle", "sent"),
+    [("archived", "ARCHIVED"), ("ALL", "ALL"), ("current", "CURRENT")],
+  )
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_reports_forwards_lifecycle(
+    self, mock_execute, lifecycle, sent, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"reports": {"reports": []}}
+    client = LedgerClient(mock_config)
+    client.list_reports(graph_id, lifecycle=lifecycle)
+    assert mock_execute.call_args[0][2] == {"lifecycle": sent}
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_trial_balance(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
       "trialBalance": {

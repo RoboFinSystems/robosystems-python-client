@@ -111,8 +111,9 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeReportResponse]:
   """Transition Filing Status
 
-   Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed →
-  archived). Use 'file-report' to reach 'filed' so audit fields land cleanly.
+   Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed ↔
+  archived). Archiving takes a filed report off the current list without deleting it; unarchiving
+  returns it to 'filed'. Use 'file-report' to file a draft so audit fields land cleanly.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -123,10 +124,11 @@ def sync_detailed(
       body (TransitionFilingStatusRequest): Generic filing-status transition — escape hatch for
           non-file moves.
 
-          Used for `draft → under_review` (submit for review) and
-          `filed → archived` (supersede / retire). Filing the package goes
-          through :class:`FileReportRequest` so `filed_at` / `filed_by`
-          audit fields land cleanly.
+          Used for `draft ↔ under_review` (submit for review, or send back),
+          `filed → archived` (take a filed report off the current list) and
+          `archived → filed` (bring it back). Filing a draft goes through
+          :class:`FileReportRequest` so `filed_at` / `filed_by` audit fields
+          land cleanly.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -158,8 +160,9 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeReportResponse | None:
   """Transition Filing Status
 
-   Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed →
-  archived). Use 'file-report' to reach 'filed' so audit fields land cleanly.
+   Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed ↔
+  archived). Archiving takes a filed report off the current list without deleting it; unarchiving
+  returns it to 'filed'. Use 'file-report' to file a draft so audit fields land cleanly.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -170,10 +173,11 @@ def sync(
       body (TransitionFilingStatusRequest): Generic filing-status transition — escape hatch for
           non-file moves.
 
-          Used for `draft → under_review` (submit for review) and
-          `filed → archived` (supersede / retire). Filing the package goes
-          through :class:`FileReportRequest` so `filed_at` / `filed_by`
-          audit fields land cleanly.
+          Used for `draft ↔ under_review` (submit for review, or send back),
+          `filed → archived` (take a filed report off the current list) and
+          `archived → filed` (bring it back). Filing a draft goes through
+          :class:`FileReportRequest` so `filed_at` / `filed_by` audit fields
+          land cleanly.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -200,8 +204,9 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeReportResponse]:
   """Transition Filing Status
 
-   Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed →
-  archived). Use 'file-report' to reach 'filed' so audit fields land cleanly.
+   Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed ↔
+  archived). Archiving takes a filed report off the current list without deleting it; unarchiving
+  returns it to 'filed'. Use 'file-report' to file a draft so audit fields land cleanly.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -212,10 +217,11 @@ async def asyncio_detailed(
       body (TransitionFilingStatusRequest): Generic filing-status transition — escape hatch for
           non-file moves.
 
-          Used for `draft → under_review` (submit for review) and
-          `filed → archived` (supersede / retire). Filing the package goes
-          through :class:`FileReportRequest` so `filed_at` / `filed_by`
-          audit fields land cleanly.
+          Used for `draft ↔ under_review` (submit for review, or send back),
+          `filed → archived` (take a filed report off the current list) and
+          `archived → filed` (bring it back). Filing a draft goes through
+          :class:`FileReportRequest` so `filed_at` / `filed_by` audit fields
+          land cleanly.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -245,8 +251,9 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeReportResponse | None:
   """Transition Filing Status
 
-   Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed →
-  archived). Use 'file-report' to reach 'filed' so audit fields land cleanly.
+   Move a Report along the non-file legs of the filing lifecycle (draft ↔ under_review, filed ↔
+  archived). Archiving takes a filed report off the current list without deleting it; unarchiving
+  returns it to 'filed'. Use 'file-report' to file a draft so audit fields land cleanly.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -257,10 +264,11 @@ async def asyncio(
       body (TransitionFilingStatusRequest): Generic filing-status transition — escape hatch for
           non-file moves.
 
-          Used for `draft → under_review` (submit for review) and
-          `filed → archived` (supersede / retire). Filing the package goes
-          through :class:`FileReportRequest` so `filed_at` / `filed_by`
-          audit fields land cleanly.
+          Used for `draft ↔ under_review` (submit for review, or send back),
+          `filed → archived` (take a filed report off the current list) and
+          `archived → filed` (bring it back). Filing a draft goes through
+          :class:`FileReportRequest` so `filed_at` / `filed_by` audit fields
+          land cleanly.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

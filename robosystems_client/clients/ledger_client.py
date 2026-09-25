@@ -2186,9 +2186,20 @@ class LedgerClient:
     envelope = self._call_op("Create report", response)
     return self._typed_result("Create report", envelope, ReportResponse)
 
-  def list_reports(self, graph_id: str) -> list[ListLedgerReportsReportsReports]:
-    """List all reports for a graph (includes received shared reports)."""
-    data = self._query(graph_id, LIST_LEDGER_REPORTS_GQL)
+  def list_reports(
+    self, graph_id: str, lifecycle: str | None = None
+  ) -> list[ListLedgerReportsReportsReports]:
+    """List reports for a graph (includes received shared reports).
+
+    Args:
+        graph_id: The graph to list.
+        lifecycle: ``"current"`` (the server default) leaves archived
+            reports out, ``"archived"`` returns only those, ``"all"`` every
+            report. The enum names ``"CURRENT"`` / ``"ARCHIVED"`` /
+            ``"ALL"`` are also accepted.
+    """
+    variables = {"lifecycle": lifecycle.upper()} if lifecycle else None
+    data = self._query(graph_id, LIST_LEDGER_REPORTS_GQL, variables)
     page = ListLedgerReports.model_validate(data).reports
     return page.reports if page else []
 
@@ -2372,9 +2383,11 @@ class LedgerClient:
   ) -> ReportResponse:
     """Move a Report along the non-file legs of the filing lifecycle.
 
-    Use ``file_report()`` to reach 'filed' so audit fields land cleanly.
-    Other transitions (draft ↔ under_review, filed → archived) go through
-    here so the legal-transition graph stays in one place.
+    Use ``file_report()`` to file a draft so audit fields land cleanly.
+    Other transitions (draft ↔ under_review, filed ↔ archived) go through
+    here so the legal-transition graph stays in one place. Archiving takes
+    a filed report off the current list without deleting it; unarchiving
+    (``target_status="filed"``) brings it back.
     """
     body = TransitionFilingStatusRequest(
       report_id=report_id, target_status=target_status

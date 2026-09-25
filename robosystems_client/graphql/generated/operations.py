@@ -1592,13 +1592,14 @@ query ListLedgerPublishLists($limit: Int! = 100, $offset: Int! = 0) {
 """
 
 LIST_LEDGER_REPORTS_GQL = """
-query ListLedgerReports {
-  reports {
+query ListLedgerReports($lifecycle: ReportLifecycle) {
+  reports(lifecycle: $lifecycle) {
     reports {
       id
       name
       taxonomyId
       generationStatus
+      filingStatus
       periodType
       periodStart
       periodEnd

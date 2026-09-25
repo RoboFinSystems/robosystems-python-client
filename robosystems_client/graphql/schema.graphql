@@ -463,8 +463,13 @@ type Query {
   """
   closingBookStructures: ClosingBookStructures
 
-  """List all report definitions for this graph."""
-  reports: ReportList
+  """List report definitions for this graph, newest first."""
+  reports(
+    """
+    `CURRENT` (the default) leaves out archived reports, `ARCHIVED` returns only those, `ALL` returns every report.
+    """
+    lifecycle: ReportLifecycle! = CURRENT
+  ): ReportList
 
   """Single report definition with structures + entity name."""
   report(
@@ -2453,6 +2458,12 @@ type StructureSummary {
   blockType: String!
 }
 
+enum ReportLifecycle {
+  CURRENT
+  ARCHIVED
+  ALL
+}
+
 type ReportPackage {
   id: ID!
   name: String!
@@ -3000,7 +3011,7 @@ type ReportBundleDownload {
   generationCount: Int!
 
   """
-  Content the Report carries that this flavor does not. `disclosure_notes`: the XBRL 2.1 zip ships statements only — tenant-authored disclosure notes render on screen and ride the Tavi and holon flavors, but are excluded from this file. The Tavi compiled model carries the statements and notes but has no home for `ib_envelopes` (the per-Network Information Block payloads), `definition_links` (equivalence, general-special, essence-alias and mapping arcs), `reporting_style`, `framework_pins`, `fact_sets` (the FactSet partition and each fact's structure pin) or `filing_lifecycle` (filing status, supersession, share provenance); all of it rides the holon flavor.
+  Content the Report carries that this flavor does not. `disclosure_notes`: the XBRL 2.1 zip ships statements only — tenant-authored disclosure notes render on screen and ride the Tavi and holon flavors, but are excluded from this file. The Tavi compiled model carries the statements, notes, reporting style and FactSet partition but has no home for `ib_envelopes` (the per-Network Information Block payloads), `definition_links` (equivalence, general-special, essence-alias and mapping arcs), `framework_pins` or `filing_lifecycle` (filing status, supersession, share provenance); all of it rides the holon flavor.
   """
   omittedContent: [String!]!
 }
