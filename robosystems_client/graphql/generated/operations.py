@@ -1592,7 +1592,7 @@ query ListLedgerPublishLists($limit: Int! = 100, $offset: Int! = 0) {
 """
 
 LIST_LEDGER_REPORTS_GQL = """
-query ListLedgerReports($lifecycle: ReportLifecycle! = CURRENT) {
+query ListLedgerReports($lifecycle: ReportLifecycle) {
   reports(lifecycle: $lifecycle) {
     reports {
       id

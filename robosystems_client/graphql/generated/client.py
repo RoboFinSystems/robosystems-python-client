@@ -769,7 +769,7 @@ class Client(BaseClient):
     return ListLedgerPublishLists.model_validate(data)
 
   def list_ledger_reports(
-    self, lifecycle: ReportLifecycle, **kwargs: Any
+    self, lifecycle: Union[Optional[ReportLifecycle], UnsetType] = UNSET, **kwargs: Any
   ) -> ListLedgerReports:
     variables: dict[str, object] = {"lifecycle": lifecycle}
     response = self.execute(
