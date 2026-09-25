@@ -18,6 +18,7 @@ class ListLedgerReportsReportsReports(BaseModel):
   name: str
   taxonomy_id: str = Field(alias="taxonomyId")
   generation_status: str = Field(alias="generationStatus")
+  filing_status: str = Field(alias="filingStatus")
   period_type: str = Field(alias="periodType")
   period_start: Optional[str] = Field(alias="periodStart")
   period_end: Optional[str] = Field(alias="periodEnd")

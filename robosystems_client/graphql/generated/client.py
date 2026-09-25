@@ -2,7 +2,7 @@ from typing import Any, Optional, Union
 
 from .base_client import BaseClient
 from .base_model import UNSET, UnsetType
-from .enums import ReportDownloadFormat
+from .enums import ReportDownloadFormat, ReportLifecycle
 from .get_information_block import GetInformationBlock
 from .get_investor_holdings import GetInvestorHoldings
 from .get_investor_portfolio_block import GetInvestorPortfolioBlock
@@ -768,8 +768,10 @@ class Client(BaseClient):
     data = self.get_data(response)
     return ListLedgerPublishLists.model_validate(data)
 
-  def list_ledger_reports(self, **kwargs: Any) -> ListLedgerReports:
-    variables: dict[str, object] = {}
+  def list_ledger_reports(
+    self, lifecycle: ReportLifecycle, **kwargs: Any
+  ) -> ListLedgerReports:
+    variables: dict[str, object] = {"lifecycle": lifecycle}
     response = self.execute(
       query=LIST_LEDGER_REPORTS_GQL,
       operation_name="ListLedgerReports",

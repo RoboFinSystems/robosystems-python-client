@@ -1,7 +1,7 @@
 from .base_client import BaseClient
 from .base_model import BaseModel, Upload
 from .client import Client
-from .enums import ReportDownloadFormat
+from .enums import ReportDownloadFormat, ReportLifecycle
 from .exceptions import (
   GraphQLClientError,
   GraphQLClientGraphQLError,
@@ -676,6 +676,7 @@ __all__ = [
   "MappingCandidates",
   "MappingCandidatesMappingCandidates",
   "ReportDownloadFormat",
+  "ReportLifecycle",
   "SEARCH_LIBRARY_ELEMENTS_GQL",
   "SearchLibraryElements",
   "SearchLibraryElementsSearchLibraryElements",

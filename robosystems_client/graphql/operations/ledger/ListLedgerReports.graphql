@@ -1,7 +1,7 @@
-query ListLedgerReports {
-  reports {
+query ListLedgerReports($lifecycle: ReportLifecycle! = CURRENT) {
+  reports(lifecycle: $lifecycle) {
     reports {
-      id name taxonomyId generationStatus periodType
+      id name taxonomyId generationStatus filingStatus periodType
       periodStart periodEnd comparative mappingId aiGenerated
       createdAt lastGenerated entityName
       sourceGraphId sourceReportId sharedAt
