@@ -19,7 +19,8 @@ class MaterializeOp:
       force (bool | Unset): Force materialization even if already up to date Default: False.
       rebuild (bool | Unset): Rebuild the graph from scratch, dropping existing data. Required (staged source) when
           materializing new uploads into a graph that already contains materialized data — staging replays all uploaded
-          files, so a non-rebuild pass would re-copy ingested rows (409). Default: False.
+          files, so a non-rebuild pass would re-copy ingested rows (409). An extensions source always rebuilds a graph
+          that already exists: the new copy is built alongside and swapped in, regardless of this flag. Default: False.
       dry_run (bool | Unset): Validate tables without writing to the graph Default: False.
       source (None | str | Unset): Materialization source: 'extensions' for OLTP, omit for DuckDB staging tables
       materialize_embeddings (bool | Unset): Generate vector embeddings during materialization Default: False.

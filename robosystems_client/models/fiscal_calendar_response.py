@@ -57,6 +57,11 @@ class FiscalCalendarResponse:
           with resolve-reconciling-item, or close over them knowingly with allow_reconciling_items. Default: 0.
       reconciling_item_sample (list[str] | Unset): Source identifiers (or event ids) of up to 5 unresolved reconciling
           items, so the blocker names what is holding the close.
+      unposted_source_event_count (int | Unset): Source events dated in this period that were never committed: bank-
+          feed lines still captured or classified, and QuickBooks transactions whose automatic posting failed. Commit or
+          void each, or close over them knowingly with allow_unposted_source_events. Default: 0.
+      unposted_source_event_sample (list[str] | Unset): Source identifiers (or event ids) of up to 5 unposted source
+          events, so the blocker names what is holding the close.
       last_close_at (datetime.datetime | None | Unset):
       initialized_at (datetime.datetime | None | Unset):
       last_sync_at (datetime.datetime | None | Unset): Most recent QB sync timestamp (if connected)
@@ -79,6 +84,8 @@ class FiscalCalendarResponse:
   stranded_obligation_sample: list[PendingObligationDetailResponse] | Unset = UNSET
   reconciling_item_count: int | Unset = 0
   reconciling_item_sample: list[str] | Unset = UNSET
+  unposted_source_event_count: int | Unset = 0
+  unposted_source_event_sample: list[str] | Unset = UNSET
   last_close_at: datetime.datetime | None | Unset = UNSET
   initialized_at: datetime.datetime | None | Unset = UNSET
   last_sync_at: datetime.datetime | None | Unset = UNSET
@@ -150,6 +157,12 @@ class FiscalCalendarResponse:
     if not isinstance(self.reconciling_item_sample, Unset):
       reconciling_item_sample = self.reconciling_item_sample
 
+    unposted_source_event_count = self.unposted_source_event_count
+
+    unposted_source_event_sample: list[str] | Unset = UNSET
+    if not isinstance(self.unposted_source_event_sample, Unset):
+      unposted_source_event_sample = self.unposted_source_event_sample
+
     last_close_at: None | str | Unset
     if isinstance(self.last_close_at, Unset):
       last_close_at = UNSET
@@ -217,6 +230,10 @@ class FiscalCalendarResponse:
       field_dict["reconciling_item_count"] = reconciling_item_count
     if reconciling_item_sample is not UNSET:
       field_dict["reconciling_item_sample"] = reconciling_item_sample
+    if unposted_source_event_count is not UNSET:
+      field_dict["unposted_source_event_count"] = unposted_source_event_count
+    if unposted_source_event_sample is not UNSET:
+      field_dict["unposted_source_event_sample"] = unposted_source_event_sample
     if last_close_at is not UNSET:
       field_dict["last_close_at"] = last_close_at
     if initialized_at is not UNSET:
@@ -316,6 +333,12 @@ class FiscalCalendarResponse:
 
     reconciling_item_sample = cast(list[str], d.pop("reconciling_item_sample", UNSET))
 
+    unposted_source_event_count = d.pop("unposted_source_event_count", UNSET)
+
+    unposted_source_event_sample = cast(
+      list[str], d.pop("unposted_source_event_sample", UNSET)
+    )
+
     def _parse_last_close_at(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
@@ -393,6 +416,8 @@ class FiscalCalendarResponse:
       stranded_obligation_sample=stranded_obligation_sample,
       reconciling_item_count=reconciling_item_count,
       reconciling_item_sample=reconciling_item_sample,
+      unposted_source_event_count=unposted_source_event_count,
+      unposted_source_event_sample=unposted_source_event_sample,
       last_close_at=last_close_at,
       initialized_at=initialized_at,
       last_sync_at=last_sync_at,

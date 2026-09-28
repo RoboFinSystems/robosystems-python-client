@@ -2139,6 +2139,16 @@ type FiscalCalendar {
   Source identifiers (or event ids) of up to 5 unresolved reconciling items, so the blocker names what is holding the close.
   """
   reconcilingItemSample: [String!]!
+
+  """
+  Source events dated in this period that were never committed: bank-feed lines still captured or classified, and QuickBooks transactions whose automatic posting failed. Commit or void each, or close over them knowingly with allow_unposted_source_events.
+  """
+  unpostedSourceEventCount: Int!
+
+  """
+  Source identifiers (or event ids) of up to 5 unposted source events, so the blocker names what is holding the close.
+  """
+  unpostedSourceEventSample: [String!]!
   lastCloseAt: DateTime
   initializedAt: DateTime
 
@@ -2766,7 +2776,7 @@ type InformationBlockFactSet {
   scenarioId: String
 
   """
-  Typed `FactProvenance` descriptor (discriminated on `origin`: pivot | schedule | derived | asserted | document | forecast | filed) recording how this FactSet's facts were constructed. Surfaced as JSON, mirroring how mechanics is exposed. Null when the FactSet carries no descriptor.
+  Typed `FactProvenance` descriptor (discriminated on `origin`: pivot | schedule | derived | asserted | document | forecast | filed) recording how this FactSet was constructed. It describes the set, not each fact: a `pivot` set's mapped leaves aggregate posted line items, while its subtotals and derivations are computed from those leaves. Surfaced as JSON, mirroring how mechanics is exposed. Null when the FactSet carries no descriptor.
   """
   provenance: JSON
 }

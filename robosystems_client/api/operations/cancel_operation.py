@@ -110,7 +110,8 @@ def sync_detailed(
   """Cancel Operation
 
    Cancels a pending or running operation. Emits a cancellation event to any active SSE connections.
-  Cannot cancel completed or failed operations.
+  Cannot cancel completed or failed operations, or a running operation that cannot be stopped (graph
+  creation, tier changes, materialization, period close), which returns 409.
 
   Args:
       operation_id (str): Operation identifier
@@ -148,7 +149,8 @@ def sync(
   """Cancel Operation
 
    Cancels a pending or running operation. Emits a cancellation event to any active SSE connections.
-  Cannot cancel completed or failed operations.
+  Cannot cancel completed or failed operations, or a running operation that cannot be stopped (graph
+  creation, tier changes, materialization, period close), which returns 409.
 
   Args:
       operation_id (str): Operation identifier
@@ -177,7 +179,8 @@ async def asyncio_detailed(
   """Cancel Operation
 
    Cancels a pending or running operation. Emits a cancellation event to any active SSE connections.
-  Cannot cancel completed or failed operations.
+  Cannot cancel completed or failed operations, or a running operation that cannot be stopped (graph
+  creation, tier changes, materialization, period close), which returns 409.
 
   Args:
       operation_id (str): Operation identifier
@@ -213,7 +216,8 @@ async def asyncio(
   """Cancel Operation
 
    Cancels a pending or running operation. Emits a cancellation event to any active SSE connections.
-  Cannot cancel completed or failed operations.
+  Cannot cancel completed or failed operations, or a running operation that cannot be stopped (graph
+  creation, tier changes, materialization, period close), which returns 409.
 
   Args:
       operation_id (str): Operation identifier

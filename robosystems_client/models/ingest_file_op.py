@@ -20,7 +20,8 @@ class IngestFileOp:
 
       Attributes:
           file_id (str): Uploaded file id to ingest
-          ingest_to_graph (bool | Unset): Auto-materialize into the graph after DuckDB staging Default: False.
+          ingest_to_graph (bool | Unset): Auto-materialize into the graph after DuckDB staging. Refused with 409 while
+              another materialization of the graph is running. Default: False.
   """
 
   file_id: str
