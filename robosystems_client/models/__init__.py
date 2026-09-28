@@ -375,6 +375,7 @@ from .line_item_metadata_predicate import LineItemMetadataPredicate
 from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
+from .list_graph_mutations_surface_type_0 import ListGraphMutationsSurfaceType0
 from .list_org_graphs_response_200_item import ListOrgGraphsResponse200Item
 from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
@@ -395,6 +396,10 @@ from .mfa_options_request import MfaOptionsRequest
 from .mfa_status_response import MfaStatusResponse
 from .mfa_verify_request import MfaVerifyRequest
 from .mfa_verify_request_assertion_type_0 import MfaVerifyRequestAssertionType0
+from .mutation_audit_entry import MutationAuditEntry
+from .mutation_audit_entry_status import MutationAuditEntryStatus
+from .mutation_audit_entry_surface import MutationAuditEntrySurface
+from .mutation_audit_list_response import MutationAuditListResponse
 from .o_auth_callback_request import OAuthCallbackRequest
 from .o_auth_callback_response import OAuthCallbackResponse
 from .o_auth_grant_info import OAuthGrantInfo
@@ -1311,6 +1316,7 @@ __all__ = (
   "LinkEntityTaxonomyRequest",
   "LinkEntityTaxonomyRequestBasis",
   "ListConnectionsProviderType0",
+  "ListGraphMutationsSurfaceType0",
   "ListOrgGraphsResponse200Item",
   "ListSubgraphsResponse",
   "ListTableFilesResponse",
@@ -1331,6 +1337,10 @@ __all__ = (
   "MfaStatusResponse",
   "MfaVerifyRequest",
   "MfaVerifyRequestAssertionType0",
+  "MutationAuditEntry",
+  "MutationAuditEntryStatus",
+  "MutationAuditEntrySurface",
+  "MutationAuditListResponse",
   "OAuthCallbackRequest",
   "OAuthCallbackResponse",
   "OAuthGrantInfo",

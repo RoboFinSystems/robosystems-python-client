@@ -113,7 +113,8 @@ def sync_detailed(
 
    Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
   stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
-  `ingest_to_graph` to auto-materialize into the graph after staging.
+  `ingest_to_graph` to auto-materialize into the graph after staging; that write takes the graph's
+  materialize lock, so it returns 409 while another materialization of the graph is running.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -158,7 +159,8 @@ def sync(
 
    Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
   stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
-  `ingest_to_graph` to auto-materialize into the graph after staging.
+  `ingest_to_graph` to auto-materialize into the graph after staging; that write takes the graph's
+  materialize lock, so it returns 409 while another materialization of the graph is running.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -198,7 +200,8 @@ async def asyncio_detailed(
 
    Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
   stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
-  `ingest_to_graph` to auto-materialize into the graph after staging.
+  `ingest_to_graph` to auto-materialize into the graph after staging; that write takes the graph's
+  materialize lock, so it returns 409 while another materialization of the graph is running.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -241,7 +244,8 @@ async def asyncio(
 
    Mark an uploaded file ready and stage it into DuckDB. Small files stage directly (sync); large files
   stage via a background job (returns a pending envelope with an `operation_id` to monitor). Set
-  `ingest_to_graph` to auto-materialize into the graph after staging.
+  `ingest_to_graph` to auto-materialize into the graph after staging; that write takes the graph's
+  materialize lock, so it returns 409 while another materialization of the graph is running.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

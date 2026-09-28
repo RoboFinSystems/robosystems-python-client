@@ -116,7 +116,8 @@ def sync_detailed(
   """Create Mapping Association
 
    Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
-  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. Map
+  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. The
+  target must be a leaf concept: a subtotal the statement sums from its children is refused (422). Map
   before you close: an account with landed history in a closed month cannot be re-mapped (422) — the
   closed month's stamped statements were computed through the old arcs. Reopen latest-first down to
   the earliest month named, map, then close forward.
@@ -165,7 +166,8 @@ def sync(
   """Create Mapping Association
 
    Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
-  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. Map
+  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. The
+  target must be a leaf concept: a subtotal the statement sums from its children is refused (422). Map
   before you close: an account with landed history in a closed month cannot be re-mapped (422) — the
   closed month's stamped statements were computed through the old arcs. Reopen latest-first down to
   the earliest month named, map, then close forward.
@@ -209,7 +211,8 @@ async def asyncio_detailed(
   """Create Mapping Association
 
    Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
-  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. Map
+  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. The
+  target must be a leaf concept: a subtotal the statement sums from its children is refused (422). Map
   before you close: an account with landed history in a closed month cannot be re-mapped (422) — the
   closed month's stamped statements were computed through the old arcs. Reopen latest-first down to
   the earliest month named, map, then close forward.
@@ -256,7 +259,8 @@ async def asyncio(
   """Create Mapping Association
 
    Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
-  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. Map
+  `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. The
+  target must be a leaf concept: a subtotal the statement sums from its children is refused (422). Map
   before you close: an account with landed history in a closed month cannot be re-mapped (422) — the
   closed month's stamped statements were computed through the old arcs. Reopen latest-first down to
   the earliest month named, map, then close forward.
