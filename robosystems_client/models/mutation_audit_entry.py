@@ -24,7 +24,8 @@ class MutationAuditEntry:
       surface (MutationAuditEntrySurface): Where the call came from: 'api' for a REST operation, 'mcp' for an external
           MCP client, 'operator' for an in-app AI operator run such as the console's /do
       operation_name (str): The operation or MCP tool that ran
-      status (MutationAuditEntryStatus): Whether the call succeeded; a failed call changed nothing it reports
+      status (MutationAuditEntryStatus): Whether the call succeeded; a failed call changed nothing it reports.
+          'pending' means the call started background work; follow its operation_id for the outcome
       duration_ms (float): How long the call took
       error_code (None | str | Unset): Why a failed call failed
       user_id (None | str | Unset): The user the call ran as
