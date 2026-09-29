@@ -1927,6 +1927,7 @@ type MappingCoverage {
   highConfidence: Int!
   mediumConfidence: Int!
   lowConfidence: Int!
+  manualConfidence: Int!
   unreachableCount: Int!
   unreachable: [UnreachableMappingType!]!
 }
