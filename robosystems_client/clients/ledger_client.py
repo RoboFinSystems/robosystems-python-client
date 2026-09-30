@@ -1198,7 +1198,11 @@ class LedgerClient:
     return page.structures if page else []
 
   def list_mappings(self, graph_id: str) -> list[ListLedgerMappingsMappingsStructures]:
-    """List active CoA→reporting mapping structures."""
+    """List active CoA→reporting mapping structures, the book mapping first.
+
+    Each carries ``framework``: the reporting framework it maps the chart
+    into. A chart holds one mapping per framework.
+    """
     data = self._query(graph_id, LIST_LEDGER_MAPPINGS_GQL)
     page = ListLedgerMappings.model_validate(data).mappings
     return page.structures if page else []

@@ -1564,6 +1564,7 @@ query ListLedgerMappings {
       blockType
       taxonomyId
       isActive
+      framework
     }
   }
 }
@@ -1637,6 +1638,7 @@ query ListLedgerStructures($taxonomyId: String, $blockType: String) {
       blockType
       taxonomyId
       isActive
+      framework
     }
   }
 }

@@ -21,6 +21,7 @@ class TaxonomyBlockStructure:
       block_type (str):
       description (None | str | Unset):
       role_uri (None | str | Unset):
+      target_framework (None | str | Unset): `coa_mapping` only: the framework the mapping maps into.
   """
 
   id: str
@@ -28,6 +29,7 @@ class TaxonomyBlockStructure:
   block_type: str
   description: None | str | Unset = UNSET
   role_uri: None | str | Unset = UNSET
+  target_framework: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -49,6 +51,12 @@ class TaxonomyBlockStructure:
     else:
       role_uri = self.role_uri
 
+    target_framework: None | str | Unset
+    if isinstance(self.target_framework, Unset):
+      target_framework = UNSET
+    else:
+      target_framework = self.target_framework
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -62,6 +70,8 @@ class TaxonomyBlockStructure:
       field_dict["description"] = description
     if role_uri is not UNSET:
       field_dict["role_uri"] = role_uri
+    if target_framework is not UNSET:
+      field_dict["target_framework"] = target_framework
 
     return field_dict
 
@@ -92,12 +102,22 @@ class TaxonomyBlockStructure:
 
     role_uri = _parse_role_uri(d.pop("role_uri", UNSET))
 
+    def _parse_target_framework(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    target_framework = _parse_target_framework(d.pop("target_framework", UNSET))
+
     taxonomy_block_structure = cls(
       id=id,
       name=name,
       block_type=block_type,
       description=description,
       role_uri=role_uri,
+      target_framework=target_framework,
     )
 
     taxonomy_block_structure.additional_properties = d

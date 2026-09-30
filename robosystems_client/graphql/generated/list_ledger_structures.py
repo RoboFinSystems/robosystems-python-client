@@ -20,6 +20,7 @@ class ListLedgerStructuresStructuresStructures(BaseModel):
   block_type: str = Field(alias="blockType")
   taxonomy_id: str = Field(alias="taxonomyId")
   is_active: bool = Field(alias="isActive")
+  framework: Optional[str]
 
 
 ListLedgerStructures.model_rebuild()

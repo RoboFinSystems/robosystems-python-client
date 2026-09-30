@@ -255,8 +255,9 @@ class TestLedgerReads:
             "name": "CoA → GAAP",
             "description": None,
             "blockType": "coa_mapping",
-            "taxonomyId": "tax_usgaap",
+            "taxonomyId": "tax_map_gaap",
             "isActive": True,
+            "framework": "rs-gaap",
           }
         ]
       }
@@ -265,6 +266,7 @@ class TestLedgerReads:
     mappings = client.list_mappings(graph_id)
     assert len(mappings) == 1
     assert mappings[0].block_type == "coa_mapping"
+    assert mappings[0].framework == "rs-gaap"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_fiscal_calendar(self, mock_execute, mock_config, graph_id):
@@ -1272,6 +1274,7 @@ class TestLedgerReadsAdditional:
             "blockType": "income_statement",
             "taxonomyId": "tax_usgaap",
             "isActive": True,
+            "framework": None,
           }
         ]
       }

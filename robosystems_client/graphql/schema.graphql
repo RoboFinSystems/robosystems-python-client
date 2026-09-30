@@ -1878,6 +1878,11 @@ type Structure {
   blockType: String!
   taxonomyId: String!
   isActive: Boolean!
+
+  """
+  `coa_mapping` only: the reporting framework the mapping maps the chart into (e.g. `rs-gaap`). A chart holds one mapping per framework.
+  """
+  framework: String
 }
 
 """A mapping structure with all its associations."""
