@@ -37,6 +37,8 @@ class TaxonomyBlockStructureRequest:
           vocabulary). A disclosure note footing members to a total is `roll_up`. Null leaves the pattern unset.
       description (None | str | Unset):
       role_uri (None | str | Unset):
+      target_framework (None | str | Unset): `coa_mapping` only: the framework this mapping maps the chart into, e.g.
+          `rs-gaap`. Omitted means the graph's book framework. A chart holds one mapping per framework.
       metadata (TaxonomyBlockStructureRequestMetadata | Unset):
   """
 
@@ -47,6 +49,7 @@ class TaxonomyBlockStructureRequest:
   ) = UNSET
   description: None | str | Unset = UNSET
   role_uri: None | str | Unset = UNSET
+  target_framework: None | str | Unset = UNSET
   metadata: TaxonomyBlockStructureRequestMetadata | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -77,6 +80,12 @@ class TaxonomyBlockStructureRequest:
     else:
       role_uri = self.role_uri
 
+    target_framework: None | str | Unset
+    if isinstance(self.target_framework, Unset):
+      target_framework = UNSET
+    else:
+      target_framework = self.target_framework
+
     metadata: dict[str, Any] | Unset = UNSET
     if not isinstance(self.metadata, Unset):
       metadata = self.metadata.to_dict()
@@ -95,6 +104,8 @@ class TaxonomyBlockStructureRequest:
       field_dict["description"] = description
     if role_uri is not UNSET:
       field_dict["role_uri"] = role_uri
+    if target_framework is not UNSET:
+      field_dict["target_framework"] = target_framework
     if metadata is not UNSET:
       field_dict["metadata"] = metadata
 
@@ -154,6 +165,15 @@ class TaxonomyBlockStructureRequest:
 
     role_uri = _parse_role_uri(d.pop("role_uri", UNSET))
 
+    def _parse_target_framework(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    target_framework = _parse_target_framework(d.pop("target_framework", UNSET))
+
     _metadata = d.pop("metadata", UNSET)
     metadata: TaxonomyBlockStructureRequestMetadata | Unset
     if isinstance(_metadata, Unset):
@@ -167,6 +187,7 @@ class TaxonomyBlockStructureRequest:
       concept_arrangement=concept_arrangement,
       description=description,
       role_uri=role_uri,
+      target_framework=target_framework,
       metadata=metadata,
     )
 
