@@ -236,7 +236,7 @@ class TestFileUpload:
     result = client.upload(graph_id, "Entity", BytesIO(b"data"))
 
     assert result.success is False
-    assert "Failed to complete file upload" in result.error
+    assert result.error == "Failed to complete file upload: 500"
 
   def test_upload_no_token(self, mock_config, graph_id):
     """Test upload fails without API key."""

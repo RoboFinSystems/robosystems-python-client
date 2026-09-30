@@ -239,7 +239,7 @@ class FileClient:
           table_name=table_name,
           file_name=file_name,
           success=False,
-          error="Failed to complete file upload",
+          error=f"Failed to complete file upload: {update_response.status_code}",
         )
 
       # Extract staging metadata from the operation envelope result. Large files
