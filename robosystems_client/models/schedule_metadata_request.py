@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Mapping
 from typing import Any, TypeVar, cast
 
@@ -24,6 +25,11 @@ class ScheduleMetadataRequest:
           book value ends at it. Default: 0.
       useful_life_months (int | Unset): Useful life in months Default: 0.
       asset_element_id (None | str | Unset): BS asset element for net book value
+      booked_on (datetime.date | None | Unset): The date the cost went on the books, when that is before the
+          schedule's first period: a policy paid in December that starts amortizing in January, or an asset bought the
+          month before it is placed in service. From this date until the first period the schedule carries its full cost,
+          so the schedule reconciliation does not report that balance as unscheduled. Leave it out when the cost is booked
+          in the first period.
       periodic_amounts (list[int] | None | Unset): Explicit per-period amounts in cents. When set, the generator uses
           these values instead of `monthly_amount` — enabling non-straight-line schedules (effective-interest bond
           discount amortization, day-count interest accrual, variable lease payments, pre-computed effective-yield curves,
@@ -37,6 +43,7 @@ class ScheduleMetadataRequest:
   residual_value: int | Unset = 0
   useful_life_months: int | Unset = 0
   asset_element_id: None | str | Unset = UNSET
+  booked_on: datetime.date | None | Unset = UNSET
   periodic_amounts: list[int] | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -54,6 +61,14 @@ class ScheduleMetadataRequest:
       asset_element_id = UNSET
     else:
       asset_element_id = self.asset_element_id
+
+    booked_on: None | str | Unset
+    if isinstance(self.booked_on, Unset):
+      booked_on = UNSET
+    elif isinstance(self.booked_on, datetime.date):
+      booked_on = self.booked_on.isoformat()
+    else:
+      booked_on = self.booked_on
 
     periodic_amounts: list[int] | None | Unset
     if isinstance(self.periodic_amounts, Unset):
@@ -77,6 +92,8 @@ class ScheduleMetadataRequest:
       field_dict["useful_life_months"] = useful_life_months
     if asset_element_id is not UNSET:
       field_dict["asset_element_id"] = asset_element_id
+    if booked_on is not UNSET:
+      field_dict["booked_on"] = booked_on
     if periodic_amounts is not UNSET:
       field_dict["periodic_amounts"] = periodic_amounts
 
@@ -102,6 +119,23 @@ class ScheduleMetadataRequest:
 
     asset_element_id = _parse_asset_element_id(d.pop("asset_element_id", UNSET))
 
+    def _parse_booked_on(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        booked_on_type_0 = datetime.date.fromisoformat(data)
+
+        return booked_on_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    booked_on = _parse_booked_on(d.pop("booked_on", UNSET))
+
     def _parse_periodic_amounts(data: object) -> list[int] | None | Unset:
       if data is None:
         return data
@@ -125,6 +159,7 @@ class ScheduleMetadataRequest:
       residual_value=residual_value,
       useful_life_months=useful_life_months,
       asset_element_id=asset_element_id,
+      booked_on=booked_on,
       periodic_amounts=periodic_amounts,
     )
 

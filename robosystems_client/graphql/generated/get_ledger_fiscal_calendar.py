@@ -31,6 +31,8 @@ class GetLedgerFiscalCalendarFiscalCalendar(BaseModel):
   ] = Field(alias="strandedObligationSample")
   reconciling_item_count: int = Field(alias="reconcilingItemCount")
   reconciling_item_sample: list[str] = Field(alias="reconcilingItemSample")
+  unreconciled_account_count: int = Field(alias="unreconciledAccountCount")
+  unreconciled_account_sample: list[str] = Field(alias="unreconciledAccountSample")
   sync_stale_days: Optional[int] = Field(alias="syncStaleDays")
   last_close_at: Optional[str] = Field(alias="lastCloseAt")
   initialized_at: Optional[str] = Field(alias="initializedAt")

@@ -622,6 +622,30 @@ from .operation_envelope_publish_list_response import (
 from .operation_envelope_publish_list_response_status import (
   OperationEnvelopePublishListResponseStatus,
 )
+from .operation_envelope_reconciliation_list_response import (
+  OperationEnvelopeReconciliationListResponse,
+)
+from .operation_envelope_reconciliation_list_response_status import (
+  OperationEnvelopeReconciliationListResponseStatus,
+)
+from .operation_envelope_reconciliation_policy_response import (
+  OperationEnvelopeReconciliationPolicyResponse,
+)
+from .operation_envelope_reconciliation_policy_response_status import (
+  OperationEnvelopeReconciliationPolicyResponseStatus,
+)
+from .operation_envelope_reconciliation_preview_response import (
+  OperationEnvelopeReconciliationPreviewResponse,
+)
+from .operation_envelope_reconciliation_preview_response_status import (
+  OperationEnvelopeReconciliationPreviewResponseStatus,
+)
+from .operation_envelope_reconciliation_summary import (
+  OperationEnvelopeReconciliationSummary,
+)
+from .operation_envelope_reconciliation_summary_status import (
+  OperationEnvelopeReconciliationSummaryStatus,
+)
 from .operation_envelope_reconciling_item_plan import (
   OperationEnvelopeReconcilingItemPlan,
 )
@@ -757,6 +781,8 @@ from .preview_event_block_response import PreviewEventBlockResponse
 from .preview_event_block_response_handler_metadata import (
   PreviewEventBlockResponseHandlerMetadata,
 )
+from .preview_reconciliations_request import PreviewReconciliationsRequest
+from .preview_reconciliations_request_method import PreviewReconciliationsRequestMethod
 from .preview_reconciling_item_request import PreviewReconcilingItemRequest
 from .promote_obligations_request import PromoteObligationsRequest
 from .promote_obligations_response import PromoteObligationsResponse
@@ -769,6 +795,16 @@ from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
 from .rebuild_schedule_request import RebuildScheduleRequest
+from .reconciliation_component import ReconciliationComponent
+from .reconciliation_list_response import ReconciliationListResponse
+from .reconciliation_mechanics import ReconciliationMechanics
+from .reconciliation_mechanics_method import ReconciliationMechanicsMethod
+from .reconciliation_mechanics_scope import ReconciliationMechanicsScope
+from .reconciliation_policy_response import ReconciliationPolicyResponse
+from .reconciliation_preview_response import ReconciliationPreviewResponse
+from .reconciliation_preview_response_method import ReconciliationPreviewResponseMethod
+from .reconciliation_row import ReconciliationRow
+from .reconciliation_summary import ReconciliationSummary
 from .reconciling_item_catch_up import ReconcilingItemCatchUp
 from .reconciling_item_delta_line import ReconcilingItemDeltaLine
 from .reconciling_item_entry_summary import ReconcilingItemEntrySummary
@@ -777,9 +813,11 @@ from .reconciling_item_plan_default_disposition import (
   ReconcilingItemPlanDefaultDisposition,
 )
 from .reconciling_item_regenerated import ReconcilingItemRegenerated
+from .record_statement_balance_request import RecordStatementBalanceRequest
 from .recovery_codes_request import RecoveryCodesRequest
 from .recovery_codes_request_assertion_type_0 import RecoveryCodesRequestAssertionType0
 from .recovery_codes_response import RecoveryCodesResponse
+from .refresh_reconciliations_request import RefreshReconciliationsRequest
 from .regenerate_report_operation import RegenerateReportOperation
 from .register_request import RegisterRequest
 from .remember_op import RememberOp
@@ -851,11 +889,13 @@ from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
 from .set_close_target_operation import SetCloseTargetOperation
+from .set_reconciliation_policy_request import SetReconciliationPolicyRequest
 from .set_write_policy_request import SetWritePolicyRequest
 from .set_write_policy_request_write_policy import SetWritePolicyRequestWritePolicy
 from .share_report_operation import ShareReportOperation
 from .share_report_response import ShareReportResponse
 from .share_result_item import ShareResultItem
+from .sign_off_reconciliation_request import SignOffReconciliationRequest
 from .skipped_forecast_lite import SkippedForecastLite
 from .skipped_metric_lite import SkippedMetricLite
 from .sql_statement_request import SqlStatementRequest
@@ -1427,6 +1467,14 @@ __all__ = (
   "OperationEnvelopePromoteObligationsResponseStatus",
   "OperationEnvelopePublishListResponse",
   "OperationEnvelopePublishListResponseStatus",
+  "OperationEnvelopeReconciliationListResponse",
+  "OperationEnvelopeReconciliationListResponseStatus",
+  "OperationEnvelopeReconciliationPolicyResponse",
+  "OperationEnvelopeReconciliationPolicyResponseStatus",
+  "OperationEnvelopeReconciliationPreviewResponse",
+  "OperationEnvelopeReconciliationPreviewResponseStatus",
+  "OperationEnvelopeReconciliationSummary",
+  "OperationEnvelopeReconciliationSummaryStatus",
   "OperationEnvelopeReconcilingItemPlan",
   "OperationEnvelopeReconcilingItemPlanStatus",
   "OperationEnvelopeReportResponse",
@@ -1516,6 +1564,8 @@ __all__ = (
   "PositionBlock",
   "PreviewEventBlockResponse",
   "PreviewEventBlockResponseHandlerMetadata",
+  "PreviewReconciliationsRequest",
+  "PreviewReconciliationsRequestMethod",
   "PreviewReconcilingItemRequest",
   "PromoteObligationsRequest",
   "PromoteObligationsResponse",
@@ -1526,15 +1576,27 @@ __all__ = (
   "QuickBooksConnectionConfig",
   "RateLimits",
   "RebuildScheduleRequest",
+  "ReconciliationComponent",
+  "ReconciliationListResponse",
+  "ReconciliationMechanics",
+  "ReconciliationMechanicsMethod",
+  "ReconciliationMechanicsScope",
+  "ReconciliationPolicyResponse",
+  "ReconciliationPreviewResponse",
+  "ReconciliationPreviewResponseMethod",
+  "ReconciliationRow",
+  "ReconciliationSummary",
   "ReconcilingItemCatchUp",
   "ReconcilingItemDeltaLine",
   "ReconcilingItemEntrySummary",
   "ReconcilingItemPlan",
   "ReconcilingItemPlanDefaultDisposition",
   "ReconcilingItemRegenerated",
+  "RecordStatementBalanceRequest",
   "RecoveryCodesRequest",
   "RecoveryCodesRequestAssertionType0",
   "RecoveryCodesResponse",
+  "RefreshReconciliationsRequest",
   "RegenerateReportOperation",
   "RegisterRequest",
   "RememberOp",
@@ -1590,11 +1652,13 @@ __all__ = (
   "ServiceOfferingsResponse",
   "ServiceOfferingSummary",
   "SetCloseTargetOperation",
+  "SetReconciliationPolicyRequest",
   "SetWritePolicyRequest",
   "SetWritePolicyRequestWritePolicy",
   "ShareReportOperation",
   "ShareReportResponse",
   "ShareResultItem",
+  "SignOffReconciliationRequest",
   "SkippedForecastLite",
   "SkippedMetricLite",
   "SqlStatementRequest",

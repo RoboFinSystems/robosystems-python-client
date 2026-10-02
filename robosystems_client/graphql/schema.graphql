@@ -247,6 +247,17 @@ type Query {
     endDate: Date = null
   ): AccountRollups
 
+  """
+  Every reconciliation's standing at a period end.
+  
+  A reconciliation not yet compared for the period is `not_started`.
+  Comparisons are recorded by the `refresh-reconciliations` operation.
+  """
+  reconciliations(
+    """The period, as YYYY-MM."""
+    period: String!
+  ): ReconciliationList
+
   """Trial balance for posted entries in a date range."""
   trialBalance(
     """Start of the posting window (inclusive)."""
@@ -1601,6 +1612,212 @@ type AccountRollupRow {
   netBalance: Float!
 }
 
+"""Every reconciliation's standing for one period."""
+type ReconciliationList {
+  """The period, as YYYY-MM."""
+  period: String!
+
+  """The period's last day."""
+  asOf: Date!
+
+  """One entry per reconciliation block, oldest block first."""
+  reconciliations: [ReconciliationSummary!]!
+
+  """
+  What a refresh could not compare, such as a check skipped because its source is no longer connected. Empty on a plain read.
+  """
+  notes: [String!]!
+}
+
+"""One reconciliation's standing for a period."""
+type ReconciliationSummary {
+  """The reconciliation block."""
+  structureId: String!
+
+  """The block's name."""
+  name: String!
+
+  """
+  `ledger`: the whole ledger against one source. `account`: one account against an independent balance.
+  """
+  scope: String!
+
+  """
+  Where the independent side comes from. `source_ledger` is the synced accounting system's own trial balance. `schedule_register` is what the account's schedules say it carries. `statement` is the ending balance of a statement recorded for the account.
+  """
+  method: String!
+
+  """The account reconciled; null for a ledger-scope block."""
+  elementId: String
+
+  """Whether the period's close waits on this reconciliation."""
+  requiredForClose: Boolean!
+
+  """A difference up to this amount still counts as reconciled."""
+  materiality: Float!
+
+  """The period, as YYYY-MM."""
+  period: String!
+
+  """The period's last day."""
+  asOf: Date!
+
+  """
+  `not_started`: not compared for this period. `unreconciled`: the sides differ by more than the materiality. `explained`: they differ and items account for all of it. `reconciled`: nothing is left unexplained. `reviewed`: reconciled and signed off.
+  """
+  status: String!
+
+  """
+  What is left unexplained at the last comparison; null when the period has not been compared. For a ledger-scope block, the sum of every account's absolute difference. For an account-scope block, the ledger balance minus the independent one.
+  """
+  unreconciledDifference: Float
+
+  """Ledger-scope only: accounts with a balance on either side."""
+  accountsCompared: Int
+
+  """Ledger-scope only: accounts that do not tie."""
+  accountsDifferent: Int
+
+  """
+  Account-scope only: the account's balance at the last comparison, debit-positive, as the period's close will leave it.
+  """
+  ledgerBalance: Float
+
+  """
+  Account-scope only: what the independent source said at the last comparison, debit-positive.
+  """
+  independentBalance: Float
+
+  """
+  Account-scope only: the date the two balances are stated at. The period's last day, unless a statement ended earlier in the period.
+  """
+  balanceAsOf: Date
+
+  """
+  Account-scope only: what makes up the independent balance. One entry per schedule for `schedule_register`; the recorded statement for `statement`.
+  """
+  components: [ReconciliationComponent!]!
+
+  """The system the independent side was read from."""
+  source: String
+
+  """When the two sides were last compared."""
+  comparedAt: DateTime
+
+  """The FactSet holding the period's comparison."""
+  factSetId: String
+
+  """The user whose action ran the last comparison."""
+  comparedBy: String
+
+  """
+  `operation` when someone ran refresh-reconciliations; `sync` when a source sync refreshed it.
+  """
+  comparedVia: String
+
+  """Whether the close also waits for a sign-off."""
+  reviewRequired: Boolean!
+
+  """
+  Whether the reviewer must be someone other than the person who ran the comparison.
+  """
+  separateReviewer: Boolean!
+
+  """
+  The user who signed off the comparison as it stands. Null when nobody has, or when the balances changed after the sign-off.
+  """
+  reviewedBy: String
+
+  """When the standing sign-off was made."""
+  reviewedAt: DateTime
+
+  """
+  True when the reviewer is the person who ran the comparison they signed off. Null when there is no standing sign-off.
+  """
+  selfReviewed: Boolean
+
+  """
+  Ledger-scope only: the accounts that did not tie at the last comparison, largest difference first.
+  """
+  differences: [ReconciliationRow!]!
+}
+
+"""
+One part of an account's independent balance: what a single schedule
+says the account carries, or a recorded statement balance.
+"""
+type ReconciliationComponent {
+  """The schedule's name, or the statement and its date."""
+  name: String!
+
+  """What this part says the account holds, debit-positive."""
+  amount: Float!
+
+  """The schedule, for a `schedule_register` part."""
+  structureId: String
+
+  """The recorded balance, for a `statement` part."""
+  eventId: String
+
+  """The statement document given as evidence, when one was."""
+  documentId: String
+
+  """
+  Why a schedule carries nothing (disposed of, or ended early), or the note recorded with a statement balance.
+  """
+  note: String
+}
+
+"""
+One account: the ledger's balance, the independent balance, the difference.
+
+Balances are debit-positive, so a credit balance is negative on both sides.
+"""
+type ReconciliationRow {
+  """The chart account; null when the ledger has none for it."""
+  elementId: String
+
+  """The chart account's code."""
+  accountCode: String
+
+  """The account's name in the ledger, else in the source."""
+  accountName: String!
+
+  """The account's id in the source system, when it has one."""
+  sourceAccountId: String
+
+  """
+  `balance_sheet` or `income_statement`. Balance-sheet accounts are compared cumulatively to the period end; income-statement accounts from the start of the fiscal year. Null when the ledger has no account.
+  """
+  statement: String
+
+  """
+  What the ledger holds. For `source_ledger`, landed entries only. For `schedule_register`, the balance as the period's close will leave it: landed entries, drafts awaiting the close, and schedule entries not yet drafted.
+  """
+  ledgerBalance: Float!
+
+  """What the independent source says."""
+  independentBalance: Float!
+
+  """Ledger minus independent."""
+  difference: Float!
+
+  """
+  `tied`: both sides agree to the cent. `different`: both know the account and disagree. `not_in_ledger`: the source reports an account the ledger has none for. `not_in_source`: the ledger holds a balance on an account the source does not have.
+  """
+  status: String!
+
+  """
+  The date both balances are stated at, when it is not the period's last day: a statement that ends mid-period is compared with the ledger at the statement's own date.
+  """
+  asOf: Date
+
+  """
+  Account-scope methods only: what makes up the independent balance. One entry per schedule for `schedule_register`; the recorded statement for `statement`.
+  """
+  components: [ReconciliationComponent!]!
+}
+
 """
 Trial balance for posted entries in a date range — every CoA
 account that had activity, plus aggregate totals.
@@ -2155,6 +2372,16 @@ type FiscalCalendar {
   Source identifiers (or event ids) of up to 5 unposted source events, so the blocker names what is holding the close.
   """
   unpostedSourceEventSample: [String!]!
+
+  """
+  Reconciliations the close waits on that are not reconciled for this period, including any never compared for it. Run refresh-reconciliations and clear what it reports, release one with set-reconciliation-policy, or close over them knowingly with allow_unreconciled_accounts.
+  """
+  unreconciledAccountCount: Int!
+
+  """
+  Name and status of up to 5 of those reconciliations, so the blocker names what is holding the close.
+  """
+  unreconciledAccountSample: [String!]!
   lastCloseAt: DateTime
   initializedAt: DateTime
 
@@ -2313,9 +2540,10 @@ One row in the closing book — a navigable artifact for the
 period (statement, schedule, rollup, etc.).
 
 `itemType` discriminates: 'statement', 'schedule',
-'account_rollups', 'period_close', 'trial_balance'. Statement items
-carry `reportId` to fetch the rendered facts; schedule items
-carry `status` ('complete' | 'draft' | 'pending').
+'account_rollups', 'period_close', 'reconciliations', 'trial_balance'.
+Statement items carry `reportId` to fetch the rendered facts; schedule
+items carry `status` ('complete' | 'draft' | 'pending'). The single
+'reconciliations' item opens the period's reconciliation worklist.
 """
 type ClosingBookItem {
   id: String!

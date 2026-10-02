@@ -287,6 +287,8 @@ class TestLedgerReads:
         "strandedObligationSample": [],
         "reconcilingItemCount": 0,
         "reconcilingItemSample": [],
+        "unreconciledAccountCount": 0,
+        "unreconciledAccountSample": [],
         "syncStaleDays": None,
         "lastCloseAt": None,
         "initializedAt": "2026-01-01T00:00:00Z",
@@ -337,6 +339,8 @@ class TestLedgerReads:
         ],
         "reconcilingItemCount": 1,
         "reconcilingItemSample": ["ri_bank_fee_2026-03"],
+        "unreconciledAccountCount": 1,
+        "unreconciledAccountSample": ["Equipment Loan (statement): unreconciled"],
         "syncStaleDays": None,
         "lastCloseAt": None,
         "initializedAt": "2026-01-01T00:00:00Z",
@@ -423,6 +427,48 @@ class TestLedgerWrites:
     body = mock_op.call_args.kwargs["body"]
     assert body.period == "2026-03"
     assert body.allow_stale_sync is True
+    # Left unset, so the server's default applies.
+    assert "allow_unreconciled_accounts" not in body.to_dict()
+
+  @patch("robosystems_client.clients.ledger_client.op_close_period")
+  def test_close_period_can_override_the_reconciliation_gate(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope(
+      "close-period",
+      {
+        "period": "2026-03",
+        "entries_posted": 0,
+        "target_auto_advanced": False,
+        "fiscal_calendar": {},
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.close_period(graph_id, "2026-03", allow_unreconciled_accounts=True)
+    body = mock_op.call_args.kwargs["body"]
+    assert body.to_dict()["allow_unreconciled_accounts"] is True
+
+  @patch("robosystems_client.clients.ledger_client.op_create_information_block")
+  def test_create_schedule_carries_the_day_its_cost_was_booked(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope("create-information-block", {"structure_id": "str_1"})
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.create_schedule(
+      graph_id,
+      name="Insurance policy",
+      element_ids=["elem_1"],
+      period_start="2026-02-01",
+      period_end="2027-01-31",
+      monthly_amount=10000,
+      debit_element_id="elem_insurance",
+      credit_element_id="elem_prepaid",
+      booked_on="2026-01-15",
+    )
+    payload = mock_op.call_args.kwargs["body"].payload.to_dict()
+    assert payload["schedule_metadata"]["booked_on"] == "2026-01-15"
 
   @patch("robosystems_client.clients.ledger_client.op_create_information_block")
   def test_create_schedule(self, mock_op, mock_config, graph_id):
@@ -2609,3 +2655,271 @@ class TestChartOfAccountsOps:
     client = LedgerClient(mock_config)
     with pytest.raises(ValueError):
       client.initialize_chart_of_accounts(graph_id, "retail")
+
+
+# ── Reconciliations ────────────────────────────────────────────────────
+
+_RECONCILIATION = {
+  "structure_id": "struct_loan",
+  "name": "Equipment Loan (statement)",
+  "scope": "account",
+  "method": "statement",
+  "element_id": "elem_loan",
+  "required_for_close": False,
+  "materiality": 0.0,
+  "period": "2026-08",
+  "as_of": "2026-08-31",
+  "status": "reconciled",
+  "unreconciled_difference": 0.0,
+  "review_required": False,
+  "separate_reviewer": False,
+  "components": [],
+  "differences": [],
+}
+
+
+@pytest.mark.unit
+class TestLedgerReconciliations:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_reconciliations(self, mock_execute, mock_config, graph_id):
+    component = {
+      "name": "Statement ending 2026-08-31",
+      "amount": 4800.0,
+      "structureId": None,
+      "eventId": "evt_1",
+      "documentId": None,
+      "note": None,
+    }
+    mock_execute.return_value = {
+      "reconciliations": {
+        "period": "2026-08",
+        "asOf": "2026-08-31",
+        "notes": [],
+        "reconciliations": [
+          {
+            "structureId": "struct_loan",
+            "name": "Equipment Loan (statement)",
+            "scope": "account",
+            "method": "statement",
+            "elementId": "elem_loan",
+            "requiredForClose": False,
+            "materiality": 0.0,
+            "period": "2026-08",
+            "asOf": "2026-08-31",
+            "status": "unreconciled",
+            "unreconciledDifference": 200.0,
+            "accountsCompared": None,
+            "accountsDifferent": None,
+            "ledgerBalance": 5000.0,
+            "independentBalance": 4800.0,
+            "balanceAsOf": "2026-08-31",
+            "components": [component],
+            "source": "statement",
+            "comparedAt": "2026-09-02T08:00:00Z",
+            "factSetId": "fs_1",
+            "comparedBy": "usr_1",
+            "comparedVia": "operation",
+            "reviewRequired": False,
+            "separateReviewer": False,
+            "reviewedBy": None,
+            "reviewedAt": None,
+            "selfReviewed": None,
+            "differences": [
+              {
+                "elementId": "elem_loan",
+                "accountCode": "2100",
+                "accountName": "Equipment Loan",
+                "sourceAccountId": None,
+                "statement": "balance_sheet",
+                "ledgerBalance": 5000.0,
+                "independentBalance": 4800.0,
+                "difference": 200.0,
+                "status": "different",
+                "asOf": "2026-08-31",
+                "components": [component],
+              }
+            ],
+          }
+        ],
+      }
+    }
+    client = LedgerClient(mock_config)
+
+    result = client.list_reconciliations(graph_id, "2026-08")
+
+    assert result is not None
+    (rec,) = result.reconciliations
+    assert (rec.status, rec.unreconciled_difference) == ("unreconciled", 200.0)
+    assert rec.components[0].event_id == "evt_1"
+    assert rec.differences[0].account_name == "Equipment Loan"
+    assert mock_execute.call_args.args[2] == {"period": "2026-08"}
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_reconciliations_on_a_graph_without_a_ledger(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"reconciliations": None}
+    client = LedgerClient(mock_config)
+    assert client.list_reconciliations(graph_id, "2026-08") is None
+
+  @patch("robosystems_client.clients.ledger_client.op_preview_reconciliations")
+  def test_preview_reconciliations_names_the_check(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope(
+      "preview-reconciliations", {"period": "2026-08", "accounts_different": 1}
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+
+    result = client.preview_reconciliations(
+      graph_id, "2026-08", method="schedule_register", include_tied=True
+    )
+
+    assert result["accounts_different"] == 1
+    body = mock_op.call_args.kwargs["body"].to_dict()
+    assert body == {
+      "period": "2026-08",
+      "method": "schedule_register",
+      "include_tied": True,
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_preview_reconciliations")
+  def test_preview_reconciliations_leaves_the_method_to_the_server(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(
+      _envelope("preview-reconciliations", {"period": "2026-08"})
+    )
+    client = LedgerClient(mock_config)
+
+    client.preview_reconciliations(graph_id, "2026-08")
+
+    assert mock_op.call_args.kwargs["body"].to_dict() == {"period": "2026-08"}
+
+  def test_preview_reconciliations_refuses_an_unknown_check(
+    self, mock_config, graph_id
+  ):
+    client = LedgerClient(mock_config)
+    with pytest.raises(ValueError):
+      client.preview_reconciliations(graph_id, "2026-08", method="guesswork")
+
+  @patch("robosystems_client.clients.ledger_client.op_refresh_reconciliations")
+  def test_refresh_reconciliations(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "refresh-reconciliations",
+      {
+        "period": "2026-08",
+        "as_of": "2026-08-31",
+        "notes": ["Source ledger (QuickBooks) was not compared."],
+        "reconciliations": [_RECONCILIATION],
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+
+    result = client.refresh_reconciliations(graph_id, "2026-08")
+
+    assert result["notes"] == ["Source ledger (QuickBooks) was not compared."]
+    assert mock_op.call_args.kwargs["body"].period == "2026-08"
+
+  @patch("robosystems_client.clients.ledger_client.op_record_statement_balance")
+  def test_record_statement_balance(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope("record-statement-balance", _RECONCILIATION)
+    )
+    client = LedgerClient(mock_config)
+
+    result = client.record_statement_balance(
+      graph_id,
+      element_id="elem_loan",
+      as_of="2026-08-31",
+      balance=4800.0,
+      document_id="doc_1",
+    )
+
+    assert result["status"] == "reconciled"
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "element_id": "elem_loan",
+      "as_of": "2026-08-31",
+      "balance": 4800.0,
+      "document_id": "doc_1",
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_set_reconciliation_policy")
+  def test_set_reconciliation_policy_sends_only_what_changes(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope(
+      "set-reconciliation-policy",
+      {
+        "structure_id": "struct_loan",
+        "required_for_close": True,
+        "materiality": 0.0,
+        "review_required": False,
+        "separate_reviewer": False,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+
+    result = client.set_reconciliation_policy(
+      graph_id, "struct_loan", required_for_close=True
+    )
+
+    assert result["required_for_close"] is True
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "structure_id": "struct_loan",
+      "required_for_close": True,
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_set_reconciliation_policy")
+  def test_set_reconciliation_policy_can_turn_a_setting_off(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(
+      _envelope("set-reconciliation-policy", {"structure_id": "struct_loan"})
+    )
+    client = LedgerClient(mock_config)
+
+    client.set_reconciliation_policy(
+      graph_id, "struct_loan", required_for_close=False, materiality=0.0
+    )
+
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "structure_id": "struct_loan",
+      "required_for_close": False,
+      "materiality": 0.0,
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_sign_off_reconciliation")
+  def test_sign_off_reconciliation(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "sign-off-reconciliation",
+        {**_RECONCILIATION, "status": "reviewed", "reviewed_by": "usr_2"},
+      )
+    )
+    client = LedgerClient(mock_config)
+
+    result = client.sign_off_reconciliation(
+      graph_id, "struct_loan", "2026-08", note="Agreed to the statement"
+    )
+
+    assert (result["status"], result["reviewed_by"]) == ("reviewed", "usr_2")
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "structure_id": "struct_loan",
+      "period": "2026-08",
+      "note": "Agreed to the statement",
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_refresh_reconciliations")
+  def test_a_refusal_carries_the_server_response(self, mock_op, mock_config, graph_id):
+    resp = Mock()
+    resp.status_code = HTTPStatus.CONFLICT
+    resp.content = b'{"detail":"Nothing to reconcile."}'
+    mock_op.return_value = resp
+    client = LedgerClient(mock_config)
+
+    with pytest.raises(RuntimeError, match="Nothing to reconcile"):
+      client.refresh_reconciliations(graph_id, "2026-08")

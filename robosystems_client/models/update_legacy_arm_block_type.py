@@ -8,6 +8,7 @@ class UpdateLegacyArmBlockType(str, Enum):
   EQUITY_STATEMENT = "equity_statement"
   INCOME_STATEMENT = "income_statement"
   METRIC = "metric"
+  RECONCILIATION = "reconciliation"
   REGULATORY_DISCLOSURE = "regulatory_disclosure"
 
   def __str__(self) -> str:

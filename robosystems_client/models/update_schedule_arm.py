@@ -34,7 +34,8 @@ class UpdateScheduleArm:
               entry), then create a fresh schedule via `create-information-block`
               (`block_type='schedule'`).
 
-              Omitted fields are left unchanged.
+              Omitted fields are left unchanged, and that holds inside
+              `schedule_metadata` too: name only the fields to change.
   """
 
   block_type: Literal["schedule"]
