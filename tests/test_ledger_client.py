@@ -2187,25 +2187,26 @@ class TestDownloadReportBundle:
     return mock_client
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
-  def test_default_download_is_the_tavi(self, mock_client_cls, mock_config, graph_id):
-    """No format: the Tavi anchor. GraphQL resolves the URL, client follows it."""
+  def test_default_download_is_the_holon(self, mock_client_cls, mock_config, graph_id):
+    """No format: the holon. GraphQL resolves the URL, client follows it."""
     mock_client = self._patch_httpx(
-      mock_client_cls, self._mock_artifact(b'{"xbrlModel": {}}', "rpt_01-g2.tavi.json")
+      mock_client_cls,
+      self._mock_artifact(b'{"@graph": []}', "rpt_01-g2.holon.jsonld"),
     )
     with patch.object(
       LedgerClient,
       "_query",
-      return_value=self._gql_data("application/json", "tavi", gen=2),
+      return_value=self._gql_data("application/ld+json", "holon-jsonld", gen=2),
     ) as mock_query:
       result = LedgerClient(mock_config).download_report_bundle(graph_id, "rpt_01")
 
-    assert result.content == b'{"xbrlModel": {}}'
-    assert result.filename == "rpt_01-g2.tavi.json"
-    assert result.format == "tavi"
-    assert result.content_type == "application/json"
+    assert result.content == b'{"@graph": []}'
+    assert result.filename == "rpt_01-g2.holon.jsonld"
+    assert result.format == "holon-jsonld"
+    assert result.content_type == "application/ld+json"
     assert result.generation_count == 2
     # GraphQL var carries the enum NAME, not the wire flavor string.
-    assert mock_query.call_args.args[2]["format"] == "TAVI"
+    assert mock_query.call_args.args[2]["format"] == "HOLON_JSONLD"
     # The bytes come from following the presigned URL.
     assert mock_client.get.call_args.args[0].startswith("https://s3.example.com/")
 

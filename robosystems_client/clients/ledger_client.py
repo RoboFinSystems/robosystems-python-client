@@ -2481,7 +2481,7 @@ class LedgerClient:
     graph_id: str,
     report_id: str,
     *,
-    format: str = "tavi",
+    format: str = "holon-jsonld",
     to: str | Path | None = None,
     expires_in: int = 300,
   ) -> ReportBundleDownload:
@@ -2497,10 +2497,10 @@ class LedgerClient:
     Args:
         graph_id: Graph identifier owning the Report.
         report_id: Report identifier (``rpt_``-prefixed ULID).
-        format: Serialization flavor — ``"tavi"`` (default, the Project
-            Tavi compiled model stamped at publish), ``"holon-jsonld"``
-            (the dataset-form scene/boundary/projection holon), or
-            ``"xbrl-2.1"``. The enum names ``"TAVI"`` /
+        format: Serialization flavor — ``"holon-jsonld"`` (default, the
+            dataset-form scene/boundary/projection holon, which carries
+            the whole report), ``"tavi"`` (the Project Tavi compiled
+            model stamped at publish), or ``"xbrl-2.1"``. The enum names ``"TAVI"`` /
             ``"HOLON_JSONLD"`` / ``"XBRL_2_1"`` are also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
