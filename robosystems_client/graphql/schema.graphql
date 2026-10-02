@@ -505,8 +505,8 @@ type Query {
   
   The only way to download a report's bundle. Every format resolves to a
   short-lived presigned S3 URL which the client follows directly — the
-  field returns the URL, never the bytes. The Tavi model is stamped at
-  publish time; the holon and XBRL are materialized and cached on first
+  field returns the URL, never the bytes. The holon is stamped at
+  publish time; the Tavi and XBRL are materialized and cached on first
   request. `expiresIn`
   is the URL's lifetime in seconds, bounded 60-3600.
   
@@ -518,7 +518,7 @@ type Query {
     """The published report whose bundle to link."""
     reportId: String!
 
-    """Serialization flavor. Defaults to the Tavi model."""
+    """Serialization flavor. Defaults to the holon."""
     format: ReportDownloadFormat = null
 
     """
@@ -1663,7 +1663,7 @@ type ReconciliationSummary {
   asOf: Date!
 
   """
-  `not_started`: not compared for this period. `unreconciled`: the sides differ by more than the materiality. `explained`: they differ and items account for all of it. `reconciled`: nothing is left unexplained. `reviewed`: reconciled and signed off.
+  `not_started`: not compared for this period. `stale`: the books have changed since it was compared, so run refresh-reconciliations. `unreconciled`: the sides differ by more than the materiality. `reconciled`: they agree within it. `reviewed`: reconciled and signed off.
   """
   status: String!
 
@@ -3229,7 +3229,7 @@ type InformationBlockChartSeries {
 Presigned-URL response for a published Report's serialization bundle.
 
 Every flavor resolves to a short-lived presigned URL pointing at the
-bundle in S3 — the Tavi model is stamped at publish time; the holon and
+bundle in S3 — the holon is stamped at publish time; the Tavi and
 XBRL 2.1 are materialized on first download and cached by
 `generationCount`.
 The client follows `downloadUrl` to fetch the artifact directly

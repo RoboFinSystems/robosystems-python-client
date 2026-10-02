@@ -33,9 +33,9 @@ class ReconciliationSummary:
       materiality (float): A difference up to this amount still counts as reconciled.
       period (str): The period, as YYYY-MM.
       as_of (datetime.date): The period's last day.
-      status (str): `not_started`: not compared for this period. `unreconciled`: the sides differ by more than the
-          materiality. `explained`: they differ and items account for all of it. `reconciled`: nothing is left
-          unexplained. `reviewed`: reconciled and signed off.
+      status (str): `not_started`: not compared for this period. `stale`: the books have changed since it was
+          compared, so run refresh-reconciliations. `unreconciled`: the sides differ by more than the materiality.
+          `reconciled`: they agree within it. `reviewed`: reconciled and signed off.
       review_required (bool): Whether the close also waits for a sign-off.
       separate_reviewer (bool): Whether the reviewer must be someone other than the person who ran the comparison.
       element_id (None | str | Unset): The account reconciled; null for a ledger-scope block.
