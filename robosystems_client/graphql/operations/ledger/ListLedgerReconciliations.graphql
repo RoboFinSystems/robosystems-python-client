@@ -1,0 +1,20 @@
+query ListLedgerReconciliations($period: String!) {
+  reconciliations(period: $period) {
+    period asOf notes
+    reconciliations {
+      structureId name scope method elementId
+      requiredForClose materiality
+      period asOf status unreconciledDifference
+      accountsCompared accountsDifferent
+      ledgerBalance independentBalance balanceAsOf
+      components { name amount structureId eventId documentId note }
+      source comparedAt factSetId comparedBy comparedVia
+      reviewRequired separateReviewer reviewedBy reviewedAt selfReviewed
+      differences {
+        elementId accountCode accountName sourceAccountId statement
+        ledgerBalance independentBalance difference status asOf
+        components { name amount structureId eventId documentId note }
+      }
+    }
+  }
+}

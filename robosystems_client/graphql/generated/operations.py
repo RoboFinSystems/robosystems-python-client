@@ -44,6 +44,7 @@ __all__ = [
   "LIST_LEDGER_JOURNAL_ENTRIES_GQL",
   "LIST_LEDGER_MAPPINGS_GQL",
   "LIST_LEDGER_PUBLISH_LISTS_GQL",
+  "LIST_LEDGER_RECONCILIATIONS_GQL",
   "LIST_LEDGER_REPORTS_GQL",
   "LIST_LEDGER_STRUCTURES_GQL",
   "LIST_LEDGER_TAXONOMIES_GQL",
@@ -653,6 +654,8 @@ query GetLedgerFiscalCalendar {
     }
     reconcilingItemCount
     reconcilingItemSample
+    unreconciledAccountCount
+    unreconciledAccountSample
     syncStaleDays
     lastCloseAt
     initializedAt
@@ -1587,6 +1590,72 @@ query ListLedgerPublishLists($limit: Int! = 100, $offset: Int! = 0) {
       limit
       offset
       hasMore
+    }
+  }
+}
+"""
+
+LIST_LEDGER_RECONCILIATIONS_GQL = """
+query ListLedgerReconciliations($period: String!) {
+  reconciliations(period: $period) {
+    period
+    asOf
+    notes
+    reconciliations {
+      structureId
+      name
+      scope
+      method
+      elementId
+      requiredForClose
+      materiality
+      period
+      asOf
+      status
+      unreconciledDifference
+      accountsCompared
+      accountsDifferent
+      ledgerBalance
+      independentBalance
+      balanceAsOf
+      components {
+        name
+        amount
+        structureId
+        eventId
+        documentId
+        note
+      }
+      source
+      comparedAt
+      factSetId
+      comparedBy
+      comparedVia
+      reviewRequired
+      separateReviewer
+      reviewedBy
+      reviewedAt
+      selfReviewed
+      differences {
+        elementId
+        accountCode
+        accountName
+        sourceAccountId
+        statement
+        ledgerBalance
+        independentBalance
+        difference
+        status
+        asOf
+        components {
+          name
+          amount
+          structureId
+          eventId
+          documentId
+          note
+        }
+      }
     }
   }
 }

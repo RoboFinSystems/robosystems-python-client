@@ -48,6 +48,7 @@ from .list_ledger_event_blocks import ListLedgerEventBlocks
 from .list_ledger_journal_entries import ListLedgerJournalEntries
 from .list_ledger_mappings import ListLedgerMappings
 from .list_ledger_publish_lists import ListLedgerPublishLists
+from .list_ledger_reconciliations import ListLedgerReconciliations
 from .list_ledger_reports import ListLedgerReports
 from .list_ledger_structures import ListLedgerStructures
 from .list_ledger_taxonomies import ListLedgerTaxonomies
@@ -104,6 +105,7 @@ from .operations import (
   LIST_LEDGER_JOURNAL_ENTRIES_GQL,
   LIST_LEDGER_MAPPINGS_GQL,
   LIST_LEDGER_PUBLISH_LISTS_GQL,
+  LIST_LEDGER_RECONCILIATIONS_GQL,
   LIST_LEDGER_REPORTS_GQL,
   LIST_LEDGER_STRUCTURES_GQL,
   LIST_LEDGER_TAXONOMIES_GQL,
@@ -767,6 +769,19 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListLedgerPublishLists.model_validate(data)
+
+  def list_ledger_reconciliations(
+    self, period: str, **kwargs: Any
+  ) -> ListLedgerReconciliations:
+    variables: dict[str, object] = {"period": period}
+    response = self.execute(
+      query=LIST_LEDGER_RECONCILIATIONS_GQL,
+      operation_name="ListLedgerReconciliations",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListLedgerReconciliations.model_validate(data)
 
   def list_ledger_reports(
     self, lifecycle: Union[Optional[ReportLifecycle], UnsetType] = UNSET, **kwargs: Any

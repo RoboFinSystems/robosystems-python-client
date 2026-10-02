@@ -35,6 +35,10 @@ class ClosePeriodOperation:
               committed. Once the period closes they cannot post into it, so the stamped statements leave them out. Prefer
               classifying and committing, or voiding, each first. The override is recorded in the close audit note. Default:
               False.
+          allow_unreconciled_accounts (bool | Unset): Override the reconciliation gate — close even though a
+              reconciliation the close waits on is not reconciled for the period, or was never compared for it. The books are
+              then closed without that check. Prefer refresh-reconciliations and clearing what it reports first. The override
+              is recorded in the close audit note. Default: False.
   """
 
   period: str
@@ -43,6 +47,7 @@ class ClosePeriodOperation:
   allow_stranded_obligations: bool | Unset = False
   allow_reconciling_items: bool | Unset = False
   allow_unposted_source_events: bool | Unset = False
+  allow_unreconciled_accounts: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -62,6 +67,8 @@ class ClosePeriodOperation:
 
     allow_unposted_source_events = self.allow_unposted_source_events
 
+    allow_unreconciled_accounts = self.allow_unreconciled_accounts
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -79,6 +86,8 @@ class ClosePeriodOperation:
       field_dict["allow_reconciling_items"] = allow_reconciling_items
     if allow_unposted_source_events is not UNSET:
       field_dict["allow_unposted_source_events"] = allow_unposted_source_events
+    if allow_unreconciled_accounts is not UNSET:
+      field_dict["allow_unreconciled_accounts"] = allow_unreconciled_accounts
 
     return field_dict
 
@@ -104,6 +113,8 @@ class ClosePeriodOperation:
 
     allow_unposted_source_events = d.pop("allow_unposted_source_events", UNSET)
 
+    allow_unreconciled_accounts = d.pop("allow_unreconciled_accounts", UNSET)
+
     close_period_operation = cls(
       period=period,
       note=note,
@@ -111,6 +122,7 @@ class ClosePeriodOperation:
       allow_stranded_obligations=allow_stranded_obligations,
       allow_reconciling_items=allow_reconciling_items,
       allow_unposted_source_events=allow_unposted_source_events,
+      allow_unreconciled_accounts=allow_unreconciled_accounts,
     )
 
     close_period_operation.additional_properties = d

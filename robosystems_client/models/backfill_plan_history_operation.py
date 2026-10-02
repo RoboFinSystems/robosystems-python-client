@@ -31,6 +31,9 @@ class BackfillPlanHistoryOperation:
       allow_unposted_source_events (bool | Unset): Override the unposted-source-event gate on each reclose. Only
           needed when a source event inside the backfill window was never committed and you have decided not to commit or
           void it first. Default: False.
+      allow_unreconciled_accounts (bool | Unset): Override the reconciliation gate on each reclose. Needed when a
+          month inside the backfill window has a reconciliation the close waits on that was never compared for it, which
+          is every month closed before the reconciliation existed. Default: False.
       restamp (bool | Unset): Also re-derive months that ALREADY have canonical statement sets (default: skip them).
           Use after an engine improvement changes what a stamp produces — each month reruns the full reopen → reclose
           cycle and replaces its sets. A restamp run is not self-resuming (every month in range stays a candidate);
@@ -44,6 +47,7 @@ class BackfillPlanHistoryOperation:
   allow_stranded_obligations: bool | Unset = False
   allow_reconciling_items: bool | Unset = False
   allow_unposted_source_events: bool | Unset = False
+  allow_unreconciled_accounts: bool | Unset = False
   restamp: bool | Unset = False
   note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -64,6 +68,8 @@ class BackfillPlanHistoryOperation:
     allow_reconciling_items = self.allow_reconciling_items
 
     allow_unposted_source_events = self.allow_unposted_source_events
+
+    allow_unreconciled_accounts = self.allow_unreconciled_accounts
 
     restamp = self.restamp
 
@@ -88,6 +94,8 @@ class BackfillPlanHistoryOperation:
       field_dict["allow_reconciling_items"] = allow_reconciling_items
     if allow_unposted_source_events is not UNSET:
       field_dict["allow_unposted_source_events"] = allow_unposted_source_events
+    if allow_unreconciled_accounts is not UNSET:
+      field_dict["allow_unreconciled_accounts"] = allow_unreconciled_accounts
     if restamp is not UNSET:
       field_dict["restamp"] = restamp
     if note is not UNSET:
@@ -118,6 +126,8 @@ class BackfillPlanHistoryOperation:
 
     allow_unposted_source_events = d.pop("allow_unposted_source_events", UNSET)
 
+    allow_unreconciled_accounts = d.pop("allow_unreconciled_accounts", UNSET)
+
     restamp = d.pop("restamp", UNSET)
 
     def _parse_note(data: object) -> None | str | Unset:
@@ -136,6 +146,7 @@ class BackfillPlanHistoryOperation:
       allow_stranded_obligations=allow_stranded_obligations,
       allow_reconciling_items=allow_reconciling_items,
       allow_unposted_source_events=allow_unposted_source_events,
+      allow_unreconciled_accounts=allow_unreconciled_accounts,
       restamp=restamp,
       note=note,
     )

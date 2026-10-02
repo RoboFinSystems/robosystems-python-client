@@ -42,6 +42,21 @@ from ..api.robo_ledger_analytical_views.build_fact_grid import (
 from ..api.robo_ledger_fiscal_close.close_period import (
   sync_detailed as op_close_period,
 )
+from ..api.robo_ledger_ledger_events.preview_reconciliations import (
+  sync_detailed as op_preview_reconciliations,
+)
+from ..api.robo_ledger_ledger_events.record_statement_balance import (
+  sync_detailed as op_record_statement_balance,
+)
+from ..api.robo_ledger_ledger_events.refresh_reconciliations import (
+  sync_detailed as op_refresh_reconciliations,
+)
+from ..api.robo_ledger_ledger_events.set_reconciliation_policy import (
+  sync_detailed as op_set_reconciliation_policy,
+)
+from ..api.robo_ledger_ledger_events.sign_off_reconciliation import (
+  sync_detailed as op_sign_off_reconciliation,
+)
 from ..api.robo_ledger_information_blocks.compute_metrics import (
   sync_detailed as op_compute_metrics,
 )
@@ -227,6 +242,12 @@ from ..graphql.generated.get_ledger_fiscal_calendar import (
 from ..graphql.generated.get_ledger_fiscal_calendar import (
   GetLedgerFiscalCalendarFiscalCalendar as FiscalCalendar,
 )
+from ..graphql.generated.list_ledger_reconciliations import (
+  ListLedgerReconciliations,
+)
+from ..graphql.generated.list_ledger_reconciliations import (
+  ListLedgerReconciliationsReconciliations as ReconciliationList,
+)
 from ..graphql.generated.list_chart_templates import (
   ListChartTemplates,
 )
@@ -400,6 +421,7 @@ from ..graphql.generated.operations import (
   GET_LEDGER_EVENT_BLOCK_GQL,
   GET_LEDGER_FISCAL_CALENDAR_GQL,
   LIST_CHART_TEMPLATES_GQL,
+  LIST_LEDGER_RECONCILIATIONS_GQL,
   GET_LEDGER_MAPPED_TRIAL_BALANCE_GQL,
   GET_LEDGER_MAPPING_COVERAGE_GQL,
   GET_LEDGER_MAPPING_GQL,
@@ -472,6 +494,18 @@ from ..models.update_journal_entry_request import UpdateJournalEntryRequest
 from ..models.update_schedule_arm import UpdateScheduleArm
 from ..models.update_schedule_request import UpdateScheduleRequest
 from ..models.close_period_operation import ClosePeriodOperation
+from ..models.preview_reconciliations_request import PreviewReconciliationsRequest
+from ..models.preview_reconciliations_request_method import (
+  PreviewReconciliationsRequestMethod,
+)
+from ..models.reconciliation_list_response import ReconciliationListResponse
+from ..models.reconciliation_policy_response import ReconciliationPolicyResponse
+from ..models.reconciliation_preview_response import ReconciliationPreviewResponse
+from ..models.reconciliation_summary import ReconciliationSummary
+from ..models.record_statement_balance_request import RecordStatementBalanceRequest
+from ..models.refresh_reconciliations_request import RefreshReconciliationsRequest
+from ..models.set_reconciliation_policy_request import SetReconciliationPolicyRequest
+from ..models.sign_off_reconciliation_request import SignOffReconciliationRequest
 from ..models.compute_metrics_request import ComputeMetricsRequest
 from ..models.compute_metrics_response import ComputeMetricsResponse
 from ..models.create_view_request import CreateViewRequest
@@ -1438,8 +1472,14 @@ class LedgerClient:
     useful_life_months: int | None = None,
     asset_element_id: str | None = None,
     auto_reverse: bool = False,
+    booked_on: str | None = None,
   ) -> InformationBlockEnvelope:
-    """Create a new schedule with pre-generated monthly facts."""
+    """Create a new schedule with pre-generated monthly facts.
+
+    ``booked_on`` (``YYYY-MM-DD``) is the day the schedule's cost went on
+    the books, when that is before its first period. The schedule
+    reconciliation carries the cost from that day.
+    """
     payload_dict: dict[str, Any] = {
       "name": name,
       "element_ids": element_ids,
@@ -1467,6 +1507,8 @@ class LedgerClient:
       schedule_metadata["useful_life_months"] = useful_life_months
     if asset_element_id:
       schedule_metadata["asset_element_id"] = asset_element_id
+    if booked_on is not None:
+      schedule_metadata["booked_on"] = booked_on
     if schedule_metadata:
       payload_dict["schedule_metadata"] = schedule_metadata
 
@@ -2130,12 +2172,24 @@ class LedgerClient:
     period: str,
     note: str | None = None,
     allow_stale_sync: bool | None = None,
+    allow_unreconciled_accounts: bool | None = None,
   ) -> ClosePeriodResponse:
-    """Close a fiscal period — the final commit action."""
+    """Close a fiscal period — the final commit action.
+
+    ``allow_unreconciled_accounts`` closes despite a reconciliation the
+    close waits on that is not reconciled for the period. Prefer
+    `refresh_reconciliations` and clearing what it reports; the override is
+    recorded in the close audit note.
+    """
     body = ClosePeriodOperation(
       period=period,
       note=note if note is not None else UNSET,
       allow_stale_sync=(allow_stale_sync if allow_stale_sync is not None else UNSET),
+      allow_unreconciled_accounts=(
+        allow_unreconciled_accounts
+        if allow_unreconciled_accounts is not None
+        else UNSET
+      ),
     )
     response = op_close_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Close period", response)
@@ -2157,6 +2211,148 @@ class LedgerClient:
     response = op_reopen_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Reopen period", response)
     return self._typed_result("Reopen period", envelope, FiscalCalendarResponse)
+
+  # ── Reconciliations ─────────────────────────────────────────────────
+
+  def list_reconciliations(
+    self, graph_id: str, period: str
+  ) -> ReconciliationList | None:
+    """Every reconciliation block's standing at a period end (``YYYY-MM``).
+
+    A block not yet compared for the period reads ``not_started``.
+    Comparisons are recorded by `refresh_reconciliations` and
+    `record_statement_balance`.
+    """
+    data = self._query(graph_id, LIST_LEDGER_RECONCILIATIONS_GQL, {"period": period})
+    return ListLedgerReconciliations.model_validate(data).reconciliations
+
+  def preview_reconciliations(
+    self,
+    graph_id: str,
+    period: str,
+    *,
+    method: PreviewReconciliationsRequestMethod | str | None = None,
+    include_tied: bool | None = None,
+  ) -> ReconciliationPreviewResponse:
+    """Compare the ledger with something outside it. Records nothing.
+
+    ``method`` picks the check: ``source_ledger`` (the default, which needs a
+    connected QuickBooks ledger), ``schedule_register`` or ``statement``.
+    ``include_tied`` also returns the accounts that tie.
+    """
+    body = PreviewReconciliationsRequest(
+      period=period,
+      method=(
+        PreviewReconciliationsRequestMethod(method) if method is not None else UNSET
+      ),
+      include_tied=include_tied if include_tied is not None else UNSET,
+    )
+    response = op_preview_reconciliations(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Preview reconciliations", response)
+    return self._typed_result(
+      "Preview reconciliations", envelope, ReconciliationPreviewResponse
+    )
+
+  def refresh_reconciliations(
+    self, graph_id: str, period: str
+  ) -> ReconciliationListResponse:
+    """Run every reconciliation that applies at a period end and record each
+    result on its block. ``notes`` names any check that could not run."""
+    body = RefreshReconciliationsRequest(period=period)
+    response = op_refresh_reconciliations(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Refresh reconciliations", response)
+    return self._typed_result(
+      "Refresh reconciliations", envelope, ReconciliationListResponse
+    )
+
+  def record_statement_balance(
+    self,
+    graph_id: str,
+    *,
+    element_id: str,
+    as_of: str | datetime.date,
+    balance: float,
+    document_id: str | None = None,
+    note: str | None = None,
+  ) -> ReconciliationSummary:
+    """Record a statement's ending balance for a balance-sheet account and
+    reconcile the account to it for the period the statement ends in.
+
+    ``balance`` is as the statement shows it: a positive number in the
+    account's normal direction (money in a bank account, or the amount owed
+    on a loan or a card). ``as_of`` is the statement's ending date.
+    ``document_id`` names the statement itself, as a document already on
+    the graph. Writes no books.
+    """
+    body = RecordStatementBalanceRequest(
+      element_id=element_id,
+      as_of=datetime.date.fromisoformat(as_of) if isinstance(as_of, str) else as_of,
+      balance=balance,
+      document_id=document_id if document_id is not None else UNSET,
+      note=note if note is not None else UNSET,
+    )
+    response = op_record_statement_balance(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Record statement balance", response)
+    return self._typed_result(
+      "Record statement balance", envelope, ReconciliationSummary
+    )
+
+  def set_reconciliation_policy(
+    self,
+    graph_id: str,
+    structure_id: str,
+    *,
+    required_for_close: bool | None = None,
+    materiality: float | None = None,
+    review_required: bool | None = None,
+    separate_reviewer: bool | None = None,
+  ) -> ReconciliationPolicyResponse:
+    """Change how much the close cares about one reconciliation. An omitted
+    field keeps its value."""
+    body = SetReconciliationPolicyRequest(
+      structure_id=structure_id,
+      required_for_close=(
+        required_for_close if required_for_close is not None else UNSET
+      ),
+      materiality=materiality if materiality is not None else UNSET,
+      review_required=review_required if review_required is not None else UNSET,
+      separate_reviewer=(separate_reviewer if separate_reviewer is not None else UNSET),
+    )
+    response = op_set_reconciliation_policy(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Set reconciliation policy", response)
+    return self._typed_result(
+      "Set reconciliation policy", envelope, ReconciliationPolicyResponse
+    )
+
+  def sign_off_reconciliation(
+    self,
+    graph_id: str,
+    structure_id: str,
+    period: str,
+    note: str | None = None,
+  ) -> ReconciliationSummary:
+    """Sign off a reconciled period as its reviewer. Only a member of the
+    graph can; a later change to any balance lapses the sign-off."""
+    body = SignOffReconciliationRequest(
+      structure_id=structure_id,
+      period=period,
+      note=note if note is not None else UNSET,
+    )
+    response = op_sign_off_reconciliation(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Sign off reconciliation", response)
+    return self._typed_result(
+      "Sign off reconciliation", envelope, ReconciliationSummary
+    )
 
   # ── Reports ─────────────────────────────────────────────────────────
 
@@ -2285,7 +2481,7 @@ class LedgerClient:
     graph_id: str,
     report_id: str,
     *,
-    format: str = "tavi",
+    format: str = "holon-jsonld",
     to: str | Path | None = None,
     expires_in: int = 300,
   ) -> ReportBundleDownload:
@@ -2301,10 +2497,10 @@ class LedgerClient:
     Args:
         graph_id: Graph identifier owning the Report.
         report_id: Report identifier (``rpt_``-prefixed ULID).
-        format: Serialization flavor — ``"tavi"`` (default, the Project
-            Tavi compiled model stamped at publish), ``"holon-jsonld"``
-            (the dataset-form scene/boundary/projection holon), or
-            ``"xbrl-2.1"``. The enum names ``"TAVI"`` /
+        format: Serialization flavor — ``"holon-jsonld"`` (default, the
+            dataset-form scene/boundary/projection holon, which carries
+            the whole report), ``"tavi"`` (the Project Tavi compiled
+            model stamped at publish), or ``"xbrl-2.1"``. The enum names ``"TAVI"`` /
             ``"HOLON_JSONLD"`` / ``"XBRL_2_1"`` are also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the

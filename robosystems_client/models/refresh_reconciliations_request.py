@@ -6,35 +6,28 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DeleteScheduleRequest")
+T = TypeVar("T", bound="RefreshReconciliationsRequest")
 
 
 @_attrs_define
-class DeleteScheduleRequest:
-  """Delete a schedule and everything under it. Permanent and irreversible.
+class RefreshReconciliationsRequest:
+  """Compare each reconciliation at a period end and record the result.
 
-  Removes the Structure, its Facts and Associations, its draft entries and
-  its unposted obligations. Refused once any of the schedule's entries has
-  posted, because the schedule is their support. To end a schedule early
-  and keep its history, use `terminate-schedule` (no entry) or
-  `create-event-block(event_type='asset_disposed')`, whose handler voids
-  the remaining obligations and posts the disposal entry in one step.
-
-      Attributes:
-          structure_id (str):
+  Attributes:
+      period (str): Period to reconcile at its last day, as YYYY-MM.
   """
 
-  structure_id: str
+  period: str
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    structure_id = self.structure_id
+    period = self.period
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "structure_id": structure_id,
+        "period": period,
       }
     )
 
@@ -43,14 +36,14 @@ class DeleteScheduleRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    structure_id = d.pop("structure_id")
+    period = d.pop("period")
 
-    delete_schedule_request = cls(
-      structure_id=structure_id,
+    refresh_reconciliations_request = cls(
+      period=period,
     )
 
-    delete_schedule_request.additional_properties = d
-    return delete_schedule_request
+    refresh_reconciliations_request.additional_properties = d
+    return refresh_reconciliations_request
 
   @property
   def additional_keys(self) -> list[str]:

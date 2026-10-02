@@ -1,42 +1,52 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DeleteScheduleRequest")
+from ..types import UNSET, Unset
+
+T = TypeVar("T", bound="SignOffReconciliationRequest")
 
 
 @_attrs_define
-class DeleteScheduleRequest:
-  """Delete a schedule and everything under it. Permanent and irreversible.
+class SignOffReconciliationRequest:
+  """Sign off a reconciliation for a period as its reviewer.
 
-  Removes the Structure, its Facts and Associations, its draft entries and
-  its unposted obligations. Refused once any of the schedule's entries has
-  posted, because the schedule is their support. To end a schedule early
-  and keep its history, use `terminate-schedule` (no entry) or
-  `create-event-block(event_type='asset_disposed')`, whose handler voids
-  the remaining obligations and posts the disposal entry in one step.
-
-      Attributes:
-          structure_id (str):
+  Attributes:
+      structure_id (str): The reconciliation block.
+      period (str): The period signed off, as YYYY-MM.
+      note (None | str | Unset): What the reviewer looked at, kept on the sign-off.
   """
 
   structure_id: str
+  period: str
+  note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     structure_id = self.structure_id
+
+    period = self.period
+
+    note: None | str | Unset
+    if isinstance(self.note, Unset):
+      note = UNSET
+    else:
+      note = self.note
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
         "structure_id": structure_id,
+        "period": period,
       }
     )
+    if note is not UNSET:
+      field_dict["note"] = note
 
     return field_dict
 
@@ -45,12 +55,25 @@ class DeleteScheduleRequest:
     d = dict(src_dict)
     structure_id = d.pop("structure_id")
 
-    delete_schedule_request = cls(
+    period = d.pop("period")
+
+    def _parse_note(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    note = _parse_note(d.pop("note", UNSET))
+
+    sign_off_reconciliation_request = cls(
       structure_id=structure_id,
+      period=period,
+      note=note,
     )
 
-    delete_schedule_request.additional_properties = d
-    return delete_schedule_request
+    sign_off_reconciliation_request.additional_properties = d
+    return sign_off_reconciliation_request
 
   @property
   def additional_keys(self) -> list[str]:
