@@ -654,6 +654,8 @@ query GetLedgerFiscalCalendar {
     }
     reconcilingItemCount
     reconcilingItemSample
+    unpostedSourceEventCount
+    unpostedSourceEventSample
     unreconciledAccountCount
     unreconciledAccountSample
     syncStaleDays
@@ -1469,13 +1471,14 @@ query ListLedgerEntities($source: String) {
 """
 
 LIST_LEDGER_EVENT_BLOCKS_GQL = """
-query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status: String, $agentId: String, $source: String, $limit: Int! = 50, $offset: Int! = 0) {
+query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status: String, $agentId: String, $source: String, $isReconcilingItem: Boolean, $limit: Int! = 50, $offset: Int! = 0) {
   eventBlocks(
     eventType: $eventType
     eventCategory: $eventCategory
     status: $status
     agentId: $agentId
     source: $source
+    isReconcilingItem: $isReconcilingItem
     limit: $limit
     offset: $offset
   ) {

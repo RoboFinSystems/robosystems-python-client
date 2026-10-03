@@ -8,6 +8,7 @@ query GetLedgerFiscalCalendar {
     strandedObligationCount
     strandedObligationSample { eventId scheduleId scheduleName period }
     reconcilingItemCount reconcilingItemSample
+    unpostedSourceEventCount unpostedSourceEventSample
     unreconciledAccountCount unreconciledAccountSample
     syncStaleDays
     lastCloseAt initializedAt lastSyncAt

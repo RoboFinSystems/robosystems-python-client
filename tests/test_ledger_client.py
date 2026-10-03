@@ -287,6 +287,8 @@ class TestLedgerReads:
         "strandedObligationSample": [],
         "reconcilingItemCount": 0,
         "reconcilingItemSample": [],
+        "unpostedSourceEventCount": 0,
+        "unpostedSourceEventSample": [],
         "unreconciledAccountCount": 0,
         "unreconciledAccountSample": [],
         "syncStaleDays": None,
@@ -339,6 +341,8 @@ class TestLedgerReads:
         ],
         "reconcilingItemCount": 1,
         "reconcilingItemSample": ["ri_bank_fee_2026-03"],
+        "unpostedSourceEventCount": 2,
+        "unpostedSourceEventSample": ["evt_3", "INV-1042"],
         "unreconciledAccountCount": 1,
         "unreconciledAccountSample": ["Equipment Loan (statement): unreconciled"],
         "syncStaleDays": None,
@@ -358,6 +362,8 @@ class TestLedgerReads:
     assert cal.stranded_obligation_sample[0].period == "2026-03"
     assert cal.reconciling_item_count == 1
     assert cal.reconciling_item_sample == ["ri_bank_fee_2026-03"]
+    assert cal.unposted_source_event_count == 2
+    assert cal.unposted_source_event_sample == ["evt_3", "INV-1042"]
 
 
 # ── Writes (Operation envelope) ────────────────────────────────────────
@@ -448,6 +454,108 @@ class TestLedgerWrites:
     client.close_period(graph_id, "2026-03", allow_unreconciled_accounts=True)
     body = mock_op.call_args.kwargs["body"]
     assert body.to_dict()["allow_unreconciled_accounts"] is True
+
+  @patch("robosystems_client.clients.ledger_client.op_close_period")
+  def test_close_period_sends_each_override_it_is_given(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope("close-period", {"period": "2026-03", "fiscal_calendar": {}})
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.close_period(
+      graph_id,
+      "2026-03",
+      allow_stranded_obligations=True,
+      allow_reconciling_items=True,
+      allow_unposted_source_events=True,
+    )
+    sent = mock_op.call_args.kwargs["body"].to_dict()
+    assert sent["allow_stranded_obligations"] is True
+    assert sent["allow_reconciling_items"] is True
+    assert sent["allow_unposted_source_events"] is True
+    # The two it was not given stay off the wire.
+    assert "allow_stale_sync" not in sent
+    assert "allow_unreconciled_accounts" not in sent
+
+  @patch("robosystems_client.clients.ledger_client.op_promote_obligations")
+  def test_promote_obligations_leaves_the_default_to_the_server(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope(
+      "promote-obligations",
+      {"classified_count": 2, "dispatched_count": 2, "stranded_count": 1},
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.promote_obligations(graph_id)
+    assert result["dispatched_count"] == 2
+    assert mock_op.call_args.kwargs["graph_id"] == graph_id
+    assert mock_op.call_args.kwargs["body"].to_dict() == {}
+
+  @patch("robosystems_client.clients.ledger_client.op_promote_obligations")
+  def test_promote_obligations_can_flip_without_drafting(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(_envelope("promote-obligations", {}))
+    client = LedgerClient(mock_config)
+    client.promote_obligations(graph_id, dispatch_handlers=False)
+    assert mock_op.call_args.kwargs["body"].to_dict() == {"dispatch_handlers": False}
+
+  @patch("robosystems_client.clients.ledger_client.op_preview_reconciling_item")
+  def test_preview_reconciling_item(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "preview-reconciling-item",
+      {"event_id": "evt_1", "default_disposition": "catch_up"},
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    plan = client.preview_reconciling_item(graph_id, "evt_1")
+    assert plan["default_disposition"] == "catch_up"
+    assert mock_op.call_args.kwargs["body"].to_dict() == {"event_id": "evt_1"}
+
+  @patch("robosystems_client.clients.ledger_client.op_resolve_reconciling_item")
+  def test_resolve_reconciling_item_takes_the_default_when_given_none(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope("resolve-reconciling-item", {"event_id": "evt_1"})
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.resolve_reconciling_item(graph_id, "evt_1")
+    # No disposition and no status: the server picks both.
+    assert mock_op.call_args.kwargs["body"].to_dict() == {"event_id": "evt_1"}
+
+  @patch("robosystems_client.clients.ledger_client.op_resolve_reconciling_item")
+  def test_resolve_reconciling_item_sends_the_chosen_treatment(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope(
+      "resolve-reconciling-item", {"event_id": "evt_1", "disposition": "catch_up"}
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.resolve_reconciling_item(
+      graph_id,
+      "evt_1",
+      disposition="catch_up",
+      posting_date="2026-09-30",
+      status="posted",
+      note="Vendor credit arrived late",
+    )
+    assert result["disposition"] == "catch_up"
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "event_id": "evt_1",
+      "disposition": "catch_up",
+      "posting_date": "2026-09-30",
+      "status": "posted",
+      "note": "Vendor credit arrived late",
+    }
+
+  def test_resolve_reconciling_item_refuses_an_unknown_treatment(
+    self, mock_config, graph_id
+  ):
+    client = LedgerClient(mock_config)
+    with pytest.raises(ValueError):
+      client.resolve_reconciling_item(graph_id, "evt_1", disposition="ignore")
 
   @patch("robosystems_client.clients.ledger_client.op_create_information_block")
   def test_create_schedule_carries_the_day_its_cost_was_booked(
@@ -1044,6 +1152,19 @@ class TestLedgerReadsAdditional:
     variables = mock_execute.call_args[0][2]
     assert variables["eventType"] == "invoice_issued"
     assert variables["status"] == "captured"
+    # Left unset, the filter is not sent at all.
+    assert "isReconcilingItem" not in variables
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_event_blocks_narrows_to_reconciling_items(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"eventBlocks": []}
+    client = LedgerClient(mock_config)
+    client.list_event_blocks(graph_id, is_reconciling_item=True)
+    query, variables = mock_execute.call_args[0][1:3]
+    assert variables["isReconcilingItem"] is True
+    assert "isReconcilingItem: $isReconcilingItem" in query
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_event_block(self, mock_execute, mock_config, graph_id):
