@@ -4,6 +4,7 @@ query ListLedgerEventBlocks(
   $status: String
   $agentId: String
   $source: String
+  $isReconcilingItem: Boolean
   $limit: Int! = 50
   $offset: Int! = 0
 ) {
@@ -13,6 +14,7 @@ query ListLedgerEventBlocks(
     status: $status
     agentId: $agentId
     source: $source
+    isReconcilingItem: $isReconcilingItem
     limit: $limit
     offset: $offset
   ) {

@@ -42,6 +42,15 @@ from ..api.robo_ledger_analytical_views.build_fact_grid import (
 from ..api.robo_ledger_fiscal_close.close_period import (
   sync_detailed as op_close_period,
 )
+from ..api.robo_ledger_fiscal_close.promote_obligations import (
+  sync_detailed as op_promote_obligations,
+)
+from ..api.robo_ledger_ledger_events.preview_reconciling_item import (
+  sync_detailed as op_preview_reconciling_item,
+)
+from ..api.robo_ledger_ledger_events.resolve_reconciling_item import (
+  sync_detailed as op_resolve_reconciling_item,
+)
 from ..api.robo_ledger_ledger_events.preview_reconciliations import (
   sync_detailed as op_preview_reconciliations,
 )
@@ -504,6 +513,18 @@ from ..models.reconciliation_preview_response import ReconciliationPreviewRespon
 from ..models.reconciliation_summary import ReconciliationSummary
 from ..models.record_statement_balance_request import RecordStatementBalanceRequest
 from ..models.refresh_reconciliations_request import RefreshReconciliationsRequest
+from ..models.preview_reconciling_item_request import PreviewReconcilingItemRequest
+from ..models.promote_obligations_request import PromoteObligationsRequest
+from ..models.promote_obligations_response import PromoteObligationsResponse
+from ..models.reconciling_item_plan import ReconcilingItemPlan
+from ..models.resolve_reconciling_item_request import ResolveReconcilingItemRequest
+from ..models.resolve_reconciling_item_request_disposition_type_0 import (
+  ResolveReconcilingItemRequestDispositionType0,
+)
+from ..models.resolve_reconciling_item_request_status import (
+  ResolveReconcilingItemRequestStatus,
+)
+from ..models.resolve_reconciling_item_response import ResolveReconcilingItemResponse
 from ..models.set_reconciliation_policy_request import SetReconciliationPolicyRequest
 from ..models.sign_off_reconciliation_request import SignOffReconciliationRequest
 from ..models.compute_metrics_request import ComputeMetricsRequest
@@ -579,7 +600,7 @@ from ..models.blocked_source_graph_response import BlockedSourceGraphResponse
 from ..models.revoke_report_share_response import RevokeReportShareResponse
 from ..models.taxonomy_block_envelope import TaxonomyBlockEnvelope
 
-from ..types import UNSET
+from ..types import UNSET, Unset
 
 
 # Captures the ``filename`` value from a Content-Disposition header, with
@@ -988,8 +1009,13 @@ class LedgerClient:
     source: str | None = None,
     limit: int = 50,
     offset: int = 0,
+    is_reconciling_item: bool | None = None,
   ) -> list[ListLedgerEventBlocksEventBlocks]:
-    """List captured event blocks (inbox surface)."""
+    """List captured event blocks (inbox surface).
+
+    ``is_reconciling_item=True`` narrows to posted events whose source
+    payload changed afterwards and that await a decision.
+    """
     data = self._query(
       graph_id,
       LIST_LEDGER_EVENT_BLOCKS_GQL,
@@ -999,6 +1025,7 @@ class LedgerClient:
         "status": status,
         "agentId": agent_id,
         "source": source,
+        "isReconcilingItem": is_reconciling_item,
         "limit": limit,
         "offset": offset,
       },
@@ -2173,23 +2200,36 @@ class LedgerClient:
     note: str | None = None,
     allow_stale_sync: bool | None = None,
     allow_unreconciled_accounts: bool | None = None,
+    allow_stranded_obligations: bool | None = None,
+    allow_reconciling_items: bool | None = None,
+    allow_unposted_source_events: bool | None = None,
   ) -> ClosePeriodResponse:
     """Close a fiscal period — the final commit action.
 
-    ``allow_unreconciled_accounts`` closes despite a reconciliation the
-    close waits on that is not reconciled for the period. Prefer
-    `refresh_reconciliations` and clearing what it reports; the override is
-    recorded in the close audit note.
+    Each ``allow_*`` flag closes despite one blocker and is recorded in the
+    close audit note; prefer clearing the blocker.
+
+    - ``allow_unreconciled_accounts``: a reconciliation the close waits on
+      is not reconciled for the period (`refresh_reconciliations`).
+    - ``allow_stranded_obligations``: matured obligations that were never
+      drafted (`promote_obligations`).
+    - ``allow_reconciling_items``: posted events whose source payload
+      changed afterwards (`resolve_reconciling_item`).
+    - ``allow_unposted_source_events``: source events dated in the period
+      that were never committed, and cannot post into it once it closes.
     """
+
+    def flag(value: bool | None) -> bool | Unset:
+      return value if value is not None else UNSET
+
     body = ClosePeriodOperation(
       period=period,
       note=note if note is not None else UNSET,
-      allow_stale_sync=(allow_stale_sync if allow_stale_sync is not None else UNSET),
-      allow_unreconciled_accounts=(
-        allow_unreconciled_accounts
-        if allow_unreconciled_accounts is not None
-        else UNSET
-      ),
+      allow_stale_sync=flag(allow_stale_sync),
+      allow_unreconciled_accounts=flag(allow_unreconciled_accounts),
+      allow_stranded_obligations=flag(allow_stranded_obligations),
+      allow_reconciling_items=flag(allow_reconciling_items),
+      allow_unposted_source_events=flag(allow_unposted_source_events),
     )
     response = op_close_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Close period", response)
@@ -2211,6 +2251,89 @@ class LedgerClient:
     response = op_reopen_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Reopen period", response)
     return self._typed_result("Reopen period", envelope, FiscalCalendarResponse)
+
+  def promote_obligations(
+    self, graph_id: str, *, dispatch_handlers: bool | None = None
+  ) -> PromoteObligationsResponse:
+    """Draft the closing entry of every matured schedule obligation,
+    including ones promoted earlier and never drafted. The drafts post when
+    the period closes. Safe to repeat.
+
+    ``dispatch_handlers=False`` only flips the status and drafts nothing,
+    which leaves the obligations stranded; the server default drafts.
+    """
+    body = PromoteObligationsRequest(
+      dispatch_handlers=(dispatch_handlers if dispatch_handlers is not None else UNSET)
+    )
+    response = op_promote_obligations(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Promote obligations", response)
+    return self._typed_result(
+      "Promote obligations", envelope, PromoteObligationsResponse
+    )
+
+  # ── Reconciling items ───────────────────────────────────────────────
+
+  def preview_reconciling_item(
+    self, graph_id: str, event_id: str
+  ) -> ReconcilingItemPlan:
+    """What changed on a reconciling item (a posted event whose source
+    payload changed afterwards) and what each treatment would do. Writes
+    nothing. List the items with ``list_event_blocks(is_reconciling_item=True)``.
+    """
+    body = PreviewReconcilingItemRequest(event_id=event_id)
+    response = op_preview_reconciling_item(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Preview reconciling item", response)
+    return self._typed_result("Preview reconciling item", envelope, ReconcilingItemPlan)
+
+  def resolve_reconciling_item(
+    self,
+    graph_id: str,
+    event_id: str,
+    *,
+    disposition: str | None = None,
+    posting_date: str | datetime.date | None = None,
+    status: str | None = None,
+    note: str | None = None,
+    reference_event_id: str | None = None,
+  ) -> ResolveReconcilingItemResponse:
+    """Decide one reconciling item.
+
+    ``disposition`` is ``restate`` (rebuild the affected months),
+    ``catch_up`` (an entry in the open period) or ``acknowledge`` (handled
+    elsewhere; ``note`` is required). Omit it to take the default the
+    preview reports. ``posting_date`` and ``status`` (``draft`` or
+    ``posted``) apply to ``catch_up`` only; ``reference_event_id`` to
+    ``acknowledge`` only.
+    """
+    if isinstance(posting_date, str):
+      posting_date = datetime.date.fromisoformat(posting_date)
+    body = ResolveReconcilingItemRequest(
+      event_id=event_id,
+      disposition=(
+        ResolveReconcilingItemRequestDispositionType0(disposition)
+        if disposition is not None
+        else UNSET
+      ),
+      posting_date=posting_date if posting_date is not None else UNSET,
+      status=(
+        ResolveReconcilingItemRequestStatus(status) if status is not None else UNSET
+      ),
+      note=note if note is not None else UNSET,
+      reference_event_id=(
+        reference_event_id if reference_event_id is not None else UNSET
+      ),
+    )
+    response = op_resolve_reconciling_item(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Resolve reconciling item", response)
+    return self._typed_result(
+      "Resolve reconciling item", envelope, ResolveReconcilingItemResponse
+    )
 
   # ── Reconciliations ─────────────────────────────────────────────────
 

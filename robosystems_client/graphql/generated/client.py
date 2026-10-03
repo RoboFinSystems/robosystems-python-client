@@ -695,6 +695,7 @@ class Client(BaseClient):
     status: Union[Optional[str], UnsetType] = UNSET,
     agent_id: Union[Optional[str], UnsetType] = UNSET,
     source: Union[Optional[str], UnsetType] = UNSET,
+    is_reconciling_item: Union[Optional[bool], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> ListLedgerEventBlocks:
     variables: dict[str, object] = {
@@ -703,6 +704,7 @@ class Client(BaseClient):
       "status": status,
       "agentId": agent_id,
       "source": source,
+      "isReconcilingItem": is_reconciling_item,
       "limit": limit,
       "offset": offset,
     }
