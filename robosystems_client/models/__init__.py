@@ -185,6 +185,18 @@ from .delete_security_operation import DeleteSecurityOperation
 from .delete_subgraph_op import DeleteSubgraphOp
 from .delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
 from .delete_taxonomy_block_response import DeleteTaxonomyBlockResponse
+from .describe_filing_request import DescribeFilingRequest
+from .describe_filing_response import DescribeFilingResponse
+from .describe_filing_response_counts_type_0 import DescribeFilingResponseCountsType0
+from .describe_filing_response_entity_type_0 import DescribeFilingResponseEntityType0
+from .describe_filing_response_filing_type_0 import DescribeFilingResponseFilingType0
+from .describe_filing_response_profile_type_0 import DescribeFilingResponseProfileType0
+from .describe_filing_response_resolved_report_type_0 import (
+  DescribeFilingResponseResolvedReportType0,
+)
+from .describe_filing_response_sections_type_0 import (
+  DescribeFilingResponseSectionsType0,
+)
 from .detailed_transactions_response import DetailedTransactionsResponse
 from .detailed_transactions_response_date_range import (
   DetailedTransactionsResponseDateRange,
@@ -249,6 +261,8 @@ from .file_info import FileInfo
 from .file_layer_status import FileLayerStatus
 from .file_report_request import FileReportRequest
 from .file_upload_request import FileUploadRequest
+from .filing_links import FilingLinks
+from .filing_links_exhibits_type_0 import FilingLinksExhibitsType0
 from .financial_statement_analysis_request import FinancialStatementAnalysisRequest
 from .financial_statement_analysis_response import FinancialStatementAnalysisResponse
 from .fiscal_calendar_response import FiscalCalendarResponse
@@ -498,6 +512,12 @@ from .operation_envelope_delete_taxonomy_block_response import (
 from .operation_envelope_delete_taxonomy_block_response_status import (
   OperationEnvelopeDeleteTaxonomyBlockResponseStatus,
 )
+from .operation_envelope_describe_filing_response import (
+  OperationEnvelopeDescribeFilingResponse,
+)
+from .operation_envelope_describe_filing_response_status import (
+  OperationEnvelopeDescribeFilingResponseStatus,
+)
 from .operation_envelope_disclosures_response import (
   OperationEnvelopeDisclosuresResponse,
 )
@@ -622,6 +642,10 @@ from .operation_envelope_publish_list_response import (
 from .operation_envelope_publish_list_response_status import (
   OperationEnvelopePublishListResponseStatus,
 )
+from .operation_envelope_read_text_response import OperationEnvelopeReadTextResponse
+from .operation_envelope_read_text_response_status import (
+  OperationEnvelopeReadTextResponseStatus,
+)
 from .operation_envelope_reconciliation_list_response import (
   OperationEnvelopeReconciliationListResponse,
 )
@@ -673,6 +697,10 @@ from .operation_envelope_schedule_created_response import (
 )
 from .operation_envelope_schedule_created_response_status import (
   OperationEnvelopeScheduleCreatedResponseStatus,
+)
+from .operation_envelope_search_text_response import OperationEnvelopeSearchTextResponse
+from .operation_envelope_search_text_response_status import (
+  OperationEnvelopeSearchTextResponseStatus,
 )
 from .operation_envelope_security_response import OperationEnvelopeSecurityResponse
 from .operation_envelope_security_response_status import (
@@ -794,6 +822,11 @@ from .publish_list_response import PublishListResponse
 from .query_limits import QueryLimits
 from .quick_books_connection_config import QuickBooksConnectionConfig
 from .rate_limits import RateLimits
+from .read_text_request import ReadTextRequest
+from .read_text_response import ReadTextResponse
+from .read_text_response_resolved_report_type_0 import (
+  ReadTextResponseResolvedReportType0,
+)
 from .rebuild_schedule_request import RebuildScheduleRequest
 from .reconciliation_component import ReconciliationComponent
 from .reconciliation_list_response import ReconciliationListResponse
@@ -882,6 +915,16 @@ from .schema_validation_response_stats_type_0 import SchemaValidationResponseSta
 from .search_hit import SearchHit
 from .search_request import SearchRequest
 from .search_response import SearchResponse
+from .search_text_request import SearchTextRequest
+from .search_text_response import SearchTextResponse
+from .search_text_response_hits_item import SearchTextResponseHitsItem
+from .search_text_response_resolved_report_type_0 import (
+  SearchTextResponseResolvedReportType0,
+)
+from .search_text_response_sections_type_0_item import (
+  SearchTextResponseSectionsType0Item,
+)
+from .search_text_response_terms_type_0_item import SearchTextResponseTermsType0Item
 from .security_lite import SecurityLite
 from .security_response import SecurityResponse
 from .security_response_terms import SecurityResponseTerms
@@ -1214,6 +1257,14 @@ __all__ = (
   "DeleteSubgraphOp",
   "DeleteTaxonomyBlockRequest",
   "DeleteTaxonomyBlockResponse",
+  "DescribeFilingRequest",
+  "DescribeFilingResponse",
+  "DescribeFilingResponseCountsType0",
+  "DescribeFilingResponseEntityType0",
+  "DescribeFilingResponseFilingType0",
+  "DescribeFilingResponseProfileType0",
+  "DescribeFilingResponseResolvedReportType0",
+  "DescribeFilingResponseSectionsType0",
   "DetailedTransactionsResponse",
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
@@ -1264,6 +1315,8 @@ __all__ = (
   "FileLayerStatus",
   "FileReportRequest",
   "FileUploadRequest",
+  "FilingLinks",
+  "FilingLinksExhibitsType0",
   "FinancialStatementAnalysisRequest",
   "FinancialStatementAnalysisResponse",
   "FiscalCalendarResponse",
@@ -1423,6 +1476,8 @@ __all__ = (
   "OperationEnvelopeDeleteResultStatus",
   "OperationEnvelopeDeleteTaxonomyBlockResponse",
   "OperationEnvelopeDeleteTaxonomyBlockResponseStatus",
+  "OperationEnvelopeDescribeFilingResponse",
+  "OperationEnvelopeDescribeFilingResponseStatus",
   "OperationEnvelopeDisclosuresResponse",
   "OperationEnvelopeDisclosuresResponseStatus",
   "OperationEnvelopeEntityTaxonomyResponse",
@@ -1467,6 +1522,8 @@ __all__ = (
   "OperationEnvelopePromoteObligationsResponseStatus",
   "OperationEnvelopePublishListResponse",
   "OperationEnvelopePublishListResponseStatus",
+  "OperationEnvelopeReadTextResponse",
+  "OperationEnvelopeReadTextResponseStatus",
   "OperationEnvelopeReconciliationListResponse",
   "OperationEnvelopeReconciliationListResponseStatus",
   "OperationEnvelopeReconciliationPolicyResponse",
@@ -1485,6 +1542,8 @@ __all__ = (
   "OperationEnvelopeRevokeReportShareResponseStatus",
   "OperationEnvelopeScheduleCreatedResponse",
   "OperationEnvelopeScheduleCreatedResponseStatus",
+  "OperationEnvelopeSearchTextResponse",
+  "OperationEnvelopeSearchTextResponseStatus",
   "OperationEnvelopeSecurityResponse",
   "OperationEnvelopeSecurityResponseStatus",
   "OperationEnvelopeShareReportResponse",
@@ -1575,6 +1634,9 @@ __all__ = (
   "QueryLimits",
   "QuickBooksConnectionConfig",
   "RateLimits",
+  "ReadTextRequest",
+  "ReadTextResponse",
+  "ReadTextResponseResolvedReportType0",
   "RebuildScheduleRequest",
   "ReconciliationComponent",
   "ReconciliationListResponse",
@@ -1645,6 +1707,12 @@ __all__ = (
   "SearchHit",
   "SearchRequest",
   "SearchResponse",
+  "SearchTextRequest",
+  "SearchTextResponse",
+  "SearchTextResponseHitsItem",
+  "SearchTextResponseResolvedReportType0",
+  "SearchTextResponseSectionsType0Item",
+  "SearchTextResponseTermsType0Item",
   "SecurityLite",
   "SecurityResponse",
   "SecurityResponseTerms",
