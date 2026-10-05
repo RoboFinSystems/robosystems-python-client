@@ -2306,6 +2306,7 @@ class LedgerClient:
     status: str | None = None,
     note: str | None = None,
     reference_event_id: str | None = None,
+    expected_drift_detected_at: str | datetime.datetime | None = None,
   ) -> ResolveReconcilingItemResponse:
     """Decide one reconciling item.
 
@@ -2315,11 +2316,22 @@ class LedgerClient:
     preview reports. ``posting_date`` and ``status`` (``draft`` or
     ``posted``) apply to ``catch_up`` only; ``reference_event_id`` to
     ``acknowledge`` only.
+
+    Pass ``expected_drift_detected_at`` as the ``drift_detected_at`` of the
+    preview the decision was made on: the resolution is refused if the item
+    was flagged again since, and must be previewed again.
     """
     if isinstance(posting_date, str):
       posting_date = datetime.date.fromisoformat(posting_date)
+    if isinstance(expected_drift_detected_at, str):
+      expected_drift_detected_at = datetime.datetime.fromisoformat(
+        expected_drift_detected_at
+      )
     body = ResolveReconcilingItemRequest(
       event_id=event_id,
+      expected_drift_detected_at=(
+        expected_drift_detected_at if expected_drift_detected_at is not None else UNSET
+      ),
       disposition=(
         ResolveReconcilingItemRequestDispositionType0(disposition)
         if disposition is not None

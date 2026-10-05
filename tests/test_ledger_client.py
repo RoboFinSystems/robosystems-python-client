@@ -550,6 +550,21 @@ class TestLedgerWrites:
       "note": "Vendor credit arrived late",
     }
 
+  @patch("robosystems_client.clients.ledger_client.op_resolve_reconciling_item")
+  def test_resolve_reconciling_item_sends_the_previewed_stamp(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope("resolve-reconciling-item", {"event_id": "evt_1"})
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.resolve_reconciling_item(
+      graph_id, "evt_1", expected_drift_detected_at="2026-08-21T04:00:00+00:00"
+    )
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "event_id": "evt_1",
+      "expected_drift_detected_at": "2026-08-21T04:00:00+00:00",
+    }
+
   def test_resolve_reconciling_item_refuses_an_unknown_treatment(
     self, mock_config, graph_id
   ):

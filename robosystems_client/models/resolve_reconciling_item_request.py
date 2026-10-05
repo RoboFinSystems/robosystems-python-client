@@ -24,6 +24,9 @@ class ResolveReconcilingItemRequest:
 
   Attributes:
       event_id (str): Event id (evt_ prefixed) to resolve
+      expected_drift_detected_at (datetime.datetime | None | Unset): The `drift_detected_at` of the preview this
+          resolution was decided on. Pass it: the resolution is refused when the item has been flagged again since, with a
+          newer payload nobody has seen, and must be previewed again.
       disposition (None | ResolveReconcilingItemRequestDispositionType0 | Unset): How to dispose of the difference.
           Omit to take the default the preview reports: restate when every period the event touches is open, catch_up when
           any is closed.
@@ -39,6 +42,7 @@ class ResolveReconcilingItemRequest:
   """
 
   event_id: str
+  expected_drift_detected_at: datetime.datetime | None | Unset = UNSET
   disposition: None | ResolveReconcilingItemRequestDispositionType0 | Unset = UNSET
   posting_date: datetime.date | None | Unset = UNSET
   status: ResolveReconcilingItemRequestStatus | Unset = (
@@ -50,6 +54,14 @@ class ResolveReconcilingItemRequest:
 
   def to_dict(self) -> dict[str, Any]:
     event_id = self.event_id
+
+    expected_drift_detected_at: None | str | Unset
+    if isinstance(self.expected_drift_detected_at, Unset):
+      expected_drift_detected_at = UNSET
+    elif isinstance(self.expected_drift_detected_at, datetime.datetime):
+      expected_drift_detected_at = self.expected_drift_detected_at.isoformat()
+    else:
+      expected_drift_detected_at = self.expected_drift_detected_at
 
     disposition: None | str | Unset
     if isinstance(self.disposition, Unset):
@@ -90,6 +102,8 @@ class ResolveReconcilingItemRequest:
         "event_id": event_id,
       }
     )
+    if expected_drift_detected_at is not UNSET:
+      field_dict["expected_drift_detected_at"] = expected_drift_detected_at
     if disposition is not UNSET:
       field_dict["disposition"] = disposition
     if posting_date is not UNSET:
@@ -107,6 +121,27 @@ class ResolveReconcilingItemRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
     event_id = d.pop("event_id")
+
+    def _parse_expected_drift_detected_at(
+      data: object,
+    ) -> datetime.datetime | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        expected_drift_detected_at_type_0 = datetime.datetime.fromisoformat(data)
+
+        return expected_drift_detected_at_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.datetime | None | Unset, data)
+
+    expected_drift_detected_at = _parse_expected_drift_detected_at(
+      d.pop("expected_drift_detected_at", UNSET)
+    )
 
     def _parse_disposition(
       data: object,
@@ -171,6 +206,7 @@ class ResolveReconcilingItemRequest:
 
     resolve_reconciling_item_request = cls(
       event_id=event_id,
+      expected_drift_detected_at=expected_drift_detected_at,
       disposition=disposition,
       posting_date=posting_date,
       status=status,
