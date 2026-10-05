@@ -21,13 +21,14 @@ class CreateViewRequest:
   Attributes:
       elements (list[str] | Unset): Element qnames (e.g., 'us-gaap:Assets'). Can combine with canonical_concepts.
       canonical_concepts (list[str] | Unset): Canonical concept names (e.g., 'revenue', 'net_income'). Matches all
-          mapped qnames.
+          mapped qnames. Shared repositories only.
       periods (list[str] | Unset): Period end dates (YYYY-MM-DD format)
       entity (None | str | Unset): Filter by entity ticker, CIK, or name
       entities (list[str] | Unset): Filter by multiple entity tickers (e.g., ['NVDA', 'AAPL'])
-      form (None | str | Unset): Filter by SEC filing form type (e.g., '10-K', '10-Q')
-      fiscal_year (int | None | Unset): Filter by fiscal year (e.g., 2024)
-      fiscal_period (None | str | Unset): Filter by fiscal period (e.g., 'FY', 'Q1', 'Q2', 'Q3')
+      form (None | str | Unset): Filter by SEC filing form type (e.g., '10-K', '10-Q'). Shared repositories only.
+      fiscal_year (int | None | Unset): Filter by fiscal year (e.g., 2024). Shared repositories only.
+      fiscal_period (None | str | Unset): Filter by fiscal period (e.g., 'FY', 'Q1', 'Q2', 'Q3'). Shared repositories
+          only.
       period_type (None | str | Unset): Filter by period type: 'annual', 'quarterly', or 'instant'
       include_summary (bool | Unset): Include summary statistics per element Default: False.
       limit (int | Unset): Maximum facts to return. Applied after deduplication and sorting, so truncation keeps the

@@ -25,8 +25,7 @@ class FilingLinks:
       tavi (None | str | Unset):
       as_filed (None | str | Unset): The primary document as filed
       exhibits (FilingLinksExhibitsType0 | None | Unset): An 8-K's exhibits by exhibit number (EX-99.1)
-      manifest (None | str | Unset):
-      folder (None | str | Unset):
+      manifest (None | str | Unset): Every file in the filing's public folder, with its URL
       edgar (None | str | Unset): The filing's folder on EDGAR
   """
 
@@ -36,7 +35,6 @@ class FilingLinks:
   as_filed: None | str | Unset = UNSET
   exhibits: FilingLinksExhibitsType0 | None | Unset = UNSET
   manifest: None | str | Unset = UNSET
-  folder: None | str | Unset = UNSET
   edgar: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -81,12 +79,6 @@ class FilingLinks:
     else:
       manifest = self.manifest
 
-    folder: None | str | Unset
-    if isinstance(self.folder, Unset):
-      folder = UNSET
-    else:
-      folder = self.folder
-
     edgar: None | str | Unset
     if isinstance(self.edgar, Unset):
       edgar = UNSET
@@ -108,8 +100,6 @@ class FilingLinks:
       field_dict["exhibits"] = exhibits
     if manifest is not UNSET:
       field_dict["manifest"] = manifest
-    if folder is not UNSET:
-      field_dict["folder"] = folder
     if edgar is not UNSET:
       field_dict["edgar"] = edgar
 
@@ -183,15 +173,6 @@ class FilingLinks:
 
     manifest = _parse_manifest(d.pop("manifest", UNSET))
 
-    def _parse_folder(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    folder = _parse_folder(d.pop("folder", UNSET))
-
     def _parse_edgar(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -208,7 +189,6 @@ class FilingLinks:
       as_filed=as_filed,
       exhibits=exhibits,
       manifest=manifest,
-      folder=folder,
       edgar=edgar,
     )
 

@@ -40,6 +40,7 @@ class SearchHit:
           filing_date (None | str | Unset):
           fiscal_year (int | None | Unset):
           form_type (None | str | Unset):
+          accession_number (None | str | Unset):
           xbrl_elements (list[str] | None | Unset):
           content_length (int | Unset):  Default: 0.
           content_url (None | str | Unset):
@@ -65,6 +66,7 @@ class SearchHit:
   filing_date: None | str | Unset = UNSET
   fiscal_year: int | None | Unset = UNSET
   form_type: None | str | Unset = UNSET
+  accession_number: None | str | Unset = UNSET
   xbrl_elements: list[str] | None | Unset = UNSET
   content_length: int | Unset = 0
   content_url: None | str | Unset = UNSET
@@ -147,6 +149,12 @@ class SearchHit:
     else:
       form_type = self.form_type
 
+    accession_number: None | str | Unset
+    if isinstance(self.accession_number, Unset):
+      accession_number = UNSET
+    else:
+      accession_number = self.accession_number
+
     xbrl_elements: list[str] | None | Unset
     if isinstance(self.xbrl_elements, Unset):
       xbrl_elements = UNSET
@@ -225,6 +233,8 @@ class SearchHit:
       field_dict["fiscal_year"] = fiscal_year
     if form_type is not UNSET:
       field_dict["form_type"] = form_type
+    if accession_number is not UNSET:
+      field_dict["accession_number"] = accession_number
     if xbrl_elements is not UNSET:
       field_dict["xbrl_elements"] = xbrl_elements
     if content_length is not UNSET:
@@ -347,6 +357,15 @@ class SearchHit:
 
     form_type = _parse_form_type(d.pop("form_type", UNSET))
 
+    def _parse_accession_number(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    accession_number = _parse_accession_number(d.pop("accession_number", UNSET))
+
     def _parse_xbrl_elements(data: object) -> list[str] | None | Unset:
       if data is None:
         return data
@@ -436,6 +455,7 @@ class SearchHit:
       filing_date=filing_date,
       fiscal_year=fiscal_year,
       form_type=form_type,
+      accession_number=accession_number,
       xbrl_elements=xbrl_elements,
       content_length=content_length,
       content_url=content_url,
