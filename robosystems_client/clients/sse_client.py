@@ -268,6 +268,10 @@ class SSEClient:
 
       time.sleep(delay_seconds)
 
+      # A close() during the backoff ends the reconnect.
+      if self.closed:
+        return
+
       # Resume from last event if available
       resume_from = 0
       if self.last_event_id:

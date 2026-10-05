@@ -7,6 +7,9 @@ cancel_operation, close_operation, close_all.
 Dataclass and enum tests already exist in tests/test_operation_client.py.
 """
 
+import threading
+import time
+
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from robosystems_client.clients.operation_client import (
@@ -15,7 +18,7 @@ from robosystems_client.clients.operation_client import (
   OperationProgress,
   MonitorOptions,
 )
-from robosystems_client.clients.sse_client import SSEClient
+from robosystems_client.clients.sse_client import SSEClient, SSEConfig
 from robosystems_client.models.cancel_operation_response_canceloperation import (
   CancelOperationResponseCanceloperation,
 )
@@ -237,6 +240,60 @@ class TestMonitorOperation:
     assert "op-cleanup" not in client.active_operations
     # SSE client should have been closed
     fake_sse.close.assert_called()
+
+  @patch("robosystems_client.clients.operation_client.SSEClient")
+  def test_monitor_timeout_closes_a_silent_stream(self, MockSSE, mock_config):
+    """A stream with no terminal event is closed at `timeout` and raises."""
+    fake_sse = MagicMock(spec=SSEClient)
+    closed = threading.Event()
+
+    # connect() blocks until the stream is closed, like a live stream would.
+    fake_sse.connect.side_effect = lambda op_id: closed.wait(5)
+    fake_sse.close.side_effect = closed.set
+    MockSSE.return_value = fake_sse
+
+    client = OperationClient(mock_config)
+    started = time.monotonic()
+    with pytest.raises(TimeoutError, match="timed out after 0.1s"):
+      client.monitor_operation("op-silent", MonitorOptions(timeout=0.1))
+
+    assert time.monotonic() - started < 2
+    assert "op-silent" not in client.active_operations
+
+  @patch("robosystems_client.clients.operation_client.SSEClient")
+  def test_monitor_completion_beats_timeout(self, MockSSE, mock_config):
+    """A run that finishes inside `timeout` returns its result."""
+    fake_sse = MagicMock(spec=SSEClient)
+    listeners = {}
+    fake_sse.on.side_effect = lambda event, handler: listeners.__setitem__(
+      event, handler
+    )
+    fake_sse.connect.side_effect = lambda op_id: listeners["operation_completed"](
+      {"result": {"ok": True}}
+    )
+    MockSSE.return_value = fake_sse
+
+    client = OperationClient(mock_config)
+    result = client.monitor_operation("op-fast", MonitorOptions(timeout=5))
+
+    assert result.status == OperationStatus.COMPLETED
+    assert result.result == {"ok": True}
+
+
+@pytest.mark.unit
+class TestSSEReconnect:
+  """Test SSEClient's reconnect backoff."""
+
+  @patch("robosystems_client.clients.sse_client.time.sleep")
+  def test_close_during_backoff_ends_the_reconnect(self, mock_sleep):
+    """A close() while the reconnect sleeps must not reopen the stream."""
+    sse = SSEClient(SSEConfig(base_url="http://localhost:8000", max_retries=3))
+    mock_sleep.side_effect = lambda _s: setattr(sse, "closed", True)
+
+    with patch.object(sse, "connect") as mock_connect:
+      sse._handle_error(RuntimeError("dropped"), "op-1", 0)
+
+    mock_connect.assert_not_called()
 
 
 # ── get_operation_status ─────────────────────────────────────────────
