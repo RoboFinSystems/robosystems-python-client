@@ -150,6 +150,8 @@ class OperationClient:
     result = OperationResult(operation_id=operation_id, status=OperationStatus.PENDING)
     completed = False
     error = None
+    # Set by a terminal event, or when the stream ends without one.
+    settled = threading.Event()
 
     # Set up SSE connection with event replay from the beginning
     # This handles the race condition where the operation may have already completed.
@@ -189,6 +191,7 @@ class OperationClient:
       result.completed_at = datetime.now()
       result.execution_time_ms = data.get("execution_time_ms")
       completed = True
+      settled.set()
 
     def on_operation_error(err):
       nonlocal completed, error
@@ -197,12 +200,14 @@ class OperationClient:
       result.completed_at = datetime.now()
       error = Exception(result.error)
       completed = True
+      settled.set()
 
     def on_operation_cancelled(_data=None):
       nonlocal completed
       result.status = OperationStatus.CANCELLED
       result.completed_at = datetime.now()
       completed = True
+      settled.set()
 
     def on_connection_error(err):
       nonlocal completed, error
@@ -211,6 +216,7 @@ class OperationClient:
       result.completed_at = datetime.now()
       error = err if isinstance(err, Exception) else Exception(str(err))
       completed = True
+      settled.set()
 
     # Register event handlers
     sse_client.on(EventType.OPERATION_STARTED.value, on_operation_started)
@@ -224,30 +230,28 @@ class OperationClient:
     sse_client.on("error", on_connection_error)
     sse_client.on("max_retries_exceeded", on_connection_error)
 
-    # connect() blocks, so the timeout closes the stream from a timer thread,
-    # which ends the read and returns control here.
-    timed_out = threading.Event()
-
-    def on_timeout():
-      timed_out.set()
-      sse_client.close()
-
-    timer = threading.Timer(options.timeout, on_timeout) if options.timeout else None
+    def read_stream():
+      try:
+        sse_client.connect(operation_id)
+      finally:
+        settled.set()
 
     # Connect and monitor. Registered first so cancel_operation() can close
-    # the stream; connect() blocks until the stream ends (or never opens).
+    # the stream.
     try:
       with self._lock:
         self.active_operations[operation_id] = sse_client
-      if timer:
-        timer.daemon = True
-        timer.start()
-      sse_client.connect(operation_id)
-
-      if not completed and timed_out.is_set():
-        raise TimeoutError(
-          f"Operation {operation_id} timed out after {options.timeout}s"
-        )
+      if options.timeout:
+        # connect() blocks on the socket, and closing the stream from another
+        # thread does not wake that read, so the stream is read on a worker
+        # and the timeout is kept here.
+        threading.Thread(target=read_stream, daemon=True).start()
+        if not settled.wait(options.timeout):
+          raise TimeoutError(
+            f"Operation {operation_id} timed out after {options.timeout}s"
+          )
+      else:
+        read_stream()
 
       if not completed:
         # The stream ended without a terminal event: no verdict to report,
@@ -257,8 +261,6 @@ class OperationClient:
         )
 
     finally:
-      if timer:
-        timer.cancel()
       # Clean up with thread safety
       with self._lock:
         if operation_id in self.active_operations:

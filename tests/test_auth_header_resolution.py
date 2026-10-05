@@ -15,6 +15,7 @@ from robosystems_client.clients.auth_integration import _apply_auth_header
 from robosystems_client.clients.operation_client import OperationClient
 from robosystems_client.clients.retry import RetryingClient
 from robosystems_client.clients.sse_client import SSEClient, event_error_message
+from robosystems_client.graphql.client import GraphQLClient
 from robosystems_client.clients.token_utils import (
   apply_auth_header,
   resolve_auth_headers,
@@ -153,3 +154,35 @@ class TestOperationClientHeaders:
     passed = mock_get.call_args.kwargs["client"]
     assert passed.get_httpx_client().headers["X-API-Key"] == "rfs_fresh"
     assert isinstance(passed.get_httpx_client(), RetryingClient)
+
+
+@pytest.mark.unit
+class TestGraphQLClientCredential:
+  """GraphQL reads send exactly one credential, as the REST writes do."""
+
+  def test_resolved_jwt_replaces_a_static_api_key(self):
+    # A facade with a static `rfs` key in its headers and a token_provider
+    # handing out JWTs: the resolved JWT is the one sent.
+    client = GraphQLClient(
+      "http://localhost:8000",
+      token="eyJ.jwt",
+      headers={"X-API-Key": "rfs_static", "X-Trace": "1"},
+    )
+
+    assert client._headers == {
+      "Content-Type": "application/json",
+      "X-Trace": "1",
+      "Authorization": "Bearer eyJ.jwt",
+    }
+
+  def test_resolved_api_key_replaces_a_static_bearer(self):
+    client = GraphQLClient(
+      "http://localhost:8000",
+      token="rfs_key",
+      headers={"authorization": "Bearer stale"},
+    )
+
+    assert client._headers == {
+      "Content-Type": "application/json",
+      "X-API-Key": "rfs_key",
+    }

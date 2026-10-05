@@ -90,6 +90,14 @@ class GraphQLClient:
       # use cases, but we keep the routing symmetric with the TS
       # client so a caller that forwards a JWT (e.g. a backend
       # proxying a request-scoped token) still works.
+      #
+      # The resolved token replaces any credential the static headers carry,
+      # as the REST writes do, so exactly one is sent.
+      self._headers = {
+        k: v
+        for k, v in self._headers.items()
+        if k.lower() not in ("x-api-key", "authorization")
+      }
       if token.startswith("rfs"):
         self._headers["X-API-Key"] = token
       else:
