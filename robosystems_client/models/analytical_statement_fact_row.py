@@ -20,6 +20,8 @@ class AnalyticalStatementFactRow:
       name (str):
       canonical_concept (None | str | Unset):
       value (float | None | Unset):
+      unit (None | str | Unset): The fact's unit, e.g. `USD` or `USD/shares`. A line a filer reports in two units (its
+          own currency and a US-dollar translation) comes back once per unit.
       start_date (None | str | Unset):
       end_date (None | str | Unset):
       period_type (None | str | Unset):
@@ -30,6 +32,7 @@ class AnalyticalStatementFactRow:
   name: str
   canonical_concept: None | str | Unset = UNSET
   value: float | None | Unset = UNSET
+  unit: None | str | Unset = UNSET
   start_date: None | str | Unset = UNSET
   end_date: None | str | Unset = UNSET
   period_type: None | str | Unset = UNSET
@@ -52,6 +55,12 @@ class AnalyticalStatementFactRow:
       value = UNSET
     else:
       value = self.value
+
+    unit: None | str | Unset
+    if isinstance(self.unit, Unset):
+      unit = UNSET
+    else:
+      unit = self.unit
 
     start_date: None | str | Unset
     if isinstance(self.start_date, Unset):
@@ -89,6 +98,8 @@ class AnalyticalStatementFactRow:
       field_dict["canonical_concept"] = canonical_concept
     if value is not UNSET:
       field_dict["value"] = value
+    if unit is not UNSET:
+      field_dict["unit"] = unit
     if start_date is not UNSET:
       field_dict["start_date"] = start_date
     if end_date is not UNSET:
@@ -124,6 +135,15 @@ class AnalyticalStatementFactRow:
       return cast(float | None | Unset, data)
 
     value = _parse_value(d.pop("value", UNSET))
+
+    def _parse_unit(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    unit = _parse_unit(d.pop("unit", UNSET))
 
     def _parse_start_date(data: object) -> None | str | Unset:
       if data is None:
@@ -166,6 +186,7 @@ class AnalyticalStatementFactRow:
       name=name,
       canonical_concept=canonical_concept,
       value=value,
+      unit=unit,
       start_date=start_date,
       end_date=end_date,
       period_type=period_type,

@@ -30,7 +30,8 @@ class CreateViewRequest:
       fiscal_period (None | str | Unset): Filter by fiscal period (e.g., 'FY', 'Q1', 'Q2', 'Q3'). Shared repositories
           only.
       period_type (None | str | Unset): Filter by period type: 'annual', 'quarterly', or 'instant'
-      include_summary (bool | Unset): Include summary statistics per element Default: False.
+      include_summary (bool | Unset): Include summary statistics per element. An element reported in more than one
+          unit has none. Default: False.
       limit (int | Unset): Maximum facts to return. Applied after deduplication and sorting, so truncation keeps the
           most recent periods. Check `metadata.truncated` to see whether more facts matched. Default: 250.
       view_config (ViewConfig | Unset):
