@@ -25,7 +25,8 @@ class DescribeFilingRequest:
           default) or quarterly (10-Q as well)
       accession (None | str | Unset): SEC only, with ticker: one filing by accession number — a report, or an 8-K from
           resolved_report.recent_releases
-      form (None | str | Unset): SEC only, with ticker: '8-K' reads the latest earnings release
+      form (None | str | Unset): SEC only, with ticker: '8-K' reads the latest earnings release, or with fiscal_year
+          the latest filed in that calendar year
   """
 
   ticker: None | str | Unset = UNSET

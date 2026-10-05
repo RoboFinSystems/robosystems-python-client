@@ -17,9 +17,9 @@ class ReopenPeriodOperation:
 
   Attributes:
       reason (str): Required reason for the reopen (captured in audit log)
-      period (str): Period to reopen, in YYYY-MM. Any closed period may be reopened. Reopening the current
-          `closed_through` retreats it by one month; reopening an earlier period leaves `closed_through` where it is (a
-          prior-period adjustment), and its re-close restores the period without moving the pointer.
+      period (str): Period to reopen, in YYYY-MM. Only the latest closed period (the current `closed_through`) can be
+          reopened, and reopening it retreats `closed_through` by one month. To reach an earlier period, reopen the later
+          ones first, latest to earliest.
       note (None | str | Unset): Additional free-form note
   """
 

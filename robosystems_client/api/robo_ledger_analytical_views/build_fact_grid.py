@@ -111,11 +111,12 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeViewResponse]:
   """Build Fact Grid
 
-   Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
-  entities, form, and fiscal context. Returns deduplicated facts plus the aspects they span —
-  arranging them into a table is the consumer's job, since collapsing cells safely requires the full
-  aspect signature. Works on both roboledger tenant graphs (post-materialization) and the SEC shared
-  repository.
+   Queries LadybugDB `Fact` nodes by element qnames, with filters for periods and entities. Returns
+  deduplicated facts plus the aspects they span — arranging them into a table is the consumer's job,
+  since collapsing cells safely requires the full aspect signature. Works on both roboledger tenant
+  graphs (post-materialization) and the SEC shared repository. Canonical concepts and the form and
+  fiscal-period filters exist on shared repositories only: a ledger's graph carries none of them, and
+  a query by them there is refused rather than answered with nothing.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -155,11 +156,12 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeViewResponse | None:
   """Build Fact Grid
 
-   Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
-  entities, form, and fiscal context. Returns deduplicated facts plus the aspects they span —
-  arranging them into a table is the consumer's job, since collapsing cells safely requires the full
-  aspect signature. Works on both roboledger tenant graphs (post-materialization) and the SEC shared
-  repository.
+   Queries LadybugDB `Fact` nodes by element qnames, with filters for periods and entities. Returns
+  deduplicated facts plus the aspects they span — arranging them into a table is the consumer's job,
+  since collapsing cells safely requires the full aspect signature. Works on both roboledger tenant
+  graphs (post-materialization) and the SEC shared repository. Canonical concepts and the form and
+  fiscal-period filters exist on shared repositories only: a ledger's graph carries none of them, and
+  a query by them there is refused rather than answered with nothing.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -194,11 +196,12 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeViewResponse]:
   """Build Fact Grid
 
-   Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
-  entities, form, and fiscal context. Returns deduplicated facts plus the aspects they span —
-  arranging them into a table is the consumer's job, since collapsing cells safely requires the full
-  aspect signature. Works on both roboledger tenant graphs (post-materialization) and the SEC shared
-  repository.
+   Queries LadybugDB `Fact` nodes by element qnames, with filters for periods and entities. Returns
+  deduplicated facts plus the aspects they span — arranging them into a table is the consumer's job,
+  since collapsing cells safely requires the full aspect signature. Works on both roboledger tenant
+  graphs (post-materialization) and the SEC shared repository. Canonical concepts and the form and
+  fiscal-period filters exist on shared repositories only: a ledger's graph carries none of them, and
+  a query by them there is refused rather than answered with nothing.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -236,11 +239,12 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeViewResponse | None:
   """Build Fact Grid
 
-   Queries LadybugDB `Fact` nodes by element qnames or canonical concepts, with filters for periods,
-  entities, form, and fiscal context. Returns deduplicated facts plus the aspects they span —
-  arranging them into a table is the consumer's job, since collapsing cells safely requires the full
-  aspect signature. Works on both roboledger tenant graphs (post-materialization) and the SEC shared
-  repository.
+   Queries LadybugDB `Fact` nodes by element qnames, with filters for periods and entities. Returns
+  deduplicated facts plus the aspects they span — arranging them into a table is the consumer's job,
+  since collapsing cells safely requires the full aspect signature. Works on both roboledger tenant
+  graphs (post-materialization) and the SEC shared repository. Canonical concepts and the form and
+  fiscal-period filters exist on shared repositories only: a ledger's graph carries none of them, and
+  a query by them there is refused rather than answered with nothing.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -118,8 +118,9 @@ def sync_detailed(
   text` pages from. On the SEC shared repository the filing is read from its public folder — its own
   document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed by
   `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings release
-  and its exhibits. SEC only: a ledger files no document, and its sections read through `disclosures`
-  and `information-block`.
+  and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand in for
+  the ticker). SEC only: a ledger files no document, and its sections read through `disclosures` and
+  `information-block`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -165,8 +166,9 @@ def sync(
   text` pages from. On the SEC shared repository the filing is read from its public folder — its own
   document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed by
   `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings release
-  and its exhibits. SEC only: a ledger files no document, and its sections read through `disclosures`
-  and `information-block`.
+  and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand in for
+  the ticker). SEC only: a ledger files no document, and its sections read through `disclosures` and
+  `information-block`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -207,8 +209,9 @@ async def asyncio_detailed(
   text` pages from. On the SEC shared repository the filing is read from its public folder — its own
   document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed by
   `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings release
-  and its exhibits. SEC only: a ledger files no document, and its sections read through `disclosures`
-  and `information-block`.
+  and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand in for
+  the ticker). SEC only: a ledger files no document, and its sections read through `disclosures` and
+  `information-block`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -252,8 +255,9 @@ async def asyncio(
   text` pages from. On the SEC shared repository the filing is read from its public folder — its own
   document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed by
   `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings release
-  and its exhibits. SEC only: a ledger files no document, and its sections read through `disclosures`
-  and `information-block`.
+  and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand in for
+  the ticker). SEC only: a ledger files no document, and its sections read through `disclosures` and
+  `information-block`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
