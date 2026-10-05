@@ -3,10 +3,15 @@
 The API rate-limits per user per endpoint category and answers an
 exhausted budget with ``429`` plus ``Retry-After`` / ``X-RateLimit-*``
 headers. That rejection is raised by a request dependency *before* the
-endpoint handler runs, so the request had no effect and is always safe
-to replay — including a ``POST`` carrying no idempotency key. Nothing
-other than ``429`` is retried here, precisely because nothing else
-carries that guarantee.
+endpoint handler runs, so the request had no effect and is safe to
+replay — including a ``POST`` carrying no idempotency key. Nothing other
+than ``429`` is retried here, because nothing else carries that
+guarantee.
+
+A few handlers also answer ``429`` for a quota of their own (a backup
+quota, the concurrent-query cap). Those refuse the request before doing
+its work, so a replay is still harmless, though it can only succeed once
+the quota frees up.
 
 The motivating case is a bulk backfill: an integrator loading a year of
 history through per-event write calls runs at the category budget for
@@ -145,29 +150,48 @@ def retrying_authenticated_client(
   base_url: str,
   token: str,
   headers: dict[str, str] | None = None,
-  auth_header_name: str = "X-API-Key",
-  prefix: str = "",
+  auth_header_name: str | None = None,
+  prefix: str | None = None,
   config: dict[str, Any] | None = None,
 ) -> AuthenticatedClient:
   """An :class:`AuthenticatedClient` whose transport replays 429s.
 
   Mirrors what ``AuthenticatedClient.get_httpx_client()`` would build —
-  including stamping the credential onto the header the caller named —
-  and installs it through the public ``set_httpx_client`` hook, so the
-  generated ``api/`` layer is untouched and survives ``just
-  generate-sdk``.
+  including stamping the credential onto its header — and installs it
+  through the public ``set_httpx_client`` hook, so the generated ``api/``
+  layer is untouched and survives ``just generate-sdk``.
+
+  Without an explicit ``auth_header_name`` the credential is routed by
+  shape, the same rule the GraphQL reads use (``apply_auth_header``):
+  ``rfs…`` API keys in ``X-API-Key``, anything else (a JWT) as
+  ``Authorization: Bearer …``. Any credential header already in
+  ``headers`` is dropped first, so exactly one is sent.
 
   ``timeout`` is left unset to match the generated client's own
   default; callers that need one set it on the facade.
   """
-  request_headers = dict(headers or {})
+  base_headers = dict(headers or {})
+  if auth_header_name is None:
+    base_headers = {
+      k: v
+      for k, v in base_headers.items()
+      if k.lower() not in ("x-api-key", "authorization")
+    }
+    if token.startswith("rfs"):
+      auth_header_name = "X-API-Key"
+      prefix = prefix or ""
+    else:
+      auth_header_name = "Authorization"
+      prefix = "Bearer" if prefix is None else prefix
+  prefix = prefix or ""
+  request_headers = dict(base_headers)
   request_headers[auth_header_name] = f"{prefix} {token}" if prefix else token
   client = AuthenticatedClient(
     base_url=base_url,
     token=token,
     prefix=prefix,
     auth_header_name=auth_header_name,
-    headers=dict(headers or {}),
+    headers=base_headers,
   )
   return client.set_httpx_client(
     build_httpx_client(

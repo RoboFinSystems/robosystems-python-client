@@ -4,10 +4,11 @@ Provides high-level graph management and lifecycle operations with
 automatic operation monitoring. Supports both SSE (Server-Sent Events)
 for real-time updates and polling fallback.
 
-Graph lifecycle operations (create-subgraph, delete-subgraph, create-backup,
-change-tier, materialize) all go through the operations surface at
+The lifecycle operations this client wraps (materialize, change-tier) go
+through the operations surface at
 ``POST /v1/graphs/{graph_id}/operations/{op_name}`` and return an
-``OperationEnvelope``.
+``OperationEnvelope``. Subgraph and backup operations live on the same
+surface but have no method here — call the generated ``api`` functions.
 
 Backups are a download capability: there is no customer-facing restore.
 Graphs with an upstream rebuild from it — entity graphs re-materialize,
@@ -23,7 +24,9 @@ import logging
 
 import httpx
 
+from ..types import Unset
 from .operation_client import OperationClient, OperationProgress, MonitorOptions
+from .token_utils import apply_auth_header, current_token
 
 logger = logging.getLogger(__name__)
 
@@ -96,8 +99,8 @@ class MaterializationResult:
 class GraphClient:
   """Client for graph management and lifecycle operations.
 
-  Covers graph creation, info retrieval, and all graph lifecycle
-  operations (materialize, subgraphs, backups, tier changes).
+  Covers graph creation and deletion, info retrieval, materialization
+  and tier changes.
   """
 
   def __init__(self, config: Dict[str, Any]):
@@ -118,12 +121,14 @@ class GraphClient:
     """Build an AuthenticatedClient for API calls."""
     from .retry import retrying_authenticated_client
 
-    if not self.token:
+    token = current_token(self.config, self.token)
+
+    if not token:
       raise ValueError("No API key provided. Set X-API-Key in headers.")
 
     return retrying_authenticated_client(
       base_url=self.base_url,
-      token=self.token,
+      token=token,
       headers=self.headers,
       config=self.config,
     )
@@ -250,18 +255,18 @@ class GraphClient:
     client = self._get_authenticated_client()
     response = get_graphs(client=client)
 
-    if not response.parsed:
+    if response.status_code != 200 or not response.parsed:
       raise RuntimeError(f"Failed to get graphs: {response.status_code}")
 
+    # Every generated model carries `additional_properties` (the fields the
+    # schema does not name), so the declared `graphs` field is read first.
     data = response.parsed
-    graphs = None
-
     if isinstance(data, dict):
       graphs = data.get("graphs", [])
-    elif hasattr(data, "additional_properties"):
-      graphs = data.additional_properties.get("graphs", [])
     elif hasattr(data, "graphs"):
       graphs = data.graphs
+    elif hasattr(data, "additional_properties"):
+      graphs = data.additional_properties.get("graphs", [])
     else:
       raise RuntimeError("Unexpected response format from get_graphs")
 
@@ -290,16 +295,19 @@ class GraphClient:
         status=graph_data.get("status"),
       )
     else:
+
+      def field(name: str) -> Any:
+        value = getattr(graph_data, name, None)
+        return None if isinstance(value, Unset) else value
+
       return GraphInfo(
-        graph_id=getattr(graph_data, "graph_id", None)
-        or getattr(graph_data, "id", graph_id),
-        graph_name=getattr(graph_data, "graph_name", None)
-        or getattr(graph_data, "name", ""),
-        description=getattr(graph_data, "description", None),
-        schema_extensions=getattr(graph_data, "schema_extensions", None),
-        tags=getattr(graph_data, "tags", None),
-        created_at=getattr(graph_data, "created_at", None),
-        status=getattr(graph_data, "status", None),
+        graph_id=field("graph_id") or field("id") or graph_id,
+        graph_name=field("graph_name") or field("name") or "",
+        description=field("description"),
+        schema_extensions=field("schema_extensions"),
+        tags=field("tags"),
+        created_at=field("created_at"),
+        status=field("status"),
       )
 
   # ---------------------------------------------------------------------------
@@ -535,7 +543,10 @@ class GraphClient:
   ) -> str:
     """Wait for operation completion using SSE stream."""
     stream_url = f"{self.base_url}/v1/operations/{operation_id}/stream"
-    headers = {"X-API-Key": self.token, "Accept": "text/event-stream"}
+    headers = {"Accept": "text/event-stream"}
+    token = current_token(self.config, self.token)
+    if token:
+      apply_auth_header(headers, token)
 
     with httpx.Client(timeout=httpx.Timeout(timeout + 5.0)) as http_client:
       with http_client.stream("GET", stream_url, headers=headers) as response:

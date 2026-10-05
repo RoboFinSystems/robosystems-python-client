@@ -29,8 +29,15 @@ from ..api.content_operations.delete_file import (
 from ..models.file_upload_request import FileUploadRequest
 from ..models.ingest_file_op import IngestFileOp
 from ..models.delete_file_op import DeleteFileOp
+from ..types import Unset
+from .token_utils import current_token
 
 logger = logging.getLogger(__name__)
+
+
+def _unset_to_none(value: Any) -> Any:
+  """A generated-model field as a plain value: ``UNSET`` becomes ``None``."""
+  return None if isinstance(value, Unset) else value
 
 
 @dataclass
@@ -139,12 +146,14 @@ class FileClient:
 
       from .retry import retrying_authenticated_client
 
-      if not self.token:
+      token = current_token(self.config, self.token)
+
+      if not token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
       client = retrying_authenticated_client(
         base_url=self.base_url,
-        token=self.token,
+        token=token,
         headers=self.headers,
         config=self.config,
       )
@@ -295,12 +304,14 @@ class FileClient:
     try:
       from .retry import retrying_authenticated_client
 
-      if not self.token:
+      token = current_token(self.config, self.token)
+
+      if not token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
       client = retrying_authenticated_client(
         base_url=self.base_url,
-        token=self.token,
+        token=token,
         headers=self.headers,
         config=self.config,
       )
@@ -330,11 +341,11 @@ class FileClient:
           file_name=f.file_name,
           file_format=f.file_format,
           size_bytes=f.size_bytes or 0,
-          row_count=f.row_count,
+          row_count=_unset_to_none(f.row_count),
           upload_status=f.upload_status,
-          table_name=getattr(f, "table_name", ""),
-          created_at=f.created_at,
-          uploaded_at=f.uploaded_at,
+          table_name=_unset_to_none(getattr(f, "table_name", None)) or "",
+          created_at=_unset_to_none(f.created_at),
+          uploaded_at=_unset_to_none(f.uploaded_at),
         )
         for f in files
       ]
@@ -357,12 +368,14 @@ class FileClient:
     try:
       from .retry import retrying_authenticated_client
 
-      if not self.token:
+      token = current_token(self.config, self.token)
+
+      if not token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
       client = retrying_authenticated_client(
         base_url=self.base_url,
-        token=self.token,
+        token=token,
         headers=self.headers,
         config=self.config,
       )
@@ -386,12 +399,12 @@ class FileClient:
         file_name=file_data.file_name,
         file_format=file_data.file_format,
         size_bytes=file_data.size_bytes or 0,
-        row_count=file_data.row_count,
+        row_count=_unset_to_none(file_data.row_count),
         upload_status=file_data.upload_status,
-        table_name=file_data.table_name or "",
-        created_at=file_data.created_at,
-        uploaded_at=file_data.uploaded_at,
-        layers=getattr(file_data, "layers", None),
+        table_name=_unset_to_none(file_data.table_name) or "",
+        created_at=_unset_to_none(file_data.created_at),
+        uploaded_at=_unset_to_none(file_data.uploaded_at),
+        layers=_unset_to_none(getattr(file_data, "layers", None)),
       )
 
     except Exception as e:
@@ -413,12 +426,14 @@ class FileClient:
     try:
       from .retry import retrying_authenticated_client
 
-      if not self.token:
+      token = current_token(self.config, self.token)
+
+      if not token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
       client = retrying_authenticated_client(
         base_url=self.base_url,
-        token=self.token,
+        token=token,
         headers=self.headers,
         config=self.config,
       )

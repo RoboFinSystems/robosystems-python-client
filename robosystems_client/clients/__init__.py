@@ -21,6 +21,7 @@ from .operator_client import (
   OperatorQueryRequest,
   OperatorOptions,
   QueuedOperatorError,
+  OperatorRunError,
 )
 from .operation_client import (
   OperationClient,
@@ -144,6 +145,7 @@ __all__ = [
   "OperatorQueryRequest",
   "OperatorOptions",
   "QueuedOperatorError",
+  "OperatorRunError",
   # Operation Client
   "OperationClient",
   "OperationStatus",

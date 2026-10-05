@@ -11,6 +11,7 @@ response, successful ones included.
 ``to_dict()``; these tests pin that the same accessor is used here.
 """
 
+from http import HTTPStatus
 from typing import Any
 from unittest.mock import MagicMock, patch
 
@@ -41,10 +42,19 @@ def _status_response(body: dict[str, Any]) -> MagicMock:
   return response
 
 
-def _cancel_response(body: dict[str, Any]) -> MagicMock:
+def _cancel_response(body: dict[str, Any], status_code: int = 200) -> MagicMock:
   response = MagicMock()
+  response.status_code = HTTPStatus(status_code)
   response.parsed = CancelOperationResponseCanceloperation.from_dict(body)
   return response
+
+
+# The API's real answer to a cancel that landed (routers/operations.py).
+CANCELLED_BODY = {
+  "operation_id": "op_1",
+  "status": "cancelled",
+  "message": "Operation has been cancelled",
+}
 
 
 @pytest.mark.unit
@@ -129,13 +139,17 @@ class TestGetOperationStatus:
 class TestCancelOperation:
   @patch("robosystems_client.api.operations.cancel_operation.sync_detailed")
   def test_returns_true_when_the_cancel_lands(self, mock_cancel, client):
-    mock_cancel.return_value = _cancel_response({"cancelled": True})
+    mock_cancel.return_value = _cancel_response(CANCELLED_BODY)
 
     assert client.cancel_operation("op_1") is True
 
   @patch("robosystems_client.api.operations.cancel_operation.sync_detailed")
   def test_returns_false_when_the_server_declines(self, mock_cancel, client):
-    mock_cancel.return_value = _cancel_response({"cancelled": False})
+    # A finished operation is refused with 409.
+    mock_cancel.return_value = _cancel_response(
+      {"detail": "Operation cannot be cancelled - current status is completed"},
+      status_code=409,
+    )
 
     assert client.cancel_operation("op_1") is False
 
@@ -143,7 +157,7 @@ class TestCancelOperation:
   def test_closes_the_stream_on_a_successful_cancel(self, mock_cancel, client):
     # The cleanup used to sit after an early `return` on the success path,
     # so the one case that needs it skipped it and leaked the stream.
-    mock_cancel.return_value = _cancel_response({"cancelled": True})
+    mock_cancel.return_value = _cancel_response(CANCELLED_BODY)
     stream = MagicMock()
     client.active_operations["op_1"] = stream
 

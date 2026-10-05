@@ -507,14 +507,15 @@ class TestWaitWithSSE:
     mock_client = self._create_mock_client(mock_response)
     mock_httpx_client.return_value = mock_client
 
-    client = GraphClient(mock_config)
+    # API keys are `rfs…`-prefixed; the credential is routed by that shape.
+    client = GraphClient({**mock_config, "token": "rfs_test_key"})
     client._wait_with_sse("op-999", timeout=60, on_progress=None)
 
     # Verify stream was called with correct URL and headers
     mock_client.stream.assert_called_once_with(
       "GET",
       "http://localhost:8000/v1/operations/op-999/stream",
-      headers={"X-API-Key": "test-api-key", "Accept": "text/event-stream"},
+      headers={"Accept": "text/event-stream", "X-API-Key": "rfs_test_key"},
     )
 
 

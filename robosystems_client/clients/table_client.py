@@ -15,6 +15,7 @@ from ..api.query.execute_sql import (
   sync_detailed as query_tables,
 )
 from ..models.sql_statement_request import SqlStatementRequest
+from .token_utils import current_token
 
 logger = logging.getLogger(__name__)
 
@@ -24,10 +25,12 @@ class TableInfo:
   """Information about a DuckDB staging table"""
 
   table_name: str
-  table_type: str
+  # The API no longer reports a table type; kept for compatibility, always None.
+  table_type: Optional[str]
   row_count: int
   file_count: int
   total_size_bytes: int
+  s3_location: Optional[str] = None
 
 
 @dataclass
@@ -64,12 +67,14 @@ class TableClient:
     try:
       from .retry import retrying_authenticated_client
 
-      if not self.token:
+      token = current_token(self.config, self.token)
+
+      if not token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
       client = retrying_authenticated_client(
         base_url=self.base_url,
-        token=self.token,
+        token=token,
         headers=self.headers,
         config=self.config,
       )
@@ -91,10 +96,11 @@ class TableClient:
       return [
         TableInfo(
           table_name=t.table_name,
-          table_type=t.table_type,
+          table_type=None,
           row_count=t.row_count,
           file_count=t.file_count or 0,
           total_size_bytes=t.total_size_bytes or 0,
+          s3_location=t.s3_location if isinstance(t.s3_location, str) else None,
         )
         for t in tables
       ]
@@ -134,12 +140,14 @@ class TableClient:
 
       from .retry import retrying_authenticated_client
 
-      if not self.token:
+      token = current_token(self.config, self.token)
+
+      if not token:
         raise Exception("No API key provided. Set X-API-Key in headers.")
 
       client = retrying_authenticated_client(
         base_url=self.base_url,
-        token=self.token,
+        token=token,
         headers=self.headers,
         config=self.config,
       )

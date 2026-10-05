@@ -30,6 +30,7 @@ from ..models.operation_envelope import OperationEnvelope
 from ..models.search_request import SearchRequest
 from ..models.search_response import SearchResponse
 from ..types import UNSET
+from .token_utils import current_token
 
 
 class DocumentClient:
@@ -43,11 +44,12 @@ class DocumentClient:
     self.timeout = config.get("timeout", 60)
 
   def _get_client(self) -> AuthenticatedClient:
-    if not self.token:
+    token = current_token(self.config, self.token)
+    if not token:
       raise Exception("No API key provided. Set X-API-Key in headers.")
     return retrying_authenticated_client(
       base_url=self.base_url,
-      token=self.token,
+      token=token,
       headers=self.headers,
       config=self.config,
     )

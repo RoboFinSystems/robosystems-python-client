@@ -300,8 +300,13 @@ class TestCancelOperation:
   def test_cancel_success(self, mock_cancel, mock_config):
     """Test successful cancellation."""
     mock_resp = Mock()
+    mock_resp.status_code = 200
     mock_resp.parsed = CancelOperationResponseCanceloperation.from_dict(
-      {"cancelled": True}
+      {
+        "operation_id": "op-cancel",
+        "status": "cancelled",
+        "message": "Operation has been cancelled",
+      }
     )
     mock_cancel.return_value = mock_resp
 
