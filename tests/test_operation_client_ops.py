@@ -9,6 +9,7 @@ Dataclass and enum tests already exist in tests/test_operation_client.py.
 
 import threading
 import time
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
@@ -259,6 +260,43 @@ class TestMonitorOperation:
 
     assert time.monotonic() - started < 2
     assert "op-silent" not in client.active_operations
+
+  def test_monitor_timeout_fires_on_time_over_a_real_socket(self, mock_config):
+    """A blocked socket read must not hold the timeout to the stream's own
+    30s read timeout: a server that keeps the stream open with keepalives
+    and never finishes is given up on at `timeout`."""
+    stop = threading.Event()
+
+    class KeepaliveStream(BaseHTTPRequestHandler):
+      def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream")
+        self.end_headers()
+        while not stop.is_set():
+          try:
+            self.wfile.write(b": keepalive\n\n")
+            self.wfile.flush()
+          except OSError:
+            return
+          stop.wait(0.5)
+
+      def log_message(self, *args):
+        pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), KeepaliveStream)
+    server.daemon_threads = True
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+      config = {**mock_config, "base_url": f"http://127.0.0.1:{server.server_port}"}
+      client = OperationClient(config)
+      started = time.monotonic()
+      with pytest.raises(TimeoutError, match="timed out after 1s"):
+        client.monitor_operation("op-open", MonitorOptions(timeout=1))
+      assert time.monotonic() - started < 5
+    finally:
+      stop.set()
+      server.shutdown()
+      server.server_close()
 
   @patch("robosystems_client.clients.operation_client.SSEClient")
   def test_monitor_completion_beats_timeout(self, MockSSE, mock_config):
