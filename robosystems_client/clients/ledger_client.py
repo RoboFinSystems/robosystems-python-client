@@ -2642,7 +2642,7 @@ class LedgerClient:
     A download is a read, so the presigned URL is resolved through the
     GraphQL ``reportDownloadUrl`` field (the REST download route was
     retired). Every flavor resolves to a short-lived presigned S3 URL —
-    the Tavi model is stamped at publish time; the holon and XBRL are
+    the holon is stamped at publish time; the Tavi model and XBRL are
     materialized + cached on first request. The client follows the URL
     and pulls the bytes.
 
@@ -2651,8 +2651,8 @@ class LedgerClient:
         report_id: Report identifier (``rpt_``-prefixed ULID).
         format: Serialization flavor — ``"holon-jsonld"`` (default, the
             dataset-form scene/boundary/projection holon, which carries
-            the whole report), ``"tavi"`` (the Project Tavi compiled
-            model stamped at publish), or ``"xbrl-2.1"``. The enum names ``"TAVI"`` /
+            the whole report and is stamped at publish), ``"tavi"`` (the
+            Project Tavi compiled model), or ``"xbrl-2.1"``. The enum names ``"TAVI"`` /
             ``"HOLON_JSONLD"`` / ``"XBRL_2_1"`` are also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
