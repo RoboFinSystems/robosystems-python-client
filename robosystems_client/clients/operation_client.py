@@ -5,6 +5,7 @@ Provides comprehensive operation monitoring with SSE support.
 
 import asyncio
 import logging
+import threading
 from dataclasses import dataclass
 from typing import Dict, Any, Optional, Callable, List, cast
 from datetime import datetime
@@ -67,7 +68,7 @@ class MonitorOptions:
 
   on_progress: Optional[Callable[[OperationProgress], None]] = None
   on_queue_update: Optional[Callable[[int, int], None]] = None
-  timeout: Optional[int] = None
+  timeout: Optional[float] = None  # seconds
   poll_interval: Optional[int] = None
 
 
@@ -132,8 +133,6 @@ class OperationClient:
       self.headers["X-API-Key"] = self.token
     self.active_operations: Dict[str, SSEClient] = {}
     # Thread safety for operations tracking
-    import threading
-
     self._lock = threading.Lock()
 
   def monitor_operation(
@@ -225,12 +224,30 @@ class OperationClient:
     sse_client.on("error", on_connection_error)
     sse_client.on("max_retries_exceeded", on_connection_error)
 
+    # connect() blocks, so the timeout closes the stream from a timer thread,
+    # which ends the read and returns control here.
+    timed_out = threading.Event()
+
+    def on_timeout():
+      timed_out.set()
+      sse_client.close()
+
+    timer = threading.Timer(options.timeout, on_timeout) if options.timeout else None
+
     # Connect and monitor. Registered first so cancel_operation() can close
     # the stream; connect() blocks until the stream ends (or never opens).
     try:
       with self._lock:
         self.active_operations[operation_id] = sse_client
+      if timer:
+        timer.daemon = True
+        timer.start()
       sse_client.connect(operation_id)
+
+      if not completed and timed_out.is_set():
+        raise TimeoutError(
+          f"Operation {operation_id} timed out after {options.timeout}s"
+        )
 
       if not completed:
         # The stream ended without a terminal event: no verdict to report,
@@ -240,6 +257,8 @@ class OperationClient:
         )
 
     finally:
+      if timer:
+        timer.cancel()
       # Clean up with thread safety
       with self._lock:
         if operation_id in self.active_operations:
