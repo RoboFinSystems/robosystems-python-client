@@ -3,9 +3,10 @@
 Provides intelligent operator execution with automatic strategy selection.
 """
 
+import json
 import time
 from dataclasses import dataclass
-from typing import Dict, Any, Optional, Callable, cast
+from typing import Dict, Any, List, Optional, Callable, cast
 from datetime import datetime
 
 from ..api.operator.auto_select_operator import sync_detailed as auto_select_operator
@@ -19,7 +20,8 @@ from ..client import Client
 from .retry import retrying_client
 from ..models.operator_request import OperatorRequest
 from ..models.operator_message import OperatorMessage
-from ..types import UNSET
+from ..models.response_mode import ResponseMode
+from ..types import UNSET, Unset
 from .sse_client import SSEClient, SSEConfig, EventType, event_error_message
 from .token_utils import resolve_auth_headers, resolve_config_token
 
@@ -95,16 +97,6 @@ def _operator_result(data: Dict[str, Any]) -> OperatorResult:
   )
 
 
-def _attr_or_none(data: Any, name: str) -> Any:
-  """An attrs-model field as a plain value: UNSET → None, models → dicts."""
-  value = getattr(data, name, None)
-  if value is UNSET:
-    return None
-  if hasattr(value, "to_dict"):
-    return value.to_dict()
-  return value
-
-
 @dataclass
 class QueuedOperatorResponse:
   """Response when operator execution is queued"""
@@ -131,6 +123,81 @@ def _response_detail(response: Any) -> str:
   else:
     text = str(content or "")
   return text[:200] or "empty response"
+
+
+def _status_code(response: Any) -> Optional[int]:
+  """The HTTP status of a generated-client response, when it carries one."""
+  code = getattr(response, "status_code", None)
+  return int(code) if isinstance(code, int) else None
+
+
+def _response_body(response: Any) -> Optional[Dict[str, Any]]:
+  """The JSON body of an operator response as a dict.
+
+  The generated parser yields ``None`` for a 202, so its body (the queued
+  operation and its links) is read off the raw content instead.
+  """
+  parsed = getattr(response, "parsed", None)
+  if isinstance(parsed, dict):
+    return parsed
+  if parsed is not None and hasattr(parsed, "to_dict"):
+    body = parsed.to_dict()
+    if isinstance(body, dict):
+      return body
+  content = getattr(response, "content", None)
+  if isinstance(content, (bytes, str)) and content:
+    try:
+      body = json.loads(content)
+    except ValueError:
+      return None
+    return body if isinstance(body, dict) else None
+  return None
+
+
+def _response_mode(mode: Optional[str]) -> ResponseMode | Unset:
+  """`OperatorOptions.mode` as the endpoint's `?mode=` value, when it is one."""
+  try:
+    return ResponseMode(mode) if mode else UNSET
+  except ValueError:
+    return UNSET
+
+
+def _wrap_call_error(error: Exception) -> Exception:
+  """A transport-level failure of the operator call, labelled for the caller."""
+  error_msg = str(error)
+  if "401" in error_msg or "403" in error_msg or "unauthorized" in error_msg.lower():
+    return Exception(f"Authentication failed during operator execution: {error_msg}")
+  return Exception(f"Operator execution failed: {error_msg}")
+
+
+def _read_writes(source: Any) -> List[Dict[str, Any]]:
+  """The `writes` a stopped run had already landed, from whichever payload has them."""
+  writes = source.get("writes") if isinstance(source, dict) else None
+  if not isinstance(writes, list):
+    return []
+  return [w for w in writes if isinstance(w, dict)]
+
+
+class OperatorRunError(Exception):
+  """A run that failed or was cancelled.
+
+  ``writes`` lists what the run had already changed on the graph before it
+  stopped, so a caller can show a receipt rather than invite a retry that
+  repeats them. ``status`` is ``"failed"`` or ``"cancelled"``.
+  """
+
+  def __init__(
+    self,
+    message: str,
+    status: str,
+    writes: Optional[List[Dict[str, Any]]] = None,
+    operation_id: Optional[str] = None,
+  ):
+    super().__init__(message)
+    self.message = message
+    self.status = status
+    self.writes: List[Dict[str, Any]] = list(writes or [])
+    self.operation_id = operation_id
 
 
 class QueuedOperatorError(Exception):
@@ -201,118 +268,12 @@ class OperatorClient:
         graph_id=graph_id,
         client=client,
         body=operator_request,
+        mode=_response_mode(options.mode),
       )
-
-      # Check response type and handle accordingly
-      if hasattr(response, "parsed") and response.parsed:
-        response_data = response.parsed
-
-        # Handle both dict and attrs object responses
-        if isinstance(response_data, dict):
-          data = response_data
-        else:
-          # Response is an attrs object
-          data = response_data
-
-        # Check if this is an immediate response (sync or SSE execution)
-        has_content = False
-        if isinstance(data, dict):
-          has_content = "content" in data and "operator_used" in data
-        else:
-          has_content = hasattr(data, "content") and hasattr(data, "operator_used")
-
-        if has_content:
-          # Extract data from either dict or attrs object
-          if isinstance(data, dict):
-            return OperatorResult(
-              content=data["content"],
-              operator_used=data["operator_used"],
-              mode_used=data["mode_used"],
-              metadata=data.get("metadata"),
-              tokens_used=data.get("tokens_used"),
-              confidence_score=data.get("confidence_score"),
-              execution_time=data.get("execution_time"),
-              timestamp=data.get("timestamp", datetime.now().isoformat()),
-              error_details=data.get("error_details"),
-            )
-          else:
-            # attrs object - access attributes directly
-            return OperatorResult(
-              content=data.content if data.content is not UNSET else "",
-              operator_used=data.operator_used
-              if data.operator_used is not UNSET
-              else "unknown",
-              mode_used=data.mode_used.value
-              if hasattr(data.mode_used, "value")
-              else data.mode_used
-              if data.mode_used is not UNSET
-              else "standard",
-              metadata=data.metadata if data.metadata is not UNSET else None,
-              tokens_used=data.tokens_used if data.tokens_used is not UNSET else None,
-              confidence_score=data.confidence_score
-              if data.confidence_score is not UNSET
-              else None,
-              execution_time=data.execution_time
-              if data.execution_time is not UNSET
-              else None,
-              timestamp=data.timestamp
-              if hasattr(data, "timestamp") and data.timestamp is not UNSET
-              else datetime.now().isoformat(),
-              error_details=_attr_or_none(data, "error_details"),
-            )
-
-        # Check if this is a queued response (async background task execution)
-        is_queued = False
-        queued_response = None
-
-        if isinstance(data, dict):
-          is_queued = "operation_id" in data
-          if is_queued:
-            queued_response = QueuedOperatorResponse(
-              status=data.get("status", "queued"),
-              operation_id=data["operation_id"],
-              message=data.get("message", "Operator execution queued"),
-              sse_endpoint=data.get("sse_endpoint"),
-            )
-        else:
-          is_queued = hasattr(data, "operation_id")
-          if is_queued:
-            queued_response = QueuedOperatorResponse(
-              status=data.status if hasattr(data, "status") else "queued",
-              operation_id=data.operation_id,
-              message=data.message
-              if hasattr(data, "message") and data.message is not UNSET
-              else "Operator execution queued",
-              sse_endpoint=data.sse_endpoint
-              if hasattr(data, "sse_endpoint") and data.sse_endpoint is not UNSET
-              else None,
-            )
-
-        if is_queued and queued_response:
-          # If user doesn't want to wait, raise with queue info
-          if options.max_wait == 0:
-            raise QueuedOperatorError(queued_response)
-
-          # Use SSE to monitor the operation
-          return self._wait_for_operator_completion(
-            queued_response.operation_id, options
-          )
-
     except Exception as e:
-      if isinstance(e, QueuedOperatorError):
-        raise
+      raise _wrap_call_error(e) from e
 
-      error_msg = str(e)
-      # Check for authentication errors
-      if (
-        "401" in error_msg or "403" in error_msg or "unauthorized" in error_msg.lower()
-      ):
-        raise Exception(f"Authentication failed during operator execution: {error_msg}")
-      else:
-        raise Exception(f"Operator execution failed: {error_msg}")
-
-    # Unexpected response format
-    raise Exception("Unexpected response format from operator endpoint")
+    return self._settle(response, options)
 
   def execute_operator(
     self,
@@ -347,115 +308,48 @@ class OperatorClient:
         operator_type=operator_type,
         client=client,
         body=operator_request,
+        mode=_response_mode(options.mode),
       )
-
-      # Check response type and handle accordingly
-      if hasattr(response, "parsed") and response.parsed:
-        response_data = response.parsed
-
-        # Handle both dict and attrs object responses
-        if isinstance(response_data, dict):
-          data = response_data
-        else:
-          data = response_data
-
-        # Check if this is an immediate response
-        has_content = False
-        if isinstance(data, dict):
-          has_content = "content" in data and "operator_used" in data
-        else:
-          has_content = hasattr(data, "content") and hasattr(data, "operator_used")
-
-        if has_content:
-          # Extract data from either dict or attrs object
-          if isinstance(data, dict):
-            return OperatorResult(
-              content=data["content"],
-              operator_used=data["operator_used"],
-              mode_used=data["mode_used"],
-              metadata=data.get("metadata"),
-              tokens_used=data.get("tokens_used"),
-              confidence_score=data.get("confidence_score"),
-              execution_time=data.get("execution_time"),
-              timestamp=data.get("timestamp", datetime.now().isoformat()),
-              error_details=data.get("error_details"),
-            )
-          else:
-            # attrs object
-            return OperatorResult(
-              content=data.content if data.content is not UNSET else "",
-              operator_used=data.operator_used
-              if data.operator_used is not UNSET
-              else "unknown",
-              mode_used=data.mode_used.value
-              if hasattr(data.mode_used, "value")
-              else data.mode_used
-              if data.mode_used is not UNSET
-              else "standard",
-              metadata=data.metadata if data.metadata is not UNSET else None,
-              tokens_used=data.tokens_used if data.tokens_used is not UNSET else None,
-              confidence_score=data.confidence_score
-              if data.confidence_score is not UNSET
-              else None,
-              execution_time=data.execution_time
-              if data.execution_time is not UNSET
-              else None,
-              timestamp=data.timestamp
-              if hasattr(data, "timestamp") and data.timestamp is not UNSET
-              else datetime.now().isoformat(),
-              error_details=_attr_or_none(data, "error_details"),
-            )
-
-        # Check if this is a queued response
-        is_queued = False
-        queued_response = None
-
-        if isinstance(data, dict):
-          is_queued = "operation_id" in data
-          if is_queued:
-            queued_response = QueuedOperatorResponse(
-              status=data.get("status", "queued"),
-              operation_id=data["operation_id"],
-              message=data.get("message", "Operator execution queued"),
-              sse_endpoint=data.get("sse_endpoint"),
-            )
-        else:
-          is_queued = hasattr(data, "operation_id")
-          if is_queued:
-            queued_response = QueuedOperatorResponse(
-              status=data.status if hasattr(data, "status") else "queued",
-              operation_id=data.operation_id,
-              message=data.message
-              if hasattr(data, "message") and data.message is not UNSET
-              else "Operator execution queued",
-              sse_endpoint=data.sse_endpoint
-              if hasattr(data, "sse_endpoint") and data.sse_endpoint is not UNSET
-              else None,
-            )
-
-        if is_queued and queued_response:
-          # If user doesn't want to wait, raise with queue info
-          if options.max_wait == 0:
-            raise QueuedOperatorError(queued_response)
-
-          # Use SSE to monitor the operation
-          return self._wait_for_operator_completion(
-            queued_response.operation_id, options
-          )
-
     except Exception as e:
-      if isinstance(e, QueuedOperatorError):
-        raise
+      raise _wrap_call_error(e) from e
 
-      error_msg = str(e)
-      if (
-        "401" in error_msg or "403" in error_msg or "unauthorized" in error_msg.lower()
-      ):
-        raise Exception(f"Authentication failed during operator execution: {error_msg}")
-      else:
-        raise Exception(f"Operator execution failed: {error_msg}")
+    return self._settle(response, options)
 
-    # Unexpected response format
+  def _settle(self, response: Any, options: OperatorOptions) -> OperatorResult:
+    """Resolve an operator endpoint response.
+
+    A 200 body is the result. A 202 carries the queued operation's links
+    — the generated parser yields ``None`` for it, so the body is read off
+    the raw response — and is followed to completion.
+    """
+    code = _status_code(response)
+    if code is not None and code >= 400:
+      detail = _response_detail(response)
+      if code in (401, 403):
+        raise Exception(
+          f"Authentication failed during operator execution: {code}: {detail}"
+        )
+      raise Exception(f"Operator execution failed: {code}: {detail}")
+
+    data = _response_body(response)
+    if data is None:
+      raise Exception("Unexpected response format from operator endpoint")
+
+    if "content" in data and "operator_used" in data:
+      return _operator_result(data)
+
+    if data.get("operation_id"):
+      links = data.get("_links") or {}
+      queued_response = QueuedOperatorResponse(
+        status=data.get("status") or "queued",
+        operation_id=data["operation_id"],
+        message=data.get("message") or "Operator execution queued",
+        sse_endpoint=data.get("sse_endpoint") or links.get("stream"),
+      )
+      if options.max_wait == 0:
+        raise QueuedOperatorError(queued_response)
+      return self._wait_for_operator_completion(queued_response.operation_id, options)
+
     raise Exception("Unexpected response format from operator endpoint")
 
   def _wait_for_operator_completion(
@@ -473,9 +367,10 @@ class OperatorClient:
 
     def on_progress(data):
       if options.on_progress:
-        options.on_progress(
-          data.get("message", "Processing..."), data.get("percentage")
-        )
+        percent = data.get("progress_percent")
+        if percent is None:
+          percent = data.get("percentage")
+        options.on_progress(data.get("message", "Processing..."), percent)
 
     def on_operator_started(data):
       if options.on_progress:
@@ -500,12 +395,17 @@ class OperatorClient:
     def on_error(err):
       # The run itself failed — a verdict, not a transport problem.
       nonlocal error, completed
-      error = Exception(event_error_message(err))
+      details = err.get("error_details") if isinstance(err, dict) else None
+      error = OperatorRunError(
+        event_error_message(err), "failed", _read_writes(details), operation_id
+      )
       completed = True
 
     def on_cancelled(_data=None):
       nonlocal error, completed
-      error = Exception("Operator execution cancelled")
+      error = OperatorRunError(
+        "Operator execution cancelled", "cancelled", [], operation_id
+      )
       completed = True
 
     def on_transport_error(err):
@@ -610,11 +510,19 @@ class OperatorClient:
       if state == "completed":
         return _operator_result(status.get("result") or {})
       if state == "failed":
-        raise Exception(
-          status.get("error") or status.get("message") or "Operator run failed"
+        raise OperatorRunError(
+          status.get("error") or status.get("message") or "Operator run failed",
+          "failed",
+          _read_writes(status),
+          operation_id,
         )
       if state == "cancelled":
-        raise Exception("Operator execution cancelled")
+        raise OperatorRunError(
+          "Operator execution cancelled",
+          "cancelled",
+          _read_writes(status.get("result")),
+          operation_id,
+        )
       if options.on_progress and status.get("message"):
         options.on_progress(status["message"], None)
       time.sleep(interval)

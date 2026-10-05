@@ -1177,12 +1177,13 @@ query ListChartTemplates {
 """
 
 LIST_INFORMATION_BLOCKS_GQL = """
-query ListInformationBlocks($blockType: String, $category: String, $limit: Int, $offset: Int) {
+query ListInformationBlocks($blockType: String, $category: String, $limit: Int, $offset: Int, $scenarioId: String) {
   informationBlocks(
     blockType: $blockType
     category: $category
     limit: $limit
     offset: $offset
+    scenarioId: $scenarioId
   ) {
     id
     blockType

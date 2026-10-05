@@ -82,9 +82,14 @@ class AuthenticatedClients(RoboSystemsClients):
   def execute_cypher_query(
     self, graph_id: str, query: str, parameters: Dict[str, Any] = None
   ):
-    """Execute Cypher query using authenticated SDK client"""
+    """Execute Cypher query using authenticated SDK client.
+
+    A query the API queues (202) is followed over its SSE stream to the
+    result, as :meth:`QueryClient.execute_query` does.
+    """
     from ..api.query.execute_cypher import sync_detailed
     from ..models.cypher_statement_request import CypherStatementRequest
+    from .query_client import QueryOptions, QueryResult, _interpret_response
 
     request = CypherStatementRequest(query=query, parameters=parameters or {})
 
@@ -95,15 +100,17 @@ class AuthenticatedClients(RoboSystemsClients):
       body=request,
     )
 
-    if response.parsed:
-      return {
-        "data": getattr(response.parsed, "data", []),
-        "columns": getattr(response.parsed, "columns", []),
-        "row_count": getattr(response.parsed, "row_count", 0),
-        "execution_time_ms": getattr(response.parsed, "execution_time_ms", 0),
-      }
-    else:
-      raise Exception(f"Query failed: {response.status_code}")
+    outcome = _interpret_response(response, graph_id)
+    if not isinstance(outcome, QueryResult):
+      outcome = self.query._wait_for_query_completion(
+        outcome.operation_id, QueryOptions()
+      )
+    return {
+      "data": outcome.data,
+      "columns": outcome.columns,
+      "row_count": outcome.row_count,
+      "execution_time_ms": outcome.execution_time_ms,
+    }
 
 
 class CookieAuthClients(RoboSystemsClients):

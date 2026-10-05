@@ -161,6 +161,7 @@ class AsyncRoboSystemsClients:
       "max_retries": config.max_retries,
       "retry_delay": config.retry_delay,
       "timeout": config.timeout,
+      "token_provider": config.token_provider,
     }
 
     # Initialize async clients

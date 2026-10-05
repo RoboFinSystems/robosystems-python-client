@@ -446,6 +446,18 @@ def resolve_config_token(config: Dict[str, Any]) -> Optional[str]:
   return config.get("token")
 
 
+def current_token(config: Dict[str, Any], static_token: Optional[str]) -> Optional[str]:
+  """The credential for one call: ``token_provider`` wins over ``static_token``.
+
+  For the facades that keep the static token on ``self.token``; the same
+  precedence as :func:`resolve_config_token`.
+  """
+  provider = config.get("token_provider")
+  if provider is not None:
+    return provider()
+  return static_token
+
+
 _AUTH_HEADER_NAMES = ("x-api-key", "authorization")
 
 
@@ -467,6 +479,11 @@ def apply_auth_header(headers: Dict[str, str], credential: str) -> None:
     headers["X-API-Key"] = credential
   else:
     headers["Authorization"] = f"Bearer {credential}"
+
+
+def has_auth_header(headers: Dict[str, str]) -> bool:
+  """Whether ``headers`` carry a credential (``X-API-Key`` or ``Authorization``)."""
+  return any(k.lower() in _AUTH_HEADER_NAMES and v for k, v in headers.items())
 
 
 def resolve_auth_headers(config: Dict[str, Any]) -> Dict[str, str]:

@@ -3,12 +3,14 @@
 Provides comprehensive operation monitoring with SSE support.
 """
 
+import asyncio
 import logging
 from dataclasses import dataclass
 from typing import Dict, Any, Optional, Callable, List, cast
 from datetime import datetime
 from enum import Enum
 
+from ..client import Client
 from .sse_client import SSEClient, AsyncSSEClient, SSEConfig, EventType
 from .token_utils import resolve_auth_headers
 
@@ -87,6 +89,33 @@ def _parsed_dict(parsed: Any) -> Dict[str, Any] | None:
   return None
 
 
+def _progress_percent(data: Dict[str, Any]) -> Optional[float]:
+  """Progress of an `operation_progress` event; the API emits `progress_percent`."""
+  percent = data.get("progress_percent")
+  return percent if percent is not None else data.get("percentage")
+
+
+def _status_result(operation_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+  return {
+    "operation_id": operation_id,
+    "status": payload.get("status", "unknown"),
+    "progress": payload.get("progress"),
+    "result": payload.get("result"),
+    "error": payload.get("error"),
+  }
+
+
+def _is_cancelled(response: Any, payload: Dict[str, Any] | None) -> bool:
+  """Whether a `DELETE /v1/operations/{id}` answer reports the cancel landed.
+
+  The API answers 200 with ``{operation_id, status: "cancelled", message}``.
+  """
+  code = getattr(response, "status_code", None)
+  if isinstance(code, int) and code != 200:
+    return False
+  return payload is not None and payload.get("status") == "cancelled"
+
+
 class OperationClient:
   """Client for monitoring operations via SSE"""
 
@@ -138,7 +167,7 @@ class OperationClient:
     def on_operation_progress(data):
       progress = OperationProgress(
         message=data.get("message", "Processing..."),
-        percentage=data.get("percentage"),
+        percentage=_progress_percent(data),
         current_step=data.get("current_step"),
         total_steps=data.get("total_steps"),
       )
@@ -170,7 +199,7 @@ class OperationClient:
       error = Exception(result.error)
       completed = True
 
-    def on_operation_cancelled():
+    def on_operation_cancelled(_data=None):
       nonlocal completed
       result.status = OperationStatus.CANCELLED
       result.completed_at = datetime.now()
@@ -196,30 +225,19 @@ class OperationClient:
     sse_client.on("error", on_connection_error)
     sse_client.on("max_retries_exceeded", on_connection_error)
 
-    # Connect and monitor
+    # Connect and monitor. Registered first so cancel_operation() can close
+    # the stream; connect() blocks until the stream ends (or never opens).
     try:
-      sse_client.connect(operation_id)
       with self._lock:
         self.active_operations[operation_id] = sse_client
+      sse_client.connect(operation_id)
 
-      # Wait for completion
-      import time
-
-      start_time = datetime.now()
-      while not completed:
-        if error:
-          raise error
-
-        # Check timeout
-        if options.timeout:
-          elapsed = (datetime.now() - start_time).total_seconds()
-          if elapsed > options.timeout:
-            sse_client.close()
-            raise TimeoutError(
-              f"Operation {operation_id} timed out after {options.timeout}s"
-            )
-
-        time.sleep(options.poll_interval or 0.1)
+      if not completed:
+        # The stream ended without a terminal event: no verdict to report,
+        # and nothing left to wait on.
+        raise Exception(
+          f"Operation {operation_id} stream ended before a terminal event"
+        )
 
     finally:
       # Clean up with thread safety
@@ -257,13 +275,7 @@ class OperationClient:
       response = get_operation_status(operation_id=operation_id, client=client)
       payload = _parsed_dict(response.parsed)
       if payload is not None:
-        return {
-          "operation_id": operation_id,
-          "status": payload.get("status", "unknown"),
-          "progress": payload.get("progress"),
-          "result": payload.get("result"),
-          "error": payload.get("error"),
-        }
+        return _status_result(operation_id, payload)
     except Exception as e:
       # Logged rather than silently shaped into a result: swallowing here is
       # what hid the TypeError above for as long as it lived.
@@ -289,7 +301,7 @@ class OperationClient:
       # through `to_dict()` because attribute access always raises.
       response = cancel_operation(operation_id=operation_id, client=client)
       payload = _parsed_dict(response.parsed)
-      cancelled = bool(payload.get("cancelled")) if payload is not None else False
+      cancelled = _is_cancelled(response, payload)
     except Exception as e:
       logger.warning("Failed to cancel operation %s: %s", operation_id, e)
       return False
@@ -362,7 +374,7 @@ class AsyncOperationClient:
     def on_operation_progress(data):
       progress = OperationProgress(
         message=data.get("message", "Processing..."),
-        percentage=data.get("percentage"),
+        percentage=_progress_percent(data),
         current_step=data.get("current_step"),
         total_steps=data.get("total_steps"),
       )
@@ -394,7 +406,7 @@ class AsyncOperationClient:
       error = Exception(result.error)
       completed = True
 
-    def on_operation_cancelled():
+    def on_operation_cancelled(_data=None):
       nonlocal completed
       result.status = OperationStatus.CANCELLED
       result.completed_at = datetime.now()
@@ -420,29 +432,20 @@ class AsyncOperationClient:
     sse_client.on("error", on_connection_error)
     sse_client.on("max_retries_exceeded", on_connection_error)
 
-    # Connect and monitor
+    # Connect and monitor; connect() returns once the stream has ended.
     try:
-      await sse_client.connect(operation_id)
       self.active_operations[operation_id] = sse_client
+      try:
+        await asyncio.wait_for(sse_client.connect(operation_id), options.timeout)
+      except asyncio.TimeoutError:
+        raise TimeoutError(
+          f"Operation {operation_id} timed out after {options.timeout}s"
+        ) from None
 
-      # Wait for completion
-      import asyncio
-
-      start_time = datetime.now()
-      while not completed:
-        if error:
-          raise error
-
-        # Check timeout
-        if options.timeout:
-          elapsed = (datetime.now() - start_time).total_seconds()
-          if elapsed > options.timeout:
-            await sse_client.close()
-            raise TimeoutError(
-              f"Operation {operation_id} timed out after {options.timeout}s"
-            )
-
-        await asyncio.sleep(options.poll_interval or 0.1)
+      if not completed:
+        raise Exception(
+          f"Operation {operation_id} stream ended before a terminal event"
+        )
 
     finally:
       # Clean up
@@ -452,15 +455,43 @@ class AsyncOperationClient:
 
     return result
 
+  def _rest_client(self) -> Client:
+    """A REST client for one call, carrying the credential current now."""
+    return Client(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+
   async def get_operation_status(self, operation_id: str) -> Dict[str, Any]:
     """Get current status of an operation (async API call)"""
-    # Would use async version of the generated client
-    pass
+    from ..api.operations.get_operation_status import asyncio_detailed
+
+    try:
+      async with self._rest_client() as client:
+        response = await asyncio_detailed(operation_id=operation_id, client=client)
+      payload = _parsed_dict(response.parsed)
+      if payload is not None:
+        return _status_result(operation_id, payload)
+    except Exception as e:
+      logger.warning("Failed to get status for operation %s: %s", operation_id, e)
+      return {"operation_id": operation_id, "status": "error", "error": str(e)}
+
+    return {"operation_id": operation_id, "status": "unknown"}
 
   async def cancel_operation(self, operation_id: str) -> bool:
     """Cancel an operation (async)"""
-    # Would use async version of the generated client
-    pass
+    from ..api.operations.cancel_operation import asyncio_detailed
+
+    try:
+      async with self._rest_client() as client:
+        response = await asyncio_detailed(operation_id=operation_id, client=client)
+      cancelled = _is_cancelled(response, _parsed_dict(response.parsed))
+    except Exception as e:
+      logger.warning("Failed to cancel operation %s: %s", operation_id, e)
+      return False
+
+    if operation_id in self.active_operations:
+      await self.active_operations[operation_id].close()
+      del self.active_operations[operation_id]
+
+    return cancelled
 
   async def close_all(self):
     """Close all active operation monitors (async)"""

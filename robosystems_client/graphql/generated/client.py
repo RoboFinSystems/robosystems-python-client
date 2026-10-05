@@ -568,6 +568,7 @@ class Client(BaseClient):
     category: Union[Optional[str], UnsetType] = UNSET,
     limit: Union[Optional[int], UnsetType] = UNSET,
     offset: Union[Optional[int], UnsetType] = UNSET,
+    scenario_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> ListInformationBlocks:
     variables: dict[str, object] = {
@@ -575,6 +576,7 @@ class Client(BaseClient):
       "category": category,
       "limit": limit,
       "offset": offset,
+      "scenarioId": scenario_id,
     }
     response = self.execute(
       query=LIST_INFORMATION_BLOCKS_GQL,

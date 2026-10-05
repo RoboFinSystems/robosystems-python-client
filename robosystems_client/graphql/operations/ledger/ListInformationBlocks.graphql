@@ -3,12 +3,14 @@ query ListInformationBlocks(
   $category: String
   $limit: Int
   $offset: Int
+  $scenarioId: String
 ) {
   informationBlocks(
     blockType: $blockType
     category: $category
     limit: $limit
     offset: $offset
+    scenarioId: $scenarioId
   ) {
     id blockType name displayName category
     taxonomyId taxonomyName

@@ -547,6 +547,7 @@ from ..models.initialize_chart_of_accounts_request_template import (
 from ..models.initialize_ledger_request import InitializeLedgerRequest
 from ..models.create_publish_list_request import CreatePublishListRequest
 from ..models.create_report_request import CreateReportRequest
+from ..models.period_spec import PeriodSpec
 from ..models.delete_publish_list_operation import DeletePublishListOperation
 from ..models.delete_report_operation import DeleteReportOperation
 from ..models.file_report_request import FileReportRequest
@@ -615,6 +616,13 @@ _DOWNLOAD_FORMAT_ALIASES = {
   "xbrl-2.1": "XBRL_2_1",
   "tavi": "TAVI",
 }
+
+
+def _as_date(value: str | datetime.date) -> datetime.date:
+  """An ISO ``YYYY-MM-DD`` string or a date, as the date the request models need."""
+  if isinstance(value, datetime.date):
+    return value
+  return datetime.date.fromisoformat(value)
 
 
 def _parse_filename(content_disposition: str) -> str | None:
@@ -730,12 +738,6 @@ class LedgerClient:
   def _is_envelope(self, value: Any) -> bool:
     return all(hasattr(value, f) for f in self._ENVELOPE_FIELDS)
 
-  def _unwrap(self, label: str, envelope: Any) -> Any:
-    """Unwrap an operation envelope and return `result` (None on failure)."""
-    if not self._is_envelope(envelope):
-      raise RuntimeError(f"{label} failed: {envelope!r}")
-    return envelope.result
-
   def _typed_result(
     self,
     label: str,
@@ -784,8 +786,8 @@ class LedgerClient:
 
     Returns the parsed envelope unchanged. Typed-envelope ops surface
     ``envelope.result`` as the SDK's typed attrs class (e.g.
-    ``ReportResponse``); untyped ops surface it as a plain dict via
-    ``OperationEnvelopeResultType0``. Facade methods are responsible
+    ``ReportResponse``); untyped ops (the plain ``OperationEnvelope``)
+    surface it as the raw JSON value, usually a dict. Facade methods are responsible
     for asserting / casting the result to the type they advertise.
     """
     if response.status_code not in (HTTPStatus.OK, HTTPStatus.ACCEPTED):
@@ -1396,11 +1398,14 @@ class LedgerClient:
     category: str | None = None,
     limit: int | None = None,
     offset: int | None = None,
+    scenario_id: str | None = None,
   ) -> list[ListInformationBlocksInformationBlocks]:
     """List Information Block envelopes, optionally filtered.
 
     Replaces the old ``list_schedules`` method — use
     ``block_type='schedule'`` for the same set of blocks.
+    ``scenario_id`` (a forecast block's structure id) threads into each
+    envelope's FactSet binding.
     """
     data = self._query(
       graph_id,
@@ -1410,6 +1415,7 @@ class LedgerClient:
         "category": category,
         "limit": limit,
         "offset": offset,
+        "scenarioId": scenario_id,
       },
     )
     return ListInformationBlocks.model_validate(data).information_blocks
@@ -1552,8 +1558,8 @@ class LedgerClient:
     graph_id: str,
     structure_id: str,
     disposal_date: str,
-    memo: str,
-    reason: str,
+    memo: str | None = None,
+    reason: str | None = None,
     sale_proceeds: int | None = None,
     proceeds_element_id: str | None = None,
     gain_loss_element_id: str | None = None,
@@ -1564,13 +1570,14 @@ class LedgerClient:
 
     Routes through ``create-event-block`` with
     ``event_type='asset_disposed'``. ``source`` defaults to ``"manual"``
-    (user-initiated disposal); sync adapters override.
+    (user-initiated disposal); sync adapters override. ``memo`` and
+    ``reason`` are optional; the server fills in its own defaults.
     """
-    metadata: dict[str, Any] = {
-      "schedule_id": structure_id,
-      "memo": memo,
-      "reason": reason,
-    }
+    metadata: dict[str, Any] = {"schedule_id": structure_id}
+    if memo is not None:
+      metadata["memo"] = memo
+    if reason is not None:
+      metadata["reason"] = reason
     if sale_proceeds is not None:
       metadata["proceeds"] = sale_proceeds
     if proceeds_element_id is not None:
@@ -2489,22 +2496,32 @@ class LedgerClient:
     taxonomy_id: str = "rs-gaap",
     period_type: str = "quarterly",
     comparative: bool = True,
+    periods: list[PeriodSpec | dict[str, Any]] | None = None,
   ) -> ReportResponse:
     """Generate report facts from the ledger and publish a Report
     definition. Synchronous — returns the published report header.
 
     ``taxonomy_id`` defaults to ``"rs-gaap"``, the canonical reporting
     vocabulary (matches the backend's ``CreateReportRequest`` default).
+
+    ``periods`` sets the columns explicitly — ``PeriodSpec`` or
+    ``{"start", "end", "label"}`` dicts — for multi-period layouts
+    (YTD-by-quarter, multi-year). When given, the server ignores
+    ``period_start`` / ``period_end`` / ``comparative``.
     """
     body = CreateReportRequest(
       name=name,
       mapping_id=mapping_id,
-      period_start=period_start,
-      period_end=period_end,
+      period_start=_as_date(period_start),
+      period_end=_as_date(period_end),
       taxonomy_id=taxonomy_id,
       period_type=period_type,
       comparative=comparative,
     )
+    if periods:
+      body.periods = [
+        p if isinstance(p, PeriodSpec) else PeriodSpec.from_dict(p) for p in periods
+      ]
     response = op_create_report(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Create report", response)
     return self._typed_result("Create report", envelope, ReportResponse)
@@ -2569,8 +2586,8 @@ class LedgerClient:
     """
     body = RegenerateReportOperation(
       report_id=report_id,
-      period_start=period_start if period_start is not None else UNSET,
-      period_end=period_end if period_end is not None else UNSET,
+      period_start=_as_date(period_start) if period_start is not None else UNSET,
+      period_end=_as_date(period_end) if period_end is not None else UNSET,
     )
     response = op_regenerate_report(
       graph_id=graph_id, body=body, client=self._get_client()

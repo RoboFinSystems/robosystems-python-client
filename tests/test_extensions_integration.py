@@ -86,13 +86,18 @@ class TestAuthenticatedIntegration:
   @patch("robosystems_client.api.query.execute_cypher.sync_detailed")
   def test_cypher_query_execution(self, mock_sync_detailed, extensions):
     """Test executing Cypher queries through authenticated client"""
-    # Mock the response
+    # The generated parser hands a 200 body back as a plain dict.
     mock_response = Mock()
-    mock_response.parsed = Mock()
-    mock_response.parsed.data = [{"name": "Company A", "revenue": 1000000}]
-    mock_response.parsed.columns = ["name", "revenue"]
-    mock_response.parsed.row_count = 1
-    mock_response.parsed.execution_time_ms = 150
+    mock_response.status_code = 200
+    mock_response.headers = {"content-type": "application/json"}
+    mock_response.parsed = {
+      "success": True,
+      "data": [{"name": "Company A", "revenue": 1000000}],
+      "columns": ["name", "revenue"],
+      "row_count": 1,
+      "execution_time_ms": 150,
+      "graph_id": "test_graph",
+    }
     mock_sync_detailed.return_value = mock_response
 
     result = extensions.execute_cypher_query(
