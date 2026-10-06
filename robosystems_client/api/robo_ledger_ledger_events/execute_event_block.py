@@ -113,11 +113,12 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeExecuteEventBlockResponse]:
   """Execute Event Block
 
-   For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the captured GL
-  plan to the source-of-truth system (QuickBooks). Captures qb_txn_id on
-  event.metadata.qb_external_id, transitions status to 'fulfilled' (or 'pending' on rejection), and
-  promotes draft GL rows to 'posted'. Native-policy events fast-path through with no QB write —
-  RoboSystems is the system of record.
+   For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the event's
+  draft GL entries to the source-of-truth system (QuickBooks), each as its own JournalEntry. Records
+  the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
+  'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
+  is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
+  record.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -129,11 +130,12 @@ def sync_detailed(
           system.
 
           For events on a connection with `write_policy='qb_authoritative'`
-          (or `'hybrid'`), this triggers a synchronous write to QuickBooks
-          via the QB API. The returned `qb_txn_id` lands on
-          `event.metadata.qb_external_id` and the event transitions to
-          `committed` (in flight) → `fulfilled` (QB accepted) or `pending`
-          (QB rejected).
+          (or `'hybrid'`), this triggers a synchronous write to QuickBooks:
+          each draft entry posts as its own JournalEntry, with the entry id as
+          the RequestId, and its QuickBooks id is recorded per entry on
+          `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
+          draft remains, or `pending` when QuickBooks rejects an entry (what
+          landed is kept).
 
           `'native'`-policy events fast-path through with no QB write —
           RoboSystems IS the source of truth, no outbound publish needed.
@@ -168,11 +170,12 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeExecuteEventBlockResponse | None:
   """Execute Event Block
 
-   For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the captured GL
-  plan to the source-of-truth system (QuickBooks). Captures qb_txn_id on
-  event.metadata.qb_external_id, transitions status to 'fulfilled' (or 'pending' on rejection), and
-  promotes draft GL rows to 'posted'. Native-policy events fast-path through with no QB write —
-  RoboSystems is the system of record.
+   For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the event's
+  draft GL entries to the source-of-truth system (QuickBooks), each as its own JournalEntry. Records
+  the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
+  'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
+  is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
+  record.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -184,11 +187,12 @@ def sync(
           system.
 
           For events on a connection with `write_policy='qb_authoritative'`
-          (or `'hybrid'`), this triggers a synchronous write to QuickBooks
-          via the QB API. The returned `qb_txn_id` lands on
-          `event.metadata.qb_external_id` and the event transitions to
-          `committed` (in flight) → `fulfilled` (QB accepted) or `pending`
-          (QB rejected).
+          (or `'hybrid'`), this triggers a synchronous write to QuickBooks:
+          each draft entry posts as its own JournalEntry, with the entry id as
+          the RequestId, and its QuickBooks id is recorded per entry on
+          `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
+          draft remains, or `pending` when QuickBooks rejects an entry (what
+          landed is kept).
 
           `'native'`-policy events fast-path through with no QB write —
           RoboSystems IS the source of truth, no outbound publish needed.
@@ -218,11 +222,12 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeExecuteEventBlockResponse]:
   """Execute Event Block
 
-   For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the captured GL
-  plan to the source-of-truth system (QuickBooks). Captures qb_txn_id on
-  event.metadata.qb_external_id, transitions status to 'fulfilled' (or 'pending' on rejection), and
-  promotes draft GL rows to 'posted'. Native-policy events fast-path through with no QB write —
-  RoboSystems is the system of record.
+   For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the event's
+  draft GL entries to the source-of-truth system (QuickBooks), each as its own JournalEntry. Records
+  the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
+  'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
+  is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
+  record.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -234,11 +239,12 @@ async def asyncio_detailed(
           system.
 
           For events on a connection with `write_policy='qb_authoritative'`
-          (or `'hybrid'`), this triggers a synchronous write to QuickBooks
-          via the QB API. The returned `qb_txn_id` lands on
-          `event.metadata.qb_external_id` and the event transitions to
-          `committed` (in flight) → `fulfilled` (QB accepted) or `pending`
-          (QB rejected).
+          (or `'hybrid'`), this triggers a synchronous write to QuickBooks:
+          each draft entry posts as its own JournalEntry, with the entry id as
+          the RequestId, and its QuickBooks id is recorded per entry on
+          `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
+          draft remains, or `pending` when QuickBooks rejects an entry (what
+          landed is kept).
 
           `'native'`-policy events fast-path through with no QB write —
           RoboSystems IS the source of truth, no outbound publish needed.
@@ -271,11 +277,12 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeExecuteEventBlockResponse | None:
   """Execute Event Block
 
-   For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the captured GL
-  plan to the source-of-truth system (QuickBooks). Captures qb_txn_id on
-  event.metadata.qb_external_id, transitions status to 'fulfilled' (or 'pending' on rejection), and
-  promotes draft GL rows to 'posted'. Native-policy events fast-path through with no QB write —
-  RoboSystems is the system of record.
+   For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the event's
+  draft GL entries to the source-of-truth system (QuickBooks), each as its own JournalEntry. Records
+  the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
+  'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
+  is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
+  record.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -287,11 +294,12 @@ async def asyncio(
           system.
 
           For events on a connection with `write_policy='qb_authoritative'`
-          (or `'hybrid'`), this triggers a synchronous write to QuickBooks
-          via the QB API. The returned `qb_txn_id` lands on
-          `event.metadata.qb_external_id` and the event transitions to
-          `committed` (in flight) → `fulfilled` (QB accepted) or `pending`
-          (QB rejected).
+          (or `'hybrid'`), this triggers a synchronous write to QuickBooks:
+          each draft entry posts as its own JournalEntry, with the entry id as
+          the RequestId, and its QuickBooks id is recorded per entry on
+          `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
+          draft remains, or `pending` when QuickBooks rejects an entry (what
+          landed is kept).
 
           `'native'`-policy events fast-path through with no QB write —
           RoboSystems IS the source of truth, no outbound publish needed.

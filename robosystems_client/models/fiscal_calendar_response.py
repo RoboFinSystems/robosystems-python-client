@@ -35,7 +35,7 @@ class FiscalCalendarResponse:
           Default: False.
       blockers (list[str] | Unset): Structured blocker codes when closeable_now is False: 'sequence_violation',
           'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations',
-          'stranded_obligations'
+          'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts'
       pending_obligation_count (int | Unset): Number of pending schedule_entry_due events blocking close. Non-zero
           only when `pending_obligations` is in `blockers`. Default: 0.
       pending_obligation_sample (list[PendingObligationDetailResponse] | Unset): Sample of up to 5 pending obligations
