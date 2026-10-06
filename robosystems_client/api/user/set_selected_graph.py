@@ -1,6 +1,5 @@
 from http import HTTPStatus
 from typing import Any
-from urllib.parse import quote
 
 import httpx
 
@@ -8,21 +7,27 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.set_selected_graph_request import SetSelectedGraphRequest
 from ...models.success_response import SuccessResponse
 from ...types import Response
 
 
 def _get_kwargs(
-  graph_id: str,
+  *,
+  body: SetSelectedGraphRequest,
 ) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
 
   _kwargs: dict[str, Any] = {
-    "method": "post",
-    "url": "/v1/graphs/{graph_id}/select".format(
-      graph_id=quote(str(graph_id), safe=""),
-    ),
+    "method": "put",
+    "url": "/v1/user/selected-graph",
   }
 
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
+
+  _kwargs["headers"] = headers
   return _kwargs
 
 
@@ -87,17 +92,18 @@ def _build_response(
 
 
 def sync_detailed(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: SetSelectedGraphRequest,
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
-  """Select Graph
+  """Set Selected Graph
 
-   Deprecated: use `PUT /v1/user/selected-graph`, which writes the same selection. Remembers the graph
-  as the caller's current one.
+   Remembers the graph as the caller's current one: `GET /v1/graphs` then reports it as
+  `selectedGraphId`, and the apps open on it. One graph per user, replacing the previous selection.
+  Only a graph the caller belongs to can be selected; shared repositories cannot be.
 
   Args:
-      graph_id (str):
+      body (SetSelectedGraphRequest): Request model for setting the user's selected graph.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -108,7 +114,7 @@ def sync_detailed(
   """
 
   kwargs = _get_kwargs(
-    graph_id=graph_id,
+    body=body,
   )
 
   response = client.get_httpx_client().request(
@@ -119,17 +125,18 @@ def sync_detailed(
 
 
 def sync(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: SetSelectedGraphRequest,
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
-  """Select Graph
+  """Set Selected Graph
 
-   Deprecated: use `PUT /v1/user/selected-graph`, which writes the same selection. Remembers the graph
-  as the caller's current one.
+   Remembers the graph as the caller's current one: `GET /v1/graphs` then reports it as
+  `selectedGraphId`, and the apps open on it. One graph per user, replacing the previous selection.
+  Only a graph the caller belongs to can be selected; shared repositories cannot be.
 
   Args:
-      graph_id (str):
+      body (SetSelectedGraphRequest): Request model for setting the user's selected graph.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -140,23 +147,24 @@ def sync(
   """
 
   return sync_detailed(
-    graph_id=graph_id,
     client=client,
+    body=body,
   ).parsed
 
 
 async def asyncio_detailed(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: SetSelectedGraphRequest,
 ) -> Response[ErrorResponse | HTTPValidationError | SuccessResponse]:
-  """Select Graph
+  """Set Selected Graph
 
-   Deprecated: use `PUT /v1/user/selected-graph`, which writes the same selection. Remembers the graph
-  as the caller's current one.
+   Remembers the graph as the caller's current one: `GET /v1/graphs` then reports it as
+  `selectedGraphId`, and the apps open on it. One graph per user, replacing the previous selection.
+  Only a graph the caller belongs to can be selected; shared repositories cannot be.
 
   Args:
-      graph_id (str):
+      body (SetSelectedGraphRequest): Request model for setting the user's selected graph.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -167,7 +175,7 @@ async def asyncio_detailed(
   """
 
   kwargs = _get_kwargs(
-    graph_id=graph_id,
+    body=body,
   )
 
   response = await client.get_async_httpx_client().request(**kwargs)
@@ -176,17 +184,18 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-  graph_id: str,
   *,
   client: AuthenticatedClient,
+  body: SetSelectedGraphRequest,
 ) -> ErrorResponse | HTTPValidationError | SuccessResponse | None:
-  """Select Graph
+  """Set Selected Graph
 
-   Deprecated: use `PUT /v1/user/selected-graph`, which writes the same selection. Remembers the graph
-  as the caller's current one.
+   Remembers the graph as the caller's current one: `GET /v1/graphs` then reports it as
+  `selectedGraphId`, and the apps open on it. One graph per user, replacing the previous selection.
+  Only a graph the caller belongs to can be selected; shared repositories cannot be.
 
   Args:
-      graph_id (str):
+      body (SetSelectedGraphRequest): Request model for setting the user's selected graph.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -198,7 +207,7 @@ async def asyncio(
 
   return (
     await asyncio_detailed(
-      graph_id=graph_id,
       client=client,
+      body=body,
     )
   ).parsed

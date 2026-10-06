@@ -121,8 +121,9 @@ def sync_detailed(
 
   Args:
       operation_id (str): Operation identifier from initial submission
-      from_sequence (int | Unset): Start streaming from this sequence number (0 = from
-          beginning) Default: 0.
+      from_sequence (int | Unset): Replay stored events from this sequence number, then stream
+          live ones. A running operation replays nothing at 0 (live events only); a settled one
+          replays its history from here (0 = all) and closes. Default: 0.
       token (None | str | Unset): JWT token for SSE authentication
       authorization (None | str | Unset):
 
@@ -163,8 +164,9 @@ def sync(
 
   Args:
       operation_id (str): Operation identifier from initial submission
-      from_sequence (int | Unset): Start streaming from this sequence number (0 = from
-          beginning) Default: 0.
+      from_sequence (int | Unset): Replay stored events from this sequence number, then stream
+          live ones. A running operation replays nothing at 0 (live events only); a settled one
+          replays its history from here (0 = all) and closes. Default: 0.
       token (None | str | Unset): JWT token for SSE authentication
       authorization (None | str | Unset):
 
@@ -200,8 +202,9 @@ async def asyncio_detailed(
 
   Args:
       operation_id (str): Operation identifier from initial submission
-      from_sequence (int | Unset): Start streaming from this sequence number (0 = from
-          beginning) Default: 0.
+      from_sequence (int | Unset): Replay stored events from this sequence number, then stream
+          live ones. A running operation replays nothing at 0 (live events only); a settled one
+          replays its history from here (0 = all) and closes. Default: 0.
       token (None | str | Unset): JWT token for SSE authentication
       authorization (None | str | Unset):
 
@@ -240,8 +243,9 @@ async def asyncio(
 
   Args:
       operation_id (str): Operation identifier from initial submission
-      from_sequence (int | Unset): Start streaming from this sequence number (0 = from
-          beginning) Default: 0.
+      from_sequence (int | Unset): Replay stored events from this sequence number, then stream
+          live ones. A running operation replays nothing at 0 (live events only); a settled one
+          replays its history from here (0 = all) and closes. Default: 0.
       token (None | str | Unset): JWT token for SSE authentication
       authorization (None | str | Unset):
 

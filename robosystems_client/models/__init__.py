@@ -933,6 +933,7 @@ from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
 from .set_close_target_operation import SetCloseTargetOperation
 from .set_reconciliation_policy_request import SetReconciliationPolicyRequest
+from .set_selected_graph_request import SetSelectedGraphRequest
 from .set_write_policy_request import SetWritePolicyRequest
 from .set_write_policy_request_write_policy import SetWritePolicyRequestWritePolicy
 from .share_report_operation import ShareReportOperation
@@ -1721,6 +1722,7 @@ __all__ = (
   "ServiceOfferingSummary",
   "SetCloseTargetOperation",
   "SetReconciliationPolicyRequest",
+  "SetSelectedGraphRequest",
   "SetWritePolicyRequest",
   "SetWritePolicyRequestWritePolicy",
   "ShareReportOperation",
