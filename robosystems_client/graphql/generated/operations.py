@@ -37,6 +37,7 @@ __all__ = [
   "LIST_INVESTOR_SECURITIES_GQL",
   "LIST_LEDGER_ACCOUNTS_GQL",
   "LIST_LEDGER_AGENTS_GQL",
+  "LIST_LEDGER_BANK_ACCOUNTS_GQL",
   "LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL",
   "LIST_LEDGER_ELEMENTS_GQL",
   "LIST_LEDGER_ENTITIES_GQL",
@@ -1398,6 +1399,33 @@ query ListLedgerAgents($agentType: String, $source: String, $isActive: Boolean =
     createdAt
     updatedAt
     createdBy
+  }
+}
+"""
+
+LIST_LEDGER_BANK_ACCOUNTS_GQL = """
+query ListLedgerBankAccounts($entityId: String) {
+  bankAccounts(entityId: $entityId) {
+    total
+    accounts {
+      id
+      code
+      name
+      kind
+      balanceType
+      isActive
+      entityId
+      entityName
+      source
+      connectionId
+      institution
+      feedAccountId
+      feedAccountName
+      feedAccountKind
+      connectionStatus
+      lastSyncAt
+      lastSyncStatus
+    }
   }
 }
 """

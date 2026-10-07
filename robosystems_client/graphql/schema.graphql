@@ -264,6 +264,18 @@ type Query {
     entityId: String = null
   ): AccountTree
 
+  """
+  The group's bank and card accounts, with what writes to each.
+  
+  Every chart account a feed books to, or that a source system types as a
+  bank or card account, with the entity whose chart it is in and the
+  health of the connection that writes to it.
+  """
+  bankAccounts(
+    """One entity's accounts. Omit for every entity in the group."""
+    entityId: String = null
+  ): BankAccountList
+
   """CoA accounts grouped by reporting element with balances."""
   accountRollups(
     """
@@ -1647,6 +1659,74 @@ type AccountTreeNode {
   depth: Int!
   isActive: Boolean!
   children: [AccountTreeNode!]!
+}
+
+"""Every bank and card account across the group, or one entity's."""
+type BankAccountList {
+  """The accounts, by code then name."""
+  accounts: [BankAccount!]!
+
+  """How many accounts are listed."""
+  total: Int!
+}
+
+"""
+One bank or card account on an entity's chart, with the feed that
+books to it, if any.
+"""
+type BankAccount {
+  """The chart account (element id)."""
+  id: String!
+
+  """The account's code on its chart."""
+  code: String
+
+  """The account's name on its chart."""
+  name: String!
+
+  """`bank` or `credit`, from the balance side."""
+  kind: String!
+
+  """`debit` or `credit`."""
+  balanceType: String!
+
+  """False once the account is retired."""
+  isActive: Boolean!
+
+  """The entity whose chart the account is in; its lines book here."""
+  entityId: String
+
+  """That entity's name."""
+  entityName: String
+
+  """
+  What writes to the account: a bank feed provider (`plaid`, `mercury`), `quickbooks` for a synced account, or null for one kept by hand.
+  """
+  source: String
+
+  """The connection that writes to the account, if one does."""
+  connectionId: String
+
+  """The bank the feed account is at, as the provider names it."""
+  institution: String
+
+  """The provider's id for the account, for `link-bank-account`."""
+  feedAccountId: String
+
+  """The account's name at the bank, with its mask."""
+  feedAccountName: String
+
+  """The provider's account kind (`checking`, `credit card`, ...)."""
+  feedAccountKind: String
+
+  """The connection's status (`active`, `needs_reauth`, ...)."""
+  connectionStatus: String
+
+  """When the connection last synced successfully."""
+  lastSyncAt: DateTime
+
+  """The outcome of the connection's most recent sync attempt."""
+  lastSyncStatus: String
 }
 
 """

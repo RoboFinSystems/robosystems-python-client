@@ -387,6 +387,8 @@ from .line_growth_request_values_by_period_type_0 import (
   LineGrowthRequestValuesByPeriodType0,
 )
 from .line_item_metadata_predicate import LineItemMetadataPredicate
+from .link_bank_account_request import LinkBankAccountRequest
+from .link_bank_account_response import LinkBankAccountResponse
 from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
@@ -612,6 +614,12 @@ from .operation_envelope_ledger_entity_response import (
 )
 from .operation_envelope_ledger_entity_response_status import (
   OperationEnvelopeLedgerEntityResponseStatus,
+)
+from .operation_envelope_link_bank_account_response import (
+  OperationEnvelopeLinkBankAccountResponse,
+)
+from .operation_envelope_link_bank_account_response_status import (
+  OperationEnvelopeLinkBankAccountResponseStatus,
 )
 from .operation_envelope_live_financial_statement_response import (
   OperationEnvelopeLiveFinancialStatementResponse,
@@ -1409,6 +1417,8 @@ __all__ = (
   "LineGrowthRequest",
   "LineGrowthRequestValuesByPeriodType0",
   "LineItemMetadataPredicate",
+  "LinkBankAccountRequest",
+  "LinkBankAccountResponse",
   "LinkEntityTaxonomyRequest",
   "LinkEntityTaxonomyRequestBasis",
   "ListConnectionsProviderType0",
@@ -1513,6 +1523,8 @@ __all__ = (
   "OperationEnvelopeLedgerAgentResponseStatus",
   "OperationEnvelopeLedgerEntityResponse",
   "OperationEnvelopeLedgerEntityResponseStatus",
+  "OperationEnvelopeLinkBankAccountResponse",
+  "OperationEnvelopeLinkBankAccountResponseStatus",
   "OperationEnvelopelistPublishListMemberResponse",
   "OperationEnvelopelistPublishListMemberResponseStatus",
   "OperationEnvelopeLiveFinancialStatementResponse",
