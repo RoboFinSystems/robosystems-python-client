@@ -1,5 +1,5 @@
-query ListLedgerReconciliations($period: String!) {
-  reconciliations(period: $period) {
+query ListLedgerReconciliations($period: String!, $entityId: String) {
+  reconciliations(period: $period, entityId: $entityId) {
     period asOf notes
     reconciliations {
       structureId name scope method elementId

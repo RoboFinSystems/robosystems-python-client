@@ -1,6 +1,6 @@
-query GetLedgerFiscalCalendar {
-  fiscalCalendar {
-    graphId fiscalYearStartMonth closedThrough closeTarget
+query GetLedgerFiscalCalendar($entityId: String) {
+  fiscalCalendar(entityId: $entityId) {
+    graphId entityId fiscalYearStartMonth closedThrough closeTarget
     gapPeriods catchUpSequence closeableNow blockers
     pendingObligationCount
     pendingObligationSample { eventId scheduleId scheduleName period }

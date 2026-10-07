@@ -2,11 +2,13 @@ query GetLedgerAccountRollups(
   $mappingId: String
   $startDate: Date
   $endDate: Date
+  $entityId: String
 ) {
   accountRollups(
     mappingId: $mappingId
     startDate: $startDate
     endDate: $endDate
+    entityId: $entityId
   ) {
     mappingId
     mappingName

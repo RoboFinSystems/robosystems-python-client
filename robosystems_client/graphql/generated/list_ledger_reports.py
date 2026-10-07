@@ -15,6 +15,7 @@ class ListLedgerReportsReports(BaseModel):
 
 class ListLedgerReportsReportsReports(BaseModel):
   id: str
+  entity_id: Optional[str] = Field(alias="entityId")
   name: str
   taxonomy_id: str = Field(alias="taxonomyId")
   generation_status: str = Field(alias="generationStatus")

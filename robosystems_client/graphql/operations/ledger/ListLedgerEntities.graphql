@@ -10,6 +10,7 @@ query ListLedgerEntities($source: String) {
     status
     isParent
     parentEntityId
+    ownershipPct
     source
     sourceGraphId
     connectionId

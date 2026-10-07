@@ -271,12 +271,14 @@ class Client(BaseClient):
     mapping_id: Union[Optional[str], UnsetType] = UNSET,
     start_date: Union[Optional[str], UnsetType] = UNSET,
     end_date: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> GetLedgerAccountRollups:
     variables: dict[str, object] = {
       "mappingId": mapping_id,
       "startDate": start_date,
       "endDate": end_date,
+      "entityId": entity_id,
     }
     response = self.execute(
       query=GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
@@ -287,8 +289,10 @@ class Client(BaseClient):
     data = self.get_data(response)
     return GetLedgerAccountRollups.model_validate(data)
 
-  def get_ledger_account_tree(self, **kwargs: Any) -> GetLedgerAccountTree:
-    variables: dict[str, object] = {}
+  def get_ledger_account_tree(
+    self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
+  ) -> GetLedgerAccountTree:
+    variables: dict[str, object] = {"entityId": entity_id}
     response = self.execute(
       query=GET_LEDGER_ACCOUNT_TREE_GQL,
       operation_name="GetLedgerAccountTree",
@@ -310,9 +314,9 @@ class Client(BaseClient):
     return GetLedgerAgent.model_validate(data)
 
   def get_ledger_closing_book_structures(
-    self, **kwargs: Any
+    self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
   ) -> GetLedgerClosingBookStructures:
-    variables: dict[str, object] = {}
+    variables: dict[str, object] = {"entityId": entity_id}
     response = self.execute(
       query=GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL,
       operation_name="GetLedgerClosingBookStructures",
@@ -322,8 +326,10 @@ class Client(BaseClient):
     data = self.get_data(response)
     return GetLedgerClosingBookStructures.model_validate(data)
 
-  def get_ledger_entity(self, **kwargs: Any) -> GetLedgerEntity:
-    variables: dict[str, object] = {}
+  def get_ledger_entity(
+    self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
+  ) -> GetLedgerEntity:
+    variables: dict[str, object] = {"entityId": entity_id}
     response = self.execute(
       query=GET_LEDGER_ENTITY_GQL,
       operation_name="GetLedgerEntity",
@@ -344,8 +350,10 @@ class Client(BaseClient):
     data = self.get_data(response)
     return GetLedgerEventBlock.model_validate(data)
 
-  def get_ledger_fiscal_calendar(self, **kwargs: Any) -> GetLedgerFiscalCalendar:
-    variables: dict[str, object] = {}
+  def get_ledger_fiscal_calendar(
+    self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
+  ) -> GetLedgerFiscalCalendar:
+    variables: dict[str, object] = {"entityId": entity_id}
     response = self.execute(
       query=GET_LEDGER_FISCAL_CALENDAR_GQL,
       operation_name="GetLedgerFiscalCalendar",
@@ -401,11 +409,16 @@ class Client(BaseClient):
     return GetLedgerMappingCoverage.model_validate(data)
 
   def get_ledger_period_close_status(
-    self, period_start: str, period_end: str, **kwargs: Any
+    self,
+    period_start: str,
+    period_end: str,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
   ) -> GetLedgerPeriodCloseStatus:
     variables: dict[str, object] = {
       "periodStart": period_start,
       "periodEnd": period_end,
+      "entityId": entity_id,
     }
     response = self.execute(
       query=GET_LEDGER_PERIOD_CLOSE_STATUS_GQL,
@@ -417,9 +430,9 @@ class Client(BaseClient):
     return GetLedgerPeriodCloseStatus.model_validate(data)
 
   def get_ledger_period_drafts(
-    self, period: str, **kwargs: Any
+    self, period: str, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
   ) -> GetLedgerPeriodDrafts:
-    variables: dict[str, object] = {"period": period}
+    variables: dict[str, object] = {"period": period, "entityId": entity_id}
     response = self.execute(
       query=GET_LEDGER_PERIOD_DRAFTS_GQL,
       operation_name="GetLedgerPeriodDrafts",
@@ -511,8 +524,10 @@ class Client(BaseClient):
     data = self.get_data(response)
     return GetLedgerStatement.model_validate(data)
 
-  def get_ledger_summary(self, **kwargs: Any) -> GetLedgerSummary:
-    variables: dict[str, object] = {}
+  def get_ledger_summary(
+    self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
+  ) -> GetLedgerSummary:
+    variables: dict[str, object] = {"entityId": entity_id}
     response = self.execute(
       query=GET_LEDGER_SUMMARY_GQL,
       operation_name="GetLedgerSummary",
@@ -539,9 +554,14 @@ class Client(BaseClient):
     self,
     start_date: Union[Optional[str], UnsetType] = UNSET,
     end_date: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> GetLedgerTrialBalance:
-    variables: dict[str, object] = {"startDate": start_date, "endDate": end_date}
+    variables: dict[str, object] = {
+      "startDate": start_date,
+      "endDate": end_date,
+      "entityId": entity_id,
+    }
     response = self.execute(
       query=GET_LEDGER_TRIAL_BALANCE_GQL,
       operation_name="GetLedgerTrialBalance",
@@ -593,6 +613,7 @@ class Client(BaseClient):
     offset: int,
     classification: Union[Optional[str], UnsetType] = UNSET,
     is_active: Union[Optional[bool], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> ListLedgerAccounts:
     variables: dict[str, object] = {
@@ -600,6 +621,7 @@ class Client(BaseClient):
       "isActive": is_active,
       "limit": limit,
       "offset": offset,
+      "entityId": entity_id,
     }
     response = self.execute(
       query=LIST_LEDGER_ACCOUNTS_GQL,
@@ -698,6 +720,7 @@ class Client(BaseClient):
     agent_id: Union[Optional[str], UnsetType] = UNSET,
     source: Union[Optional[str], UnsetType] = UNSET,
     is_reconciling_item: Union[Optional[bool], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> ListLedgerEventBlocks:
     variables: dict[str, object] = {
@@ -709,6 +732,7 @@ class Client(BaseClient):
       "isReconcilingItem": is_reconciling_item,
       "limit": limit,
       "offset": offset,
+      "entityId": entity_id,
     }
     response = self.execute(
       query=LIST_LEDGER_EVENT_BLOCKS_GQL,
@@ -729,6 +753,7 @@ class Client(BaseClient):
     type_: Union[Optional[str], UnsetType] = UNSET,
     provenance: Union[Optional[str], UnsetType] = UNSET,
     transaction_id: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> ListLedgerJournalEntries:
     variables: dict[str, object] = {
@@ -740,6 +765,7 @@ class Client(BaseClient):
       "transactionId": transaction_id,
       "limit": limit,
       "offset": offset,
+      "entityId": entity_id,
     }
     response = self.execute(
       query=LIST_LEDGER_JOURNAL_ENTRIES_GQL,
@@ -775,9 +801,9 @@ class Client(BaseClient):
     return ListLedgerPublishLists.model_validate(data)
 
   def list_ledger_reconciliations(
-    self, period: str, **kwargs: Any
+    self, period: str, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
   ) -> ListLedgerReconciliations:
-    variables: dict[str, object] = {"period": period}
+    variables: dict[str, object] = {"period": period, "entityId": entity_id}
     response = self.execute(
       query=LIST_LEDGER_RECONCILIATIONS_GQL,
       operation_name="ListLedgerReconciliations",
@@ -788,9 +814,12 @@ class Client(BaseClient):
     return ListLedgerReconciliations.model_validate(data)
 
   def list_ledger_reports(
-    self, lifecycle: Union[Optional[ReportLifecycle], UnsetType] = UNSET, **kwargs: Any
+    self,
+    lifecycle: Union[Optional[ReportLifecycle], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
   ) -> ListLedgerReports:
-    variables: dict[str, object] = {"lifecycle": lifecycle}
+    variables: dict[str, object] = {"lifecycle": lifecycle, "entityId": entity_id}
     response = self.execute(
       query=LIST_LEDGER_REPORTS_GQL,
       operation_name="ListLedgerReports",
@@ -839,6 +868,7 @@ class Client(BaseClient):
     type_: Union[Optional[str], UnsetType] = UNSET,
     start_date: Union[Optional[str], UnsetType] = UNSET,
     end_date: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> ListLedgerTransactions:
     variables: dict[str, object] = {
@@ -847,6 +877,7 @@ class Client(BaseClient):
       "endDate": end_date,
       "limit": limit,
       "offset": offset,
+      "entityId": entity_id,
     }
     response = self.execute(
       query=LIST_LEDGER_TRANSACTIONS_GQL,

@@ -26,11 +26,13 @@ class GetLedgerEntityEntity(BaseModel):
   lei: Optional[str]
   industry: Optional[str]
   entity_type: Optional[str] = Field(alias="entityType")
+  reporting_style_id: Optional[str] = Field(alias="reportingStyleId")
   phone: Optional[str]
   website: Optional[str]
   status: str
   is_parent: bool = Field(alias="isParent")
   parent_entity_id: Optional[str] = Field(alias="parentEntityId")
+  ownership_pct: Optional[float] = Field(alias="ownershipPct")
   source: str
   source_id: Optional[str] = Field(alias="sourceId")
   source_graph_id: Optional[str] = Field(alias="sourceGraphId")

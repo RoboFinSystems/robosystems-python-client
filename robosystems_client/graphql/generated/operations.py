@@ -438,8 +438,13 @@ query GetInformationBlock($id: ID!, $scenarioId: String, $series: Boolean! = fal
 """
 
 GET_LEDGER_ACCOUNT_ROLLUPS_GQL = """
-query GetLedgerAccountRollups($mappingId: String, $startDate: Date, $endDate: Date) {
-  accountRollups(mappingId: $mappingId, startDate: $startDate, endDate: $endDate) {
+query GetLedgerAccountRollups($mappingId: String, $startDate: Date, $endDate: Date, $entityId: String) {
+  accountRollups(
+    mappingId: $mappingId
+    startDate: $startDate
+    endDate: $endDate
+    entityId: $entityId
+  ) {
     mappingId
     mappingName
     totalMapped
@@ -465,8 +470,8 @@ query GetLedgerAccountRollups($mappingId: String, $startDate: Date, $endDate: Da
 """
 
 GET_LEDGER_ACCOUNT_TREE_GQL = """
-query GetLedgerAccountTree {
-  accountTree {
+query GetLedgerAccountTree($entityId: String) {
+  accountTree(entityId: $entityId) {
     totalAccounts
     roots {
       id
@@ -538,8 +543,8 @@ query GetLedgerAgent($id: String!) {
 """
 
 GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL = """
-query GetLedgerClosingBookStructures {
-  closingBookStructures {
+query GetLedgerClosingBookStructures($entityId: String) {
+  closingBookStructures(entityId: $entityId) {
     hasData
     categories {
       label
@@ -557,8 +562,8 @@ query GetLedgerClosingBookStructures {
 """
 
 GET_LEDGER_ENTITY_GQL = """
-query GetLedgerEntity {
-  entity {
+query GetLedgerEntity($entityId: String) {
+  entity(entityId: $entityId) {
     id
     name
     legalName
@@ -575,11 +580,13 @@ query GetLedgerEntity {
     lei
     industry
     entityType
+    reportingStyleId
     phone
     website
     status
     isParent
     parentEntityId
+    ownershipPct
     source
     sourceId
     sourceGraphId
@@ -627,9 +634,10 @@ query GetLedgerEventBlock($id: String!) {
 """
 
 GET_LEDGER_FISCAL_CALENDAR_GQL = """
-query GetLedgerFiscalCalendar {
-  fiscalCalendar {
+query GetLedgerFiscalCalendar($entityId: String) {
+  fiscalCalendar(entityId: $entityId) {
     graphId
+    entityId
     fiscalYearStartMonth
     closedThrough
     closeTarget
@@ -739,8 +747,12 @@ query GetLedgerMappingCoverage($mappingId: String!) {
 """
 
 GET_LEDGER_PERIOD_CLOSE_STATUS_GQL = """
-query GetLedgerPeriodCloseStatus($periodStart: Date!, $periodEnd: Date!) {
-  periodCloseStatus(periodStart: $periodStart, periodEnd: $periodEnd) {
+query GetLedgerPeriodCloseStatus($periodStart: Date!, $periodEnd: Date!, $entityId: String) {
+  periodCloseStatus(
+    periodStart: $periodStart
+    periodEnd: $periodEnd
+    entityId: $entityId
+  ) {
     fiscalPeriodStart
     fiscalPeriodEnd
     periodStatus
@@ -760,8 +772,8 @@ query GetLedgerPeriodCloseStatus($periodStart: Date!, $periodEnd: Date!) {
 """
 
 GET_LEDGER_PERIOD_DRAFTS_GQL = """
-query GetLedgerPeriodDrafts($period: String!) {
-  periodDrafts(period: $period) {
+query GetLedgerPeriodDrafts($period: String!, $entityId: String) {
+  periodDrafts(period: $period, entityId: $entityId) {
     period
     periodStart
     periodEnd
@@ -825,6 +837,7 @@ GET_LEDGER_REPORT_GQL = """
 query GetLedgerReport($reportId: String!) {
   report(reportId: $reportId) {
     id
+    entityId
     name
     taxonomyId
     generationStatus
@@ -1090,9 +1103,10 @@ query GetLedgerStatement($reportId: String!, $blockType: String!) {
 """
 
 GET_LEDGER_SUMMARY_GQL = """
-query GetLedgerSummary {
-  summary {
+query GetLedgerSummary($entityId: String) {
+  summary(entityId: $entityId) {
     graphId
+    entityId
     accountCount
     transactionCount
     entryCount
@@ -1147,8 +1161,8 @@ query GetLedgerTransaction($transactionId: String!) {
 """
 
 GET_LEDGER_TRIAL_BALANCE_GQL = """
-query GetLedgerTrialBalance($startDate: Date, $endDate: Date) {
-  trialBalance(startDate: $startDate, endDate: $endDate) {
+query GetLedgerTrialBalance($startDate: Date, $endDate: Date, $entityId: String) {
+  trialBalance(startDate: $startDate, endDate: $endDate, entityId: $entityId) {
     totalDebits
     totalCredits
     rows {
@@ -1322,12 +1336,13 @@ query ListInformationBlocks($blockType: String, $category: String, $limit: Int, 
 """
 
 LIST_LEDGER_ACCOUNTS_GQL = """
-query ListLedgerAccounts($classification: String, $isActive: Boolean, $limit: Int! = 100, $offset: Int! = 0) {
+query ListLedgerAccounts($classification: String, $isActive: Boolean, $limit: Int! = 100, $offset: Int! = 0, $entityId: String) {
   accounts(
     classification: $classification
     isActive: $isActive
     limit: $limit
     offset: $offset
+    entityId: $entityId
   ) {
     accounts {
       id
@@ -1462,6 +1477,7 @@ query ListLedgerEntities($source: String) {
     status
     isParent
     parentEntityId
+    ownershipPct
     source
     sourceGraphId
     connectionId
@@ -1472,7 +1488,7 @@ query ListLedgerEntities($source: String) {
 """
 
 LIST_LEDGER_EVENT_BLOCKS_GQL = """
-query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status: String, $agentId: String, $source: String, $isReconcilingItem: Boolean, $limit: Int! = 50, $offset: Int! = 0) {
+query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status: String, $agentId: String, $source: String, $isReconcilingItem: Boolean, $limit: Int! = 50, $offset: Int! = 0, $entityId: String) {
   eventBlocks(
     eventType: $eventType
     eventCategory: $eventCategory
@@ -1482,6 +1498,7 @@ query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status:
     isReconcilingItem: $isReconcilingItem
     limit: $limit
     offset: $offset
+    entityId: $entityId
   ) {
     id
     eventType
@@ -1512,7 +1529,7 @@ query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status:
 """
 
 LIST_LEDGER_JOURNAL_ENTRIES_GQL = """
-query ListLedgerJournalEntries($startDate: Date, $endDate: Date, $status: String, $type: String, $provenance: String, $transactionId: String, $limit: Int! = 100, $offset: Int! = 0) {
+query ListLedgerJournalEntries($startDate: Date, $endDate: Date, $status: String, $type: String, $provenance: String, $transactionId: String, $limit: Int! = 100, $offset: Int! = 0, $entityId: String) {
   journalEntries(
     startDate: $startDate
     endDate: $endDate
@@ -1522,6 +1539,7 @@ query ListLedgerJournalEntries($startDate: Date, $endDate: Date, $status: String
     transactionId: $transactionId
     limit: $limit
     offset: $offset
+    entityId: $entityId
   ) {
     entries {
       id
@@ -1600,8 +1618,8 @@ query ListLedgerPublishLists($limit: Int! = 100, $offset: Int! = 0) {
 """
 
 LIST_LEDGER_RECONCILIATIONS_GQL = """
-query ListLedgerReconciliations($period: String!) {
-  reconciliations(period: $period) {
+query ListLedgerReconciliations($period: String!, $entityId: String) {
+  reconciliations(period: $period, entityId: $entityId) {
     period
     asOf
     notes
@@ -1666,10 +1684,11 @@ query ListLedgerReconciliations($period: String!) {
 """
 
 LIST_LEDGER_REPORTS_GQL = """
-query ListLedgerReports($lifecycle: ReportLifecycle) {
-  reports(lifecycle: $lifecycle) {
+query ListLedgerReports($lifecycle: ReportLifecycle, $entityId: String) {
+  reports(lifecycle: $lifecycle, entityId: $entityId) {
     reports {
       id
+      entityId
       name
       taxonomyId
       generationStatus
@@ -1739,13 +1758,14 @@ query ListLedgerTaxonomies($taxonomyType: String) {
 """
 
 LIST_LEDGER_TRANSACTIONS_GQL = """
-query ListLedgerTransactions($type: String, $startDate: Date, $endDate: Date, $limit: Int! = 100, $offset: Int! = 0) {
+query ListLedgerTransactions($type: String, $startDate: Date, $endDate: Date, $limit: Int! = 100, $offset: Int! = 0, $entityId: String) {
   transactions(
     type: $type
     startDate: $startDate
     endDate: $endDate
     limit: $limit
     offset: $offset
+    entityId: $entityId
   ) {
     transactions {
       id

@@ -132,6 +132,9 @@ from ..api.robo_ledger_information_blocks.bind_text_block import (
 from ..api.robo_ledger_information_blocks.evaluate_rules import (
   sync_detailed as op_evaluate_rules,
 )
+from ..api.robo_ledger_setup.create_entity import (
+  sync_detailed as op_create_entity,
+)
 from ..api.robo_ledger_setup.update_entity import (
   sync_detailed as op_update_entity,
 )
@@ -465,6 +468,7 @@ from ..graphql.generated.operations import (
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
 from ..models.create_agent_request import CreateAgentRequest
+from ..models.create_entity_request import CreateEntityRequest
 from ..models.create_event_block_request import CreateEventBlockRequest
 from ..models.create_event_block_request_event_category import (
   CreateEventBlockRequestEventCategory,
@@ -710,6 +714,12 @@ class LedgerClient:
 
   # ── Helpers ─────────────────────────────────────────────────────────
 
+  @staticmethod
+  def _scope(entity_id: str | None) -> dict[str, Any] | None:
+    """Variables for a read that takes only the entity scope. ``None`` is the
+    group parent, and sends no variables, as before entities were an axis."""
+    return {"entityId": entity_id} if entity_id else None
+
   def _query(
     self,
     graph_id: str,
@@ -844,18 +854,25 @@ class LedgerClient:
 
   # ── Entity ──────────────────────────────────────────────────────────
 
-  def get_entity(self, graph_id: str) -> LedgerEntity | None:
-    """Get the entity (company/organization) for this graph.
+  def get_entity(
+    self, graph_id: str, entity_id: str | None = None
+  ) -> LedgerEntity | None:
+    """Get an entity of this graph: the group parent, or the one ``entity_id``
+    names.
 
     Returns None when the ledger has no entity yet.
     """
-    data = self._query(graph_id, GET_LEDGER_ENTITY_GQL)
+    data = self._query(graph_id, GET_LEDGER_ENTITY_GQL, self._scope(entity_id))
     return GetLedgerEntity.model_validate(data).entity
 
   def list_entities(
     self, graph_id: str, source: str | None = None
   ) -> list[ListLedgerEntitiesEntities]:
-    """List all entities for this graph, optionally filtered by source system."""
+    """List the graph's entities, optionally filtered by source system.
+
+    The group parent is the row with ``is_parent``; a subsidiary names its
+    ``parent_entity_id`` and may carry an ``ownership_pct``.
+    """
     data = self._query(graph_id, LIST_LEDGER_ENTITIES_GQL, {"source": source})
     return ListLedgerEntities.model_validate(data).entities
 
@@ -868,15 +885,32 @@ class LedgerClient:
     envelope = self._call_op("Update entity", response)
     return self._typed_result("Update entity", envelope, LedgerEntityResponse)
 
+  def create_entity(self, graph_id: str, body: dict[str, Any]) -> LedgerEntityResponse:
+    """Create an entity in this graph.
+
+    A graph's first entity becomes the group parent; every later one is a
+    subsidiary of the parent unless ``parent_entity_id`` names another
+    entity. ``ticker`` prefixes the entity's account names and is unique in
+    the graph (derived from the name's initials when omitted).
+    """
+    request = CreateEntityRequest.from_dict(body)
+    response = op_create_entity(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Create entity", response)
+    return self._typed_result("Create entity", envelope, LedgerEntityResponse)
+
   # ── Summary ────────────────────────────────────────────────────────
 
-  def get_summary(self, graph_id: str) -> LedgerSummary | None:
+  def get_summary(
+    self, graph_id: str, entity_id: str | None = None
+  ) -> LedgerSummary | None:
     """Ledger rollup counts + QB sync metadata.
 
     Returns the codegen-typed ``LedgerSummary`` model (attribute access,
     snake_case) rather than a dict.
     """
-    data = self._query(graph_id, GET_LEDGER_SUMMARY_GQL)
+    data = self._query(graph_id, GET_LEDGER_SUMMARY_GQL, self._scope(entity_id))
     return GetLedgerSummary.model_validate(data).summary
 
   # ── Accounts ────────────────────────────────────────────────────────
@@ -888,6 +922,7 @@ class LedgerClient:
     is_active: bool | None = None,
     limit: int = 100,
     offset: int = 0,
+    entity_id: str | None = None,
   ) -> LedgerAccountsPage | None:
     """List CoA accounts with optional filters and pagination."""
     data = self._query(
@@ -898,13 +933,16 @@ class LedgerClient:
         "isActive": is_active,
         "limit": limit,
         "offset": offset,
+        "entityId": entity_id,
       },
     )
     return ListLedgerAccounts.model_validate(data).accounts
 
-  def get_account_tree(self, graph_id: str) -> LedgerAccountTree | None:
+  def get_account_tree(
+    self, graph_id: str, entity_id: str | None = None
+  ) -> LedgerAccountTree | None:
     """Hierarchical Chart of Accounts (up to 4 levels deep)."""
-    data = self._query(graph_id, GET_LEDGER_ACCOUNT_TREE_GQL)
+    data = self._query(graph_id, GET_LEDGER_ACCOUNT_TREE_GQL, self._scope(entity_id))
     return GetLedgerAccountTree.model_validate(data).account_tree
 
   def get_account_rollups(
@@ -913,12 +951,18 @@ class LedgerClient:
     mapping_id: str | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
+    entity_id: str | None = None,
   ) -> LedgerAccountRollups | None:
     """Accounts rolled up to reporting concepts via a mapping structure."""
     data = self._query(
       graph_id,
       GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
-      {"mappingId": mapping_id, "startDate": start_date, "endDate": end_date},
+      {
+        "mappingId": mapping_id,
+        "startDate": start_date,
+        "endDate": end_date,
+        "entityId": entity_id,
+      },
     )
     return GetLedgerAccountRollups.model_validate(data).account_rollups
 
@@ -932,6 +976,7 @@ class LedgerClient:
     end_date: str | None = None,
     limit: int = 100,
     offset: int = 0,
+    entity_id: str | None = None,
   ) -> LedgerTransactionsPage | None:
     """List transactions with optional type + date filters and pagination."""
     data = self._query(
@@ -943,6 +988,7 @@ class LedgerClient:
         "endDate": end_date,
         "limit": limit,
         "offset": offset,
+        "entityId": entity_id,
       },
     )
     return ListLedgerTransactions.model_validate(data).transactions
@@ -969,6 +1015,7 @@ class LedgerClient:
     transaction_id: str | None = None,
     limit: int = 100,
     offset: int = 0,
+    entity_id: str | None = None,
   ) -> LedgerJournalEntriesPage | None:
     """List journal entries with their line items, newest first.
 
@@ -995,6 +1042,7 @@ class LedgerClient:
         "transactionId": transaction_id,
         "limit": limit,
         "offset": offset,
+        "entityId": entity_id,
       },
     )
     return ListLedgerJournalEntries.model_validate(data).journal_entries
@@ -1012,6 +1060,7 @@ class LedgerClient:
     limit: int = 50,
     offset: int = 0,
     is_reconciling_item: bool | None = None,
+    entity_id: str | None = None,
   ) -> list[ListLedgerEventBlocksEventBlocks]:
     """List captured event blocks (inbox surface).
 
@@ -1030,6 +1079,7 @@ class LedgerClient:
         "isReconcilingItem": is_reconciling_item,
         "limit": limit,
         "offset": offset,
+        "entityId": entity_id,
       },
     )
     return ListLedgerEventBlocks.model_validate(data).event_blocks
@@ -1076,12 +1126,13 @@ class LedgerClient:
     graph_id: str,
     start_date: str | None = None,
     end_date: str | None = None,
+    entity_id: str | None = None,
   ) -> TrialBalance | None:
     """Trial balance by raw CoA account."""
     data = self._query(
       graph_id,
       GET_LEDGER_TRIAL_BALANCE_GQL,
-      {"startDate": start_date, "endDate": end_date},
+      {"startDate": start_date, "endDate": end_date, "entityId": entity_id},
     )
     return GetLedgerTrialBalance.model_validate(data).trial_balance
 
@@ -1725,18 +1776,23 @@ class LedgerClient:
     graph_id: str,
     period_start: str,
     period_end: str,
+    entity_id: str | None = None,
   ) -> PeriodCloseStatus | None:
     """Close status for all schedules in a fiscal period."""
     data = self._query(
       graph_id,
       GET_LEDGER_PERIOD_CLOSE_STATUS_GQL,
-      {"periodStart": period_start, "periodEnd": period_end},
+      {"periodStart": period_start, "periodEnd": period_end, "entityId": entity_id},
     )
     return GetLedgerPeriodCloseStatus.model_validate(data).period_close_status
 
-  def list_period_drafts(self, graph_id: str, period: str) -> PeriodDrafts | None:
+  def list_period_drafts(
+    self, graph_id: str, period: str, entity_id: str | None = None
+  ) -> PeriodDrafts | None:
     """All draft entries in a period, fully expanded for review pre-close."""
-    data = self._query(graph_id, GET_LEDGER_PERIOD_DRAFTS_GQL, {"period": period})
+    data = self._query(
+      graph_id, GET_LEDGER_PERIOD_DRAFTS_GQL, {"period": period, "entityId": entity_id}
+    )
     return GetLedgerPeriodDrafts.model_validate(data).period_drafts
 
   def create_closing_entry(
@@ -2104,22 +2160,30 @@ class LedgerClient:
 
   # ── Closing book ───────────────────────────────────────────────────
 
-  def get_closing_book_structures(self, graph_id: str) -> ClosingBookStructures | None:
+  def get_closing_book_structures(
+    self, graph_id: str, entity_id: str | None = None
+  ) -> ClosingBookStructures | None:
     """Grouped closing book structures for the close-screen sidebar."""
-    data = self._query(graph_id, GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL)
+    data = self._query(
+      graph_id, GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL, self._scope(entity_id)
+    )
     return GetLedgerClosingBookStructures.model_validate(data).closing_book_structures
 
   # ── Fiscal Calendar ────────────────────────────────────────────────
 
-  def get_fiscal_calendar(self, graph_id: str) -> FiscalCalendar | None:
-    """Current fiscal calendar state — pointers, gap, closeable status."""
-    data = self._query(graph_id, GET_LEDGER_FISCAL_CALENDAR_GQL)
+  def get_fiscal_calendar(
+    self, graph_id: str, entity_id: str | None = None
+  ) -> FiscalCalendar | None:
+    """Current fiscal calendar state — pointers, gap, closeable status — for
+    the group parent, or for the entity ``entity_id`` names."""
+    data = self._query(graph_id, GET_LEDGER_FISCAL_CALENDAR_GQL, self._scope(entity_id))
     return GetLedgerFiscalCalendar.model_validate(data).fiscal_calendar
 
   def initialize_ledger(
     self,
     graph_id: str,
     *,
+    entity_id: str | None = None,
     closed_through: str | None = None,
     fiscal_year_start_month: int | None = None,
     earliest_data_period: str | None = None,
@@ -2128,6 +2192,7 @@ class LedgerClient:
   ) -> InitializeLedgerResponse:
     """One-time ledger initialization — seed fiscal calendar + periods."""
     body = InitializeLedgerRequest(
+      entity_id=entity_id if entity_id is not None else UNSET,
       closed_through=closed_through if closed_through is not None else UNSET,
       fiscal_year_start_month=(
         fiscal_year_start_month if fiscal_year_start_month is not None else UNSET
@@ -2158,6 +2223,7 @@ class LedgerClient:
     graph_id: str,
     template: InitializeChartOfAccountsRequestTemplate | str,
     *,
+    entity_id: str | None = None,
     entity_type: str | None = None,
     name: str | None = None,
   ) -> InitializeChartOfAccountsResponse:
@@ -2172,6 +2238,7 @@ class LedgerClient:
     """
     body = InitializeChartOfAccountsRequest(
       template=InitializeChartOfAccountsRequestTemplate(template),
+      entity_id=entity_id if entity_id is not None else UNSET,
       entity_type=entity_type if entity_type is not None else UNSET,
       name=name if name is not None else UNSET,
     )
@@ -2188,11 +2255,14 @@ class LedgerClient:
     graph_id: str,
     period: str,
     note: str | None = None,
+    *,
+    entity_id: str | None = None,
   ) -> FiscalCalendarResponse:
     """Set the user-controlled close target (YYYY-MM)."""
     body = SetCloseTargetOperation(
       period=period,
       note=note if note is not None else UNSET,
+      entity_id=entity_id if entity_id is not None else UNSET,
     )
     response = op_set_close_target(
       graph_id=graph_id, body=body, client=self._get_client()
@@ -2210,8 +2280,10 @@ class LedgerClient:
     allow_stranded_obligations: bool | None = None,
     allow_reconciling_items: bool | None = None,
     allow_unposted_source_events: bool | None = None,
+    entity_id: str | None = None,
   ) -> ClosePeriodResponse:
-    """Close a fiscal period — the final commit action.
+    """Close a fiscal period — the final commit action — on the group parent,
+    or on the entity ``entity_id`` names. Each entity closes on its own.
 
     Each ``allow_*`` flag closes despite one blocker and is recorded in the
     close audit note; prefer clearing the blocker.
@@ -2231,6 +2303,7 @@ class LedgerClient:
 
     body = ClosePeriodOperation(
       period=period,
+      entity_id=entity_id if entity_id is not None else UNSET,
       note=note if note is not None else UNSET,
       allow_stale_sync=flag(allow_stale_sync),
       allow_unreconciled_accounts=flag(allow_unreconciled_accounts),
@@ -2248,12 +2321,15 @@ class LedgerClient:
     period: str,
     reason: str,
     note: str | None = None,
+    *,
+    entity_id: str | None = None,
   ) -> FiscalCalendarResponse:
     """Reopen a closed fiscal period. Requires a reason for the audit log."""
     body = ReopenPeriodOperation(
       period=period,
       reason=reason,
       note=note if note is not None else UNSET,
+      entity_id=entity_id if entity_id is not None else UNSET,
     )
     response = op_reopen_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Reopen period", response)
@@ -2357,7 +2433,7 @@ class LedgerClient:
   # ── Reconciliations ─────────────────────────────────────────────────
 
   def list_reconciliations(
-    self, graph_id: str, period: str
+    self, graph_id: str, period: str, entity_id: str | None = None
   ) -> ReconciliationList | None:
     """Every reconciliation block's standing at a period end (``YYYY-MM``).
 
@@ -2365,7 +2441,11 @@ class LedgerClient:
     Comparisons are recorded by `refresh_reconciliations` and
     `record_statement_balance`.
     """
-    data = self._query(graph_id, LIST_LEDGER_RECONCILIATIONS_GQL, {"period": period})
+    data = self._query(
+      graph_id,
+      LIST_LEDGER_RECONCILIATIONS_GQL,
+      {"period": period, "entityId": entity_id},
+    )
     return ListLedgerReconciliations.model_validate(data).reconciliations
 
   def preview_reconciliations(
@@ -2539,7 +2619,10 @@ class LedgerClient:
     return self._typed_result("Create report", envelope, ReportResponse)
 
   def list_reports(
-    self, graph_id: str, lifecycle: str | None = None
+    self,
+    graph_id: str,
+    lifecycle: str | None = None,
+    entity_id: str | None = None,
   ) -> list[ListLedgerReportsReportsReports]:
     """List reports for a graph (includes received shared reports).
 
@@ -2549,9 +2632,12 @@ class LedgerClient:
             reports out, ``"archived"`` returns only those, ``"all"`` every
             report. The enum names ``"CURRENT"`` / ``"ARCHIVED"`` /
             ``"ALL"`` are also accepted.
+        entity_id: one entity's reports; the group parent's when omitted.
     """
-    variables = {"lifecycle": lifecycle.upper()} if lifecycle else None
-    data = self._query(graph_id, LIST_LEDGER_REPORTS_GQL, variables)
+    variables = strip_none_vars(
+      {"lifecycle": lifecycle.upper() if lifecycle else None, "entityId": entity_id}
+    )
+    data = self._query(graph_id, LIST_LEDGER_REPORTS_GQL, variables or None)
     page = ListLedgerReports.model_validate(data).reports
     return page.reports if page else []
 

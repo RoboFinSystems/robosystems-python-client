@@ -1,5 +1,5 @@
-query GetLedgerAccountTree {
-  accountTree {
+query GetLedgerAccountTree($entityId: String) {
+  accountTree(entityId: $entityId) {
     totalAccounts
     roots {
       id code name trait accountType balanceType depth isActive

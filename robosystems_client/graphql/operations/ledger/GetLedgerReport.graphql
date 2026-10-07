@@ -1,6 +1,6 @@
 query GetLedgerReport($reportId: String!) {
   report(reportId: $reportId) {
-    id name taxonomyId generationStatus periodType
+    id entityId name taxonomyId generationStatus periodType
     periodStart periodEnd comparative mappingId aiGenerated
     createdAt lastGenerated entityName
     filingStatus filedAt filedBy supersedesId supersededById

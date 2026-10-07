@@ -1,5 +1,5 @@
-query GetLedgerPeriodDrafts($period: String!) {
-  periodDrafts(period: $period) {
+query GetLedgerPeriodDrafts($period: String!, $entityId: String) {
+  periodDrafts(period: $period, entityId: $entityId) {
     period periodStart periodEnd draftCount
     totalDebit totalCredit allBalanced
     qbWritebackConnectionId qbWritePolicy qbPublishCount localOnlyCount
