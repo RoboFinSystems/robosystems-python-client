@@ -118,7 +118,8 @@ def sync_detailed(
   books the feed's lines go into, so this is also how a feed account is bound to a subsidiary. Lines
   still in the inbox move with it (across an entity change their suggestion is resolved again on the
   new chart, and a classification that named the old entity's account is dropped); posted entries stay
-  where they were posted. An account another connection already feeds is refused. An account the feed
+  where they were posted. An account another connection already feeds is refused, as is an entity
+  whose books QuickBooks keeps (the group parent, while QuickBooks is connected). An account the feed
   created and then left stays on its chart as an ordinary account. A sync already in flight when the
   link moves can still land a line or two on the old account; running this again moves them. Read the
   group's accounts with the `bankAccounts` GraphQL field.
@@ -172,7 +173,8 @@ def sync(
   books the feed's lines go into, so this is also how a feed account is bound to a subsidiary. Lines
   still in the inbox move with it (across an entity change their suggestion is resolved again on the
   new chart, and a classification that named the old entity's account is dropped); posted entries stay
-  where they were posted. An account another connection already feeds is refused. An account the feed
+  where they were posted. An account another connection already feeds is refused, as is an entity
+  whose books QuickBooks keeps (the group parent, while QuickBooks is connected). An account the feed
   created and then left stays on its chart as an ordinary account. A sync already in flight when the
   link moves can still land a line or two on the old account; running this again moves them. Read the
   group's accounts with the `bankAccounts` GraphQL field.
@@ -221,7 +223,8 @@ async def asyncio_detailed(
   books the feed's lines go into, so this is also how a feed account is bound to a subsidiary. Lines
   still in the inbox move with it (across an entity change their suggestion is resolved again on the
   new chart, and a classification that named the old entity's account is dropped); posted entries stay
-  where they were posted. An account another connection already feeds is refused. An account the feed
+  where they were posted. An account another connection already feeds is refused, as is an entity
+  whose books QuickBooks keeps (the group parent, while QuickBooks is connected). An account the feed
   created and then left stays on its chart as an ordinary account. A sync already in flight when the
   link moves can still land a line or two on the old account; running this again moves them. Read the
   group's accounts with the `bankAccounts` GraphQL field.
@@ -273,7 +276,8 @@ async def asyncio(
   books the feed's lines go into, so this is also how a feed account is bound to a subsidiary. Lines
   still in the inbox move with it (across an entity change their suggestion is resolved again on the
   new chart, and a classification that named the old entity's account is dropped); posted entries stay
-  where they were posted. An account another connection already feeds is refused. An account the feed
+  where they were posted. An account another connection already feeds is refused, as is an entity
+  whose books QuickBooks keeps (the group parent, while QuickBooks is connected). An account the feed
   created and then left stays on its chart as an ordinary account. A sync already in flight when the
   link moves can still land a line or two on the old account; running this again moves them. Read the
   group's accounts with the `bankAccounts` GraphQL field.
