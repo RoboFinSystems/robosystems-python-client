@@ -30,11 +30,15 @@ class MercuryConnectionConfig:
           include_treasury (bool | Unset): Capture treasury-account activity alongside checking/savings. Default: True.
           api_key (None | str | Unset): A personal read-only Mercury API token, for deployments that allow the api_key
               credential mode. Omit to connect over OAuth.
+          entity_id (None | str | Unset): The entity whose books the feed's accounts land on: a subsidiary's id, or omit
+              for the group parent. Required when QuickBooks keeps the parent's books. Each account can be moved to another
+              entity later with `link-bank-account`.
   """
 
   since_date: datetime.date | None | Unset = UNSET
   include_treasury: bool | Unset = True
   api_key: None | str | Unset = UNSET
+  entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -54,6 +58,12 @@ class MercuryConnectionConfig:
     else:
       api_key = self.api_key
 
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
@@ -63,6 +73,8 @@ class MercuryConnectionConfig:
       field_dict["include_treasury"] = include_treasury
     if api_key is not UNSET:
       field_dict["api_key"] = api_key
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
 
     return field_dict
 
@@ -98,10 +110,20 @@ class MercuryConnectionConfig:
 
     api_key = _parse_api_key(d.pop("api_key", UNSET))
 
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
     mercury_connection_config = cls(
       since_date=since_date,
       include_treasury=include_treasury,
       api_key=api_key,
+      entity_id=entity_id,
     )
 
     mercury_connection_config.additional_properties = d

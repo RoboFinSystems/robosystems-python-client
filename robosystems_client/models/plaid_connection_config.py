@@ -16,19 +16,24 @@ T = TypeVar("T", bound="PlaidConnectionConfig")
 class PlaidConnectionConfig:
   """Plaid bank-feed connection configuration.
 
-  A bank feed is native accounting: the graph must already have a chart of
-  accounts and no live QuickBooks connection. The connection is created
-  `pending_oauth`; `POST /oauth/init` returns a `link_token` for Plaid
-  Link, and the `public_token` Link hands back completes it through
+  A bank feed is native accounting: the entity its accounts land on must
+  already have a chart of accounts and must not be the one QuickBooks keeps
+  (the group parent, while QuickBooks is connected). The connection is
+  created `pending_oauth`; `POST /oauth/init` returns a `link_token` for
+  Plaid Link, and the `public_token` Link hands back completes it through
   `POST /oauth/callback/plaid` (as `code`). One connection per institution
   login; a graph can hold several.
 
       Attributes:
           since_date (datetime.date | None | Unset): First day of the backfill (ISO 8601), and how much history Plaid is
               asked to pull for the new Item (at most two years). Defaults to 1 January of last year.
+          entity_id (None | str | Unset): The entity whose books the feed's accounts land on: a subsidiary's id, or omit
+              for the group parent. Required when QuickBooks keeps the parent's books. Each account can be moved to another
+              entity later with `link-bank-account`.
   """
 
   since_date: datetime.date | None | Unset = UNSET
+  entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -40,11 +45,19 @@ class PlaidConnectionConfig:
     else:
       since_date = self.since_date
 
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
     if since_date is not UNSET:
       field_dict["since_date"] = since_date
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
 
     return field_dict
 
@@ -69,8 +82,18 @@ class PlaidConnectionConfig:
 
     since_date = _parse_since_date(d.pop("since_date", UNSET))
 
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
     plaid_connection_config = cls(
       since_date=since_date,
+      entity_id=entity_id,
     )
 
     plaid_connection_config.additional_properties = d
