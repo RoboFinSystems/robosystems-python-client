@@ -19,6 +19,8 @@ class ClosePeriodOperation:
 
       Attributes:
           period (str): Period to close, in YYYY-MM. Must be exactly `closed_through + 1` — close runs sequentially.
+          entity_id (None | str | Unset): The entity whose books this acts on, by id. Omit for the group parent — the
+              single-entity default.
           note (None | str | Unset): Free-form note attached to the close event
           allow_stale_sync (bool | Unset): Override the sync-currency gate. Only use when you have manually verified that
               the source data for the period is complete. Default: False.
@@ -42,6 +44,7 @@ class ClosePeriodOperation:
   """
 
   period: str
+  entity_id: None | str | Unset = UNSET
   note: None | str | Unset = UNSET
   allow_stale_sync: bool | Unset = False
   allow_stranded_obligations: bool | Unset = False
@@ -52,6 +55,12 @@ class ClosePeriodOperation:
 
   def to_dict(self) -> dict[str, Any]:
     period = self.period
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     note: None | str | Unset
     if isinstance(self.note, Unset):
@@ -76,6 +85,8 @@ class ClosePeriodOperation:
         "period": period,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if note is not UNSET:
       field_dict["note"] = note
     if allow_stale_sync is not UNSET:
@@ -95,6 +106,15 @@ class ClosePeriodOperation:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
     period = d.pop("period")
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_note(data: object) -> None | str | Unset:
       if data is None:
@@ -117,6 +137,7 @@ class ClosePeriodOperation:
 
     close_period_operation = cls(
       period=period,
+      entity_id=entity_id,
       note=note,
       allow_stale_sync=allow_stale_sync,
       allow_stranded_obligations=allow_stranded_obligations,

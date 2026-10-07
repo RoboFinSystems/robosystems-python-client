@@ -8,36 +8,45 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="UpdateEntityRequest")
+T = TypeVar("T", bound="CreateEntityRequest")
 
 
 @_attrs_define
-class UpdateEntityRequest:
-  """Update an entity of the graph's reporting group. All fields are
-  optional — pass only what changes. Identifiers (CIK, LEI, tax_id) are
-  typically set once at onboarding; address fields are flattened to make
-  them easy to project into reporting forms (1099, state filings).
+class CreateEntityRequest:
+  """Add an entity to the graph's reporting group.
 
-  Omit `entity_id` to target the group parent.
+  The new entity is a subsidiary of `parent_entity_id`, default the group
+  parent, and keeps its own books: give it a chart next
+  (`initialize-chart-of-accounts` with `entity_id`) and a calendar
+  (`initialize`), then name it with `entity_id` on any ledger operation.
+  A graph created without an entity gets this one as its group parent.
+  There is no cap on entities in a graph; capacity is the tier's.
 
       Attributes:
-          entity_id (None | str | Unset): The entity to update. Omit to target the group parent — the single-entity
-              default.
-          name (None | str | Unset):
-          legal_name (None | str | Unset):
-          uri (None | str | Unset):
+          name (str): Display name.
+          legal_name (None | str | Unset): Registered legal name. Defaults to `name`.
+          entity_type (None | str | Unset): Legal form: `corporation`, `llc`, `partnership`, `sole_proprietorship`,
+              `non_profit`. Picks the default Reporting Style (partnership and llc have equity-form Styles of their own;
+              anything else is corporate) and the equity rows of a chart template.
+          reporting_style_id (None | str | Unset): Structure id of the Reporting Style to present under, validated in the
+              graph like change-reporting-style. Omit to derive it from `entity_type`.
+          parent_entity_id (None | str | Unset): The entity this one is held under. Omit for the group parent; name a
+              subsidiary to nest a sub-group under it.
+          ownership_pct (float | None | Unset): The parent's share of this entity, as a percent (100 = wholly owned). Omit
+              when not recorded. Refused on a graph's first entity, which becomes the group parent.
+          ticker (None | str | Unset): Short symbol, unique in the graph; it prefixes the entity's account names
+              (`coa-<ticker>:1000`). Derived from the name's initials when omitted.
+          uri (None | str | Unset): Canonical URL / external identifier.
           cik (None | str | Unset):
-          ticker (None | str | Unset):
-          exchange (None | str | Unset):
           sic (None | str | Unset):
           sic_description (None | str | Unset):
           category (None | str | Unset):
           state_of_incorporation (None | str | Unset):
-          fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD (e.g. '12-31', '06-30').
+          fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD. Defaults to the parent's: a graph has one fiscal
+              cadence, and every entity's calendar follows it.
           tax_id (None | str | Unset):
           lei (None | str | Unset):
           industry (None | str | Unset):
-          entity_type (None | str | Unset):
           phone (None | str | Unset):
           website (None | str | Unset):
           address_line1 (None | str | Unset):
@@ -45,17 +54,17 @@ class UpdateEntityRequest:
           address_state (None | str | Unset):
           address_postal_code (None | str | Unset):
           address_country (None | str | Unset):
-          ownership_pct (float | None | Unset): The parent's share of this entity, as a percent. Refused on the group
-              parent, which has no owner in the graph.
   """
 
-  entity_id: None | str | Unset = UNSET
-  name: None | str | Unset = UNSET
+  name: str
   legal_name: None | str | Unset = UNSET
+  entity_type: None | str | Unset = UNSET
+  reporting_style_id: None | str | Unset = UNSET
+  parent_entity_id: None | str | Unset = UNSET
+  ownership_pct: float | None | Unset = UNSET
+  ticker: None | str | Unset = UNSET
   uri: None | str | Unset = UNSET
   cik: None | str | Unset = UNSET
-  ticker: None | str | Unset = UNSET
-  exchange: None | str | Unset = UNSET
   sic: None | str | Unset = UNSET
   sic_description: None | str | Unset = UNSET
   category: None | str | Unset = UNSET
@@ -64,7 +73,6 @@ class UpdateEntityRequest:
   tax_id: None | str | Unset = UNSET
   lei: None | str | Unset = UNSET
   industry: None | str | Unset = UNSET
-  entity_type: None | str | Unset = UNSET
   phone: None | str | Unset = UNSET
   website: None | str | Unset = UNSET
   address_line1: None | str | Unset = UNSET
@@ -72,27 +80,46 @@ class UpdateEntityRequest:
   address_state: None | str | Unset = UNSET
   address_postal_code: None | str | Unset = UNSET
   address_country: None | str | Unset = UNSET
-  ownership_pct: float | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    entity_id: None | str | Unset
-    if isinstance(self.entity_id, Unset):
-      entity_id = UNSET
-    else:
-      entity_id = self.entity_id
-
-    name: None | str | Unset
-    if isinstance(self.name, Unset):
-      name = UNSET
-    else:
-      name = self.name
+    name = self.name
 
     legal_name: None | str | Unset
     if isinstance(self.legal_name, Unset):
       legal_name = UNSET
     else:
       legal_name = self.legal_name
+
+    entity_type: None | str | Unset
+    if isinstance(self.entity_type, Unset):
+      entity_type = UNSET
+    else:
+      entity_type = self.entity_type
+
+    reporting_style_id: None | str | Unset
+    if isinstance(self.reporting_style_id, Unset):
+      reporting_style_id = UNSET
+    else:
+      reporting_style_id = self.reporting_style_id
+
+    parent_entity_id: None | str | Unset
+    if isinstance(self.parent_entity_id, Unset):
+      parent_entity_id = UNSET
+    else:
+      parent_entity_id = self.parent_entity_id
+
+    ownership_pct: float | None | Unset
+    if isinstance(self.ownership_pct, Unset):
+      ownership_pct = UNSET
+    else:
+      ownership_pct = self.ownership_pct
+
+    ticker: None | str | Unset
+    if isinstance(self.ticker, Unset):
+      ticker = UNSET
+    else:
+      ticker = self.ticker
 
     uri: None | str | Unset
     if isinstance(self.uri, Unset):
@@ -105,18 +132,6 @@ class UpdateEntityRequest:
       cik = UNSET
     else:
       cik = self.cik
-
-    ticker: None | str | Unset
-    if isinstance(self.ticker, Unset):
-      ticker = UNSET
-    else:
-      ticker = self.ticker
-
-    exchange: None | str | Unset
-    if isinstance(self.exchange, Unset):
-      exchange = UNSET
-    else:
-      exchange = self.exchange
 
     sic: None | str | Unset
     if isinstance(self.sic, Unset):
@@ -166,12 +181,6 @@ class UpdateEntityRequest:
     else:
       industry = self.industry
 
-    entity_type: None | str | Unset
-    if isinstance(self.entity_type, Unset):
-      entity_type = UNSET
-    else:
-      entity_type = self.entity_type
-
     phone: None | str | Unset
     if isinstance(self.phone, Unset):
       phone = UNSET
@@ -214,29 +223,29 @@ class UpdateEntityRequest:
     else:
       address_country = self.address_country
 
-    ownership_pct: float | None | Unset
-    if isinstance(self.ownership_pct, Unset):
-      ownership_pct = UNSET
-    else:
-      ownership_pct = self.ownership_pct
-
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
-    field_dict.update({})
-    if entity_id is not UNSET:
-      field_dict["entity_id"] = entity_id
-    if name is not UNSET:
-      field_dict["name"] = name
+    field_dict.update(
+      {
+        "name": name,
+      }
+    )
     if legal_name is not UNSET:
       field_dict["legal_name"] = legal_name
+    if entity_type is not UNSET:
+      field_dict["entity_type"] = entity_type
+    if reporting_style_id is not UNSET:
+      field_dict["reporting_style_id"] = reporting_style_id
+    if parent_entity_id is not UNSET:
+      field_dict["parent_entity_id"] = parent_entity_id
+    if ownership_pct is not UNSET:
+      field_dict["ownership_pct"] = ownership_pct
+    if ticker is not UNSET:
+      field_dict["ticker"] = ticker
     if uri is not UNSET:
       field_dict["uri"] = uri
     if cik is not UNSET:
       field_dict["cik"] = cik
-    if ticker is not UNSET:
-      field_dict["ticker"] = ticker
-    if exchange is not UNSET:
-      field_dict["exchange"] = exchange
     if sic is not UNSET:
       field_dict["sic"] = sic
     if sic_description is not UNSET:
@@ -253,8 +262,6 @@ class UpdateEntityRequest:
       field_dict["lei"] = lei
     if industry is not UNSET:
       field_dict["industry"] = industry
-    if entity_type is not UNSET:
-      field_dict["entity_type"] = entity_type
     if phone is not UNSET:
       field_dict["phone"] = phone
     if website is not UNSET:
@@ -269,32 +276,13 @@ class UpdateEntityRequest:
       field_dict["address_postal_code"] = address_postal_code
     if address_country is not UNSET:
       field_dict["address_country"] = address_country
-    if ownership_pct is not UNSET:
-      field_dict["ownership_pct"] = ownership_pct
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-
-    def _parse_entity_id(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
-
-    def _parse_name(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    name = _parse_name(d.pop("name", UNSET))
+    name = d.pop("name")
 
     def _parse_legal_name(data: object) -> None | str | Unset:
       if data is None:
@@ -304,6 +292,51 @@ class UpdateEntityRequest:
       return cast(None | str | Unset, data)
 
     legal_name = _parse_legal_name(d.pop("legal_name", UNSET))
+
+    def _parse_entity_type(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_type = _parse_entity_type(d.pop("entity_type", UNSET))
+
+    def _parse_reporting_style_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    reporting_style_id = _parse_reporting_style_id(d.pop("reporting_style_id", UNSET))
+
+    def _parse_parent_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    parent_entity_id = _parse_parent_entity_id(d.pop("parent_entity_id", UNSET))
+
+    def _parse_ownership_pct(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    ownership_pct = _parse_ownership_pct(d.pop("ownership_pct", UNSET))
+
+    def _parse_ticker(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    ticker = _parse_ticker(d.pop("ticker", UNSET))
 
     def _parse_uri(data: object) -> None | str | Unset:
       if data is None:
@@ -322,24 +355,6 @@ class UpdateEntityRequest:
       return cast(None | str | Unset, data)
 
     cik = _parse_cik(d.pop("cik", UNSET))
-
-    def _parse_ticker(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    ticker = _parse_ticker(d.pop("ticker", UNSET))
-
-    def _parse_exchange(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    exchange = _parse_exchange(d.pop("exchange", UNSET))
 
     def _parse_sic(data: object) -> None | str | Unset:
       if data is None:
@@ -415,15 +430,6 @@ class UpdateEntityRequest:
 
     industry = _parse_industry(d.pop("industry", UNSET))
 
-    def _parse_entity_type(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    entity_type = _parse_entity_type(d.pop("entity_type", UNSET))
-
     def _parse_phone(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -489,23 +495,16 @@ class UpdateEntityRequest:
 
     address_country = _parse_address_country(d.pop("address_country", UNSET))
 
-    def _parse_ownership_pct(data: object) -> float | None | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(float | None | Unset, data)
-
-    ownership_pct = _parse_ownership_pct(d.pop("ownership_pct", UNSET))
-
-    update_entity_request = cls(
-      entity_id=entity_id,
+    create_entity_request = cls(
       name=name,
       legal_name=legal_name,
+      entity_type=entity_type,
+      reporting_style_id=reporting_style_id,
+      parent_entity_id=parent_entity_id,
+      ownership_pct=ownership_pct,
+      ticker=ticker,
       uri=uri,
       cik=cik,
-      ticker=ticker,
-      exchange=exchange,
       sic=sic,
       sic_description=sic_description,
       category=category,
@@ -514,7 +513,6 @@ class UpdateEntityRequest:
       tax_id=tax_id,
       lei=lei,
       industry=industry,
-      entity_type=entity_type,
       phone=phone,
       website=website,
       address_line1=address_line1,
@@ -522,11 +520,10 @@ class UpdateEntityRequest:
       address_state=address_state,
       address_postal_code=address_postal_code,
       address_country=address_country,
-      ownership_pct=ownership_pct,
     )
 
-    update_entity_request.additional_properties = d
-    return update_entity_request
+    create_entity_request.additional_properties = d
+    return create_entity_request
 
   @property
   def additional_keys(self) -> list[str]:

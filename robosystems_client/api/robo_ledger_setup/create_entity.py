@@ -6,18 +6,18 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.create_entity_request import CreateEntityRequest
 from ...models.error_response import ErrorResponse
 from ...models.operation_envelope_ledger_entity_response import (
   OperationEnvelopeLedgerEntityResponse,
 )
-from ...models.update_entity_request import UpdateEntityRequest
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: UpdateEntityRequest,
+  body: CreateEntityRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -26,7 +26,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/update-entity".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/create-entity".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -108,14 +108,20 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateEntityRequest,
+  body: CreateEntityRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeLedgerEntityResponse]:
-  """Update Entity
+  """Create Entity
 
-   Update an entity of the graph's reporting group. Only provided (non-null) fields are updated. Omit
-  `entity_id` to target the group parent; name a subsidiary's id to edit it. `ownership_pct` is
-  refused on the group parent (422), and `ticker` must stay unique in the graph (409).
+   Add an entity to the graph's reporting group: a subsidiary under `parent_entity_id` (default the
+  group parent) that keeps its own books, chart of accounts and close, on the group's fiscal cadence.
+  A graph created without an entity gets this one as its group parent. Creates the entity row only —
+  give it a chart next (initialize-chart-of-accounts with `entity_id`) and a calendar (initialize with
+  `entity_id`); from then on every ledger operation takes `entity_id` to act in its books, and
+  omitting it means the group parent. The Reporting Style follows `entity_type` unless
+  `reporting_style_id` names one. `ticker` prefixes the entity's account names and must be unique in
+  the graph (409). There is no cap on entities: a graph is one reporting group, and everyone with
+  access to it sees every entity.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -123,13 +129,14 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateEntityRequest): Update an entity of the graph's reporting group. All fields
-          are
-          optional — pass only what changes. Identifiers (CIK, LEI, tax_id) are
-          typically set once at onboarding; address fields are flattened to make
-          them easy to project into reporting forms (1099, state filings).
+      body (CreateEntityRequest): Add an entity to the graph's reporting group.
 
-          Omit `entity_id` to target the group parent.
+          The new entity is a subsidiary of `parent_entity_id`, default the group
+          parent, and keeps its own books: give it a chart next
+          (`initialize-chart-of-accounts` with `entity_id`) and a calendar
+          (`initialize`), then name it with `entity_id` on any ledger operation.
+          A graph created without an entity gets this one as its group parent.
+          There is no cap on entities in a graph; capacity is the tier's.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -156,14 +163,20 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateEntityRequest,
+  body: CreateEntityRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeLedgerEntityResponse | None:
-  """Update Entity
+  """Create Entity
 
-   Update an entity of the graph's reporting group. Only provided (non-null) fields are updated. Omit
-  `entity_id` to target the group parent; name a subsidiary's id to edit it. `ownership_pct` is
-  refused on the group parent (422), and `ticker` must stay unique in the graph (409).
+   Add an entity to the graph's reporting group: a subsidiary under `parent_entity_id` (default the
+  group parent) that keeps its own books, chart of accounts and close, on the group's fiscal cadence.
+  A graph created without an entity gets this one as its group parent. Creates the entity row only —
+  give it a chart next (initialize-chart-of-accounts with `entity_id`) and a calendar (initialize with
+  `entity_id`); from then on every ledger operation takes `entity_id` to act in its books, and
+  omitting it means the group parent. The Reporting Style follows `entity_type` unless
+  `reporting_style_id` names one. `ticker` prefixes the entity's account names and must be unique in
+  the graph (409). There is no cap on entities: a graph is one reporting group, and everyone with
+  access to it sees every entity.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -171,13 +184,14 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateEntityRequest): Update an entity of the graph's reporting group. All fields
-          are
-          optional — pass only what changes. Identifiers (CIK, LEI, tax_id) are
-          typically set once at onboarding; address fields are flattened to make
-          them easy to project into reporting forms (1099, state filings).
+      body (CreateEntityRequest): Add an entity to the graph's reporting group.
 
-          Omit `entity_id` to target the group parent.
+          The new entity is a subsidiary of `parent_entity_id`, default the group
+          parent, and keeps its own books: give it a chart next
+          (`initialize-chart-of-accounts` with `entity_id`) and a calendar
+          (`initialize`), then name it with `entity_id` on any ledger operation.
+          A graph created without an entity gets this one as its group parent.
+          There is no cap on entities in a graph; capacity is the tier's.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -199,14 +213,20 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateEntityRequest,
+  body: CreateEntityRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> Response[ErrorResponse | OperationEnvelopeLedgerEntityResponse]:
-  """Update Entity
+  """Create Entity
 
-   Update an entity of the graph's reporting group. Only provided (non-null) fields are updated. Omit
-  `entity_id` to target the group parent; name a subsidiary's id to edit it. `ownership_pct` is
-  refused on the group parent (422), and `ticker` must stay unique in the graph (409).
+   Add an entity to the graph's reporting group: a subsidiary under `parent_entity_id` (default the
+  group parent) that keeps its own books, chart of accounts and close, on the group's fiscal cadence.
+  A graph created without an entity gets this one as its group parent. Creates the entity row only —
+  give it a chart next (initialize-chart-of-accounts with `entity_id`) and a calendar (initialize with
+  `entity_id`); from then on every ledger operation takes `entity_id` to act in its books, and
+  omitting it means the group parent. The Reporting Style follows `entity_type` unless
+  `reporting_style_id` names one. `ticker` prefixes the entity's account names and must be unique in
+  the graph (409). There is no cap on entities: a graph is one reporting group, and everyone with
+  access to it sees every entity.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -214,13 +234,14 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateEntityRequest): Update an entity of the graph's reporting group. All fields
-          are
-          optional — pass only what changes. Identifiers (CIK, LEI, tax_id) are
-          typically set once at onboarding; address fields are flattened to make
-          them easy to project into reporting forms (1099, state filings).
+      body (CreateEntityRequest): Add an entity to the graph's reporting group.
 
-          Omit `entity_id` to target the group parent.
+          The new entity is a subsidiary of `parent_entity_id`, default the group
+          parent, and keeps its own books: give it a chart next
+          (`initialize-chart-of-accounts` with `entity_id`) and a calendar
+          (`initialize`), then name it with `entity_id` on any ledger operation.
+          A graph created without an entity gets this one as its group parent.
+          There is no cap on entities in a graph; capacity is the tier's.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -245,14 +266,20 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateEntityRequest,
+  body: CreateEntityRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> ErrorResponse | OperationEnvelopeLedgerEntityResponse | None:
-  """Update Entity
+  """Create Entity
 
-   Update an entity of the graph's reporting group. Only provided (non-null) fields are updated. Omit
-  `entity_id` to target the group parent; name a subsidiary's id to edit it. `ownership_pct` is
-  refused on the group parent (422), and `ticker` must stay unique in the graph (409).
+   Add an entity to the graph's reporting group: a subsidiary under `parent_entity_id` (default the
+  group parent) that keeps its own books, chart of accounts and close, on the group's fiscal cadence.
+  A graph created without an entity gets this one as its group parent. Creates the entity row only —
+  give it a chart next (initialize-chart-of-accounts with `entity_id`) and a calendar (initialize with
+  `entity_id`); from then on every ledger operation takes `entity_id` to act in its books, and
+  omitting it means the group parent. The Reporting Style follows `entity_type` unless
+  `reporting_style_id` names one. `ticker` prefixes the entity's account names and must be unique in
+  the graph (409). There is no cap on entities: a graph is one reporting group, and everyone with
+  access to it sees every entity.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -260,13 +287,14 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateEntityRequest): Update an entity of the graph's reporting group. All fields
-          are
-          optional — pass only what changes. Identifiers (CIK, LEI, tax_id) are
-          typically set once at onboarding; address fields are flattened to make
-          them easy to project into reporting forms (1099, state filings).
+      body (CreateEntityRequest): Add an entity to the graph's reporting group.
 
-          Omit `entity_id` to target the group parent.
+          The new entity is a subsidiary of `parent_entity_id`, default the group
+          parent, and keeps its own books: give it a chart next
+          (`initialize-chart-of-accounts` with `entity_id`) and a calendar
+          (`initialize`), then name it with `entity_id` on any ledger operation.
+          A graph created without an entity gets this one as its group parent.
+          There is no cap on entities in a graph; capacity is the tier's.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

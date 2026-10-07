@@ -21,7 +21,7 @@ class BackfillPlanHistoryResponse:
   """Response from one chunked plan-history backfill call.
 
   Attributes:
-      fiscal_calendar (FiscalCalendarResponse): Current fiscal calendar state for a graph.
+      fiscal_calendar (FiscalCalendarResponse): Current fiscal calendar state for one entity of a graph.
       earliest_available_period (str): First month with ledger data — the hard floor for backfill
       effective_start_period (str): The start actually used after clamping to earliest_available_period
       closed_through (str): The close boundary the backfill runs up to (inclusive)

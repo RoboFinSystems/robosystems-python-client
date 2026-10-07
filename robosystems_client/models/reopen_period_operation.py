@@ -20,11 +20,14 @@ class ReopenPeriodOperation:
       period (str): Period to reopen, in YYYY-MM. Only the latest closed period (the current `closed_through`) can be
           reopened, and reopening it retreats `closed_through` by one month. To reach an earlier period, reopen the later
           ones first, latest to earliest.
+      entity_id (None | str | Unset): The entity whose books this acts on, by id. Omit for the group parent — the
+          single-entity default.
       note (None | str | Unset): Additional free-form note
   """
 
   reason: str
   period: str
+  entity_id: None | str | Unset = UNSET
   note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -32,6 +35,12 @@ class ReopenPeriodOperation:
     reason = self.reason
 
     period = self.period
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     note: None | str | Unset
     if isinstance(self.note, Unset):
@@ -47,6 +56,8 @@ class ReopenPeriodOperation:
         "period": period,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if note is not UNSET:
       field_dict["note"] = note
 
@@ -58,6 +69,15 @@ class ReopenPeriodOperation:
     reason = d.pop("reason")
 
     period = d.pop("period")
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_note(data: object) -> None | str | Unset:
       if data is None:
@@ -71,6 +91,7 @@ class ReopenPeriodOperation:
     reopen_period_operation = cls(
       reason=reason,
       period=period,
+      entity_id=entity_id,
       note=note,
     )
 

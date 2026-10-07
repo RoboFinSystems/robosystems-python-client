@@ -29,6 +29,8 @@ class InitializeLedgerRequest:
     closing toward. Set independently via `set-close-target`.
 
       Attributes:
+          entity_id (None | str | Unset): The entity whose books this acts on, by id. Omit for the group parent — the
+              single-entity default.
           closed_through (None | str | Unset): YYYY-MM period. Periods ≤ this date are treated as historical (already
               closed before the user joined). Set to null for a fresh business with no prior close state.
           fiscal_year_start_month (int | Unset): Fiscal year start month (1-12). Defaults to calendar year. Default: 1.
@@ -39,6 +41,7 @@ class InitializeLedgerRequest:
           note (None | str | Unset): Free-form note attached to the audit event
   """
 
+  entity_id: None | str | Unset = UNSET
   closed_through: None | str | Unset = UNSET
   fiscal_year_start_month: int | Unset = 1
   auto_seed_schedules: bool | Unset = False
@@ -47,6 +50,12 @@ class InitializeLedgerRequest:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
     closed_through: None | str | Unset
     if isinstance(self.closed_through, Unset):
       closed_through = UNSET
@@ -72,6 +81,8 @@ class InitializeLedgerRequest:
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if closed_through is not UNSET:
       field_dict["closed_through"] = closed_through
     if fiscal_year_start_month is not UNSET:
@@ -88,6 +99,15 @@ class InitializeLedgerRequest:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_closed_through(data: object) -> None | str | Unset:
       if data is None:
@@ -123,6 +143,7 @@ class InitializeLedgerRequest:
     note = _parse_note(d.pop("note", UNSET))
 
     initialize_ledger_request = cls(
+      entity_id=entity_id,
       closed_through=closed_through,
       fiscal_year_start_month=fiscal_year_start_month,
       auto_seed_schedules=auto_seed_schedules,

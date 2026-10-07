@@ -16,15 +16,24 @@ class SetCloseTargetOperation:
   """
   Attributes:
       period (str): Target period in YYYY-MM format. Must be > current `closed_through`.
+      entity_id (None | str | Unset): The entity whose books this acts on, by id. Omit for the group parent — the
+          single-entity default.
       note (None | str | Unset): Free-form note attached to the audit event
   """
 
   period: str
+  entity_id: None | str | Unset = UNSET
   note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     period = self.period
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     note: None | str | Unset
     if isinstance(self.note, Unset):
@@ -39,6 +48,8 @@ class SetCloseTargetOperation:
         "period": period,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if note is not UNSET:
       field_dict["note"] = note
 
@@ -48,6 +59,15 @@ class SetCloseTargetOperation:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
     period = d.pop("period")
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_note(data: object) -> None | str | Unset:
       if data is None:
@@ -60,6 +80,7 @@ class SetCloseTargetOperation:
 
     set_close_target_operation = cls(
       period=period,
+      entity_id=entity_id,
       note=note,
     )
 

@@ -20,24 +20,38 @@ class LiveFinancialStatementRequest:
       statement_type (str): income_statement | balance_sheet | cash_flow_statement | equity_statement.
           `equity_statement` is provisional — equity balances, not a rollforward — and is not offered on the MCP surface
           until it articulates.
+      entity_id (None | str | Unset): The entity whose books this acts on, by id. Omit for the group parent — the
+          single-entity default.
       period_start (datetime.date | None | Unset): Explicit window start. Overrides period_type/fiscal_year.
       period_end (datetime.date | None | Unset): Explicit window end. Overrides period_type/fiscal_year.
       period_type (None | str | Unset): annual | quarterly | instant (ignored when dates supplied)
       fiscal_year (int | None | Unset): Fiscal year for annual window (anchored on FiscalCalendar)
+      consolidated (bool | Unset): A combined statement, not a consolidation: every entity of the reporting group
+          rendered under the group parent's Reporting Style and summed per rs-gaap concept, with nothing eliminated
+          between them. Only on the group parent (422 on a subsidiary). An entity with no CoA mapping yet contributes
+          nothing and is left out of `combined_entity_ids`. Default: False.
       limit (int | Unset): Max fact rows returned. Defaults to the ceiling so a statement is never cut mid-section —
           visible rows would stop footing to visible subtotals. Lower it only for a preview. Default: 1000.
   """
 
   statement_type: str
+  entity_id: None | str | Unset = UNSET
   period_start: datetime.date | None | Unset = UNSET
   period_end: datetime.date | None | Unset = UNSET
   period_type: None | str | Unset = UNSET
   fiscal_year: int | None | Unset = UNSET
+  consolidated: bool | Unset = False
   limit: int | Unset = 1000
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     statement_type = self.statement_type
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     period_start: None | str | Unset
     if isinstance(self.period_start, Unset):
@@ -67,6 +81,8 @@ class LiveFinancialStatementRequest:
     else:
       fiscal_year = self.fiscal_year
 
+    consolidated = self.consolidated
+
     limit = self.limit
 
     field_dict: dict[str, Any] = {}
@@ -76,6 +92,8 @@ class LiveFinancialStatementRequest:
         "statement_type": statement_type,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if period_start is not UNSET:
       field_dict["period_start"] = period_start
     if period_end is not UNSET:
@@ -84,6 +102,8 @@ class LiveFinancialStatementRequest:
       field_dict["period_type"] = period_type
     if fiscal_year is not UNSET:
       field_dict["fiscal_year"] = fiscal_year
+    if consolidated is not UNSET:
+      field_dict["consolidated"] = consolidated
     if limit is not UNSET:
       field_dict["limit"] = limit
 
@@ -93,6 +113,15 @@ class LiveFinancialStatementRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
     statement_type = d.pop("statement_type")
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_period_start(data: object) -> datetime.date | None | Unset:
       if data is None:
@@ -146,14 +175,18 @@ class LiveFinancialStatementRequest:
 
     fiscal_year = _parse_fiscal_year(d.pop("fiscal_year", UNSET))
 
+    consolidated = d.pop("consolidated", UNSET)
+
     limit = d.pop("limit", UNSET)
 
     live_financial_statement_request = cls(
       statement_type=statement_type,
+      entity_id=entity_id,
       period_start=period_start,
       period_end=period_end,
       period_type=period_type,
       fiscal_year=fiscal_year,
+      consolidated=consolidated,
       limit=limit,
     )
 

@@ -117,7 +117,9 @@ def sync_detailed(
 
    Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
   CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
-  materialization required. Rejected on shared-repository graphs; those should use `financial-
+  materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
+  group parent; `consolidated` on the parent combines every entity of the group at the rs-gaap
+  concepts, with no eliminations. Rejected on shared-repository graphs; those should use `financial-
   statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
@@ -161,7 +163,9 @@ def sync(
 
    Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
   CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
-  materialization required. Rejected on shared-repository graphs; those should use `financial-
+  materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
+  group parent; `consolidated` on the parent combines every entity of the group at the rs-gaap
+  concepts, with no eliminations. Rejected on shared-repository graphs; those should use `financial-
   statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
@@ -200,7 +204,9 @@ async def asyncio_detailed(
 
    Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
   CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
-  materialization required. Rejected on shared-repository graphs; those should use `financial-
+  materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
+  group parent; `consolidated` on the parent combines every entity of the group at the rs-gaap
+  concepts, with no eliminations. Rejected on shared-repository graphs; those should use `financial-
   statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
@@ -242,7 +248,9 @@ async def asyncio(
 
    Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
   CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
-  materialization required. Rejected on shared-repository graphs; those should use `financial-
+  materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
+  group parent; `consolidated` on the parent combines every entity of the group at the rs-gaap
+  concepts, with no eliminations. Rejected on shared-repository graphs; those should use `financial-
   statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours

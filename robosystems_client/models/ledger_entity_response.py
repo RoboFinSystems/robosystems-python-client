@@ -45,6 +45,8 @@ class LedgerEntityResponse:
           status (str | Unset): Operational status: 'active' | 'inactive' | 'dissolved'. Default: 'active'.
           is_parent (bool | Unset): True for top-level entities; False for subsidiaries. Default: True.
           parent_entity_id (None | str | Unset): Parent entity ID for subsidiaries; null for top-level.
+          ownership_pct (float | None | Unset): The parent's share of this entity, as a percent (100 = wholly owned). Null
+              on the group parent, and where it was never recorded.
           source (str | Unset): Provenance: 'native' | 'sec' | 'quickbooks' | 'xero' | 'plaid'. Default: 'native'.
           source_id (None | str | Unset): Source-system primary key for sync reconciliation.
           source_graph_id (None | str | Unset): Origin graph for received entities (cross-graph linking, e.g. RoboInvestor
@@ -81,6 +83,7 @@ class LedgerEntityResponse:
   status: str | Unset = "active"
   is_parent: bool | Unset = True
   parent_entity_id: None | str | Unset = UNSET
+  ownership_pct: float | None | Unset = UNSET
   source: str | Unset = "native"
   source_id: None | str | Unset = UNSET
   source_graph_id: None | str | Unset = UNSET
@@ -211,6 +214,12 @@ class LedgerEntityResponse:
     else:
       parent_entity_id = self.parent_entity_id
 
+    ownership_pct: float | None | Unset
+    if isinstance(self.ownership_pct, Unset):
+      ownership_pct = UNSET
+    else:
+      ownership_pct = self.ownership_pct
+
     source = self.source
 
     source_id: None | str | Unset
@@ -321,6 +330,8 @@ class LedgerEntityResponse:
       field_dict["is_parent"] = is_parent
     if parent_entity_id is not UNSET:
       field_dict["parent_entity_id"] = parent_entity_id
+    if ownership_pct is not UNSET:
+      field_dict["ownership_pct"] = ownership_pct
     if source is not UNSET:
       field_dict["source"] = source
     if source_id is not UNSET:
@@ -521,6 +532,15 @@ class LedgerEntityResponse:
 
     parent_entity_id = _parse_parent_entity_id(d.pop("parent_entity_id", UNSET))
 
+    def _parse_ownership_pct(data: object) -> float | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(float | None | Unset, data)
+
+    ownership_pct = _parse_ownership_pct(d.pop("ownership_pct", UNSET))
+
     source = d.pop("source", UNSET)
 
     def _parse_source_id(data: object) -> None | str | Unset:
@@ -638,6 +658,7 @@ class LedgerEntityResponse:
       status=status,
       is_parent=is_parent,
       parent_entity_id=parent_entity_id,
+      ownership_pct=ownership_pct,
       source=source,
       source_id=source_id,
       source_graph_id=source_graph_id,

@@ -29,7 +29,7 @@ class ClosePeriodResponse:
   """Response from a single-period close operation.
 
   Attributes:
-      fiscal_calendar (FiscalCalendarResponse): Current fiscal calendar state for a graph.
+      fiscal_calendar (FiscalCalendarResponse): Current fiscal calendar state for one entity of a graph.
       period (str):
       entries_posted (int | Unset): Total draft entries the close transitioned to posted, across both post paths (QB
           pre-publish + local bulk transition). See entries_published_to_qb / entries_posted_locally for the split.
