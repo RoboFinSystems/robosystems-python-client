@@ -21,11 +21,12 @@ T = TypeVar("T", bound="FiscalCalendarResponse")
 
 @_attrs_define
 class FiscalCalendarResponse:
-  """Current fiscal calendar state for a graph.
+  """Current fiscal calendar state for one entity of a graph.
 
   Attributes:
       graph_id (str):
       fiscal_year_start_month (int):
+      entity_id (None | str | Unset): The entity whose calendar this is.
       closed_through (None | str | Unset): Latest closed period (YYYY-MM), or null if nothing closed
       close_target (None | str | Unset): Target period the user wants closed through (YYYY-MM)
       gap_periods (int | Unset): Number of periods between closed_through and close_target (inclusive of
@@ -75,6 +76,7 @@ class FiscalCalendarResponse:
 
   graph_id: str
   fiscal_year_start_month: int
+  entity_id: None | str | Unset = UNSET
   closed_through: None | str | Unset = UNSET
   close_target: None | str | Unset = UNSET
   gap_periods: int | Unset = 0
@@ -103,6 +105,12 @@ class FiscalCalendarResponse:
     graph_id = self.graph_id
 
     fiscal_year_start_month = self.fiscal_year_start_month
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     closed_through: None | str | Unset
     if isinstance(self.closed_through, Unset):
@@ -215,6 +223,8 @@ class FiscalCalendarResponse:
         "fiscal_year_start_month": fiscal_year_start_month,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if closed_through is not UNSET:
       field_dict["closed_through"] = closed_through
     if close_target is not UNSET:
@@ -273,6 +283,15 @@ class FiscalCalendarResponse:
     graph_id = d.pop("graph_id")
 
     fiscal_year_start_month = d.pop("fiscal_year_start_month")
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_closed_through(data: object) -> None | str | Unset:
       if data is None:
@@ -425,6 +444,7 @@ class FiscalCalendarResponse:
     fiscal_calendar_response = cls(
       graph_id=graph_id,
       fiscal_year_start_month=fiscal_year_start_month,
+      entity_id=entity_id,
       closed_through=closed_through,
       close_target=close_target,
       gap_periods=gap_periods,

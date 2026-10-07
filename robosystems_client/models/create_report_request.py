@@ -40,6 +40,9 @@ class CreateReportRequest:
           period_start (datetime.date): Current-period start (inclusive). Ignored when `periods` is supplied.
           period_end (datetime.date): Current-period end (inclusive). Must be >= `period_start`. Ignored when `periods` is
               supplied.
+          entity_id (None | str | Unset): The entity the report is for, by id. Omit for the entity whose chart
+              `mapping_id` maps from (the group parent on a one-entity graph). Named alongside a mapping of another entity's
+              chart, it is refused.
           taxonomy_id (str | Unset): Taxonomy that defines the structures (BS / IS / CF / Equity / Schedules) this report
               can render. Accepts either an exact tenant-specific taxonomy UUID or a standard name (e.g. 'rs-gaap'). Standard
               names resolve to the latest reporting_standard taxonomy with that name. Defaults to 'rs-gaap', the canonical
@@ -56,6 +59,7 @@ class CreateReportRequest:
   mapping_id: str
   period_start: datetime.date
   period_end: datetime.date
+  entity_id: None | str | Unset = UNSET
   taxonomy_id: str | Unset = "rs-gaap"
   period_type: str | Unset = "quarterly"
   comparative: bool | Unset = True
@@ -70,6 +74,12 @@ class CreateReportRequest:
     period_start = self.period_start.isoformat()
 
     period_end = self.period_end.isoformat()
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     taxonomy_id = self.taxonomy_id
 
@@ -99,6 +109,8 @@ class CreateReportRequest:
         "period_end": period_end,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if taxonomy_id is not UNSET:
       field_dict["taxonomy_id"] = taxonomy_id
     if period_type is not UNSET:
@@ -122,6 +134,15 @@ class CreateReportRequest:
     period_start = datetime.date.fromisoformat(d.pop("period_start"))
 
     period_end = datetime.date.fromisoformat(d.pop("period_end"))
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     taxonomy_id = d.pop("taxonomy_id", UNSET)
 
@@ -156,6 +177,7 @@ class CreateReportRequest:
       mapping_id=mapping_id,
       period_start=period_start,
       period_end=period_end,
+      entity_id=entity_id,
       taxonomy_id=taxonomy_id,
       period_type=period_type,
       comparative=comparative,

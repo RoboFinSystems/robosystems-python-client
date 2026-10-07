@@ -43,6 +43,8 @@ class CreateEventBlockRequest:
       occurred_at (datetime.datetime): When the event happened in the real world
       source (str): 'manual' | 'system' | 'schedule', a connected provider name (e.g. 'quickbooks'), or a source_name
           registered via an 'external' connection. Validated against the graph's registered connections.
+      entity_id (None | str | Unset): The entity whose books the event lands in, by id; every GL row its handler
+          writes follows it. Omit for the group parent.
       event_class (CreateEventBlockRequestEventClass | Unset): REA event class. 'economic' events change resources and
           drive GL postings; 'support' events are audit-trail / value-chain primitives (typically captured with
           apply_handlers=False). Default: CreateEventBlockRequestEventClass.ECONOMIC.
@@ -82,6 +84,7 @@ class CreateEventBlockRequest:
   event_category: CreateEventBlockRequestEventCategory
   occurred_at: datetime.datetime
   source: str
+  entity_id: None | str | Unset = UNSET
   event_class: CreateEventBlockRequestEventClass | Unset = (
     CreateEventBlockRequestEventClass.ECONOMIC
   )
@@ -110,6 +113,12 @@ class CreateEventBlockRequest:
     occurred_at = self.occurred_at.isoformat()
 
     source = self.source
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     event_class: str | Unset = UNSET
     if not isinstance(self.event_class, Unset):
@@ -209,6 +218,8 @@ class CreateEventBlockRequest:
         "source": source,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if event_class is not UNSET:
       field_dict["event_class"] = event_class
     if event_action is not UNSET:
@@ -258,6 +269,15 @@ class CreateEventBlockRequest:
     occurred_at = datetime.datetime.fromisoformat(d.pop("occurred_at"))
 
     source = d.pop("source")
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     _event_class = d.pop("event_class", UNSET)
     event_class: CreateEventBlockRequestEventClass | Unset
@@ -417,6 +437,7 @@ class CreateEventBlockRequest:
       event_category=event_category,
       occurred_at=occurred_at,
       source=source,
+      entity_id=entity_id,
       event_class=event_class,
       event_action=event_action,
       agent_id=agent_id,

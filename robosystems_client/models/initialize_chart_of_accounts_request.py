@@ -18,9 +18,10 @@ T = TypeVar("T", bound="InitializeChartOfAccountsRequest")
 class InitializeChartOfAccountsRequest:
   """Create the graph's chart of accounts from a shipped template.
 
-  Refused (409) when the graph already has an active `chart_of_accounts`
+  Refused (409) when the entity already has an active `chart_of_accounts`
   taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
-  never replaced. The template's equity rows are mapped by the entity's
+  never replaced. Each entity of the group keeps its own chart; omit
+  `entity_id` for the group parent. The template's equity rows are mapped by the entity's
   legal form (`entity_type`: corporation / llc / partnership); omit it
   to use the graph's primary entity, falling back to corporation.
 
@@ -28,18 +29,27 @@ class InitializeChartOfAccountsRequest:
           template (InitializeChartOfAccountsRequestTemplate): Template key: `saas` (subscription software — deferred
               revenue, cost of revenue, R&D / S&M / G&A), `services` (professional services — no inventory, no COGS),
               `product` (inventory and cost of goods sold, direct + wholesale + subscription revenue).
+          entity_id (None | str | Unset): The entity to give a chart to, by id. Omit for the group parent. A sibling
+              already having one is no bar.
           entity_type (None | str | Unset): Legal form for the equity mapping: `corporation`, `llc` or `partnership`.
               Defaults to the graph's primary entity, then to corporation.
           name (None | str | Unset): Chart display name. Defaults to 'Chart of Accounts'.
   """
 
   template: InitializeChartOfAccountsRequestTemplate
+  entity_id: None | str | Unset = UNSET
   entity_type: None | str | Unset = UNSET
   name: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     template = self.template.value
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     entity_type: None | str | Unset
     if isinstance(self.entity_type, Unset):
@@ -60,6 +70,8 @@ class InitializeChartOfAccountsRequest:
         "template": template,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if entity_type is not UNSET:
       field_dict["entity_type"] = entity_type
     if name is not UNSET:
@@ -71,6 +83,15 @@ class InitializeChartOfAccountsRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
     template = InitializeChartOfAccountsRequestTemplate(d.pop("template"))
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_entity_type(data: object) -> None | str | Unset:
       if data is None:
@@ -92,6 +113,7 @@ class InitializeChartOfAccountsRequest:
 
     initialize_chart_of_accounts_request = cls(
       template=template,
+      entity_id=entity_id,
       entity_type=entity_type,
       name=name,
     )

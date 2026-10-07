@@ -29,6 +29,10 @@ class LiveFinancialStatementResponse:
           indirect-method delta basis and not rendered.
       facts (list[LiveStatementFactRow]):
       fact_count (int):
+      entity_id (None | str | Unset): The entity whose books were rendered.
+      consolidated (bool | Unset): Whether the group's entities were summed into this: a combined statement, not a
+          consolidation — nothing is eliminated between them. Default: False.
+      combined_entity_ids (list[str] | Unset): The entities summed into a combined statement, parent first.
       validation (None | Unset | ValidationCheckResponse): Guard-rail outcome for the rendered columns — accounting
           equation, net-income equation, totals footing, operating-plug size. Null only when no structure rendered.
       unmapped_count (int | Unset):  Default: 0.
@@ -40,6 +44,9 @@ class LiveFinancialStatementResponse:
   periods: list[PeriodSpec]
   facts: list[LiveStatementFactRow]
   fact_count: int
+  entity_id: None | str | Unset = UNSET
+  consolidated: bool | Unset = False
+  combined_entity_ids: list[str] | Unset = UNSET
   validation: None | Unset | ValidationCheckResponse = UNSET
   unmapped_count: int | Unset = 0
   truncated: bool | Unset = False
@@ -64,6 +71,18 @@ class LiveFinancialStatementResponse:
 
     fact_count = self.fact_count
 
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
+    consolidated = self.consolidated
+
+    combined_entity_ids: list[str] | Unset = UNSET
+    if not isinstance(self.combined_entity_ids, Unset):
+      combined_entity_ids = self.combined_entity_ids
+
     validation: dict[str, Any] | None | Unset
     if isinstance(self.validation, Unset):
       validation = UNSET
@@ -87,6 +106,12 @@ class LiveFinancialStatementResponse:
         "fact_count": fact_count,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
+    if consolidated is not UNSET:
+      field_dict["consolidated"] = consolidated
+    if combined_entity_ids is not UNSET:
+      field_dict["combined_entity_ids"] = combined_entity_ids
     if validation is not UNSET:
       field_dict["validation"] = validation
     if unmapped_count is not UNSET:
@@ -123,6 +148,19 @@ class LiveFinancialStatementResponse:
 
     fact_count = d.pop("fact_count")
 
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
+    consolidated = d.pop("consolidated", UNSET)
+
+    combined_entity_ids = cast(list[str], d.pop("combined_entity_ids", UNSET))
+
     def _parse_validation(data: object) -> None | Unset | ValidationCheckResponse:
       if data is None:
         return data
@@ -150,6 +188,9 @@ class LiveFinancialStatementResponse:
       periods=periods,
       facts=facts,
       fact_count=fact_count,
+      entity_id=entity_id,
+      consolidated=consolidated,
+      combined_entity_ids=combined_entity_ids,
       validation=validation,
       unmapped_count=unmapped_count,
       truncated=truncated,

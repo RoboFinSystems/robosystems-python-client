@@ -16,6 +16,8 @@ class BackfillPlanHistoryOperation:
   """Compile monthly statement history behind the close boundary.
 
   Attributes:
+      entity_id (None | str | Unset): The entity whose books this acts on, by id. Omit for the group parent — the
+          single-entity default.
       start_period (None | str | Unset): YYYY-MM period to backfill from. Clamped to the earliest month with ledger
           data; defaults to that month when omitted. Must be on or before `closed_through`.
       max_periods (int | Unset): Maximum months to restamp in this call. Each month runs a full reopen → reclose
@@ -41,6 +43,7 @@ class BackfillPlanHistoryOperation:
       note (None | str | Unset): Free-form note attached to each close audit event
   """
 
+  entity_id: None | str | Unset = UNSET
   start_period: None | str | Unset = UNSET
   max_periods: int | Unset = 12
   allow_stale_sync: bool | Unset = False
@@ -53,6 +56,12 @@ class BackfillPlanHistoryOperation:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
     start_period: None | str | Unset
     if isinstance(self.start_period, Unset):
       start_period = UNSET
@@ -82,6 +91,8 @@ class BackfillPlanHistoryOperation:
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if start_period is not UNSET:
       field_dict["start_period"] = start_period
     if max_periods is not UNSET:
@@ -106,6 +117,15 @@ class BackfillPlanHistoryOperation:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_start_period(data: object) -> None | str | Unset:
       if data is None:
@@ -140,6 +160,7 @@ class BackfillPlanHistoryOperation:
     note = _parse_note(d.pop("note", UNSET))
 
     backfill_plan_history_operation = cls(
+      entity_id=entity_id,
       start_period=start_period,
       max_periods=max_periods,
       allow_stale_sync=allow_stale_sync,

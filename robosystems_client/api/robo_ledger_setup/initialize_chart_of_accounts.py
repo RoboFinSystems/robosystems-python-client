@@ -124,9 +124,10 @@ def sync_detailed(
   services), `product` (inventory and COGS) — the `chartTemplates` GraphQL field lists them with names
   and account counts. Creates the chart, its `coa_mapping` structure and the template's CoA → rs-gaap
   mapping associations in one transaction, with the equity rows mapped by the entity's legal form
-  (`entity_type`, defaulting to the graph's primary entity). One-time: 409 once a chart exists — a
-  chart is never replaced. Customize afterwards with update-taxonomy-block; accounts that carry
-  activity are never deleted.
+  (`entity_type`, defaulting to the entity's). Each entity of the group keeps its own chart:
+  `entity_id` names a subsidiary, omitted means the group parent. One-time per entity: 409 once that
+  entity has a chart — a chart is never replaced. Customize afterwards with update-taxonomy-block;
+  accounts that carry activity are never deleted.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -137,9 +138,10 @@ def sync_detailed(
       body (InitializeChartOfAccountsRequest): Create the graph's chart of accounts from a
           shipped template.
 
-          Refused (409) when the graph already has an active `chart_of_accounts`
+          Refused (409) when the entity already has an active `chart_of_accounts`
           taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
-          never replaced. The template's equity rows are mapped by the entity's
+          never replaced. Each entity of the group keeps its own chart; omit
+          `entity_id` for the group parent. The template's equity rows are mapped by the entity's
           legal form (`entity_type`: corporation / llc / partnership); omit it
           to use the graph's primary entity, falling back to corporation.
 
@@ -180,9 +182,10 @@ def sync(
   services), `product` (inventory and COGS) — the `chartTemplates` GraphQL field lists them with names
   and account counts. Creates the chart, its `coa_mapping` structure and the template's CoA → rs-gaap
   mapping associations in one transaction, with the equity rows mapped by the entity's legal form
-  (`entity_type`, defaulting to the graph's primary entity). One-time: 409 once a chart exists — a
-  chart is never replaced. Customize afterwards with update-taxonomy-block; accounts that carry
-  activity are never deleted.
+  (`entity_type`, defaulting to the entity's). Each entity of the group keeps its own chart:
+  `entity_id` names a subsidiary, omitted means the group parent. One-time per entity: 409 once that
+  entity has a chart — a chart is never replaced. Customize afterwards with update-taxonomy-block;
+  accounts that carry activity are never deleted.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -193,9 +196,10 @@ def sync(
       body (InitializeChartOfAccountsRequest): Create the graph's chart of accounts from a
           shipped template.
 
-          Refused (409) when the graph already has an active `chart_of_accounts`
+          Refused (409) when the entity already has an active `chart_of_accounts`
           taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
-          never replaced. The template's equity rows are mapped by the entity's
+          never replaced. Each entity of the group keeps its own chart; omit
+          `entity_id` for the group parent. The template's equity rows are mapped by the entity's
           legal form (`entity_type`: corporation / llc / partnership); omit it
           to use the graph's primary entity, falling back to corporation.
 
@@ -231,9 +235,10 @@ async def asyncio_detailed(
   services), `product` (inventory and COGS) — the `chartTemplates` GraphQL field lists them with names
   and account counts. Creates the chart, its `coa_mapping` structure and the template's CoA → rs-gaap
   mapping associations in one transaction, with the equity rows mapped by the entity's legal form
-  (`entity_type`, defaulting to the graph's primary entity). One-time: 409 once a chart exists — a
-  chart is never replaced. Customize afterwards with update-taxonomy-block; accounts that carry
-  activity are never deleted.
+  (`entity_type`, defaulting to the entity's). Each entity of the group keeps its own chart:
+  `entity_id` names a subsidiary, omitted means the group parent. One-time per entity: 409 once that
+  entity has a chart — a chart is never replaced. Customize afterwards with update-taxonomy-block;
+  accounts that carry activity are never deleted.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -244,9 +249,10 @@ async def asyncio_detailed(
       body (InitializeChartOfAccountsRequest): Create the graph's chart of accounts from a
           shipped template.
 
-          Refused (409) when the graph already has an active `chart_of_accounts`
+          Refused (409) when the entity already has an active `chart_of_accounts`
           taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
-          never replaced. The template's equity rows are mapped by the entity's
+          never replaced. Each entity of the group keeps its own chart; omit
+          `entity_id` for the group parent. The template's equity rows are mapped by the entity's
           legal form (`entity_type`: corporation / llc / partnership); omit it
           to use the graph's primary entity, falling back to corporation.
 
@@ -285,9 +291,10 @@ async def asyncio(
   services), `product` (inventory and COGS) — the `chartTemplates` GraphQL field lists them with names
   and account counts. Creates the chart, its `coa_mapping` structure and the template's CoA → rs-gaap
   mapping associations in one transaction, with the equity rows mapped by the entity's legal form
-  (`entity_type`, defaulting to the graph's primary entity). One-time: 409 once a chart exists — a
-  chart is never replaced. Customize afterwards with update-taxonomy-block; accounts that carry
-  activity are never deleted.
+  (`entity_type`, defaulting to the entity's). Each entity of the group keeps its own chart:
+  `entity_id` names a subsidiary, omitted means the group parent. One-time per entity: 409 once that
+  entity has a chart — a chart is never replaced. Customize afterwards with update-taxonomy-block;
+  accounts that carry activity are never deleted.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -298,9 +305,10 @@ async def asyncio(
       body (InitializeChartOfAccountsRequest): Create the graph's chart of accounts from a
           shipped template.
 
-          Refused (409) when the graph already has an active `chart_of_accounts`
+          Refused (409) when the entity already has an active `chart_of_accounts`
           taxonomy — a QuickBooks-synced tenant never needs this, and a chart is
-          never replaced. The template's equity rows are mapped by the entity's
+          never replaced. Each entity of the group keeps its own chart; omit
+          `entity_id` for the group parent. The template's equity rows are mapped by the entity's
           legal form (`entity_type`: corporation / llc / partnership); omit it
           to use the graph's primary entity, falling back to corporation.
 

@@ -27,6 +27,7 @@ class LinkEntityTaxonomyRequest:
 
       Attributes:
           taxonomy_id (str): The taxonomy to link to.
+          entity_id (None | str | Unset): The entity to link, by id. Omit for the group parent.
           basis (LinkEntityTaxonomyRequestBasis | Unset): Linkage role: `chart_of_accounts` (the entity's CoA),
               `reporting` (reporting standard like us-gaap), `mapping` (CoA→reporting rollup), `schedule` (schedule
               structure). Default: LinkEntityTaxonomyRequestBasis.CHART_OF_ACCOUNTS.
@@ -37,6 +38,7 @@ class LinkEntityTaxonomyRequest:
   """
 
   taxonomy_id: str
+  entity_id: None | str | Unset = UNSET
   basis: LinkEntityTaxonomyRequestBasis | Unset = (
     LinkEntityTaxonomyRequestBasis.CHART_OF_ACCOUNTS
   )
@@ -46,6 +48,12 @@ class LinkEntityTaxonomyRequest:
 
   def to_dict(self) -> dict[str, Any]:
     taxonomy_id = self.taxonomy_id
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     basis: str | Unset = UNSET
     if not isinstance(self.basis, Unset):
@@ -66,6 +74,8 @@ class LinkEntityTaxonomyRequest:
         "taxonomy_id": taxonomy_id,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if basis is not UNSET:
       field_dict["basis"] = basis
     if is_primary is not UNSET:
@@ -79,6 +89,15 @@ class LinkEntityTaxonomyRequest:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
     taxonomy_id = d.pop("taxonomy_id")
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     _basis = d.pop("basis", UNSET)
     basis: LinkEntityTaxonomyRequestBasis | Unset
@@ -100,6 +119,7 @@ class LinkEntityTaxonomyRequest:
 
     link_entity_taxonomy_request = cls(
       taxonomy_id=taxonomy_id,
+      entity_id=entity_id,
       basis=basis,
       is_primary=is_primary,
       adoption_context=adoption_context,

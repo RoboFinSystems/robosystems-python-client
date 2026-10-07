@@ -91,6 +91,7 @@ from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
+from .create_entity_request import CreateEntityRequest
 from .create_event_block_request import CreateEventBlockRequest
 from .create_event_block_request_event_action_type_0 import (
   CreateEventBlockRequestEventActionType0,
@@ -1182,6 +1183,7 @@ __all__ = (
   "CreateCheckoutRequestResourceConfig",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
+  "CreateEntityRequest",
   "CreateEventBlockRequest",
   "CreateEventBlockRequestEventActionType0",
   "CreateEventBlockRequestEventCategory",

@@ -82,8 +82,14 @@ type Query {
     portfolioId: String!
   ): PortfolioBlock
 
-  """Return the parent ledger entity (company) for a graph."""
-  entity: LedgerEntity
+  """
+  One entity of the graph's reporting group: the named one, else the
+  group parent. Null on a graph with no entity yet.
+  """
+  entity(
+    """A subsidiary's id. Omit for the group parent."""
+    entityId: String = null
+  ): LedgerEntity
 
   """List entities for a graph, optionally filtered by source."""
   entities(
@@ -120,22 +126,34 @@ type Query {
   ): [Agent!]!
 
   """
-  Graph-wide open AR — total + counterparty count + open invoice count.
+  One entity's open AR — total + counterparty count + open invoice count.
   
   Derived from the event duality chain: sum of unsettled
   `invoice_issued` / `sales_receipt_recorded` amounts minus
   discharges pointed at them.
   """
-  openReceivables: OpenBalanceAggregate!
+  openReceivables(
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
+  ): OpenBalanceAggregate!
 
-  """Graph-wide open AP — symmetric to `openReceivables`."""
-  openPayables: OpenBalanceAggregate!
+  """One entity's open AP — symmetric to `openReceivables`."""
+  openPayables(
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
+  ): OpenBalanceAggregate!
 
   """Per-counterparty open AR rows, ordered by absolute balance descending."""
-  openReceivablesByAgent: [OpenBalanceByAgent!]!
+  openReceivablesByAgent(
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
+  ): [OpenBalanceByAgent!]!
 
   """Per-counterparty open AP rows, ordered by absolute balance descending."""
-  openPayablesByAgent: [OpenBalanceByAgent!]!
+  openPayablesByAgent(
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
+  ): [OpenBalanceByAgent!]!
 
   """Fetch a single event block by id."""
   eventBlock(
@@ -144,7 +162,7 @@ type Query {
   ): EventBlock
 
   """
-  List event blocks with optional filters.
+  List one entity's event blocks with optional filters.
   
   Recent events first (`occurred_at` descending). Filter by `status`
   (`captured` is the unposted queue, `committed` the audit trail),
@@ -185,19 +203,26 @@ type Query {
     Rows to skip before returning, 0 or greater. Out of range raises `INVALID_PAGINATION`.
     """
     offset: Int = null
+
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
   ): [EventBlock!]!
 
   """
-  Ledger counts + date range + connection metadata.
+  One entity's ledger counts + date range, with the graph's connection
+  metadata.
   
   Counts and dates come from the ledger itself; the connection fields
   describe the source system feeding it. If connection metadata cannot be
   read the field still resolves, reporting a zero count and a null
   timestamp rather than failing the whole query.
   """
-  summary: LedgerSummary
+  summary(
+    """The entity whose books to count. Omit for the group parent."""
+    entityId: String = null
+  ): LedgerSummary
 
-  """Paginated Chart of Accounts listing."""
+  """Paginated Chart of Accounts listing, one entity's chart."""
   accounts(
     """
     Filter on the account's statement classification, e.g. `asset` or `revenue`.
@@ -216,10 +241,13 @@ type Query {
     Rows to skip before returning, 0 or greater. Out of range raises `INVALID_PAGINATION`.
     """
     offset: Int = null
+
+    """The entity whose chart to read. Omit for the group parent."""
+    entityId: String = null
   ): AccountList
 
   """
-  Chart of Accounts as a recursive tree.
+  One entity's Chart of Accounts as a recursive tree.
   
   `includeInactive` defaults to `False` so deleted source-system
   accounts (still kept in OLTP for historical journal-line FK integrity)
@@ -231,12 +259,15 @@ type Query {
     Include accounts deleted upstream but retained for journal-line integrity. Defaults to false.
     """
     includeInactive: Boolean = null
+
+    """The entity whose chart to read. Omit for the group parent."""
+    entityId: String = null
   ): AccountTree
 
   """CoA accounts grouped by reporting element with balances."""
   accountRollups(
     """
-    The mapping whose associations group the accounts. Omit for the active mapping.
+    The mapping whose associations group the accounts. Omit for the entity's active mapping.
     """
     mappingId: String = null
 
@@ -245,10 +276,13 @@ type Query {
 
     """End of the balance window (inclusive)."""
     endDate: Date = null
+
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
   ): AccountRollups
 
   """
-  Every reconciliation's standing at a period end.
+  Every reconciliation's standing at a period end, for one entity.
   
   A reconciliation not yet compared for the period is `not_started`.
   Comparisons are recorded by the `refresh-reconciliations` operation.
@@ -256,18 +290,24 @@ type Query {
   reconciliations(
     """The period, as YYYY-MM."""
     period: String!
+
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
   ): ReconciliationList
 
-  """Trial balance for posted entries in a date range."""
+  """One entity's trial balance for posted entries in a date range."""
   trialBalance(
     """Start of the posting window (inclusive)."""
     startDate: Date = null
 
     """End of the posting window (inclusive)."""
     endDate: Date = null
+
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
   ): TrialBalance
 
-  """Paginated list of transactions."""
+  """Paginated list of one entity's transactions."""
   transactions(
     """Filter by transaction type."""
     type: String = null
@@ -287,6 +327,9 @@ type Query {
     Rows to skip before returning, 0 or greater. Out of range raises `INVALID_PAGINATION`.
     """
     offset: Int = null
+
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
   ): LedgerTransactionList
 
   """Single transaction with all entries and line items."""
@@ -296,7 +339,8 @@ type Query {
   ): LedgerTransactionDetail
 
   """
-  Paginated journal — entries with their line items, newest first.
+  Paginated journal — one entity's entries with their line items,
+  newest first.
   
   The entry-centric read. `transactions` lists transactions and hangs
   entries off them, so it cannot show an entry with no parent; the
@@ -339,6 +383,9 @@ type Query {
     Rows to skip before returning, 0 or greater. Out of range raises `INVALID_PAGINATION`.
     """
     offset: Int = null
+
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
   ): LedgerJournalEntryList
 
   """List all active taxonomies, optionally filtered by type."""
@@ -439,13 +486,16 @@ type Query {
     endDate: Date = null
   ): MappedTrialBalance
 
-  """Close status for all schedules in a fiscal period."""
+  """Close status for an entity's schedules in a fiscal period."""
   periodCloseStatus(
     """First day of the fiscal period, as `YYYY-MM-DD`."""
     periodStart: Date!
 
     """Last day of the fiscal period, as `YYYY-MM-DD`."""
     periodEnd: Date!
+
+    """The entity whose schedules to read. Omit for the group parent."""
+    entityId: String = null
   ): PeriodCloseStatus
 
   """
@@ -453,11 +503,15 @@ type Query {
   """
   chartTemplates: [ChartTemplate!]!
 
-  """Current fiscal calendar state — pointers, gap, closeable status."""
-  fiscalCalendar: FiscalCalendar
+  """An entity's fiscal calendar — pointers, gap, closeable status."""
+  fiscalCalendar(
+    """The entity whose calendar to read. Omit for the group parent."""
+    entityId: String = null
+  ): FiscalCalendar
 
   """
-  All draft entries for a fiscal period, ready for review before close.
+  An entity's draft entries for a fiscal period, ready for review
+  before close.
   
   The close-review *outbox*: each draft is annotated with its QB
   write-back disposition (`willPublishToQb`) and the response carries
@@ -467,19 +521,31 @@ type Query {
   periodDrafts(
     """The fiscal period, as `YYYY-MM`."""
     period: String!
+
+    """The entity whose drafts to list. Omit for the group parent."""
+    entityId: String = null
   ): PeriodDrafts
 
   """
-  Closing book sidebar navigation (statements, schedules, rollups, etc.).
+  One entity's closing book sidebar navigation (statements, schedules,
+  rollups, etc.).
   """
-  closingBookStructures: ClosingBookStructures
+  closingBookStructures(
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
+  ): ClosingBookStructures
 
-  """List report definitions for this graph, newest first."""
+  """List one entity's report definitions, newest first."""
   reports(
     """
     `CURRENT` (the default) leaves out archived reports, `ARCHIVED` returns only those, `ALL` returns every report.
     """
     lifecycle: ReportLifecycle! = CURRENT
+
+    """
+    The entity whose reports to list. Omit for the group parent, whose list also carries reports shared in from other graphs.
+    """
+    entityId: String = null
   ): ReportList
 
   """Single report definition with structures + entity name."""
@@ -1384,6 +1450,11 @@ type LedgerEntity {
   """Parent entity ID for subsidiaries; null for top-level."""
   parentEntityId: String
 
+  """
+  The parent's share of this entity, as a percent (100 = wholly owned). Null on the group parent, and where it was never recorded.
+  """
+  ownershipPct: Float
+
   """Provenance: 'native' | 'sec' | 'quickbooks' | 'xero' | 'plaid'."""
   source: String!
 
@@ -1512,6 +1583,9 @@ reflects active integrations (QuickBooks / Plaid / etc.); a non-null
 """
 type LedgerSummary {
   graphId: String!
+
+  """The entity whose books were counted; null before one exists."""
+  entityId: String
   accountCount: Int!
   transactionCount: Int!
   entryCount: Int!
@@ -2294,9 +2368,12 @@ type ChartTemplate {
   accountCount: Int!
 }
 
-"""Current fiscal calendar state for a graph."""
+"""Current fiscal calendar state for one entity of a graph."""
 type FiscalCalendar {
   graphId: String!
+
+  """The entity whose calendar this is."""
+  entityId: String
   fiscalYearStartMonth: Int!
 
   """Latest closed period (YYYY-MM), or null if nothing closed"""
@@ -2617,7 +2694,12 @@ type Report {
   """
   structures: [StructureSummary!]!
 
-  """Display name of the primary entity the report is tagged to."""
+  """
+  The entity the report is about. Null on a shared-in copy, and on a report from before entities were recorded, which is the group parent's.
+  """
+  entityId: String
+
+  """Display name of the entity the report is tagged to."""
   entityName: String
 
   """

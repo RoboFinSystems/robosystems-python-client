@@ -19,7 +19,7 @@ T = TypeVar("T", bound="InitializeLedgerResponse")
 class InitializeLedgerResponse:
   """
   Attributes:
-      fiscal_calendar (FiscalCalendarResponse): Current fiscal calendar state for a graph.
+      fiscal_calendar (FiscalCalendarResponse): Current fiscal calendar state for one entity of a graph.
       periods_created (int | Unset): Number of FiscalPeriod rows created by initialization Default: 0.
       warnings (list[str] | Unset): Non-fatal warnings (e.g., auto_seed_schedules not implemented)
   """

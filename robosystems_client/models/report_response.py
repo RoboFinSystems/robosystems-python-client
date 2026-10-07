@@ -47,7 +47,9 @@ class ReportResponse:
           last_generated (datetime.datetime | None | Unset): When the facts were last (re)generated.
           structures (list[StructureSummary] | Unset): Structures available for this report's taxonomy — renderable
               sections (BS / IS / CF / Equity / Schedules).
-          entity_name (None | str | Unset): Display name of the primary entity the report is tagged to.
+          entity_id (None | str | Unset): The entity the report is about. Null on a shared-in copy, and on a report from
+              before entities were recorded, which is the group parent's.
+          entity_name (None | str | Unset): Display name of the entity the report is tagged to.
           filing_status (str | Unset): Filing lifecycle (orthogonal to `generation_status`): `draft`, `under_review`,
               `filed`, `archived`. Default: 'draft'.
           filed_at (datetime.datetime | None | Unset): When the report was transitioned to `filed`. On a report shared in
@@ -81,6 +83,7 @@ class ReportResponse:
   ai_generated: bool | Unset = False
   last_generated: datetime.datetime | None | Unset = UNSET
   structures: list[StructureSummary] | Unset = UNSET
+  entity_id: None | str | Unset = UNSET
   entity_name: None | str | Unset = UNSET
   filing_status: str | Unset = "draft"
   filed_at: datetime.datetime | None | Unset = UNSET
@@ -162,6 +165,12 @@ class ReportResponse:
       for structures_item_data in self.structures:
         structures_item = structures_item_data.to_dict()
         structures.append(structures_item)
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     entity_name: None | str | Unset
     if isinstance(self.entity_name, Unset):
@@ -252,6 +261,8 @@ class ReportResponse:
       field_dict["last_generated"] = last_generated
     if structures is not UNSET:
       field_dict["structures"] = structures
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if entity_name is not UNSET:
       field_dict["entity_name"] = entity_name
     if filing_status is not UNSET:
@@ -391,6 +402,15 @@ class ReportResponse:
 
         structures.append(structures_item)
 
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
     def _parse_entity_name(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -515,6 +535,7 @@ class ReportResponse:
       ai_generated=ai_generated,
       last_generated=last_generated,
       structures=structures,
+      entity_id=entity_id,
       entity_name=entity_name,
       filing_status=filing_status,
       filed_at=filed_at,
