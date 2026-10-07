@@ -1,0 +1,12 @@
+query ListLedgerBankAccounts($entityId: String) {
+  bankAccounts(entityId: $entityId) {
+    total
+    accounts {
+      id code name kind balanceType isActive
+      entityId entityName
+      source connectionId institution
+      feedAccountId feedAccountName feedAccountKind
+      connectionStatus lastSyncAt lastSyncStatus
+    }
+  }
+}

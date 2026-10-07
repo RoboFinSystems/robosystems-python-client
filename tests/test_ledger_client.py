@@ -3167,6 +3167,75 @@ class TestEntityScope:
       "entity_id": "ent_2",
     }
 
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_bank_accounts(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "bankAccounts": {
+        "total": 1,
+        "accounts": [
+          {
+            "id": "elem_chk",
+            "code": "1010",
+            "name": "Chase Checking ••1234",
+            "kind": "bank",
+            "balanceType": "debit",
+            "isActive": True,
+            "entityId": "ent_2",
+            "entityName": "Cadence",
+            "source": "plaid",
+            "connectionId": "conn_plaid",
+            "institution": "Chase",
+            "feedAccountId": "acc_1",
+            "feedAccountName": "Chase Checking ••1234",
+            "feedAccountKind": "checking",
+            "connectionStatus": "active",
+            "lastSyncAt": "2026-10-07T12:00:00+00:00",
+            "lastSyncStatus": "success",
+          }
+        ],
+      }
+    }
+    client = LedgerClient(mock_config)
+    page = client.list_bank_accounts(graph_id, entity_id="ent_2")
+    assert mock_execute.call_args[0][2] == {"entityId": "ent_2"}
+    assert page.total == 1
+    assert page.accounts[0].feed_account_id == "acc_1"
+    assert page.accounts[0].entity_name == "Cadence"
+    assert page.accounts[0].connection_status == "active"
+
+  @patch("robosystems_client.clients.ledger_client.op_link_bank_account")
+  def test_link_bank_account_posts_the_body_and_unwraps_the_envelope(
+    self, mock_op, mock_config, graph_id
+  ):
+    moved = {
+      "connection_id": "conn_plaid",
+      "provider": "plaid",
+      "account_id": "acc_1",
+      "element_id": "elem_sub",
+      "previous_element_id": "elem_chk",
+      "entity_id": "ent_2",
+      "account_created": True,
+      "events_repointed": 3,
+      "events_unclassified": 1,
+      "pairs_across_entities": 0,
+      "changed": True,
+    }
+    mock_op.return_value = _mock_response(_envelope("link-bank-account", moved))
+    client = LedgerClient(mock_config)
+    result = client.link_bank_account(
+      graph_id,
+      {"connection_id": "conn_plaid", "account_id": "acc_1", "entity_id": "ent_2"},
+    )
+    assert mock_op.call_args.kwargs["graph_id"] == graph_id
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "connection_id": "conn_plaid",
+      "account_id": "acc_1",
+      "entity_id": "ent_2",
+    }
+    assert result["element_id"] == "elem_sub"
+    assert result["account_created"] is True
+    assert result["events_repointed"] == 3
+
   @patch("robosystems_client.clients.ledger_client.op_create_entity")
   def test_create_entity_posts_the_body_and_unwraps_the_envelope(
     self, mock_op, mock_config, graph_id

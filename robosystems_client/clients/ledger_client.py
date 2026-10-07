@@ -135,6 +135,9 @@ from ..api.robo_ledger_information_blocks.evaluate_rules import (
 from ..api.robo_ledger_setup.create_entity import (
   sync_detailed as op_create_entity,
 )
+from ..api.robo_ledger_setup.link_bank_account import (
+  sync_detailed as op_link_bank_account,
+)
 from ..api.robo_ledger_setup.update_entity import (
   sync_detailed as op_update_entity,
 )
@@ -223,6 +226,12 @@ from ..graphql.generated.get_ledger_account_tree import (
 )
 from ..graphql.generated.get_ledger_account_tree import (
   GetLedgerAccountTreeAccountTree as LedgerAccountTree,
+)
+from ..graphql.generated.list_ledger_bank_accounts import (
+  ListLedgerBankAccounts,
+)
+from ..graphql.generated.list_ledger_bank_accounts import (
+  ListLedgerBankAccountsBankAccounts as LedgerBankAccountList,
 )
 from ..graphql.generated.get_ledger_agent import (
   GetLedgerAgent,
@@ -428,6 +437,7 @@ from ..graphql.generated.operations import (
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
   GET_LEDGER_ACCOUNT_TREE_GQL,
   GET_LEDGER_AGENT_GQL,
+  LIST_LEDGER_BANK_ACCOUNTS_GQL,
   GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL,
   GET_LEDGER_ENTITY_GQL,
   GET_LEDGER_EVENT_BLOCK_GQL,
@@ -469,6 +479,8 @@ from ..models.add_publish_list_members_operation import AddPublishListMembersOpe
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
 from ..models.create_agent_request import CreateAgentRequest
 from ..models.create_entity_request import CreateEntityRequest
+from ..models.link_bank_account_request import LinkBankAccountRequest
+from ..models.link_bank_account_response import LinkBankAccountResponse
 from ..models.create_event_block_request import CreateEventBlockRequest
 from ..models.create_event_block_request_event_category import (
   CreateEventBlockRequestEventCategory,
@@ -944,6 +956,41 @@ class LedgerClient:
     """Hierarchical Chart of Accounts (up to 4 levels deep)."""
     data = self._query(graph_id, GET_LEDGER_ACCOUNT_TREE_GQL, self._scope(entity_id))
     return GetLedgerAccountTree.model_validate(data).account_tree
+
+  # ── Bank accounts ───────────────────────────────────────────────────
+
+  def list_bank_accounts(
+    self, graph_id: str, entity_id: str | None = None
+  ) -> LedgerBankAccountList | None:
+    """The group's bank and card accounts.
+
+    Every chart account a feed books to, or that a source system types as a
+    bank or card account, with the entity whose chart it is in (the books
+    its lines go into), what writes to it (``source``: a feed provider,
+    ``quickbooks``, or None for an account kept by hand) and the connection's
+    status and last sync. ``entity_id`` narrows to one entity; None is the
+    whole group.
+    """
+    data = self._query(graph_id, LIST_LEDGER_BANK_ACCOUNTS_GQL, {"entityId": entity_id})
+    return ListLedgerBankAccounts.model_validate(data).bank_accounts
+
+  def link_bank_account(
+    self, graph_id: str, body: dict[str, Any]
+  ) -> LinkBankAccountResponse:
+    """Point a bank feed's account at a chart account.
+
+    ``element_id`` links an existing account (its chart's entity takes the
+    feed); ``entity_id`` alone creates one in that entity's chart. This is
+    how a feed account is bound to a subsidiary: lines still in the inbox
+    move with it, posted entries stay where they were posted. An account
+    another connection already feeds is refused.
+    """
+    request = LinkBankAccountRequest.from_dict(body)
+    response = op_link_bank_account(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Link bank account", response)
+    return self._typed_result("Link bank account", envelope, LinkBankAccountResponse)
 
   def get_account_rollups(
     self,
