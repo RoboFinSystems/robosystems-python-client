@@ -100,11 +100,13 @@ class TestLedgerReads:
         "lei": None,
         "industry": None,
         "entityType": "corporation",
+        "reportingStyleId": None,
         "phone": None,
         "website": None,
         "status": "active",
         "isParent": False,
         "parentEntityId": None,
+        "ownershipPct": None,
         "source": "qb",
         "sourceId": None,
         "sourceGraphId": None,
@@ -150,6 +152,7 @@ class TestLedgerReads:
           "status": "active",
           "isParent": True,
           "parentEntityId": None,
+          "ownershipPct": None,
           "source": "qb",
           "sourceGraphId": None,
           "connectionId": None,
@@ -209,7 +212,7 @@ class TestLedgerReads:
     client = LedgerClient(mock_config)
     assert client.list_reports(graph_id) == []
     query, variables = mock_execute.call_args[0][1], mock_execute.call_args[0][2]
-    assert "reports(lifecycle: $lifecycle)" in query
+    assert "reports(lifecycle: $lifecycle, entityId: $entityId)" in query
     assert "filingStatus" in query
     assert not variables
 
@@ -273,6 +276,7 @@ class TestLedgerReads:
     mock_execute.return_value = {
       "fiscalCalendar": {
         "graphId": graph_id,
+        "entityId": None,
         "fiscalYearStartMonth": 1,
         "closedThrough": "2026-02",
         "closeTarget": "2026-03",
@@ -320,6 +324,7 @@ class TestLedgerReads:
     mock_execute.return_value = {
       "fiscalCalendar": {
         "graphId": graph_id,
+        "entityId": None,
         "fiscalYearStartMonth": 1,
         "closedThrough": "2026-02",
         "closeTarget": "2026-03",
@@ -897,6 +902,7 @@ class TestLedgerReadsAdditional:
     mock_execute.return_value = {
       "summary": {
         "graphId": graph_id,
+        "entityId": None,
         "accountCount": 120,
         "transactionCount": 500,
         "entryCount": 300,
@@ -3060,3 +3066,135 @@ class TestLedgerReconciliations:
 
     with pytest.raises(RuntimeError, match="Nothing to reconcile"):
       client.refresh_reconciliations(graph_id, "2026-08")
+
+
+# ── Entity scope (multi-entity) ─────────────────────────────────────────
+
+
+@pytest.mark.unit
+class TestEntityScope:
+  """``entity_id`` names one entity of the reporting group; omitted, a call
+  is about the group parent and sends exactly what it sent before."""
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_entity_reads_the_group_parent_by_default(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"entity": None}
+    client = LedgerClient(mock_config)
+    assert client.get_entity(graph_id) is None
+    assert mock_execute.call_args[0][2] is None
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_entity_forwards_entity_id(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {"entity": None}
+    client = LedgerClient(mock_config)
+    client.get_entity(graph_id, entity_id="ent_2")
+    assert mock_execute.call_args[0][2] == {"entityId": "ent_2"}
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_fiscal_calendar_forwards_entity_id(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"fiscalCalendar": None}
+    client = LedgerClient(mock_config)
+    client.get_fiscal_calendar(graph_id, entity_id="ent_2")
+    assert mock_execute.call_args[0][2] == {"entityId": "ent_2"}
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_period_close_status_forwards_entity_id(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"periodCloseStatus": None}
+    client = LedgerClient(mock_config)
+    client.get_period_close_status(
+      graph_id, "2026-03-01", "2026-03-31", entity_id="ent_2"
+    )
+    assert mock_execute.call_args[0][2] == {
+      "periodStart": "2026-03-01",
+      "periodEnd": "2026-03-31",
+      "entityId": "ent_2",
+    }
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_accounts_strips_an_omitted_entity_id(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"accounts": None}
+    client = LedgerClient(mock_config)
+    client.list_accounts(graph_id)
+    assert "entityId" not in mock_execute.call_args[0][2]
+    client.list_accounts(graph_id, entity_id="ent_2")
+    assert mock_execute.call_args[0][2]["entityId"] == "ent_2"
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_reports_forwards_entity_id(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {"reports": {"reports": []}}
+    client = LedgerClient(mock_config)
+    client.list_reports(graph_id, entity_id="ent_2")
+    assert mock_execute.call_args[0][2] == {"entityId": "ent_2"}
+
+  @patch("robosystems_client.clients.ledger_client.op_close_period")
+  def test_close_period_sends_entity_id_only_when_named(
+    self, mock_op, mock_config, graph_id
+  ):
+    result = {"period": "2026-03", "entries_posted": 0, "fiscal_calendar": {}}
+    mock_op.return_value = _mock_response(_envelope("close-period", result))
+    client = LedgerClient(mock_config)
+    client.close_period(graph_id, "2026-03")
+    assert "entity_id" not in mock_op.call_args.kwargs["body"].to_dict()
+    client.close_period(graph_id, "2026-03", entity_id="ent_2")
+    assert mock_op.call_args.kwargs["body"].entity_id == "ent_2"
+
+  @patch("robosystems_client.clients.ledger_client.op_set_close_target")
+  def test_set_close_target_sends_entity_id(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(_envelope("set-close-target", {}))
+    client = LedgerClient(mock_config)
+    client.set_close_target(graph_id, "2026-03", entity_id="ent_2")
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "period": "2026-03",
+      "entity_id": "ent_2",
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_reopen_period")
+  def test_reopen_period_sends_entity_id(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(_envelope("reopen-period", {}))
+    client = LedgerClient(mock_config)
+    client.reopen_period(graph_id, "2026-03", "late invoice", entity_id="ent_2")
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "period": "2026-03",
+      "reason": "late invoice",
+      "entity_id": "ent_2",
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_create_entity")
+  def test_create_entity_posts_the_body_and_unwraps_the_envelope(
+    self, mock_op, mock_config, graph_id
+  ):
+    created = {
+      "id": "ent_2",
+      "name": "Driftline Café LLC",
+      "entity_type": "llc",
+      "ticker": "DCL",
+      "is_parent": False,
+      "parent_entity_id": "ent_1",
+      "ownership_pct": 100,
+    }
+    mock_op.return_value = _mock_response(_envelope("create-entity", created))
+    client = LedgerClient(mock_config)
+    entity = client.create_entity(
+      graph_id,
+      {"name": "Driftline Café LLC", "entity_type": "llc", "ownership_pct": 100},
+    )
+    assert mock_op.call_args.kwargs["graph_id"] == graph_id
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "name": "Driftline Café LLC",
+      "entity_type": "llc",
+      "ownership_pct": 100,
+    }
+    # A dict mock comes back as a dict (see ``_typed_result``); the SDK's
+    # parsed envelope gives the attrs model in production.
+    assert entity["id"] == "ent_2"
+    assert entity["parent_entity_id"] == "ent_1"
+    assert entity["ownership_pct"] == 100
+    assert entity["is_parent"] is False

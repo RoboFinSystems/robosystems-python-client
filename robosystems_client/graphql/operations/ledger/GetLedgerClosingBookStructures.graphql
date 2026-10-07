@@ -1,5 +1,5 @@
-query GetLedgerClosingBookStructures {
-  closingBookStructures {
+query GetLedgerClosingBookStructures($entityId: String) {
+  closingBookStructures(entityId: $entityId) {
     hasData
     categories {
       label

@@ -1,5 +1,9 @@
-query GetLedgerPeriodCloseStatus($periodStart: Date!, $periodEnd: Date!) {
-  periodCloseStatus(periodStart: $periodStart, periodEnd: $periodEnd) {
+query GetLedgerPeriodCloseStatus(
+  $periodStart: Date!
+  $periodEnd: Date!
+  $entityId: String
+) {
+  periodCloseStatus(periodStart: $periodStart, periodEnd: $periodEnd, entityId: $entityId) {
     fiscalPeriodStart fiscalPeriodEnd periodStatus totalDraft totalPosted
     schedules {
       structureId structureName amount status

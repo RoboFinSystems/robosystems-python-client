@@ -7,6 +7,7 @@ query ListLedgerJournalEntries(
   $transactionId: String
   $limit: Int! = 100
   $offset: Int! = 0
+  $entityId: String
 ) {
   journalEntries(
     startDate: $startDate
@@ -17,6 +18,7 @@ query ListLedgerJournalEntries(
     transactionId: $transactionId
     limit: $limit
     offset: $offset
+    entityId: $entityId
   ) {
     entries {
       id number transactionId type status postingDate memo

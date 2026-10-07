@@ -1,5 +1,5 @@
-query GetLedgerEntity {
-  entity {
+query GetLedgerEntity($entityId: String) {
+  entity(entityId: $entityId) {
     id
     name
     legalName
@@ -16,11 +16,13 @@ query GetLedgerEntity {
     lei
     industry
     entityType
+    reportingStyleId
     phone
     website
     status
     isParent
     parentEntityId
+    ownershipPct
     source
     sourceId
     sourceGraphId

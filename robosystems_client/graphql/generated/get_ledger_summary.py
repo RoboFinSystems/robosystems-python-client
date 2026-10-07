@@ -11,6 +11,7 @@ class GetLedgerSummary(BaseModel):
 
 class GetLedgerSummarySummary(BaseModel):
   graph_id: str = Field(alias="graphId")
+  entity_id: Optional[str] = Field(alias="entityId")
   account_count: int = Field(alias="accountCount")
   transaction_count: int = Field(alias="transactionCount")
   entry_count: int = Field(alias="entryCount")

@@ -4,6 +4,7 @@ query ListLedgerTransactions(
   $endDate: Date
   $limit: Int! = 100
   $offset: Int! = 0
+  $entityId: String
 ) {
   transactions(
     type: $type
@@ -11,6 +12,7 @@ query ListLedgerTransactions(
     endDate: $endDate
     limit: $limit
     offset: $offset
+    entityId: $entityId
   ) {
     transactions {
       id number type category amount currency date dueDate

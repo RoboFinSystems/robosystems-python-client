@@ -7,6 +7,7 @@ query ListLedgerEventBlocks(
   $isReconcilingItem: Boolean
   $limit: Int! = 50
   $offset: Int! = 0
+  $entityId: String
 ) {
   eventBlocks(
     eventType: $eventType
@@ -17,6 +18,7 @@ query ListLedgerEventBlocks(
     isReconcilingItem: $isReconcilingItem
     limit: $limit
     offset: $offset
+    entityId: $entityId
   ) {
     id eventType eventCategory eventClass status occurredAt effectiveAt
     source externalId externalUrl amount currency description metadata

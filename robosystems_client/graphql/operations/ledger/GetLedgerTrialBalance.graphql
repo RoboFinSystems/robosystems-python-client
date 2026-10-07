@@ -1,5 +1,5 @@
-query GetLedgerTrialBalance($startDate: Date, $endDate: Date) {
-  trialBalance(startDate: $startDate, endDate: $endDate) {
+query GetLedgerTrialBalance($startDate: Date, $endDate: Date, $entityId: String) {
+  trialBalance(startDate: $startDate, endDate: $endDate, entityId: $entityId) {
     totalDebits
     totalCredits
     rows {

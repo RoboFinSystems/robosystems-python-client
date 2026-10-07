@@ -13,6 +13,7 @@ class GetLedgerFiscalCalendar(BaseModel):
 
 class GetLedgerFiscalCalendarFiscalCalendar(BaseModel):
   graph_id: str = Field(alias="graphId")
+  entity_id: Optional[str] = Field(alias="entityId")
   fiscal_year_start_month: int = Field(alias="fiscalYearStartMonth")
   closed_through: Optional[str] = Field(alias="closedThrough")
   close_target: Optional[str] = Field(alias="closeTarget")
