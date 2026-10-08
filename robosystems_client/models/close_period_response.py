@@ -9,6 +9,9 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+  from ..models.close_period_response_gate_finding_counts import (
+    ClosePeriodResponseGateFindingCounts,
+  )
   from ..models.close_period_response_rule_summary_type_0 import (
     ClosePeriodResponseRuleSummaryType0,
   )
@@ -47,6 +50,16 @@ class ClosePeriodResponse:
           close. Pairs with rule_summary.
       statements_stamped (bool | Unset): Whether the close stamped the period's canonical statement FactSets (the
           close-time pivot). False when the tenant hasn't set up reporting yet — see statement_stamp_note. Default: False.
+      shadow (bool | Unset): True when the close ran in shadow (the QuickBooks connection's write_policy is 'shadow'):
+          nothing was written to QuickBooks, nothing posted, the in-window drafts were shadowed, and the gates that would
+          have blocked the close are in gate_findings. Default: False.
+      entries_shadowed (int | Unset): Drafts a shadow close took as expectations (status 'shadowed') instead of
+          posting. Always 0 outside shadow. Default: 0.
+      gate_findings (list[str] | Unset): Blocker codes a shadow close recorded instead of enforcing: sync_stale,
+          pending_obligations, stranded_obligations, reconciling_items, unposted_source_events, unreconciled_accounts.
+          Empty outside shadow.
+      gate_finding_counts (ClosePeriodResponseGateFindingCounts | Unset): Each finding's size: days stale for
+          sync_stale, a count for the rest.
       statement_stamp_note (None | str | Unset): Soft-skip reason when statements_stamped is false: no_coa_mapping |
           no_entity | no_statement_structures | no_taxonomy.
       stamped_statement_sets (ClosePeriodResponseStampedStatementSets | Unset): structure_id -> fact_set_id for every
@@ -65,6 +78,10 @@ class ClosePeriodResponse:
   rule_summary: ClosePeriodResponseRuleSummaryType0 | None | Unset = UNSET
   evaluated_structure_ids: list[str] | Unset = UNSET
   statements_stamped: bool | Unset = False
+  shadow: bool | Unset = False
+  entries_shadowed: int | Unset = 0
+  gate_findings: list[str] | Unset = UNSET
+  gate_finding_counts: ClosePeriodResponseGateFindingCounts | Unset = UNSET
   statement_stamp_note: None | str | Unset = UNSET
   stamped_statement_sets: ClosePeriodResponseStampedStatementSets | Unset = UNSET
   statement_rule_summary: (
@@ -105,6 +122,18 @@ class ClosePeriodResponse:
       evaluated_structure_ids = self.evaluated_structure_ids
 
     statements_stamped = self.statements_stamped
+
+    shadow = self.shadow
+
+    entries_shadowed = self.entries_shadowed
+
+    gate_findings: list[str] | Unset = UNSET
+    if not isinstance(self.gate_findings, Unset):
+      gate_findings = self.gate_findings
+
+    gate_finding_counts: dict[str, Any] | Unset = UNSET
+    if not isinstance(self.gate_finding_counts, Unset):
+      gate_finding_counts = self.gate_finding_counts.to_dict()
 
     statement_stamp_note: None | str | Unset
     if isinstance(self.statement_stamp_note, Unset):
@@ -148,6 +177,14 @@ class ClosePeriodResponse:
       field_dict["evaluated_structure_ids"] = evaluated_structure_ids
     if statements_stamped is not UNSET:
       field_dict["statements_stamped"] = statements_stamped
+    if shadow is not UNSET:
+      field_dict["shadow"] = shadow
+    if entries_shadowed is not UNSET:
+      field_dict["entries_shadowed"] = entries_shadowed
+    if gate_findings is not UNSET:
+      field_dict["gate_findings"] = gate_findings
+    if gate_finding_counts is not UNSET:
+      field_dict["gate_finding_counts"] = gate_finding_counts
     if statement_stamp_note is not UNSET:
       field_dict["statement_stamp_note"] = statement_stamp_note
     if stamped_statement_sets is not UNSET:
@@ -159,6 +196,9 @@ class ClosePeriodResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.close_period_response_gate_finding_counts import (
+      ClosePeriodResponseGateFindingCounts,
+    )
     from ..models.close_period_response_rule_summary_type_0 import (
       ClosePeriodResponseRuleSummaryType0,
     )
@@ -205,6 +245,21 @@ class ClosePeriodResponse:
     evaluated_structure_ids = cast(list[str], d.pop("evaluated_structure_ids", UNSET))
 
     statements_stamped = d.pop("statements_stamped", UNSET)
+
+    shadow = d.pop("shadow", UNSET)
+
+    entries_shadowed = d.pop("entries_shadowed", UNSET)
+
+    gate_findings = cast(list[str], d.pop("gate_findings", UNSET))
+
+    _gate_finding_counts = d.pop("gate_finding_counts", UNSET)
+    gate_finding_counts: ClosePeriodResponseGateFindingCounts | Unset
+    if isinstance(_gate_finding_counts, Unset):
+      gate_finding_counts = UNSET
+    else:
+      gate_finding_counts = ClosePeriodResponseGateFindingCounts.from_dict(
+        _gate_finding_counts
+      )
 
     def _parse_statement_stamp_note(data: object) -> None | str | Unset:
       if data is None:
@@ -259,6 +314,10 @@ class ClosePeriodResponse:
       rule_summary=rule_summary,
       evaluated_structure_ids=evaluated_structure_ids,
       statements_stamped=statements_stamped,
+      shadow=shadow,
+      entries_shadowed=entries_shadowed,
+      gate_findings=gate_findings,
+      gate_finding_counts=gate_finding_counts,
       statement_stamp_note=statement_stamp_note,
       stamped_statement_sets=stamped_statement_sets,
       statement_rule_summary=statement_rule_summary,

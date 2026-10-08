@@ -21,8 +21,11 @@ class SetWritePolicyRequest:
   until its code path ships.
 
       Attributes:
-          write_policy (SetWritePolicyRequestWritePolicy): 'native' = RoboSystems authoritative, no write-back;
-              'qb_authoritative' = QuickBooks authoritative, entries publish to QB.
+          write_policy (SetWritePolicyRequestWritePolicy): 'qb_authoritative' = QuickBooks authoritative, entries publish
+              to QB; 'shadow' = QuickBooks authoritative and RoboSystems only observes: nothing is written to QuickBooks, the
+              close posts nothing locally, its drafts become shadowed expectations and its gates are findings. 'native', books
+              kept in RoboSystems with no write-back, is what disconnecting or severing leaves, not a choice for a live
+              connection.
   """
 
   write_policy: SetWritePolicyRequestWritePolicy

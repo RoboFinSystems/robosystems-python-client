@@ -2376,7 +2376,8 @@ type PeriodCloseStatus {
 One schedule's contribution to a period close — drafted closing
 entry plus its reversal (when `auto_reverse=True`).
 
-`status` is the closing entry's draft/posted lifecycle. The
+`status` is the closing entry's draft/posted lifecycle (`shadowed` when a
+shadow close took the draft as an expectation and posted nothing). The
 reversal mirrors the same shape with `reversal_*` fields.
 """
 type PeriodCloseItem {
@@ -2403,7 +2404,9 @@ schema and both SDKs derive from it, and an opaque blob would push the
 shape onto every reader to rediscover.
 """
 type CloseReceipt {
-  """Receipt schema version; 1 is the first shipped shape"""
+  """
+  Receipt schema version; 1 is the first shipped shape, 2 adds the shadow fields
+  """
   version: Int!
 
   """Period this receipt is for (YYYY-MM)"""
@@ -2436,6 +2439,18 @@ type CloseReceipt {
   """structure_id -> minted fact_set_id"""
   stampedStatementSets: JSON!
   statementRuleSummary: JSON
+
+  """
+  The close ran in shadow: nothing written to QuickBooks, nothing posted, the drafts shadowed, the gates recorded as findings
+  """
+  shadow: Boolean!
+  entriesShadowed: Int!
+
+  """Blocker codes a shadow close recorded instead of enforcing"""
+  gateFindings: [String!]!
+
+  """Each finding's size: days stale, or a count"""
+  gateFindingCounts: JSON
 }
 
 """
@@ -2610,7 +2625,7 @@ type PeriodDrafts {
   qbWritebackConnectionId: String
 
   """
-  write_policy of the publishing QB connection ('qb_authoritative' / 'hybrid'), or null when there is no write-back connection.
+  write_policy of the publishing QB connection ('qb_authoritative' / 'hybrid'), 'shadow' when the connection runs in shadow, or null when there is no write-back connection.
   """
   qbWritePolicy: String
 
@@ -2619,6 +2634,14 @@ type PeriodDrafts {
 
   """Number of drafts that post locally only (no QB write-back)."""
   localOnlyCount: Int!
+
+  """
+  True when the connection runs in shadow: the close writes nothing to QuickBooks and posts nothing; every draft becomes a shadowed expectation compared with what QuickBooks holds.
+  """
+  shadow: Boolean!
+
+  """Number of drafts the close will shadow (all of them, in shadow)."""
+  shadowedCount: Int!
   drafts: [DraftEntry!]!
 }
 
@@ -2656,6 +2679,11 @@ type DraftEntry {
   True if closing the period will publish this draft to QuickBooks — i.e. the graph has a qb_authoritative/hybrid QB connection AND this is an RL-originated draft (schedule/manual) not already in QB. False means it posts locally only.
   """
   willPublishToQb: Boolean!
+
+  """
+  What the close does with this draft: 'publish' writes it to QuickBooks, 'post' posts it locally, 'shadow' takes it as an expectation with nothing written or posted (a shadow connection).
+  """
+  closeDisposition: String!
 }
 
 """A single line item within a draft entry."""

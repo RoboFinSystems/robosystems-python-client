@@ -120,7 +120,10 @@ def sync_detailed(
   isn't set up). Period must be exactly `closed_through + 1` — sequence violations return 422 with
   structured `blockers`. Common blockers: `sync_stale` (override with `allow_stale_sync=true` after
   manual verification), `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-
-  order).
+  order). Under a QuickBooks connection whose write_policy is `shadow`, the close observes instead:
+  nothing is written to QuickBooks or posted, the drafts become `shadowed` expectations
+  (`entries_shadowed`), and the gates that would have blocked are returned as `gate_findings` rather
+  than enforced.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -170,7 +173,10 @@ def sync(
   isn't set up). Period must be exactly `closed_through + 1` — sequence violations return 422 with
   structured `blockers`. Common blockers: `sync_stale` (override with `allow_stale_sync=true` after
   manual verification), `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-
-  order).
+  order). Under a QuickBooks connection whose write_policy is `shadow`, the close observes instead:
+  nothing is written to QuickBooks or posted, the drafts become `shadowed` expectations
+  (`entries_shadowed`), and the gates that would have blocked are returned as `gate_findings` rather
+  than enforced.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -215,7 +221,10 @@ async def asyncio_detailed(
   isn't set up). Period must be exactly `closed_through + 1` — sequence violations return 422 with
   structured `blockers`. Common blockers: `sync_stale` (override with `allow_stale_sync=true` after
   manual verification), `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-
-  order).
+  order). Under a QuickBooks connection whose write_policy is `shadow`, the close observes instead:
+  nothing is written to QuickBooks or posted, the drafts become `shadowed` expectations
+  (`entries_shadowed`), and the gates that would have blocked are returned as `gate_findings` rather
+  than enforced.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -263,7 +272,10 @@ async def asyncio(
   isn't set up). Period must be exactly `closed_through + 1` — sequence violations return 422 with
   structured `blockers`. Common blockers: `sync_stale` (override with `allow_stale_sync=true` after
   manual verification), `period_incomplete` (draft entries unbalanced), `sequence_violation` (out-of-
-  order).
+  order). Under a QuickBooks connection whose write_policy is `shadow`, the close observes instead:
+  nothing is written to QuickBooks or posted, the drafts become `shadowed` expectations
+  (`entries_shadowed`), and the gates that would have blocked are returned as `gate_findings` rather
+  than enforced.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

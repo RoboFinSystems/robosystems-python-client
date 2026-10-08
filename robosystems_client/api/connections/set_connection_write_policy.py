@@ -106,10 +106,13 @@ def sync_detailed(
 ) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Set Connection Write Policy
 
-   Opt a connection into or out of outbound write-back. 'qb_authoritative' makes QuickBooks the source
-  of truth — RoboSystems-originated entries (manual JEs, schedule drafts) publish to QuickBooks when
-  executed or at close. 'native' keeps RoboSystems authoritative with no write-back. This is the
-  explicit operator opt-in for writing to your books of record.
+   Choose how a live connection and RoboSystems share the books. 'qb_authoritative', the default, makes
+  QuickBooks the book of record: RoboSystems-originated entries (manual JEs, schedule drafts) publish
+  to QuickBooks when executed or at close. 'shadow' keeps QuickBooks the book of record and writes
+  nothing to it: the close posts nothing locally either, its drafts become shadowed expectations
+  compared with what QuickBooks holds, and its gates are recorded as findings. 'native' is not a
+  choice here: it is what disconnecting or severing leaves, books kept in RoboSystems with no
+  connection to write to. This is the explicit operator opt-in for writing to your books of record.
 
   Args:
       graph_id (str):
@@ -149,10 +152,13 @@ def sync(
 ) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Set Connection Write Policy
 
-   Opt a connection into or out of outbound write-back. 'qb_authoritative' makes QuickBooks the source
-  of truth — RoboSystems-originated entries (manual JEs, schedule drafts) publish to QuickBooks when
-  executed or at close. 'native' keeps RoboSystems authoritative with no write-back. This is the
-  explicit operator opt-in for writing to your books of record.
+   Choose how a live connection and RoboSystems share the books. 'qb_authoritative', the default, makes
+  QuickBooks the book of record: RoboSystems-originated entries (manual JEs, schedule drafts) publish
+  to QuickBooks when executed or at close. 'shadow' keeps QuickBooks the book of record and writes
+  nothing to it: the close posts nothing locally either, its drafts become shadowed expectations
+  compared with what QuickBooks holds, and its gates are recorded as findings. 'native' is not a
+  choice here: it is what disconnecting or severing leaves, books kept in RoboSystems with no
+  connection to write to. This is the explicit operator opt-in for writing to your books of record.
 
   Args:
       graph_id (str):
@@ -187,10 +193,13 @@ async def asyncio_detailed(
 ) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
   """Set Connection Write Policy
 
-   Opt a connection into or out of outbound write-back. 'qb_authoritative' makes QuickBooks the source
-  of truth — RoboSystems-originated entries (manual JEs, schedule drafts) publish to QuickBooks when
-  executed or at close. 'native' keeps RoboSystems authoritative with no write-back. This is the
-  explicit operator opt-in for writing to your books of record.
+   Choose how a live connection and RoboSystems share the books. 'qb_authoritative', the default, makes
+  QuickBooks the book of record: RoboSystems-originated entries (manual JEs, schedule drafts) publish
+  to QuickBooks when executed or at close. 'shadow' keeps QuickBooks the book of record and writes
+  nothing to it: the close posts nothing locally either, its drafts become shadowed expectations
+  compared with what QuickBooks holds, and its gates are recorded as findings. 'native' is not a
+  choice here: it is what disconnecting or severing leaves, books kept in RoboSystems with no
+  connection to write to. This is the explicit operator opt-in for writing to your books of record.
 
   Args:
       graph_id (str):
@@ -228,10 +237,13 @@ async def asyncio(
 ) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
   """Set Connection Write Policy
 
-   Opt a connection into or out of outbound write-back. 'qb_authoritative' makes QuickBooks the source
-  of truth — RoboSystems-originated entries (manual JEs, schedule drafts) publish to QuickBooks when
-  executed or at close. 'native' keeps RoboSystems authoritative with no write-back. This is the
-  explicit operator opt-in for writing to your books of record.
+   Choose how a live connection and RoboSystems share the books. 'qb_authoritative', the default, makes
+  QuickBooks the book of record: RoboSystems-originated entries (manual JEs, schedule drafts) publish
+  to QuickBooks when executed or at close. 'shadow' keeps QuickBooks the book of record and writes
+  nothing to it: the close posts nothing locally either, its drafts become shadowed expectations
+  compared with what QuickBooks holds, and its gates are recorded as findings. 'native' is not a
+  choice here: it is what disconnecting or severing leaves, books kept in RoboSystems with no
+  connection to write to. This is the explicit operator opt-in for writing to your books of record.
 
   Args:
       graph_id (str):

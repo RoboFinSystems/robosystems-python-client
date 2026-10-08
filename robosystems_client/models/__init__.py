@@ -59,6 +59,9 @@ from .checkout_status_response import CheckoutStatusResponse
 from .classification_lite import ClassificationLite
 from .close_period_operation import ClosePeriodOperation
 from .close_period_response import ClosePeriodResponse
+from .close_period_response_gate_finding_counts import (
+  ClosePeriodResponseGateFindingCounts,
+)
 from .close_period_response_rule_summary_type_0 import (
   ClosePeriodResponseRuleSummaryType0,
 )
@@ -1165,6 +1168,7 @@ __all__ = (
   "ClassificationLite",
   "ClosePeriodOperation",
   "ClosePeriodResponse",
+  "ClosePeriodResponseGateFindingCounts",
   "ClosePeriodResponseRuleSummaryType0",
   "ClosePeriodResponseStampedStatementSets",
   "ClosePeriodResponseStatementRuleSummaryType0",

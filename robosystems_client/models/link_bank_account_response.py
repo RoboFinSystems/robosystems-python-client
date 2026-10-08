@@ -28,7 +28,7 @@ class LinkBankAccountResponse:
           previous entity's chart. Default: 0.
       pairs_across_entities (int | Unset): Open transfer pairs whose two legs now sit on two entities, because only
           one leg's account moved. Intercompany; the commit guard refuses them until the other leg follows. Default: 0.
-      changed (bool | Unset): False when the link already stood. Default: True.
+      changed (bool | Unset): False when the link already stood and no line moved. Default: True.
   """
 
   connection_id: str

@@ -113,8 +113,9 @@ def sync_detailed(
   allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
   allows one per bank login (a connection still waiting on Link is returned instead of a second).
   Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
-  bank feed (Mercury, Plaid) is refused (409) beside a live QuickBooks connection or on a graph with
-  no chart of accounts.
+  bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
+  omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
+  keeps; QuickBooks is refused (409) when the group parent's books are already native.
 
   Args:
       graph_id (str):
@@ -154,8 +155,9 @@ def sync(
   allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
   allows one per bank login (a connection still waiting on Link is returned instead of a second).
   Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
-  bank feed (Mercury, Plaid) is refused (409) beside a live QuickBooks connection or on a graph with
-  no chart of accounts.
+  bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
+  omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
+  keeps; QuickBooks is refused (409) when the group parent's books are already native.
 
   Args:
       graph_id (str):
@@ -190,8 +192,9 @@ async def asyncio_detailed(
   allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
   allows one per bank login (a connection still waiting on Link is returned instead of a second).
   Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
-  bank feed (Mercury, Plaid) is refused (409) beside a live QuickBooks connection or on a graph with
-  no chart of accounts.
+  bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
+  omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
+  keeps; QuickBooks is refused (409) when the group parent's books are already native.
 
   Args:
       graph_id (str):
@@ -229,8 +232,9 @@ async def asyncio(
   allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
   allows one per bank login (a connection still waiting on Link is returned instead of a second).
   Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
-  bank feed (Mercury, Plaid) is refused (409) beside a live QuickBooks connection or on a graph with
-  no chart of accounts.
+  bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
+  omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
+  keeps; QuickBooks is refused (409) when the group parent's books are already native.
 
   Args:
       graph_id (str):
