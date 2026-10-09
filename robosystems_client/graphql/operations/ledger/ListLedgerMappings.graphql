@@ -1,7 +1,7 @@
-query ListLedgerMappings {
-  mappings {
+query ListLedgerMappings($entityId: String) {
+  mappings(entityId: $entityId) {
     structures {
-      id name description blockType taxonomyId isActive framework
+      id name description blockType taxonomyId isActive framework entityId
     }
   }
 }

@@ -29,8 +29,7 @@ class ComputeMetricsRequest:
               exactly (instant balances as of this date; durations ending on it).
           period_start (datetime.date | None | Unset): Optional lower bound for duration-operand binding and the standing
               FactSet's period_start.
-          entity_id (None | str | Unset): Entity to compute for. Defaults to the graph's earliest-created entity (the
-              primary entity for single-entity graphs).
+          entity_id (None | str | Unset): The entity whose metrics to compute, by id. Omit for the group parent.
           scenario_id (None | str | Unset): Compute on a scenario slice: operands bind that scenario's facts (actuals as
               the fallback across the seam) and the standing metric set is stamped with the scenario. None (the default)
               computes actuals only. Pass a forecast block's structure id after compute-forecast to extend the metric series

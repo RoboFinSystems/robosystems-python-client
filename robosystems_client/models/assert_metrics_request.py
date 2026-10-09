@@ -41,8 +41,7 @@ class AssertMetricsRequest:
           observations (list[MetricObservation]): Observed values, one per metric concept — duplicates rejected.
           period_start (datetime.date | None | Unset): Window start for duration concepts and the standing FactSet's
               period_start. Instant concepts ignore it.
-          entity_id (None | str | Unset): Entity to assert for. Defaults to the graph's earliest-created entity (the
-              primary entity for single-entity graphs).
+          entity_id (None | str | Unset): The entity the asserted values belong to, by id. Omit for the group parent.
           basis_note (None | str | Unset): Free-text basis / source reference for the observations.
   """
 

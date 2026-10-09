@@ -4,6 +4,7 @@ query GetInformationBlock(
   $series: Boolean! = false
   $seriesHistory: Int
   $seriesForecast: Int
+  $entityId: String
 ) {
   informationBlock(
     id: $id
@@ -11,9 +12,10 @@ query GetInformationBlock(
     series: $series
     seriesHistory: $seriesHistory
     seriesForecast: $seriesForecast
+    entityId: $entityId
   ) {
     id blockType name displayName category
-    taxonomyId taxonomyName
+    taxonomyId taxonomyName entityId
     informationModel { conceptArrangement memberArrangement }
     artifact { topic rendererNote template mechanics }
     elements {

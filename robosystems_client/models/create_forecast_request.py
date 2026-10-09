@@ -52,8 +52,8 @@ class CreateForecastRequest:
           line_growth (list[LineGrowthRequest] | Unset): Per-line growth trajectories. Each names an income-statement leaf
               and grows it month-over-month at the asserted rate — the generic form of the revenue growth lever, for lines the
               catalog doesn't drive (opex trajectories, cost-cut ramps).
-          entity_id (None | str | Unset): Entity the scenario belongs to. Defaults to the graph's earliest-created entity
-              (single-entity convention).
+          entity_id (None | str | Unset): The entity the scenario belongs to, by id: its history and its computed months
+              are that entity's books. Omit for the group parent.
   """
 
   name: str

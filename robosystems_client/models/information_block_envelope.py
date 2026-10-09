@@ -54,6 +54,9 @@ class InformationBlockEnvelope:
           disclosure_id (None | str | Unset): Qname of the named Disclosure this block corresponds to (e.g.,
               'disclosures:BalanceSheet'), when an inbound reportedDisclosure-requiresDisclosure arc identifies one. Null for
               tenant-authored blocks without a Disclosure mapping.
+          entity_id (None | str | Unset): The entity whose books the envelope reads. A schedule, reconciliation or
+              forecast is one entity's own and always reads its owner's; a block shared by the group (statements, metrics)
+              reads the entity asked for, else the group parent. Null on the library and on a graph with no entity yet.
           elements (list[ElementLite] | Unset):
           connections (list[ConnectionLite] | Unset):
           facts (list[FactLite] | Unset):
@@ -92,6 +95,7 @@ class InformationBlockEnvelope:
   taxonomy_id: None | str | Unset = UNSET
   taxonomy_name: None | str | Unset = UNSET
   disclosure_id: None | str | Unset = UNSET
+  entity_id: None | str | Unset = UNSET
   elements: list[ElementLite] | Unset = UNSET
   connections: list[ConnectionLite] | Unset = UNSET
   facts: list[FactLite] | Unset = UNSET
@@ -138,6 +142,12 @@ class InformationBlockEnvelope:
       disclosure_id = UNSET
     else:
       disclosure_id = self.disclosure_id
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     elements: list[dict[str, Any]] | Unset = UNSET
     if not isinstance(self.elements, Unset):
@@ -220,6 +230,8 @@ class InformationBlockEnvelope:
       field_dict["taxonomy_name"] = taxonomy_name
     if disclosure_id is not UNSET:
       field_dict["disclosure_id"] = disclosure_id
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if elements is not UNSET:
       field_dict["elements"] = elements
     if connections is not UNSET:
@@ -298,6 +310,15 @@ class InformationBlockEnvelope:
       return cast(None | str | Unset, data)
 
     disclosure_id = _parse_disclosure_id(d.pop("disclosure_id", UNSET))
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     _elements = d.pop("elements", UNSET)
     elements: list[ElementLite] | Unset = UNSET
@@ -411,6 +432,7 @@ class InformationBlockEnvelope:
       taxonomy_id=taxonomy_id,
       taxonomy_name=taxonomy_name,
       disclosure_id=disclosure_id,
+      entity_id=entity_id,
       elements=elements,
       connections=connections,
       facts=facts,

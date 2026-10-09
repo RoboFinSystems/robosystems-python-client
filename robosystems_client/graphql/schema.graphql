@@ -179,6 +179,11 @@ type Query {
     eventCategory: String = null
 
     """
+    `economic` for business activity, `support` for evidence about it (balance readings, reconciliation sign-offs), `operational` for schedule obligations. A balance reading's amount is a balance, not a flow.
+    """
+    eventClass: String = null
+
+    """
     Filter by lifecycle state: `captured` is the unposted queue, `committed` the audit trail.
     """
     status: String = null
@@ -439,17 +444,20 @@ type Query {
   """
   The rs-gaap concepts a chart-of-accounts element may map to.
   
-  Limited to concepts that actually render under the active Reporting Style
-  — falling back to the rs-gaap-presentation set when no Style is seeded —
-  with statement-level subtotals excluded. It is the same candidate set the
-  mapping operator picks from, so a target that would land a fact on an
-  unreachable branch is never offered.
+  Limited to concepts that actually render under the entity's Reporting
+  Style — falling back to the rs-gaap-presentation set when no Style is
+  seeded — with statement-level subtotals excluded. It is the same candidate
+  set the mapping operator picks from, so a target that would land a fact on
+  an unreachable branch is never offered.
   """
   mappingCandidates(
     """
     The CoA element's EFS classification - asset, liability, equity, revenue, expense, gain or loss - whose eligible rs-gaap targets to return.
     """
     classification: String!
+
+    """The entity whose chart is being mapped. Omit for the group parent."""
+    entityId: String = null
   ): [Element!]!
 
   """CoA elements not yet mapped to the reporting taxonomy."""
@@ -467,8 +475,14 @@ type Query {
     blockType: String = null
   ): StructureList
 
-  """List all active mapping structures."""
-  mappings: StructureList
+  """
+  List the active mapping structures, each naming the entity whose chart
+  it maps from.
+  """
+  mappings(
+    """Keep only this entity's mappings. Omit for every entity's."""
+    entityId: String = null
+  ): StructureList
 
   """Single mapping structure with all associations."""
   mapping(
@@ -669,6 +683,12 @@ type Query {
   seam-adjacent columns — the last N actual columns and the first N
   forecast columns; omitted = unbounded. Pass the visible window so
   the envelope scales with the screen, not the ledger's age.
+  
+  `entityId` picks whose books a block shared by the group reads
+  (statements, metrics, disclosures); omitted = the scenario's entity,
+  else the group parent. A schedule, reconciliation or forecast is one
+  entity's own and always reads its owner's. `entityId` on the envelope
+  names the entity it read.
   """
   informationBlock(
     """The block's structure id."""
@@ -687,6 +707,11 @@ type Query {
 
     """Cap the series at the first N forecast columns. Omit for unbounded."""
     seriesForecast: Int = null
+
+    """
+    The entity whose books a shared block reads. Omit for the group parent.
+    """
+    entityId: String = null
   ): InformationBlock
 
   """
@@ -697,6 +722,11 @@ type Query {
   category label ('Close', 'Reporting', …). Both combine as AND.
   `scenarioId` threads into each envelope's FactSet binding (the
   Structure list itself is scenario-independent).
+  
+  `entityId` (omitted = the scenario's entity, else the group parent)
+  lists the blocks shared by the group plus that entity's own schedules,
+  reconciliations and forecasts, never another entity's; shared blocks
+  read its books.
   """
   informationBlocks(
     """Filter to one registered block type, e.g. `schedule`."""
@@ -721,6 +751,9 @@ type Query {
     A forecast block's structure id, threaded into each envelope's FactSet binding.
     """
     scenarioId: String = null
+
+    """The entity whose blocks and books to list. Omit for the group parent."""
+    entityId: String = null
   ): [InformationBlock!]!
 
   """Fetch a single Taxonomy Block envelope by id."""
@@ -2254,6 +2287,11 @@ type Structure {
   `coa_mapping` only: the reporting framework the mapping maps the chart into (e.g. `rs-gaap`). A chart holds one mapping per framework.
   """
   framework: String
+
+  """
+  `coa_mapping` only, in the mappings list: the entity whose chart the mapping maps from, so whose reports it can produce.
+  """
+  entityId: String
 }
 
 """A mapping structure with all its associations."""
@@ -2939,6 +2977,11 @@ type InformationBlock {
   taxonomyId: String
   taxonomyName: String
   disclosureId: String
+
+  """
+  The entity whose books the envelope reads: a schedule, reconciliation or forecast reads its owner's; a shared block (statements, metrics) the entity asked for, else the group parent.
+  """
+  entityId: String
   informationModel: InformationModel!
   artifact: Artifact!
   elements: [InformationBlockElement!]!

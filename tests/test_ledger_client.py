@@ -261,15 +261,18 @@ class TestLedgerReads:
             "taxonomyId": "tax_map_gaap",
             "isActive": True,
             "framework": "rs-gaap",
+            "entityId": "ent_sub",
           }
         ]
       }
     }
     client = LedgerClient(mock_config)
-    mappings = client.list_mappings(graph_id)
+    mappings = client.list_mappings(graph_id, entity_id="ent_sub")
     assert len(mappings) == 1
     assert mappings[0].block_type == "coa_mapping"
     assert mappings[0].framework == "rs-gaap"
+    assert mappings[0].entity_id == "ent_sub"
+    assert mock_execute.call_args[0][2] == {"entityId": "ent_sub"}
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_fiscal_calendar(self, mock_execute, mock_config, graph_id):
@@ -597,6 +600,26 @@ class TestLedgerWrites:
     )
     payload = mock_op.call_args.kwargs["body"].payload.to_dict()
     assert payload["schedule_metadata"]["booked_on"] == "2026-01-15"
+    assert "entity_id" not in payload
+
+  @patch("robosystems_client.clients.ledger_client.op_create_information_block")
+  def test_create_schedule_for_a_subsidiary(self, mock_op, mock_config, graph_id):
+    envelope = _envelope("create-information-block", {"structure_id": "str_1"})
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.create_schedule(
+      graph_id,
+      name="Café prepaid rent",
+      element_ids=["elem_1"],
+      period_start="2026-02-01",
+      period_end="2027-01-31",
+      monthly_amount=10000,
+      debit_element_id="elem_rent",
+      credit_element_id="elem_prepaid",
+      entity_id="ent_sub",
+    )
+    payload = mock_op.call_args.kwargs["body"].payload.to_dict()
+    assert payload["entity_id"] == "ent_sub"
 
   @patch("robosystems_client.clients.ledger_client.op_create_information_block")
   def test_create_schedule(self, mock_op, mock_config, graph_id):
@@ -1545,6 +1568,7 @@ class TestLedgerReadsAdditional:
           "category": "Close",
           "taxonomyId": "tax_01",
           "taxonomyName": "My CoA",
+          "entityId": "ent_parent",
           "informationModel": {
             "conceptArrangement": "roll_forward",
             "memberArrangement": None,
@@ -1591,6 +1615,7 @@ class TestLedgerReadsAdditional:
         "category": "Close",
         "taxonomyId": None,
         "taxonomyName": None,
+        "entityId": "ent_parent",
         "informationModel": {
           "conceptArrangement": "roll_forward",
           "memberArrangement": None,
@@ -2532,6 +2557,32 @@ class TestInformationBlockReadOptions:
       "series": True,
       "seriesHistory": 6,
       "seriesForecast": 12,
+    }
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_block_reads_forward_the_entity(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {"informationBlock": None}
+    client = LedgerClient(mock_config)
+    client.get_information_block(graph_id, "blk_1", entity_id="ent_sub")
+    assert mock_execute.call_args[0][2] == {"id": "blk_1", "entityId": "ent_sub"}
+
+    mock_execute.return_value = {"informationBlocks": []}
+    client.list_information_blocks(graph_id, block_type="forecast", entity_id="ent_sub")
+    assert mock_execute.call_args[0][2] == {
+      "blockType": "forecast",
+      "entityId": "ent_sub",
+    }
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_mapping_candidates_forward_the_entity(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"mappingCandidates": []}
+    client = LedgerClient(mock_config)
+    client.get_mapping_candidates(graph_id, "asset", entity_id="ent_sub")
+    assert mock_execute.call_args[0][2] == {
+      "classification": "asset",
+      "entityId": "ent_sub",
     }
 
 

@@ -28,6 +28,9 @@ class CreateScheduleRequest:
       period_end (datetime.date): Last period end
       monthly_amount (int): Monthly amount in cents
       entry_template (EntryTemplateRequest):
+      entity_id (None | str | Unset): The entity whose books the schedule belongs to, by id. Omit for the group
+          parent. Its facts, obligations and closing entries land in that entity's books, against that entity's own
+          accounts.
       taxonomy_id (None | str | Unset): Taxonomy ID (auto-creates if omitted)
       schedule_metadata (None | ScheduleMetadataRequest | Unset):
       closed_through (datetime.date | None | Unset): Watermark for onboarding. Facts with period_end ≤ this date are
@@ -46,6 +49,7 @@ class CreateScheduleRequest:
   period_end: datetime.date
   monthly_amount: int
   entry_template: EntryTemplateRequest
+  entity_id: None | str | Unset = UNSET
   taxonomy_id: None | str | Unset = UNSET
   schedule_metadata: None | ScheduleMetadataRequest | Unset = UNSET
   closed_through: datetime.date | None | Unset = UNSET
@@ -66,6 +70,12 @@ class CreateScheduleRequest:
     monthly_amount = self.monthly_amount
 
     entry_template = self.entry_template.to_dict()
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     taxonomy_id: None | str | Unset
     if isinstance(self.taxonomy_id, Unset):
@@ -107,6 +117,8 @@ class CreateScheduleRequest:
         "entry_template": entry_template,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if taxonomy_id is not UNSET:
       field_dict["taxonomy_id"] = taxonomy_id
     if schedule_metadata is not UNSET:
@@ -135,6 +147,15 @@ class CreateScheduleRequest:
     monthly_amount = d.pop("monthly_amount")
 
     entry_template = EntryTemplateRequest.from_dict(d.pop("entry_template"))
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_taxonomy_id(data: object) -> None | str | Unset:
       if data is None:
@@ -199,6 +220,7 @@ class CreateScheduleRequest:
       period_end=period_end,
       monthly_amount=monthly_amount,
       entry_template=entry_template,
+      entity_id=entity_id,
       taxonomy_id=taxonomy_id,
       schedule_metadata=schedule_metadata,
       closed_through=closed_through,
