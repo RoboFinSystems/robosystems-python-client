@@ -26,7 +26,7 @@ class BindTextBlockRequest:
       element_id (None | str | Unset): Disclosure element to tag the text to (id form).
       element_qname (None | str | Unset): Disclosure element qname (e.g.
           'acme:SignificantAccountingPoliciesTextBlock') — exactly one of element_id / element_qname.
-      entity_id (None | str | Unset): Entity the fact belongs to; defaults to the primary entity.
+      entity_id (None | str | Unset): Entity the fact belongs to, by id; omit for the group parent.
   """
 
   document_id: str

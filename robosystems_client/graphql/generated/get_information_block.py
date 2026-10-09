@@ -19,6 +19,7 @@ class GetInformationBlockInformationBlock(BaseModel):
   category: str
   taxonomy_id: Optional[str] = Field(alias="taxonomyId")
   taxonomy_name: Optional[str] = Field(alias="taxonomyName")
+  entity_id: Optional[str] = Field(alias="entityId")
   information_model: "GetInformationBlockInformationBlockInformationModel" = Field(
     alias="informationModel"
   )

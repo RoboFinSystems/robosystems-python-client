@@ -1358,13 +1358,17 @@ class LedgerClient:
     page = ListLedgerStructures.model_validate(data).structures
     return page.structures if page else []
 
-  def list_mappings(self, graph_id: str) -> list[ListLedgerMappingsMappingsStructures]:
+  def list_mappings(
+    self, graph_id: str, *, entity_id: str | None = None
+  ) -> list[ListLedgerMappingsMappingsStructures]:
     """List active CoA→reporting mapping structures, the book mapping first.
 
     Each carries ``framework``: the reporting framework it maps the chart
-    into. A chart holds one mapping per framework.
+    into (a chart holds one mapping per framework), and ``entity_id``: the
+    entity whose chart it maps from, so whose reports it can produce.
+    ``entity_id`` keeps that entity's mappings only.
     """
-    data = self._query(graph_id, LIST_LEDGER_MAPPINGS_GQL)
+    data = self._query(graph_id, LIST_LEDGER_MAPPINGS_GQL, {"entityId": entity_id})
     page = ListLedgerMappings.model_validate(data).mappings
     return page.structures if page else []
 
@@ -1383,16 +1387,19 @@ class LedgerClient:
     return GetLedgerMappingCoverage.model_validate(data).mapping_coverage
 
   def get_mapping_candidates(
-    self, graph_id: str, classification: str
+    self, graph_id: str, classification: str, *, entity_id: str | None = None
   ) -> list[MappingCandidatesMappingCandidates]:
     """rs-gaap concepts a CoA element of the given EFS ``classification``
     (asset / liability / equity / revenue / expense) may map to — limited
-    to concepts that render under the graph's active Reporting Style,
-    with statement-level subtotals excluded. Use this to populate the
-    mapping picker so it never offers an unreachable target.
+    to concepts that render under the Reporting Style of the entity whose
+    chart is being mapped (``entity_id``, default the group parent), with
+    statement-level subtotals excluded. Use this to populate the mapping
+    picker so it never offers an unreachable target.
     """
     data = self._query(
-      graph_id, MAPPING_CANDIDATES_GQL, {"classification": classification}
+      graph_id,
+      MAPPING_CANDIDATES_GQL,
+      {"classification": classification, "entityId": entity_id},
     )
     return MappingCandidates.model_validate(data).mapping_candidates
 
@@ -1454,6 +1461,7 @@ class LedgerClient:
     series: bool | None = None,
     series_history: int | None = None,
     series_forecast: int | None = None,
+    entity_id: str | None = None,
   ) -> InformationBlock | None:
     """Fetch an Information Block envelope by id — the cross-block-type read.
 
@@ -1474,6 +1482,12 @@ class LedgerClient:
     ``series_history`` / ``series_forecast`` window the series to its
     seam-adjacent columns — the last N actual columns and the first N
     forecast columns; ``None`` = unbounded.
+
+    ``entity_id`` picks whose books a block shared by the group reads
+    (statements, metrics, disclosures); ``None`` = the scenario's entity,
+    else the group parent. A schedule, reconciliation or forecast always
+    reads its own entity's. The envelope's ``entity_id`` names the entity
+    it read.
     """
     data = self._query(
       graph_id,
@@ -1484,6 +1498,7 @@ class LedgerClient:
         "series": series,
         "seriesHistory": series_history,
         "seriesForecast": series_forecast,
+        "entityId": entity_id,
       },
     )
     return GetInformationBlock.model_validate(data).information_block
@@ -1497,6 +1512,7 @@ class LedgerClient:
     limit: int | None = None,
     offset: int | None = None,
     scenario_id: str | None = None,
+    entity_id: str | None = None,
   ) -> list[ListInformationBlocksInformationBlocks]:
     """List Information Block envelopes, optionally filtered.
 
@@ -1504,6 +1520,11 @@ class LedgerClient:
     ``block_type='schedule'`` for the same set of blocks.
     ``scenario_id`` (a forecast block's structure id) threads into each
     envelope's FactSet binding.
+
+    ``entity_id`` (``None`` = the scenario's entity, else the group
+    parent) lists the blocks shared by the group plus that entity's own
+    schedules, reconciliations and forecasts, never another entity's;
+    shared blocks read its books.
     """
     data = self._query(
       graph_id,
@@ -1514,6 +1535,7 @@ class LedgerClient:
         "limit": limit,
         "offset": offset,
         "scenarioId": scenario_id,
+        "entityId": entity_id,
       },
     )
     return ListInformationBlocks.model_validate(data).information_blocks
@@ -1604,12 +1626,16 @@ class LedgerClient:
     asset_element_id: str | None = None,
     auto_reverse: bool = False,
     booked_on: str | None = None,
+    entity_id: str | None = None,
   ) -> InformationBlockEnvelope:
     """Create a new schedule with pre-generated monthly facts.
 
     ``booked_on`` (``YYYY-MM-DD``) is the day the schedule's cost went on
     the books, when that is before its first period. The schedule
     reconciliation carries the cost from that day.
+
+    ``entity_id`` is the entity whose books the schedule belongs to;
+    ``None`` = the group parent.
     """
     payload_dict: dict[str, Any] = {
       "name": name,
@@ -1627,6 +1653,8 @@ class LedgerClient:
     }
     if taxonomy_id:
       payload_dict["taxonomy_id"] = taxonomy_id
+    if entity_id:
+      payload_dict["entity_id"] = entity_id
     schedule_metadata: dict[str, Any] = {}
     if method:
       schedule_metadata["method"] = method
@@ -2636,6 +2664,7 @@ class LedgerClient:
     period_type: str = "quarterly",
     comparative: bool = True,
     periods: list[PeriodSpec | dict[str, Any]] | None = None,
+    entity_id: str | None = None,
   ) -> ReportResponse:
     """Generate report facts from the ledger and publish a Report
     definition. Synchronous — returns the published report header.
@@ -2647,6 +2676,10 @@ class LedgerClient:
     ``{"start", "end", "label"}`` dicts — for multi-period layouts
     (YTD-by-quarter, multi-year). When given, the server ignores
     ``period_start`` / ``period_end`` / ``comparative``.
+
+    ``entity_id`` is the entity the report is for; ``None`` = the entity
+    whose chart ``mapping_id`` maps from. Named alongside another entity's
+    mapping, the server refuses it.
     """
     body = CreateReportRequest(
       name=name,
@@ -2661,6 +2694,8 @@ class LedgerClient:
       body.periods = [
         p if isinstance(p, PeriodSpec) else PeriodSpec.from_dict(p) for p in periods
       ]
+    if entity_id:
+      body.entity_id = entity_id
     response = op_create_report(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Create report", response)
     return self._typed_result("Create report", envelope, ReportResponse)

@@ -250,6 +250,7 @@ class Client(BaseClient):
     scenario_id: Union[Optional[str], UnsetType] = UNSET,
     series_history: Union[Optional[int], UnsetType] = UNSET,
     series_forecast: Union[Optional[int], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> GetInformationBlock:
     variables: dict[str, object] = {
@@ -258,6 +259,7 @@ class Client(BaseClient):
       "series": series,
       "seriesHistory": series_history,
       "seriesForecast": series_forecast,
+      "entityId": entity_id,
     }
     response = self.execute(
       query=GET_INFORMATION_BLOCK_GQL,
@@ -591,6 +593,7 @@ class Client(BaseClient):
     limit: Union[Optional[int], UnsetType] = UNSET,
     offset: Union[Optional[int], UnsetType] = UNSET,
     scenario_id: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> ListInformationBlocks:
     variables: dict[str, object] = {
@@ -599,6 +602,7 @@ class Client(BaseClient):
       "limit": limit,
       "offset": offset,
       "scenarioId": scenario_id,
+      "entityId": entity_id,
     }
     response = self.execute(
       query=LIST_INFORMATION_BLOCKS_GQL,
@@ -791,8 +795,10 @@ class Client(BaseClient):
     data = self.get_data(response)
     return ListLedgerJournalEntries.model_validate(data)
 
-  def list_ledger_mappings(self, **kwargs: Any) -> ListLedgerMappings:
-    variables: dict[str, object] = {}
+  def list_ledger_mappings(
+    self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
+  ) -> ListLedgerMappings:
+    variables: dict[str, object] = {"entityId": entity_id}
     response = self.execute(
       query=LIST_LEDGER_MAPPINGS_GQL,
       operation_name="ListLedgerMappings",
@@ -916,8 +922,16 @@ class Client(BaseClient):
     data = self.get_data(response)
     return ListLedgerUnmappedElements.model_validate(data)
 
-  def mapping_candidates(self, classification: str, **kwargs: Any) -> MappingCandidates:
-    variables: dict[str, object] = {"classification": classification}
+  def mapping_candidates(
+    self,
+    classification: str,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> MappingCandidates:
+    variables: dict[str, object] = {
+      "classification": classification,
+      "entityId": entity_id,
+    }
     response = self.execute(
       query=MAPPING_CANDIDATES_GQL,
       operation_name="MappingCandidates",

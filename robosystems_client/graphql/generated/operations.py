@@ -279,13 +279,14 @@ query ListInvestorSecurities($entityId: String, $securityType: String, $isActive
 """
 
 GET_INFORMATION_BLOCK_GQL = """
-query GetInformationBlock($id: ID!, $scenarioId: String, $series: Boolean! = false, $seriesHistory: Int, $seriesForecast: Int) {
+query GetInformationBlock($id: ID!, $scenarioId: String, $series: Boolean! = false, $seriesHistory: Int, $seriesForecast: Int, $entityId: String) {
   informationBlock(
     id: $id
     scenarioId: $scenarioId
     series: $series
     seriesHistory: $seriesHistory
     seriesForecast: $seriesForecast
+    entityId: $entityId
   ) {
     id
     blockType
@@ -294,6 +295,7 @@ query GetInformationBlock($id: ID!, $scenarioId: String, $series: Boolean! = fal
     category
     taxonomyId
     taxonomyName
+    entityId
     informationModel {
       conceptArrangement
       memberArrangement
@@ -1192,13 +1194,14 @@ query ListChartTemplates {
 """
 
 LIST_INFORMATION_BLOCKS_GQL = """
-query ListInformationBlocks($blockType: String, $category: String, $limit: Int, $offset: Int, $scenarioId: String) {
+query ListInformationBlocks($blockType: String, $category: String, $limit: Int, $offset: Int, $scenarioId: String, $entityId: String) {
   informationBlocks(
     blockType: $blockType
     category: $category
     limit: $limit
     offset: $offset
     scenarioId: $scenarioId
+    entityId: $entityId
   ) {
     id
     blockType
@@ -1207,6 +1210,7 @@ query ListInformationBlocks($blockType: String, $category: String, $limit: Int, 
     category
     taxonomyId
     taxonomyName
+    entityId
     informationModel {
       conceptArrangement
       memberArrangement
@@ -1608,8 +1612,8 @@ query ListLedgerJournalEntries($startDate: Date, $endDate: Date, $status: String
 """
 
 LIST_LEDGER_MAPPINGS_GQL = """
-query ListLedgerMappings {
-  mappings {
+query ListLedgerMappings($entityId: String) {
+  mappings(entityId: $entityId) {
     structures {
       id
       name
@@ -1618,6 +1622,7 @@ query ListLedgerMappings {
       taxonomyId
       isActive
       framework
+      entityId
     }
   }
 }
@@ -1840,8 +1845,8 @@ query ListLedgerUnmappedElements($mappingId: String) {
 """
 
 MAPPING_CANDIDATES_GQL = """
-query MappingCandidates($classification: String!) {
-  mappingCandidates(classification: $classification) {
+query MappingCandidates($classification: String!, $entityId: String) {
+  mappingCandidates(classification: $classification, entityId: $entityId) {
     id
     name
     qname

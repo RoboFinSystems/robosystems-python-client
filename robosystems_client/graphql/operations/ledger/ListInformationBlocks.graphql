@@ -4,6 +4,7 @@ query ListInformationBlocks(
   $limit: Int
   $offset: Int
   $scenarioId: String
+  $entityId: String
 ) {
   informationBlocks(
     blockType: $blockType
@@ -11,9 +12,10 @@ query ListInformationBlocks(
     limit: $limit
     offset: $offset
     scenarioId: $scenarioId
+    entityId: $entityId
   ) {
     id blockType name displayName category
-    taxonomyId taxonomyName
+    taxonomyId taxonomyName entityId
     informationModel { conceptArrangement memberArrangement }
     artifact { topic rendererNote template mechanics }
     elements {

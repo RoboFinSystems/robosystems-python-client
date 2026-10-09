@@ -686,6 +686,22 @@ class TestLedgerParity:
       {"start": "2025-01-01", "end": "2025-03-31", "label": "Q1"}
     ]
 
+  def test_create_report_sends_the_entity(self, httpx_mock):
+    httpx_mock.add_response(
+      method="POST",
+      url=f"{BASE}/extensions/roboledger/{GRAPH}/operations/create-report",
+      status_code=500,
+      json={"detail": "stop here"},
+    )
+
+    with pytest.raises(RuntimeError):
+      LedgerClient(CONFIG).create_report(
+        GRAPH, "FY25", "map_sub", "2025-01-01", "2025-12-31", entity_id="ent_sub"
+      )
+
+    body = json.loads(httpx_mock.get_requests()[0].content)
+    assert body["entity_id"] == "ent_sub"
+
   def test_list_information_blocks_sends_scenario_id(self, httpx_mock):
     httpx_mock.add_response(
       method="POST",

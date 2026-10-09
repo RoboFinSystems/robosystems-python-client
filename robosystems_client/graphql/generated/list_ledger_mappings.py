@@ -21,6 +21,7 @@ class ListLedgerMappingsMappingsStructures(BaseModel):
   taxonomy_id: str = Field(alias="taxonomyId")
   is_active: bool = Field(alias="isActive")
   framework: Optional[str]
+  entity_id: Optional[str] = Field(alias="entityId")
 
 
 ListLedgerMappings.model_rebuild()

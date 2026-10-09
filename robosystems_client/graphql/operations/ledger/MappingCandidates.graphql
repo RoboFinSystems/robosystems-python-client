@@ -1,5 +1,5 @@
-query MappingCandidates($classification: String!) {
-  mappingCandidates(classification: $classification) {
+query MappingCandidates($classification: String!, $entityId: String) {
+  mappingCandidates(classification: $classification, entityId: $entityId) {
     id
     name
     qname

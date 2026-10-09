@@ -23,8 +23,7 @@ class ChangeReportingStyleRequest:
       Attributes:
           reporting_style_id (str): Structure id of the target Reporting Style. Must exist in the tenant schema with a
               complete Network composition.
-          entity_id (None | str | Unset): Target entity. Omit to target the graph's primary (earliest-created) entity —
-              the single-entity default.
+          entity_id (None | str | Unset): The entity whose style to change, by id. Omit for the group parent.
   """
 
   reporting_style_id: str
