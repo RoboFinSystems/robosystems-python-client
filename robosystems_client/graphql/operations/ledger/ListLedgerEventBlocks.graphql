@@ -23,7 +23,7 @@ query ListLedgerEventBlocks(
     id eventType eventCategory eventClass status occurredAt effectiveAt
     source externalId externalUrl amount currency description metadata
     dimensionIds agentId resourceType resourceElementId
-    replacedByEventId replacesEventId obligatedByEventId dischargesEventId
+    replacedByEventId replacesEventId obligatedByEventId dischargesEventId documentId
     createdAt createdBy
   }
 }

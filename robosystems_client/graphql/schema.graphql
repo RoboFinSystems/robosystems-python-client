@@ -1613,6 +1613,7 @@ type EventBlock {
   replacesEventId: String
   obligatedByEventId: String
   dischargesEventId: String
+  documentId: String
   createdAt: DateTime!
   createdBy: String!
 }

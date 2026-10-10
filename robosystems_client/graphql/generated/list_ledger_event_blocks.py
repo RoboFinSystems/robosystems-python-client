@@ -32,6 +32,7 @@ class ListLedgerEventBlocksEventBlocks(BaseModel):
   replaces_event_id: Optional[str] = Field(alias="replacesEventId")
   obligated_by_event_id: Optional[str] = Field(alias="obligatedByEventId")
   discharges_event_id: Optional[str] = Field(alias="dischargesEventId")
+  document_id: Optional[str] = Field(alias="documentId")
   created_at: str = Field(alias="createdAt")
   created_by: str = Field(alias="createdBy")
 

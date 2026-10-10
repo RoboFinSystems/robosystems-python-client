@@ -1181,6 +1181,7 @@ class TestLedgerReadsAdditional:
           "replacesEventId": None,
           "obligatedByEventId": None,
           "dischargesEventId": None,
+          "documentId": None,
           "createdAt": "2026-03-15T12:00:00Z",
           "createdBy": "user_1",
         }
@@ -1236,6 +1237,7 @@ class TestLedgerReadsAdditional:
         "replacesEventId": None,
         "obligatedByEventId": None,
         "dischargesEventId": None,
+        "documentId": "doc_inv_9",
         "createdAt": "2026-03-15T12:00:00Z",
         "createdBy": "user_1",
       }
@@ -1244,6 +1246,7 @@ class TestLedgerReadsAdditional:
     result = client.get_event_block(graph_id, "evt_1")
     assert result is not None
     assert result.id == "evt_1"
+    assert result.document_id == "doc_inv_9"
     variables = mock_execute.call_args[0][2]
     assert variables["id"] == "evt_1"
 
