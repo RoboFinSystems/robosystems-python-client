@@ -3207,6 +3207,55 @@ class TestEntityScope:
       "entity_id": "ent_2",
     }
 
+  @patch("robosystems_client.clients.ledger_client.op_change_calendar_start")
+  def test_change_calendar_start(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "change-calendar-start",
+        {"fiscal_calendar": {}, "periods_created": 7, "periods_removed": 0},
+      )
+    )
+    client = LedgerClient(mock_config)
+    result = client.change_calendar_start(
+      graph_id, "2026-02", "history from February", entity_id="ent_2"
+    )
+    assert result["periods_created"] == 7
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "first_open_period": "2026-02",
+      "note": "history from February",
+      "entity_id": "ent_2",
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_record_statement_balance")
+  @patch("robosystems_client.clients.ledger_client.op_refresh_reconciliations")
+  @patch("robosystems_client.clients.ledger_client.op_preview_reconciliations")
+  def test_reconciliation_calls_send_entity_id(
+    self, mock_preview, mock_refresh, mock_record, mock_config, graph_id
+  ):
+    mock_preview.return_value = _mock_response(
+      _envelope("preview-reconciliations", {"period": "2026-08", "rows": []})
+    )
+    mock_refresh.return_value = _mock_response(
+      _envelope("refresh-reconciliations", {"period": "2026-08", "reconciliations": []})
+    )
+    mock_record.return_value = _mock_response(
+      _envelope("record-statement-balance", _RECONCILIATION)
+    )
+    client = LedgerClient(mock_config)
+
+    client.preview_reconciliations(graph_id, "2026-08", entity_id="ent_2")
+    client.refresh_reconciliations(graph_id, "2026-08", entity_id="ent_2")
+    client.record_statement_balance(
+      graph_id,
+      element_id="elem_cash",
+      as_of="2026-08-31",
+      balance=1200.0,
+      entity_id="ent_2",
+    )
+
+    for mock in (mock_preview, mock_refresh, mock_record):
+      assert mock.call_args.kwargs["body"].entity_id == "ent_2"
+
   @patch("robosystems_client.clients.ledger_client.op_reopen_period")
   def test_reopen_period_sends_entity_id(self, mock_op, mock_config, graph_id):
     mock_op.return_value = _mock_response(_envelope("reopen-period", {}))

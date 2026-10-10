@@ -117,6 +117,9 @@ from ..api.robo_ledger_fiscal_close.reopen_period import (
 from ..api.robo_ledger_fiscal_close.set_close_target import (
   sync_detailed as op_set_close_target,
 )
+from ..api.robo_ledger_setup.change_calendar_start import (
+  sync_detailed as op_change_calendar_start,
+)
 from ..api.robo_ledger_taxonomy_mapping.create_taxonomy_block import (
   sync_detailed as op_create_taxonomy_block,
 )
@@ -579,6 +582,8 @@ from ..models.revoke_report_share_operation import RevokeReportShareOperation
 from ..models.update_publish_list_operation import UpdatePublishListOperation
 from ..models.reopen_period_operation import ReopenPeriodOperation
 from ..models.set_close_target_operation import SetCloseTargetOperation
+from ..models.change_calendar_start_request import ChangeCalendarStartRequest
+from ..models.change_calendar_start_response import ChangeCalendarStartResponse
 from ..models.bind_text_block_request import BindTextBlockRequest
 from ..models.bind_text_block_response import BindTextBlockResponse
 from ..models.create_taxonomy_block_request import CreateTaxonomyBlockRequest
@@ -2345,6 +2350,30 @@ class LedgerClient:
     envelope = self._call_op("Set close target", response)
     return self._typed_result("Set close target", envelope, FiscalCalendarResponse)
 
+  def change_calendar_start(
+    self,
+    graph_id: str,
+    first_open_period: str,
+    note: str | None = None,
+    *,
+    entity_id: str | None = None,
+  ) -> ChangeCalendarStartResponse:
+    """Move the calendar's first open month (YYYY-MM), allowed only until the
+    entity's first close. Earlier opens months back to it; later removes the
+    leading months, refused while they hold any entry."""
+    body = ChangeCalendarStartRequest(
+      first_open_period=first_open_period,
+      note=note if note is not None else UNSET,
+      entity_id=entity_id if entity_id is not None else UNSET,
+    )
+    response = op_change_calendar_start(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Change calendar start", response)
+    return self._typed_result(
+      "Change calendar start", envelope, ChangeCalendarStartResponse
+    )
+
   def close_period(
     self,
     graph_id: str,
@@ -2530,12 +2559,14 @@ class LedgerClient:
     *,
     method: PreviewReconciliationsRequestMethod | str | None = None,
     include_tied: bool | None = None,
+    entity_id: str | None = None,
   ) -> ReconciliationPreviewResponse:
     """Compare the ledger with something outside it. Records nothing.
 
     ``method`` picks the check: ``source_ledger`` (the default, which needs a
     connected QuickBooks ledger), ``schedule_register`` or ``statement``.
-    ``include_tied`` also returns the accounts that tie.
+    ``include_tied`` also returns the accounts that tie. ``entity_id`` checks
+    a subsidiary's books; omitted, the group parent's.
     """
     body = PreviewReconciliationsRequest(
       period=period,
@@ -2543,6 +2574,7 @@ class LedgerClient:
         PreviewReconciliationsRequestMethod(method) if method is not None else UNSET
       ),
       include_tied=include_tied if include_tied is not None else UNSET,
+      entity_id=entity_id if entity_id is not None else UNSET,
     )
     response = op_preview_reconciliations(
       graph_id=graph_id, body=body, client=self._get_client()
@@ -2553,11 +2585,14 @@ class LedgerClient:
     )
 
   def refresh_reconciliations(
-    self, graph_id: str, period: str
+    self, graph_id: str, period: str, *, entity_id: str | None = None
   ) -> ReconciliationListResponse:
     """Run every reconciliation that applies at a period end and record each
-    result on its block. ``notes`` names any check that could not run."""
-    body = RefreshReconciliationsRequest(period=period)
+    result on its block. ``notes`` names any check that could not run.
+    ``entity_id`` runs a subsidiary's; omitted, the group parent's."""
+    body = RefreshReconciliationsRequest(
+      period=period, entity_id=entity_id if entity_id is not None else UNSET
+    )
     response = op_refresh_reconciliations(
       graph_id=graph_id, body=body, client=self._get_client()
     )
@@ -2575,6 +2610,7 @@ class LedgerClient:
     balance: float,
     document_id: str | None = None,
     note: str | None = None,
+    entity_id: str | None = None,
   ) -> ReconciliationSummary:
     """Record a statement's ending balance for a balance-sheet account and
     reconcile the account to it for the period the statement ends in.
@@ -2583,10 +2619,12 @@ class LedgerClient:
     account's normal direction (money in a bank account, or the amount owed
     on a loan or a card). ``as_of`` is the statement's ending date.
     ``document_id`` names the statement itself, as a document already on
-    the graph. Writes no books.
+    the graph. ``entity_id`` names the subsidiary whose account it is;
+    omitted, the group parent. Writes no books.
     """
     body = RecordStatementBalanceRequest(
       element_id=element_id,
+      entity_id=entity_id if entity_id is not None else UNSET,
       as_of=datetime.date.fromisoformat(as_of) if isinstance(as_of, str) else as_of,
       balance=balance,
       document_id=document_id if document_id is not None else UNSET,
