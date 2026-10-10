@@ -859,9 +859,16 @@ from .reconciliation_list_response import ReconciliationListResponse
 from .reconciliation_mechanics import ReconciliationMechanics
 from .reconciliation_mechanics_method import ReconciliationMechanicsMethod
 from .reconciliation_mechanics_scope import ReconciliationMechanicsScope
+from .reconciliation_mechanics_statement_cycle_type_0 import (
+  ReconciliationMechanicsStatementCycleType0,
+)
 from .reconciliation_policy_response import ReconciliationPolicyResponse
+from .reconciliation_policy_response_statement_cycle_type_0 import (
+  ReconciliationPolicyResponseStatementCycleType0,
+)
 from .reconciliation_preview_response import ReconciliationPreviewResponse
 from .reconciliation_preview_response_method import ReconciliationPreviewResponseMethod
+from .reconciliation_roll_forward import ReconciliationRollForward
 from .reconciliation_row import ReconciliationRow
 from .reconciliation_summary import ReconciliationSummary
 from .reconciling_item_catch_up import ReconcilingItemCatchUp
@@ -959,6 +966,9 @@ from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
 from .set_close_target_operation import SetCloseTargetOperation
 from .set_reconciliation_policy_request import SetReconciliationPolicyRequest
+from .set_reconciliation_policy_request_statement_cycle_type_0 import (
+  SetReconciliationPolicyRequestStatementCycleType0,
+)
 from .set_selected_graph_request import SetSelectedGraphRequest
 from .set_write_policy_request import SetWritePolicyRequest
 from .set_write_policy_request_write_policy import SetWritePolicyRequestWritePolicy
@@ -1686,9 +1696,12 @@ __all__ = (
   "ReconciliationMechanics",
   "ReconciliationMechanicsMethod",
   "ReconciliationMechanicsScope",
+  "ReconciliationMechanicsStatementCycleType0",
   "ReconciliationPolicyResponse",
+  "ReconciliationPolicyResponseStatementCycleType0",
   "ReconciliationPreviewResponse",
   "ReconciliationPreviewResponseMethod",
+  "ReconciliationRollForward",
   "ReconciliationRow",
   "ReconciliationSummary",
   "ReconcilingItemCatchUp",
@@ -1764,6 +1777,7 @@ __all__ = (
   "ServiceOfferingSummary",
   "SetCloseTargetOperation",
   "SetReconciliationPolicyRequest",
+  "SetReconciliationPolicyRequestStatementCycleType0",
   "SetSelectedGraphRequest",
   "SetWritePolicyRequest",
   "SetWritePolicyRequestWritePolicy",

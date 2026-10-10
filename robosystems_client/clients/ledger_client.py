@@ -545,6 +545,9 @@ from ..models.resolve_reconciling_item_request_status import (
 )
 from ..models.resolve_reconciling_item_response import ResolveReconcilingItemResponse
 from ..models.set_reconciliation_policy_request import SetReconciliationPolicyRequest
+from ..models.set_reconciliation_policy_request_statement_cycle_type_0 import (
+  SetReconciliationPolicyRequestStatementCycleType0,
+)
 from ..models.sign_off_reconciliation_request import SignOffReconciliationRequest
 from ..models.compute_metrics_request import ComputeMetricsRequest
 from ..models.compute_metrics_response import ComputeMetricsResponse
@@ -2647,9 +2650,13 @@ class LedgerClient:
     materiality: float | None = None,
     review_required: bool | None = None,
     separate_reviewer: bool | None = None,
+    statement_cycle: SetReconciliationPolicyRequestStatementCycleType0
+    | str
+    | None = None,
   ) -> ReconciliationPolicyResponse:
     """Change how much the close cares about one reconciliation. An omitted
-    field keeps its value."""
+    field keeps its value. ``statement_cycle`` (``monthly``, ``quarterly`` or
+    ``annual``) applies to statement reconciliations only."""
     body = SetReconciliationPolicyRequest(
       structure_id=structure_id,
       required_for_close=(
@@ -2658,6 +2665,11 @@ class LedgerClient:
       materiality=materiality if materiality is not None else UNSET,
       review_required=review_required if review_required is not None else UNSET,
       separate_reviewer=(separate_reviewer if separate_reviewer is not None else UNSET),
+      statement_cycle=(
+        SetReconciliationPolicyRequestStatementCycleType0(statement_cycle)
+        if statement_cycle is not None
+        else UNSET
+      ),
     )
     response = op_set_reconciliation_policy(
       graph_id=graph_id, body=body, client=self._get_client()

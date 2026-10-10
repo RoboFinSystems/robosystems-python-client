@@ -1844,6 +1844,11 @@ type ReconciliationSummary {
   """A difference up to this amount still counts as reconciled."""
   materiality: Float!
 
+  """
+  `statement` blocks only: how often the account's statement is issued, `monthly`, `quarterly` or `annual`.
+  """
+  statementCycle: String
+
   """The period, as YYYY-MM."""
   period: String!
 
@@ -1877,14 +1882,19 @@ type ReconciliationSummary {
   independentBalance: Float
 
   """
-  Account-scope only: the date the two balances are stated at. The period's last day, unless a statement ended earlier in the period.
+  Account-scope only: the date the two balances are stated at. The period's last day, unless the statement covering it ended earlier.
   """
   balanceAsOf: Date
 
   """
-  Account-scope only: what makes up the independent balance. One entry per schedule for `schedule_register`; the recorded statement for `statement`.
+  Account-scope only: what makes up the independent balance. One entry per schedule for `schedule_register`; the recorded statement for `statement`, then each outstanding line.
   """
   components: [ReconciliationComponent!]!
+
+  """
+  `statement` on a bank-fed account whose statement ends before the period's last day: the statement carried to it by the feed's lines.
+  """
+  rollForward: ReconciliationRollForward
 
   """The system the independent side was read from."""
   source: String
@@ -1932,19 +1942,35 @@ type ReconciliationSummary {
 
 """
 One part of an account's independent balance: what a single schedule
-says the account carries, or a recorded statement balance.
+says the account carries, a recorded statement balance, or a ledger line
+outstanding at the statement's date.
 """
 type ReconciliationComponent {
-  """The schedule's name, or the statement and its date."""
+  """
+  The schedule's name, the statement and its date, or the outstanding line's description.
+  """
   name: String!
 
   """What this part says the account holds, debit-positive."""
   amount: Float!
 
+  """
+  `schedule`, `statement`, or `outstanding`: a ledger line on a bank-fed account that did not come from the feed, dated on or before the statement, so the bank had not cleared it.
+  """
+  kind: String
+
+  """An `outstanding` line's posting date."""
+  postingDate: Date
+
+  """The journal entry an `outstanding` line belongs to."""
+  entryId: String
+
   """The schedule, for a `schedule_register` part."""
   structureId: String
 
-  """The recorded balance, for a `statement` part."""
+  """
+  The recorded balance, for a `statement` part; the event behind an `outstanding` line, when it has one.
+  """
   eventId: String
 
   """The statement document given as evidence, when one was."""
@@ -1954,6 +1980,47 @@ type ReconciliationComponent {
   Why a schedule carries nothing (disposed of, or ended early), or the note recorded with a statement balance.
   """
   note: String
+}
+
+"""
+A statement carried from its ending date to the period's last day on a
+bank-fed account, where every line the feed brought is the bank's own.
+"""
+type ReconciliationRollForward {
+  """The statement's ending date."""
+  statementAsOf: Date!
+
+  """The period's last day."""
+  through: Date!
+
+  """Booked feed lines dated after the statement, to the period end."""
+  bankLines: Int!
+
+  """Their net effect on the account, debit-positive."""
+  bankActivity: Float!
+
+  """
+  The statement balance carried to the period end by those lines: what the bank held then, debit-positive.
+  """
+  bankBalance: Float!
+
+  """
+  The ledger's balance at the period end, as the close will leave it, debit-positive.
+  """
+  ledgerBalance: Float!
+
+  """
+  Ledger lines not from the feed and dated on or before the period end, net: the ledger minus the carried bank balance.
+  """
+  outstanding: Float!
+
+  """
+  A cross-check, never the figure reconciled: the bank feed's own balance from the first reading on or after the period end, less the booked feed lines between the period end and that reading. Null when the feed has no reading within ten days.
+  """
+  feedBalance: Float
+
+  """The day of the feed reading `feedBalance` starts from."""
+  feedBalanceReadOn: Date
 }
 
 """
@@ -1984,7 +2051,9 @@ type ReconciliationRow {
   """
   ledgerBalance: Float!
 
-  """What the independent source says."""
+  """
+  What the independent source says. For a `statement` on a bank-fed account, the statement balance adjusted by its outstanding lines.
+  """
   independentBalance: Float!
 
   """Ledger minus independent."""
@@ -2001,9 +2070,14 @@ type ReconciliationRow {
   asOf: Date
 
   """
-  Account-scope methods only: what makes up the independent balance. One entry per schedule for `schedule_register`; the recorded statement for `statement`.
+  Account-scope methods only: what makes up the independent balance. One entry per schedule for `schedule_register`; the recorded statement for `statement`, then each outstanding line.
   """
   components: [ReconciliationComponent!]!
+
+  """
+  `statement` on a bank-fed account whose statement ends before the period's last day: the statement carried to it by the feed's lines.
+  """
+  rollForward: ReconciliationRollForward
 }
 
 """

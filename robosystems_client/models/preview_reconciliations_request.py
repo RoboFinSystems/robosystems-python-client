@@ -23,8 +23,8 @@ class PreviewReconciliationsRequest:
       method (PreviewReconciliationsRequestMethod | Unset): Which check to preview. `source_ledger` compares every
           account with the synced accounting system's own trial balance. `schedule_register` compares each asset account a
           schedule carries a balance on with what its schedules say it holds. `statement` compares each account that has a
-          statement balance recorded in the period with that balance. Default:
-          PreviewReconciliationsRequestMethod.SOURCE_LEDGER.
+          statement covering the period with that balance, adjusted on a bank-fed account by the lines the bank had not
+          cleared. Default: PreviewReconciliationsRequestMethod.SOURCE_LEDGER.
       include_tied (bool | Unset): Also return the accounts that tie. Off by default: the differences are the work,
           and the counts cover the rest. Default: False.
       entity_id (None | str | Unset): The entity whose books to compare, by id. Omit for the group parent.

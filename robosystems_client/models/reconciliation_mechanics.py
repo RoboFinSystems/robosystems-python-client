@@ -8,6 +8,9 @@ from attrs import field as _attrs_field
 
 from ..models.reconciliation_mechanics_method import ReconciliationMechanicsMethod
 from ..models.reconciliation_mechanics_scope import ReconciliationMechanicsScope
+from ..models.reconciliation_mechanics_statement_cycle_type_0 import (
+  ReconciliationMechanicsStatementCycleType0,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="ReconciliationMechanics")
@@ -34,6 +37,9 @@ class ReconciliationMechanics:
               reconcile. Default: False.
           separate_reviewer (bool | Unset): Whether the person who signs off must be someone other than the person who ran
               the comparison. Default: False.
+          statement_cycle (None | ReconciliationMechanicsStatementCycleType0 | Unset): `statement` blocks only: how often
+              the account's statement is issued; unset is monthly. A period is covered by the latest statement ending within
+              the cycle that ends with it.
   """
 
   scope: ReconciliationMechanicsScope
@@ -44,6 +50,7 @@ class ReconciliationMechanics:
   materiality: float | Unset = 0.0
   review_required: bool | Unset = False
   separate_reviewer: bool | Unset = False
+  statement_cycle: None | ReconciliationMechanicsStatementCycleType0 | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -67,6 +74,14 @@ class ReconciliationMechanics:
 
     separate_reviewer = self.separate_reviewer
 
+    statement_cycle: None | str | Unset
+    if isinstance(self.statement_cycle, Unset):
+      statement_cycle = UNSET
+    elif isinstance(self.statement_cycle, ReconciliationMechanicsStatementCycleType0):
+      statement_cycle = self.statement_cycle.value
+    else:
+      statement_cycle = self.statement_cycle
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -87,6 +102,8 @@ class ReconciliationMechanics:
       field_dict["review_required"] = review_required
     if separate_reviewer is not UNSET:
       field_dict["separate_reviewer"] = separate_reviewer
+    if statement_cycle is not UNSET:
+      field_dict["statement_cycle"] = statement_cycle
 
     return field_dict
 
@@ -118,6 +135,25 @@ class ReconciliationMechanics:
 
     separate_reviewer = d.pop("separate_reviewer", UNSET)
 
+    def _parse_statement_cycle(
+      data: object,
+    ) -> None | ReconciliationMechanicsStatementCycleType0 | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        statement_cycle_type_0 = ReconciliationMechanicsStatementCycleType0(data)
+
+        return statement_cycle_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | ReconciliationMechanicsStatementCycleType0 | Unset, data)
+
+    statement_cycle = _parse_statement_cycle(d.pop("statement_cycle", UNSET))
+
     reconciliation_mechanics = cls(
       scope=scope,
       method=method,
@@ -127,6 +163,7 @@ class ReconciliationMechanics:
       materiality=materiality,
       review_required=review_required,
       separate_reviewer=separate_reviewer,
+      statement_cycle=statement_cycle,
     )
 
     reconciliation_mechanics.additional_properties = d

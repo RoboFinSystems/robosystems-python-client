@@ -6,6 +6,9 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.set_reconciliation_policy_request_statement_cycle_type_0 import (
+  SetReconciliationPolicyRequestStatementCycleType0,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="SetReconciliationPolicyRequest")
@@ -24,6 +27,9 @@ class SetReconciliationPolicyRequest:
       separate_reviewer (bool | None | Unset): Whether the person who signs off must be someone other than the person
           who ran the comparison. It can only be turned on when the graph has at least two members who can write. Omit to
           keep.
+      statement_cycle (None | SetReconciliationPolicyRequestStatementCycleType0 | Unset): `statement` blocks only: how
+          often the account's statement is issued. A period is covered by the latest statement ending within the cycle
+          that ends with it, so a quarterly statement covers the two months before the next one. Omit to keep.
   """
 
   structure_id: str
@@ -31,6 +37,9 @@ class SetReconciliationPolicyRequest:
   materiality: float | None | Unset = UNSET
   review_required: bool | None | Unset = UNSET
   separate_reviewer: bool | None | Unset = UNSET
+  statement_cycle: None | SetReconciliationPolicyRequestStatementCycleType0 | Unset = (
+    UNSET
+  )
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -60,6 +69,16 @@ class SetReconciliationPolicyRequest:
     else:
       separate_reviewer = self.separate_reviewer
 
+    statement_cycle: None | str | Unset
+    if isinstance(self.statement_cycle, Unset):
+      statement_cycle = UNSET
+    elif isinstance(
+      self.statement_cycle, SetReconciliationPolicyRequestStatementCycleType0
+    ):
+      statement_cycle = self.statement_cycle.value
+    else:
+      statement_cycle = self.statement_cycle
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -75,6 +94,8 @@ class SetReconciliationPolicyRequest:
       field_dict["review_required"] = review_required
     if separate_reviewer is not UNSET:
       field_dict["separate_reviewer"] = separate_reviewer
+    if statement_cycle is not UNSET:
+      field_dict["statement_cycle"] = statement_cycle
 
     return field_dict
 
@@ -119,12 +140,34 @@ class SetReconciliationPolicyRequest:
 
     separate_reviewer = _parse_separate_reviewer(d.pop("separate_reviewer", UNSET))
 
+    def _parse_statement_cycle(
+      data: object,
+    ) -> None | SetReconciliationPolicyRequestStatementCycleType0 | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        statement_cycle_type_0 = SetReconciliationPolicyRequestStatementCycleType0(data)
+
+        return statement_cycle_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(
+        None | SetReconciliationPolicyRequestStatementCycleType0 | Unset, data
+      )
+
+    statement_cycle = _parse_statement_cycle(d.pop("statement_cycle", UNSET))
+
     set_reconciliation_policy_request = cls(
       structure_id=structure_id,
       required_for_close=required_for_close,
       materiality=materiality,
       review_required=review_required,
       separate_reviewer=separate_reviewer,
+      statement_cycle=statement_cycle,
     )
 
     set_reconciliation_policy_request.additional_properties = d
