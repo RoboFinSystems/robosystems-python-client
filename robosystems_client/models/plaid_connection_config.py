@@ -26,7 +26,8 @@ class PlaidConnectionConfig:
 
       Attributes:
           since_date (datetime.date | None | Unset): First day of the backfill (ISO 8601), and how much history Plaid is
-              asked to pull for the new Item (at most two years). Defaults to 1 January of last year.
+              asked to pull for the new Item (at most two years). Defaults to as far back as Plaid goes. Lines dated in a
+              closed period are never captured, whatever the window.
           entity_id (None | str | Unset): The entity whose books the feed's accounts land on: a subsidiary's id, or omit
               for the group parent. Required when QuickBooks keeps the parent's books. Each account can be moved to another
               entity later with `link-bank-account`.

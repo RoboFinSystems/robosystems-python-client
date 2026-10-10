@@ -80,6 +80,8 @@ class EventBlockEnvelope:
               this one (e.g. depreciation entries point at the originating `asset_acquired` event).
           discharges_event_id (None | str | Unset): Settlement link — the obligation this event discharges (e.g.
               `cash_received` pointing at the originating `sale_invoiced`).
+          document_id (None | str | Unset): The stored document the event rests on (an invoice, a bill, a receipt, a
+              statement); read it with get-document.
   """
 
   id: str
@@ -108,6 +110,7 @@ class EventBlockEnvelope:
   replaces_event_id: None | str | Unset = UNSET
   obligated_by_event_id: None | str | Unset = UNSET
   discharges_event_id: None | str | Unset = UNSET
+  document_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -219,6 +222,12 @@ class EventBlockEnvelope:
     else:
       discharges_event_id = self.discharges_event_id
 
+    document_id: None | str | Unset
+    if isinstance(self.document_id, Unset):
+      document_id = UNSET
+    else:
+      document_id = self.document_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -265,6 +274,8 @@ class EventBlockEnvelope:
       field_dict["obligated_by_event_id"] = obligated_by_event_id
     if discharges_event_id is not UNSET:
       field_dict["discharges_event_id"] = discharges_event_id
+    if document_id is not UNSET:
+      field_dict["document_id"] = document_id
 
     return field_dict
 
@@ -442,6 +453,15 @@ class EventBlockEnvelope:
       d.pop("discharges_event_id", UNSET)
     )
 
+    def _parse_document_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    document_id = _parse_document_id(d.pop("document_id", UNSET))
+
     event_block_envelope = cls(
       id=id,
       event_type=event_type,
@@ -469,6 +489,7 @@ class EventBlockEnvelope:
       replaces_event_id=replaces_event_id,
       obligated_by_event_id=obligated_by_event_id,
       discharges_event_id=discharges_event_id,
+      document_id=document_id,
     )
 
     event_block_envelope.additional_properties = d
