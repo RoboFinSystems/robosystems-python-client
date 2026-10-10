@@ -630,6 +630,7 @@ query GetLedgerEventBlock($id: String!) {
     replacesEventId
     obligatedByEventId
     dischargesEventId
+    documentId
     createdAt
     createdBy
   }
@@ -1554,6 +1555,7 @@ query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status:
     replacesEventId
     obligatedByEventId
     dischargesEventId
+    documentId
     createdAt
     createdBy
   }
