@@ -8,25 +8,33 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="RefreshReconciliationsRequest")
+T = TypeVar("T", bound="ChangeCalendarStartRequest")
 
 
 @_attrs_define
-class RefreshReconciliationsRequest:
-  """Compare each reconciliation at a period end and record the result.
+class ChangeCalendarStartRequest:
+  """Move where an entity's calendar starts, before its first close.
 
-  Attributes:
-      period (str): Period to reconcile at its last day, as YYYY-MM.
-      entity_id (None | str | Unset): The entity whose books to reconcile, by id. Omit for the group parent. Each
-          entity's reconciliations, and the close they hold, are its own.
+  Earlier adds open months back to `first_open_period`, for history that
+  predates the start (a bank feed's backfill, a cutover moved earlier).
+  Later removes empty leading months. Refused once any month has closed,
+  and when moving later would drop months that hold entries or unposted
+  source lines.
+
+      Attributes:
+          first_open_period (str): YYYY-MM: the new first month of the calendar, open.
+          entity_id (None | str | Unset): The entity whose books this acts on, by id. Omit for the group parent — the
+              single-entity default.
+          note (None | str | Unset): Free-form note attached to the audit event
   """
 
-  period: str
+  first_open_period: str
   entity_id: None | str | Unset = UNSET
+  note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    period = self.period
+    first_open_period = self.first_open_period
 
     entity_id: None | str | Unset
     if isinstance(self.entity_id, Unset):
@@ -34,22 +42,30 @@ class RefreshReconciliationsRequest:
     else:
       entity_id = self.entity_id
 
+    note: None | str | Unset
+    if isinstance(self.note, Unset):
+      note = UNSET
+    else:
+      note = self.note
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "period": period,
+        "first_open_period": first_open_period,
       }
     )
     if entity_id is not UNSET:
       field_dict["entity_id"] = entity_id
+    if note is not UNSET:
+      field_dict["note"] = note
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    period = d.pop("period")
+    first_open_period = d.pop("first_open_period")
 
     def _parse_entity_id(data: object) -> None | str | Unset:
       if data is None:
@@ -60,13 +76,23 @@ class RefreshReconciliationsRequest:
 
     entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
-    refresh_reconciliations_request = cls(
-      period=period,
+    def _parse_note(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    note = _parse_note(d.pop("note", UNSET))
+
+    change_calendar_start_request = cls(
+      first_open_period=first_open_period,
       entity_id=entity_id,
+      note=note,
     )
 
-    refresh_reconciliations_request.additional_properties = d
-    return refresh_reconciliations_request
+    change_calendar_start_request.additional_properties = d
+    return change_calendar_start_request
 
   @property
   def additional_keys(self) -> list[str]:

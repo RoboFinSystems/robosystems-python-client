@@ -118,7 +118,8 @@ def sync_detailed(
   number in the account's normal direction, with the statement's ending date. The ledger's balance at
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
   the account's statement reconciliation for the period the statement ends in. Attach the statement as
-  evidence by passing the `document_id` of a document added with create-document. Writes no books. The
+  evidence by passing the `document_id` of its stored file (create-document-upload, then complete-
+  document-upload); recording it again with another document lapses a sign-off. Writes no books. The
   first statement recorded for an account creates its reconciliation, which does not hold the close:
   turn `required_for_close` on with set-reconciliation-policy to make every period's close wait for a
   statement on that account. Recording the same account and date again replaces the earlier balance;
@@ -171,7 +172,8 @@ def sync(
   number in the account's normal direction, with the statement's ending date. The ledger's balance at
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
   the account's statement reconciliation for the period the statement ends in. Attach the statement as
-  evidence by passing the `document_id` of a document added with create-document. Writes no books. The
+  evidence by passing the `document_id` of its stored file (create-document-upload, then complete-
+  document-upload); recording it again with another document lapses a sign-off. Writes no books. The
   first statement recorded for an account creates its reconciliation, which does not hold the close:
   turn `required_for_close` on with set-reconciliation-policy to make every period's close wait for a
   statement on that account. Recording the same account and date again replaces the earlier balance;
@@ -219,7 +221,8 @@ async def asyncio_detailed(
   number in the account's normal direction, with the statement's ending date. The ledger's balance at
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
   the account's statement reconciliation for the period the statement ends in. Attach the statement as
-  evidence by passing the `document_id` of a document added with create-document. Writes no books. The
+  evidence by passing the `document_id` of its stored file (create-document-upload, then complete-
+  document-upload); recording it again with another document lapses a sign-off. Writes no books. The
   first statement recorded for an account creates its reconciliation, which does not hold the close:
   turn `required_for_close` on with set-reconciliation-policy to make every period's close wait for a
   statement on that account. Recording the same account and date again replaces the earlier balance;
@@ -270,7 +273,8 @@ async def asyncio(
   number in the account's normal direction, with the statement's ending date. The ledger's balance at
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
   the account's statement reconciliation for the period the statement ends in. Attach the statement as
-  evidence by passing the `document_id` of a document added with create-document. Writes no books. The
+  evidence by passing the `document_id` of its stored file (create-document-upload, then complete-
+  document-upload); recording it again with another document lapses a sign-off. Writes no books. The
   first statement recorded for an account creates its reconciliation, which does not hold the close:
   turn `required_for_close` on with set-reconciliation-policy to make every period's close wait for a
   statement on that account. Recording the same account and date again replaces the earlier balance;

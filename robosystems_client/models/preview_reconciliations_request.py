@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -27,6 +27,8 @@ class PreviewReconciliationsRequest:
           PreviewReconciliationsRequestMethod.SOURCE_LEDGER.
       include_tied (bool | Unset): Also return the accounts that tie. Off by default: the differences are the work,
           and the counts cover the rest. Default: False.
+      entity_id (None | str | Unset): The entity whose books to compare, by id. Omit for the group parent.
+          `source_ledger` applies to the group parent only: QuickBooks keeps its books, not a subsidiary's.
   """
 
   period: str
@@ -34,6 +36,7 @@ class PreviewReconciliationsRequest:
     PreviewReconciliationsRequestMethod.SOURCE_LEDGER
   )
   include_tied: bool | Unset = False
+  entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -44,6 +47,12 @@ class PreviewReconciliationsRequest:
       method = self.method.value
 
     include_tied = self.include_tied
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
@@ -56,6 +65,8 @@ class PreviewReconciliationsRequest:
       field_dict["method"] = method
     if include_tied is not UNSET:
       field_dict["include_tied"] = include_tied
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
 
     return field_dict
 
@@ -73,10 +84,20 @@ class PreviewReconciliationsRequest:
 
     include_tied = d.pop("include_tied", UNSET)
 
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
     preview_reconciliations_request = cls(
       period=period,
       method=method,
       include_tied=include_tied,
+      entity_id=entity_id,
     )
 
     preview_reconciliations_request.additional_properties = d

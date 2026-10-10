@@ -22,6 +22,8 @@ class RecordStatementBalanceRequest:
       balance (float): The ending balance as the statement shows it, as a positive number in the account's normal
           direction: money in a bank account, or the amount owed on a loan or a card. Negative for the opposite, such as
           an overdrawn bank account.
+      entity_id (None | str | Unset): The entity whose books the account is in, by id. Omit for the group parent. The
+          account must be in that entity's chart.
       document_id (None | str | Unset): The statement itself, as a document already added with create-document. Kept
           on the record as evidence.
       note (None | str | Unset): Anything worth keeping with the recorded balance.
@@ -30,6 +32,7 @@ class RecordStatementBalanceRequest:
   element_id: str
   as_of: datetime.date
   balance: float
+  entity_id: None | str | Unset = UNSET
   document_id: None | str | Unset = UNSET
   note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -40,6 +43,12 @@ class RecordStatementBalanceRequest:
     as_of = self.as_of.isoformat()
 
     balance = self.balance
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     document_id: None | str | Unset
     if isinstance(self.document_id, Unset):
@@ -62,6 +71,8 @@ class RecordStatementBalanceRequest:
         "balance": balance,
       }
     )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if document_id is not UNSET:
       field_dict["document_id"] = document_id
     if note is not UNSET:
@@ -77,6 +88,15 @@ class RecordStatementBalanceRequest:
     as_of = datetime.date.fromisoformat(d.pop("as_of"))
 
     balance = d.pop("balance")
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_document_id(data: object) -> None | str | Unset:
       if data is None:
@@ -100,6 +120,7 @@ class RecordStatementBalanceRequest:
       element_id=element_id,
       as_of=as_of,
       balance=balance,
+      entity_id=entity_id,
       document_id=document_id,
       note=note,
     )

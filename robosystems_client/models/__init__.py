@@ -47,6 +47,8 @@ from .cancel_operation_response_canceloperation import (
 from .cancel_subscription_request import CancelSubscriptionRequest
 from .ceremony_options_response import CeremonyOptionsResponse
 from .ceremony_options_response_options import CeremonyOptionsResponseOptions
+from .change_calendar_start_request import ChangeCalendarStartRequest
+from .change_calendar_start_response import ChangeCalendarStartResponse
 from .change_reporting_style_request import ChangeReportingStyleRequest
 from .change_reporting_style_response import ChangeReportingStyleResponse
 from .change_tier_op import ChangeTierOp
@@ -71,6 +73,7 @@ from .close_period_response_stamped_statement_sets import (
 from .close_period_response_statement_rule_summary_type_0 import (
   ClosePeriodResponseStatementRuleSummaryType0,
 )
+from .complete_document_upload_op import CompleteDocumentUploadOp
 from .compute_forecast_request import ComputeForecastRequest
 from .compute_forecast_response import ComputeForecastResponse
 from .compute_metrics_request import ComputeMetricsRequest
@@ -94,6 +97,8 @@ from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
+from .create_document_upload_op import CreateDocumentUploadOp
+from .create_document_upload_op_content_type import CreateDocumentUploadOpContentType
 from .create_entity_request import CreateEntityRequest
 from .create_event_block_request import CreateEventBlockRequest
 from .create_event_block_request_event_action_type_0 import (
@@ -215,6 +220,9 @@ from .disclosures_response_disclosures_type_0_item import (
   DisclosuresResponseDisclosuresType0Item,
 )
 from .document_detail_response import DocumentDetailResponse
+from .document_evidence import DocumentEvidence
+from .document_file_download_response import DocumentFileDownloadResponse
+from .document_file_info import DocumentFileInfo
 from .document_limits import DocumentLimits
 from .document_list_item import DocumentListItem
 from .document_list_response import DocumentListResponse
@@ -473,6 +481,12 @@ from .operation_envelope_blocked_source_graph_response import (
 )
 from .operation_envelope_blocked_source_graph_response_status import (
   OperationEnvelopeBlockedSourceGraphResponseStatus,
+)
+from .operation_envelope_change_calendar_start_response import (
+  OperationEnvelopeChangeCalendarStartResponse,
+)
+from .operation_envelope_change_calendar_start_response_status import (
+  OperationEnvelopeChangeCalendarStartResponseStatus,
 )
 from .operation_envelope_change_reporting_style_response import (
   OperationEnvelopeChangeReportingStyleResponse,
@@ -1156,6 +1170,8 @@ __all__ = (
   "CancelSubscriptionRequest",
   "CeremonyOptionsResponse",
   "CeremonyOptionsResponseOptions",
+  "ChangeCalendarStartRequest",
+  "ChangeCalendarStartResponse",
   "ChangeReportingStyleRequest",
   "ChangeReportingStyleResponse",
   "ChangeTierOp",
@@ -1172,6 +1188,7 @@ __all__ = (
   "ClosePeriodResponseRuleSummaryType0",
   "ClosePeriodResponseStampedStatementSets",
   "ClosePeriodResponseStatementRuleSummaryType0",
+  "CompleteDocumentUploadOp",
   "ComputedMetricLite",
   "ComputeForecastRequest",
   "ComputeForecastResponse",
@@ -1195,6 +1212,8 @@ __all__ = (
   "CreateCheckoutRequestResourceConfig",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
+  "CreateDocumentUploadOp",
+  "CreateDocumentUploadOpContentType",
   "CreateEntityRequest",
   "CreateEventBlockRequest",
   "CreateEventBlockRequestEventActionType0",
@@ -1290,6 +1309,9 @@ __all__ = (
   "DisclosuresResponseBlocksType0Item",
   "DisclosuresResponseDisclosuresType0Item",
   "DocumentDetailResponse",
+  "DocumentEvidence",
+  "DocumentFileDownloadResponse",
+  "DocumentFileInfo",
   "DocumentLimits",
   "DocumentListItem",
   "DocumentListResponse",
@@ -1477,6 +1499,8 @@ __all__ = (
   "OperationEnvelopeBlockedSourceGraphResponseStatus",
   "OperationEnvelopeBlockSourceGraphResult",
   "OperationEnvelopeBlockSourceGraphResultStatus",
+  "OperationEnvelopeChangeCalendarStartResponse",
+  "OperationEnvelopeChangeCalendarStartResponseStatus",
   "OperationEnvelopeChangeReportingStyleResponse",
   "OperationEnvelopeChangeReportingStyleResponseStatus",
   "OperationEnvelopeClosePeriodResponse",

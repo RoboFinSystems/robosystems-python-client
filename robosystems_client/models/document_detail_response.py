@@ -1,12 +1,17 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+  from ..models.document_evidence import DocumentEvidence
+  from ..models.document_file_info import DocumentFileInfo
+
 
 T = TypeVar("T", bound="DocumentDetailResponse")
 
@@ -29,6 +34,11 @@ class DocumentDetailResponse:
       folder (None | str | Unset):
       external_id (None | str | Unset):
       source_provider (None | str | Unset):
+      file (DocumentFileInfo | None | Unset): The stored file, for a document that is one; its `content` is empty.
+          Download it from `GET /documents/{document_id}/file`.
+      evidence_for (list[DocumentEvidence] | Unset): The live events that name this document as their evidence (an
+          invoice, a bill, a statement balance), newest first, at most 50. While any are listed, the document cannot be
+          deleted.
   """
 
   id: str
@@ -44,9 +54,13 @@ class DocumentDetailResponse:
   folder: None | str | Unset = UNSET
   external_id: None | str | Unset = UNSET
   source_provider: None | str | Unset = UNSET
+  file: DocumentFileInfo | None | Unset = UNSET
+  evidence_for: list[DocumentEvidence] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.document_file_info import DocumentFileInfo
+
     id = self.id
 
     graph_id = self.graph_id
@@ -92,6 +106,21 @@ class DocumentDetailResponse:
     else:
       source_provider = self.source_provider
 
+    file: dict[str, Any] | None | Unset
+    if isinstance(self.file, Unset):
+      file = UNSET
+    elif isinstance(self.file, DocumentFileInfo):
+      file = self.file.to_dict()
+    else:
+      file = self.file
+
+    evidence_for: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.evidence_for, Unset):
+      evidence_for = []
+      for evidence_for_item_data in self.evidence_for:
+        evidence_for_item = evidence_for_item_data.to_dict()
+        evidence_for.append(evidence_for_item)
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -115,11 +144,18 @@ class DocumentDetailResponse:
       field_dict["external_id"] = external_id
     if source_provider is not UNSET:
       field_dict["source_provider"] = source_provider
+    if file is not UNSET:
+      field_dict["file"] = file
+    if evidence_for is not UNSET:
+      field_dict["evidence_for"] = evidence_for
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.document_evidence import DocumentEvidence
+    from ..models.document_file_info import DocumentFileInfo
+
     d = dict(src_dict)
     id = d.pop("id")
 
@@ -183,6 +219,32 @@ class DocumentDetailResponse:
 
     source_provider = _parse_source_provider(d.pop("source_provider", UNSET))
 
+    def _parse_file(data: object) -> DocumentFileInfo | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        file_type_0 = DocumentFileInfo.from_dict(data)
+
+        return file_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(DocumentFileInfo | None | Unset, data)
+
+    file = _parse_file(d.pop("file", UNSET))
+
+    _evidence_for = d.pop("evidence_for", UNSET)
+    evidence_for: list[DocumentEvidence] | Unset = UNSET
+    if _evidence_for is not UNSET:
+      evidence_for = []
+      for evidence_for_item_data in _evidence_for:
+        evidence_for_item = DocumentEvidence.from_dict(evidence_for_item_data)
+
+        evidence_for.append(evidence_for_item)
+
     document_detail_response = cls(
       id=id,
       graph_id=graph_id,
@@ -197,6 +259,8 @@ class DocumentDetailResponse:
       folder=folder,
       external_id=external_id,
       source_provider=source_provider,
+      file=file,
+      evidence_for=evidence_for,
     )
 
     document_detail_response.additional_properties = d

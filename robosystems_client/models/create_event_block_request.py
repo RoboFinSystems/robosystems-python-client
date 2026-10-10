@@ -76,6 +76,9 @@ class CreateEventBlockRequest:
           this one (e.g. depreciation entries point at the asset_acquired event).
       discharges_event_id (None | str | Unset): Settlement link: the obligation this event discharges (e.g.
           cash_received pointing at the originating sale_invoiced).
+      document_id (None | str | Unset): The stored document this event rests on, as evidence: the invoice PDF, the
+          vendor bill, the receipt photo (upload it with create-document-upload and complete-document-upload). Must be a
+          document on this graph. While the event is live, the document cannot be deleted.
       apply_handlers (bool | Unset): When True, resolves the event_type to a handler (Python registry first, then DSL)
           and fires it atomically with event creation. Default: False.
   """
@@ -102,6 +105,7 @@ class CreateEventBlockRequest:
   dimension_ids: list[str] | Unset = UNSET
   obligated_by_event_id: None | str | Unset = UNSET
   discharges_event_id: None | str | Unset = UNSET
+  document_id: None | str | Unset = UNSET
   apply_handlers: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -206,6 +210,12 @@ class CreateEventBlockRequest:
     else:
       discharges_event_id = self.discharges_event_id
 
+    document_id: None | str | Unset
+    if isinstance(self.document_id, Unset):
+      document_id = UNSET
+    else:
+      document_id = self.document_id
+
     apply_handlers = self.apply_handlers
 
     field_dict: dict[str, Any] = {}
@@ -250,6 +260,8 @@ class CreateEventBlockRequest:
       field_dict["obligated_by_event_id"] = obligated_by_event_id
     if discharges_event_id is not UNSET:
       field_dict["discharges_event_id"] = discharges_event_id
+    if document_id is not UNSET:
+      field_dict["document_id"] = document_id
     if apply_handlers is not UNSET:
       field_dict["apply_handlers"] = apply_handlers
 
@@ -430,6 +442,15 @@ class CreateEventBlockRequest:
       d.pop("discharges_event_id", UNSET)
     )
 
+    def _parse_document_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    document_id = _parse_document_id(d.pop("document_id", UNSET))
+
     apply_handlers = d.pop("apply_handlers", UNSET)
 
     create_event_block_request = cls(
@@ -453,6 +474,7 @@ class CreateEventBlockRequest:
       dimension_ids=dimension_ids,
       obligated_by_event_id=obligated_by_event_id,
       discharges_event_id=discharges_event_id,
+      document_id=document_id,
       apply_handlers=apply_handlers,
     )
 

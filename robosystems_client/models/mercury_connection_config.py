@@ -26,8 +26,8 @@ class MercuryConnectionConfig:
   hosted product refuses it.
 
       Attributes:
-          since_date (datetime.date | None | Unset): First day of the backfill (ISO 8601). Defaults to 1 January of last
-              year. Incremental syncs never look back before it.
+          since_date (datetime.date | None | Unset): First day of the backfill (ISO 8601). Defaults to two years back.
+              Incremental syncs never look back before it, and lines dated in a closed period are never captured.
           include_treasury (bool | Unset): Capture treasury-account activity alongside checking/savings. Default: True.
           api_key (None | str | Unset): A personal read-only Mercury API token, for deployments that allow the api_key
               credential mode. Omit to connect over OAuth.

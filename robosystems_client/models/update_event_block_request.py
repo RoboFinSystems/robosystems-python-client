@@ -54,6 +54,8 @@ class UpdateEventBlockRequest:
               reclassifying after the fact.
           obligated_by_event_id (None | str | Unset): Set/update the forward-materialization link.
           discharges_event_id (None | str | Unset): Set/update the settlement link.
+          document_id (None | str | Unset): Set or replace the stored document the event rests on; an empty string
+              detaches it. Must be a document on this graph. Unset = unchanged.
   """
 
   event_id: str
@@ -65,6 +67,7 @@ class UpdateEventBlockRequest:
   event_action: None | Unset | UpdateEventBlockRequestEventActionType0 = UNSET
   obligated_by_event_id: None | str | Unset = UNSET
   discharges_event_id: None | str | Unset = UNSET
+  document_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -122,6 +125,12 @@ class UpdateEventBlockRequest:
     else:
       discharges_event_id = self.discharges_event_id
 
+    document_id: None | str | Unset
+    if isinstance(self.document_id, Unset):
+      document_id = UNSET
+    else:
+      document_id = self.document_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -145,6 +154,8 @@ class UpdateEventBlockRequest:
       field_dict["obligated_by_event_id"] = obligated_by_event_id
     if discharges_event_id is not UNSET:
       field_dict["discharges_event_id"] = discharges_event_id
+    if document_id is not UNSET:
+      field_dict["document_id"] = document_id
 
     return field_dict
 
@@ -259,6 +270,15 @@ class UpdateEventBlockRequest:
       d.pop("discharges_event_id", UNSET)
     )
 
+    def _parse_document_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    document_id = _parse_document_id(d.pop("document_id", UNSET))
+
     update_event_block_request = cls(
       event_id=event_id,
       transition_to=transition_to,
@@ -269,6 +289,7 @@ class UpdateEventBlockRequest:
       event_action=event_action,
       obligated_by_event_id=obligated_by_event_id,
       discharges_event_id=discharges_event_id,
+      document_id=document_id,
     )
 
     update_event_block_request.additional_properties = d
