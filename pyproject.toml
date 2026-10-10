@@ -1,6 +1,6 @@
 [project]
 name = "robosystems-client"
-version = "2.11.1"
+version = "2.11.2"
 description = "Python client library for the RoboSystems financial intelligence platform"
 readme = "README.md"
 requires-python = ">=3.11"
