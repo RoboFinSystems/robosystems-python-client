@@ -24,6 +24,7 @@ class ListLedgerReconciliationsReconciliationsReconciliations(BaseModel):
   element_id: Optional[str] = Field(alias="elementId")
   required_for_close: bool = Field(alias="requiredForClose")
   materiality: float
+  statement_cycle: Optional[str] = Field(alias="statementCycle")
   period: str
   as_of: str = Field(alias="asOf")
   status: str
@@ -34,6 +35,9 @@ class ListLedgerReconciliationsReconciliationsReconciliations(BaseModel):
   independent_balance: Optional[float] = Field(alias="independentBalance")
   balance_as_of: Optional[str] = Field(alias="balanceAsOf")
   components: list["ListLedgerReconciliationsReconciliationsReconciliationsComponents"]
+  roll_forward: Optional[
+    "ListLedgerReconciliationsReconciliationsReconciliationsRollForward"
+  ] = Field(alias="rollForward")
   source: Optional[str]
   compared_at: Optional[str] = Field(alias="comparedAt")
   fact_set_id: Optional[str] = Field(alias="factSetId")
@@ -52,10 +56,25 @@ class ListLedgerReconciliationsReconciliationsReconciliations(BaseModel):
 class ListLedgerReconciliationsReconciliationsReconciliationsComponents(BaseModel):
   name: str
   amount: float
+  kind: Optional[str]
+  posting_date: Optional[str] = Field(alias="postingDate")
+  entry_id: Optional[str] = Field(alias="entryId")
   structure_id: Optional[str] = Field(alias="structureId")
   event_id: Optional[str] = Field(alias="eventId")
   document_id: Optional[str] = Field(alias="documentId")
   note: Optional[str]
+
+
+class ListLedgerReconciliationsReconciliationsReconciliationsRollForward(BaseModel):
+  statement_as_of: str = Field(alias="statementAsOf")
+  through: str
+  bank_lines: int = Field(alias="bankLines")
+  bank_activity: float = Field(alias="bankActivity")
+  bank_balance: float = Field(alias="bankBalance")
+  ledger_balance: float = Field(alias="ledgerBalance")
+  outstanding: float
+  feed_balance: Optional[float] = Field(alias="feedBalance")
+  feed_balance_read_on: Optional[str] = Field(alias="feedBalanceReadOn")
 
 
 class ListLedgerReconciliationsReconciliationsReconciliationsDifferences(BaseModel):
@@ -72,6 +91,9 @@ class ListLedgerReconciliationsReconciliationsReconciliationsDifferences(BaseMod
   components: list[
     "ListLedgerReconciliationsReconciliationsReconciliationsDifferencesComponents"
   ]
+  roll_forward: Optional[
+    "ListLedgerReconciliationsReconciliationsReconciliationsDifferencesRollForward"
+  ] = Field(alias="rollForward")
 
 
 class ListLedgerReconciliationsReconciliationsReconciliationsDifferencesComponents(
@@ -79,10 +101,27 @@ class ListLedgerReconciliationsReconciliationsReconciliationsDifferencesComponen
 ):
   name: str
   amount: float
+  kind: Optional[str]
+  posting_date: Optional[str] = Field(alias="postingDate")
+  entry_id: Optional[str] = Field(alias="entryId")
   structure_id: Optional[str] = Field(alias="structureId")
   event_id: Optional[str] = Field(alias="eventId")
   document_id: Optional[str] = Field(alias="documentId")
   note: Optional[str]
+
+
+class ListLedgerReconciliationsReconciliationsReconciliationsDifferencesRollForward(
+  BaseModel
+):
+  statement_as_of: str = Field(alias="statementAsOf")
+  through: str
+  bank_lines: int = Field(alias="bankLines")
+  bank_activity: float = Field(alias="bankActivity")
+  bank_balance: float = Field(alias="bankBalance")
+  ledger_balance: float = Field(alias="ledgerBalance")
+  outstanding: float
+  feed_balance: Optional[float] = Field(alias="feedBalance")
+  feed_balance_read_on: Optional[str] = Field(alias="feedBalanceReadOn")
 
 
 ListLedgerReconciliations.model_rebuild()

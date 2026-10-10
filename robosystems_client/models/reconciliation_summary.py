@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.reconciliation_component import ReconciliationComponent
+  from ..models.reconciliation_roll_forward import ReconciliationRollForward
   from ..models.reconciliation_row import ReconciliationRow
 
 
@@ -39,6 +40,8 @@ class ReconciliationSummary:
       review_required (bool): Whether the close also waits for a sign-off.
       separate_reviewer (bool): Whether the reviewer must be someone other than the person who ran the comparison.
       element_id (None | str | Unset): The account reconciled; null for a ledger-scope block.
+      statement_cycle (None | str | Unset): `statement` blocks only: how often the account's statement is issued,
+          `monthly`, `quarterly` or `annual`.
       unreconciled_difference (float | None | Unset): What is left unexplained at the last comparison; null when the
           period has not been compared. For a ledger-scope block, the sum of every account's absolute difference. For an
           account-scope block, the ledger balance minus the independent one.
@@ -49,9 +52,12 @@ class ReconciliationSummary:
       independent_balance (float | None | Unset): Account-scope only: what the independent source said at the last
           comparison, debit-positive.
       balance_as_of (datetime.date | None | Unset): Account-scope only: the date the two balances are stated at. The
-          period's last day, unless a statement ended earlier in the period.
+          period's last day, unless the statement covering it ended earlier.
       components (list[ReconciliationComponent] | Unset): Account-scope only: what makes up the independent balance.
-          One entry per schedule for `schedule_register`; the recorded statement for `statement`.
+          One entry per schedule for `schedule_register`; the recorded statement for `statement`, then each outstanding
+          line.
+      roll_forward (None | ReconciliationRollForward | Unset): `statement` on a bank-fed account whose statement ends
+          before the period's last day: the statement carried to it by the feed's lines.
       source (None | str | Unset): The system the independent side was read from.
       compared_at (datetime.datetime | None | Unset): When the two sides were last compared.
       fact_set_id (None | str | Unset): The FactSet holding the period's comparison.
@@ -79,6 +85,7 @@ class ReconciliationSummary:
   review_required: bool
   separate_reviewer: bool
   element_id: None | str | Unset = UNSET
+  statement_cycle: None | str | Unset = UNSET
   unreconciled_difference: float | None | Unset = UNSET
   accounts_compared: int | None | Unset = UNSET
   accounts_different: int | None | Unset = UNSET
@@ -86,6 +93,7 @@ class ReconciliationSummary:
   independent_balance: float | None | Unset = UNSET
   balance_as_of: datetime.date | None | Unset = UNSET
   components: list[ReconciliationComponent] | Unset = UNSET
+  roll_forward: None | ReconciliationRollForward | Unset = UNSET
   source: None | str | Unset = UNSET
   compared_at: datetime.datetime | None | Unset = UNSET
   fact_set_id: None | str | Unset = UNSET
@@ -98,6 +106,8 @@ class ReconciliationSummary:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.reconciliation_roll_forward import ReconciliationRollForward
+
     structure_id = self.structure_id
 
     name = self.name
@@ -125,6 +135,12 @@ class ReconciliationSummary:
       element_id = UNSET
     else:
       element_id = self.element_id
+
+    statement_cycle: None | str | Unset
+    if isinstance(self.statement_cycle, Unset):
+      statement_cycle = UNSET
+    else:
+      statement_cycle = self.statement_cycle
 
     unreconciled_difference: float | None | Unset
     if isinstance(self.unreconciled_difference, Unset):
@@ -170,6 +186,14 @@ class ReconciliationSummary:
       for components_item_data in self.components:
         components_item = components_item_data.to_dict()
         components.append(components_item)
+
+    roll_forward: dict[str, Any] | None | Unset
+    if isinstance(self.roll_forward, Unset):
+      roll_forward = UNSET
+    elif isinstance(self.roll_forward, ReconciliationRollForward):
+      roll_forward = self.roll_forward.to_dict()
+    else:
+      roll_forward = self.roll_forward
 
     source: None | str | Unset
     if isinstance(self.source, Unset):
@@ -249,6 +273,8 @@ class ReconciliationSummary:
     )
     if element_id is not UNSET:
       field_dict["element_id"] = element_id
+    if statement_cycle is not UNSET:
+      field_dict["statement_cycle"] = statement_cycle
     if unreconciled_difference is not UNSET:
       field_dict["unreconciled_difference"] = unreconciled_difference
     if accounts_compared is not UNSET:
@@ -263,6 +289,8 @@ class ReconciliationSummary:
       field_dict["balance_as_of"] = balance_as_of
     if components is not UNSET:
       field_dict["components"] = components
+    if roll_forward is not UNSET:
+      field_dict["roll_forward"] = roll_forward
     if source is not UNSET:
       field_dict["source"] = source
     if compared_at is not UNSET:
@@ -287,6 +315,7 @@ class ReconciliationSummary:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.reconciliation_component import ReconciliationComponent
+    from ..models.reconciliation_roll_forward import ReconciliationRollForward
     from ..models.reconciliation_row import ReconciliationRow
 
     d = dict(src_dict)
@@ -320,6 +349,15 @@ class ReconciliationSummary:
       return cast(None | str | Unset, data)
 
     element_id = _parse_element_id(d.pop("element_id", UNSET))
+
+    def _parse_statement_cycle(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    statement_cycle = _parse_statement_cycle(d.pop("statement_cycle", UNSET))
 
     def _parse_unreconciled_difference(data: object) -> float | None | Unset:
       if data is None:
@@ -395,6 +433,23 @@ class ReconciliationSummary:
         components_item = ReconciliationComponent.from_dict(components_item_data)
 
         components.append(components_item)
+
+    def _parse_roll_forward(data: object) -> None | ReconciliationRollForward | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        roll_forward_type_0 = ReconciliationRollForward.from_dict(data)
+
+        return roll_forward_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | ReconciliationRollForward | Unset, data)
+
+    roll_forward = _parse_roll_forward(d.pop("roll_forward", UNSET))
 
     def _parse_source(data: object) -> None | str | Unset:
       if data is None:
@@ -506,6 +561,7 @@ class ReconciliationSummary:
       review_required=review_required,
       separate_reviewer=separate_reviewer,
       element_id=element_id,
+      statement_cycle=statement_cycle,
       unreconciled_difference=unreconciled_difference,
       accounts_compared=accounts_compared,
       accounts_different=accounts_different,
@@ -513,6 +569,7 @@ class ReconciliationSummary:
       independent_balance=independent_balance,
       balance_as_of=balance_as_of,
       components=components,
+      roll_forward=roll_forward,
       source=source,
       compared_at=compared_at,
       fact_set_id=fact_set_id,

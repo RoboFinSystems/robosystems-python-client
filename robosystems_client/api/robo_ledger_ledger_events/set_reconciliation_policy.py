@@ -120,8 +120,11 @@ def sync_detailed(
   whether the close also waits for a sign-off (`review_required`); and whether the reviewer must be
   someone other than the person who ran the comparison (`separate_reviewer`, which can only be turned
   on while the graph has at least two members who can write; if it later has one, turn it off or add a
-  member). Omitted fields keep their value. The next refresh-reconciliations uses the new materiality;
-  comparisons already recorded are not re-judged.
+  member). For a statement reconciliation, `statement_cycle` says how often the statement is issued
+  (monthly, quarterly or annual): a period is covered by the latest statement ending within the cycle
+  that ends with it, so a quarterly statement still covers the months between statements. Omitted
+  fields keep their value. The next refresh-reconciliations uses the new materiality; comparisons
+  already recorded are not re-judged.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -167,8 +170,11 @@ def sync(
   whether the close also waits for a sign-off (`review_required`); and whether the reviewer must be
   someone other than the person who ran the comparison (`separate_reviewer`, which can only be turned
   on while the graph has at least two members who can write; if it later has one, turn it off or add a
-  member). Omitted fields keep their value. The next refresh-reconciliations uses the new materiality;
-  comparisons already recorded are not re-judged.
+  member). For a statement reconciliation, `statement_cycle` says how often the statement is issued
+  (monthly, quarterly or annual): a period is covered by the latest statement ending within the cycle
+  that ends with it, so a quarterly statement still covers the months between statements. Omitted
+  fields keep their value. The next refresh-reconciliations uses the new materiality; comparisons
+  already recorded are not re-judged.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -209,8 +215,11 @@ async def asyncio_detailed(
   whether the close also waits for a sign-off (`review_required`); and whether the reviewer must be
   someone other than the person who ran the comparison (`separate_reviewer`, which can only be turned
   on while the graph has at least two members who can write; if it later has one, turn it off or add a
-  member). Omitted fields keep their value. The next refresh-reconciliations uses the new materiality;
-  comparisons already recorded are not re-judged.
+  member). For a statement reconciliation, `statement_cycle` says how often the statement is issued
+  (monthly, quarterly or annual): a period is covered by the latest statement ending within the cycle
+  that ends with it, so a quarterly statement still covers the months between statements. Omitted
+  fields keep their value. The next refresh-reconciliations uses the new materiality; comparisons
+  already recorded are not re-judged.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -254,8 +263,11 @@ async def asyncio(
   whether the close also waits for a sign-off (`review_required`); and whether the reviewer must be
   someone other than the person who ran the comparison (`separate_reviewer`, which can only be turned
   on while the graph has at least two members who can write; if it later has one, turn it off or add a
-  member). Omitted fields keep their value. The next refresh-reconciliations uses the new materiality;
-  comparisons already recorded are not re-judged.
+  member). For a statement reconciliation, `statement_cycle` says how often the statement is issued
+  (monthly, quarterly or annual): a period is covered by the latest statement ending within the cycle
+  that ends with it, so a quarterly statement still covers the months between statements. Omitted
+  fields keep their value. The next refresh-reconciliations uses the new materiality; comparisons
+  already recorded are not re-judged.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

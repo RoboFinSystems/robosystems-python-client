@@ -1666,6 +1666,7 @@ query ListLedgerReconciliations($period: String!, $entityId: String) {
       elementId
       requiredForClose
       materiality
+      statementCycle
       period
       asOf
       status
@@ -1678,10 +1679,24 @@ query ListLedgerReconciliations($period: String!, $entityId: String) {
       components {
         name
         amount
+        kind
+        postingDate
+        entryId
         structureId
         eventId
         documentId
         note
+      }
+      rollForward {
+        statementAsOf
+        through
+        bankLines
+        bankActivity
+        bankBalance
+        ledgerBalance
+        outstanding
+        feedBalance
+        feedBalanceReadOn
       }
       source
       comparedAt
@@ -1707,10 +1722,24 @@ query ListLedgerReconciliations($period: String!, $entityId: String) {
         components {
           name
           amount
+          kind
+          postingDate
+          entryId
           structureId
           eventId
           documentId
           note
+        }
+        rollForward {
+          statementAsOf
+          through
+          bankLines
+          bankActivity
+          bankBalance
+          ledgerBalance
+          outstanding
+          feedBalance
+          feedBalanceReadOn
         }
       }
     }

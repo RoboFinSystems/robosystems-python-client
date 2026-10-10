@@ -118,15 +118,15 @@ def sync_detailed(
    Run every reconciliation that applies at a period end and record each result on its block. A ledger
   synced from QuickBooks is compared with QuickBooks' own trial balance, on one block for the whole
   ledger. Each asset account a schedule carries a balance on is compared with what its schedules say
-  it holds, on a block of its own. Each account with a statement balance recorded in the period
-  (record-statement-balance) is compared with that balance. A block reconciles for the period when its
-  difference is within its materiality. Running it again replaces the period's comparison, so the
-  answer is always as of the last run. A block is created the first time its check applies, and from
-  then on the period's close waits on it until set-reconciliation-policy releases it. The one
-  exception is an account block whose first comparison does not tie: it is created without holding the
-  close, so a difference found on first contact is reported and becomes a close requirement only when
-  you turn it on. Returns every reconciliation's standing for the period. Use preview-reconciliations
-  to see a comparison without recording it.
+  it holds, on a block of its own. Each account with a statement covering the period (record-
+  statement-balance; the latest within its statement cycle) is compared with that balance. A block
+  reconciles for the period when its difference is within its materiality. Running it again replaces
+  the period's comparison, so the answer is always as of the last run. A block is created the first
+  time its check applies, and from then on the period's close waits on it until set-reconciliation-
+  policy releases it. The one exception is an account block whose first comparison does not tie: it is
+  created without holding the close, so a difference found on first contact is reported and becomes a
+  close requirement only when you turn it on. Returns every reconciliation's standing for the period.
+  Use preview-reconciliations to see a comparison without recording it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -170,15 +170,15 @@ def sync(
    Run every reconciliation that applies at a period end and record each result on its block. A ledger
   synced from QuickBooks is compared with QuickBooks' own trial balance, on one block for the whole
   ledger. Each asset account a schedule carries a balance on is compared with what its schedules say
-  it holds, on a block of its own. Each account with a statement balance recorded in the period
-  (record-statement-balance) is compared with that balance. A block reconciles for the period when its
-  difference is within its materiality. Running it again replaces the period's comparison, so the
-  answer is always as of the last run. A block is created the first time its check applies, and from
-  then on the period's close waits on it until set-reconciliation-policy releases it. The one
-  exception is an account block whose first comparison does not tie: it is created without holding the
-  close, so a difference found on first contact is reported and becomes a close requirement only when
-  you turn it on. Returns every reconciliation's standing for the period. Use preview-reconciliations
-  to see a comparison without recording it.
+  it holds, on a block of its own. Each account with a statement covering the period (record-
+  statement-balance; the latest within its statement cycle) is compared with that balance. A block
+  reconciles for the period when its difference is within its materiality. Running it again replaces
+  the period's comparison, so the answer is always as of the last run. A block is created the first
+  time its check applies, and from then on the period's close waits on it until set-reconciliation-
+  policy releases it. The one exception is an account block whose first comparison does not tie: it is
+  created without holding the close, so a difference found on first contact is reported and becomes a
+  close requirement only when you turn it on. Returns every reconciliation's standing for the period.
+  Use preview-reconciliations to see a comparison without recording it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -217,15 +217,15 @@ async def asyncio_detailed(
    Run every reconciliation that applies at a period end and record each result on its block. A ledger
   synced from QuickBooks is compared with QuickBooks' own trial balance, on one block for the whole
   ledger. Each asset account a schedule carries a balance on is compared with what its schedules say
-  it holds, on a block of its own. Each account with a statement balance recorded in the period
-  (record-statement-balance) is compared with that balance. A block reconciles for the period when its
-  difference is within its materiality. Running it again replaces the period's comparison, so the
-  answer is always as of the last run. A block is created the first time its check applies, and from
-  then on the period's close waits on it until set-reconciliation-policy releases it. The one
-  exception is an account block whose first comparison does not tie: it is created without holding the
-  close, so a difference found on first contact is reported and becomes a close requirement only when
-  you turn it on. Returns every reconciliation's standing for the period. Use preview-reconciliations
-  to see a comparison without recording it.
+  it holds, on a block of its own. Each account with a statement covering the period (record-
+  statement-balance; the latest within its statement cycle) is compared with that balance. A block
+  reconciles for the period when its difference is within its materiality. Running it again replaces
+  the period's comparison, so the answer is always as of the last run. A block is created the first
+  time its check applies, and from then on the period's close waits on it until set-reconciliation-
+  policy releases it. The one exception is an account block whose first comparison does not tie: it is
+  created without holding the close, so a difference found on first contact is reported and becomes a
+  close requirement only when you turn it on. Returns every reconciliation's standing for the period.
+  Use preview-reconciliations to see a comparison without recording it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -267,15 +267,15 @@ async def asyncio(
    Run every reconciliation that applies at a period end and record each result on its block. A ledger
   synced from QuickBooks is compared with QuickBooks' own trial balance, on one block for the whole
   ledger. Each asset account a schedule carries a balance on is compared with what its schedules say
-  it holds, on a block of its own. Each account with a statement balance recorded in the period
-  (record-statement-balance) is compared with that balance. A block reconciles for the period when its
-  difference is within its materiality. Running it again replaces the period's comparison, so the
-  answer is always as of the last run. A block is created the first time its check applies, and from
-  then on the period's close waits on it until set-reconciliation-policy releases it. The one
-  exception is an account block whose first comparison does not tie: it is created without holding the
-  close, so a difference found on first contact is reported and becomes a close requirement only when
-  you turn it on. Returns every reconciliation's standing for the period. Use preview-reconciliations
-  to see a comparison without recording it.
+  it holds, on a block of its own. Each account with a statement covering the period (record-
+  statement-balance; the latest within its statement cycle) is compared with that balance. A block
+  reconciles for the period when its difference is within its materiality. Running it again replaces
+  the period's comparison, so the answer is always as of the last run. A block is created the first
+  time its check applies, and from then on the period's close waits on it until set-reconciliation-
+  policy releases it. The one exception is an account block whose first comparison does not tie: it is
+  created without holding the close, so a difference found on first contact is reported and becomes a
+  close requirement only when you turn it on. Returns every reconciliation's standing for the period.
+  Use preview-reconciliations to see a comparison without recording it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

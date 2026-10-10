@@ -2882,6 +2882,9 @@ class TestLedgerReconciliations:
     component = {
       "name": "Statement ending 2026-08-31",
       "amount": 4800.0,
+      "kind": "statement",
+      "postingDate": None,
+      "entryId": None,
       "structureId": None,
       "eventId": "evt_1",
       "documentId": None,
@@ -2901,6 +2904,7 @@ class TestLedgerReconciliations:
             "elementId": "elem_loan",
             "requiredForClose": False,
             "materiality": 0.0,
+            "statementCycle": "monthly",
             "period": "2026-08",
             "asOf": "2026-08-31",
             "status": "unreconciled",
@@ -2911,6 +2915,7 @@ class TestLedgerReconciliations:
             "independentBalance": 4800.0,
             "balanceAsOf": "2026-08-31",
             "components": [component],
+            "rollForward": None,
             "source": "statement",
             "comparedAt": "2026-09-02T08:00:00Z",
             "factSetId": "fs_1",
@@ -2934,6 +2939,7 @@ class TestLedgerReconciliations:
                 "status": "different",
                 "asOf": "2026-08-31",
                 "components": [component],
+                "rollForward": None,
               }
             ],
           }
@@ -2948,6 +2954,7 @@ class TestLedgerReconciliations:
     (rec,) = result.reconciliations
     assert (rec.status, rec.unreconciled_difference) == ("unreconciled", 200.0)
     assert rec.components[0].event_id == "evt_1"
+    assert (rec.statement_cycle, rec.roll_forward) == ("monthly", None)
     assert rec.differences[0].account_name == "Equipment Loan"
     assert mock_execute.call_args.args[2] == {"period": "2026-08"}
 
@@ -2958,6 +2965,99 @@ class TestLedgerReconciliations:
     mock_execute.return_value = {"reconciliations": None}
     client = LedgerClient(mock_config)
     assert client.list_reconciliations(graph_id, "2026-08") is None
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_reconciliations_carries_a_bank_statements_parts(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {
+      "reconciliations": {
+        "period": "2026-09",
+        "asOf": "2026-09-30",
+        "notes": [],
+        "reconciliations": [
+          {
+            "structureId": "struct_cash",
+            "name": "Checking (statement)",
+            "scope": "account",
+            "method": "statement",
+            "elementId": "elem_cash",
+            "requiredForClose": True,
+            "materiality": 0.0,
+            "statementCycle": "monthly",
+            "period": "2026-09",
+            "asOf": "2026-09-30",
+            "status": "reconciled",
+            "unreconciledDifference": 0.0,
+            "accountsCompared": None,
+            "accountsDifferent": None,
+            "ledgerBalance": 1450.0,
+            "independentBalance": 1450.0,
+            "balanceAsOf": "2026-09-05",
+            "components": [
+              {
+                "name": "Statement ending 2026-09-05",
+                "amount": 1500.0,
+                "kind": "statement",
+                "postingDate": None,
+                "entryId": None,
+                "structureId": None,
+                "eventId": "evt_1",
+                "documentId": "doc_1",
+                "note": None,
+              },
+              {
+                "name": "Vendor payment",
+                "amount": -50.0,
+                "kind": "outstanding",
+                "postingDate": "2026-09-04",
+                "entryId": "je_1",
+                "structureId": None,
+                "eventId": None,
+                "documentId": None,
+                "note": None,
+              },
+            ],
+            "rollForward": {
+              "statementAsOf": "2026-09-05",
+              "through": "2026-09-30",
+              "bankLines": 1,
+              "bankActivity": -200.0,
+              "bankBalance": 1300.0,
+              "ledgerBalance": 1250.0,
+              "outstanding": -50.0,
+              "feedBalance": 1300.0,
+              "feedBalanceReadOn": "2026-10-03",
+            },
+            "source": "statement",
+            "comparedAt": "2026-10-10T08:00:00Z",
+            "factSetId": "fs_1",
+            "comparedBy": "usr_1",
+            "comparedVia": "operation",
+            "reviewRequired": False,
+            "separateReviewer": False,
+            "reviewedBy": None,
+            "reviewedAt": None,
+            "selfReviewed": None,
+            "differences": [],
+          }
+        ],
+      }
+    }
+    client = LedgerClient(mock_config)
+
+    result = client.list_reconciliations(graph_id, "2026-09")
+
+    assert result is not None
+    (rec,) = result.reconciliations
+    outstanding = rec.components[1]
+    assert (outstanding.kind, outstanding.entry_id) == ("outstanding", "je_1")
+    assert str(outstanding.posting_date) == "2026-09-04"
+    assert rec.roll_forward is not None
+    assert (rec.roll_forward.bank_balance, rec.roll_forward.outstanding) == (
+      1300.0,
+      -50.0,
+    )
 
   @patch("robosystems_client.clients.ledger_client.op_preview_reconciliations")
   def test_preview_reconciliations_names_the_check(
@@ -3068,6 +3168,27 @@ class TestLedgerReconciliations:
     assert mock_op.call_args.kwargs["body"].to_dict() == {
       "structure_id": "struct_loan",
       "required_for_close": True,
+    }
+
+  @patch("robosystems_client.clients.ledger_client.op_set_reconciliation_policy")
+  def test_set_reconciliation_policy_sets_a_statement_cycle(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "set-reconciliation-policy",
+        {"structure_id": "struct_cash", "statement_cycle": "quarterly"},
+      )
+    )
+    client = LedgerClient(mock_config)
+
+    client.set_reconciliation_policy(
+      graph_id, "struct_cash", statement_cycle="quarterly"
+    )
+
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "structure_id": "struct_cash",
+      "statement_cycle": "quarterly",
     }
 
   @patch("robosystems_client.clients.ledger_client.op_set_reconciliation_policy")

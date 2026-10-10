@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.reconciliation_component import ReconciliationComponent
+  from ..models.reconciliation_roll_forward import ReconciliationRollForward
 
 
 T = TypeVar("T", bound="ReconciliationRow")
@@ -27,7 +28,8 @@ class ReconciliationRow:
           ledger_balance (float): What the ledger holds. For `source_ledger`, landed entries only. For
               `schedule_register`, the balance as the period's close will leave it: landed entries, drafts awaiting the close,
               and schedule entries not yet drafted.
-          independent_balance (float): What the independent source says.
+          independent_balance (float): What the independent source says. For a `statement` on a bank-fed account, the
+              statement balance adjusted by its outstanding lines.
           difference (float): Ledger minus independent.
           status (str): `tied`: both sides agree to the cent. `different`: both know the account and disagree.
               `not_in_ledger`: the source reports an account the ledger has none for. `not_in_source`: the ledger holds a
@@ -41,7 +43,10 @@ class ReconciliationRow:
           as_of (datetime.date | None | Unset): The date both balances are stated at, when it is not the period's last
               day: a statement that ends mid-period is compared with the ledger at the statement's own date.
           components (list[ReconciliationComponent] | Unset): Account-scope methods only: what makes up the independent
-              balance. One entry per schedule for `schedule_register`; the recorded statement for `statement`.
+              balance. One entry per schedule for `schedule_register`; the recorded statement for `statement`, then each
+              outstanding line.
+          roll_forward (None | ReconciliationRollForward | Unset): `statement` on a bank-fed account whose statement ends
+              before the period's last day: the statement carried to it by the feed's lines.
   """
 
   account_name: str
@@ -55,9 +60,12 @@ class ReconciliationRow:
   statement: None | str | Unset = UNSET
   as_of: datetime.date | None | Unset = UNSET
   components: list[ReconciliationComponent] | Unset = UNSET
+  roll_forward: None | ReconciliationRollForward | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.reconciliation_roll_forward import ReconciliationRollForward
+
     account_name = self.account_name
 
     ledger_balance = self.ledger_balance
@@ -107,6 +115,14 @@ class ReconciliationRow:
         components_item = components_item_data.to_dict()
         components.append(components_item)
 
+    roll_forward: dict[str, Any] | None | Unset
+    if isinstance(self.roll_forward, Unset):
+      roll_forward = UNSET
+    elif isinstance(self.roll_forward, ReconciliationRollForward):
+      roll_forward = self.roll_forward.to_dict()
+    else:
+      roll_forward = self.roll_forward
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -130,12 +146,15 @@ class ReconciliationRow:
       field_dict["as_of"] = as_of
     if components is not UNSET:
       field_dict["components"] = components
+    if roll_forward is not UNSET:
+      field_dict["roll_forward"] = roll_forward
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.reconciliation_component import ReconciliationComponent
+    from ..models.reconciliation_roll_forward import ReconciliationRollForward
 
     d = dict(src_dict)
     account_name = d.pop("account_name")
@@ -210,6 +229,23 @@ class ReconciliationRow:
 
         components.append(components_item)
 
+    def _parse_roll_forward(data: object) -> None | ReconciliationRollForward | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        roll_forward_type_0 = ReconciliationRollForward.from_dict(data)
+
+        return roll_forward_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | ReconciliationRollForward | Unset, data)
+
+    roll_forward = _parse_roll_forward(d.pop("roll_forward", UNSET))
+
     reconciliation_row = cls(
       account_name=account_name,
       ledger_balance=ledger_balance,
@@ -222,6 +258,7 @@ class ReconciliationRow:
       statement=statement,
       as_of=as_of,
       components=components,
+      roll_forward=roll_forward,
     )
 
     reconciliation_row.additional_properties = d

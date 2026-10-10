@@ -117,16 +117,19 @@ def sync_detailed(
   account, and reconcile the account to it. Give the balance as the statement shows it, as a positive
   number in the account's normal direction, with the statement's ending date. The ledger's balance at
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
-  the account's statement reconciliation for the period the statement ends in. Attach the statement as
-  evidence by passing the `document_id` of its stored file (create-document-upload, then complete-
-  document-upload); recording it again with another document lapses a sign-off. Writes no books. The
-  first statement recorded for an account creates its reconciliation, which does not hold the close:
-  turn `required_for_close` on with set-reconciliation-policy to make every period's close wait for a
-  statement on that account. Recording the same account and date again replaces the earlier balance;
-  when more than one statement ends in a period, the one with the latest date stands. Recording a
-  balance that differs from one already signed off lapses that sign-off. A difference is not explained
-  here: it is activity one side has and the other does not yet, or an error on either. Returns the
-  reconciliation's standing for the period.
+  the account's statement reconciliation for the period the statement ends in. On an account a bank
+  feed keeps, ledger lines that did not come from the feed and are dated on or before the statement
+  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; a
+  statement ending before the period's last day is carried to it by the feed's own lines
+  (`roll_forward`). Attach the statement as evidence by passing the `document_id` of its stored file
+  (create-document-upload, then complete-document-upload); recording it again with another document
+  lapses a sign-off. Writes no books. The first statement recorded for an account creates its
+  reconciliation, which does not hold the close: turn `required_for_close` on with set-reconciliation-
+  policy to make every period's close wait for a statement on that account. Recording the same account
+  and date again replaces the earlier balance; when more than one statement ends in a period, the one
+  with the latest date stands. Recording a balance that differs from one already signed off lapses
+  that sign-off. A difference left after the outstanding lines is activity one side has and the other
+  does not yet, or an error on either. Returns the reconciliation's standing for the period.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -171,16 +174,19 @@ def sync(
   account, and reconcile the account to it. Give the balance as the statement shows it, as a positive
   number in the account's normal direction, with the statement's ending date. The ledger's balance at
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
-  the account's statement reconciliation for the period the statement ends in. Attach the statement as
-  evidence by passing the `document_id` of its stored file (create-document-upload, then complete-
-  document-upload); recording it again with another document lapses a sign-off. Writes no books. The
-  first statement recorded for an account creates its reconciliation, which does not hold the close:
-  turn `required_for_close` on with set-reconciliation-policy to make every period's close wait for a
-  statement on that account. Recording the same account and date again replaces the earlier balance;
-  when more than one statement ends in a period, the one with the latest date stands. Recording a
-  balance that differs from one already signed off lapses that sign-off. A difference is not explained
-  here: it is activity one side has and the other does not yet, or an error on either. Returns the
-  reconciliation's standing for the period.
+  the account's statement reconciliation for the period the statement ends in. On an account a bank
+  feed keeps, ledger lines that did not come from the feed and are dated on or before the statement
+  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; a
+  statement ending before the period's last day is carried to it by the feed's own lines
+  (`roll_forward`). Attach the statement as evidence by passing the `document_id` of its stored file
+  (create-document-upload, then complete-document-upload); recording it again with another document
+  lapses a sign-off. Writes no books. The first statement recorded for an account creates its
+  reconciliation, which does not hold the close: turn `required_for_close` on with set-reconciliation-
+  policy to make every period's close wait for a statement on that account. Recording the same account
+  and date again replaces the earlier balance; when more than one statement ends in a period, the one
+  with the latest date stands. Recording a balance that differs from one already signed off lapses
+  that sign-off. A difference left after the outstanding lines is activity one side has and the other
+  does not yet, or an error on either. Returns the reconciliation's standing for the period.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -220,16 +226,19 @@ async def asyncio_detailed(
   account, and reconcile the account to it. Give the balance as the statement shows it, as a positive
   number in the account's normal direction, with the statement's ending date. The ledger's balance at
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
-  the account's statement reconciliation for the period the statement ends in. Attach the statement as
-  evidence by passing the `document_id` of its stored file (create-document-upload, then complete-
-  document-upload); recording it again with another document lapses a sign-off. Writes no books. The
-  first statement recorded for an account creates its reconciliation, which does not hold the close:
-  turn `required_for_close` on with set-reconciliation-policy to make every period's close wait for a
-  statement on that account. Recording the same account and date again replaces the earlier balance;
-  when more than one statement ends in a period, the one with the latest date stands. Recording a
-  balance that differs from one already signed off lapses that sign-off. A difference is not explained
-  here: it is activity one side has and the other does not yet, or an error on either. Returns the
-  reconciliation's standing for the period.
+  the account's statement reconciliation for the period the statement ends in. On an account a bank
+  feed keeps, ledger lines that did not come from the feed and are dated on or before the statement
+  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; a
+  statement ending before the period's last day is carried to it by the feed's own lines
+  (`roll_forward`). Attach the statement as evidence by passing the `document_id` of its stored file
+  (create-document-upload, then complete-document-upload); recording it again with another document
+  lapses a sign-off. Writes no books. The first statement recorded for an account creates its
+  reconciliation, which does not hold the close: turn `required_for_close` on with set-reconciliation-
+  policy to make every period's close wait for a statement on that account. Recording the same account
+  and date again replaces the earlier balance; when more than one statement ends in a period, the one
+  with the latest date stands. Recording a balance that differs from one already signed off lapses
+  that sign-off. A difference left after the outstanding lines is activity one side has and the other
+  does not yet, or an error on either. Returns the reconciliation's standing for the period.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -272,16 +281,19 @@ async def asyncio(
   account, and reconcile the account to it. Give the balance as the statement shows it, as a positive
   number in the account's normal direction, with the statement's ending date. The ledger's balance at
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
-  the account's statement reconciliation for the period the statement ends in. Attach the statement as
-  evidence by passing the `document_id` of its stored file (create-document-upload, then complete-
-  document-upload); recording it again with another document lapses a sign-off. Writes no books. The
-  first statement recorded for an account creates its reconciliation, which does not hold the close:
-  turn `required_for_close` on with set-reconciliation-policy to make every period's close wait for a
-  statement on that account. Recording the same account and date again replaces the earlier balance;
-  when more than one statement ends in a period, the one with the latest date stands. Recording a
-  balance that differs from one already signed off lapses that sign-off. A difference is not explained
-  here: it is activity one side has and the other does not yet, or an error on either. Returns the
-  reconciliation's standing for the period.
+  the account's statement reconciliation for the period the statement ends in. On an account a bank
+  feed keeps, ledger lines that did not come from the feed and are dated on or before the statement
+  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; a
+  statement ending before the period's last day is carried to it by the feed's own lines
+  (`roll_forward`). Attach the statement as evidence by passing the `document_id` of its stored file
+  (create-document-upload, then complete-document-upload); recording it again with another document
+  lapses a sign-off. Writes no books. The first statement recorded for an account creates its
+  reconciliation, which does not hold the close: turn `required_for_close` on with set-reconciliation-
+  policy to make every period's close wait for a statement on that account. Recording the same account
+  and date again replaces the earlier balance; when more than one statement ends in a period, the one
+  with the latest date stands. Recording a balance that differs from one already signed off lapses
+  that sign-off. A difference left after the outstanding lines is activity one side has and the other
+  does not yet, or an error on either. Returns the reconciliation's standing for the period.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
