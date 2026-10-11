@@ -87,6 +87,9 @@ from ..api.robo_ledger_analytical_views.live_financial_statement import (
 from ..api.robo_ledger_ledger_events.preview_event_block import (
   sync_detailed as op_preview_event_block,
 )
+from ..api.robo_ledger_ledger_events.learn_classification_defaults import (
+  sync_detailed as op_learn_classification_defaults,
+)
 from ..api.robo_ledger_ledger_events.update_agent import (
   sync_detailed as op_update_agent,
 )
@@ -544,6 +547,12 @@ from ..models.resolve_reconciling_item_request_status import (
   ResolveReconcilingItemRequestStatus,
 )
 from ..models.resolve_reconciling_item_response import ResolveReconcilingItemResponse
+from ..models.learn_classification_defaults_request import (
+  LearnClassificationDefaultsRequest,
+)
+from ..models.learn_classification_defaults_response import (
+  LearnClassificationDefaultsResponse,
+)
 from ..models.set_reconciliation_policy_request import SetReconciliationPolicyRequest
 from ..models.set_reconciliation_policy_request_statement_cycle_type_0 import (
   SetReconciliationPolicyRequestStatementCycleType0,
@@ -2131,7 +2140,10 @@ class LedgerClient:
     body: dict[str, Any],
   ) -> LedgerAgentResponse:
     """Update an agent. ``metadata_patch`` is a partial merge into existing
-    metadata; all other fields replace.
+    metadata; all other fields replace. ``classification_element_id`` sets
+    the account its bank lines are suggested (an empty string clears it) and
+    ``classification_mode="always_ask"`` stops suggesting one; its open lines
+    are re-suggested at once.
     """
     request = UpdateAgentRequest.from_dict(body)
     response = op_update_agent(
@@ -2139,6 +2151,23 @@ class LedgerClient:
     )
     envelope = self._call_op("Update agent", response)
     return self._typed_result("Update agent", envelope, LedgerAgentResponse)
+
+  def learn_classification_defaults(
+    self, graph_id: str, *, dry_run: bool = False
+  ) -> LearnClassificationDefaultsResponse:
+    """Give each counterparty with committed bank lines and no default the
+    account most of its lines went to, and re-suggest its open lines. Run
+    once on books classified before defaults were learned; ``dry_run``
+    reports without writing."""
+    response = op_learn_classification_defaults(
+      graph_id=graph_id,
+      body=LearnClassificationDefaultsRequest(dry_run=dry_run),
+      client=self._get_client(),
+    )
+    envelope = self._call_op("Learn classification defaults", response)
+    return self._typed_result(
+      "Learn classification defaults", envelope, LearnClassificationDefaultsResponse
+    )
 
   # ── Event handlers (DSL handler registry) ────────────────────────────
 

@@ -1281,6 +1281,7 @@ class TestLedgerReadsAdditional:
           "createdAt": "2026-03-15T12:00:00Z",
           "updatedAt": "2026-03-15T12:00:00Z",
           "createdBy": "user_1",
+          "classification": None,
         }
       ]
     }
@@ -1314,12 +1315,27 @@ class TestLedgerReadsAdditional:
         "createdAt": "2026-03-15T12:00:00Z",
         "updatedAt": "2026-03-15T12:00:00Z",
         "createdBy": "user_1",
+        "classification": {
+          "elementId": "elem_payroll",
+          "accountName": "Payroll",
+          "mode": "suggest",
+          "confirmations": 7,
+          "overrides": 1,
+          "setBy": "user_1",
+          "setAt": "2026-10-10T00:00:00Z",
+          "learnedFrom": "evt_1",
+        },
       }
     }
     client = LedgerClient(mock_config)
     result = client.get_agent(graph_id, "agt_1")
     assert result is not None
     assert result.id == "agt_1"
+    assert result.classification is not None
+    assert (
+      result.classification.account_name,
+      result.classification.confirmations,
+    ) == ("Payroll", 7)
     variables = mock_execute.call_args[0][2]
     assert variables["id"] == "agt_1"
 
@@ -2168,6 +2184,41 @@ class TestAgentOps:
     )
     body = mock_op.call_args.kwargs["body"]
     assert body.metadata_patch.to_dict() == {"region": "us-west"}
+
+  @patch("robosystems_client.clients.ledger_client.op_update_agent")
+  def test_update_agent_sets_a_default_account(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(_envelope("update-agent", {}))
+    client = LedgerClient(mock_config)
+    client.update_agent(
+      graph_id,
+      {
+        "agent_id": "agt_1",
+        "classification_element_id": "elem_payroll",
+        "classification_mode": "suggest",
+      },
+    )
+    sent = mock_op.call_args.kwargs["body"].to_dict()
+    assert sent["classification_element_id"] == "elem_payroll"
+    assert sent["classification_mode"] == "suggest"
+
+  @patch("robosystems_client.clients.ledger_client.op_learn_classification_defaults")
+  def test_learn_classification_defaults(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "learn-classification-defaults",
+        {
+          "agents_learned": 12,
+          "agents_kept": 0,
+          "lines_read": 61,
+          "open_lines_resuggested": 9,
+          "dry_run": True,
+        },
+      )
+    )
+    client = LedgerClient(mock_config)
+    result = client.learn_classification_defaults(graph_id, dry_run=True)
+    assert result["agents_learned"] == 12
+    assert mock_op.call_args.kwargs["body"].to_dict() == {"dry_run": True}
 
 
 # ── Event handlers ────────────────────────────────────────────────────────

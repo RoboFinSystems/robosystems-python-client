@@ -10,6 +10,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+  from ..models.agent_classification import AgentClassification
   from ..models.ledger_agent_response_address_type_0 import (
     LedgerAgentResponseAddressType0,
   )
@@ -37,6 +38,7 @@ class LedgerAgentResponse:
       phone (None | str | Unset):
       address (LedgerAgentResponseAddressType0 | None | Unset):
       external_id (None | str | Unset):
+      classification (AgentClassification | None | Unset): The default account its bank lines are suggested.
       created_at (datetime.datetime | None | Unset):
       updated_at (datetime.datetime | None | Unset):
       created_by (None | str | Unset):
@@ -57,12 +59,14 @@ class LedgerAgentResponse:
   phone: None | str | Unset = UNSET
   address: LedgerAgentResponseAddressType0 | None | Unset = UNSET
   external_id: None | str | Unset = UNSET
+  classification: AgentClassification | None | Unset = UNSET
   created_at: datetime.datetime | None | Unset = UNSET
   updated_at: datetime.datetime | None | Unset = UNSET
   created_by: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.agent_classification import AgentClassification
     from ..models.ledger_agent_response_address_type_0 import (
       LedgerAgentResponseAddressType0,
     )
@@ -135,6 +139,14 @@ class LedgerAgentResponse:
     else:
       external_id = self.external_id
 
+    classification: dict[str, Any] | None | Unset
+    if isinstance(self.classification, Unset):
+      classification = UNSET
+    elif isinstance(self.classification, AgentClassification):
+      classification = self.classification.to_dict()
+    else:
+      classification = self.classification
+
     created_at: None | str | Unset
     if isinstance(self.created_at, Unset):
       created_at = UNSET
@@ -187,6 +199,8 @@ class LedgerAgentResponse:
       field_dict["address"] = address
     if external_id is not UNSET:
       field_dict["external_id"] = external_id
+    if classification is not UNSET:
+      field_dict["classification"] = classification
     if created_at is not UNSET:
       field_dict["created_at"] = created_at
     if updated_at is not UNSET:
@@ -198,6 +212,7 @@ class LedgerAgentResponse:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.agent_classification import AgentClassification
     from ..models.ledger_agent_response_address_type_0 import (
       LedgerAgentResponseAddressType0,
     )
@@ -306,6 +321,23 @@ class LedgerAgentResponse:
 
     external_id = _parse_external_id(d.pop("external_id", UNSET))
 
+    def _parse_classification(data: object) -> AgentClassification | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        classification_type_0 = AgentClassification.from_dict(data)
+
+        return classification_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(AgentClassification | None | Unset, data)
+
+    classification = _parse_classification(d.pop("classification", UNSET))
+
     def _parse_created_at(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
@@ -365,6 +397,7 @@ class LedgerAgentResponse:
       phone=phone,
       address=address,
       external_id=external_id,
+      classification=classification,
       created_at=created_at,
       updated_at=updated_at,
       created_by=created_by,

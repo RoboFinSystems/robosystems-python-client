@@ -3,6 +3,7 @@
 from .account_info import AccountInfo
 from .add_graph_member_request import AddGraphMemberRequest
 from .add_publish_list_members_operation import AddPublishListMembersOperation
+from .agent_classification import AgentClassification
 from .analytical_statement_fact_row import AnalyticalStatementFactRow
 from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
@@ -376,6 +377,8 @@ from .journal_entry_line_item_input_metadata_type_0 import (
 )
 from .journal_entry_line_item_response import JournalEntryLineItemResponse
 from .journal_entry_response import JournalEntryResponse
+from .learn_classification_defaults_request import LearnClassificationDefaultsRequest
+from .learn_classification_defaults_response import LearnClassificationDefaultsResponse
 from .ledger_agent_response import LedgerAgentResponse
 from .ledger_agent_response_address_type_0 import LedgerAgentResponseAddressType0
 from .ledger_entity_response import LedgerEntityResponse
@@ -619,6 +622,12 @@ from .operation_envelope_journal_entry_response import (
 )
 from .operation_envelope_journal_entry_response_status import (
   OperationEnvelopeJournalEntryResponseStatus,
+)
+from .operation_envelope_learn_classification_defaults_response import (
+  OperationEnvelopeLearnClassificationDefaultsResponse,
+)
+from .operation_envelope_learn_classification_defaults_response_status import (
+  OperationEnvelopeLearnClassificationDefaultsResponseStatus,
 )
 from .operation_envelope_ledger_agent_response import (
   OperationEnvelopeLedgerAgentResponse,
@@ -1063,6 +1072,9 @@ from .unblock_source_graph_operation import UnblockSourceGraphOperation
 from .upcoming_invoice import UpcomingInvoice
 from .update_agent_request import UpdateAgentRequest
 from .update_agent_request_address_type_0 import UpdateAgentRequestAddressType0
+from .update_agent_request_classification_mode_type_0 import (
+  UpdateAgentRequestClassificationModeType0,
+)
 from .update_agent_request_metadata_patch import UpdateAgentRequestMetadataPatch
 from .update_api_key_request import UpdateAPIKeyRequest
 from .update_entity_request import UpdateEntityRequest
@@ -1140,6 +1152,7 @@ __all__ = (
   "AccountInfo",
   "AddGraphMemberRequest",
   "AddPublishListMembersOperation",
+  "AgentClassification",
   "AnalyticalStatementFactRow",
   "APIKeyInfo",
   "APIKeysResponse",
@@ -1437,6 +1450,8 @@ __all__ = (
   "JournalEntryLineItemInputMetadataType0",
   "JournalEntryLineItemResponse",
   "JournalEntryResponse",
+  "LearnClassificationDefaultsRequest",
+  "LearnClassificationDefaultsResponse",
   "LedgerAgentResponse",
   "LedgerAgentResponseAddressType0",
   "LedgerEntityResponse",
@@ -1557,6 +1572,8 @@ __all__ = (
   "OperationEnvelopeInitializeLedgerResponseStatus",
   "OperationEnvelopeJournalEntryResponse",
   "OperationEnvelopeJournalEntryResponseStatus",
+  "OperationEnvelopeLearnClassificationDefaultsResponse",
+  "OperationEnvelopeLearnClassificationDefaultsResponseStatus",
   "OperationEnvelopeLedgerAgentResponse",
   "OperationEnvelopeLedgerAgentResponseStatus",
   "OperationEnvelopeLedgerEntityResponse",
@@ -1850,6 +1867,7 @@ __all__ = (
   "UpcomingInvoice",
   "UpdateAgentRequest",
   "UpdateAgentRequestAddressType0",
+  "UpdateAgentRequestClassificationModeType0",
   "UpdateAgentRequestMetadataPatch",
   "UpdateAPIKeyRequest",
   "UpdateEntityRequest",

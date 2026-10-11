@@ -63,7 +63,11 @@ from .get_ledger_account_tree import (
   GetLedgerAccountTreeAccountTreeRootsChildrenChildren,
   GetLedgerAccountTreeAccountTreeRootsChildrenChildrenChildren,
 )
-from .get_ledger_agent import GetLedgerAgent, GetLedgerAgentAgent
+from .get_ledger_agent import (
+  GetLedgerAgent,
+  GetLedgerAgentAgent,
+  GetLedgerAgentAgentClassification,
+)
 from .get_ledger_closing_book_structures import (
   GetLedgerClosingBookStructures,
   GetLedgerClosingBookStructuresClosingBookStructures,
@@ -233,7 +237,11 @@ from .list_ledger_accounts import (
   ListLedgerAccountsAccountsAccounts,
   ListLedgerAccountsAccountsPagination,
 )
-from .list_ledger_agents import ListLedgerAgents, ListLedgerAgentsAgents
+from .list_ledger_agents import (
+  ListLedgerAgents,
+  ListLedgerAgentsAgents,
+  ListLedgerAgentsAgentsClassification,
+)
 from .list_ledger_bank_accounts import (
   ListLedgerBankAccounts,
   ListLedgerBankAccountsBankAccounts,
@@ -481,6 +489,7 @@ __all__ = [
   "GetLedgerAccountTreeAccountTreeRootsChildrenChildrenChildren",
   "GetLedgerAgent",
   "GetLedgerAgentAgent",
+  "GetLedgerAgentAgentClassification",
   "GetLedgerClosingBookStructures",
   "GetLedgerClosingBookStructuresClosingBookStructures",
   "GetLedgerClosingBookStructuresClosingBookStructuresCategories",
@@ -639,6 +648,7 @@ __all__ = [
   "ListLedgerAccountsAccountsPagination",
   "ListLedgerAgents",
   "ListLedgerAgentsAgents",
+  "ListLedgerAgentsAgentsClassification",
   "ListLedgerBankAccounts",
   "ListLedgerBankAccountsBankAccounts",
   "ListLedgerBankAccountsBankAccountsAccounts",
