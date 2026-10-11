@@ -1538,11 +1538,42 @@ type Agent {
   externalId: String
   isActive: Boolean!
   is1099Recipient: Boolean!
+  classification: AgentClassification
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: String
   openReceivable: OpenBalanceByAgent
   openPayable: OpenBalanceByAgent
+}
+
+"""
+A counterparty's default account, learned from committed lines or set by
+hand.
+"""
+type AgentClassification {
+  """The default chart account."""
+  elementId: String!
+
+  """The account's name."""
+  accountName: String
+
+  """`suggest`: offered on each new line. `always_ask`: never offered."""
+  mode: String!
+
+  """Committed lines that went to this account."""
+  confirmations: Int!
+
+  """Committed lines that went elsewhere while it was the default."""
+  overrides: Int!
+
+  """Who set or last moved it."""
+  setBy: String
+
+  """When it was set or last moved."""
+  setAt: String
+
+  """The committed line it was learned from, when it was."""
+  learnedFrom: String
 }
 
 """

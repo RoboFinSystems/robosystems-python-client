@@ -3,5 +3,8 @@ query GetLedgerAgent($id: String!) {
     id agentType name legalName taxId registrationNumber duns lei
     email phone address source externalId
     isActive is1099Recipient createdAt updatedAt createdBy
+    classification {
+      elementId accountName mode confirmations overrides setBy setAt learnedFrom
+    }
   }
 }

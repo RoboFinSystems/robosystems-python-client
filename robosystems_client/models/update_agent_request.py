@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.update_agent_request_classification_mode_type_0 import (
+  UpdateAgentRequestClassificationModeType0,
+)
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
@@ -39,8 +42,13 @@ class UpdateAgentRequest:
           address (None | Unset | UpdateAgentRequestAddressType0):
           is_active (bool | None | Unset): Toggle activation. Inactive agents are hidden from new-transaction pickers.
           is_1099_recipient (bool | None | Unset):
+          classification_element_id (None | str | Unset): The chart account this counterparty's bank lines are usually
+              classified to, suggested on each new line. An empty string clears it. Its still-open lines are re-suggested at
+              once. Omit to keep.
+          classification_mode (None | Unset | UpdateAgentRequestClassificationModeType0): `suggest` offers the default on
+              each line; `always_ask` offers none, for a counterparty whose lines go to different accounts. Omit to keep.
           metadata_patch (UpdateAgentRequestMetadataPatch | Unset): Deep-merged into agent.metadata. Pass `{}` to leave
-              unchanged.
+              unchanged. The default classification is set with the fields above, not here.
   """
 
   agent_id: str
@@ -55,6 +63,8 @@ class UpdateAgentRequest:
   address: None | Unset | UpdateAgentRequestAddressType0 = UNSET
   is_active: bool | None | Unset = UNSET
   is_1099_recipient: bool | None | Unset = UNSET
+  classification_element_id: None | str | Unset = UNSET
+  classification_mode: None | Unset | UpdateAgentRequestClassificationModeType0 = UNSET
   metadata_patch: UpdateAgentRequestMetadataPatch | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -133,6 +143,22 @@ class UpdateAgentRequest:
     else:
       is_1099_recipient = self.is_1099_recipient
 
+    classification_element_id: None | str | Unset
+    if isinstance(self.classification_element_id, Unset):
+      classification_element_id = UNSET
+    else:
+      classification_element_id = self.classification_element_id
+
+    classification_mode: None | str | Unset
+    if isinstance(self.classification_mode, Unset):
+      classification_mode = UNSET
+    elif isinstance(
+      self.classification_mode, UpdateAgentRequestClassificationModeType0
+    ):
+      classification_mode = self.classification_mode.value
+    else:
+      classification_mode = self.classification_mode
+
     metadata_patch: dict[str, Any] | Unset = UNSET
     if not isinstance(self.metadata_patch, Unset):
       metadata_patch = self.metadata_patch.to_dict()
@@ -166,6 +192,10 @@ class UpdateAgentRequest:
       field_dict["is_active"] = is_active
     if is_1099_recipient is not UNSET:
       field_dict["is_1099_recipient"] = is_1099_recipient
+    if classification_element_id is not UNSET:
+      field_dict["classification_element_id"] = classification_element_id
+    if classification_mode is not UNSET:
+      field_dict["classification_mode"] = classification_mode
     if metadata_patch is not UNSET:
       field_dict["metadata_patch"] = metadata_patch
 
@@ -292,6 +322,38 @@ class UpdateAgentRequest:
 
     is_1099_recipient = _parse_is_1099_recipient(d.pop("is_1099_recipient", UNSET))
 
+    def _parse_classification_element_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    classification_element_id = _parse_classification_element_id(
+      d.pop("classification_element_id", UNSET)
+    )
+
+    def _parse_classification_mode(
+      data: object,
+    ) -> None | Unset | UpdateAgentRequestClassificationModeType0:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        classification_mode_type_0 = UpdateAgentRequestClassificationModeType0(data)
+
+        return classification_mode_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | Unset | UpdateAgentRequestClassificationModeType0, data)
+
+    classification_mode = _parse_classification_mode(
+      d.pop("classification_mode", UNSET)
+    )
+
     _metadata_patch = d.pop("metadata_patch", UNSET)
     metadata_patch: UpdateAgentRequestMetadataPatch | Unset
     if isinstance(_metadata_patch, Unset):
@@ -312,6 +374,8 @@ class UpdateAgentRequest:
       address=address,
       is_active=is_active,
       is_1099_recipient=is_1099_recipient,
+      classification_element_id=classification_element_id,
+      classification_mode=classification_mode,
       metadata_patch=metadata_patch,
     )
 

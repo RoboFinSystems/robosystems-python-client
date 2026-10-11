@@ -6,32 +6,44 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="UpdateAgentRequestMetadataPatch")
+from ..types import UNSET, Unset
+
+T = TypeVar("T", bound="LearnClassificationDefaultsRequest")
 
 
 @_attrs_define
-class UpdateAgentRequestMetadataPatch:
-  """Deep-merged into agent.metadata. Pass `{}` to leave unchanged. The default classification is set with the fields
-  above, not here.
+class LearnClassificationDefaultsRequest:
+  """Seed counterparty defaults from the bank lines already committed.
 
+  Attributes:
+      dry_run (bool | Unset): Report what would be learned without writing it. Default: False.
   """
 
+  dry_run: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    dry_run = self.dry_run
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
+    field_dict.update({})
+    if dry_run is not UNSET:
+      field_dict["dry_run"] = dry_run
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    update_agent_request_metadata_patch = cls()
+    dry_run = d.pop("dry_run", UNSET)
 
-    update_agent_request_metadata_patch.additional_properties = d
-    return update_agent_request_metadata_patch
+    learn_classification_defaults_request = cls(
+      dry_run=dry_run,
+    )
+
+    learn_classification_defaults_request.additional_properties = d
+    return learn_classification_defaults_request
 
   @property
   def additional_keys(self) -> list[str]:

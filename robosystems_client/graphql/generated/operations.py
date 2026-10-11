@@ -541,6 +541,16 @@ query GetLedgerAgent($id: String!) {
     createdAt
     updatedAt
     createdBy
+    classification {
+      elementId
+      accountName
+      mode
+      confirmations
+      overrides
+      setBy
+      setAt
+      learnedFrom
+    }
   }
 }
 """
@@ -1404,6 +1414,16 @@ query ListLedgerAgents($agentType: String, $source: String, $isActive: Boolean =
     createdAt
     updatedAt
     createdBy
+    classification {
+      elementId
+      accountName
+      mode
+      confirmations
+      overrides
+      setBy
+      setAt
+      learnedFrom
+    }
   }
 }
 """

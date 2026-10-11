@@ -7,17 +7,19 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.operation_envelope_ledger_agent_response import (
-  OperationEnvelopeLedgerAgentResponse,
+from ...models.learn_classification_defaults_request import (
+  LearnClassificationDefaultsRequest,
 )
-from ...models.update_agent_request import UpdateAgentRequest
+from ...models.operation_envelope_learn_classification_defaults_response import (
+  OperationEnvelopeLearnClassificationDefaultsResponse,
+)
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
   graph_id: str,
   *,
-  body: UpdateAgentRequest,
+  body: LearnClassificationDefaultsRequest,
   idempotency_key: None | str | Unset = UNSET,
 ) -> dict[str, Any]:
   headers: dict[str, Any] = {}
@@ -26,7 +28,7 @@ def _get_kwargs(
 
   _kwargs: dict[str, Any] = {
     "method": "post",
-    "url": "/extensions/roboledger/{graph_id}/operations/update-agent".format(
+    "url": "/extensions/roboledger/{graph_id}/operations/learn-classification-defaults".format(
       graph_id=quote(str(graph_id), safe=""),
     ),
   }
@@ -41,9 +43,11 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | OperationEnvelopeLedgerAgentResponse | None:
+) -> ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse | None:
   if response.status_code == 200:
-    response_200 = OperationEnvelopeLedgerAgentResponse.from_dict(response.json())
+    response_200 = OperationEnvelopeLearnClassificationDefaultsResponse.from_dict(
+      response.json()
+    )
 
     return response_200
 
@@ -95,7 +99,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | OperationEnvelopeLedgerAgentResponse]:
+) -> Response[ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -108,17 +112,17 @@ def sync_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateAgentRequest,
+  body: LearnClassificationDefaultsRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeLedgerAgentResponse]:
-  """Update Agent
+) -> Response[ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse]:
+  """Learn Classification Defaults
 
-   Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
-  (agents are never deleted — they are reference data referenced by events and transactions).
-  `classification_element_id` sets the account this counterparty's bank lines are suggested (an empty
-  string clears it), and `classification_mode='always_ask'` stops suggesting one for a counterparty
-  whose lines go to different accounts; its still-open lines are re-suggested at once. A default is
-  also learned as lines are committed, so set one by hand only to correct it.
+   Seed each counterparty's default account from the bank lines already committed to the books: the
+  account most of its lines went to becomes its default, with the lines that agreed counted as
+  confirmations. A counterparty that already has a default keeps it. Its still-open lines are then
+  suggested from the default. Run it once on books that were classified before defaults were learned;
+  after that, every commit teaches the default by itself. `dry_run` reports what would be learned
+  without writing it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -126,16 +130,15 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest): Patch an agent. All fields except `agent_id` are optional —
-          pass only what changes. `metadata_patch` is deep-merged into the
-          existing metadata dict.
+      body (LearnClassificationDefaultsRequest): Seed counterparty defaults from the bank lines
+          already committed.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeLedgerAgentResponse]
+      Response[ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse]
   """
 
   kwargs = _get_kwargs(
@@ -155,17 +158,17 @@ def sync(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateAgentRequest,
+  body: LearnClassificationDefaultsRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeLedgerAgentResponse | None:
-  """Update Agent
+) -> ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse | None:
+  """Learn Classification Defaults
 
-   Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
-  (agents are never deleted — they are reference data referenced by events and transactions).
-  `classification_element_id` sets the account this counterparty's bank lines are suggested (an empty
-  string clears it), and `classification_mode='always_ask'` stops suggesting one for a counterparty
-  whose lines go to different accounts; its still-open lines are re-suggested at once. A default is
-  also learned as lines are committed, so set one by hand only to correct it.
+   Seed each counterparty's default account from the bank lines already committed to the books: the
+  account most of its lines went to becomes its default, with the lines that agreed counted as
+  confirmations. A counterparty that already has a default keeps it. Its still-open lines are then
+  suggested from the default. Run it once on books that were classified before defaults were learned;
+  after that, every commit teaches the default by itself. `dry_run` reports what would be learned
+  without writing it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -173,16 +176,15 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest): Patch an agent. All fields except `agent_id` are optional —
-          pass only what changes. `metadata_patch` is deep-merged into the
-          existing metadata dict.
+      body (LearnClassificationDefaultsRequest): Seed counterparty defaults from the bank lines
+          already committed.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeLedgerAgentResponse
+      ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse
   """
 
   return sync_detailed(
@@ -197,17 +199,17 @@ async def asyncio_detailed(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateAgentRequest,
+  body: LearnClassificationDefaultsRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeLedgerAgentResponse]:
-  """Update Agent
+) -> Response[ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse]:
+  """Learn Classification Defaults
 
-   Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
-  (agents are never deleted — they are reference data referenced by events and transactions).
-  `classification_element_id` sets the account this counterparty's bank lines are suggested (an empty
-  string clears it), and `classification_mode='always_ask'` stops suggesting one for a counterparty
-  whose lines go to different accounts; its still-open lines are re-suggested at once. A default is
-  also learned as lines are committed, so set one by hand only to correct it.
+   Seed each counterparty's default account from the bank lines already committed to the books: the
+  account most of its lines went to becomes its default, with the lines that agreed counted as
+  confirmations. A counterparty that already has a default keeps it. Its still-open lines are then
+  suggested from the default. Run it once on books that were classified before defaults were learned;
+  after that, every commit teaches the default by itself. `dry_run` reports what would be learned
+  without writing it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -215,16 +217,15 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest): Patch an agent. All fields except `agent_id` are optional —
-          pass only what changes. `metadata_patch` is deep-merged into the
-          existing metadata dict.
+      body (LearnClassificationDefaultsRequest): Seed counterparty defaults from the bank lines
+          already committed.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeLedgerAgentResponse]
+      Response[ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse]
   """
 
   kwargs = _get_kwargs(
@@ -242,17 +243,17 @@ async def asyncio(
   graph_id: str,
   *,
   client: AuthenticatedClient,
-  body: UpdateAgentRequest,
+  body: LearnClassificationDefaultsRequest,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeLedgerAgentResponse | None:
-  """Update Agent
+) -> ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse | None:
+  """Learn Classification Defaults
 
-   Patch counterparty fields. Only supplied fields are updated. Set is_active=false to deactivate
-  (agents are never deleted — they are reference data referenced by events and transactions).
-  `classification_element_id` sets the account this counterparty's bank lines are suggested (an empty
-  string clears it), and `classification_mode='always_ask'` stops suggesting one for a counterparty
-  whose lines go to different accounts; its still-open lines are re-suggested at once. A default is
-  also learned as lines are committed, so set one by hand only to correct it.
+   Seed each counterparty's default account from the bank lines already committed to the books: the
+  account most of its lines went to becomes its default, with the lines that agreed counted as
+  confirmations. A counterparty that already has a default keeps it. Its still-open lines are then
+  suggested from the default. Run it once on books that were classified before defaults were learned;
+  after that, every commit teaches the default by itself. `dry_run` reports what would be learned
+  without writing it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -260,16 +261,15 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateAgentRequest): Patch an agent. All fields except `agent_id` are optional —
-          pass only what changes. `metadata_patch` is deep-merged into the
-          existing metadata dict.
+      body (LearnClassificationDefaultsRequest): Seed counterparty defaults from the bank lines
+          already committed.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeLedgerAgentResponse
+      ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse
   """
 
   return (

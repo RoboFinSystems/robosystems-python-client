@@ -121,7 +121,12 @@ def sync_detailed(
   captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
   bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
   (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
-  UI can display the failure reason without retry.
+  UI can display the failure reason without retry. A bank line's flow is a second classification
+  beside its account, overriding the account's default flow on the cash flow and equity statements:
+  patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
+  gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
+  posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
+  string clears it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -172,7 +177,12 @@ def sync(
   captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
   bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
   (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
-  UI can display the failure reason without retry.
+  UI can display the failure reason without retry. A bank line's flow is a second classification
+  beside its account, overriding the account's default flow on the cash flow and equity statements:
+  patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
+  gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
+  posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
+  string clears it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -218,7 +228,12 @@ async def asyncio_detailed(
   captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
   bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
   (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
-  UI can display the failure reason without retry.
+  UI can display the failure reason without retry. A bank line's flow is a second classification
+  beside its account, overriding the account's default flow on the cash flow and equity statements:
+  patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
+  gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
+  posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
+  string clears it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -267,7 +282,12 @@ async def asyncio(
   captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
   bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
   (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
-  UI can display the failure reason without retry.
+  UI can display the failure reason without retry. A bank line's flow is a second classification
+  beside its account, overriding the account's default flow on the cash flow and equity statements:
+  patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
+  gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
+  posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
+  string clears it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
