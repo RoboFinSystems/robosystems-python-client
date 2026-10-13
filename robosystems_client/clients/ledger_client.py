@@ -1939,6 +1939,7 @@ class LedgerClient:
     transaction_id: str | None = None,
     source: str = "manual",
     idempotency_key: str | None = None,
+    entity_id: str | None = None,
   ) -> EventBlockEnvelope:
     """Create a journal entry with balanced line items (DR=CR enforced).
 
@@ -1958,6 +1959,9 @@ class LedgerClient:
     within 24 hours return the same envelope. Reusing the key with a
     different body returns HTTP 409.
 
+    ``entity_id`` names the entity whose books the entry goes into; omitted,
+    the group parent's.
+
     Returns the EventBlockEnvelope (event row fields).
     """
     metadata: dict[str, Any] = {
@@ -1976,6 +1980,8 @@ class LedgerClient:
       metadata=metadata,
       source=source,
     )
+    if entity_id is not None:
+      body.entity_id = entity_id
     response = op_create_event_block(
       graph_id=graph_id,
       body=body,
