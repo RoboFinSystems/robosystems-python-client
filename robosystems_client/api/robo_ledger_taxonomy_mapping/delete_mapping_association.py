@@ -117,7 +117,8 @@ def sync_detailed(
   only the association row is dropped. Use this to correct a wrong mapping — delete the bad edge, then
   `create-mapping-association` the right one. Find the association id via the `library_element_arcs`
   GraphQL field. Library-seeded rows cannot be deleted (403). An edge for an account with landed
-  history in a closed month cannot be removed (422) until those months are reopened, latest-first.
+  history in a closed month cannot be removed on its own (422): move the account with `create-mapping-
+  association` and `replaces_association_id` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -162,7 +163,8 @@ def sync(
   only the association row is dropped. Use this to correct a wrong mapping — delete the bad edge, then
   `create-mapping-association` the right one. Find the association id via the `library_element_arcs`
   GraphQL field. Library-seeded rows cannot be deleted (403). An edge for an account with landed
-  history in a closed month cannot be removed (422) until those months are reopened, latest-first.
+  history in a closed month cannot be removed on its own (422): move the account with `create-mapping-
+  association` and `replaces_association_id` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -202,7 +204,8 @@ async def asyncio_detailed(
   only the association row is dropped. Use this to correct a wrong mapping — delete the bad edge, then
   `create-mapping-association` the right one. Find the association id via the `library_element_arcs`
   GraphQL field. Library-seeded rows cannot be deleted (403). An edge for an account with landed
-  history in a closed month cannot be removed (422) until those months are reopened, latest-first.
+  history in a closed month cannot be removed on its own (422): move the account with `create-mapping-
+  association` and `replaces_association_id` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -245,7 +248,8 @@ async def asyncio(
   only the association row is dropped. Use this to correct a wrong mapping — delete the bad edge, then
   `create-mapping-association` the right one. Find the association id via the `library_element_arcs`
   GraphQL field. Library-seeded rows cannot be deleted (403). An edge for an account with landed
-  history in a closed month cannot be removed (422) until those months are reopened, latest-first.
+  history in a closed month cannot be removed on its own (422): move the account with `create-mapping-
+  association` and `replaces_association_id` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

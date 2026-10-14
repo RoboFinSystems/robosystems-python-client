@@ -118,9 +118,12 @@ def sync_detailed(
    Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
   `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. The
   target must be a leaf concept: a subtotal the statement sums from its children is refused (422). Map
-  before you close: an account with landed history in a closed month cannot be re-mapped (422) — the
-  closed month's stamped statements were computed through the old arcs. Reopen latest-first down to
-  the earliest month named, map, then close forward.
+  before you close: a new arc for an account with landed history in a closed month is refused (422),
+  since the month's stamped statements were computed through the arcs as they stood. To move such an
+  account, pass `replaces_association_id` (its current arc, removed in the same write). A move within
+  the same primary statement is a reclassification and goes through: the stamped statements keep the
+  answer as closed, live renders follow the new arc, and `reclassified_periods` names the months. A
+  move across statements restates net income and is refused, naming the months to reopen latest-first.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -168,9 +171,12 @@ def sync(
    Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
   `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. The
   target must be a leaf concept: a subtotal the statement sums from its children is refused (422). Map
-  before you close: an account with landed history in a closed month cannot be re-mapped (422) — the
-  closed month's stamped statements were computed through the old arcs. Reopen latest-first down to
-  the earliest month named, map, then close forward.
+  before you close: a new arc for an account with landed history in a closed month is refused (422),
+  since the month's stamped statements were computed through the arcs as they stood. To move such an
+  account, pass `replaces_association_id` (its current arc, removed in the same write). A move within
+  the same primary statement is a reclassification and goes through: the stamped statements keep the
+  answer as closed, live renders follow the new arc, and `reclassified_periods` names the months. A
+  move across statements restates net income and is refused, naming the months to reopen latest-first.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -213,9 +219,12 @@ async def asyncio_detailed(
    Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
   `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. The
   target must be a leaf concept: a subtotal the statement sums from its children is refused (422). Map
-  before you close: an account with landed history in a closed month cannot be re-mapped (422) — the
-  closed month's stamped statements were computed through the old arcs. Reopen latest-first down to
-  the earliest month named, map, then close forward.
+  before you close: a new arc for an account with landed history in a closed month is refused (422),
+  since the month's stamped statements were computed through the arcs as they stood. To move such an
+  account, pass `replaces_association_id` (its current arc, removed in the same write). A move within
+  the same primary statement is a reclassification and goes through: the stamped statements keep the
+  answer as closed, live renders follow the new arc, and `reclassified_periods` names the months. A
+  move across statements restates net income and is refused, naming the months to reopen latest-first.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -261,9 +270,12 @@ async def asyncio(
    Link a chart-of-accounts element to a US GAAP reporting concept. One mapping edge per call — use
   `auto-map-elements` for bulk AI-assisted mapping. Duplicate (from, to, type) tuples return 409. The
   target must be a leaf concept: a subtotal the statement sums from its children is refused (422). Map
-  before you close: an account with landed history in a closed month cannot be re-mapped (422) — the
-  closed month's stamped statements were computed through the old arcs. Reopen latest-first down to
-  the earliest month named, map, then close forward.
+  before you close: a new arc for an account with landed history in a closed month is refused (422),
+  since the month's stamped statements were computed through the arcs as they stood. To move such an
+  account, pass `replaces_association_id` (its current arc, removed in the same write). A move within
+  the same primary statement is a reclassification and goes through: the stamped statements keep the
+  answer as closed, live renders follow the new arc, and `reclassified_periods` names the months. A
+  move across statements restates net income and is refused, naming the months to reopen latest-first.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

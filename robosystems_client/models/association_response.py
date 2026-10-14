@@ -37,6 +37,11 @@ class AssociationResponse:
           confidence (float | None | Unset):
           suggested_by (None | str | Unset):
           approved_by (None | str | Unset):
+          replaced_association_id (None | str | Unset): The arc this write removed in the same transaction, when the call
+              named one in `replaces_association_id`.
+          reclassified_periods (list[str] | Unset): Closed months whose live statements now read through this arc while
+              their stamped sets keep the answer as closed. Empty unless the write replaced an arc on an account with landed
+              history in a closed month.
   """
 
   id: str
@@ -53,6 +58,8 @@ class AssociationResponse:
   confidence: float | None | Unset = UNSET
   suggested_by: None | str | Unset = UNSET
   approved_by: None | str | Unset = UNSET
+  replaced_association_id: None | str | Unset = UNSET
+  reclassified_periods: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -120,6 +127,16 @@ class AssociationResponse:
     else:
       approved_by = self.approved_by
 
+    replaced_association_id: None | str | Unset
+    if isinstance(self.replaced_association_id, Unset):
+      replaced_association_id = UNSET
+    else:
+      replaced_association_id = self.replaced_association_id
+
+    reclassified_periods: list[str] | Unset = UNSET
+    if not isinstance(self.reclassified_periods, Unset):
+      reclassified_periods = self.reclassified_periods
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -149,6 +166,10 @@ class AssociationResponse:
       field_dict["suggested_by"] = suggested_by
     if approved_by is not UNSET:
       field_dict["approved_by"] = approved_by
+    if replaced_association_id is not UNSET:
+      field_dict["replaced_association_id"] = replaced_association_id
+    if reclassified_periods is not UNSET:
+      field_dict["reclassified_periods"] = reclassified_periods
 
     return field_dict
 
@@ -246,6 +267,19 @@ class AssociationResponse:
 
     approved_by = _parse_approved_by(d.pop("approved_by", UNSET))
 
+    def _parse_replaced_association_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    replaced_association_id = _parse_replaced_association_id(
+      d.pop("replaced_association_id", UNSET)
+    )
+
+    reclassified_periods = cast(list[str], d.pop("reclassified_periods", UNSET))
+
     association_response = cls(
       id=id,
       structure_id=structure_id,
@@ -261,6 +295,8 @@ class AssociationResponse:
       confidence=confidence,
       suggested_by=suggested_by,
       approved_by=approved_by,
+      replaced_association_id=replaced_association_id,
+      reclassified_periods=reclassified_periods,
     )
 
     association_response.additional_properties = d

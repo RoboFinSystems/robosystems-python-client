@@ -510,8 +510,9 @@ type Query {
   ): MappingDetail
 
   """
-  How one month's bank lines were classified, per suggestion source:
-  taken as suggested, overridden, split, or chosen with no suggestion to
+  How one month's bank lines were classified, per suggestion source.
+  
+  Taken as suggested, overridden, split, or chosen with no suggestion to
   take, and the share that needed a person's choice. Counted from the
   lines committed in the month; lines posted before outcomes were recorded
   are `unstamped` and outside the share.
@@ -2491,6 +2492,16 @@ type Association {
   confidence: Float
   suggestedBy: String
   approvedBy: String
+
+  """
+  The arc this write removed in the same transaction, when the call named one in `replaces_association_id`.
+  """
+  replacedAssociationId: String
+
+  """
+  Closed months whose live statements now read through this arc while their stamped sets keep the answer as closed. Empty unless the write replaced an arc on an account with landed history in a closed month.
+  """
+  reclassifiedPeriods: [String!]!
 }
 
 """How a month's bank lines were classified, counted from the lines."""
@@ -3469,6 +3480,11 @@ type InformationBlockFactSet {
   Typed `FactProvenance` descriptor (discriminated on `origin`: pivot | schedule | derived | asserted | document | forecast | filed) recording how this FactSet was constructed. It describes the set, not each fact: a `pivot` set's mapped leaves aggregate posted line items, while its subtotals and derivations are computed from those leaves. Surfaced as JSON, mirroring how mechanics is exposed. Null when the FactSet carries no descriptor.
   """
   provenance: JSON
+
+  """
+  When the set was computed. For a close-stamped canonical set (`reportId` null, type `report`) this is the month as closed on this date: its facts keep that answer while a live render reads through the mapping arcs as they stand now.
+  """
+  createdAt: DateTime
 }
 
 """
