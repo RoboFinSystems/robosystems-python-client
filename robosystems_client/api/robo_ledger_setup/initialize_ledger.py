@@ -113,7 +113,9 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeInitializeLedgerResponse]:
   """Initialize Ledger
 
-   One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
+   One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized,
+  or if draft entries or unposted events are dated before the first open month, where no close would
+  post them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -166,7 +168,9 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeInitializeLedgerResponse | None:
   """Initialize Ledger
 
-   One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
+   One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized,
+  or if draft entries or unposted events are dated before the first open month, where no close would
+  post them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -214,7 +218,9 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeInitializeLedgerResponse]:
   """Initialize Ledger
 
-   One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
+   One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized,
+  or if draft entries or unposted events are dated before the first open month, where no close would
+  post them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -265,7 +271,9 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeInitializeLedgerResponse | None:
   """Initialize Ledger
 
-   One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized.
+   One-time setup: creates the fiscal calendar and seeds periods. Returns 409 if already initialized,
+  or if draft entries or unposted events are dated before the first open month, where no close would
+  post them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

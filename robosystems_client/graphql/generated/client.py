@@ -2,7 +2,9 @@ from typing import Any, Optional, Union
 
 from .base_client import BaseClient
 from .base_model import UNSET, UnsetType
+from .classification_stats import ClassificationStats
 from .enums import ReportDownloadFormat, ReportLifecycle
+from .flow_candidates import FlowCandidates
 from .get_information_block import GetInformationBlock
 from .get_investor_holdings import GetInvestorHoldings
 from .get_investor_portfolio_block import GetInvestorPortfolioBlock
@@ -61,6 +63,8 @@ from .list_library_taxonomies import ListLibraryTaxonomies
 from .list_library_taxonomy_arcs import ListLibraryTaxonomyArcs
 from .mapping_candidates import MappingCandidates
 from .operations import (
+  CLASSIFICATION_STATS_GQL,
+  FLOW_CANDIDATES_GQL,
   GET_INFORMATION_BLOCK_GQL,
   GET_INVESTOR_HOLDINGS_GQL,
   GET_INVESTOR_PORTFOLIO_BLOCK_GQL,
@@ -242,6 +246,32 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListInvestorSecurities.model_validate(data)
+
+  def classification_stats(
+    self, period: str, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
+  ) -> ClassificationStats:
+    variables: dict[str, object] = {"period": period, "entityId": entity_id}
+    response = self.execute(
+      query=CLASSIFICATION_STATS_GQL,
+      operation_name="ClassificationStats",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ClassificationStats.model_validate(data)
+
+  def flow_candidates(
+    self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
+  ) -> FlowCandidates:
+    variables: dict[str, object] = {"entityId": entity_id}
+    response = self.execute(
+      query=FLOW_CANDIDATES_GQL,
+      operation_name="FlowCandidates",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return FlowCandidates.model_validate(data)
 
   def get_information_block(
     self,

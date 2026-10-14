@@ -2244,6 +2244,74 @@ class TestAgentOps:
     assert result["agents_learned"] == 12
     assert mock_op.call_args.kwargs["body"].to_dict() == {"dry_run": True}
 
+  @patch("robosystems_client.clients.ledger_client.op_accept_suggestions")
+  def test_accept_suggestions(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "accept-suggestions",
+        {
+          "selected": 3,
+          "classified": 0,
+          "committed": 2,
+          "skipped": 1,
+          "truncated": False,
+          "dry_run": False,
+          "lines": [
+            {
+              "event_id": "evt_1",
+              "outcome": "committed",
+              "reason": None,
+              "detail": None,
+              "element_id": "elem_software",
+              "description": "GUSTO 10-01",
+            },
+            {
+              "event_id": "evt_2",
+              "outcome": "skipped",
+              "reason": "closed_period",
+              "detail": "Period 2026-08 is closed.",
+              "element_id": "elem_software",
+              "description": "GUSTO 08-12",
+            },
+          ],
+        },
+      )
+    )
+    client = LedgerClient(mock_config)
+    result = client.accept_suggestions(
+      graph_id,
+      {"entity_id": "ent_sub", "suggestion_source": "agent_default", "commit": True},
+    )
+    assert result["committed"] == 2
+    assert result["lines"][1]["reason"] == "closed_period"
+    sent = mock_op.call_args.kwargs["body"].to_dict()
+    assert sent["entity_id"] == "ent_sub"
+    assert sent["suggestion_source"] == "agent_default"
+    assert sent["commit"] is True
+
+  @patch("robosystems_client.clients.ledger_client.op_accept_suggestions")
+  def test_accept_suggestions_with_nothing_named(self, mock_op, mock_config, graph_id):
+    """No filters: every open suggested line of the group parent, classified
+    only — the server's own defaults."""
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "accept-suggestions",
+        {
+          "selected": 0,
+          "classified": 0,
+          "committed": 0,
+          "skipped": 0,
+          "truncated": False,
+          "dry_run": False,
+          "lines": [],
+        },
+      )
+    )
+    client = LedgerClient(mock_config)
+    client.accept_suggestions(graph_id)
+    # An empty body: every default is the server's.
+    assert mock_op.call_args.kwargs["body"].to_dict() == {}
+
 
 # ── Event handlers ────────────────────────────────────────────────────────
 
@@ -2662,6 +2730,92 @@ class TestInformationBlockReadOptions:
       "classification": "asset",
       "entityId": "ent_sub",
     }
+
+
+@pytest.mark.unit
+class TestFlowCandidates:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_flow_candidates(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "flowCandidates": [
+        {
+          "elementId": "el_capex",
+          "qname": "rs-gaap:PaymentsToAcquirePropertyPlantAndEquipment",
+          "name": "Payments to Acquire Property, Plant, and Equipment",
+          "activity": "investing",
+        },
+        {
+          "elementId": "el_std",
+          "qname": "rs-gaap:ProceedsFromShortTermDebt",
+          "name": "Proceeds from Short-Term Debt",
+          "activity": "financing",
+        },
+      ]
+    }
+    client = LedgerClient(mock_config)
+    rows = client.get_flow_candidates(graph_id)
+    assert [r.qname for r in rows] == [
+      "rs-gaap:PaymentsToAcquirePropertyPlantAndEquipment",
+      "rs-gaap:ProceedsFromShortTermDebt",
+    ]
+    assert rows[1].activity == "financing"
+    assert mock_execute.call_args[0][0] == graph_id
+    # No entity named: the read defaults to the group parent.
+    assert mock_execute.call_args[0][2] in (None, {})
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_flow_candidates_forward_the_entity(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"flowCandidates": []}
+    client = LedgerClient(mock_config)
+    client.get_flow_candidates(graph_id, entity_id="ent_sub")
+    assert mock_execute.call_args[0][2] == {"entityId": "ent_sub"}
+
+
+@pytest.mark.unit
+class TestClassificationStats:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_classification_stats(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "classificationStats": {
+        "period": "2026-10",
+        "entityId": "ent_sub",
+        "lines": 5,
+        "accepted": 2,
+        "overridden": 1,
+        "unsuggested": 1,
+        "split": 1,
+        "unstamped": 1,
+        "humanChoiceShare": 0.6,
+        "openLines": 2,
+        "bySource": [
+          {
+            "source": "agent_default",
+            "lines": 3,
+            "accepted": 2,
+            "overridden": 1,
+            "unsuggested": 0,
+            "split": 0,
+          }
+        ],
+      }
+    }
+    client = LedgerClient(mock_config)
+    stats = client.get_classification_stats(graph_id, "2026-10", entity_id="ent_sub")
+    assert stats is not None
+    assert (stats.lines, stats.accepted, stats.human_choice_share) == (5, 2, 0.6)
+    assert stats.by_source[0].source == "agent_default"
+    assert mock_execute.call_args[0][2] == {"period": "2026-10", "entityId": "ent_sub"}
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_classification_stats_default_to_the_parent_and_may_be_null(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"classificationStats": None}
+    client = LedgerClient(mock_config)
+    assert client.get_classification_stats(graph_id, "2026-10") is None
+    assert mock_execute.call_args[0][2] == {"period": "2026-10"}
 
 
 # ── Compute metrics ────────────────────────────────────────────────────

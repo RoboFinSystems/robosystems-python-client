@@ -1,0 +1,8 @@
+query FlowCandidates($entityId: String) {
+  flowCandidates(entityId: $entityId) {
+    elementId
+    qname
+    name
+    activity
+  }
+}

@@ -21,8 +21,9 @@ class RebuildScheduleRequest:
   monthly_amount / period bounds on the Structure's metadata).
 
   The historical-vs-in-scope split is re-derived from the CURRENT fiscal
-  calendar `closed_through`, so a rebuild re-scopes the schedule to
-  today's close state. Use this to pick up a fixed generator (e.g. the
+  calendar (months through its `closed_through`, or before its first
+  month, are history), so a rebuild re-scopes the schedule to today's
+  close state. Use this to pick up a fixed generator (e.g. the
   roll-forward direction fix) without orphaning obligations.
 
       Attributes:

@@ -460,6 +460,25 @@ type Query {
     entityId: String = null
   ): [Element!]!
 
+  """
+  The cash flow rows a line may be tagged with.
+  
+  A flow is a second classification beside the account: it overrides the
+  account's default flow on the cash flow and equity statements (a bank
+  line's `classified_flow_qname`, a journal-entry line's
+  `transaction_description_code`). These are the leaf investing and
+  financing rows of the entity's cash flow statement under its Reporting
+  Style - the set the write path accepts - so a picker built from them
+  never offers a row the statement cannot present. By section, investing
+  then financing, and by name within each.
+  """
+  flowCandidates(
+    """
+    The entity whose statement the rows come from. Omit for the group parent.
+    """
+    entityId: String = null
+  ): [FlowCandidate!]!
+
   """CoA elements not yet mapped to the reporting taxonomy."""
   unmappedElements(
     """The mapping to measure against. Omit for the active mapping."""
@@ -489,6 +508,21 @@ type Query {
     """The mapping structure's id."""
     mappingId: String!
   ): MappingDetail
+
+  """
+  How one month's bank lines were classified, per suggestion source:
+  taken as suggested, overridden, split, or chosen with no suggestion to
+  take, and the share that needed a person's choice. Counted from the
+  lines committed in the month; lines posted before outcomes were recorded
+  are `unstamped` and outside the share.
+  """
+  classificationStats(
+    """The month, `YYYY-MM`, over the lines' own dates."""
+    period: String!
+
+    """The entity whose lines to count. Omit for the group parent."""
+    entityId: String = null
+  ): ClassificationStats
 
   """Coverage stats for a mapping."""
   mappingCoverage(
@@ -2348,6 +2382,28 @@ type Element {
   externalSource: String
 }
 
+"""
+A cash flow row a line may be tagged with: the flow that overrides the
+account's default on the cash flow and equity statements.
+"""
+type FlowCandidate {
+  """The flow concept's element id."""
+  elementId: String!
+
+  """
+  The flow's qname, the value a bank line's `classified_flow_qname` and a journal-entry line's `transaction_description_code` take.
+  """
+  qname: String!
+
+  """The flow's name, as the statement labels its row."""
+  name: String!
+
+  """
+  `investing` or `financing`: the section of the statement the row sits in.
+  """
+  activity: String!
+}
+
 """An element not yet mapped to the reporting taxonomy."""
 type UnmappedElement {
   id: String!
@@ -2435,6 +2491,67 @@ type Association {
   confidence: Float
   suggestedBy: String
   approvedBy: String
+}
+
+"""How a month's bank lines were classified, counted from the lines."""
+type ClassificationStats {
+  """The month, `YYYY-MM`."""
+  period: String!
+
+  """The entity counted."""
+  entityId: String
+
+  """Committed bank lines in the month that recorded an outcome."""
+  lines: Int!
+
+  """Lines posted to the account suggested."""
+  accepted: Int!
+
+  """Lines posted to another account than the one suggested."""
+  overridden: Int!
+
+  """Lines that had no suggestion, so a person chose."""
+  unsuggested: Int!
+
+  """Lines split across accounts."""
+  split: Int!
+
+  """Committed lines from before outcomes were recorded; outside the share."""
+  unstamped: Int!
+
+  """
+  The share of lines that needed a person's choice: everything but `accepted`, over `lines`. Null when no line recorded an outcome.
+  """
+  humanChoiceShare: Float
+
+  """Lines in the month still captured or classified, not posted."""
+  openLines: Int!
+
+  """The same counts per suggestion source, largest first."""
+  bySource: [ClassificationSourceStats!]!
+}
+
+"""One suggestion source's share of a month's committed bank lines."""
+type ClassificationSourceStats {
+  """
+  Where the suggestion came from: `agent_default`, `tier0`, `ai`, or `none` for lines that carried no suggestion.
+  """
+  source: String!
+
+  """Committed lines whose suggestion came from here."""
+  lines: Int!
+
+  """Lines posted to the account suggested."""
+  accepted: Int!
+
+  """Lines posted to another account than the one suggested."""
+  overridden: Int!
+
+  """Lines that had no suggestion, so a person chose."""
+  unsuggested: Int!
+
+  """Lines split across accounts."""
+  split: Int!
 }
 
 """Coverage stats for a mapping."""
