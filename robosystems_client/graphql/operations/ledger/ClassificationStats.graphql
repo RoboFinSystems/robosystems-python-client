@@ -1,0 +1,22 @@
+query ClassificationStats($period: String!, $entityId: String) {
+  classificationStats(period: $period, entityId: $entityId) {
+    period
+    entityId
+    lines
+    accepted
+    overridden
+    unsuggested
+    split
+    unstamped
+    humanChoiceShare
+    openLines
+    bySource {
+      source
+      lines
+      accepted
+      overridden
+      unsuggested
+      split
+    }
+  }
+}

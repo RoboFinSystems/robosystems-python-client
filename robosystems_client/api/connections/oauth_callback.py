@@ -108,8 +108,10 @@ def sync_detailed(
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
   tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
-  directly. Plaid: pass Link's public_token as `code`; a bank already connected to the graph is
-  refused (409 DUPLICATE_BANK_CONNECTION).
+  directly. QuickBooks: only the company that built the graph's books may connect to them; another
+  company is refused (409 OTHER_COMPANY_BOOKS) before any token is issued. Plaid: pass Link's
+  public_token as `code`; a bank already connected to the graph is refused (409
+  DUPLICATE_BANK_CONNECTION).
 
   Args:
       graph_id (str):
@@ -148,8 +150,10 @@ def sync(
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
   tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
-  directly. Plaid: pass Link's public_token as `code`; a bank already connected to the graph is
-  refused (409 DUPLICATE_BANK_CONNECTION).
+  directly. QuickBooks: only the company that built the graph's books may connect to them; another
+  company is refused (409 OTHER_COMPANY_BOOKS) before any token is issued. Plaid: pass Link's
+  public_token as `code`; a bank already connected to the graph is refused (409
+  DUPLICATE_BANK_CONNECTION).
 
   Args:
       graph_id (str):
@@ -183,8 +187,10 @@ async def asyncio_detailed(
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
   tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
-  directly. Plaid: pass Link's public_token as `code`; a bank already connected to the graph is
-  refused (409 DUPLICATE_BANK_CONNECTION).
+  directly. QuickBooks: only the company that built the graph's books may connect to them; another
+  company is refused (409 OTHER_COMPANY_BOOKS) before any token is issued. Plaid: pass Link's
+  public_token as `code`; a bank already connected to the graph is refused (409
+  DUPLICATE_BANK_CONNECTION).
 
   Args:
       graph_id (str):
@@ -221,8 +227,10 @@ async def asyncio(
 
    Completes the OAuth authorization flow after provider redirect. Exchanges the authorization code for
   tokens, stores them, and triggers an initial sync. This is a redirect target — not typically called
-  directly. Plaid: pass Link's public_token as `code`; a bank already connected to the graph is
-  refused (409 DUPLICATE_BANK_CONNECTION).
+  directly. QuickBooks: only the company that built the graph's books may connect to them; another
+  company is refused (409 OTHER_COMPANY_BOOKS) before any token is issued. Plaid: pass Link's
+  public_token as `code`; a bank already connected to the graph is refused (409
+  DUPLICATE_BANK_CONNECTION).
 
   Args:
       graph_id (str):

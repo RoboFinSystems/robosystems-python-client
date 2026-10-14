@@ -121,11 +121,19 @@ def sync_detailed(
   alignment entry in an open period, local-only so it cannot travel back to the source system and
   apply the change twice; 'acknowledge' records that the difference was handled elsewhere and clears
   the flag without touching the ledger (a note is required, and reference_event_id should name the
-  entry that handled it). An alignment entry authored by hand can name the items it settles in
-  metadata.resolves_reconciling_items instead, and each is acknowledged against it as it is recorded —
-  an item left flagged would be caught up a second time. Omit disposition to take the default from
-  preview-reconciling-item. Clearing the flag means the item stays cleared: the event's payload is set
-  to the accepted one, so the next sync no longer sees a difference.
+  entry that handled it: a standing entry on the item's books, other than the item, and not already
+  counted for something else such as a catch-up or another settlement). An alignment entry authored by
+  hand can name the items it settles in metadata.resolves_reconciling_items instead, each as
+  {event_id, expected_drift_detected_at} carrying the preview's stamp, and each is acknowledged
+  against it as it is recorded — an item left flagged would be caught up a second time. What an
+  acknowledged entry booked counts toward the item's next change; voiding or reversing that entry, or
+  a catch-up, flags the item again, and superseding it by a correction that books exactly the item's
+  difference hands the settlement to the correction. An entry that settles a QuickBooks change has to
+  stay local, as a catch-up does: create it with metadata.publish_to_source false, booking only the
+  differences it settles; one that would publish or books more is refused, and so is a later patch
+  setting it to publish. Omit disposition to take the default from preview-reconciling-item. Clearing
+  the flag means the item stays cleared: the event's payload is set to the accepted one, so the next
+  sync no longer sees a difference.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -171,11 +179,19 @@ def sync(
   alignment entry in an open period, local-only so it cannot travel back to the source system and
   apply the change twice; 'acknowledge' records that the difference was handled elsewhere and clears
   the flag without touching the ledger (a note is required, and reference_event_id should name the
-  entry that handled it). An alignment entry authored by hand can name the items it settles in
-  metadata.resolves_reconciling_items instead, and each is acknowledged against it as it is recorded —
-  an item left flagged would be caught up a second time. Omit disposition to take the default from
-  preview-reconciling-item. Clearing the flag means the item stays cleared: the event's payload is set
-  to the accepted one, so the next sync no longer sees a difference.
+  entry that handled it: a standing entry on the item's books, other than the item, and not already
+  counted for something else such as a catch-up or another settlement). An alignment entry authored by
+  hand can name the items it settles in metadata.resolves_reconciling_items instead, each as
+  {event_id, expected_drift_detected_at} carrying the preview's stamp, and each is acknowledged
+  against it as it is recorded — an item left flagged would be caught up a second time. What an
+  acknowledged entry booked counts toward the item's next change; voiding or reversing that entry, or
+  a catch-up, flags the item again, and superseding it by a correction that books exactly the item's
+  difference hands the settlement to the correction. An entry that settles a QuickBooks change has to
+  stay local, as a catch-up does: create it with metadata.publish_to_source false, booking only the
+  differences it settles; one that would publish or books more is refused, and so is a later patch
+  setting it to publish. Omit disposition to take the default from preview-reconciling-item. Clearing
+  the flag means the item stays cleared: the event's payload is set to the accepted one, so the next
+  sync no longer sees a difference.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -216,11 +232,19 @@ async def asyncio_detailed(
   alignment entry in an open period, local-only so it cannot travel back to the source system and
   apply the change twice; 'acknowledge' records that the difference was handled elsewhere and clears
   the flag without touching the ledger (a note is required, and reference_event_id should name the
-  entry that handled it). An alignment entry authored by hand can name the items it settles in
-  metadata.resolves_reconciling_items instead, and each is acknowledged against it as it is recorded —
-  an item left flagged would be caught up a second time. Omit disposition to take the default from
-  preview-reconciling-item. Clearing the flag means the item stays cleared: the event's payload is set
-  to the accepted one, so the next sync no longer sees a difference.
+  entry that handled it: a standing entry on the item's books, other than the item, and not already
+  counted for something else such as a catch-up or another settlement). An alignment entry authored by
+  hand can name the items it settles in metadata.resolves_reconciling_items instead, each as
+  {event_id, expected_drift_detected_at} carrying the preview's stamp, and each is acknowledged
+  against it as it is recorded — an item left flagged would be caught up a second time. What an
+  acknowledged entry booked counts toward the item's next change; voiding or reversing that entry, or
+  a catch-up, flags the item again, and superseding it by a correction that books exactly the item's
+  difference hands the settlement to the correction. An entry that settles a QuickBooks change has to
+  stay local, as a catch-up does: create it with metadata.publish_to_source false, booking only the
+  differences it settles; one that would publish or books more is refused, and so is a later patch
+  setting it to publish. Omit disposition to take the default from preview-reconciling-item. Clearing
+  the flag means the item stays cleared: the event's payload is set to the accepted one, so the next
+  sync no longer sees a difference.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -264,11 +288,19 @@ async def asyncio(
   alignment entry in an open period, local-only so it cannot travel back to the source system and
   apply the change twice; 'acknowledge' records that the difference was handled elsewhere and clears
   the flag without touching the ledger (a note is required, and reference_event_id should name the
-  entry that handled it). An alignment entry authored by hand can name the items it settles in
-  metadata.resolves_reconciling_items instead, and each is acknowledged against it as it is recorded —
-  an item left flagged would be caught up a second time. Omit disposition to take the default from
-  preview-reconciling-item. Clearing the flag means the item stays cleared: the event's payload is set
-  to the accepted one, so the next sync no longer sees a difference.
+  entry that handled it: a standing entry on the item's books, other than the item, and not already
+  counted for something else such as a catch-up or another settlement). An alignment entry authored by
+  hand can name the items it settles in metadata.resolves_reconciling_items instead, each as
+  {event_id, expected_drift_detected_at} carrying the preview's stamp, and each is acknowledged
+  against it as it is recorded — an item left flagged would be caught up a second time. What an
+  acknowledged entry booked counts toward the item's next change; voiding or reversing that entry, or
+  a catch-up, flags the item again, and superseding it by a correction that books exactly the item's
+  difference hands the settlement to the correction. An entry that settles a QuickBooks change has to
+  stay local, as a catch-up does: create it with metadata.publish_to_source false, booking only the
+  differences it settles; one that would publish or books more is refused, and so is a later patch
+  setting it to publish. Omit disposition to take the default from preview-reconciling-item. Clearing
+  the flag means the item stays cleared: the event's payload is set to the accepted one, so the next
+  sync no longer sees a difference.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

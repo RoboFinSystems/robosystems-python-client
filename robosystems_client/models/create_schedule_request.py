@@ -35,10 +35,10 @@ class CreateScheduleRequest:
       schedule_metadata (None | ScheduleMetadataRequest | Unset):
       closed_through (datetime.date | None | Unset): Watermark for onboarding. Facts with period_end ≤ this date are
           flagged 'historical' and their schedule_entry_due obligations are emitted 'voided', so the close workflow starts
-          drafting at the first open period. Set this to the last day of the fiscal calendar's closed_through month
-          (calendar '2026-05' → '2026-05-31') whether those months were actually closed in RoboLedger or just baseline-
-          watermarked at initialization. Omitting it (when prior periods exist) leaves pre-watermark periods as 'pending'
-          obligations that block the first close.
+          drafting at the first open period. Defaults to the calendar's history end: the last day of its closed_through
+          month (calendar '2026-05' → '2026-05-31'), or the day before its first month when nothing has closed yet. An
+          earlier date is raised to it, since an obligation there could never post; set a later one only to treat more
+          months as already booked.
       source_transaction_id (None | str | Unset): Free-form reference to the originating GL transaction (e.g. an
           import ID, ledger entry ID, or external system key). Stored in artifact_mechanics for audit; no FK constraint.
   """

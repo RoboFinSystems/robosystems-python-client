@@ -90,6 +90,9 @@ from ..api.robo_ledger_ledger_events.preview_event_block import (
 from ..api.robo_ledger_ledger_events.learn_classification_defaults import (
   sync_detailed as op_learn_classification_defaults,
 )
+from ..api.robo_ledger_ledger_events.accept_suggestions import (
+  sync_detailed as op_accept_suggestions,
+)
 from ..api.robo_ledger_ledger_events.update_agent import (
   sync_detailed as op_update_agent,
 )
@@ -438,6 +441,14 @@ from ..graphql.generated.mapping_candidates import (
   MappingCandidates,
   MappingCandidatesMappingCandidates,
 )
+from ..graphql.generated.flow_candidates import (
+  FlowCandidates,
+  FlowCandidatesFlowCandidates,
+)
+from ..graphql.generated.classification_stats import (
+  ClassificationStats,
+  ClassificationStatsClassificationStats,
+)
 from ..graphql.generated.operations import (
   GET_INFORMATION_BLOCK_GQL,
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
@@ -480,6 +491,8 @@ from ..graphql.generated.operations import (
   LIST_LEDGER_TRANSACTIONS_GQL,
   LIST_LEDGER_UNMAPPED_ELEMENTS_GQL,
   MAPPING_CANDIDATES_GQL,
+  FLOW_CANDIDATES_GQL,
+  CLASSIFICATION_STATS_GQL,
 )
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
@@ -553,6 +566,8 @@ from ..models.learn_classification_defaults_request import (
 from ..models.learn_classification_defaults_response import (
   LearnClassificationDefaultsResponse,
 )
+from ..models.accept_suggestions_request import AcceptSuggestionsRequest
+from ..models.accept_suggestions_response import AcceptSuggestionsResponse
 from ..models.set_reconciliation_policy_request import SetReconciliationPolicyRequest
 from ..models.set_reconciliation_policy_request_statement_cycle_type_0 import (
   SetReconciliationPolicyRequestStatementCycleType0,
@@ -1420,6 +1435,21 @@ class LedgerClient:
     )
     return MappingCandidates.model_validate(data).mapping_candidates
 
+  def get_flow_candidates(
+    self, graph_id: str, *, entity_id: str | None = None
+  ) -> list[FlowCandidatesFlowCandidates]:
+    """The cash flow rows a line may be tagged with: the leaf investing and
+    financing rows of the entity's cash flow statement under its Reporting
+    Style (``entity_id``, default the group parent), by section then name.
+    A flow is a second classification beside the account — it overrides the
+    account's default flow on the cash flow and equity statements — and this
+    is the set the write path accepts, so a picker built from it never
+    offers a row the statement cannot present. The ``qname`` is what a bank
+    line's ``classified_flow_qname`` takes.
+    """
+    data = self._query(graph_id, FLOW_CANDIDATES_GQL, {"entityId": entity_id})
+    return FlowCandidates.model_validate(data).flow_candidates
+
   def create_mapping_association(
     self,
     graph_id: str,
@@ -2174,6 +2204,41 @@ class LedgerClient:
     return self._typed_result(
       "Learn classification defaults", envelope, LearnClassificationDefaultsResponse
     )
+
+  def accept_suggestions(
+    self, graph_id: str, body: dict[str, Any] | None = None
+  ) -> AcceptSuggestionsResponse:
+    """Take the suggestion on every open bank line the filters select, oldest
+    first, through the same update a single line goes through; ``commit``
+    posts them too. ``body`` takes the filters (``source``, ``agent_id``,
+    ``suggestion_source`` — ``agent_default`` for the learned ones — a date
+    range as ``occurred_from`` / ``occurred_to``, or explicit ``event_ids``),
+    ``entity_id``, ``commit``, ``dry_run`` and ``limit``. A line that cannot
+    be taken comes back ``skipped`` with its reason, never forced; the
+    result carries the counts, ``truncated``, and every line looked at.
+    """
+    request = AcceptSuggestionsRequest.from_dict(body or {})
+    response = op_accept_suggestions(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Accept suggestions", response)
+    return self._typed_result("Accept suggestions", envelope, AcceptSuggestionsResponse)
+
+  def get_classification_stats(
+    self, graph_id: str, period: str, *, entity_id: str | None = None
+  ) -> ClassificationStatsClassificationStats | None:
+    """How one month's bank lines were classified, per suggestion source:
+    taken as suggested, overridden, split, or chosen with no suggestion to
+    take, and the share that needed a person's choice. ``period`` is
+    ``YYYY-MM`` over the lines' own dates; ``entity_id`` defaults to the
+    group parent. Lines posted before outcomes were recorded are
+    ``unstamped``, outside the share. ``None`` when the ledger is not
+    initialized.
+    """
+    data = self._query(
+      graph_id, CLASSIFICATION_STATS_GQL, {"period": period, "entityId": entity_id}
+    )
+    return ClassificationStats.model_validate(data).classification_stats
 
   # ── Event handlers (DSL handler registry) ────────────────────────────
 

@@ -1,5 +1,9 @@
 """Contains all the data models used in inputs/outputs"""
 
+from .accept_suggestion_line import AcceptSuggestionLine
+from .accept_suggestion_line_outcome import AcceptSuggestionLineOutcome
+from .accept_suggestions_request import AcceptSuggestionsRequest
+from .accept_suggestions_response import AcceptSuggestionsResponse
 from .account_info import AccountInfo
 from .add_graph_member_request import AddGraphMemberRequest
 from .add_publish_list_members_operation import AddPublishListMembersOperation
@@ -449,6 +453,12 @@ from .operation_costs import OperationCosts
 from .operation_costs_ai_operations import OperationCostsAiOperations
 from .operation_costs_token_pricing import OperationCostsTokenPricing
 from .operation_envelope import OperationEnvelope
+from .operation_envelope_accept_suggestions_response import (
+  OperationEnvelopeAcceptSuggestionsResponse,
+)
+from .operation_envelope_accept_suggestions_response_status import (
+  OperationEnvelopeAcceptSuggestionsResponseStatus,
+)
 from .operation_envelope_assert_metrics_response import (
   OperationEnvelopeAssertMetricsResponse,
 )
@@ -1149,6 +1159,10 @@ from .view_response import ViewResponse
 from .view_response_summary_type_0 import ViewResponseSummaryType0
 
 __all__ = (
+  "AcceptSuggestionLine",
+  "AcceptSuggestionLineOutcome",
+  "AcceptSuggestionsRequest",
+  "AcceptSuggestionsResponse",
   "AccountInfo",
   "AddGraphMemberRequest",
   "AddPublishListMembersOperation",
@@ -1512,6 +1526,8 @@ __all__ = (
   "OperationCostsAiOperations",
   "OperationCostsTokenPricing",
   "OperationEnvelope",
+  "OperationEnvelopeAcceptSuggestionsResponse",
+  "OperationEnvelopeAcceptSuggestionsResponseStatus",
   "OperationEnvelopeAssertMetricsResponse",
   "OperationEnvelopeAssertMetricsResponseStatus",
   "OperationEnvelopeAssociationResponse",

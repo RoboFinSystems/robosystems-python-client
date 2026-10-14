@@ -1,4 +1,6 @@
 __all__ = [
+  "CLASSIFICATION_STATS_GQL",
+  "FLOW_CANDIDATES_GQL",
   "GET_INFORMATION_BLOCK_GQL",
   "GET_INVESTOR_HOLDINGS_GQL",
   "GET_INVESTOR_PORTFOLIO_BLOCK_GQL",
@@ -274,6 +276,42 @@ query ListInvestorSecurities($entityId: String, $securityType: String, $isActive
       offset
       hasMore
     }
+  }
+}
+"""
+
+CLASSIFICATION_STATS_GQL = """
+query ClassificationStats($period: String!, $entityId: String) {
+  classificationStats(period: $period, entityId: $entityId) {
+    period
+    entityId
+    lines
+    accepted
+    overridden
+    unsuggested
+    split
+    unstamped
+    humanChoiceShare
+    openLines
+    bySource {
+      source
+      lines
+      accepted
+      overridden
+      unsuggested
+      split
+    }
+  }
+}
+"""
+
+FLOW_CANDIDATES_GQL = """
+query FlowCandidates($entityId: String) {
+  flowCandidates(entityId: $entityId) {
+    elementId
+    qname
+    name
+    activity
   }
 }
 """

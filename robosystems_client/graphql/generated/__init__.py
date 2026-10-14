@@ -1,5 +1,10 @@
 from .base_client import BaseClient
 from .base_model import BaseModel, Upload
+from .classification_stats import (
+  ClassificationStats,
+  ClassificationStatsClassificationStats,
+  ClassificationStatsClassificationStatsBySource,
+)
 from .client import Client
 from .enums import ReportDownloadFormat, ReportLifecycle
 from .exceptions import (
@@ -9,6 +14,7 @@ from .exceptions import (
   GraphQLClientHttpError,
   GraphQLClientInvalidResponseError,
 )
+from .flow_candidates import FlowCandidates, FlowCandidatesFlowCandidates
 from .get_information_block import (
   GetInformationBlock,
   GetInformationBlockInformationBlock,
@@ -340,6 +346,8 @@ from .list_library_taxonomy_arcs import (
 )
 from .mapping_candidates import MappingCandidates, MappingCandidatesMappingCandidates
 from .operations import (
+  CLASSIFICATION_STATS_GQL,
+  FLOW_CANDIDATES_GQL,
   GET_INFORMATION_BLOCK_GQL,
   GET_INVESTOR_HOLDINGS_GQL,
   GET_INVESTOR_PORTFOLIO_BLOCK_GQL,
@@ -409,7 +417,14 @@ from .search_library_elements import (
 __all__ = [
   "BaseClient",
   "BaseModel",
+  "CLASSIFICATION_STATS_GQL",
+  "ClassificationStats",
+  "ClassificationStatsClassificationStats",
+  "ClassificationStatsClassificationStatsBySource",
   "Client",
+  "FLOW_CANDIDATES_GQL",
+  "FlowCandidates",
+  "FlowCandidatesFlowCandidates",
   "GET_INFORMATION_BLOCK_GQL",
   "GET_INVESTOR_HOLDINGS_GQL",
   "GET_INVESTOR_PORTFOLIO_BLOCK_GQL",
