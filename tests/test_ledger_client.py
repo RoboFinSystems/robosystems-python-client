@@ -767,6 +767,30 @@ class TestJournalEntries:
     assert metadata["status"] == "draft"
 
   @patch("robosystems_client.clients.ledger_client.op_create_event_block")
+  def test_create_journal_entry_names_its_entity(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(_envelope("create-event-block", {}))
+    client = LedgerClient(mock_config)
+    client.create_journal_entry(
+      graph_id,
+      posting_date="2026-03-31",
+      memo="Opening balance",
+      line_items=self._LINE_ITEMS,
+      entity_id="ent_sub",
+    )
+    assert mock_op.call_args.kwargs["body"].entity_id == "ent_sub"
+
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
+  def test_create_journal_entry_leaves_the_entity_to_the_server(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(_envelope("create-event-block", {}))
+    client = LedgerClient(mock_config)
+    client.create_journal_entry(
+      graph_id, posting_date="2026-03-31", memo="X", line_items=self._LINE_ITEMS
+    )
+    assert mock_op.call_args.kwargs["body"].entity_id is UNSET
+
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
   def test_create_journal_entry_idempotency_key_forwarded(
     self, mock_op, mock_config, graph_id
   ):
