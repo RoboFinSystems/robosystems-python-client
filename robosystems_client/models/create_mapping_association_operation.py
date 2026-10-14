@@ -38,6 +38,13 @@ class CreateMappingAssociationOperation:
               0.70–0.89 flagged for review, <0.70 skipped.
           suggested_by (None | str | Unset): Source of the suggestion (e.g., 'mapping_agent', 'user'). Captured for audit;
               not used by the runtime.
+          replaces_association_id (None | str | Unset): The account's current mapping arc in this structure, removed in
+              the same write: a remap in one call. When the account has landed history in a closed month the move is judged as
+              a reclassification: allowed when the new concept sits on the same primary statement as the old one (the stamped
+              statements keep the answer as closed; live renders follow the new arc; `reclassified_periods` names the months),
+              refused when it crosses one.
+          reason (None | str | Unset): Why the account is reclassified. Recorded on the new arc beside the months it
+              reaches.
   """
 
   from_element_id: str
@@ -50,6 +57,8 @@ class CreateMappingAssociationOperation:
   weight: float | None | Unset = UNSET
   confidence: float | None | Unset = UNSET
   suggested_by: None | str | Unset = UNSET
+  replaces_association_id: None | str | Unset = UNSET
+  reason: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -87,6 +96,18 @@ class CreateMappingAssociationOperation:
     else:
       suggested_by = self.suggested_by
 
+    replaces_association_id: None | str | Unset
+    if isinstance(self.replaces_association_id, Unset):
+      replaces_association_id = UNSET
+    else:
+      replaces_association_id = self.replaces_association_id
+
+    reason: None | str | Unset
+    if isinstance(self.reason, Unset):
+      reason = UNSET
+    else:
+      reason = self.reason
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -106,6 +127,10 @@ class CreateMappingAssociationOperation:
       field_dict["confidence"] = confidence
     if suggested_by is not UNSET:
       field_dict["suggested_by"] = suggested_by
+    if replaces_association_id is not UNSET:
+      field_dict["replaces_association_id"] = replaces_association_id
+    if reason is not UNSET:
+      field_dict["reason"] = reason
 
     return field_dict
 
@@ -163,6 +188,26 @@ class CreateMappingAssociationOperation:
 
     suggested_by = _parse_suggested_by(d.pop("suggested_by", UNSET))
 
+    def _parse_replaces_association_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    replaces_association_id = _parse_replaces_association_id(
+      d.pop("replaces_association_id", UNSET)
+    )
+
+    def _parse_reason(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    reason = _parse_reason(d.pop("reason", UNSET))
+
     create_mapping_association_operation = cls(
       from_element_id=from_element_id,
       to_element_id=to_element_id,
@@ -172,6 +217,8 @@ class CreateMappingAssociationOperation:
       weight=weight,
       confidence=confidence,
       suggested_by=suggested_by,
+      replaces_association_id=replaces_association_id,
+      reason=reason,
     )
 
     create_mapping_association_operation.additional_properties = d

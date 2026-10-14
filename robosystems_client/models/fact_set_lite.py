@@ -40,6 +40,9 @@ class FactSetLite:
               constructed. It describes the set, not each fact: a `pivot` set's mapped leaves aggregate posted line items,
               while its subtotals and derivations are computed from those leaves. Surfaced as JSON, mirroring how mechanics is
               exposed. Null when the FactSet carries no descriptor.
+          created_at (datetime.datetime | None | Unset): When the set was computed. For a close-stamped canonical set
+              (`report_id` null, type `report`) this is the month as closed on this date: its facts keep that answer while a
+              live render reads through the mapping arcs as they stand now.
   """
 
   id: str
@@ -51,6 +54,7 @@ class FactSetLite:
   report_id: None | str | Unset = UNSET
   scenario_id: None | str | Unset = UNSET
   provenance: FactSetLiteProvenanceType0 | None | Unset = UNSET
+  created_at: datetime.datetime | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -98,6 +102,14 @@ class FactSetLite:
     else:
       provenance = self.provenance
 
+    created_at: None | str | Unset
+    if isinstance(self.created_at, Unset):
+      created_at = UNSET
+    elif isinstance(self.created_at, datetime.datetime):
+      created_at = self.created_at.isoformat()
+    else:
+      created_at = self.created_at
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -118,6 +130,8 @@ class FactSetLite:
       field_dict["scenario_id"] = scenario_id
     if provenance is not UNSET:
       field_dict["provenance"] = provenance
+    if created_at is not UNSET:
+      field_dict["created_at"] = created_at
 
     return field_dict
 
@@ -195,6 +209,23 @@ class FactSetLite:
 
     provenance = _parse_provenance(d.pop("provenance", UNSET))
 
+    def _parse_created_at(data: object) -> datetime.datetime | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        created_at_type_0 = datetime.datetime.fromisoformat(data)
+
+        return created_at_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.datetime | None | Unset, data)
+
+    created_at = _parse_created_at(d.pop("created_at", UNSET))
+
     fact_set_lite = cls(
       id=id,
       period_end=period_end,
@@ -205,6 +236,7 @@ class FactSetLite:
       report_id=report_id,
       scenario_id=scenario_id,
       provenance=provenance,
+      created_at=created_at,
     )
 
     fact_set_lite.additional_properties = d
