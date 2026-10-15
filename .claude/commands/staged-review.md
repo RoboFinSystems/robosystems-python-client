@@ -47,7 +47,7 @@ Post-1.0, the emitted type surface **is** the contract. For anything staged here
 ## Packaging
 
 - Changes to `pyproject.toml` — dependency pins, optional extras, `requires-python`, included packages, `py.typed` — change **what ships and who can install it**. A dropped `py.typed` silently turns a typed SDK into an untyped one for every consumer; a narrowed `requires-python` locks out supported versions (3.11–3.13).
-- Never stage a version bump in `pyproject.toml` in a feature branch: `create-release.yml` owns the bump on `main`, and pushing `release/**` is what triggers `publish.yml`.
+- Never stage a version bump in `pyproject.toml` in a feature branch: `create-release.yml` owns the bump on `main` and publishes from the tag it cuts.
 
 ## Testing
 
