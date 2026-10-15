@@ -3,7 +3,7 @@ name = "robosystems-client"
 version = "2.14.2"
 description = "Python client library for the RoboSystems financial intelligence platform"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 authors = [
     {name = "RFS LLC"},
 ]
@@ -20,9 +20,9 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Office/Business :: Financial",
     "Topic :: Office/Business :: Financial :: Accounting",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -82,7 +82,7 @@ include = [
 include = ["robosystems_client/clients"]
 exclude = ["tests"]
 extraPaths = ["."]
-pythonVersion = "3.13"
+pythonVersion = "3.12"
 venvPath = "."
 venv = ".venv"
 typeCheckingMode = "standard"
