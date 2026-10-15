@@ -13,6 +13,7 @@ from ..models.update_journal_entry_request_type_type_0 import (
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+  from ..models.journal_entry_line_flow import JournalEntryLineFlow
   from ..models.journal_entry_line_item_input import JournalEntryLineItemInput
 
 
@@ -21,8 +22,11 @@ T = TypeVar("T", bound="UpdateJournalEntryRequest")
 
 @_attrs_define
 class UpdateJournalEntryRequest:
-  """Update a draft journal entry. Posted entries cannot be updated —
-  create a reversal and a corrected entry instead.
+  """Update a draft journal entry, or re-tag any entry's flows.
+
+  Posted entries accept only `line_flows`: a flow moves no balance, so it
+  changes in place, closed month or not. Anything else on a posted entry is
+  a reversal and a corrected entry.
 
   Omitted fields are left unchanged. If `line_items` is provided, the
   existing line items are replaced entirely (atomic delete + insert)
@@ -37,6 +41,11 @@ class UpdateJournalEntryRequest:
               by close-period.
           line_items (list[JournalEntryLineItemInput] | None | Unset): Replacement line items. Whole-list replacement (not
               patch). The new set must still balance (total_debit == total_credit). Omit to leave existing lines untouched.
+          line_flows (list[JournalEntryLineFlow] | None | Unset): Re-tag lines in place: each named line takes its
+              `flow_qname` (null clears it), and when every line on that side of the entry then carries one flow, the lines on
+              the other side not named here take it too, so the cash line and the account line agree. Allowed on a posted
+              entry, closed month included, and the only change one accepts; recorded on the entry as `flow_retags`. Not
+              combinable with `line_items`, which replaces the lines (set `flow_qname` on them).
   """
 
   entry_id: str
@@ -44,6 +53,7 @@ class UpdateJournalEntryRequest:
   memo: None | str | Unset = UNSET
   type_: None | Unset | UpdateJournalEntryRequestTypeType0 = UNSET
   line_items: list[JournalEntryLineItemInput] | None | Unset = UNSET
+  line_flows: list[JournalEntryLineFlow] | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -83,6 +93,18 @@ class UpdateJournalEntryRequest:
     else:
       line_items = self.line_items
 
+    line_flows: list[dict[str, Any]] | None | Unset
+    if isinstance(self.line_flows, Unset):
+      line_flows = UNSET
+    elif isinstance(self.line_flows, list):
+      line_flows = []
+      for line_flows_type_0_item_data in self.line_flows:
+        line_flows_type_0_item = line_flows_type_0_item_data.to_dict()
+        line_flows.append(line_flows_type_0_item)
+
+    else:
+      line_flows = self.line_flows
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -98,11 +120,14 @@ class UpdateJournalEntryRequest:
       field_dict["type"] = type_
     if line_items is not UNSET:
       field_dict["line_items"] = line_items
+    if line_flows is not UNSET:
+      field_dict["line_flows"] = line_flows
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.journal_entry_line_flow import JournalEntryLineFlow
     from ..models.journal_entry_line_item_input import JournalEntryLineItemInput
 
     d = dict(src_dict)
@@ -177,12 +202,37 @@ class UpdateJournalEntryRequest:
 
     line_items = _parse_line_items(d.pop("line_items", UNSET))
 
+    def _parse_line_flows(data: object) -> list[JournalEntryLineFlow] | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, list):
+          raise TypeError()
+        line_flows_type_0 = []
+        _line_flows_type_0 = data
+        for line_flows_type_0_item_data in _line_flows_type_0:
+          line_flows_type_0_item = JournalEntryLineFlow.from_dict(
+            line_flows_type_0_item_data
+          )
+
+          line_flows_type_0.append(line_flows_type_0_item)
+
+        return line_flows_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(list[JournalEntryLineFlow] | None | Unset, data)
+
+    line_flows = _parse_line_flows(d.pop("line_flows", UNSET))
+
     update_journal_entry_request = cls(
       entry_id=entry_id,
       posting_date=posting_date,
       memo=memo,
       type_=type_,
       line_items=line_items,
+      line_flows=line_flows,
     )
 
     update_journal_entry_request.additional_properties = d

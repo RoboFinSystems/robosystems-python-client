@@ -29,6 +29,11 @@ class JournalEntryLineItemInput:
           debit_amount (int | Unset): Debit amount in cents. Must be 0 if `credit_amount` > 0. Default: 0.
           credit_amount (int | Unset): Credit amount in cents. Must be 0 if `debit_amount` > 0. Default: 0.
           description (None | str | Unset): Per-line memo (overrides the entry-level memo on this line).
+          flow_qname (None | str | Unset): The cash flow row this line's cash belongs to, an rs-gaap flow qname
+              (`flowCandidates(entityId)` lists the rows this company's statement offers). Only for a loan drawn or repaid,
+              capital put in or taken out, an asset bought or sold; omitted, the account's default flow applies. A flow set on
+              one side of the entry tags the untagged lines on the other: the cash flow statement reads the cash line and the
+              roll-forwards read the account line. Refused when it is not a row of the entity's cash flow statement.
           metadata (JournalEntryLineItemInputMetadataType0 | None | Unset): Optional per-line metadata stamped on
               `LineItem.metadata_`. Used to carry source-system fields the standard columns don't cover — e.g. an external
               flow-tag code that drives rollforward attribution (`transaction_description_code`), an external memo, or a cost-
@@ -40,6 +45,7 @@ class JournalEntryLineItemInput:
   debit_amount: int | Unset = 0
   credit_amount: int | Unset = 0
   description: None | str | Unset = UNSET
+  flow_qname: None | str | Unset = UNSET
   metadata: JournalEntryLineItemInputMetadataType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -59,6 +65,12 @@ class JournalEntryLineItemInput:
       description = UNSET
     else:
       description = self.description
+
+    flow_qname: None | str | Unset
+    if isinstance(self.flow_qname, Unset):
+      flow_qname = UNSET
+    else:
+      flow_qname = self.flow_qname
 
     metadata: dict[str, Any] | None | Unset
     if isinstance(self.metadata, Unset):
@@ -81,6 +93,8 @@ class JournalEntryLineItemInput:
       field_dict["credit_amount"] = credit_amount
     if description is not UNSET:
       field_dict["description"] = description
+    if flow_qname is not UNSET:
+      field_dict["flow_qname"] = flow_qname
     if metadata is not UNSET:
       field_dict["metadata"] = metadata
 
@@ -108,6 +122,15 @@ class JournalEntryLineItemInput:
 
     description = _parse_description(d.pop("description", UNSET))
 
+    def _parse_flow_qname(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    flow_qname = _parse_flow_qname(d.pop("flow_qname", UNSET))
+
     def _parse_metadata(
       data: object,
     ) -> JournalEntryLineItemInputMetadataType0 | None | Unset:
@@ -132,6 +155,7 @@ class JournalEntryLineItemInput:
       debit_amount=debit_amount,
       credit_amount=credit_amount,
       description=description,
+      flow_qname=flow_qname,
       metadata=metadata,
     )
 

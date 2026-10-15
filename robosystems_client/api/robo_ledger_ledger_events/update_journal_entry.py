@@ -113,10 +113,12 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeJournalEntryResponse]:
   """Update Journal Entry
 
-   Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
-  block(event_type='journal_entry_reversed')`. If line_items is provided, existing line items are
-  replaced atomically, the new set must balance, and a line on a retired (`is_active=false`) account
-  is refused.
+   Update a draft journal entry, or re-tag any entry's flows. If line_items is provided, existing line
+  items are replaced atomically, the new set must balance, and a line on a retired (`is_active=false`)
+  account is refused. `line_flows` sets the cash flow row of the named lines in place, on a posted
+  entry too, closed month included, since a flow moves no balance; the lines on the other side of the
+  entry follow when that side carries one flow. Posted entries accept nothing else and are corrected
+  via `create-event-block(event_type='journal_entry_reversed')`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -124,9 +126,12 @@ def sync_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateJournalEntryRequest): Update a draft journal entry. Posted entries cannot be
-          updated —
-          create a reversal and a corrected entry instead.
+      body (UpdateJournalEntryRequest): Update a draft journal entry, or re-tag any entry's
+          flows.
+
+          Posted entries accept only `line_flows`: a flow moves no balance, so it
+          changes in place, closed month or not. Anything else on a posted entry is
+          a reversal and a corrected entry.
 
           Omitted fields are left unchanged. If `line_items` is provided, the
           existing line items are replaced entirely (atomic delete + insert)
@@ -163,10 +168,12 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeJournalEntryResponse | None:
   """Update Journal Entry
 
-   Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
-  block(event_type='journal_entry_reversed')`. If line_items is provided, existing line items are
-  replaced atomically, the new set must balance, and a line on a retired (`is_active=false`) account
-  is refused.
+   Update a draft journal entry, or re-tag any entry's flows. If line_items is provided, existing line
+  items are replaced atomically, the new set must balance, and a line on a retired (`is_active=false`)
+  account is refused. `line_flows` sets the cash flow row of the named lines in place, on a posted
+  entry too, closed month included, since a flow moves no balance; the lines on the other side of the
+  entry follow when that side carries one flow. Posted entries accept nothing else and are corrected
+  via `create-event-block(event_type='journal_entry_reversed')`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -174,9 +181,12 @@ def sync(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateJournalEntryRequest): Update a draft journal entry. Posted entries cannot be
-          updated —
-          create a reversal and a corrected entry instead.
+      body (UpdateJournalEntryRequest): Update a draft journal entry, or re-tag any entry's
+          flows.
+
+          Posted entries accept only `line_flows`: a flow moves no balance, so it
+          changes in place, closed month or not. Anything else on a posted entry is
+          a reversal and a corrected entry.
 
           Omitted fields are left unchanged. If `line_items` is provided, the
           existing line items are replaced entirely (atomic delete + insert)
@@ -208,10 +218,12 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeJournalEntryResponse]:
   """Update Journal Entry
 
-   Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
-  block(event_type='journal_entry_reversed')`. If line_items is provided, existing line items are
-  replaced atomically, the new set must balance, and a line on a retired (`is_active=false`) account
-  is refused.
+   Update a draft journal entry, or re-tag any entry's flows. If line_items is provided, existing line
+  items are replaced atomically, the new set must balance, and a line on a retired (`is_active=false`)
+  account is refused. `line_flows` sets the cash flow row of the named lines in place, on a posted
+  entry too, closed month included, since a flow moves no balance; the lines on the other side of the
+  entry follow when that side carries one flow. Posted entries accept nothing else and are corrected
+  via `create-event-block(event_type='journal_entry_reversed')`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -219,9 +231,12 @@ async def asyncio_detailed(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateJournalEntryRequest): Update a draft journal entry. Posted entries cannot be
-          updated —
-          create a reversal and a corrected entry instead.
+      body (UpdateJournalEntryRequest): Update a draft journal entry, or re-tag any entry's
+          flows.
+
+          Posted entries accept only `line_flows`: a flow moves no balance, so it
+          changes in place, closed month or not. Anything else on a posted entry is
+          a reversal and a corrected entry.
 
           Omitted fields are left unchanged. If `line_items` is provided, the
           existing line items are replaced entirely (atomic delete + insert)
@@ -256,10 +271,12 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeJournalEntryResponse | None:
   """Update Journal Entry
 
-   Update a draft journal entry. Posted entries are immutable and must be corrected via `create-event-
-  block(event_type='journal_entry_reversed')`. If line_items is provided, existing line items are
-  replaced atomically, the new set must balance, and a line on a retired (`is_active=false`) account
-  is refused.
+   Update a draft journal entry, or re-tag any entry's flows. If line_items is provided, existing line
+  items are replaced atomically, the new set must balance, and a line on a retired (`is_active=false`)
+  account is refused. `line_flows` sets the cash flow row of the named lines in place, on a posted
+  entry too, closed month included, since a flow moves no balance; the lines on the other side of the
+  entry follow when that side carries one flow. Posted entries accept nothing else and are corrected
+  via `create-event-block(event_type='journal_entry_reversed')`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -267,9 +284,12 @@ async def asyncio(
   Args:
       graph_id (str):
       idempotency_key (None | str | Unset):
-      body (UpdateJournalEntryRequest): Update a draft journal entry. Posted entries cannot be
-          updated —
-          create a reversal and a corrected entry instead.
+      body (UpdateJournalEntryRequest): Update a draft journal entry, or re-tag any entry's
+          flows.
+
+          Posted entries accept only `line_flows`: a flow moves no balance, so it
+          changes in place, closed month or not. Anything else on a posted entry is
+          a reversal and a corrected entry.
 
           Omitted fields are left unchanged. If `line_items` is provided, the
           existing line items are replaced entirely (atomic delete + insert)

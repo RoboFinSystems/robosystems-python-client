@@ -47,6 +47,7 @@ class ListLedgerJournalEntriesJournalEntriesEntriesLineItems(BaseModel):
   credit_amount: float = Field(alias="creditAmount")
   description: Optional[str]
   line_order: int = Field(alias="lineOrder")
+  flow_qname: Optional[str] = Field(alias="flowQname")
 
 
 class ListLedgerJournalEntriesJournalEntriesPagination(BaseModel):
