@@ -2257,6 +2257,7 @@ type LedgerLineItem {
   creditAmount: Float!
   description: String
   lineOrder: Int!
+  flowQname: String
 }
 
 """

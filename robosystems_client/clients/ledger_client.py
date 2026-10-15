@@ -1992,6 +1992,12 @@ class LedgerClient:
     ``entity_id`` names the entity whose books the entry goes into; omitted,
     the group parent's.
 
+    A line dict may carry ``flow_qname``, the cash flow row its cash belongs
+    to (a ``qname`` from ``get_flow_candidates``): only for a loan drawn or
+    repaid, capital put in or taken out, an asset bought or sold. A flow on
+    one side of the entry tags the untagged lines on the other; one that is
+    not a row of the entity's statement is refused.
+
     Returns the EventBlockEnvelope (event row fields).
     """
     metadata: dict[str, Any] = {
@@ -2024,7 +2030,13 @@ class LedgerClient:
   def update_journal_entry(
     self, graph_id: str, body: dict[str, Any]
   ) -> JournalEntryResponse:
-    """Update a draft journal entry. Posted entries are immutable."""
+    """Update a draft journal entry, or re-tag any entry's flows.
+
+    ``line_flows`` (``[{"line_id", "flow_qname"}]``) sets the cash flow row
+    of the named lines in place, on a posted entry too, closed month
+    included, since a flow moves no balance; the lines on the other side of
+    the entry follow. It is the only change a posted entry accepts.
+    """
     request = UpdateJournalEntryRequest.from_dict(body)
     response = op_update_journal_entry(
       graph_id=graph_id, body=request, client=self._get_client()

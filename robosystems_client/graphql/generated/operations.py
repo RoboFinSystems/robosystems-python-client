@@ -1659,6 +1659,7 @@ query ListLedgerJournalEntries($startDate: Date, $endDate: Date, $status: String
         creditAmount
         description
         lineOrder
+        flowQname
       }
     }
     pagination {

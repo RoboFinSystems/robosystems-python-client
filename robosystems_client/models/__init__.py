@@ -375,6 +375,7 @@ from .invitation_preview_response import InvitationPreviewResponse
 from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
+from .journal_entry_line_flow import JournalEntryLineFlow
 from .journal_entry_line_item_input import JournalEntryLineItemInput
 from .journal_entry_line_item_input_metadata_type_0 import (
   JournalEntryLineItemInputMetadataType0,
@@ -1460,6 +1461,7 @@ __all__ = (
   "Invoice",
   "InvoiceLineItem",
   "InvoicesResponse",
+  "JournalEntryLineFlow",
   "JournalEntryLineItemInput",
   "JournalEntryLineItemInputMetadataType0",
   "JournalEntryLineItemResponse",

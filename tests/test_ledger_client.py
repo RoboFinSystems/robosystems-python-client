@@ -841,6 +841,32 @@ class TestJournalEntries:
     assert result["memo"] == "Updated memo"
     assert mock_op.call_args.kwargs["graph_id"] == graph_id
 
+  @patch("robosystems_client.clients.ledger_client.op_update_journal_entry")
+  def test_update_journal_entry_re_tags_lines_in_place(
+    self, mock_op, mock_config, graph_id
+  ):
+    flow = "rs-gaap:ProceedsFromIssuanceOfLongTermDebt"
+    envelope = _envelope(
+      "update-journal-entry",
+      {
+        "id": "je_1",
+        "status": "posted",
+        "line_items": [
+          {"id": "li_1", "flow_qname": flow},
+          {"id": "li_2", "flow_qname": flow},
+        ],
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.update_journal_entry(
+      graph_id,
+      {"entry_id": "je_1", "line_flows": [{"line_id": "li_2", "flow_qname": flow}]},
+    )
+    sent = mock_op.call_args.kwargs["body"]
+    assert [(f.line_id, f.flow_qname) for f in sent.line_flows] == [("li_2", flow)]
+    assert [li["flow_qname"] for li in result["line_items"]] == [flow, flow]
+
   @patch("robosystems_client.clients.ledger_client.op_delete_journal_entry")
   def test_delete_journal_entry_returns_deleted_sentinel(
     self, mock_op, mock_config, graph_id
@@ -1097,6 +1123,7 @@ class TestLedgerReadsAdditional:
                 "creditAmount": 0.0,
                 "description": None,
                 "lineOrder": 1,
+                "flowQname": None,
               }
             ],
           }

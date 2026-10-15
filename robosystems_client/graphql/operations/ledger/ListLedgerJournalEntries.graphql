@@ -27,7 +27,7 @@ query ListLedgerJournalEntries(
       totalDebit totalCredit balanced
       lineItems {
         id accountId accountName accountCode
-        debitAmount creditAmount description lineOrder
+        debitAmount creditAmount description lineOrder flowQname
       }
     }
     pagination { total limit offset hasMore }
