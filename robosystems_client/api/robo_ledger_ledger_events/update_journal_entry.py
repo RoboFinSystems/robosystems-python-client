@@ -117,8 +117,8 @@ def sync_detailed(
   items are replaced atomically, the new set must balance, and a line on a retired (`is_active=false`)
   account is refused. `line_flows` sets the cash flow row of the named lines in place, on a posted
   entry too, closed month included, since a flow moves no balance; the lines on the other side of the
-  entry follow when that side carries one flow. Posted entries accept nothing else and are corrected
-  via `create-event-block(event_type='journal_entry_reversed')`.
+  entry that were in step with it follow. Posted entries accept nothing else and are corrected via
+  `create-event-block(event_type='journal_entry_reversed')`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -172,8 +172,8 @@ def sync(
   items are replaced atomically, the new set must balance, and a line on a retired (`is_active=false`)
   account is refused. `line_flows` sets the cash flow row of the named lines in place, on a posted
   entry too, closed month included, since a flow moves no balance; the lines on the other side of the
-  entry follow when that side carries one flow. Posted entries accept nothing else and are corrected
-  via `create-event-block(event_type='journal_entry_reversed')`.
+  entry that were in step with it follow. Posted entries accept nothing else and are corrected via
+  `create-event-block(event_type='journal_entry_reversed')`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -222,8 +222,8 @@ async def asyncio_detailed(
   items are replaced atomically, the new set must balance, and a line on a retired (`is_active=false`)
   account is refused. `line_flows` sets the cash flow row of the named lines in place, on a posted
   entry too, closed month included, since a flow moves no balance; the lines on the other side of the
-  entry follow when that side carries one flow. Posted entries accept nothing else and are corrected
-  via `create-event-block(event_type='journal_entry_reversed')`.
+  entry that were in step with it follow. Posted entries accept nothing else and are corrected via
+  `create-event-block(event_type='journal_entry_reversed')`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -275,8 +275,8 @@ async def asyncio(
   items are replaced atomically, the new set must balance, and a line on a retired (`is_active=false`)
   account is refused. `line_flows` sets the cash flow row of the named lines in place, on a posted
   entry too, closed month included, since a flow moves no balance; the lines on the other side of the
-  entry follow when that side carries one flow. Posted entries accept nothing else and are corrected
-  via `create-event-block(event_type='journal_entry_reversed')`.
+  entry that were in step with it follow. Posted entries accept nothing else and are corrected via
+  `create-event-block(event_type='journal_entry_reversed')`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
