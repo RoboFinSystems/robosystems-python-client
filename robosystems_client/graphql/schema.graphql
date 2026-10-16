@@ -791,6 +791,43 @@ type Query {
     entityId: String = null
   ): [InformationBlock!]!
 
+  """
+  List Information Blocks as identities and counts, one row per block.
+  
+  The rows, filters, order and page of `informationBlocks`, read in one
+  query instead of an envelope build per block — the call that fills a
+  picker or a rail. `factCount` says whether a block carries facts for
+  the entity read (a library-seeded structure variant carries none);
+  a block's atoms come from `informationBlock(id)`.
+  """
+  informationBlockSummaries(
+    """Filter to one registered block type, e.g. `schedule`."""
+    blockType: String = null
+
+    """
+    Filter on the registry entry's category label, e.g. `Close` or `Reporting`.
+    """
+    category: String = null
+
+    """
+    Maximum rows to return, 1-1000. Omit to use this field's own default; out of range raises `INVALID_PAGINATION`.
+    """
+    limit: Int = null
+
+    """
+    Rows to skip before returning, 0 or greater. Out of range raises `INVALID_PAGINATION`.
+    """
+    offset: Int = null
+
+    """
+    A forecast block's structure id; its entity scopes the list when `entityId` is omitted.
+    """
+    scenarioId: String = null
+
+    """The entity whose blocks and facts to list. Omit for the group parent."""
+    entityId: String = null
+  ): [InformationBlockSummary!]!
+
   """Fetch a single Taxonomy Block envelope by id."""
   taxonomyBlock(
     """The taxonomy block's structure id."""
@@ -3809,6 +3846,11 @@ type FactRow {
 
   """Indentation depth in the structure hierarchy (0 = root)."""
   depth: Int!
+
+  """
+  On a roll-forward, `start` for the beginning-balance row and `end` for the ending-balance row — one concept, two rows. Null elsewhere.
+  """
+  periodRole: String
 }
 
 """
@@ -3946,6 +3988,44 @@ type BlockedSourceGraph {
 
   """Recipient's own note, if given."""
   reason: String
+}
+
+"""
+One row of a block list: the envelope's identity with counts in place
+of its atoms. Read in one query, so a graph's whole catalogue lists in the
+time one envelope builds.
+"""
+type InformationBlockSummary {
+  id: String!
+
+  """Discriminator — 'schedule', …"""
+  blockType: String!
+  name: String!
+
+  """Registry-sourced display label (e.g., 'Schedule')."""
+  displayName: String!
+
+  """Registry-sourced sidebar grouping ('Close', 'Reporting', …)."""
+  category: String!
+
+  """Source taxonomy the Structure was seeded from."""
+  taxonomyId: String
+
+  """Display name of the source taxonomy."""
+  taxonomyName: String
+
+  """
+  The entity whose books the block reads: its owner for a schedule, reconciliation or forecast; the entity asked for, else the group parent, on a block shared by the group. Null on the library.
+  """
+  entityId: String
+
+  """
+  Facts in the block's scope for that entity, every set — what its envelope carries. Zero on a library-seeded structure variant and on a schedule that has run off into history, which a picker leaves out.
+  """
+  factCount: Int!
+
+  """Arcs the block's structure carries."""
+  connectionCount: Int!
 }
 
 type TaxonomyBlock {

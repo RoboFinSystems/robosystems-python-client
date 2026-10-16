@@ -702,6 +702,22 @@ class TestLedgerParity:
     body = json.loads(httpx_mock.get_requests()[0].content)
     assert body["entity_id"] == "ent_sub"
 
+  def test_list_information_block_summaries_sends_filters(self, httpx_mock):
+    httpx_mock.add_response(
+      method="POST",
+      url=f"{BASE}/extensions/{GRAPH}/graphql",
+      json={"data": {"informationBlockSummaries": []}},
+    )
+
+    blocks = LedgerClient(CONFIG).list_information_block_summaries(
+      GRAPH, block_type="forecast", entity_id="ent_sub"
+    )
+
+    assert blocks == []
+    payload = json.loads(httpx_mock.get_requests()[0].content)
+    assert payload["variables"] == {"blockType": "forecast", "entityId": "ent_sub"}
+    assert "informationBlockSummaries" in payload["query"]
+
   def test_list_information_blocks_sends_scenario_id(self, httpx_mock):
     httpx_mock.add_response(
       method="POST",
