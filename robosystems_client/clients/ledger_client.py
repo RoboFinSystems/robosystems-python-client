@@ -365,6 +365,10 @@ from ..graphql.generated.get_ledger_trial_balance import (
 from ..graphql.generated.get_ledger_trial_balance import (
   GetLedgerTrialBalanceTrialBalance as TrialBalance,
 )
+from ..graphql.generated.list_information_block_summaries import (
+  ListInformationBlockSummaries,
+  ListInformationBlockSummariesInformationBlockSummaries,
+)
 from ..graphql.generated.list_information_blocks import (
   ListInformationBlocks,
   ListInformationBlocksInformationBlocks,
@@ -475,6 +479,7 @@ from ..graphql.generated.operations import (
   GET_LEDGER_SUMMARY_GQL,
   GET_LEDGER_TRANSACTION_GQL,
   GET_LEDGER_TRIAL_BALANCE_GQL,
+  LIST_INFORMATION_BLOCK_SUMMARIES_GQL,
   LIST_INFORMATION_BLOCKS_GQL,
   LIST_LEDGER_ACCOUNTS_GQL,
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
@@ -1586,6 +1591,41 @@ class LedgerClient:
       },
     )
     return ListInformationBlocks.model_validate(data).information_blocks
+
+  def list_information_block_summaries(
+    self,
+    graph_id: str,
+    *,
+    block_type: str | None = None,
+    category: str | None = None,
+    limit: int | None = None,
+    offset: int | None = None,
+    scenario_id: str | None = None,
+    entity_id: str | None = None,
+  ) -> list[ListInformationBlockSummariesInformationBlockSummaries]:
+    """List Information Blocks as identities and counts, one row per block.
+
+    The rows, filters, order and page of ``list_information_blocks``, read
+    in one query instead of an envelope build per block — the call that
+    fills a picker. ``fact_count > 0`` marks a block whose envelope carries
+    facts (a library-seeded structure variant carries none); a block's
+    atoms come from ``get_information_block``.
+    """
+    data = self._query(
+      graph_id,
+      LIST_INFORMATION_BLOCK_SUMMARIES_GQL,
+      {
+        "blockType": block_type,
+        "category": category,
+        "limit": limit,
+        "offset": offset,
+        "scenarioId": scenario_id,
+        "entityId": entity_id,
+      },
+    )
+    return ListInformationBlockSummaries.model_validate(
+      data
+    ).information_block_summaries
 
   def create_information_block(
     self,

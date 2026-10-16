@@ -1,0 +1,21 @@
+query ListInformationBlockSummaries(
+  $blockType: String
+  $category: String
+  $limit: Int
+  $offset: Int
+  $scenarioId: String
+  $entityId: String
+) {
+  informationBlockSummaries(
+    blockType: $blockType
+    category: $category
+    limit: $limit
+    offset: $offset
+    scenarioId: $scenarioId
+    entityId: $entityId
+  ) {
+    id blockType name displayName category
+    taxonomyId taxonomyName entityId
+    factCount connectionCount
+  }
+}

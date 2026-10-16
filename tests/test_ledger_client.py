@@ -1675,6 +1675,34 @@ class TestLedgerReadsAdditional:
     assert variables["blockType"] == "schedule"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_information_block_summaries(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "informationBlockSummaries": [
+        {
+          "id": "str_sched_1",
+          "blockType": "schedule",
+          "name": "Depreciation",
+          "displayName": "Schedule",
+          "category": "Close",
+          "taxonomyId": "tax_01",
+          "taxonomyName": "My CoA",
+          "entityId": "ent_parent",
+          "factCount": 12,
+          "connectionCount": 3,
+        }
+      ]
+    }
+    client = LedgerClient(mock_config)
+    result = client.list_information_block_summaries(graph_id, limit=200)
+    assert len(result) == 1
+    assert result[0].id == "str_sched_1"
+    assert result[0].block_type == "schedule"
+    assert (result[0].fact_count, result[0].connection_count) == (12, 3)
+    assert not hasattr(result[0], "facts")
+    variables = mock_execute.call_args[0][2]
+    assert variables["limit"] == 200
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_information_block(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
       "informationBlock": {

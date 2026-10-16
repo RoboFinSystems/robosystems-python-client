@@ -34,6 +34,7 @@ __all__ = [
   "GET_LIBRARY_TAXONOMY_GQL",
   "LIST_CHART_TEMPLATES_GQL",
   "LIST_INFORMATION_BLOCKS_GQL",
+  "LIST_INFORMATION_BLOCK_SUMMARIES_GQL",
   "LIST_INVESTOR_PORTFOLIOS_GQL",
   "LIST_INVESTOR_POSITIONS_GQL",
   "LIST_INVESTOR_SECURITIES_GQL",
@@ -1238,6 +1239,30 @@ query ListChartTemplates {
     displayName
     description
     accountCount
+  }
+}
+"""
+
+LIST_INFORMATION_BLOCK_SUMMARIES_GQL = """
+query ListInformationBlockSummaries($blockType: String, $category: String, $limit: Int, $offset: Int, $scenarioId: String, $entityId: String) {
+  informationBlockSummaries(
+    blockType: $blockType
+    category: $category
+    limit: $limit
+    offset: $offset
+    scenarioId: $scenarioId
+    entityId: $entityId
+  ) {
+    id
+    blockType
+    name
+    displayName
+    category
+    taxonomyId
+    taxonomyName
+    entityId
+    factCount
+    connectionCount
   }
 }
 """
