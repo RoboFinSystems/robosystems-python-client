@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class InitializeChartOfAccountsRequestTemplate(str, Enum):
+  CONSOLIDATION = "consolidation"
   PRODUCT = "product"
   SAAS = "saas"
   SERVICES = "services"

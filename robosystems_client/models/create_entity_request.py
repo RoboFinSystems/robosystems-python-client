@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Mapping
 from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.create_entity_request_consolidation_method_type_0 import (
+  CreateEntityRequestConsolidationMethodType0,
+)
+from ..models.create_entity_request_entity_role_type_0 import (
+  CreateEntityRequestEntityRoleType0,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CreateEntityRequest")
@@ -34,6 +41,25 @@ class CreateEntityRequest:
               subsidiary to nest a sub-group under it.
           ownership_pct (float | None | Unset): The parent's share of this entity, as a percent (100 = wholly owned). Omit
               when not recorded. Refused on a graph's first entity, which becomes the group parent.
+          consolidation_method (CreateEntityRequestConsolidationMethodType0 | None | Unset): How the group's consolidated
+              statements treat this entity: `full` (its books are summed and an outside owner's share is carried as
+              noncontrolling interest), `equity` (one investment line and one income line), `cost` (an investment at cost) or
+              `none` (the group parent, the consolidation entity, a linked counterparty). Derived from `ownership_pct` when
+              not given — 50 and above `full`, 20 to 50 `equity`, below 20 `cost`, unrecorded `full` — and set by a person
+              where control is not the percentage: a managing member with a minority stake consolidates in full, a majority
+              without control takes the equity method. Omit to derive it; a graph's first entity and a `consolidation` entity
+              take `none`.
+          entity_role (CreateEntityRequestEntityRoleType0 | None | Unset): `operating` keeps a company's books.
+              `consolidation` is the group's one entity for the consolidating entries — eliminations, noncontrolling interest,
+              the equity-method pick-up — the adjustments column of a consolidation worksheet, which only the consolidated
+              statements read and no operating company's statements ever include. Its method is `none`. Default `operating`; a
+              graph's first entity, its group parent, is always operating. Start a consolidation entity's chart from the
+              `consolidation` template.
+          joined_on (datetime.date | None | Unset): The month this entity became a member of the group, as any date in it;
+              null is a member since the beginning. The consolidated statements include it from that month. Membership is by
+              month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
+              this graph should hold only the months it belonged. Omit for a subsidiary formed by the parent; give the
+              acquisition month for one acquired, whose books in this graph then hold only what follows it.
           ticker (None | str | Unset): Short symbol, unique in the graph; it prefixes the entity's account names
               (`coa-<ticker>:1000`). Derived from the name's initials when omitted.
           uri (None | str | Unset): Canonical URL / external identifier.
@@ -62,6 +88,11 @@ class CreateEntityRequest:
   reporting_style_id: None | str | Unset = UNSET
   parent_entity_id: None | str | Unset = UNSET
   ownership_pct: float | None | Unset = UNSET
+  consolidation_method: CreateEntityRequestConsolidationMethodType0 | None | Unset = (
+    UNSET
+  )
+  entity_role: CreateEntityRequestEntityRoleType0 | None | Unset = UNSET
+  joined_on: datetime.date | None | Unset = UNSET
   ticker: None | str | Unset = UNSET
   uri: None | str | Unset = UNSET
   cik: None | str | Unset = UNSET
@@ -114,6 +145,32 @@ class CreateEntityRequest:
       ownership_pct = UNSET
     else:
       ownership_pct = self.ownership_pct
+
+    consolidation_method: None | str | Unset
+    if isinstance(self.consolidation_method, Unset):
+      consolidation_method = UNSET
+    elif isinstance(
+      self.consolidation_method, CreateEntityRequestConsolidationMethodType0
+    ):
+      consolidation_method = self.consolidation_method.value
+    else:
+      consolidation_method = self.consolidation_method
+
+    entity_role: None | str | Unset
+    if isinstance(self.entity_role, Unset):
+      entity_role = UNSET
+    elif isinstance(self.entity_role, CreateEntityRequestEntityRoleType0):
+      entity_role = self.entity_role.value
+    else:
+      entity_role = self.entity_role
+
+    joined_on: None | str | Unset
+    if isinstance(self.joined_on, Unset):
+      joined_on = UNSET
+    elif isinstance(self.joined_on, datetime.date):
+      joined_on = self.joined_on.isoformat()
+    else:
+      joined_on = self.joined_on
 
     ticker: None | str | Unset
     if isinstance(self.ticker, Unset):
@@ -240,6 +297,12 @@ class CreateEntityRequest:
       field_dict["parent_entity_id"] = parent_entity_id
     if ownership_pct is not UNSET:
       field_dict["ownership_pct"] = ownership_pct
+    if consolidation_method is not UNSET:
+      field_dict["consolidation_method"] = consolidation_method
+    if entity_role is not UNSET:
+      field_dict["entity_role"] = entity_role
+    if joined_on is not UNSET:
+      field_dict["joined_on"] = joined_on
     if ticker is not UNSET:
       field_dict["ticker"] = ticker
     if uri is not UNSET:
@@ -328,6 +391,63 @@ class CreateEntityRequest:
       return cast(float | None | Unset, data)
 
     ownership_pct = _parse_ownership_pct(d.pop("ownership_pct", UNSET))
+
+    def _parse_consolidation_method(
+      data: object,
+    ) -> CreateEntityRequestConsolidationMethodType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        consolidation_method_type_0 = CreateEntityRequestConsolidationMethodType0(data)
+
+        return consolidation_method_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(CreateEntityRequestConsolidationMethodType0 | None | Unset, data)
+
+    consolidation_method = _parse_consolidation_method(
+      d.pop("consolidation_method", UNSET)
+    )
+
+    def _parse_entity_role(
+      data: object,
+    ) -> CreateEntityRequestEntityRoleType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        entity_role_type_0 = CreateEntityRequestEntityRoleType0(data)
+
+        return entity_role_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(CreateEntityRequestEntityRoleType0 | None | Unset, data)
+
+    entity_role = _parse_entity_role(d.pop("entity_role", UNSET))
+
+    def _parse_joined_on(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        joined_on_type_0 = datetime.date.fromisoformat(data)
+
+        return joined_on_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    joined_on = _parse_joined_on(d.pop("joined_on", UNSET))
 
     def _parse_ticker(data: object) -> None | str | Unset:
       if data is None:
@@ -502,6 +622,9 @@ class CreateEntityRequest:
       reporting_style_id=reporting_style_id,
       parent_entity_id=parent_entity_id,
       ownership_pct=ownership_pct,
+      consolidation_method=consolidation_method,
+      entity_role=entity_role,
+      joined_on=joined_on,
       ticker=ticker,
       uri=uri,
       cik=cik,

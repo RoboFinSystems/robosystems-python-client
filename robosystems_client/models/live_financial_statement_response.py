@@ -30,9 +30,12 @@ class LiveFinancialStatementResponse:
       facts (list[LiveStatementFactRow]):
       fact_count (int):
       entity_id (None | str | Unset): The entity whose books were rendered.
-      consolidated (bool | Unset): Whether the group's entities were summed into this: a combined statement, not a
-          consolidation — nothing is eliminated between them. Default: False.
-      combined_entity_ids (list[str] | Unset): The entities summed into a combined statement, parent first.
+      scope (str | Unset): What was rendered: `entity`, `combined` (the members summed, nothing eliminated) or
+          `consolidated` (the members plus the consolidation entity's adjustments). Default: 'entity'.
+      consolidated (bool | Unset): Whether the group's entities were summed into this — true for the `combined` and
+          `consolidated` scopes. Default: False.
+      combined_entity_ids (list[str] | Unset): The entities summed, parent first; on `consolidated` the consolidation
+          entity comes last.
       validation (None | Unset | ValidationCheckResponse): Guard-rail outcome for the rendered columns — accounting
           equation, net-income equation, totals footing, operating-plug size. Null only when no structure rendered.
       unmapped_count (int | Unset):  Default: 0.
@@ -45,6 +48,7 @@ class LiveFinancialStatementResponse:
   facts: list[LiveStatementFactRow]
   fact_count: int
   entity_id: None | str | Unset = UNSET
+  scope: str | Unset = "entity"
   consolidated: bool | Unset = False
   combined_entity_ids: list[str] | Unset = UNSET
   validation: None | Unset | ValidationCheckResponse = UNSET
@@ -77,6 +81,8 @@ class LiveFinancialStatementResponse:
     else:
       entity_id = self.entity_id
 
+    scope = self.scope
+
     consolidated = self.consolidated
 
     combined_entity_ids: list[str] | Unset = UNSET
@@ -108,6 +114,8 @@ class LiveFinancialStatementResponse:
     )
     if entity_id is not UNSET:
       field_dict["entity_id"] = entity_id
+    if scope is not UNSET:
+      field_dict["scope"] = scope
     if consolidated is not UNSET:
       field_dict["consolidated"] = consolidated
     if combined_entity_ids is not UNSET:
@@ -157,6 +165,8 @@ class LiveFinancialStatementResponse:
 
     entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
+    scope = d.pop("scope", UNSET)
+
     consolidated = d.pop("consolidated", UNSET)
 
     combined_entity_ids = cast(list[str], d.pop("combined_entity_ids", UNSET))
@@ -189,6 +199,7 @@ class LiveFinancialStatementResponse:
       facts=facts,
       fact_count=fact_count,
       entity_id=entity_id,
+      scope=scope,
       consolidated=consolidated,
       combined_entity_ids=combined_entity_ids,
       validation=validation,

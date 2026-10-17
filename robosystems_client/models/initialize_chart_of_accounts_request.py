@@ -28,7 +28,9 @@ class InitializeChartOfAccountsRequest:
       Attributes:
           template (InitializeChartOfAccountsRequestTemplate): Template key: `saas` (subscription software — deferred
               revenue, cost of revenue, R&D / S&M / G&A), `services` (professional services — no inventory, no COGS),
-              `product` (inventory and cost of goods sold, direct + wholesale + subscription revenue).
+              `product` (inventory and cost of goods sold, direct + wholesale + subscription revenue), `consolidation` (a
+              group's consolidation entity: the eliminated investment, intercompany and subsidiary-equity rows, noncontrolling
+              interest and its share of income — the adjustments column, never an operating company's chart).
           entity_id (None | str | Unset): The entity to give a chart to, by id. Omit for the group parent. A sibling
               already having one is no bar.
           entity_type (None | str | Unset): Legal form for the equity mapping: `corporation`, `llc` or `partnership`.

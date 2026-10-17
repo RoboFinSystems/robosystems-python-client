@@ -121,7 +121,10 @@ def sync_detailed(
   omitting it means the group parent. The Reporting Style follows `entity_type` unless
   `reporting_style_id` names one. `ticker` prefixes the entity's account names and must be unique in
   the graph (409). There is no cap on entities: a graph is one reporting group, and everyone with
-  access to it sees every entity.
+  access to it sees every entity. `ownership_pct` implies the `consolidation_method` (50 and above
+  full, 20 to 50 equity, below 20 cost) unless one is given; `entity_role: consolidation` makes this
+  the group's entity for consolidating entries, read by the consolidated statements only; `joined_on`
+  dates an acquired subsidiary's membership.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -176,7 +179,10 @@ def sync(
   omitting it means the group parent. The Reporting Style follows `entity_type` unless
   `reporting_style_id` names one. `ticker` prefixes the entity's account names and must be unique in
   the graph (409). There is no cap on entities: a graph is one reporting group, and everyone with
-  access to it sees every entity.
+  access to it sees every entity. `ownership_pct` implies the `consolidation_method` (50 and above
+  full, 20 to 50 equity, below 20 cost) unless one is given; `entity_role: consolidation` makes this
+  the group's entity for consolidating entries, read by the consolidated statements only; `joined_on`
+  dates an acquired subsidiary's membership.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -226,7 +232,10 @@ async def asyncio_detailed(
   omitting it means the group parent. The Reporting Style follows `entity_type` unless
   `reporting_style_id` names one. `ticker` prefixes the entity's account names and must be unique in
   the graph (409). There is no cap on entities: a graph is one reporting group, and everyone with
-  access to it sees every entity.
+  access to it sees every entity. `ownership_pct` implies the `consolidation_method` (50 and above
+  full, 20 to 50 equity, below 20 cost) unless one is given; `entity_role: consolidation` makes this
+  the group's entity for consolidating entries, read by the consolidated statements only; `joined_on`
+  dates an acquired subsidiary's membership.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -279,7 +288,10 @@ async def asyncio(
   omitting it means the group parent. The Reporting Style follows `entity_type` unless
   `reporting_style_id` names one. `ticker` prefixes the entity's account names and must be unique in
   the graph (409). There is no cap on entities: a graph is one reporting group, and everyone with
-  access to it sees every entity.
+  access to it sees every entity. `ownership_pct` implies the `consolidation_method` (50 and above
+  full, 20 to 50 equity, below 20 cost) unless one is given; `entity_role: consolidation` makes this
+  the group's entity for consolidating entries, read by the consolidated statements only; `joined_on`
+  dates an acquired subsidiary's membership.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

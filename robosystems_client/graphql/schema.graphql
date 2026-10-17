@@ -1572,6 +1572,26 @@ type LedgerEntity {
   """
   ownershipPct: Float
 
+  """
+  How the group's consolidated statements treat this entity: `full` (its books are summed and an outside owner's share is carried as noncontrolling interest), `equity` (one investment line and one income line), `cost` (an investment at cost) or `none` (the group parent, the consolidation entity, a linked counterparty). Derived from `ownershipPct` when not given — 50 and above `full`, 20 to 50 `equity`, below 20 `cost`, unrecorded `full` — and set by a person where control is not the percentage: a managing member with a minority stake consolidates in full, a majority without control takes the equity method.
+  """
+  consolidationMethod: String!
+
+  """
+  `operating` keeps a company's books. `consolidation` is the group's one entity for the consolidating entries — eliminations, noncontrolling interest, the equity-method pick-up — the adjustments column of a consolidation worksheet, which only the consolidated statements read and no operating company's statements ever include. Its method is `none`.
+  """
+  entityRole: String!
+
+  """
+  The month this entity became a member of the group, as any date in it; null is a member since the beginning. The consolidated statements include it from that month. Membership is by month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in this graph should hold only the months it belonged.
+  """
+  joinedOn: Date
+
+  """
+  The month this entity left the group, as any date in it; null is a member still. The consolidated statements include it through that month and leave it out after. Membership is by month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in this graph should hold only the months it belonged.
+  """
+  leftOn: Date
+
   """Provenance: 'native' | 'sec' | 'quickbooks' | 'xero' | 'plaid'."""
   source: String!
 
@@ -3996,10 +4016,15 @@ of its atoms. Read in one query, so a graph's whole catalogue lists in the
 time one envelope builds.
 """
 type InformationBlockSummary {
+  """The block's structure id."""
   id: String!
 
   """Discriminator — 'schedule', …"""
   blockType: String!
+
+  """
+  The block's own name — the instance ('FY27 Operating Budget'), where `displayName` is its type's label ('Forecast').
+  """
   name: String!
 
   """Registry-sourced display label (e.g., 'Schedule')."""

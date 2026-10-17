@@ -7,6 +7,9 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.live_financial_statement_request_scope_type_0 import (
+  LiveFinancialStatementRequestScopeType0,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="LiveFinancialStatementRequest")
@@ -26,10 +29,16 @@ class LiveFinancialStatementRequest:
       period_end (datetime.date | None | Unset): Explicit window end. Overrides period_type/fiscal_year.
       period_type (None | str | Unset): annual | quarterly | instant (ignored when dates supplied)
       fiscal_year (int | None | Unset): Fiscal year for annual window (anchored on FiscalCalendar)
-      consolidated (bool | Unset): A combined statement, not a consolidation: every entity of the reporting group
-          rendered under the group parent's Reporting Style and summed per rs-gaap concept, with nothing eliminated
-          between them. Only on the group parent (422 on a subsidiary). An entity with no CoA mapping yet contributes
-          nothing and is left out of `combined_entity_ids`. Default: False.
+      scope (LiveFinancialStatementRequestScopeType0 | None | Unset): `entity` (the default): one entity's own books.
+          `combined`: on the group parent, every member consolidated in full rendered under the parent's Reporting Style
+          and summed per rs-gaap concept, each for the months it was a member — the pre-adjustment total, nothing
+          eliminated. `consolidated`: the same sum plus the consolidation entity, whose eliminations and noncontrolling
+          interest are the adjustments column, so a group that posts its consolidating entries there reads its
+          consolidated statement. An equity-method or cost member is never summed (its `consolidation_method` says so).
+          Both group scopes are read on the group parent only (422 on a subsidiary). An entity with no CoA mapping yet
+          contributes nothing and is left out of `combined_entity_ids`.
+      consolidated (bool | Unset): The older spelling of `scope: consolidated`, kept for callers that pass it; `scope`
+          wins when both are given. Default: False.
       limit (int | Unset): Max fact rows returned. Defaults to the ceiling so a statement is never cut mid-section —
           visible rows would stop footing to visible subtotals. Lower it only for a preview. Default: 1000.
   """
@@ -40,6 +49,7 @@ class LiveFinancialStatementRequest:
   period_end: datetime.date | None | Unset = UNSET
   period_type: None | str | Unset = UNSET
   fiscal_year: int | None | Unset = UNSET
+  scope: LiveFinancialStatementRequestScopeType0 | None | Unset = UNSET
   consolidated: bool | Unset = False
   limit: int | Unset = 1000
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -81,6 +91,14 @@ class LiveFinancialStatementRequest:
     else:
       fiscal_year = self.fiscal_year
 
+    scope: None | str | Unset
+    if isinstance(self.scope, Unset):
+      scope = UNSET
+    elif isinstance(self.scope, LiveFinancialStatementRequestScopeType0):
+      scope = self.scope.value
+    else:
+      scope = self.scope
+
     consolidated = self.consolidated
 
     limit = self.limit
@@ -102,6 +120,8 @@ class LiveFinancialStatementRequest:
       field_dict["period_type"] = period_type
     if fiscal_year is not UNSET:
       field_dict["fiscal_year"] = fiscal_year
+    if scope is not UNSET:
+      field_dict["scope"] = scope
     if consolidated is not UNSET:
       field_dict["consolidated"] = consolidated
     if limit is not UNSET:
@@ -175,6 +195,25 @@ class LiveFinancialStatementRequest:
 
     fiscal_year = _parse_fiscal_year(d.pop("fiscal_year", UNSET))
 
+    def _parse_scope(
+      data: object,
+    ) -> LiveFinancialStatementRequestScopeType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        scope_type_0 = LiveFinancialStatementRequestScopeType0(data)
+
+        return scope_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(LiveFinancialStatementRequestScopeType0 | None | Unset, data)
+
+    scope = _parse_scope(d.pop("scope", UNSET))
+
     consolidated = d.pop("consolidated", UNSET)
 
     limit = d.pop("limit", UNSET)
@@ -186,6 +225,7 @@ class LiveFinancialStatementRequest:
       period_end=period_end,
       period_type=period_type,
       fiscal_year=fiscal_year,
+      scope=scope,
       consolidated=consolidated,
       limit=limit,
     )

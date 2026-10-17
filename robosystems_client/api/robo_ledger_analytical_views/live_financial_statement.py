@@ -118,9 +118,10 @@ def sync_detailed(
    Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
   CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
   materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
-  group parent; `consolidated` on the parent combines every entity of the group at the rs-gaap
-  concepts, with no eliminations. Rejected on shared-repository graphs; those should use `financial-
-  statement-analysis` instead.
+  group parent. On the parent, `scope: combined` sums every member consolidated in full at the rs-gaap
+  concepts for the months each was a member, nothing eliminated, and `scope: consolidated` adds the
+  consolidation entity's entries — the eliminations and noncontrolling interest. Rejected on shared-
+  repository graphs; those should use `financial-statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -164,9 +165,10 @@ def sync(
    Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
   CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
   materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
-  group parent; `consolidated` on the parent combines every entity of the group at the rs-gaap
-  concepts, with no eliminations. Rejected on shared-repository graphs; those should use `financial-
-  statement-analysis` instead.
+  group parent. On the parent, `scope: combined` sums every member consolidated in full at the rs-gaap
+  concepts for the months each was a member, nothing eliminated, and `scope: consolidated` adds the
+  consolidation entity's entries — the eliminations and noncontrolling interest. Rejected on shared-
+  repository graphs; those should use `financial-statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -205,9 +207,10 @@ async def asyncio_detailed(
    Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
   CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
   materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
-  group parent; `consolidated` on the parent combines every entity of the group at the rs-gaap
-  concepts, with no eliminations. Rejected on shared-repository graphs; those should use `financial-
-  statement-analysis` instead.
+  group parent. On the parent, `scope: combined` sums every member consolidated in full at the rs-gaap
+  concepts for the months each was a member, nothing eliminated, and `scope: consolidated` adds the
+  consolidation entity's entries — the eliminations and noncontrolling interest. Rejected on shared-
+  repository graphs; those should use `financial-statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -249,9 +252,10 @@ async def asyncio(
    Generate an ad-hoc financial statement directly from the tenant's OLTP ledger data using the active
   CoA→GAAP mapping. This is the authoritative source for RoboLedger entity graphs — no graph
   materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
-  group parent; `consolidated` on the parent combines every entity of the group at the rs-gaap
-  concepts, with no eliminations. Rejected on shared-repository graphs; those should use `financial-
-  statement-analysis` instead.
+  group parent. On the parent, `scope: combined` sums every member consolidated in full at the rs-gaap
+  concepts for the months each was a member, nothing eliminated, and `scope: consolidated` adds the
+  consolidation entity's entries — the eliminations and noncontrolling interest. Rejected on shared-
+  repository graphs; those should use `financial-statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -39,6 +39,14 @@ class TaxonomyBlockStructureRequest:
       role_uri (None | str | Unset):
       target_framework (None | str | Unset): `coa_mapping` only: the framework this mapping maps the chart into, e.g.
           `rs-gaap`. Omitted means the graph's book framework. A chart holds one mapping per framework.
+      extends_network (None | str | Unset): `reporting_extension` only: the role URI of the Reporting Style network
+          this structure extends (e.g. `https://robosystems.ai/seattle/cm-roles/roles/rs-gaap-presentation/CashFlow-
+          indirect`). Its arcs then render as rows of that statement for every entity whose Style composes it.
+          `block_type` must be that network's statement type. A row's parent must be on the network, a balance sheet,
+          income statement or cash flow row needs a calculation arc from its section subtotal, an equity movement hangs
+          from the roll-forward's root, and a tenant concept placed as a row must set `parent_ref` to the rs-gaap concept
+          it refines — prefer the rs-gaap concept itself (any library concept may be named, including ones not yet in this
+          graph).
       metadata (TaxonomyBlockStructureRequestMetadata | Unset):
   """
 
@@ -50,6 +58,7 @@ class TaxonomyBlockStructureRequest:
   description: None | str | Unset = UNSET
   role_uri: None | str | Unset = UNSET
   target_framework: None | str | Unset = UNSET
+  extends_network: None | str | Unset = UNSET
   metadata: TaxonomyBlockStructureRequestMetadata | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -86,6 +95,12 @@ class TaxonomyBlockStructureRequest:
     else:
       target_framework = self.target_framework
 
+    extends_network: None | str | Unset
+    if isinstance(self.extends_network, Unset):
+      extends_network = UNSET
+    else:
+      extends_network = self.extends_network
+
     metadata: dict[str, Any] | Unset = UNSET
     if not isinstance(self.metadata, Unset):
       metadata = self.metadata.to_dict()
@@ -106,6 +121,8 @@ class TaxonomyBlockStructureRequest:
       field_dict["role_uri"] = role_uri
     if target_framework is not UNSET:
       field_dict["target_framework"] = target_framework
+    if extends_network is not UNSET:
+      field_dict["extends_network"] = extends_network
     if metadata is not UNSET:
       field_dict["metadata"] = metadata
 
@@ -174,6 +191,15 @@ class TaxonomyBlockStructureRequest:
 
     target_framework = _parse_target_framework(d.pop("target_framework", UNSET))
 
+    def _parse_extends_network(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    extends_network = _parse_extends_network(d.pop("extends_network", UNSET))
+
     _metadata = d.pop("metadata", UNSET)
     metadata: TaxonomyBlockStructureRequestMetadata | Unset
     if isinstance(_metadata, Unset):
@@ -188,6 +214,7 @@ class TaxonomyBlockStructureRequest:
       description=description,
       role_uri=role_uri,
       target_framework=target_framework,
+      extends_network=extends_network,
       metadata=metadata,
     )
 

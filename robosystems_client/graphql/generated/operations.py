@@ -639,6 +639,10 @@ query GetLedgerEntity($entityId: String) {
     isParent
     parentEntityId
     ownershipPct
+    consolidationMethod
+    entityRole
+    joinedOn
+    leftOn
     source
     sourceId
     sourceGraphId
@@ -1594,6 +1598,10 @@ query ListLedgerEntities($source: String) {
     isParent
     parentEntityId
     ownershipPct
+    consolidationMethod
+    entityRole
+    joinedOn
+    leftOn
     source
     sourceGraphId
     connectionId

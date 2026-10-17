@@ -23,6 +23,10 @@ query GetLedgerEntity($entityId: String) {
     isParent
     parentEntityId
     ownershipPct
+    consolidationMethod
+    entityRole
+    joinedOn
+    leftOn
     source
     sourceId
     sourceGraphId

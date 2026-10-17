@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Mapping
 from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.update_entity_request_consolidation_method_type_0 import (
+  UpdateEntityRequestConsolidationMethodType0,
+)
+from ..models.update_entity_request_entity_role_type_0 import (
+  UpdateEntityRequestEntityRoleType0,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="UpdateEntityRequest")
@@ -46,7 +53,29 @@ class UpdateEntityRequest:
           address_postal_code (None | str | Unset):
           address_country (None | str | Unset):
           ownership_pct (float | None | Unset): The parent's share of this entity, as a percent. Refused on the group
-              parent, which has no owner in the graph.
+              parent, which has no owner in the graph. A new share re-derives `consolidation_method` unless that is given too.
+          consolidation_method (None | Unset | UpdateEntityRequestConsolidationMethodType0): How the group's consolidated
+              statements treat this entity: `full` (its books are summed and an outside owner's share is carried as
+              noncontrolling interest), `equity` (one investment line and one income line), `cost` (an investment at cost) or
+              `none` (the group parent, the consolidation entity, a linked counterparty). Derived from `ownership_pct` when
+              not given — 50 and above `full`, 20 to 50 `equity`, below 20 `cost`, unrecorded `full` — and set by a person
+              where control is not the percentage: a managing member with a minority stake consolidates in full, a majority
+              without control takes the equity method. On the group parent and the consolidation entity only `none` holds.
+          entity_role (None | Unset | UpdateEntityRequestEntityRoleType0): `operating` keeps a company's books.
+              `consolidation` is the group's one entity for the consolidating entries — eliminations, noncontrolling interest,
+              the equity-method pick-up — the adjustments column of a consolidation worksheet, which only the consolidated
+              statements read and no operating company's statements ever include. Its method is `none`. Refused on the group
+              parent. Marking an entity `consolidation` sets its method to `none`.
+          joined_on (datetime.date | None | Unset): The month this entity became a member of the group, as any date in it;
+              null is a member since the beginning. The consolidated statements include it from that month. Membership is by
+              month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
+              this graph should hold only the months it belonged. Pass null to clear it.
+          left_on (datetime.date | None | Unset): The month this entity left the group, as any date in it; null is a
+              member still. The consolidated statements include it through that month and leave it out after. Membership is by
+              month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
+              this graph should hold only the months it belonged. Must not precede `joined_on`. Set it when a subsidiary is
+              sold, dissolved or deconsolidated; its closed months and stamped statements stay readable under the group. Pass
+              null to reopen membership.
   """
 
   entity_id: None | str | Unset = UNSET
@@ -73,6 +102,12 @@ class UpdateEntityRequest:
   address_postal_code: None | str | Unset = UNSET
   address_country: None | str | Unset = UNSET
   ownership_pct: float | None | Unset = UNSET
+  consolidation_method: None | Unset | UpdateEntityRequestConsolidationMethodType0 = (
+    UNSET
+  )
+  entity_role: None | Unset | UpdateEntityRequestEntityRoleType0 = UNSET
+  joined_on: datetime.date | None | Unset = UNSET
+  left_on: datetime.date | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -220,6 +255,40 @@ class UpdateEntityRequest:
     else:
       ownership_pct = self.ownership_pct
 
+    consolidation_method: None | str | Unset
+    if isinstance(self.consolidation_method, Unset):
+      consolidation_method = UNSET
+    elif isinstance(
+      self.consolidation_method, UpdateEntityRequestConsolidationMethodType0
+    ):
+      consolidation_method = self.consolidation_method.value
+    else:
+      consolidation_method = self.consolidation_method
+
+    entity_role: None | str | Unset
+    if isinstance(self.entity_role, Unset):
+      entity_role = UNSET
+    elif isinstance(self.entity_role, UpdateEntityRequestEntityRoleType0):
+      entity_role = self.entity_role.value
+    else:
+      entity_role = self.entity_role
+
+    joined_on: None | str | Unset
+    if isinstance(self.joined_on, Unset):
+      joined_on = UNSET
+    elif isinstance(self.joined_on, datetime.date):
+      joined_on = self.joined_on.isoformat()
+    else:
+      joined_on = self.joined_on
+
+    left_on: None | str | Unset
+    if isinstance(self.left_on, Unset):
+      left_on = UNSET
+    elif isinstance(self.left_on, datetime.date):
+      left_on = self.left_on.isoformat()
+    else:
+      left_on = self.left_on
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update({})
@@ -271,6 +340,14 @@ class UpdateEntityRequest:
       field_dict["address_country"] = address_country
     if ownership_pct is not UNSET:
       field_dict["ownership_pct"] = ownership_pct
+    if consolidation_method is not UNSET:
+      field_dict["consolidation_method"] = consolidation_method
+    if entity_role is not UNSET:
+      field_dict["entity_role"] = entity_role
+    if joined_on is not UNSET:
+      field_dict["joined_on"] = joined_on
+    if left_on is not UNSET:
+      field_dict["left_on"] = left_on
 
     return field_dict
 
@@ -498,6 +575,80 @@ class UpdateEntityRequest:
 
     ownership_pct = _parse_ownership_pct(d.pop("ownership_pct", UNSET))
 
+    def _parse_consolidation_method(
+      data: object,
+    ) -> None | Unset | UpdateEntityRequestConsolidationMethodType0:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        consolidation_method_type_0 = UpdateEntityRequestConsolidationMethodType0(data)
+
+        return consolidation_method_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | Unset | UpdateEntityRequestConsolidationMethodType0, data)
+
+    consolidation_method = _parse_consolidation_method(
+      d.pop("consolidation_method", UNSET)
+    )
+
+    def _parse_entity_role(
+      data: object,
+    ) -> None | Unset | UpdateEntityRequestEntityRoleType0:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        entity_role_type_0 = UpdateEntityRequestEntityRoleType0(data)
+
+        return entity_role_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | Unset | UpdateEntityRequestEntityRoleType0, data)
+
+    entity_role = _parse_entity_role(d.pop("entity_role", UNSET))
+
+    def _parse_joined_on(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        joined_on_type_0 = datetime.date.fromisoformat(data)
+
+        return joined_on_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    joined_on = _parse_joined_on(d.pop("joined_on", UNSET))
+
+    def _parse_left_on(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        left_on_type_0 = datetime.date.fromisoformat(data)
+
+        return left_on_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    left_on = _parse_left_on(d.pop("left_on", UNSET))
+
     update_entity_request = cls(
       entity_id=entity_id,
       name=name,
@@ -523,6 +674,10 @@ class UpdateEntityRequest:
       address_postal_code=address_postal_code,
       address_country=address_country,
       ownership_pct=ownership_pct,
+      consolidation_method=consolidation_method,
+      entity_role=entity_role,
+      joined_on=joined_on,
+      left_on=left_on,
     )
 
     update_entity_request.additional_properties = d

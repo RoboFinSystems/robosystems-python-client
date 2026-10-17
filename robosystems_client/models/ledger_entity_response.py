@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Mapping
 from typing import Any, TypeVar, cast
 
@@ -47,6 +48,24 @@ class LedgerEntityResponse:
           parent_entity_id (None | str | Unset): Parent entity ID for subsidiaries; null for top-level.
           ownership_pct (float | None | Unset): The parent's share of this entity, as a percent (100 = wholly owned). Null
               on the group parent, and where it was never recorded.
+          consolidation_method (str | Unset): How the group's consolidated statements treat this entity: `full` (its books
+              are summed and an outside owner's share is carried as noncontrolling interest), `equity` (one investment line
+              and one income line), `cost` (an investment at cost) or `none` (the group parent, the consolidation entity, a
+              linked counterparty). Derived from `ownership_pct` when not given — 50 and above `full`, 20 to 50 `equity`,
+              below 20 `cost`, unrecorded `full` — and set by a person where control is not the percentage: a managing member
+              with a minority stake consolidates in full, a majority without control takes the equity method. Default: 'none'.
+          entity_role (str | Unset): `operating` keeps a company's books. `consolidation` is the group's one entity for
+              the consolidating entries — eliminations, noncontrolling interest, the equity-method pick-up — the adjustments
+              column of a consolidation worksheet, which only the consolidated statements read and no operating company's
+              statements ever include. Its method is `none`. Default: 'operating'.
+          joined_on (datetime.date | None | Unset): The month this entity became a member of the group, as any date in it;
+              null is a member since the beginning. The consolidated statements include it from that month. Membership is by
+              month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
+              this graph should hold only the months it belonged.
+          left_on (datetime.date | None | Unset): The month this entity left the group, as any date in it; null is a
+              member still. The consolidated statements include it through that month and leave it out after. Membership is by
+              month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
+              this graph should hold only the months it belonged.
           source (str | Unset): Provenance: 'native' | 'sec' | 'quickbooks' | 'xero' | 'plaid'. Default: 'native'.
           source_id (None | str | Unset): Source-system primary key for sync reconciliation.
           source_graph_id (None | str | Unset): Origin graph for received entities (cross-graph linking, e.g. RoboInvestor
@@ -84,6 +103,10 @@ class LedgerEntityResponse:
   is_parent: bool | Unset = True
   parent_entity_id: None | str | Unset = UNSET
   ownership_pct: float | None | Unset = UNSET
+  consolidation_method: str | Unset = "none"
+  entity_role: str | Unset = "operating"
+  joined_on: datetime.date | None | Unset = UNSET
+  left_on: datetime.date | None | Unset = UNSET
   source: str | Unset = "native"
   source_id: None | str | Unset = UNSET
   source_graph_id: None | str | Unset = UNSET
@@ -220,6 +243,26 @@ class LedgerEntityResponse:
     else:
       ownership_pct = self.ownership_pct
 
+    consolidation_method = self.consolidation_method
+
+    entity_role = self.entity_role
+
+    joined_on: None | str | Unset
+    if isinstance(self.joined_on, Unset):
+      joined_on = UNSET
+    elif isinstance(self.joined_on, datetime.date):
+      joined_on = self.joined_on.isoformat()
+    else:
+      joined_on = self.joined_on
+
+    left_on: None | str | Unset
+    if isinstance(self.left_on, Unset):
+      left_on = UNSET
+    elif isinstance(self.left_on, datetime.date):
+      left_on = self.left_on.isoformat()
+    else:
+      left_on = self.left_on
+
     source = self.source
 
     source_id: None | str | Unset
@@ -332,6 +375,14 @@ class LedgerEntityResponse:
       field_dict["parent_entity_id"] = parent_entity_id
     if ownership_pct is not UNSET:
       field_dict["ownership_pct"] = ownership_pct
+    if consolidation_method is not UNSET:
+      field_dict["consolidation_method"] = consolidation_method
+    if entity_role is not UNSET:
+      field_dict["entity_role"] = entity_role
+    if joined_on is not UNSET:
+      field_dict["joined_on"] = joined_on
+    if left_on is not UNSET:
+      field_dict["left_on"] = left_on
     if source is not UNSET:
       field_dict["source"] = source
     if source_id is not UNSET:
@@ -541,6 +592,44 @@ class LedgerEntityResponse:
 
     ownership_pct = _parse_ownership_pct(d.pop("ownership_pct", UNSET))
 
+    consolidation_method = d.pop("consolidation_method", UNSET)
+
+    entity_role = d.pop("entity_role", UNSET)
+
+    def _parse_joined_on(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        joined_on_type_0 = datetime.date.fromisoformat(data)
+
+        return joined_on_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    joined_on = _parse_joined_on(d.pop("joined_on", UNSET))
+
+    def _parse_left_on(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        left_on_type_0 = datetime.date.fromisoformat(data)
+
+        return left_on_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    left_on = _parse_left_on(d.pop("left_on", UNSET))
+
     source = d.pop("source", UNSET)
 
     def _parse_source_id(data: object) -> None | str | Unset:
@@ -659,6 +748,10 @@ class LedgerEntityResponse:
       is_parent=is_parent,
       parent_entity_id=parent_entity_id,
       ownership_pct=ownership_pct,
+      consolidation_method=consolidation_method,
+      entity_role=entity_role,
+      joined_on=joined_on,
+      left_on=left_on,
       source=source,
       source_id=source_id,
       source_graph_id=source_graph_id,
