@@ -117,10 +117,15 @@ def sync_detailed(
   elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
   tenant CoA), `reporting_extension`, and `custom_ontology` are supported; `reporting_standard` is
   library-origin (501). `reporting_extension` / `custom_ontology` authoring may be disabled per
-  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. NOT the path for a functional
-  close schedule: a structure with block_type='schedule' here is a bare ontology row with none of the
-  schedule machinery (per-period facts, schedule_entry_due obligations, closing-entry generator). To
-  create a working schedule use create-information-block(block_type='schedule').
+  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. A `reporting_extension` structure
+  with `extends_network` adds rows to the entity's balance sheet, income statement, cash flow or
+  equity statement: its arcs layer onto that Reporting Style network, anchored and checked when
+  authored (refused with a reason, 422). Prefer an rs-gaap concept for a row — any library concept may
+  be named, including ones not yet in this graph — and give a tenant concept a `parent_ref` to the rs-
+  gaap concept it refines. NOT the path for a functional close schedule: a structure with
+  block_type='schedule' here is a bare ontology row with none of the schedule machinery (per-period
+  facts, schedule_entry_due obligations, closing-entry generator). To create a working schedule use
+  create-information-block(block_type='schedule').
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -172,10 +177,15 @@ def sync(
   elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
   tenant CoA), `reporting_extension`, and `custom_ontology` are supported; `reporting_standard` is
   library-origin (501). `reporting_extension` / `custom_ontology` authoring may be disabled per
-  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. NOT the path for a functional
-  close schedule: a structure with block_type='schedule' here is a bare ontology row with none of the
-  schedule machinery (per-period facts, schedule_entry_due obligations, closing-entry generator). To
-  create a working schedule use create-information-block(block_type='schedule').
+  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. A `reporting_extension` structure
+  with `extends_network` adds rows to the entity's balance sheet, income statement, cash flow or
+  equity statement: its arcs layer onto that Reporting Style network, anchored and checked when
+  authored (refused with a reason, 422). Prefer an rs-gaap concept for a row — any library concept may
+  be named, including ones not yet in this graph — and give a tenant concept a `parent_ref` to the rs-
+  gaap concept it refines. NOT the path for a functional close schedule: a structure with
+  block_type='schedule' here is a bare ontology row with none of the schedule machinery (per-period
+  facts, schedule_entry_due obligations, closing-entry generator). To create a working schedule use
+  create-information-block(block_type='schedule').
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -222,10 +232,15 @@ async def asyncio_detailed(
   elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
   tenant CoA), `reporting_extension`, and `custom_ontology` are supported; `reporting_standard` is
   library-origin (501). `reporting_extension` / `custom_ontology` authoring may be disabled per
-  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. NOT the path for a functional
-  close schedule: a structure with block_type='schedule' here is a bare ontology row with none of the
-  schedule machinery (per-period facts, schedule_entry_due obligations, closing-entry generator). To
-  create a working schedule use create-information-block(block_type='schedule').
+  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. A `reporting_extension` structure
+  with `extends_network` adds rows to the entity's balance sheet, income statement, cash flow or
+  equity statement: its arcs layer onto that Reporting Style network, anchored and checked when
+  authored (refused with a reason, 422). Prefer an rs-gaap concept for a row — any library concept may
+  be named, including ones not yet in this graph — and give a tenant concept a `parent_ref` to the rs-
+  gaap concept it refines. NOT the path for a functional close schedule: a structure with
+  block_type='schedule' here is a bare ontology row with none of the schedule machinery (per-period
+  facts, schedule_entry_due obligations, closing-entry generator). To create a working schedule use
+  create-information-block(block_type='schedule').
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -275,10 +290,15 @@ async def asyncio(
   elements, associations, and rules. Dispatches by `taxonomy_type` — `chart_of_accounts` (declarative
   tenant CoA), `reporting_extension`, and `custom_ontology` are supported; `reporting_standard` is
   library-origin (501). `reporting_extension` / `custom_ontology` authoring may be disabled per
-  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. NOT the path for a functional
-  close schedule: a structure with block_type='schedule' here is a bare ontology row with none of the
-  schedule machinery (per-period facts, schedule_entry_due obligations, closing-entry generator). To
-  create a working schedule use create-information-block(block_type='schedule').
+  environment (TAXONOMY_AUTHORING_ENABLED) — disabled surfaces 403. A `reporting_extension` structure
+  with `extends_network` adds rows to the entity's balance sheet, income statement, cash flow or
+  equity statement: its arcs layer onto that Reporting Style network, anchored and checked when
+  authored (refused with a reason, 422). Prefer an rs-gaap concept for a row — any library concept may
+  be named, including ones not yet in this graph — and give a tenant concept a `parent_ref` to the rs-
+  gaap concept it refines. NOT the path for a functional close schedule: a structure with
+  block_type='schedule' here is a bare ontology row with none of the schedule machinery (per-period
+  facts, schedule_entry_due obligations, closing-entry generator). To create a working schedule use
+  create-information-block(block_type='schedule').
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

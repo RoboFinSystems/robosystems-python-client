@@ -116,6 +116,10 @@ def sync_detailed(
    Update an entity of the graph's reporting group. Only provided (non-null) fields are updated. Omit
   `entity_id` to target the group parent; name a subsidiary's id to edit it. `ownership_pct` is
   refused on the group parent (422), and `ticker` must stay unique in the graph (409).
+  `consolidation_method` overrides the treatment the share implies (a new share re-derives it unless
+  both are given), `entity_role: consolidation` marks the group's entity for consolidating entries,
+  and `joined_on` / `left_on` bound its membership by month — set `left_on` when a subsidiary leaves
+  the group and its history stays readable under it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -164,6 +168,10 @@ def sync(
    Update an entity of the graph's reporting group. Only provided (non-null) fields are updated. Omit
   `entity_id` to target the group parent; name a subsidiary's id to edit it. `ownership_pct` is
   refused on the group parent (422), and `ticker` must stay unique in the graph (409).
+  `consolidation_method` overrides the treatment the share implies (a new share re-derives it unless
+  both are given), `entity_role: consolidation` marks the group's entity for consolidating entries,
+  and `joined_on` / `left_on` bound its membership by month — set `left_on` when a subsidiary leaves
+  the group and its history stays readable under it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -207,6 +215,10 @@ async def asyncio_detailed(
    Update an entity of the graph's reporting group. Only provided (non-null) fields are updated. Omit
   `entity_id` to target the group parent; name a subsidiary's id to edit it. `ownership_pct` is
   refused on the group parent (422), and `ticker` must stay unique in the graph (409).
+  `consolidation_method` overrides the treatment the share implies (a new share re-derives it unless
+  both are given), `entity_role: consolidation` marks the group's entity for consolidating entries,
+  and `joined_on` / `left_on` bound its membership by month — set `left_on` when a subsidiary leaves
+  the group and its history stays readable under it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -253,6 +265,10 @@ async def asyncio(
    Update an entity of the graph's reporting group. Only provided (non-null) fields are updated. Omit
   `entity_id` to target the group parent; name a subsidiary's id to edit it. `ownership_pct` is
   refused on the group parent (422), and `ticker` must stay unique in the graph (409).
+  `consolidation_method` overrides the treatment the share implies (a new share re-derives it unless
+  both are given), `entity_role: consolidation` marks the group's entity for consolidating entries,
+  and `joined_on` / `left_on` bound its membership by month — set `left_on` when a subsidiary leaves
+  the group and its history stays readable under it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

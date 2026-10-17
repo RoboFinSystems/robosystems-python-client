@@ -105,6 +105,10 @@ from .create_connection_request_provider import CreateConnectionRequestProvider
 from .create_document_upload_op import CreateDocumentUploadOp
 from .create_document_upload_op_content_type import CreateDocumentUploadOpContentType
 from .create_entity_request import CreateEntityRequest
+from .create_entity_request_consolidation_method_type_0 import (
+  CreateEntityRequestConsolidationMethodType0,
+)
+from .create_entity_request_entity_role_type_0 import CreateEntityRequestEntityRoleType0
 from .create_event_block_request import CreateEventBlockRequest
 from .create_event_block_request_event_action_type_0 import (
   CreateEventBlockRequestEventActionType0,
@@ -416,6 +420,9 @@ from .list_org_graphs_response_200_item import ListOrgGraphsResponse200Item
 from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
 from .live_financial_statement_request import LiveFinancialStatementRequest
+from .live_financial_statement_request_scope_type_0 import (
+  LiveFinancialStatementRequestScopeType0,
+)
 from .live_financial_statement_response import LiveFinancialStatementResponse
 from .live_statement_fact_row import LiveStatementFactRow
 from .login_request import LoginRequest
@@ -1089,6 +1096,10 @@ from .update_agent_request_classification_mode_type_0 import (
 from .update_agent_request_metadata_patch import UpdateAgentRequestMetadataPatch
 from .update_api_key_request import UpdateAPIKeyRequest
 from .update_entity_request import UpdateEntityRequest
+from .update_entity_request_consolidation_method_type_0 import (
+  UpdateEntityRequestConsolidationMethodType0,
+)
+from .update_entity_request_entity_role_type_0 import UpdateEntityRequestEntityRoleType0
 from .update_event_block_request import UpdateEventBlockRequest
 from .update_event_block_request_event_action_type_0 import (
   UpdateEventBlockRequestEventActionType0,
@@ -1253,6 +1264,8 @@ __all__ = (
   "CreateDocumentUploadOp",
   "CreateDocumentUploadOpContentType",
   "CreateEntityRequest",
+  "CreateEntityRequestConsolidationMethodType0",
+  "CreateEntityRequestEntityRoleType0",
   "CreateEventBlockRequest",
   "CreateEventBlockRequestEventActionType0",
   "CreateEventBlockRequestEventCategory",
@@ -1494,6 +1507,7 @@ __all__ = (
   "ListSubgraphsResponse",
   "ListTableFilesResponse",
   "LiveFinancialStatementRequest",
+  "LiveFinancialStatementRequestScopeType0",
   "LiveFinancialStatementResponse",
   "LiveStatementFactRow",
   "LoginRequest",
@@ -1889,6 +1903,8 @@ __all__ = (
   "UpdateAgentRequestMetadataPatch",
   "UpdateAPIKeyRequest",
   "UpdateEntityRequest",
+  "UpdateEntityRequestConsolidationMethodType0",
+  "UpdateEntityRequestEntityRoleType0",
   "UpdateEventBlockRequest",
   "UpdateEventBlockRequestEventActionType0",
   "UpdateEventBlockRequestMetadataPatch",

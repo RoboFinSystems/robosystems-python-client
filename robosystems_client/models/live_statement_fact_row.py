@@ -22,6 +22,8 @@ class LiveStatementFactRow:
       trait (None | str | Unset):
       depth (int | Unset):  Default: 0.
       is_subtotal (bool | Unset):  Default: False.
+      period_role (None | str | Unset): On the equity roll-forward, `start` for the beginning-balance row and `end`
+          for the ending-balance row. Null elsewhere.
   """
 
   qname: str
@@ -30,6 +32,7 @@ class LiveStatementFactRow:
   trait: None | str | Unset = UNSET
   depth: int | Unset = 0
   is_subtotal: bool | Unset = False
+  period_role: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -53,6 +56,12 @@ class LiveStatementFactRow:
 
     is_subtotal = self.is_subtotal
 
+    period_role: None | str | Unset
+    if isinstance(self.period_role, Unset):
+      period_role = UNSET
+    else:
+      period_role = self.period_role
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -68,6 +77,8 @@ class LiveStatementFactRow:
       field_dict["depth"] = depth
     if is_subtotal is not UNSET:
       field_dict["is_subtotal"] = is_subtotal
+    if period_role is not UNSET:
+      field_dict["period_role"] = period_role
 
     return field_dict
 
@@ -104,6 +115,15 @@ class LiveStatementFactRow:
 
     is_subtotal = d.pop("is_subtotal", UNSET)
 
+    def _parse_period_role(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    period_role = _parse_period_role(d.pop("period_role", UNSET))
+
     live_statement_fact_row = cls(
       qname=qname,
       name=name,
@@ -111,6 +131,7 @@ class LiveStatementFactRow:
       trait=trait,
       depth=depth,
       is_subtotal=is_subtotal,
+      period_role=period_role,
     )
 
     live_statement_fact_row.additional_properties = d

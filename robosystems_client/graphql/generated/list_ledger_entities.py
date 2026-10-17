@@ -21,6 +21,10 @@ class ListLedgerEntitiesEntities(BaseModel):
   is_parent: bool = Field(alias="isParent")
   parent_entity_id: Optional[str] = Field(alias="parentEntityId")
   ownership_pct: Optional[float] = Field(alias="ownershipPct")
+  consolidation_method: str = Field(alias="consolidationMethod")
+  entity_role: str = Field(alias="entityRole")
+  joined_on: Optional[str] = Field(alias="joinedOn")
+  left_on: Optional[str] = Field(alias="leftOn")
   source: str
   source_graph_id: Optional[str] = Field(alias="sourceGraphId")
   connection_id: Optional[str] = Field(alias="connectionId")
