@@ -459,6 +459,7 @@ from .offering_repository_plan_rate_limits_type_0 import (
   OfferingRepositoryPlanRateLimitsType0,
 )
 from .oidc_provider_info import OIDCProviderInfo
+from .opening_balance_input import OpeningBalanceInput
 from .operation_costs import OperationCosts
 from .operation_costs_ai_operations import OperationCostsAiOperations
 from .operation_costs_token_pricing import OperationCostsTokenPricing
@@ -914,6 +915,7 @@ from .reconciling_item_plan_default_disposition import (
   ReconcilingItemPlanDefaultDisposition,
 )
 from .reconciling_item_regenerated import ReconcilingItemRegenerated
+from .record_opening_balance_request import RecordOpeningBalanceRequest
 from .record_statement_balance_request import RecordStatementBalanceRequest
 from .recovery_codes_request import RecoveryCodesRequest
 from .recovery_codes_request_assertion_type_0 import RecoveryCodesRequestAssertionType0
@@ -1551,6 +1553,7 @@ __all__ = (
   "OfferingRepositoryPlan",
   "OfferingRepositoryPlanRateLimitsType0",
   "OIDCProviderInfo",
+  "OpeningBalanceInput",
   "OperationCosts",
   "OperationCostsAiOperations",
   "OperationCostsTokenPricing",
@@ -1774,6 +1777,7 @@ __all__ = (
   "ReconcilingItemPlan",
   "ReconcilingItemPlanDefaultDisposition",
   "ReconcilingItemRegenerated",
+  "RecordOpeningBalanceRequest",
   "RecordStatementBalanceRequest",
   "RecoveryCodesRequest",
   "RecoveryCodesRequestAssertionType0",
