@@ -921,6 +921,33 @@ class TestJournalEntries:
     assert metadata["memo"] == "Reversal of Q1 entry"
     assert metadata["posting_date"] == "2026-04-01"
 
+  @patch("robosystems_client.clients.ledger_client.op_record_opening_balance")
+  def test_record_opening_balance(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "record-opening-balance",
+      {"id": "je_open", "type": "opening", "posting_date": "2025-12-31"},
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.record_opening_balance(
+      graph_id,
+      balances=[
+        {"element_id": "elem_cash", "debit_amount": 1500000},
+        {"element_id": "elem_loan", "credit_amount": 1000000},
+      ],
+      equity_element_id="elem_obe",
+      entity_id="ent_1",
+    )
+    assert result["type"] == "opening"
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "balances": [
+        {"element_id": "elem_cash", "debit_amount": 1500000},
+        {"element_id": "elem_loan", "credit_amount": 1000000},
+      ],
+      "entity_id": "ent_1",
+      "equity_element_id": "elem_obe",
+    }
+
 
 # ── Taxonomy / entity linking ───────────────────────────────────────────
 

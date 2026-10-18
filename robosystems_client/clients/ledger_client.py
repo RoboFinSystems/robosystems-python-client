@@ -54,6 +54,9 @@ from ..api.robo_ledger_ledger_events.resolve_reconciling_item import (
 from ..api.robo_ledger_ledger_events.preview_reconciliations import (
   sync_detailed as op_preview_reconciliations,
 )
+from ..api.robo_ledger_ledger_events.record_opening_balance import (
+  sync_detailed as op_record_opening_balance,
+)
 from ..api.robo_ledger_ledger_events.record_statement_balance import (
   sync_detailed as op_record_statement_balance,
 )
@@ -545,6 +548,8 @@ from ..models.update_legacy_arm import UpdateLegacyArm
 from ..models.update_rollforward_arm import UpdateRollforwardArm
 from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from ..models.update_journal_entry_request import UpdateJournalEntryRequest
+from ..models.opening_balance_input import OpeningBalanceInput
+from ..models.record_opening_balance_request import RecordOpeningBalanceRequest
 from ..models.update_schedule_arm import UpdateScheduleArm
 from ..models.update_schedule_request import UpdateScheduleRequest
 from ..models.close_period_operation import ClosePeriodOperation
@@ -2135,6 +2140,39 @@ class LedgerClient:
     )
     envelope = self._call_op("Reverse journal entry", response)
     return self._typed_result("Reverse journal entry", envelope, EventBlockEnvelope)
+
+  def record_opening_balance(
+    self,
+    graph_id: str,
+    *,
+    balances: list[dict[str, Any]],
+    equity_element_id: str | None = None,
+    memo: str | None = None,
+    entity_id: str | None = None,
+  ) -> JournalEntryResponse:
+    """Record the balance sheet an entity's books start from.
+
+    ``balances`` is one ``{"element_id", "debit_amount", "credit_amount"}``
+    per balance-sheet account, in cents, in the account's normal direction.
+    It posts as one ``opening`` entry dated the day before the first fiscal
+    month, so every month's opening balances include it and no month's
+    activity does. ``equity_element_id`` (usually Opening Balance Equity)
+    takes any difference between debits and credits; unbalanced balances
+    without one are refused. Recording again replaces the entry until the
+    entity's first close. ``entity_id`` names the entity; omitted, the group
+    parent.
+    """
+    body = RecordOpeningBalanceRequest(
+      balances=[OpeningBalanceInput.from_dict(b) for b in balances],
+      entity_id=entity_id if entity_id is not None else UNSET,
+      equity_element_id=(equity_element_id if equity_element_id is not None else UNSET),
+      memo=memo if memo is not None else UNSET,
+    )
+    response = op_record_opening_balance(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Record opening balance", response)
+    return self._typed_result("Record opening balance", envelope, JournalEntryResponse)
 
   # ── Event blocks (generic preview + status transitions) ──────────────
 

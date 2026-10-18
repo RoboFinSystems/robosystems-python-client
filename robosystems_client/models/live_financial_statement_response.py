@@ -36,6 +36,9 @@ class LiveFinancialStatementResponse:
           `consolidated` scopes. Default: False.
       combined_entity_ids (list[str] | Unset): The entities summed, parent first; on `consolidated` the consolidation
           entity comes last.
+      omitted_periods (list[PeriodSpec] | Unset): Columns left out because they reach back before the books begin: on
+          books that start from an opening balance, a flow statement column that starts before the first day it covers, or
+          a balance sheet dated before it. They would show a partial figure, not the months before the books.
       validation (None | Unset | ValidationCheckResponse): Guard-rail outcome for the rendered columns — accounting
           equation, net-income equation, totals footing, operating-plug size. Null only when no structure rendered.
       unmapped_count (int | Unset):  Default: 0.
@@ -51,6 +54,7 @@ class LiveFinancialStatementResponse:
   scope: str | Unset = "entity"
   consolidated: bool | Unset = False
   combined_entity_ids: list[str] | Unset = UNSET
+  omitted_periods: list[PeriodSpec] | Unset = UNSET
   validation: None | Unset | ValidationCheckResponse = UNSET
   unmapped_count: int | Unset = 0
   truncated: bool | Unset = False
@@ -89,6 +93,13 @@ class LiveFinancialStatementResponse:
     if not isinstance(self.combined_entity_ids, Unset):
       combined_entity_ids = self.combined_entity_ids
 
+    omitted_periods: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.omitted_periods, Unset):
+      omitted_periods = []
+      for omitted_periods_item_data in self.omitted_periods:
+        omitted_periods_item = omitted_periods_item_data.to_dict()
+        omitted_periods.append(omitted_periods_item)
+
     validation: dict[str, Any] | None | Unset
     if isinstance(self.validation, Unset):
       validation = UNSET
@@ -120,6 +131,8 @@ class LiveFinancialStatementResponse:
       field_dict["consolidated"] = consolidated
     if combined_entity_ids is not UNSET:
       field_dict["combined_entity_ids"] = combined_entity_ids
+    if omitted_periods is not UNSET:
+      field_dict["omitted_periods"] = omitted_periods
     if validation is not UNSET:
       field_dict["validation"] = validation
     if unmapped_count is not UNSET:
@@ -171,6 +184,15 @@ class LiveFinancialStatementResponse:
 
     combined_entity_ids = cast(list[str], d.pop("combined_entity_ids", UNSET))
 
+    _omitted_periods = d.pop("omitted_periods", UNSET)
+    omitted_periods: list[PeriodSpec] | Unset = UNSET
+    if _omitted_periods is not UNSET:
+      omitted_periods = []
+      for omitted_periods_item_data in _omitted_periods:
+        omitted_periods_item = PeriodSpec.from_dict(omitted_periods_item_data)
+
+        omitted_periods.append(omitted_periods_item)
+
     def _parse_validation(data: object) -> None | Unset | ValidationCheckResponse:
       if data is None:
         return data
@@ -202,6 +224,7 @@ class LiveFinancialStatementResponse:
       scope=scope,
       consolidated=consolidated,
       combined_entity_ids=combined_entity_ids,
+      omitted_periods=omitted_periods,
       validation=validation,
       unmapped_count=unmapped_count,
       truncated=truncated,
