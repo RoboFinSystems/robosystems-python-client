@@ -35,7 +35,8 @@ class JournalEntryLineItemInput:
               one side of the entry tags the untagged lines on the other: the cash flow statement reads the cash line and the
               roll-forwards read the account line. On the group's consolidation entity, which moves no cash, every tagged line
               counts on its own, cash-effect signed (a credit is an inflow), so an elimination offsets the flow a member's
-              line produced. Refused when it is not a row of the entity's cash flow statement.
+              line produced, and a tag does not spread to the other side. Refused when it is not a row of the entity's cash
+              flow statement.
           metadata (JournalEntryLineItemInputMetadataType0 | None | Unset): Optional per-line metadata stamped on
               `LineItem.metadata_`. Used to carry source-system fields the standard columns don't cover — e.g. an external
               flow-tag code that drives rollforward attribution (`transaction_description_code`), an external memo, or a cost-

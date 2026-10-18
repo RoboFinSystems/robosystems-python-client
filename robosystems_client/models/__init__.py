@@ -8,6 +8,7 @@ from .account_info import AccountInfo
 from .add_graph_member_request import AddGraphMemberRequest
 from .add_publish_list_members_operation import AddPublishListMembersOperation
 from .agent_classification import AgentClassification
+from .allocation_override_response import AllocationOverrideResponse
 from .analytical_statement_fact_row import AnalyticalStatementFactRow
 from .api_key_info import APIKeyInfo
 from .api_keys_response import APIKeysResponse
@@ -91,6 +92,11 @@ from .connection_provider_info_auth_type import ConnectionProviderInfoAuthType
 from .connection_provider_info_provider import ConnectionProviderInfoProvider
 from .connection_response import ConnectionResponse
 from .connection_response_metadata import ConnectionResponseMetadata
+from .consolidation_proposal import ConsolidationProposal
+from .consolidation_proposal_adjustment_kind import ConsolidationProposalAdjustmentKind
+from .consolidation_proposal_line import ConsolidationProposalLine
+from .consolidation_reconciling_item import ConsolidationReconcilingItem
+from .consolidation_residual import ConsolidationResidual
 from .consolidation_worksheet_request import ConsolidationWorksheetRequest
 from .consolidation_worksheet_response import ConsolidationWorksheetResponse
 from .content_limits import ContentLimits
@@ -470,6 +476,12 @@ from .operation_envelope_accept_suggestions_response import (
 from .operation_envelope_accept_suggestions_response_status import (
   OperationEnvelopeAcceptSuggestionsResponseStatus,
 )
+from .operation_envelope_allocation_override_response import (
+  OperationEnvelopeAllocationOverrideResponse,
+)
+from .operation_envelope_allocation_override_response_status import (
+  OperationEnvelopeAllocationOverrideResponseStatus,
+)
 from .operation_envelope_assert_metrics_response import (
   OperationEnvelopeAssertMetricsResponse,
 )
@@ -686,6 +698,12 @@ from .operation_envelope_portfolio_block_envelope import (
 from .operation_envelope_portfolio_block_envelope_status import (
   OperationEnvelopePortfolioBlockEnvelopeStatus,
 )
+from .operation_envelope_preview_consolidation_entries_response import (
+  OperationEnvelopePreviewConsolidationEntriesResponse,
+)
+from .operation_envelope_preview_consolidation_entries_response_status import (
+  OperationEnvelopePreviewConsolidationEntriesResponseStatus,
+)
 from .operation_envelope_preview_event_block_response import (
   OperationEnvelopePreviewEventBlockResponse,
 )
@@ -697,6 +715,12 @@ from .operation_envelope_promote_obligations_response import (
 )
 from .operation_envelope_promote_obligations_response_status import (
   OperationEnvelopePromoteObligationsResponseStatus,
+)
+from .operation_envelope_propose_consolidation_entries_response import (
+  OperationEnvelopeProposeConsolidationEntriesResponse,
+)
+from .operation_envelope_propose_consolidation_entries_response_status import (
+  OperationEnvelopeProposeConsolidationEntriesResponseStatus,
 )
 from .operation_envelope_publish_list_response import (
   OperationEnvelopePublishListResponse,
@@ -867,6 +891,8 @@ from .portfolio_block_position_dispose import PortfolioBlockPositionDispose
 from .portfolio_block_position_update import PortfolioBlockPositionUpdate
 from .portfolio_block_positions import PortfolioBlockPositions
 from .position_block import PositionBlock
+from .preview_consolidation_entries_request import PreviewConsolidationEntriesRequest
+from .preview_consolidation_entries_response import PreviewConsolidationEntriesResponse
 from .preview_event_block_response import PreviewEventBlockResponse
 from .preview_event_block_response_handler_metadata import (
   PreviewEventBlockResponseHandlerMetadata,
@@ -879,6 +905,8 @@ from .promote_obligations_response import PromoteObligationsResponse
 from .promote_obligations_response_errors_item import (
   PromoteObligationsResponseErrorsItem,
 )
+from .propose_consolidation_entries_request import ProposeConsolidationEntriesRequest
+from .propose_consolidation_entries_response import ProposeConsolidationEntriesResponse
 from .publish_list_member_response import PublishListMemberResponse
 from .publish_list_response import PublishListResponse
 from .query_limits import QueryLimits
@@ -1001,6 +1029,7 @@ from .security_response_terms import SecurityResponseTerms
 from .selection_criteria import SelectionCriteria
 from .service_offering_summary import ServiceOfferingSummary
 from .service_offerings_response import ServiceOfferingsResponse
+from .set_allocation_override_request import SetAllocationOverrideRequest
 from .set_close_target_operation import SetCloseTargetOperation
 from .set_reconciliation_policy_request import SetReconciliationPolicyRequest
 from .set_reconciliation_policy_request_statement_cycle_type_0 import (
@@ -1192,6 +1221,7 @@ __all__ = (
   "AddGraphMemberRequest",
   "AddPublishListMembersOperation",
   "AgentClassification",
+  "AllocationOverrideResponse",
   "AnalyticalStatementFactRow",
   "APIKeyInfo",
   "APIKeysResponse",
@@ -1263,6 +1293,11 @@ __all__ = (
   "ConnectionProviderInfoProvider",
   "ConnectionResponse",
   "ConnectionResponseMetadata",
+  "ConsolidationProposal",
+  "ConsolidationProposalAdjustmentKind",
+  "ConsolidationProposalLine",
+  "ConsolidationReconcilingItem",
+  "ConsolidationResidual",
   "ConsolidationWorksheetRequest",
   "ConsolidationWorksheetResponse",
   "ContentLimits",
@@ -1560,6 +1595,8 @@ __all__ = (
   "OperationEnvelope",
   "OperationEnvelopeAcceptSuggestionsResponse",
   "OperationEnvelopeAcceptSuggestionsResponseStatus",
+  "OperationEnvelopeAllocationOverrideResponse",
+  "OperationEnvelopeAllocationOverrideResponseStatus",
   "OperationEnvelopeAssertMetricsResponse",
   "OperationEnvelopeAssertMetricsResponseStatus",
   "OperationEnvelopeAssociationResponse",
@@ -1636,10 +1673,14 @@ __all__ = (
   "OperationEnvelopeLiveFinancialStatementResponseStatus",
   "OperationEnvelopePortfolioBlockEnvelope",
   "OperationEnvelopePortfolioBlockEnvelopeStatus",
+  "OperationEnvelopePreviewConsolidationEntriesResponse",
+  "OperationEnvelopePreviewConsolidationEntriesResponseStatus",
   "OperationEnvelopePreviewEventBlockResponse",
   "OperationEnvelopePreviewEventBlockResponseStatus",
   "OperationEnvelopePromoteObligationsResponse",
   "OperationEnvelopePromoteObligationsResponseStatus",
+  "OperationEnvelopeProposeConsolidationEntriesResponse",
+  "OperationEnvelopeProposeConsolidationEntriesResponseStatus",
   "OperationEnvelopePublishListResponse",
   "OperationEnvelopePublishListResponseStatus",
   "OperationEnvelopeReadTextResponse",
@@ -1741,6 +1782,8 @@ __all__ = (
   "PortfolioBlockPositions",
   "PortfolioBlockPositionUpdate",
   "PositionBlock",
+  "PreviewConsolidationEntriesRequest",
+  "PreviewConsolidationEntriesResponse",
   "PreviewEventBlockResponse",
   "PreviewEventBlockResponseHandlerMetadata",
   "PreviewReconciliationsRequest",
@@ -1749,6 +1792,8 @@ __all__ = (
   "PromoteObligationsRequest",
   "PromoteObligationsResponse",
   "PromoteObligationsResponseErrorsItem",
+  "ProposeConsolidationEntriesRequest",
+  "ProposeConsolidationEntriesResponse",
   "PublishListMemberResponse",
   "PublishListResponse",
   "QueryLimits",
@@ -1843,6 +1888,7 @@ __all__ = (
   "SelectionCriteria",
   "ServiceOfferingsResponse",
   "ServiceOfferingSummary",
+  "SetAllocationOverrideRequest",
   "SetCloseTargetOperation",
   "SetReconciliationPolicyRequest",
   "SetReconciliationPolicyRequestStatementCycleType0",
