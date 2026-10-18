@@ -54,8 +54,14 @@ from ..api.robo_ledger_ledger_events.resolve_reconciling_item import (
 from ..api.robo_ledger_ledger_events.preview_reconciliations import (
   sync_detailed as op_preview_reconciliations,
 )
+from ..api.robo_ledger_ledger_events.propose_consolidation_entries import (
+  sync_detailed as op_propose_consolidation_entries,
+)
 from ..api.robo_ledger_ledger_events.record_opening_balance import (
   sync_detailed as op_record_opening_balance,
+)
+from ..api.robo_ledger_ledger_events.set_allocation_override import (
+  sync_detailed as op_set_allocation_override,
 )
 from ..api.robo_ledger_ledger_events.record_statement_balance import (
   sync_detailed as op_record_statement_balance,
@@ -86,6 +92,9 @@ from ..api.robo_ledger_analytical_views.financial_statement_analysis import (
 )
 from ..api.robo_ledger_analytical_views.consolidation_worksheet import (
   sync_detailed as op_consolidation_worksheet,
+)
+from ..api.robo_ledger_analytical_views.preview_consolidation_entries import (
+  sync_detailed as op_preview_consolidation_entries,
 )
 from ..api.robo_ledger_analytical_views.live_financial_statement import (
   sync_detailed as op_live_financial_statement,
@@ -527,6 +536,20 @@ from ..models.financial_statement_analysis_request import (
 )
 from ..models.consolidation_worksheet_request import ConsolidationWorksheetRequest
 from ..models.consolidation_worksheet_response import ConsolidationWorksheetResponse
+from ..models.allocation_override_response import AllocationOverrideResponse
+from ..models.preview_consolidation_entries_request import (
+  PreviewConsolidationEntriesRequest,
+)
+from ..models.preview_consolidation_entries_response import (
+  PreviewConsolidationEntriesResponse,
+)
+from ..models.propose_consolidation_entries_request import (
+  ProposeConsolidationEntriesRequest,
+)
+from ..models.propose_consolidation_entries_response import (
+  ProposeConsolidationEntriesResponse,
+)
+from ..models.set_allocation_override_request import SetAllocationOverrideRequest
 from ..models.live_financial_statement_request import LiveFinancialStatementRequest
 from ..models.financial_statement_analysis_response import (
   FinancialStatementAnalysisResponse,
@@ -2174,6 +2197,57 @@ class LedgerClient:
     envelope = self._call_op("Record opening balance", response)
     return self._typed_result("Record opening balance", envelope, JournalEntryResponse)
 
+  def propose_consolidation_entries(
+    self, graph_id: str, period: str
+  ) -> ProposeConsolidationEntriesResponse:
+    """Draft a month's consolidating entries in the group's consolidation
+    entity, replacing the drafts the engine wrote for it before; the
+    consolidation entity's close posts them. ``period`` is ``YYYY-MM``. A
+    residual or a disagreement comes back beside the drafts, never plugged;
+    a closed month comes back ``closed``, with nothing written.
+    """
+    response = op_propose_consolidation_entries(
+      graph_id=graph_id,
+      body=ProposeConsolidationEntriesRequest(period=period),
+      client=self._get_client(),
+    )
+    envelope = self._call_op("Propose consolidation entries", response)
+    return self._typed_result(
+      "Propose consolidation entries", envelope, ProposeConsolidationEntriesResponse
+    )
+
+  def set_allocation_override(
+    self,
+    graph_id: str,
+    *,
+    entity_id: str,
+    period: str,
+    amount: int | None = None,
+    percentage: float | None = None,
+    basis: str | None = None,
+    clear: bool = False,
+  ) -> AllocationOverrideResponse:
+    """Set the outside owners' share of a member's result for one month in
+    place of the pro-rata share: ``amount`` in cents (negative for a share
+    of a loss) or ``percentage`` of the month's result, with the ``basis``.
+    ``clear=True`` removes it. Only for a member consolidated in full.
+    """
+    body = SetAllocationOverrideRequest(
+      entity_id=entity_id,
+      period=period,
+      amount=amount if amount is not None else UNSET,
+      percentage=percentage if percentage is not None else UNSET,
+      basis=basis if basis is not None else UNSET,
+      clear=clear,
+    )
+    response = op_set_allocation_override(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Set allocation override", response)
+    return self._typed_result(
+      "Set allocation override", envelope, AllocationOverrideResponse
+    )
+
   # ── Event blocks (generic preview + status transitions) ──────────────
 
   def create_event_block(
@@ -2406,6 +2480,24 @@ class LedgerClient:
     envelope = self._call_op("Consolidation worksheet", response)
     return self._typed_result(
       "Consolidation worksheet", envelope, ConsolidationWorksheetResponse
+    )
+
+  def preview_consolidation_entries(
+    self, graph_id: str, period: str
+  ) -> PreviewConsolidationEntriesResponse:
+    """The consolidating entries a group's month needs, computed from the
+    books and posting nothing: each kind and member brought to its month-end
+    balance, less what the consolidation entity already holds. ``period`` is
+    ``YYYY-MM``.
+    """
+    response = op_preview_consolidation_entries(
+      graph_id=graph_id,
+      body=PreviewConsolidationEntriesRequest(period=period),
+      client=self._get_client(),
+    )
+    envelope = self._call_op("Preview consolidation entries", response)
+    return self._typed_result(
+      "Preview consolidation entries", envelope, PreviewConsolidationEntriesResponse
     )
 
   def financial_statement_analysis(

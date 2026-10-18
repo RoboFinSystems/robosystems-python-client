@@ -948,6 +948,48 @@ class TestJournalEntries:
       "equity_element_id": "elem_obe",
     }
 
+  @patch("robosystems_client.clients.ledger_client.op_propose_consolidation_entries")
+  def test_propose_consolidation_entries(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "propose-consolidation-entries",
+      {
+        "period": "2026-08",
+        "consolidation_entity_id": "ent_adj",
+        "closed": False,
+        "entries": [],
+        "replaced": 2,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.propose_consolidation_entries(graph_id, "2026-08")
+    assert result["replaced"] == 2
+    assert mock_op.call_args.kwargs["body"].to_dict() == {"period": "2026-08"}
+
+  @patch("robosystems_client.clients.ledger_client.op_set_allocation_override")
+  def test_set_allocation_override(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "set-allocation-override",
+      {"entity_id": "ent_cafe", "period": "2026-08", "amount": 250000},
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.set_allocation_override(
+      graph_id,
+      entity_id="ent_cafe",
+      period="2026-08",
+      amount=250000,
+      basis="Preferred return first",
+    )
+    assert result["amount"] == 250000
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "entity_id": "ent_cafe",
+      "period": "2026-08",
+      "amount": 250000,
+      "basis": "Preferred return first",
+      "clear": False,
+    }
+
 
 # ── Taxonomy / entity linking ───────────────────────────────────────────
 
@@ -2530,6 +2572,25 @@ class TestFinancialStatementOps:
     assert result["columns"][0]["kind"] == "consolidated"
     body = mock_op.call_args.kwargs["body"]
     assert str(body.statement_type) == "balance_sheet"
+
+  @patch("robosystems_client.clients.ledger_client.op_preview_consolidation_entries")
+  def test_preview_consolidation_entries(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "preview-consolidation-entries",
+      {
+        "period": "2026-08",
+        "period_start": "2026-08-01",
+        "period_end": "2026-08-31",
+        "consolidation_entity_id": "ent_adj",
+        "proposals": [],
+        "up_to_date": True,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.preview_consolidation_entries(graph_id, "2026-08")
+    assert result["up_to_date"] is True
+    assert mock_op.call_args.kwargs["body"].to_dict() == {"period": "2026-08"}
 
   @patch("robosystems_client.clients.ledger_client.op_live_financial_statement")
   def test_live_financial_statement_with_fiscal_year(

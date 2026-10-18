@@ -33,6 +33,8 @@ class JournalEntryResponse:
       provenance (None | str | Unset):
       reversal_of (None | str | Unset):
       posted_at (datetime.datetime | None | Unset):
+      adjustment_kind (None | str | Unset):
+      adjusts_entity_id (None | str | Unset):
   """
 
   id: str
@@ -47,6 +49,8 @@ class JournalEntryResponse:
   provenance: None | str | Unset = UNSET
   reversal_of: None | str | Unset = UNSET
   posted_at: datetime.datetime | None | Unset = UNSET
+  adjustment_kind: None | str | Unset = UNSET
+  adjusts_entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -99,6 +103,18 @@ class JournalEntryResponse:
     else:
       posted_at = self.posted_at
 
+    adjustment_kind: None | str | Unset
+    if isinstance(self.adjustment_kind, Unset):
+      adjustment_kind = UNSET
+    else:
+      adjustment_kind = self.adjustment_kind
+
+    adjusts_entity_id: None | str | Unset
+    if isinstance(self.adjusts_entity_id, Unset):
+      adjusts_entity_id = UNSET
+    else:
+      adjusts_entity_id = self.adjusts_entity_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -122,6 +138,10 @@ class JournalEntryResponse:
       field_dict["reversal_of"] = reversal_of
     if posted_at is not UNSET:
       field_dict["posted_at"] = posted_at
+    if adjustment_kind is not UNSET:
+      field_dict["adjustment_kind"] = adjustment_kind
+    if adjusts_entity_id is not UNSET:
+      field_dict["adjusts_entity_id"] = adjusts_entity_id
 
     return field_dict
 
@@ -202,6 +222,24 @@ class JournalEntryResponse:
 
     posted_at = _parse_posted_at(d.pop("posted_at", UNSET))
 
+    def _parse_adjustment_kind(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    adjustment_kind = _parse_adjustment_kind(d.pop("adjustment_kind", UNSET))
+
+    def _parse_adjusts_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    adjusts_entity_id = _parse_adjusts_entity_id(d.pop("adjusts_entity_id", UNSET))
+
     journal_entry_response = cls(
       id=id,
       type_=type_,
@@ -215,6 +253,8 @@ class JournalEntryResponse:
       provenance=provenance,
       reversal_of=reversal_of,
       posted_at=posted_at,
+      adjustment_kind=adjustment_kind,
+      adjusts_entity_id=adjusts_entity_id,
     )
 
     journal_entry_response.additional_properties = d
