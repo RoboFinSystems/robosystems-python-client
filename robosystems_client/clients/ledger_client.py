@@ -81,6 +81,9 @@ from ..api.robo_ledger_ledger_events.create_event_handler import (
 from ..api.robo_ledger_analytical_views.financial_statement_analysis import (
   sync_detailed as op_financial_statement_analysis,
 )
+from ..api.robo_ledger_analytical_views.consolidation_worksheet import (
+  sync_detailed as op_consolidation_worksheet,
+)
 from ..api.robo_ledger_analytical_views.live_financial_statement import (
   sync_detailed as op_live_financial_statement,
 )
@@ -519,6 +522,8 @@ from ..models.create_event_handler_request import CreateEventHandlerRequest
 from ..models.financial_statement_analysis_request import (
   FinancialStatementAnalysisRequest,
 )
+from ..models.consolidation_worksheet_request import ConsolidationWorksheetRequest
+from ..models.consolidation_worksheet_response import ConsolidationWorksheetResponse
 from ..models.live_financial_statement_request import LiveFinancialStatementRequest
 from ..models.financial_statement_analysis_response import (
   FinancialStatementAnalysisResponse,
@@ -2344,6 +2349,25 @@ class LedgerClient:
     envelope = self._call_op("Live financial statement", response)
     return self._typed_result(
       "Live financial statement", envelope, LiveFinancialStatementResponse
+    )
+
+  def consolidation_worksheet(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> ConsolidationWorksheetResponse:
+    """The group's statement for one window with the entity as the column:
+    each member consolidated in full, their combined sum, the consolidation
+    entity's adjustments, the consolidated total, and each equity-method or
+    cost member beside the sum. Read on the group parent.
+    """
+    request = ConsolidationWorksheetRequest.from_dict(body)
+    response = op_consolidation_worksheet(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Consolidation worksheet", response)
+    return self._typed_result(
+      "Consolidation worksheet", envelope, ConsolidationWorksheetResponse
     )
 
   def financial_statement_analysis(

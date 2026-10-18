@@ -2470,6 +2470,40 @@ class TestFinancialStatementOps:
     body = mock_op.call_args.kwargs["body"]
     assert str(body.statement_type) == "income_statement"
 
+  @patch("robosystems_client.clients.ledger_client.op_consolidation_worksheet")
+  def test_consolidation_worksheet(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "consolidation-worksheet",
+      {
+        "graph_id": graph_id,
+        "entity_id": "entity_parent",
+        "statement_type": "balance_sheet",
+        "period": {"start": "2026-08-01", "end": "2026-08-31", "label": "Current"},
+        "columns": [
+          {
+            "key": "consolidated",
+            "label": "Consolidated",
+            "kind": "consolidated",
+            "in_sum": True,
+          }
+        ],
+        "rows": [],
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.consolidation_worksheet(
+      graph_id,
+      {
+        "statement_type": "balance_sheet",
+        "period_start": "2026-08-01",
+        "period_end": "2026-08-31",
+      },
+    )
+    assert result["columns"][0]["kind"] == "consolidated"
+    body = mock_op.call_args.kwargs["body"]
+    assert str(body.statement_type) == "balance_sheet"
+
   @patch("robosystems_client.clients.ledger_client.op_live_financial_statement")
   def test_live_financial_statement_with_fiscal_year(
     self, mock_op, mock_config, graph_id

@@ -91,6 +91,8 @@ from .connection_provider_info_auth_type import ConnectionProviderInfoAuthType
 from .connection_provider_info_provider import ConnectionProviderInfoProvider
 from .connection_response import ConnectionResponse
 from .connection_response_metadata import ConnectionResponseMetadata
+from .consolidation_worksheet_request import ConsolidationWorksheetRequest
+from .consolidation_worksheet_response import ConsolidationWorksheetResponse
 from .content_limits import ContentLimits
 from .copy_operation_limits import CopyOperationLimits
 from .create_agent_request import CreateAgentRequest
@@ -532,6 +534,12 @@ from .operation_envelope_compute_metrics_response import (
 )
 from .operation_envelope_compute_metrics_response_status import (
   OperationEnvelopeComputeMetricsResponseStatus,
+)
+from .operation_envelope_consolidation_worksheet_response import (
+  OperationEnvelopeConsolidationWorksheetResponse,
+)
+from .operation_envelope_consolidation_worksheet_response_status import (
+  OperationEnvelopeConsolidationWorksheetResponseStatus,
 )
 from .operation_envelope_delete_information_block_response import (
   OperationEnvelopeDeleteInformationBlockResponse,
@@ -1169,6 +1177,9 @@ from .view_metadata import ViewMetadata
 from .view_projections import ViewProjections
 from .view_response import ViewResponse
 from .view_response_summary_type_0 import ViewResponseSummaryType0
+from .worksheet_column import WorksheetColumn
+from .worksheet_column_kind import WorksheetColumnKind
+from .worksheet_row import WorksheetRow
 
 __all__ = (
   "AcceptSuggestionLine",
@@ -1250,6 +1261,8 @@ __all__ = (
   "ConnectionProviderInfoProvider",
   "ConnectionResponse",
   "ConnectionResponseMetadata",
+  "ConsolidationWorksheetRequest",
+  "ConsolidationWorksheetResponse",
   "ContentLimits",
   "CopyOperationLimits",
   "CreateAgentRequest",
@@ -1566,6 +1579,8 @@ __all__ = (
   "OperationEnvelopeComputeForecastResponseStatus",
   "OperationEnvelopeComputeMetricsResponse",
   "OperationEnvelopeComputeMetricsResponseStatus",
+  "OperationEnvelopeConsolidationWorksheetResponse",
+  "OperationEnvelopeConsolidationWorksheetResponseStatus",
   "OperationEnvelopeDeleteInformationBlockResponse",
   "OperationEnvelopeDeleteInformationBlockResponseStatus",
   "OperationEnvelopeDeletePortfolioBlockResponse",
@@ -1956,4 +1971,7 @@ __all__ = (
   "ViewProjections",
   "ViewResponse",
   "ViewResponseSummaryType0",
+  "WorksheetColumn",
+  "WorksheetColumnKind",
+  "WorksheetRow",
 )
