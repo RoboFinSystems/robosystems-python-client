@@ -117,12 +117,12 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse]:
   """Learn Classification Defaults
 
-   Seed each counterparty's default account from the bank lines already committed to the books: the
-  account most of its lines went to becomes its default, with the lines that agreed counted as
-  confirmations. A counterparty that already has a default keeps it. Its still-open lines are then
-  suggested from the default. Run it once on books that were classified before defaults were learned;
-  after that, every commit teaches the default by itself. `dry_run` reports what would be learned
-  without writing it.
+   Seed each counterparty's default account from the bank lines already committed to the books, one for
+  each entity whose lines it has: the account most of those lines went to becomes the default, with
+  the lines that agreed counted as confirmations. A default already there is kept. Its still-open
+  lines are then suggested from the default. Run it once on books that were classified before defaults
+  were learned; after that, every commit teaches the default by itself. `dry_run` reports what would
+  be learned without writing it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -163,12 +163,12 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse | None:
   """Learn Classification Defaults
 
-   Seed each counterparty's default account from the bank lines already committed to the books: the
-  account most of its lines went to becomes its default, with the lines that agreed counted as
-  confirmations. A counterparty that already has a default keeps it. Its still-open lines are then
-  suggested from the default. Run it once on books that were classified before defaults were learned;
-  after that, every commit teaches the default by itself. `dry_run` reports what would be learned
-  without writing it.
+   Seed each counterparty's default account from the bank lines already committed to the books, one for
+  each entity whose lines it has: the account most of those lines went to becomes the default, with
+  the lines that agreed counted as confirmations. A default already there is kept. Its still-open
+  lines are then suggested from the default. Run it once on books that were classified before defaults
+  were learned; after that, every commit teaches the default by itself. `dry_run` reports what would
+  be learned without writing it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -204,12 +204,12 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse]:
   """Learn Classification Defaults
 
-   Seed each counterparty's default account from the bank lines already committed to the books: the
-  account most of its lines went to becomes its default, with the lines that agreed counted as
-  confirmations. A counterparty that already has a default keeps it. Its still-open lines are then
-  suggested from the default. Run it once on books that were classified before defaults were learned;
-  after that, every commit teaches the default by itself. `dry_run` reports what would be learned
-  without writing it.
+   Seed each counterparty's default account from the bank lines already committed to the books, one for
+  each entity whose lines it has: the account most of those lines went to becomes the default, with
+  the lines that agreed counted as confirmations. A default already there is kept. Its still-open
+  lines are then suggested from the default. Run it once on books that were classified before defaults
+  were learned; after that, every commit teaches the default by itself. `dry_run` reports what would
+  be learned without writing it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -248,12 +248,12 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeLearnClassificationDefaultsResponse | None:
   """Learn Classification Defaults
 
-   Seed each counterparty's default account from the bank lines already committed to the books: the
-  account most of its lines went to becomes its default, with the lines that agreed counted as
-  confirmations. A counterparty that already has a default keeps it. Its still-open lines are then
-  suggested from the default. Run it once on books that were classified before defaults were learned;
-  after that, every commit teaches the default by itself. `dry_run` reports what would be learned
-  without writing it.
+   Seed each counterparty's default account from the bank lines already committed to the books, one for
+  each entity whose lines it has: the account most of those lines went to becomes the default, with
+  the lines that agreed counted as confirmations. A default already there is kept. Its still-open
+  lines are then suggested from the default. Run it once on books that were classified before defaults
+  were learned; after that, every commit teaches the default by itself. `dry_run` reports what would
+  be learned without writing it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

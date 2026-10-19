@@ -13,10 +13,11 @@ T = TypeVar("T", bound="AgentClassification")
 
 @_attrs_define
 class AgentClassification:
-  """A counterparty's default account, learned from committed lines or set by
-  hand.
+  """A counterparty's default account for one entity's lines, learned from
+  committed lines or set by hand.
 
       Attributes:
+          entity_id (str): The entity whose lines it is for.
           element_id (str): The default chart account.
           mode (str): `suggest`: offered on each new line. `always_ask`: never offered.
           confirmations (int): Committed lines that went to this account.
@@ -27,6 +28,7 @@ class AgentClassification:
           learned_from (None | str | Unset): The committed line it was learned from, when it was.
   """
 
+  entity_id: str
   element_id: str
   mode: str
   confirmations: int
@@ -38,6 +40,8 @@ class AgentClassification:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    entity_id = self.entity_id
+
     element_id = self.element_id
 
     mode = self.mode
@@ -74,6 +78,7 @@ class AgentClassification:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
+        "entity_id": entity_id,
         "element_id": element_id,
         "mode": mode,
         "confirmations": confirmations,
@@ -94,6 +99,8 @@ class AgentClassification:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
+    entity_id = d.pop("entity_id")
+
     element_id = d.pop("element_id")
 
     mode = d.pop("mode")
@@ -139,6 +146,7 @@ class AgentClassification:
     learned_from = _parse_learned_from(d.pop("learned_from", UNSET))
 
     agent_classification = cls(
+      entity_id=entity_id,
       element_id=element_id,
       mode=mode,
       confirmations=confirmations,

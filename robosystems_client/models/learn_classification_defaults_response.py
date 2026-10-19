@@ -14,8 +14,8 @@ class LearnClassificationDefaultsResponse:
   """What seeding the defaults learned.
 
   Attributes:
-      agents_learned (int): Counterparties given a default from their committed lines.
-      agents_kept (int): Counterparties that already had a default, left as they were.
+      agents_learned (int): Defaults learned from committed lines, one per counterparty and entity.
+      agents_kept (int): Counterparty and entity pairs that already had a default, left as they were.
       lines_read (int): Committed lines classified to a single account that were read.
       open_lines_resuggested (int): Still-open lines whose suggestion changed as a result.
       dry_run (bool):

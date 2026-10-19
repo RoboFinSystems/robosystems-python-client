@@ -117,8 +117,10 @@ def sync_detailed(
   (agents are never deleted — they are reference data referenced by events and transactions).
   `classification_element_id` sets the account this counterparty's bank lines are suggested (an empty
   string clears it), and `classification_mode='always_ask'` stops suggesting one for a counterparty
-  whose lines go to different accounts; its still-open lines are re-suggested at once. A default is
-  also learned as lines are committed, so set one by hand only to correct it.
+  whose lines go to different accounts; its still-open lines are re-suggested at once. Each entity of
+  a group keeps its own default, on its own chart: `classification_entity_id` names the one these
+  fields are for, omitted the group parent. A default is also learned as lines are committed, so set
+  one by hand only to correct it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -164,8 +166,10 @@ def sync(
   (agents are never deleted — they are reference data referenced by events and transactions).
   `classification_element_id` sets the account this counterparty's bank lines are suggested (an empty
   string clears it), and `classification_mode='always_ask'` stops suggesting one for a counterparty
-  whose lines go to different accounts; its still-open lines are re-suggested at once. A default is
-  also learned as lines are committed, so set one by hand only to correct it.
+  whose lines go to different accounts; its still-open lines are re-suggested at once. Each entity of
+  a group keeps its own default, on its own chart: `classification_entity_id` names the one these
+  fields are for, omitted the group parent. A default is also learned as lines are committed, so set
+  one by hand only to correct it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -206,8 +210,10 @@ async def asyncio_detailed(
   (agents are never deleted — they are reference data referenced by events and transactions).
   `classification_element_id` sets the account this counterparty's bank lines are suggested (an empty
   string clears it), and `classification_mode='always_ask'` stops suggesting one for a counterparty
-  whose lines go to different accounts; its still-open lines are re-suggested at once. A default is
-  also learned as lines are committed, so set one by hand only to correct it.
+  whose lines go to different accounts; its still-open lines are re-suggested at once. Each entity of
+  a group keeps its own default, on its own chart: `classification_entity_id` names the one these
+  fields are for, omitted the group parent. A default is also learned as lines are committed, so set
+  one by hand only to correct it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -251,8 +257,10 @@ async def asyncio(
   (agents are never deleted — they are reference data referenced by events and transactions).
   `classification_element_id` sets the account this counterparty's bank lines are suggested (an empty
   string clears it), and `classification_mode='always_ask'` stops suggesting one for a counterparty
-  whose lines go to different accounts; its still-open lines are re-suggested at once. A default is
-  also learned as lines are committed, so set one by hand only to correct it.
+  whose lines go to different accounts; its still-open lines are re-suggested at once. Each entity of
+  a group keeps its own default, on its own chart: `classification_entity_id` names the one these
+  fields are for, omitted the group parent. A default is also learned as lines are committed, so set
+  one by hand only to correct it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -1631,6 +1631,7 @@ type Agent {
   isActive: Boolean!
   is1099Recipient: Boolean!
   classification: AgentClassification
+  classifications: [AgentClassification!]!
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: String
@@ -1639,10 +1640,13 @@ type Agent {
 }
 
 """
-A counterparty's default account, learned from committed lines or set by
-hand.
+A counterparty's default account for one entity's lines, learned from
+committed lines or set by hand.
 """
 type AgentClassification {
+  """The entity whose lines it is for."""
+  entityId: String!
+
   """The default chart account."""
   elementId: String!
 

@@ -47,6 +47,8 @@ class UpdateAgentRequest:
               once. Omit to keep.
           classification_mode (None | Unset | UpdateAgentRequestClassificationModeType0): `suggest` offers the default on
               each line; `always_ask` offers none, for a counterparty whose lines go to different accounts. Omit to keep.
+          classification_entity_id (None | str | Unset): The entity whose bank lines the default above is for. Each entity
+              keeps its own default, on its own chart. Omit for the group parent.
           metadata_patch (UpdateAgentRequestMetadataPatch | Unset): Deep-merged into agent.metadata. Pass `{}` to leave
               unchanged. The default classification is set with the fields above, not here.
   """
@@ -65,6 +67,7 @@ class UpdateAgentRequest:
   is_1099_recipient: bool | None | Unset = UNSET
   classification_element_id: None | str | Unset = UNSET
   classification_mode: None | Unset | UpdateAgentRequestClassificationModeType0 = UNSET
+  classification_entity_id: None | str | Unset = UNSET
   metadata_patch: UpdateAgentRequestMetadataPatch | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -159,6 +162,12 @@ class UpdateAgentRequest:
     else:
       classification_mode = self.classification_mode
 
+    classification_entity_id: None | str | Unset
+    if isinstance(self.classification_entity_id, Unset):
+      classification_entity_id = UNSET
+    else:
+      classification_entity_id = self.classification_entity_id
+
     metadata_patch: dict[str, Any] | Unset = UNSET
     if not isinstance(self.metadata_patch, Unset):
       metadata_patch = self.metadata_patch.to_dict()
@@ -196,6 +205,8 @@ class UpdateAgentRequest:
       field_dict["classification_element_id"] = classification_element_id
     if classification_mode is not UNSET:
       field_dict["classification_mode"] = classification_mode
+    if classification_entity_id is not UNSET:
+      field_dict["classification_entity_id"] = classification_entity_id
     if metadata_patch is not UNSET:
       field_dict["metadata_patch"] = metadata_patch
 
@@ -354,6 +365,17 @@ class UpdateAgentRequest:
       d.pop("classification_mode", UNSET)
     )
 
+    def _parse_classification_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    classification_entity_id = _parse_classification_entity_id(
+      d.pop("classification_entity_id", UNSET)
+    )
+
     _metadata_patch = d.pop("metadata_patch", UNSET)
     metadata_patch: UpdateAgentRequestMetadataPatch | Unset
     if isinstance(_metadata_patch, Unset):
@@ -376,6 +398,7 @@ class UpdateAgentRequest:
       is_1099_recipient=is_1099_recipient,
       classification_element_id=classification_element_id,
       classification_mode=classification_mode,
+      classification_entity_id=classification_entity_id,
       metadata_patch=metadata_patch,
     )
 

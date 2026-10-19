@@ -2348,7 +2348,9 @@ class LedgerClient:
     metadata; all other fields replace. ``classification_element_id`` sets
     the account its bank lines are suggested (an empty string clears it) and
     ``classification_mode="always_ask"`` stops suggesting one; its open lines
-    are re-suggested at once.
+    are re-suggested at once. Each entity keeps its own default:
+    ``classification_entity_id`` names the one these are for, omitted the
+    group parent.
     """
     request = UpdateAgentRequest.from_dict(body)
     response = op_update_agent(

@@ -38,7 +38,10 @@ class LedgerAgentResponse:
       phone (None | str | Unset):
       address (LedgerAgentResponseAddressType0 | None | Unset):
       external_id (None | str | Unset):
-      classification (AgentClassification | None | Unset): The default account its bank lines are suggested.
+      classification (AgentClassification | None | Unset): The default account the group parent's bank lines are
+          suggested.
+      classifications (list[AgentClassification] | Unset): The default account for each entity's bank lines, one per
+          entity.
       created_at (datetime.datetime | None | Unset):
       updated_at (datetime.datetime | None | Unset):
       created_by (None | str | Unset):
@@ -60,6 +63,7 @@ class LedgerAgentResponse:
   address: LedgerAgentResponseAddressType0 | None | Unset = UNSET
   external_id: None | str | Unset = UNSET
   classification: AgentClassification | None | Unset = UNSET
+  classifications: list[AgentClassification] | Unset = UNSET
   created_at: datetime.datetime | None | Unset = UNSET
   updated_at: datetime.datetime | None | Unset = UNSET
   created_by: None | str | Unset = UNSET
@@ -147,6 +151,13 @@ class LedgerAgentResponse:
     else:
       classification = self.classification
 
+    classifications: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.classifications, Unset):
+      classifications = []
+      for classifications_item_data in self.classifications:
+        classifications_item = classifications_item_data.to_dict()
+        classifications.append(classifications_item)
+
     created_at: None | str | Unset
     if isinstance(self.created_at, Unset):
       created_at = UNSET
@@ -201,6 +212,8 @@ class LedgerAgentResponse:
       field_dict["external_id"] = external_id
     if classification is not UNSET:
       field_dict["classification"] = classification
+    if classifications is not UNSET:
+      field_dict["classifications"] = classifications
     if created_at is not UNSET:
       field_dict["created_at"] = created_at
     if updated_at is not UNSET:
@@ -338,6 +351,15 @@ class LedgerAgentResponse:
 
     classification = _parse_classification(d.pop("classification", UNSET))
 
+    _classifications = d.pop("classifications", UNSET)
+    classifications: list[AgentClassification] | Unset = UNSET
+    if _classifications is not UNSET:
+      classifications = []
+      for classifications_item_data in _classifications:
+        classifications_item = AgentClassification.from_dict(classifications_item_data)
+
+        classifications.append(classifications_item)
+
     def _parse_created_at(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
@@ -398,6 +420,7 @@ class LedgerAgentResponse:
       address=address,
       external_id=external_id,
       classification=classification,
+      classifications=classifications,
       created_at=created_at,
       updated_at=updated_at,
       created_by=created_by,

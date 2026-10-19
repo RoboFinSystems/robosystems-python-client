@@ -4,6 +4,11 @@ query GetLedgerAgent($id: String!) {
     email phone address source externalId
     isActive is1099Recipient createdAt updatedAt createdBy
     classification {
+      entityId
+      elementId accountName mode confirmations overrides setBy setAt learnedFrom
+    }
+    classifications {
+      entityId
       elementId accountName mode confirmations overrides setBy setAt learnedFrom
     }
   }
