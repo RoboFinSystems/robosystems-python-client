@@ -723,6 +723,10 @@ query GetLedgerFiscalCalendar($entityId: String) {
     unpostedSourceEventSample
     unreconciledAccountCount
     unreconciledAccountSample
+    groupOpenEntities
+    groupPendingAdjustments
+    groupUnexplained
+    groupNotFooting
     syncStaleDays
     lastCloseAt
     initializedAt

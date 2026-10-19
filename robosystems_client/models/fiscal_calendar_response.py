@@ -36,7 +36,9 @@ class FiscalCalendarResponse:
           Default: False.
       blockers (list[str] | Unset): Structured blocker codes when closeable_now is False: 'sequence_violation',
           'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations',
-          'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts'
+          'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts'; on the
+          consolidation entity, whose close is the group's, also 'entity_open', 'adjustments_unposted',
+          'residual_unexplained', 'consolidated_does_not_foot'
       pending_obligation_count (int | Unset): Number of pending schedule_entry_due events blocking close. Non-zero
           only when `pending_obligations` is in `blockers`. Default: 0.
       pending_obligation_sample (list[PendingObligationDetailResponse] | Unset): Sample of up to 5 pending obligations
@@ -68,6 +70,16 @@ class FiscalCalendarResponse:
           with set-reconciliation-policy, or close over them knowingly with allow_unreconciled_accounts. Default: 0.
       unreconciled_account_sample (list[str] | Unset): Name and status of up to 5 of those reconciliations, so the
           blocker names what is holding the close.
+      group_open_entities (list[str] | Unset): The group close: the entities the month consolidates, the parent and
+          its equity-method members included, that have not closed it. Close each first.
+      group_pending_adjustments (list[str] | Unset): The group close: the consolidating entries the consolidation
+          entity neither holds nor has drafted, by kind and member, or what the engine left out and why. Run propose-
+          consolidation-entries.
+      group_unexplained (list[str] | Unset): The group close: residuals and intercompany disagreements left
+          unexplained. Correct the books or post the explaining entry, or close over them knowingly with
+          allow_unexplained_residuals.
+      group_not_footing (list[str] | Unset): The group close: the consolidated balance sheet's and equity statement's
+          validation failures for the month.
       last_close_at (datetime.datetime | None | Unset):
       initialized_at (datetime.datetime | None | Unset):
       last_sync_at (datetime.datetime | None | Unset): Most recent QB sync timestamp (if connected)
@@ -95,6 +107,10 @@ class FiscalCalendarResponse:
   unposted_source_event_sample: list[str] | Unset = UNSET
   unreconciled_account_count: int | Unset = 0
   unreconciled_account_sample: list[str] | Unset = UNSET
+  group_open_entities: list[str] | Unset = UNSET
+  group_pending_adjustments: list[str] | Unset = UNSET
+  group_unexplained: list[str] | Unset = UNSET
+  group_not_footing: list[str] | Unset = UNSET
   last_close_at: datetime.datetime | None | Unset = UNSET
   initialized_at: datetime.datetime | None | Unset = UNSET
   last_sync_at: datetime.datetime | None | Unset = UNSET
@@ -184,6 +200,22 @@ class FiscalCalendarResponse:
     if not isinstance(self.unreconciled_account_sample, Unset):
       unreconciled_account_sample = self.unreconciled_account_sample
 
+    group_open_entities: list[str] | Unset = UNSET
+    if not isinstance(self.group_open_entities, Unset):
+      group_open_entities = self.group_open_entities
+
+    group_pending_adjustments: list[str] | Unset = UNSET
+    if not isinstance(self.group_pending_adjustments, Unset):
+      group_pending_adjustments = self.group_pending_adjustments
+
+    group_unexplained: list[str] | Unset = UNSET
+    if not isinstance(self.group_unexplained, Unset):
+      group_unexplained = self.group_unexplained
+
+    group_not_footing: list[str] | Unset = UNSET
+    if not isinstance(self.group_not_footing, Unset):
+      group_not_footing = self.group_not_footing
+
     last_close_at: None | str | Unset
     if isinstance(self.last_close_at, Unset):
       last_close_at = UNSET
@@ -261,6 +293,14 @@ class FiscalCalendarResponse:
       field_dict["unreconciled_account_count"] = unreconciled_account_count
     if unreconciled_account_sample is not UNSET:
       field_dict["unreconciled_account_sample"] = unreconciled_account_sample
+    if group_open_entities is not UNSET:
+      field_dict["group_open_entities"] = group_open_entities
+    if group_pending_adjustments is not UNSET:
+      field_dict["group_pending_adjustments"] = group_pending_adjustments
+    if group_unexplained is not UNSET:
+      field_dict["group_unexplained"] = group_unexplained
+    if group_not_footing is not UNSET:
+      field_dict["group_not_footing"] = group_not_footing
     if last_close_at is not UNSET:
       field_dict["last_close_at"] = last_close_at
     if initialized_at is not UNSET:
@@ -381,6 +421,16 @@ class FiscalCalendarResponse:
       list[str], d.pop("unreconciled_account_sample", UNSET)
     )
 
+    group_open_entities = cast(list[str], d.pop("group_open_entities", UNSET))
+
+    group_pending_adjustments = cast(
+      list[str], d.pop("group_pending_adjustments", UNSET)
+    )
+
+    group_unexplained = cast(list[str], d.pop("group_unexplained", UNSET))
+
+    group_not_footing = cast(list[str], d.pop("group_not_footing", UNSET))
+
     def _parse_last_close_at(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
@@ -463,6 +513,10 @@ class FiscalCalendarResponse:
       unposted_source_event_sample=unposted_source_event_sample,
       unreconciled_account_count=unreconciled_account_count,
       unreconciled_account_sample=unreconciled_account_sample,
+      group_open_entities=group_open_entities,
+      group_pending_adjustments=group_pending_adjustments,
+      group_unexplained=group_unexplained,
+      group_not_footing=group_not_footing,
       last_close_at=last_close_at,
       initialized_at=initialized_at,
       last_sync_at=last_sync_at,

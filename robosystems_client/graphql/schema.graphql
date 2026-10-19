@@ -2821,7 +2821,7 @@ type FiscalCalendar {
   closeableNow: Boolean!
 
   """
-  Structured blocker codes when closeable_now is False: 'sequence_violation', 'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations', 'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts'
+  Structured blocker codes when closeable_now is False: 'sequence_violation', 'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations', 'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts'; on the consolidation entity, whose close is the group's, also 'entity_open', 'adjustments_unposted', 'residual_unexplained', 'consolidated_does_not_foot'
   """
   blockers: [String!]!
 
@@ -2884,6 +2884,26 @@ type FiscalCalendar {
   Name and status of up to 5 of those reconciliations, so the blocker names what is holding the close.
   """
   unreconciledAccountSample: [String!]!
+
+  """
+  The group close: the entities the month consolidates, the parent and its equity-method members included, that have not closed it. Close each first.
+  """
+  groupOpenEntities: [String!]!
+
+  """
+  The group close: the consolidating entries the consolidation entity neither holds nor has drafted, by kind and member, or what the engine left out and why. Run propose-consolidation-entries.
+  """
+  groupPendingAdjustments: [String!]!
+
+  """
+  The group close: residuals and intercompany disagreements left unexplained. Correct the books or post the explaining entry, or close over them knowingly with allow_unexplained_residuals.
+  """
+  groupUnexplained: [String!]!
+
+  """
+  The group close: the consolidated balance sheet's and equity statement's validation failures for the month.
+  """
+  groupNotFooting: [String!]!
   lastCloseAt: DateTime
   initializedAt: DateTime
 

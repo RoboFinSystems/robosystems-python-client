@@ -36,6 +36,8 @@ class BackfillPlanHistoryOperation:
       allow_unreconciled_accounts (bool | Unset): Override the reconciliation gate on each reclose. Needed when a
           month inside the backfill window has a reconciliation the close waits on that was never compared for it, which
           is every month closed before the reconciliation existed. Default: False.
+      allow_unexplained_residuals (bool | Unset): Override the group close's residual gate on each reclose of the
+          consolidation entity's months. Default: False.
       restamp (bool | Unset): Also re-derive months that ALREADY have canonical statement sets (default: skip them).
           Use after an engine improvement changes what a stamp produces — each month reruns the full reopen → reclose
           cycle and replaces its sets. A restamp run is not self-resuming (every month in range stays a candidate);
@@ -51,6 +53,7 @@ class BackfillPlanHistoryOperation:
   allow_reconciling_items: bool | Unset = False
   allow_unposted_source_events: bool | Unset = False
   allow_unreconciled_accounts: bool | Unset = False
+  allow_unexplained_residuals: bool | Unset = False
   restamp: bool | Unset = False
   note: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -80,6 +83,8 @@ class BackfillPlanHistoryOperation:
 
     allow_unreconciled_accounts = self.allow_unreconciled_accounts
 
+    allow_unexplained_residuals = self.allow_unexplained_residuals
+
     restamp = self.restamp
 
     note: None | str | Unset
@@ -107,6 +112,8 @@ class BackfillPlanHistoryOperation:
       field_dict["allow_unposted_source_events"] = allow_unposted_source_events
     if allow_unreconciled_accounts is not UNSET:
       field_dict["allow_unreconciled_accounts"] = allow_unreconciled_accounts
+    if allow_unexplained_residuals is not UNSET:
+      field_dict["allow_unexplained_residuals"] = allow_unexplained_residuals
     if restamp is not UNSET:
       field_dict["restamp"] = restamp
     if note is not UNSET:
@@ -148,6 +155,8 @@ class BackfillPlanHistoryOperation:
 
     allow_unreconciled_accounts = d.pop("allow_unreconciled_accounts", UNSET)
 
+    allow_unexplained_residuals = d.pop("allow_unexplained_residuals", UNSET)
+
     restamp = d.pop("restamp", UNSET)
 
     def _parse_note(data: object) -> None | str | Unset:
@@ -168,6 +177,7 @@ class BackfillPlanHistoryOperation:
       allow_reconciling_items=allow_reconciling_items,
       allow_unposted_source_events=allow_unposted_source_events,
       allow_unreconciled_accounts=allow_unreconciled_accounts,
+      allow_unexplained_residuals=allow_unexplained_residuals,
       restamp=restamp,
       note=note,
     )
