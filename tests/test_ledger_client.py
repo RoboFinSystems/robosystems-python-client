@@ -1432,6 +1432,7 @@ class TestLedgerReadsAdditional:
           "updatedAt": "2026-03-15T12:00:00Z",
           "createdBy": "user_1",
           "classification": None,
+          "classifications": [],
         }
       ]
     }
@@ -1466,6 +1467,7 @@ class TestLedgerReadsAdditional:
         "updatedAt": "2026-03-15T12:00:00Z",
         "createdBy": "user_1",
         "classification": {
+          "entityId": "ent_parent",
           "elementId": "elem_payroll",
           "accountName": "Payroll",
           "mode": "suggest",
@@ -1475,6 +1477,30 @@ class TestLedgerReadsAdditional:
           "setAt": "2026-10-10T00:00:00Z",
           "learnedFrom": "evt_1",
         },
+        "classifications": [
+          {
+            "entityId": "ent_parent",
+            "elementId": "elem_payroll",
+            "accountName": "Payroll",
+            "mode": "suggest",
+            "confirmations": 7,
+            "overrides": 1,
+            "setBy": "user_1",
+            "setAt": "2026-10-10T00:00:00Z",
+            "learnedFrom": "evt_1",
+          },
+          {
+            "entityId": "ent_sub",
+            "elementId": "elem_sub_payroll",
+            "accountName": "Sub payroll",
+            "mode": "suggest",
+            "confirmations": 2,
+            "overrides": 0,
+            "setBy": "user_1",
+            "setAt": "2026-10-19T00:00:00Z",
+            "learnedFrom": "evt_2",
+          },
+        ],
       }
     }
     client = LedgerClient(mock_config)
@@ -1486,6 +1512,10 @@ class TestLedgerReadsAdditional:
       result.classification.account_name,
       result.classification.confirmations,
     ) == ("Payroll", 7)
+    assert [(c.entity_id, c.account_name) for c in result.classifications] == [
+      ("ent_parent", "Payroll"),
+      ("ent_sub", "Sub payroll"),
+    ]
     variables = mock_execute.call_args[0][2]
     assert variables["id"] == "agt_1"
 

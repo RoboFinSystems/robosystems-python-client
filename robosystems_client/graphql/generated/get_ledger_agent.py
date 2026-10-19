@@ -29,9 +29,23 @@ class GetLedgerAgentAgent(BaseModel):
   updated_at: Optional[str] = Field(alias="updatedAt")
   created_by: Optional[str] = Field(alias="createdBy")
   classification: Optional["GetLedgerAgentAgentClassification"]
+  classifications: list["GetLedgerAgentAgentClassifications"]
 
 
 class GetLedgerAgentAgentClassification(BaseModel):
+  entity_id: str = Field(alias="entityId")
+  element_id: str = Field(alias="elementId")
+  account_name: Optional[str] = Field(alias="accountName")
+  mode: str
+  confirmations: int
+  overrides: int
+  set_by: Optional[str] = Field(alias="setBy")
+  set_at: Optional[str] = Field(alias="setAt")
+  learned_from: Optional[str] = Field(alias="learnedFrom")
+
+
+class GetLedgerAgentAgentClassifications(BaseModel):
+  entity_id: str = Field(alias="entityId")
   element_id: str = Field(alias="elementId")
   account_name: Optional[str] = Field(alias="accountName")
   mode: str

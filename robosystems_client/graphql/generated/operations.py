@@ -581,6 +581,18 @@ query GetLedgerAgent($id: String!) {
     updatedAt
     createdBy
     classification {
+      entityId
+      elementId
+      accountName
+      mode
+      confirmations
+      overrides
+      setBy
+      setAt
+      learnedFrom
+    }
+    classifications {
+      entityId
       elementId
       accountName
       mode
@@ -1486,6 +1498,18 @@ query ListLedgerAgents($agentType: String, $source: String, $isActive: Boolean =
     updatedAt
     createdBy
     classification {
+      entityId
+      elementId
+      accountName
+      mode
+      confirmations
+      overrides
+      setBy
+      setAt
+      learnedFrom
+    }
+    classifications {
+      entityId
       elementId
       accountName
       mode
