@@ -37,6 +37,9 @@ class PreviewConsolidationEntriesResponse:
       notes (list[str] | Unset): Anything the engine left out, and why.
       closed (bool | Unset): True when the consolidation entity has closed the month: its entries are as posted, and
           nothing is recomputed. Default: False.
+      incomplete (bool | Unset): True when the engine left an entry out — a member's books it cannot read, an account
+          the consolidation entity lacks; `notes` says which. The group close waits on it whatever the residuals. Default:
+          False.
       drafted_entry_ids (list[str] | Unset): The month's drafts propose-consolidation-entries wrote, waiting for the
           consolidation entity's close to post them.
   """
@@ -51,6 +54,7 @@ class PreviewConsolidationEntriesResponse:
   reconciling_items: list[ConsolidationReconcilingItem] | Unset = UNSET
   notes: list[str] | Unset = UNSET
   closed: bool | Unset = False
+  incomplete: bool | Unset = False
   drafted_entry_ids: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -92,6 +96,8 @@ class PreviewConsolidationEntriesResponse:
 
     closed = self.closed
 
+    incomplete = self.incomplete
+
     drafted_entry_ids: list[str] | Unset = UNSET
     if not isinstance(self.drafted_entry_ids, Unset):
       drafted_entry_ids = self.drafted_entry_ids
@@ -117,6 +123,8 @@ class PreviewConsolidationEntriesResponse:
       field_dict["notes"] = notes
     if closed is not UNSET:
       field_dict["closed"] = closed
+    if incomplete is not UNSET:
+      field_dict["incomplete"] = incomplete
     if drafted_entry_ids is not UNSET:
       field_dict["drafted_entry_ids"] = drafted_entry_ids
 
@@ -172,6 +180,8 @@ class PreviewConsolidationEntriesResponse:
 
     closed = d.pop("closed", UNSET)
 
+    incomplete = d.pop("incomplete", UNSET)
+
     drafted_entry_ids = cast(list[str], d.pop("drafted_entry_ids", UNSET))
 
     preview_consolidation_entries_response = cls(
@@ -185,6 +195,7 @@ class PreviewConsolidationEntriesResponse:
       reconciling_items=reconciling_items,
       notes=notes,
       closed=closed,
+      incomplete=incomplete,
       drafted_entry_ids=drafted_entry_ids,
     )
 

@@ -113,9 +113,11 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeEntityTaxonomyResponse]:
   """Link Entity to Taxonomy
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Link an entity to a taxonomy. Idempotent — returns the existing linkage if it already exists. CoA
+  blocks auto-link at create time; use this to switch an entity's primary chart of accounts. Only the
+  `chart_of_accounts` basis changes behavior: a `reporting`, `mapping` or `schedule` link records the
+  association and nothing reads it. Statements render from the entity's reporting style (change-
+  reporting-style), and custom statement rows come from a reporting extension of that style.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -126,14 +128,12 @@ def sync_detailed(
       body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
           ENTITY_HAS_TAXONOMY edge).
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For `chart_of_accounts` taxonomies, this tells the platform which CoA
-          the entity uses. For reporting taxonomies, which standard (us-gaap,
-          ifrs). Idempotent — re-linking returns the existing edge unchanged.
-
-          CoA blocks auto-link at create time; use this to switch the primary
-          CoA, link a reporting extension, or attach a custom ontology
-          explicitly.
+          A `chart_of_accounts` link tells the platform which chart the entity
+          keeps its books in; CoA blocks auto-link at create time, so use this to
+          switch the primary one. The other bases record the association and
+          nothing reads them: statements render from the entity's reporting style,
+          whatever taxonomy is linked. Idempotent — re-linking returns the
+          existing edge unchanged.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -165,9 +165,11 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeEntityTaxonomyResponse | None:
   """Link Entity to Taxonomy
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Link an entity to a taxonomy. Idempotent — returns the existing linkage if it already exists. CoA
+  blocks auto-link at create time; use this to switch an entity's primary chart of accounts. Only the
+  `chart_of_accounts` basis changes behavior: a `reporting`, `mapping` or `schedule` link records the
+  association and nothing reads it. Statements render from the entity's reporting style (change-
+  reporting-style), and custom statement rows come from a reporting extension of that style.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -178,14 +180,12 @@ def sync(
       body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
           ENTITY_HAS_TAXONOMY edge).
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For `chart_of_accounts` taxonomies, this tells the platform which CoA
-          the entity uses. For reporting taxonomies, which standard (us-gaap,
-          ifrs). Idempotent — re-linking returns the existing edge unchanged.
-
-          CoA blocks auto-link at create time; use this to switch the primary
-          CoA, link a reporting extension, or attach a custom ontology
-          explicitly.
+          A `chart_of_accounts` link tells the platform which chart the entity
+          keeps its books in; CoA blocks auto-link at create time, so use this to
+          switch the primary one. The other bases record the association and
+          nothing reads them: statements render from the entity's reporting style,
+          whatever taxonomy is linked. Idempotent — re-linking returns the
+          existing edge unchanged.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -212,9 +212,11 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeEntityTaxonomyResponse]:
   """Link Entity to Taxonomy
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Link an entity to a taxonomy. Idempotent — returns the existing linkage if it already exists. CoA
+  blocks auto-link at create time; use this to switch an entity's primary chart of accounts. Only the
+  `chart_of_accounts` basis changes behavior: a `reporting`, `mapping` or `schedule` link records the
+  association and nothing reads it. Statements render from the entity's reporting style (change-
+  reporting-style), and custom statement rows come from a reporting extension of that style.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -225,14 +227,12 @@ async def asyncio_detailed(
       body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
           ENTITY_HAS_TAXONOMY edge).
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For `chart_of_accounts` taxonomies, this tells the platform which CoA
-          the entity uses. For reporting taxonomies, which standard (us-gaap,
-          ifrs). Idempotent — re-linking returns the existing edge unchanged.
-
-          CoA blocks auto-link at create time; use this to switch the primary
-          CoA, link a reporting extension, or attach a custom ontology
-          explicitly.
+          A `chart_of_accounts` link tells the platform which chart the entity
+          keeps its books in; CoA blocks auto-link at create time, so use this to
+          switch the primary one. The other bases record the association and
+          nothing reads them: statements render from the entity's reporting style,
+          whatever taxonomy is linked. Idempotent — re-linking returns the
+          existing edge unchanged.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -262,9 +262,11 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeEntityTaxonomyResponse | None:
   """Link Entity to Taxonomy
 
-   Link the graph's entity to a taxonomy. Idempotent — returns existing linkage if it already exists.
-  CoA blocks auto-link at create time; use this only to switch the primary CoA or link a reporting
-  extension / custom ontology explicitly.
+   Link an entity to a taxonomy. Idempotent — returns the existing linkage if it already exists. CoA
+  blocks auto-link at create time; use this to switch an entity's primary chart of accounts. Only the
+  `chart_of_accounts` basis changes behavior: a `reporting`, `mapping` or `schedule` link records the
+  association and nothing reads it. Statements render from the entity's reporting style (change-
+  reporting-style), and custom statement rows come from a reporting extension of that style.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -275,14 +277,12 @@ async def asyncio(
       body (LinkEntityTaxonomyRequest): Link an entity to a taxonomy (creates the
           ENTITY_HAS_TAXONOMY edge).
 
-          This is how a graph declares "this entity reports under this taxonomy."
-          For `chart_of_accounts` taxonomies, this tells the platform which CoA
-          the entity uses. For reporting taxonomies, which standard (us-gaap,
-          ifrs). Idempotent — re-linking returns the existing edge unchanged.
-
-          CoA blocks auto-link at create time; use this to switch the primary
-          CoA, link a reporting extension, or attach a custom ontology
-          explicitly.
+          A `chart_of_accounts` link tells the platform which chart the entity
+          keeps its books in; CoA blocks auto-link at create time, so use this to
+          switch the primary one. The other bases record the association and
+          nothing reads them: statements render from the entity's reporting style,
+          whatever taxonomy is linked. Idempotent — re-linking returns the
+          existing edge unchanged.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
