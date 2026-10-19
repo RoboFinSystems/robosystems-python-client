@@ -10,6 +10,7 @@ query GetLedgerFiscalCalendar($entityId: String) {
     reconcilingItemCount reconcilingItemSample
     unpostedSourceEventCount unpostedSourceEventSample
     unreconciledAccountCount unreconciledAccountSample
+    groupOpenEntities groupPendingAdjustments groupUnexplained groupNotFooting
     syncStaleDays
     lastCloseAt initializedAt lastSyncAt
     periods { name startDate endDate status closedAt }

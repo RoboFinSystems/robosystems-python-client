@@ -2694,6 +2694,7 @@ class LedgerClient:
     allow_reconciling_items: bool | None = None,
     allow_unposted_source_events: bool | None = None,
     entity_id: str | None = None,
+    allow_unexplained_residuals: bool | None = None,
   ) -> ClosePeriodResponse:
     """Close a fiscal period — the final commit action — on the group parent,
     or on the entity ``entity_id`` names. Each entity closes on its own.
@@ -2709,6 +2710,9 @@ class LedgerClient:
       changed afterwards (`resolve_reconciling_item`).
     - ``allow_unposted_source_events``: source events dated in the period
       that were never committed, and cannot post into it once it closes.
+    - ``allow_unexplained_residuals``: on the consolidation entity, whose
+      close is the group's, a residual or intercompany disagreement left
+      unexplained; its difference stays in the consolidated statements.
     """
 
     def flag(value: bool | None) -> bool | Unset:
@@ -2723,6 +2727,7 @@ class LedgerClient:
       allow_stranded_obligations=flag(allow_stranded_obligations),
       allow_reconciling_items=flag(allow_reconciling_items),
       allow_unposted_source_events=flag(allow_unposted_source_events),
+      allow_unexplained_residuals=flag(allow_unexplained_residuals),
     )
     response = op_close_period(graph_id=graph_id, body=body, client=self._get_client())
     envelope = self._call_op("Close period", response)

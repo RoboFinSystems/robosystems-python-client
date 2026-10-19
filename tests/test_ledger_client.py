@@ -306,6 +306,10 @@ class TestLedgerReads:
         "unpostedSourceEventSample": [],
         "unreconciledAccountCount": 0,
         "unreconciledAccountSample": [],
+        "groupOpenEntities": [],
+        "groupPendingAdjustments": [],
+        "groupUnexplained": [],
+        "groupNotFooting": [],
         "syncStaleDays": None,
         "lastCloseAt": None,
         "initializedAt": "2026-01-01T00:00:00Z",
@@ -361,6 +365,10 @@ class TestLedgerReads:
         "unpostedSourceEventSample": ["evt_3", "INV-1042"],
         "unreconciledAccountCount": 1,
         "unreconciledAccountSample": ["Equipment Loan (statement): unreconciled"],
+        "groupOpenEntities": [],
+        "groupPendingAdjustments": [],
+        "groupUnexplained": [],
+        "groupNotFooting": [],
         "syncStaleDays": None,
         "lastCloseAt": None,
         "initializedAt": "2026-01-01T00:00:00Z",
@@ -470,6 +478,20 @@ class TestLedgerWrites:
     client.close_period(graph_id, "2026-03", allow_unreconciled_accounts=True)
     body = mock_op.call_args.kwargs["body"]
     assert body.to_dict()["allow_unreconciled_accounts"] is True
+
+  @patch("robosystems_client.clients.ledger_client.op_close_period")
+  def test_the_group_close_can_override_the_residual_gate(
+    self, mock_op, mock_config, graph_id
+  ):
+    envelope = _envelope("close-period", {"period": "2026-03", "fiscal_calendar": {}})
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.close_period(
+      graph_id, "2026-03", entity_id="ent_cons", allow_unexplained_residuals=True
+    )
+    body = mock_op.call_args.kwargs["body"].to_dict()
+    assert body["allow_unexplained_residuals"] is True
+    assert body["entity_id"] == "ent_cons"
 
   @patch("robosystems_client.clients.ledger_client.op_close_period")
   def test_close_period_sends_each_override_it_is_given(

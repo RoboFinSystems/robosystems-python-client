@@ -27,8 +27,9 @@ class PreviewConsolidationEntriesResponse:
       period_start (datetime.date): The month's first day.
       period_end (datetime.date): The month's last day.
       consolidation_entity_id (str): The entity the entries post in.
-      up_to_date (bool): True when nothing is proposed, withheld or left out: the consolidation entity already holds
-          what the month needs. A closed month is up to date as posted; read `closed` first.
+      up_to_date (bool): True when nothing is withheld or left out and the consolidation entity holds what the month
+          needs, posted or in the month's drafts (then `proposals` lists what the drafts hold). A closed month is up to
+          date as posted; read `closed` first.
       proposals (list[ConsolidationProposal] | Unset): The entries to post; empty when the month is up to date.
       residuals (list[ConsolidationResidual] | Unset): Differences withheld from the proposals until explained.
       reconciling_items (list[ConsolidationReconcilingItem] | Unset): Intercompany figures the two sides do not agree
