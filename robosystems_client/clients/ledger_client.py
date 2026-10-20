@@ -29,7 +29,7 @@ import re
 from dataclasses import dataclass
 from http import HTTPStatus
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import httpx
 
@@ -468,6 +468,19 @@ from ..graphql.generated.classification_stats import (
   ClassificationStats,
   ClassificationStatsClassificationStats,
 )
+from ..graphql.generated.aged_payables import AgedPayables, AgedPayablesAgedPayables
+from ..graphql.generated.aged_receivables import (
+  AgedReceivables,
+  AgedReceivablesAgedReceivables,
+)
+from ..graphql.generated.discharge_candidates import (
+  DischargeCandidates,
+  DischargeCandidatesDischargeCandidates,
+)
+from ..graphql.generated.open_items_for_agent import (
+  OpenItemsForAgent,
+  OpenItemsForAgentOpenItemsForAgent,
+)
 from ..graphql.generated.operations import (
   GET_INFORMATION_BLOCK_GQL,
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
@@ -513,6 +526,10 @@ from ..graphql.generated.operations import (
   MAPPING_CANDIDATES_GQL,
   FLOW_CANDIDATES_GQL,
   CLASSIFICATION_STATS_GQL,
+  AGED_RECEIVABLES_GQL,
+  AGED_PAYABLES_GQL,
+  OPEN_ITEMS_FOR_AGENT_GQL,
+  DISCHARGE_CANDIDATES_GQL,
 )
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
@@ -2423,6 +2440,68 @@ class LedgerClient:
       graph_id, CLASSIFICATION_STATS_GQL, {"period": period, "entityId": entity_id}
     )
     return ClassificationStats.model_validate(data).classification_stats
+
+  # ── Receivables and payables ──────────────────────────────────────────
+
+  def get_aged_balances(
+    self,
+    graph_id: str,
+    kind: Literal["receivables", "payables"],
+    *,
+    as_of: str | None = None,
+    entity_id: str | None = None,
+    scope: Literal["entity", "group"] = "entity",
+  ) -> AgedReceivablesAgedReceivables | AgedPayablesAgedPayables:
+    """Receivables or payables aged at a date (``as_of``, ``YYYY-MM-DD``,
+    default today on the server): totals by days past due, a row per
+    counterparty, and each entity's open items tied out to its receivables
+    or payables account (``difference_cents``, never plugged). ``scope`` is
+    ``entity`` (one entity's books, ``entity_id`` default the group parent)
+    or ``group`` (the parent and its members consolidated in full, with what
+    they owe each other in ``intercompany`` and ``pairs``). An item with no
+    due date of its own is due on receipt and counted in
+    ``defaulted_due_date_count``. Both kinds return the same fields.
+    """
+    variables = {"asOf": as_of, "entityId": entity_id, "scope": scope}
+    if kind == "receivables":
+      data = self._query(graph_id, AGED_RECEIVABLES_GQL, variables)
+      return AgedReceivables.model_validate(data).aged_receivables
+    data = self._query(graph_id, AGED_PAYABLES_GQL, variables)
+    return AgedPayables.model_validate(data).aged_payables
+
+  def get_open_items_for_agent(
+    self,
+    graph_id: str,
+    agent_id: str,
+    kind: Literal["receivables", "payables"],
+    *,
+    as_of: str | None = None,
+    entity_id: str | None = None,
+  ) -> list[OpenItemsForAgentOpenItemsForAgent]:
+    """One counterparty's open invoices (``receivables``) or bills
+    (``payables``) at a date, oldest first, each with its due date, days
+    past due and bucket: the drill from an aged row into its documents.
+    """
+    data = self._query(
+      graph_id,
+      OPEN_ITEMS_FOR_AGENT_GQL,
+      {"agentId": agent_id, "kind": kind, "asOf": as_of, "entityId": entity_id},
+    )
+    return list(OpenItemsForAgent.model_validate(data).open_items_for_agent)
+
+  def get_discharge_candidates(
+    self, graph_id: str, event_id: str
+  ) -> DischargeCandidatesDischargeCandidates | None:
+    """The open invoices or bills a payment or bank line may settle: its own
+    entity's and counterparty's, open at its date, an exact amount match
+    first, then the oldest due date. ``classified_to_control`` says the line
+    went to a receivables or payables account, where a pick is expected.
+    Record the choice with ``discharge_allocations`` on
+    ``update_event_block``; nothing settles without one. ``None`` when there
+    is no such event.
+    """
+    data = self._query(graph_id, DISCHARGE_CANDIDATES_GQL, {"eventId": event_id})
+    return DischargeCandidates.model_validate(data).discharge_candidates
 
   # ── Event handlers (DSL handler registry) ────────────────────────────
 

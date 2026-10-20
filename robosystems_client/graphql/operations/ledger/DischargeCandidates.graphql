@@ -1,0 +1,24 @@
+query DischargeCandidates($eventId: String!) {
+  dischargeCandidates(eventId: $eventId) {
+    eventId
+    kind
+    amountCents
+    classifiedToControl
+    candidates {
+      eventId
+      entityId
+      agentId
+      occurredOn
+      documentNumber
+      description
+      originalCents
+      settledCents
+      openCents
+      currency
+      dueDate
+      dueDateBasis
+      daysPastDue
+      bucket
+    }
+  }
+}

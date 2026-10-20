@@ -3087,6 +3087,124 @@ class TestClassificationStats:
     assert mock_execute.call_args[0][2] == {"period": "2026-10"}
 
 
+_BUCKETS = {
+  "currentCents": 0,
+  "oneToThirtyCents": 0,
+  "thirtyOneToSixtyCents": 10000,
+  "sixtyOneToNinetyCents": 0,
+  "overNinetyCents": 0,
+  "unappliedCreditCents": 0,
+  "totalCents": 10000,
+}
+
+_OPEN_ITEM = {
+  "eventId": "evt_1",
+  "entityId": "ent_parent",
+  "agentId": "agt_acme",
+  "occurredOn": "2026-08-15",
+  "documentNumber": "1042",
+  "description": None,
+  "originalCents": 10000,
+  "settledCents": 0,
+  "openCents": 10000,
+  "currency": "USD",
+  "dueDate": "2026-08-15",
+  "dueDateBasis": "defaulted",
+  "daysPastDue": 46,
+  "bucket": "thirty_one_to_sixty",
+}
+
+
+def _aged(kind: str) -> dict:
+  return {
+    "kind": kind,
+    "asOf": "2026-09-30",
+    "scope": "group",
+    "entityId": "ent_parent",
+    "memberEntityIds": ["ent_parent", "ent_sub"],
+    "buckets": _BUCKETS,
+    "agents": [
+      {
+        "agentId": "agt_acme",
+        "agentName": "Acme",
+        "openItemCount": 1,
+        "oldestDueDate": "2026-08-15",
+        "buckets": _BUCKETS,
+      }
+    ],
+    "defaultedDueDateCount": 1,
+    "intercompany": [],
+    "pairs": [],
+    "tieOuts": [
+      {
+        "entityId": "ent_parent",
+        "accounts": [{"elementId": "el_ar", "code": "1100", "name": "A/R"}],
+        "controlBalanceCents": 10000,
+        "openItemsCents": 10000,
+        "differenceCents": 0,
+      }
+    ],
+  }
+
+
+@pytest.mark.unit
+class TestReceivablesAndPayables:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_aged_receivables_at_a_date_for_the_group(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"agedReceivables": _aged("receivables")}
+    client = LedgerClient(mock_config)
+    aged = client.get_aged_balances(
+      graph_id, "receivables", as_of="2026-09-30", scope="group"
+    )
+    assert aged.buckets.thirty_one_to_sixty_cents == 10000
+    assert aged.agents[0].agent_name == "Acme"
+    assert aged.tie_outs[0].difference_cents == 0
+    assert "agedReceivables" in mock_execute.call_args[0][1]
+    assert mock_execute.call_args[0][2] == {"asOf": "2026-09-30", "scope": "group"}
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_aged_payables_read_their_own_field(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"agedPayables": _aged("payables")}
+    client = LedgerClient(mock_config)
+    assert client.get_aged_balances(graph_id, "payables").kind == "payables"
+    assert "agedPayables" in mock_execute.call_args[0][1]
+    assert mock_execute.call_args[0][2] == {"scope": "entity"}
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_one_counterpartys_open_items(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {"openItemsForAgent": [_OPEN_ITEM]}
+    client = LedgerClient(mock_config)
+    [item] = client.get_open_items_for_agent(graph_id, "agt_acme", "receivables")
+    assert (item.open_cents, item.due_date_basis) == (10000, "defaulted")
+    assert mock_execute.call_args[0][2] == {
+      "agentId": "agt_acme",
+      "kind": "receivables",
+    }
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_discharge_candidates_or_none(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "dischargeCandidates": {
+        "eventId": "evt_line",
+        "kind": "receivables",
+        "amountCents": 10000,
+        "classifiedToControl": True,
+        "candidates": [_OPEN_ITEM],
+      }
+    }
+    client = LedgerClient(mock_config)
+    candidates = client.get_discharge_candidates(graph_id, "evt_line")
+    assert candidates is not None
+    assert candidates.classified_to_control
+    assert candidates.candidates[0].event_id == "evt_1"
+    mock_execute.return_value = {"dischargeCandidates": None}
+    assert client.get_discharge_candidates(graph_id, "evt_x") is None
+
+
 # ── Compute metrics ────────────────────────────────────────────────────
 
 

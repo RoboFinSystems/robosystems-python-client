@@ -1,0 +1,23 @@
+query OpenItemsForAgent(
+  $agentId: String!
+  $kind: String!
+  $asOf: Date
+  $entityId: String
+) {
+  openItemsForAgent(agentId: $agentId, kind: $kind, asOf: $asOf, entityId: $entityId) {
+    eventId
+    entityId
+    agentId
+    occurredOn
+    documentNumber
+    description
+    originalCents
+    settledCents
+    openCents
+    currency
+    dueDate
+    dueDateBasis
+    daysPastDue
+    bucket
+  }
+}
