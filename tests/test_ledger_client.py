@@ -810,6 +810,38 @@ class TestJournalEntries:
     assert mock_op.call_args.kwargs["body"].entity_id == "ent_sub"
 
   @patch("robosystems_client.clients.ledger_client.op_create_event_block")
+  def test_create_journal_entry_tags_a_consolidating_entry(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(_envelope("create-event-block", {}))
+    client = LedgerClient(mock_config)
+    client.create_journal_entry(
+      graph_id,
+      posting_date="2026-07-31",
+      memo="Intercompany receivable",
+      line_items=self._LINE_ITEMS,
+      entity_id="ent_cons",
+      adjustment_kind="elimination_intercompany",
+      adjusts_entity_id="ent_sub",
+    )
+    metadata = mock_op.call_args.kwargs["body"].metadata.to_dict()
+    assert metadata["adjustment_kind"] == "elimination_intercompany"
+    assert metadata["adjusts_entity_id"] == "ent_sub"
+
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
+  def test_create_journal_entry_sends_no_consolidating_tags_unasked(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(_envelope("create-event-block", {}))
+    client = LedgerClient(mock_config)
+    client.create_journal_entry(
+      graph_id, posting_date="2026-03-31", memo="X", line_items=self._LINE_ITEMS
+    )
+    metadata = mock_op.call_args.kwargs["body"].metadata.to_dict()
+    assert "adjustment_kind" not in metadata
+    assert "adjusts_entity_id" not in metadata
+
+  @patch("robosystems_client.clients.ledger_client.op_create_event_block")
   def test_create_journal_entry_leaves_the_entity_to_the_server(
     self, mock_op, mock_config, graph_id
   ):
