@@ -59,6 +59,10 @@ class CreateEventBlockRequest:
       resource_element_id (None | str | Unset): ID of the specific element being exchanged, when known (e.g. the cash
           account for a treasury movement, the inventory item for a sale).
       effective_at (datetime.datetime | None | Unset): Accounting recognition date, if different from occurred_at
+      due_date (datetime.date | None | Unset): When an obligation falls due: an `invoice_issued` or a `bill_received`.
+          Give it, or `terms_days`; with neither, the obligation is due on receipt. Refused on any other event type.
+      terms_days (int | None | Unset): Net terms in days from `occurred_at` (30 for net 30), in place of `due_date`.
+          Only on an `invoice_issued` or a `bill_received`.
       external_id (None | str | Unset): Source-system dedup key. (source, external_id) is enforced unique when
           external_id is provided, so retries from external adapters are idempotent at the DB level.
       external_url (None | str | Unset): Deep link back to source-system record
@@ -96,6 +100,8 @@ class CreateEventBlockRequest:
   resource_type: CreateEventBlockRequestResourceTypeType0 | None | Unset = UNSET
   resource_element_id: None | str | Unset = UNSET
   effective_at: datetime.datetime | None | Unset = UNSET
+  due_date: datetime.date | None | Unset = UNSET
+  terms_days: int | None | Unset = UNSET
   external_id: None | str | Unset = UNSET
   external_url: None | str | Unset = UNSET
   amount: int | None | Unset = UNSET
@@ -163,6 +169,20 @@ class CreateEventBlockRequest:
       effective_at = self.effective_at.isoformat()
     else:
       effective_at = self.effective_at
+
+    due_date: None | str | Unset
+    if isinstance(self.due_date, Unset):
+      due_date = UNSET
+    elif isinstance(self.due_date, datetime.date):
+      due_date = self.due_date.isoformat()
+    else:
+      due_date = self.due_date
+
+    terms_days: int | None | Unset
+    if isinstance(self.terms_days, Unset):
+      terms_days = UNSET
+    else:
+      terms_days = self.terms_days
 
     external_id: None | str | Unset
     if isinstance(self.external_id, Unset):
@@ -242,6 +262,10 @@ class CreateEventBlockRequest:
       field_dict["resource_element_id"] = resource_element_id
     if effective_at is not UNSET:
       field_dict["effective_at"] = effective_at
+    if due_date is not UNSET:
+      field_dict["due_date"] = due_date
+    if terms_days is not UNSET:
+      field_dict["terms_days"] = terms_days
     if external_id is not UNSET:
       field_dict["external_id"] = external_id
     if external_url is not UNSET:
@@ -373,6 +397,32 @@ class CreateEventBlockRequest:
 
     effective_at = _parse_effective_at(d.pop("effective_at", UNSET))
 
+    def _parse_due_date(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        due_date_type_0 = datetime.date.fromisoformat(data)
+
+        return due_date_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    due_date = _parse_due_date(d.pop("due_date", UNSET))
+
+    def _parse_terms_days(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    terms_days = _parse_terms_days(d.pop("terms_days", UNSET))
+
     def _parse_external_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -465,6 +515,8 @@ class CreateEventBlockRequest:
       resource_type=resource_type,
       resource_element_id=resource_element_id,
       effective_at=effective_at,
+      due_date=due_date,
+      terms_days=terms_days,
       external_id=external_id,
       external_url=external_url,
       amount=amount,

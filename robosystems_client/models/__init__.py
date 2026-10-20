@@ -230,6 +230,7 @@ from .detailed_transactions_response_date_range import (
 from .detailed_transactions_response_summary import DetailedTransactionsResponseSummary
 from .dimension import Dimension
 from .dimension_type import DimensionType
+from .discharge_allocation import DischargeAllocation
 from .disclosures_request import DisclosuresRequest
 from .disclosures_response import DisclosuresResponse
 from .disclosures_response_blocks_type_0_item import DisclosuresResponseBlocksType0Item
@@ -1405,6 +1406,7 @@ __all__ = (
   "DetailedTransactionsResponseSummary",
   "Dimension",
   "DimensionType",
+  "DischargeAllocation",
   "DisclosuresRequest",
   "DisclosuresResponse",
   "DisclosuresResponseBlocksType0Item",

@@ -16,6 +16,7 @@ from ..models.update_event_block_request_transition_to_type_0 import (
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+  from ..models.discharge_allocation import DischargeAllocation
   from ..models.update_event_block_request_metadata_patch import (
     UpdateEventBlockRequestMetadataPatch,
   )
@@ -47,13 +48,23 @@ class UpdateEventBlockRequest:
               clear.
           effective_at (datetime.datetime | None | Unset): New accounting recognition date. Unset = unchanged. Useful when
               an event was captured against the wrong period.
+          due_date (datetime.date | None | Unset): New due date of an obligation (an `invoice_issued` or a
+              `bill_received`), such as an extension granted. Unset = unchanged. It moves no ledger row, so it is accepted in
+              a closed period.
           metadata_patch (UpdateEventBlockRequestMetadataPatch | Unset): Key-value pairs merged into existing metadata
               (additive patch, not replace).
           event_action (None | Unset | UpdateEventBlockRequestEventActionType0): Set or correct the canonical action verb.
               Unset = unchanged. Useful when an adapter improvement makes a previously-NULL verb fillable, or when
               reclassifying after the fact.
           obligated_by_event_id (None | str | Unset): Set/update the forward-materialization link.
-          discharges_event_id (None | str | Unset): Set/update the settlement link.
+          discharges_event_id (None | str | Unset): Set the settlement link: the one invoice or bill this payment settles,
+              at its full amount; an empty string clears it. Replaces any `discharge_allocations`. Checked as they are.
+          discharge_allocations (list[DischargeAllocation] | None | Unset): What this payment settles, document by
+              document: one row per invoice or bill with the positive cents applied to it, together at most the payment's
+              amount (the rest is unapplied). Replaces any held; an empty list clears them, and the settlement link becomes
+              the first row's. Each must be an obligation of this event's entity, not voided: an invoice for money in, a bill
+              for money out. A person chooses them; the open items a bank line may settle are `dischargeCandidates` over
+              GraphQL.
           document_id (None | str | Unset): Set or replace the stored document the event rests on; an empty string
               detaches it. Must be a document on this graph. Unset = unchanged.
   """
@@ -63,10 +74,12 @@ class UpdateEventBlockRequest:
   superseded_by_id: None | str | Unset = UNSET
   description: None | str | Unset = UNSET
   effective_at: datetime.datetime | None | Unset = UNSET
+  due_date: datetime.date | None | Unset = UNSET
   metadata_patch: UpdateEventBlockRequestMetadataPatch | Unset = UNSET
   event_action: None | Unset | UpdateEventBlockRequestEventActionType0 = UNSET
   obligated_by_event_id: None | str | Unset = UNSET
   discharges_event_id: None | str | Unset = UNSET
+  discharge_allocations: list[DischargeAllocation] | None | Unset = UNSET
   document_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -101,6 +114,14 @@ class UpdateEventBlockRequest:
     else:
       effective_at = self.effective_at
 
+    due_date: None | str | Unset
+    if isinstance(self.due_date, Unset):
+      due_date = UNSET
+    elif isinstance(self.due_date, datetime.date):
+      due_date = self.due_date.isoformat()
+    else:
+      due_date = self.due_date
+
     metadata_patch: dict[str, Any] | Unset = UNSET
     if not isinstance(self.metadata_patch, Unset):
       metadata_patch = self.metadata_patch.to_dict()
@@ -125,6 +146,20 @@ class UpdateEventBlockRequest:
     else:
       discharges_event_id = self.discharges_event_id
 
+    discharge_allocations: list[dict[str, Any]] | None | Unset
+    if isinstance(self.discharge_allocations, Unset):
+      discharge_allocations = UNSET
+    elif isinstance(self.discharge_allocations, list):
+      discharge_allocations = []
+      for discharge_allocations_type_0_item_data in self.discharge_allocations:
+        discharge_allocations_type_0_item = (
+          discharge_allocations_type_0_item_data.to_dict()
+        )
+        discharge_allocations.append(discharge_allocations_type_0_item)
+
+    else:
+      discharge_allocations = self.discharge_allocations
+
     document_id: None | str | Unset
     if isinstance(self.document_id, Unset):
       document_id = UNSET
@@ -146,6 +181,8 @@ class UpdateEventBlockRequest:
       field_dict["description"] = description
     if effective_at is not UNSET:
       field_dict["effective_at"] = effective_at
+    if due_date is not UNSET:
+      field_dict["due_date"] = due_date
     if metadata_patch is not UNSET:
       field_dict["metadata_patch"] = metadata_patch
     if event_action is not UNSET:
@@ -154,6 +191,8 @@ class UpdateEventBlockRequest:
       field_dict["obligated_by_event_id"] = obligated_by_event_id
     if discharges_event_id is not UNSET:
       field_dict["discharges_event_id"] = discharges_event_id
+    if discharge_allocations is not UNSET:
+      field_dict["discharge_allocations"] = discharge_allocations
     if document_id is not UNSET:
       field_dict["document_id"] = document_id
 
@@ -161,6 +200,7 @@ class UpdateEventBlockRequest:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.discharge_allocation import DischargeAllocation
     from ..models.update_event_block_request_metadata_patch import (
       UpdateEventBlockRequestMetadataPatch,
     )
@@ -222,6 +262,23 @@ class UpdateEventBlockRequest:
 
     effective_at = _parse_effective_at(d.pop("effective_at", UNSET))
 
+    def _parse_due_date(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        due_date_type_0 = datetime.date.fromisoformat(data)
+
+        return due_date_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    due_date = _parse_due_date(d.pop("due_date", UNSET))
+
     _metadata_patch = d.pop("metadata_patch", UNSET)
     metadata_patch: UpdateEventBlockRequestMetadataPatch | Unset
     if isinstance(_metadata_patch, Unset):
@@ -270,6 +327,34 @@ class UpdateEventBlockRequest:
       d.pop("discharges_event_id", UNSET)
     )
 
+    def _parse_discharge_allocations(
+      data: object,
+    ) -> list[DischargeAllocation] | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, list):
+          raise TypeError()
+        discharge_allocations_type_0 = []
+        _discharge_allocations_type_0 = data
+        for discharge_allocations_type_0_item_data in _discharge_allocations_type_0:
+          discharge_allocations_type_0_item = DischargeAllocation.from_dict(
+            discharge_allocations_type_0_item_data
+          )
+
+          discharge_allocations_type_0.append(discharge_allocations_type_0_item)
+
+        return discharge_allocations_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(list[DischargeAllocation] | None | Unset, data)
+
+    discharge_allocations = _parse_discharge_allocations(
+      d.pop("discharge_allocations", UNSET)
+    )
+
     def _parse_document_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -285,10 +370,12 @@ class UpdateEventBlockRequest:
       superseded_by_id=superseded_by_id,
       description=description,
       effective_at=effective_at,
+      due_date=due_date,
       metadata_patch=metadata_patch,
       event_action=event_action,
       obligated_by_event_id=obligated_by_event_id,
       discharges_event_id=discharges_event_id,
+      discharge_allocations=discharge_allocations,
       document_id=document_id,
     )
 

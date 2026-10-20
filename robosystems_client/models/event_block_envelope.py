@@ -54,6 +54,8 @@ class EventBlockEnvelope:
           created_by (str): ID of the user who captured the event. For adapter-sourced events, the system actor associated
               with the adapter.
           effective_at (datetime.datetime | None | Unset): Accounting recognition date, when different from `occurred_at`.
+          due_date (datetime.date | None | Unset): When the obligation falls due (an `invoice_issued` or a
+              `bill_received`); null when none was stated, which reads as due on receipt, and on every other event type.
           external_id (None | str | Unset): Source-system dedup key. Unique with `source` when set, so adapter retries are
               idempotent.
           external_url (None | str | Unset): Deep link back to the source-system record.
@@ -97,6 +99,7 @@ class EventBlockEnvelope:
   created_at: datetime.datetime
   created_by: str
   effective_at: datetime.datetime | None | Unset = UNSET
+  due_date: datetime.date | None | Unset = UNSET
   external_id: None | str | Unset = UNSET
   external_url: None | str | Unset = UNSET
   amount: int | None | Unset = UNSET
@@ -145,6 +148,14 @@ class EventBlockEnvelope:
       effective_at = self.effective_at.isoformat()
     else:
       effective_at = self.effective_at
+
+    due_date: None | str | Unset
+    if isinstance(self.due_date, Unset):
+      due_date = UNSET
+    elif isinstance(self.due_date, datetime.date):
+      due_date = self.due_date.isoformat()
+    else:
+      due_date = self.due_date
 
     external_id: None | str | Unset
     if isinstance(self.external_id, Unset):
@@ -248,6 +259,8 @@ class EventBlockEnvelope:
     )
     if effective_at is not UNSET:
       field_dict["effective_at"] = effective_at
+    if due_date is not UNSET:
+      field_dict["due_date"] = due_date
     if external_id is not UNSET:
       field_dict["external_id"] = external_id
     if external_url is not UNSET:
@@ -324,6 +337,23 @@ class EventBlockEnvelope:
       return cast(datetime.datetime | None | Unset, data)
 
     effective_at = _parse_effective_at(d.pop("effective_at", UNSET))
+
+    def _parse_due_date(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        due_date_type_0 = datetime.date.fromisoformat(data)
+
+        return due_date_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    due_date = _parse_due_date(d.pop("due_date", UNSET))
 
     def _parse_external_id(data: object) -> None | str | Unset:
       if data is None:
@@ -476,6 +506,7 @@ class EventBlockEnvelope:
       created_at=created_at,
       created_by=created_by,
       effective_at=effective_at,
+      due_date=due_date,
       external_id=external_id,
       external_url=external_url,
       amount=amount,

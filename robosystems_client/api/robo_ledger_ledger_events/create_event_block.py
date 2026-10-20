@@ -119,7 +119,9 @@ def sync_detailed(
   journal_entry_recorded, whether the entry writes back to a connected source system follows `source`
   (schedule/manual publish; system does not) unless metadata.publish_to_source says otherwise — set it
   false for an alignment entry mirroring a change already made upstream, which would otherwise be
-  applied twice.
+  applied twice. An invoice_issued or bill_received takes due_date, or terms_days (net N from
+  occurred_at); with neither it is due on receipt. A later due date is a field correction on update-
+  event-block.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -165,7 +167,9 @@ def sync(
   journal_entry_recorded, whether the entry writes back to a connected source system follows `source`
   (schedule/manual publish; system does not) unless metadata.publish_to_source says otherwise — set it
   false for an alignment entry mirroring a change already made upstream, which would otherwise be
-  applied twice.
+  applied twice. An invoice_issued or bill_received takes due_date, or terms_days (net N from
+  occurred_at); with neither it is due on receipt. A later due date is a field correction on update-
+  event-block.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -206,7 +210,9 @@ async def asyncio_detailed(
   journal_entry_recorded, whether the entry writes back to a connected source system follows `source`
   (schedule/manual publish; system does not) unless metadata.publish_to_source says otherwise — set it
   false for an alignment entry mirroring a change already made upstream, which would otherwise be
-  applied twice.
+  applied twice. An invoice_issued or bill_received takes due_date, or terms_days (net N from
+  occurred_at); with neither it is due on receipt. A later due date is a field correction on update-
+  event-block.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -250,7 +256,9 @@ async def asyncio(
   journal_entry_recorded, whether the entry writes back to a connected source system follows `source`
   (schedule/manual publish; system does not) unless metadata.publish_to_source says otherwise — set it
   false for an alignment entry mirroring a change already made upstream, which would otherwise be
-  applied twice.
+  applied twice. An invoice_issued or bill_received takes due_date, or terms_days (net N from
+  occurred_at); with neither it is due on receipt. A later due date is a field correction on update-
+  event-block.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
