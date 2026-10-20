@@ -14,6 +14,7 @@ class GetLedgerTrialBalance(BaseModel):
 class GetLedgerTrialBalanceTrialBalance(BaseModel):
   total_debits: float = Field(alias="totalDebits")
   total_credits: float = Field(alias="totalCredits")
+  sliced: bool
   rows: list["GetLedgerTrialBalanceTrialBalanceRows"]
 
 

@@ -1,0 +1,15 @@
+query ListLedgerDimensions($dimensionType: String, $includeInactive: Boolean! = false) {
+  dimensions(dimensionType: $dimensionType, includeInactive: $includeInactive) {
+    types
+    dimensions {
+      id
+      dimensionType
+      name
+      value
+      source
+      isActive
+      lineCount
+      createdAt
+    }
+  }
+}

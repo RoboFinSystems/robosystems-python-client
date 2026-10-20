@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -11,6 +11,10 @@ from ..models.live_financial_statement_request_scope_type_0 import (
   LiveFinancialStatementRequestScopeType0,
 )
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+  from ..models.statement_dimension import StatementDimension
+
 
 T = TypeVar("T", bound="LiveFinancialStatementRequest")
 
@@ -41,6 +45,12 @@ class LiveFinancialStatementRequest:
           wins when both are given. Default: False.
       limit (int | Unset): Max fact rows returned. Defaults to the ceiling so a statement is never cut mid-section —
           visible rows would stop footing to visible subtotals. Lower it only for a preview. Default: 1000.
+      dimension (None | StatementDimension | Unset): Slice an income statement by a management dimension (department,
+          class, location, project). `{type, member_id}` reads one member's lines, current and prior; `member_id:
+          unallocated` reads the lines no member of the axis tags. `{type}` alone reads the current window with one column
+          per member, then Unallocated, then Total, and says in `dimension.ties_out` whether every row's members plus
+          Unallocated equal its Total. Composes with `scope` and `entity_id`; a consolidation entity's lines are untagged,
+          so eliminations read as Unallocated. Refused (422) on any other statement.
   """
 
   statement_type: str
@@ -52,9 +62,12 @@ class LiveFinancialStatementRequest:
   scope: LiveFinancialStatementRequestScopeType0 | None | Unset = UNSET
   consolidated: bool | Unset = False
   limit: int | Unset = 1000
+  dimension: None | StatementDimension | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.statement_dimension import StatementDimension
+
     statement_type = self.statement_type
 
     entity_id: None | str | Unset
@@ -103,6 +116,14 @@ class LiveFinancialStatementRequest:
 
     limit = self.limit
 
+    dimension: dict[str, Any] | None | Unset
+    if isinstance(self.dimension, Unset):
+      dimension = UNSET
+    elif isinstance(self.dimension, StatementDimension):
+      dimension = self.dimension.to_dict()
+    else:
+      dimension = self.dimension
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -126,11 +147,15 @@ class LiveFinancialStatementRequest:
       field_dict["consolidated"] = consolidated
     if limit is not UNSET:
       field_dict["limit"] = limit
+    if dimension is not UNSET:
+      field_dict["dimension"] = dimension
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.statement_dimension import StatementDimension
+
     d = dict(src_dict)
     statement_type = d.pop("statement_type")
 
@@ -218,6 +243,23 @@ class LiveFinancialStatementRequest:
 
     limit = d.pop("limit", UNSET)
 
+    def _parse_dimension(data: object) -> None | StatementDimension | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        dimension_type_0 = StatementDimension.from_dict(data)
+
+        return dimension_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | StatementDimension | Unset, data)
+
+    dimension = _parse_dimension(d.pop("dimension", UNSET))
+
     live_financial_statement_request = cls(
       statement_type=statement_type,
       entity_id=entity_id,
@@ -228,6 +270,7 @@ class LiveFinancialStatementRequest:
       scope=scope,
       consolidated=consolidated,
       limit=limit,
+      dimension=dimension,
     )
 
     live_financial_statement_request.additional_properties = d

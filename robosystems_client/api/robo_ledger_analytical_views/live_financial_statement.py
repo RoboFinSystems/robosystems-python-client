@@ -120,8 +120,10 @@ def sync_detailed(
   materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
   group parent. On the parent, `scope: combined` sums every member consolidated in full at the rs-gaap
   concepts for the months each was a member, nothing eliminated, and `scope: consolidated` adds the
-  consolidation entity's entries — the eliminations and noncontrolling interest. Rejected on shared-
-  repository graphs; those should use `financial-statement-analysis` instead.
+  consolidation entity's entries — the eliminations and noncontrolling interest. `dimension` slices an
+  income statement by department, class, location or project: one member's lines, or a column per
+  member with Unallocated and Total. Rejected on shared-repository graphs; those should use
+  `financial-statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -167,8 +169,10 @@ def sync(
   materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
   group parent. On the parent, `scope: combined` sums every member consolidated in full at the rs-gaap
   concepts for the months each was a member, nothing eliminated, and `scope: consolidated` adds the
-  consolidation entity's entries — the eliminations and noncontrolling interest. Rejected on shared-
-  repository graphs; those should use `financial-statement-analysis` instead.
+  consolidation entity's entries — the eliminations and noncontrolling interest. `dimension` slices an
+  income statement by department, class, location or project: one member's lines, or a column per
+  member with Unallocated and Total. Rejected on shared-repository graphs; those should use
+  `financial-statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -209,8 +213,10 @@ async def asyncio_detailed(
   materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
   group parent. On the parent, `scope: combined` sums every member consolidated in full at the rs-gaap
   concepts for the months each was a member, nothing eliminated, and `scope: consolidated` adds the
-  consolidation entity's entries — the eliminations and noncontrolling interest. Rejected on shared-
-  repository graphs; those should use `financial-statement-analysis` instead.
+  consolidation entity's entries — the eliminations and noncontrolling interest. `dimension` slices an
+  income statement by department, class, location or project: one member's lines, or a column per
+  member with Unallocated and Total. Rejected on shared-repository graphs; those should use
+  `financial-statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -254,8 +260,10 @@ async def asyncio(
   materialization required. One entity's books: `entity_id` names a subsidiary, omitted means the
   group parent. On the parent, `scope: combined` sums every member consolidated in full at the rs-gaap
   concepts for the months each was a member, nothing eliminated, and `scope: consolidated` adds the
-  consolidation entity's entries — the eliminations and noncontrolling interest. Rejected on shared-
-  repository graphs; those should use `financial-statement-analysis` instead.
+  consolidation entity's entries — the eliminations and noncontrolling interest. `dimension` slices an
+  income statement by department, class, location or project: one member's lines, or a column per
+  member with Unallocated and Total. Rejected on shared-repository graphs; those should use
+  `financial-statement-analysis` instead.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

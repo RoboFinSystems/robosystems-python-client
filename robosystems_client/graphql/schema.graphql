@@ -384,7 +384,30 @@ type Query {
 
     """The entity whose books to read. Omit for the group parent."""
     entityId: String = null
+
+    """
+    A management dimension axis (department, class, location, project) to slice by, with dimension_member_id.
+    """
+    dimensionType: String = null
+
+    """
+    The one member whose lines to sum, or `unallocated` for the lines no member of the axis tags.
+    """
+    dimensionMemberId: String = null
   ): TrialBalance
+
+  """
+  The graph's management dimension members (departments, classes,
+  locations, projects), by axis then name, each with how many lines carry
+  it.
+  """
+  dimensions(
+    """One axis; omit for all."""
+    dimensionType: String = null
+
+    """Also list retired members."""
+    includeInactive: Boolean! = false
+  ): DimensionList
 
   """Paginated list of one entity's transactions."""
   transactions(
@@ -2514,6 +2537,11 @@ type TrialBalance {
   rows: [TrialBalanceRow!]!
   totalDebits: Float!
   totalCredits: Float!
+
+  """
+  True when read for one management dimension member (or its axis's Unallocated). Such a balance need not foot: an entry's other side may carry another member or none.
+  """
+  sliced: Boolean!
 }
 
 """One CoA account's debit/credit totals over the trial-balance window."""
@@ -2526,6 +2554,46 @@ type TrialBalanceRow {
   totalDebits: Float!
   totalCredits: Float!
   netBalance: Float!
+}
+
+"""The graph's members of its management dimensions, by axis then name."""
+type DimensionList {
+  """The members, ordered by axis and then name."""
+  dimensions: [Dimension!]!
+
+  """The axes the graph has members on, in order."""
+  types: [String!]!
+}
+
+"""One member of a management dimension."""
+type Dimension {
+  """The member's id, as lines carry it."""
+  id: String!
+
+  """The axis: department, class, location, project, or another."""
+  dimensionType: String!
+
+  """The member's label."""
+  name: String!
+
+  """
+  The member's stable key within its axis: the source's id for a synced member, a slug of the name for one created here.
+  """
+  value: String!
+
+  """Where the member came from: `native` or `quickbooks`."""
+  source: String!
+
+  """
+  False once retired: the member stays on the lines that carry it and can no longer be put on new ones.
+  """
+  isActive: Boolean!
+
+  """How many ledger lines carry the member."""
+  lineCount: Int!
+
+  """When it was created."""
+  createdAt: DateTime
 }
 
 """Paginated transaction listing — header view."""
@@ -2614,6 +2682,23 @@ type LedgerLineItem {
   description: String
   lineOrder: Int!
   flowQname: String
+
+  """
+  The management dimension members the line carries (department, class, location, project); empty when untagged.
+  """
+  dimensions: [LineDimension!]!
+}
+
+"""A member a ledger line carries."""
+type LineDimension {
+  """The member's id."""
+  id: String!
+
+  """The member's axis."""
+  dimensionType: String!
+
+  """The member's label."""
+  name: String!
 }
 
 """

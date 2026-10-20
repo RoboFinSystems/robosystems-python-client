@@ -45,6 +45,7 @@ __all__ = [
   "LIST_LEDGER_AGENTS_GQL",
   "LIST_LEDGER_BANK_ACCOUNTS_GQL",
   "LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL",
+  "LIST_LEDGER_DIMENSIONS_GQL",
   "LIST_LEDGER_ELEMENTS_GQL",
   "LIST_LEDGER_ENTITIES_GQL",
   "LIST_LEDGER_EVENT_BLOCKS_GQL",
@@ -1400,6 +1401,12 @@ query GetLedgerTransaction($transactionId: String!) {
         creditAmount
         description
         lineOrder
+        flowQname
+        dimensions {
+          id
+          dimensionType
+          name
+        }
       }
     }
   }
@@ -1407,10 +1414,17 @@ query GetLedgerTransaction($transactionId: String!) {
 """
 
 GET_LEDGER_TRIAL_BALANCE_GQL = """
-query GetLedgerTrialBalance($startDate: Date, $endDate: Date, $entityId: String) {
-  trialBalance(startDate: $startDate, endDate: $endDate, entityId: $entityId) {
+query GetLedgerTrialBalance($startDate: Date, $endDate: Date, $entityId: String, $dimensionType: String, $dimensionMemberId: String) {
+  trialBalance(
+    startDate: $startDate
+    endDate: $endDate
+    entityId: $entityId
+    dimensionType: $dimensionType
+    dimensionMemberId: $dimensionMemberId
+  ) {
     totalDebits
     totalCredits
+    sliced
     rows {
       accountId
       accountCode
@@ -1744,6 +1758,24 @@ query ListLedgerBlockedSourceGraphs($limit: Int! = 100, $offset: Int! = 0) {
 }
 """
 
+LIST_LEDGER_DIMENSIONS_GQL = """
+query ListLedgerDimensions($dimensionType: String, $includeInactive: Boolean! = false) {
+  dimensions(dimensionType: $dimensionType, includeInactive: $includeInactive) {
+    types
+    dimensions {
+      id
+      dimensionType
+      name
+      value
+      source
+      isActive
+      lineCount
+      createdAt
+    }
+  }
+}
+"""
+
 LIST_LEDGER_ELEMENTS_GQL = """
 query ListLedgerElements($taxonomyId: String, $source: String, $classification: String, $isAbstract: Boolean, $limit: Int! = 100, $offset: Int! = 0) {
   elements(
@@ -1894,6 +1926,11 @@ query ListLedgerJournalEntries($startDate: Date, $endDate: Date, $status: String
         description
         lineOrder
         flowQname
+        dimensions {
+          id
+          dimensionType
+          name
+        }
       }
     }
     pagination {

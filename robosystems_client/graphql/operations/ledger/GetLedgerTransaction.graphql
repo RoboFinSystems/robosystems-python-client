@@ -6,7 +6,8 @@ query GetLedgerTransaction($transactionId: String!) {
       id number type postingDate memo status postedAt
       lineItems {
         id accountId accountName accountCode
-        debitAmount creditAmount description lineOrder
+        debitAmount creditAmount description lineOrder flowQname
+        dimensions { id dimensionType name }
       }
     }
   }

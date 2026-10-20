@@ -24,6 +24,7 @@ class JournalEntryLineItemResponse:
       description (None | str | Unset):
       flow_qname (None | str | Unset): The cash flow row this line carries, when tagged; null means the account's
           default flow.
+      dimension_ids (list[str] | Unset): The management dimension members the line carries, by id.
   """
 
   id: str
@@ -33,6 +34,7 @@ class JournalEntryLineItemResponse:
   line_order: int
   description: None | str | Unset = UNSET
   flow_qname: None | str | Unset = UNSET
+  dimension_ids: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -58,6 +60,10 @@ class JournalEntryLineItemResponse:
     else:
       flow_qname = self.flow_qname
 
+    dimension_ids: list[str] | Unset = UNSET
+    if not isinstance(self.dimension_ids, Unset):
+      dimension_ids = self.dimension_ids
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -73,6 +79,8 @@ class JournalEntryLineItemResponse:
       field_dict["description"] = description
     if flow_qname is not UNSET:
       field_dict["flow_qname"] = flow_qname
+    if dimension_ids is not UNSET:
+      field_dict["dimension_ids"] = dimension_ids
 
     return field_dict
 
@@ -107,6 +115,8 @@ class JournalEntryLineItemResponse:
 
     flow_qname = _parse_flow_qname(d.pop("flow_qname", UNSET))
 
+    dimension_ids = cast(list[str], d.pop("dimension_ids", UNSET))
+
     journal_entry_line_item_response = cls(
       id=id,
       element_id=element_id,
@@ -115,6 +125,7 @@ class JournalEntryLineItemResponse:
       line_order=line_order,
       description=description,
       flow_qname=flow_qname,
+      dimension_ids=dimension_ids,
     )
 
     journal_entry_line_item_response.additional_properties = d

@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
   from ..models.live_statement_fact_row import LiveStatementFactRow
   from ..models.period_spec import PeriodSpec
+  from ..models.statement_dimension_response import StatementDimensionResponse
   from ..models.validation_check_response import ValidationCheckResponse
 
 
@@ -44,6 +45,8 @@ class LiveFinancialStatementResponse:
           equation, net-income equation, totals footing, operating-plug size. Null only when no structure rendered.
       unmapped_count (int | Unset):  Default: 0.
       truncated (bool | Unset):  Default: False.
+      dimension (None | StatementDimensionResponse | Unset): How the statement was sliced by a management dimension,
+          when it was: the axis, the one member read, or the columns and whether they tie out to the Total.
   """
 
   graph_id: str
@@ -59,9 +62,11 @@ class LiveFinancialStatementResponse:
   validation: None | Unset | ValidationCheckResponse = UNSET
   unmapped_count: int | Unset = 0
   truncated: bool | Unset = False
+  dimension: None | StatementDimensionResponse | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.statement_dimension_response import StatementDimensionResponse
     from ..models.validation_check_response import ValidationCheckResponse
 
     graph_id = self.graph_id
@@ -113,6 +118,14 @@ class LiveFinancialStatementResponse:
 
     truncated = self.truncated
 
+    dimension: dict[str, Any] | None | Unset
+    if isinstance(self.dimension, Unset):
+      dimension = UNSET
+    elif isinstance(self.dimension, StatementDimensionResponse):
+      dimension = self.dimension.to_dict()
+    else:
+      dimension = self.dimension
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -140,6 +153,8 @@ class LiveFinancialStatementResponse:
       field_dict["unmapped_count"] = unmapped_count
     if truncated is not UNSET:
       field_dict["truncated"] = truncated
+    if dimension is not UNSET:
+      field_dict["dimension"] = dimension
 
     return field_dict
 
@@ -147,6 +162,7 @@ class LiveFinancialStatementResponse:
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.live_statement_fact_row import LiveStatementFactRow
     from ..models.period_spec import PeriodSpec
+    from ..models.statement_dimension_response import StatementDimensionResponse
     from ..models.validation_check_response import ValidationCheckResponse
 
     d = dict(src_dict)
@@ -215,6 +231,23 @@ class LiveFinancialStatementResponse:
 
     truncated = d.pop("truncated", UNSET)
 
+    def _parse_dimension(data: object) -> None | StatementDimensionResponse | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        dimension_type_0 = StatementDimensionResponse.from_dict(data)
+
+        return dimension_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | StatementDimensionResponse | Unset, data)
+
+    dimension = _parse_dimension(d.pop("dimension", UNSET))
+
     live_financial_statement_response = cls(
       graph_id=graph_id,
       statement_type=statement_type,
@@ -229,6 +262,7 @@ class LiveFinancialStatementResponse:
       validation=validation,
       unmapped_count=unmapped_count,
       truncated=truncated,
+      dimension=dimension,
     )
 
     live_financial_statement_response.additional_properties = d

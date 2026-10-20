@@ -243,6 +243,7 @@ class TestLedgerReads:
       "trialBalance": {
         "totalDebits": 1000,
         "totalCredits": 1000,
+        "sliced": False,
         "rows": [],
       }
     }
@@ -1255,6 +1256,7 @@ class TestLedgerReadsAdditional:
                 "description": None,
                 "lineOrder": 1,
                 "flowQname": None,
+                "dimensions": [],
               }
             ],
           }
@@ -2344,6 +2346,89 @@ class TestEventBlockOps:
     body = mock_op.call_args.kwargs["body"]
     assert body.description == "Updated description"
     assert body.metadata_patch.to_dict() == {"reason": "duplicate"}
+
+
+# ── Management dimensions ─────────────────────────────────────────────────
+
+
+@pytest.mark.unit
+class TestDimensions:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_trial_balance_slices_by_one_member(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {
+      "trialBalance": {
+        "totalDebits": 0,
+        "totalCredits": 500,
+        "sliced": True,
+        "rows": [],
+      }
+    }
+    client = LedgerClient(mock_config)
+    tb = client.get_trial_balance(
+      graph_id, dimension_type="department", dimension_member_id="dim_sales"
+    )
+    variables = mock_execute.call_args[0][2]
+    assert variables["dimensionType"] == "department"
+    assert variables["dimensionMemberId"] == "dim_sales"
+    assert tb is not None and tb.sliced is True
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_dimensions_lists_members_and_axes(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {
+      "dimensions": {
+        "types": ["department"],
+        "dimensions": [
+          {
+            "id": "dim_sales",
+            "dimensionType": "department",
+            "name": "Sales",
+            "value": "sales",
+            "source": "native",
+            "isActive": True,
+            "lineCount": 3,
+            "createdAt": None,
+          }
+        ],
+      }
+    }
+    client = LedgerClient(mock_config)
+    found = client.get_dimensions(graph_id, dimension_type="department")
+    assert mock_execute.call_args[0][2] == {
+      "dimensionType": "department",
+      "includeInactive": False,
+    }
+    assert found is not None
+    assert found.types == ["department"]
+    assert found.dimensions[0].line_count == 3
+
+  @patch("robosystems_client.clients.ledger_client.op_create_dimension")
+  def test_create_dimension(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope("create-dimension", {"id": "dim_1", "name": "Sales"})
+    )
+    client = LedgerClient(mock_config)
+    result = client.create_dimension(
+      graph_id, {"dimension_type": "department", "name": "Sales"}
+    )
+    assert result["id"] == "dim_1"
+    body = mock_op.call_args.kwargs["body"]
+    assert (body.dimension_type, body.name) == ("department", "Sales")
+
+  @patch("robosystems_client.clients.ledger_client.op_update_dimension")
+  def test_update_dimension_retires(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope("update-dimension", {"id": "dim_1", "is_active": False})
+    )
+    client = LedgerClient(mock_config)
+    result = client.update_dimension(
+      graph_id, {"dimension_id": "dim_1", "is_active": False}
+    )
+    assert result["is_active"] is False
+    assert mock_op.call_args.kwargs["body"].is_active is False
 
 
 # ── Agents ────────────────────────────────────────────────────────────────

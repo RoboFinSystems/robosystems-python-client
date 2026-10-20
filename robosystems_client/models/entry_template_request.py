@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -25,6 +25,9 @@ class EntryTemplateRequest:
           EntryTemplateRequestEntryType.CLOSING.
       memo_template (str | Unset): Memo template ({structure_name} is replaced) Default: ''.
       auto_reverse (bool | Unset): Auto-generate a reversing entry on the first day of the next period Default: False.
+      dimension_ids (list[str] | Unset): The management dimension members (department, class, location, project) every
+          entry the schedule drafts carries on both lines, one per axis: a department's depreciation lands in that
+          department.
   """
 
   debit_element_id: str
@@ -34,6 +37,7 @@ class EntryTemplateRequest:
   )
   memo_template: str | Unset = ""
   auto_reverse: bool | Unset = False
+  dimension_ids: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -49,6 +53,10 @@ class EntryTemplateRequest:
 
     auto_reverse = self.auto_reverse
 
+    dimension_ids: list[str] | Unset = UNSET
+    if not isinstance(self.dimension_ids, Unset):
+      dimension_ids = self.dimension_ids
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -63,6 +71,8 @@ class EntryTemplateRequest:
       field_dict["memo_template"] = memo_template
     if auto_reverse is not UNSET:
       field_dict["auto_reverse"] = auto_reverse
+    if dimension_ids is not UNSET:
+      field_dict["dimension_ids"] = dimension_ids
 
     return field_dict
 
@@ -84,12 +94,15 @@ class EntryTemplateRequest:
 
     auto_reverse = d.pop("auto_reverse", UNSET)
 
+    dimension_ids = cast(list[str], d.pop("dimension_ids", UNSET))
+
     entry_template_request = cls(
       debit_element_id=debit_element_id,
       credit_element_id=credit_element_id,
       entry_type=entry_type,
       memo_template=memo_template,
       auto_reverse=auto_reverse,
+      dimension_ids=dimension_ids,
     )
 
     entry_template_request.additional_properties = d
