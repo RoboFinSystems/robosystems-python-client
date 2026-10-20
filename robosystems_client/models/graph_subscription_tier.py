@@ -32,7 +32,8 @@ class GraphSubscriptionTier:
           backend (str): Database backend identifier
           max_subgraphs (int | Unset): Maximum subgraphs supported Default: 0.
           instance_type (None | str | Unset): Instance type
-          instance_storage_limit_gb (float | Unset): Soft storage cap for the instance in GB Default: 0.0.
+          instance_storage_limit_gb (float | Unset): Instance storage cap in GB; ingest and materialize are refused above
+              it Default: 0.0.
   """
 
   name: str

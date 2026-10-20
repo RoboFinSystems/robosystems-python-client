@@ -42,7 +42,7 @@ class CreateReportRequest:
               supplied.
           entity_id (None | str | Unset): The entity the report is for, by id. Omit for the entity whose chart
               `mapping_id` maps from (the group parent on a one-entity graph). Named alongside a mapping of another entity's
-              chart, it is refused.
+              chart, it is refused. The consolidation entity's report is the group's consolidated statements.
           taxonomy_id (str | Unset): Taxonomy that defines the structures (BS / IS / CF / Equity / Schedules) this report
               can render. Accepts either an exact tenant-specific taxonomy UUID or a standard name (e.g. 'rs-gaap'). Standard
               names resolve to the latest reporting_standard taxonomy with that name. Defaults to 'rs-gaap', the canonical

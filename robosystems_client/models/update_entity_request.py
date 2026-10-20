@@ -69,13 +69,13 @@ class UpdateEntityRequest:
           joined_on (datetime.date | None | Unset): The month this entity became a member of the group, as any date in it;
               null is a member since the beginning. The consolidated statements include it from that month. Membership is by
               month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
-              this graph should hold only the months it belonged. Pass null to clear it.
+              this graph should hold only the months it belonged. Pass null to clear it. Refused on the consolidation entity.
           left_on (datetime.date | None | Unset): The month this entity left the group, as any date in it; null is a
               member still. The consolidated statements include it through that month and leave it out after. Membership is by
               month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
               this graph should hold only the months it belonged. Must not precede `joined_on`. Set it when a subsidiary is
               sold, dissolved or deconsolidated; its closed months and stamped statements stay readable under the group. Pass
-              null to reopen membership.
+              null to reopen membership. Refused on the consolidation entity.
   """
 
   entity_id: None | str | Unset = UNSET

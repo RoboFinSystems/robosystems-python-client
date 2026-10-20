@@ -16,7 +16,7 @@ class StorageLimits:
   """Storage limits information.
 
   Attributes:
-      max_storage_gb (float): Maximum storage limit in GB
+      max_storage_gb (float): Instance storage cap in GB; ingest and materialize are refused above it
       approaching_limit (bool): Whether approaching storage limit (>80%)
       current_usage_gb (float | None | Unset): Current storage usage in GB
   """

@@ -59,7 +59,8 @@ class CreateEntityRequest:
               null is a member since the beginning. The consolidated statements include it from that month. Membership is by
               month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
               this graph should hold only the months it belonged. Omit for a subsidiary formed by the parent; give the
-              acquisition month for one acquired, whose books in this graph then hold only what follows it.
+              acquisition month for one acquired, whose books in this graph then hold only what follows it. Refused on the
+              consolidation entity.
           ticker (None | str | Unset): Short symbol, unique in the graph; it prefixes the entity's account names
               (`coa-<ticker>:1000`). Derived from the name's initials when omitted.
           uri (None | str | Unset): Canonical URL / external identifier.

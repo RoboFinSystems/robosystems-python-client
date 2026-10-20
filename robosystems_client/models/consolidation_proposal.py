@@ -10,6 +10,7 @@ from attrs import field as _attrs_field
 from ..models.consolidation_proposal_adjustment_kind import (
   ConsolidationProposalAdjustmentKind,
 )
+from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.consolidation_proposal_line import ConsolidationProposalLine
@@ -28,10 +29,14 @@ class ConsolidationProposal:
           adjustment_kind (ConsolidationProposalAdjustmentKind): What the entry adjusts.
           adjusts_entity_id (str): The entity whose figures the entry adjusts.
           adjusts_entity_name (str): That entity's name.
-          posting_date (datetime.date): The month's last day.
+          posting_date (datetime.date): The month's last day; for an opening, the eve of the consolidation entity's first
+              month.
           memo (str): The entry's memo.
           basis (str): How the amounts were computed.
           lines (list[ConsolidationProposalLine]): The entry's lines; they balance.
+          opening (bool | Unset): Part of the consolidation entity's opening balance: what the members' history before the
+              group's first month already needed eliminated, so the consolidated statements open on it rather than move by it.
+              Proposing records it, posted, replacing the earlier one until the first close. Default: False.
   """
 
   adjustment_kind: ConsolidationProposalAdjustmentKind
@@ -41,6 +46,7 @@ class ConsolidationProposal:
   memo: str
   basis: str
   lines: list[ConsolidationProposalLine]
+  opening: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -61,6 +67,8 @@ class ConsolidationProposal:
       lines_item = lines_item_data.to_dict()
       lines.append(lines_item)
 
+    opening = self.opening
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -74,6 +82,8 @@ class ConsolidationProposal:
         "lines": lines,
       }
     )
+    if opening is not UNSET:
+      field_dict["opening"] = opening
 
     return field_dict
 
@@ -101,6 +111,8 @@ class ConsolidationProposal:
 
       lines.append(lines_item)
 
+    opening = d.pop("opening", UNSET)
+
     consolidation_proposal = cls(
       adjustment_kind=adjustment_kind,
       adjusts_entity_id=adjusts_entity_id,
@@ -109,6 +121,7 @@ class ConsolidationProposal:
       memo=memo,
       basis=basis,
       lines=lines,
+      opening=opening,
     )
 
     consolidation_proposal.additional_properties = d

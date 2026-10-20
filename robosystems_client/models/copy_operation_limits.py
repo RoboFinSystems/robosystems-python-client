@@ -11,35 +11,19 @@ T = TypeVar("T", bound="CopyOperationLimits")
 
 @_attrs_define
 class CopyOperationLimits:
-  """Copy/ingestion operation limits.
+  """File upload limits.
 
   Attributes:
-      max_file_size_gb (float): Maximum file size in GB
-      timeout_seconds (int): Operation timeout in seconds
-      concurrent_operations (int): Maximum concurrent operations
-      max_files_per_operation (int): Maximum files per operation
-      daily_copy_operations (int): Daily operation limit
+      max_file_size_gb (float): Maximum upload file size in GB
       supported_formats (list[str]): Supported file formats
   """
 
   max_file_size_gb: float
-  timeout_seconds: int
-  concurrent_operations: int
-  max_files_per_operation: int
-  daily_copy_operations: int
   supported_formats: list[str]
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     max_file_size_gb = self.max_file_size_gb
-
-    timeout_seconds = self.timeout_seconds
-
-    concurrent_operations = self.concurrent_operations
-
-    max_files_per_operation = self.max_files_per_operation
-
-    daily_copy_operations = self.daily_copy_operations
 
     supported_formats = self.supported_formats
 
@@ -48,10 +32,6 @@ class CopyOperationLimits:
     field_dict.update(
       {
         "max_file_size_gb": max_file_size_gb,
-        "timeout_seconds": timeout_seconds,
-        "concurrent_operations": concurrent_operations,
-        "max_files_per_operation": max_files_per_operation,
-        "daily_copy_operations": daily_copy_operations,
         "supported_formats": supported_formats,
       }
     )
@@ -63,22 +43,10 @@ class CopyOperationLimits:
     d = dict(src_dict)
     max_file_size_gb = d.pop("max_file_size_gb")
 
-    timeout_seconds = d.pop("timeout_seconds")
-
-    concurrent_operations = d.pop("concurrent_operations")
-
-    max_files_per_operation = d.pop("max_files_per_operation")
-
-    daily_copy_operations = d.pop("daily_copy_operations")
-
     supported_formats = cast(list[str], d.pop("supported_formats"))
 
     copy_operation_limits = cls(
       max_file_size_gb=max_file_size_gb,
-      timeout_seconds=timeout_seconds,
-      concurrent_operations=concurrent_operations,
-      max_files_per_operation=max_files_per_operation,
-      daily_copy_operations=daily_copy_operations,
       supported_formats=supported_formats,
     )
 
