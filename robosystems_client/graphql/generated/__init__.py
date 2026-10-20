@@ -82,6 +82,15 @@ from .get_investor_portfolio_block import (
 )
 from .get_investor_position import GetInvestorPosition, GetInvestorPositionPosition
 from .get_investor_security import GetInvestorSecurity, GetInvestorSecuritySecurity
+from .get_ledger_account_register import (
+  GetLedgerAccountRegister,
+  GetLedgerAccountRegisterAccountRegister,
+  GetLedgerAccountRegisterAccountRegisterAccount,
+  GetLedgerAccountRegisterAccountRegisterDrafts,
+  GetLedgerAccountRegisterAccountRegisterDraftsDimensions,
+  GetLedgerAccountRegisterAccountRegisterLines,
+  GetLedgerAccountRegisterAccountRegisterLinesDimensions,
+)
 from .get_ledger_account_rollups import (
   GetLedgerAccountRollups,
   GetLedgerAccountRollupsAccountRollups,
@@ -109,7 +118,12 @@ from .get_ledger_closing_book_structures import (
   GetLedgerClosingBookStructuresClosingBookStructuresCategoriesItems,
 )
 from .get_ledger_entity import GetLedgerEntity, GetLedgerEntityEntity
-from .get_ledger_event_block import GetLedgerEventBlock, GetLedgerEventBlockEventBlock
+from .get_ledger_event_block import (
+  GetLedgerEventBlock,
+  GetLedgerEventBlockEventBlock,
+  GetLedgerEventBlockEventBlockTriggeredEntries,
+  GetLedgerEventBlockEventBlockTriggeredEntriesLineItems,
+)
 from .get_ledger_fiscal_calendar import (
   GetLedgerFiscalCalendar,
   GetLedgerFiscalCalendarFiscalCalendar,
@@ -397,6 +411,7 @@ from .operations import (
   GET_INVESTOR_PORTFOLIO_BLOCK_GQL,
   GET_INVESTOR_POSITION_GQL,
   GET_INVESTOR_SECURITY_GQL,
+  GET_LEDGER_ACCOUNT_REGISTER_GQL,
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
   GET_LEDGER_ACCOUNT_TREE_GQL,
   GET_LEDGER_AGENT_GQL,
@@ -501,6 +516,7 @@ __all__ = [
   "GET_INVESTOR_PORTFOLIO_BLOCK_GQL",
   "GET_INVESTOR_POSITION_GQL",
   "GET_INVESTOR_SECURITY_GQL",
+  "GET_LEDGER_ACCOUNT_REGISTER_GQL",
   "GET_LEDGER_ACCOUNT_ROLLUPS_GQL",
   "GET_LEDGER_ACCOUNT_TREE_GQL",
   "GET_LEDGER_AGENT_GQL",
@@ -563,6 +579,13 @@ __all__ = [
   "GetInvestorPositionPosition",
   "GetInvestorSecurity",
   "GetInvestorSecuritySecurity",
+  "GetLedgerAccountRegister",
+  "GetLedgerAccountRegisterAccountRegister",
+  "GetLedgerAccountRegisterAccountRegisterAccount",
+  "GetLedgerAccountRegisterAccountRegisterDrafts",
+  "GetLedgerAccountRegisterAccountRegisterDraftsDimensions",
+  "GetLedgerAccountRegisterAccountRegisterLines",
+  "GetLedgerAccountRegisterAccountRegisterLinesDimensions",
   "GetLedgerAccountRollups",
   "GetLedgerAccountRollupsAccountRollups",
   "GetLedgerAccountRollupsAccountRollupsGroups",
@@ -585,6 +608,8 @@ __all__ = [
   "GetLedgerEntityEntity",
   "GetLedgerEventBlock",
   "GetLedgerEventBlockEventBlock",
+  "GetLedgerEventBlockEventBlockTriggeredEntries",
+  "GetLedgerEventBlockEventBlockTriggeredEntriesLineItems",
   "GetLedgerFiscalCalendar",
   "GetLedgerFiscalCalendarFiscalCalendar",
   "GetLedgerFiscalCalendarFiscalCalendarPendingObligationSample",

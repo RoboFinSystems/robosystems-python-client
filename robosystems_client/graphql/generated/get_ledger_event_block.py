@@ -35,6 +35,37 @@ class GetLedgerEventBlockEventBlock(BaseModel):
   document_id: Optional[str] = Field(alias="documentId")
   created_at: str = Field(alias="createdAt")
   created_by: str = Field(alias="createdBy")
+  triggered_entries: list["GetLedgerEventBlockEventBlockTriggeredEntries"] = Field(
+    alias="triggeredEntries"
+  )
+
+
+class GetLedgerEventBlockEventBlockTriggeredEntries(BaseModel):
+  id: str
+  number: Optional[str]
+  type_: str = Field(alias="type")
+  status: str
+  posting_date: str = Field(alias="postingDate")
+  memo: Optional[str]
+  provenance: Optional[str]
+  total_debit: float = Field(alias="totalDebit")
+  total_credit: float = Field(alias="totalCredit")
+  line_items: list["GetLedgerEventBlockEventBlockTriggeredEntriesLineItems"] = Field(
+    alias="lineItems"
+  )
+
+
+class GetLedgerEventBlockEventBlockTriggeredEntriesLineItems(BaseModel):
+  id: str
+  account_id: str = Field(alias="accountId")
+  account_name: Optional[str] = Field(alias="accountName")
+  account_code: Optional[str] = Field(alias="accountCode")
+  debit_amount: float = Field(alias="debitAmount")
+  credit_amount: float = Field(alias="creditAmount")
+  description: Optional[str]
+  line_order: int = Field(alias="lineOrder")
 
 
 GetLedgerEventBlock.model_rebuild()
+GetLedgerEventBlockEventBlock.model_rebuild()
+GetLedgerEventBlockEventBlockTriggeredEntries.model_rebuild()

@@ -51,6 +51,10 @@ class LiveFinancialStatementRequest:
           per member, then Unallocated, then Total, and says in `dimension.ties_out` whether every row's members plus
           Unallocated equal its Total. Composes with `scope` and `entity_id`; a consolidation entity's lines are untagged,
           so eliminations read as Unallocated. Refused (422) on any other statement.
+      include_sources (bool | Unset): Add each row's `origin` and, per column, the accounts its figure was summed from
+          (`sources`), each keyed by the entity whose books hold it, so a figure opens on the account registers behind it.
+          Consolidated figures list each member's accounts and the consolidation entity's. Off by default: it multiplies
+          the response. Refused (422) with a `dimension` read by column. Default: False.
   """
 
   statement_type: str
@@ -63,6 +67,7 @@ class LiveFinancialStatementRequest:
   consolidated: bool | Unset = False
   limit: int | Unset = 1000
   dimension: None | StatementDimension | Unset = UNSET
+  include_sources: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -124,6 +129,8 @@ class LiveFinancialStatementRequest:
     else:
       dimension = self.dimension
 
+    include_sources = self.include_sources
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -149,6 +156,8 @@ class LiveFinancialStatementRequest:
       field_dict["limit"] = limit
     if dimension is not UNSET:
       field_dict["dimension"] = dimension
+    if include_sources is not UNSET:
+      field_dict["include_sources"] = include_sources
 
     return field_dict
 
@@ -260,6 +269,8 @@ class LiveFinancialStatementRequest:
 
     dimension = _parse_dimension(d.pop("dimension", UNSET))
 
+    include_sources = d.pop("include_sources", UNSET)
+
     live_financial_statement_request = cls(
       statement_type=statement_type,
       entity_id=entity_id,
@@ -271,6 +282,7 @@ class LiveFinancialStatementRequest:
       consolidated=consolidated,
       limit=limit,
       dimension=dimension,
+      include_sources=include_sources,
     )
 
     live_financial_statement_request.additional_properties = d

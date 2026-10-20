@@ -397,6 +397,50 @@ type Query {
   ): TrialBalance
 
   """
+  One entity's posted lines on one account, oldest first, each with the
+  balance it leaves.
+  
+  The lines run from an opening balance to a closing one, which is the
+  trial balance's for the same window added to the opening. An income or
+  expense account's opening counts from the fiscal year's start.
+  """
+  accountRegister(
+    """The account."""
+    accountId: String!
+
+    """Start of the window (inclusive). Omit from the first line."""
+    startDate: Date = null
+
+    """End of the window (inclusive). Omit through the last line."""
+    endDate: Date = null
+
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
+
+    """A management dimension axis to slice by, with dimension_member_id."""
+    dimensionType: String = null
+
+    """
+    The one member whose lines to read, or `unallocated` for the lines no member of the axis tags.
+    """
+    dimensionMemberId: String = null
+
+    """Only the lines tagged to this cash flow or equity movement row."""
+    flowElementId: String = null
+
+    """Also return the window's draft lines, outside every balance."""
+    includeDrafts: Boolean! = false
+
+    """The `nextCursor` of the page before."""
+    after: String = null
+
+    """
+    Maximum rows to return, 1-1000. Omit to use this field's own default; out of range raises `INVALID_PAGINATION`.
+    """
+    limit: Int = null
+  ): AccountRegister
+
+  """
   The graph's management dimension members (departments, classes,
   locations, projects), by axis then name, each with how many lines carry
   it.
@@ -2061,6 +2105,99 @@ type EventBlock {
   documentId: String
   createdAt: DateTime!
   createdBy: String!
+  triggeredEntries: [LedgerJournalEntry!]!
+}
+
+"""
+A posted or draft journal entry, read on its own terms.
+
+Distinct from `LedgerEntryResponse`, which is an entry *underneath* a
+transaction in the detail view. An entry does not need a parent:
+`Entry.transaction_id` is nullable by design (see the model comment on
+`Entry.triggered_by_event_id`), and the schedule engine and event
+handlers create entries with no transaction at all. Those entries are
+invisible to the transaction-centric reads, which is what this shape
+exists to fix — so `transactionId` is projected explicitly, and a
+`None` here means a standalone entry rather than missing data.
+"""
+type LedgerJournalEntry {
+  id: String!
+  number: String
+
+  """
+  Parent transaction, or null for a standalone entry (schedule-derived closing entries and event-handler entries have no parent)
+  """
+  transactionId: String
+
+  """'standard' | 'adjusting' | 'closing' | 'reversing'"""
+  type: String!
+
+  """'draft' | 'posted' | 'reversed'"""
+  status: String!
+  postingDate: Date!
+  memo: String
+
+  """
+  Where the entry came from (ENTRY_PROVENANCE_VALUES): source_sync, ai_generated, manual_entry, schedule_derived, system_computed, event_handler
+  """
+  provenance: String
+
+  """Schedule structure that generated this entry (if any)"""
+  sourceStructureId: String
+
+  """Human-readable name of the source schedule"""
+  sourceStructureName: String
+
+  """Business event that caused this entry (if any)"""
+  triggeredByEventId: String
+
+  """
+  That event's type (`invoice_issued`, `bill_received`, `journal_entry_recorded`, ...), so a list can label the entry's source without fetching the event
+  """
+  triggeredByEventType: String
+
+  """The entry this one reverses (if any)"""
+  reversalOf: String
+  postedAt: DateTime
+  lineItems: [LedgerLineItem!]!
+  totalDebit: Float!
+  totalCredit: Float!
+
+  """True if total_debit == total_credit"""
+  balanced: Boolean!
+}
+
+"""
+One debit/credit line within a journal entry. Always exactly one
+side has a non-zero amount.
+"""
+type LedgerLineItem {
+  id: String!
+  accountId: String!
+  accountName: String
+  accountCode: String
+  debitAmount: Float!
+  creditAmount: Float!
+  description: String
+  lineOrder: Int!
+  flowQname: String
+
+  """
+  The management dimension members the line carries (department, class, location, project); empty when untagged.
+  """
+  dimensions: [LineDimension!]!
+}
+
+"""A member a ledger line carries."""
+type LineDimension {
+  """The member's id."""
+  id: String!
+
+  """The member's axis."""
+  dimensionType: String!
+
+  """The member's label."""
+  name: String!
 }
 
 """
@@ -2556,6 +2693,166 @@ type TrialBalanceRow {
   netBalance: Float!
 }
 
+"""
+One account's lines over a window, each with the balance it leaves.
+
+`closingBalance` is `openingBalance` plus the window's lines, and equals
+the trial balance's net for the same entity, account and window added to
+the opening. A page carries its own `pageOpeningBalance`, so reading one
+page needs none before it.
+"""
+type AccountRegister {
+  """The account read."""
+  account: RegisterAccount!
+
+  """The entity whose books were read."""
+  entityId: String
+
+  """The window's first day; null from the first line."""
+  startDate: Date
+
+  """The window's last day; null through the last line."""
+  endDate: Date
+
+  """
+  The day the opening balance counts from: the fiscal year's start for an income or expense account, null (inception) for any other.
+  """
+  openingFrom: Date
+
+  """The balance before the window's first line, natural sign."""
+  openingBalance: Float!
+
+  """The window's debits, in dollars."""
+  totalDebits: Float!
+
+  """The window's credits, in dollars."""
+  totalCredits: Float!
+
+  """
+  The balance after the window's last line, natural sign. A window spanning fiscal years carries an income or expense account's balance across the year end rather than resetting it.
+  """
+  closingBalance: Float!
+
+  """How many lines the window holds."""
+  lineCount: Int!
+
+  """The balance before this page's first line, natural sign."""
+  pageOpeningBalance: Float!
+
+  """This page's lines, oldest first."""
+  lines: [RegisterLine!]!
+
+  """Pass as `after` for the next page; null on the last."""
+  nextCursor: String
+
+  """
+  With `include_drafts`, on the first page only: the window's draft lines on the account, oldest first and at most a page of them, outside every balance above.
+  """
+  drafts: [RegisterLine!]!
+
+  """True when the window holds more drafts than `drafts` lists."""
+  draftsTruncated: Boolean!
+
+  """
+  True when read for one management dimension member, its axis's Unallocated, or one flow row: the balances are that slice's, not the account's.
+  """
+  sliced: Boolean!
+}
+
+"""The account a register reads."""
+type RegisterAccount {
+  """The account's id."""
+  id: String!
+
+  """The account's code."""
+  code: String
+
+  """The account's name."""
+  name: String!
+
+  """
+  `debit` or `credit`: the side the account's balance is normally on, and the sign every balance in the register is read in.
+  """
+  balanceType: String!
+
+  """
+  What the account is: asset, liability, equity, revenue, expense, gain or loss, where the chart says.
+  """
+  trait: String
+
+  """
+  True for an income or expense account, whose opening balance counts from the start of the fiscal year: the close to retained earnings is computed, never posted.
+  """
+  temporary: Boolean!
+}
+
+"""One line of the register."""
+type RegisterLine {
+  """The line item's id."""
+  lineId: String!
+
+  """The journal entry the line is on."""
+  entryId: String!
+
+  """The entry's number."""
+  entryNumber: String
+
+  """The entry's posting date."""
+  postingDate: Date!
+
+  """The entry's type."""
+  entryType: String!
+
+  """Where the entry came from: native, a sync, an adjustment."""
+  provenance: String
+
+  """
+  `posted`, `reversed` (posted, then reversed by `reversedBy`), or `draft` in the register's `drafts`.
+  """
+  status: String!
+
+  """The entry's memo."""
+  memo: String
+
+  """The line's description."""
+  description: String
+
+  """The line's debit, in dollars."""
+  debit: Float!
+
+  """The line's credit, in dollars."""
+  credit: Float!
+
+  """
+  The account's balance after this line, in its natural sign. Null on a draft, which is never counted in it.
+  """
+  balance: Float
+
+  """The event whose handler wrote the entry."""
+  triggeredByEventId: String
+
+  """That event's type, such as `invoice_issued`."""
+  triggeredByEventType: String
+
+  """The entry this one reverses, when it is a reversal."""
+  reversalOf: String
+
+  """The landed entry that reverses this one, when one does."""
+  reversedBy: String
+
+  """The counterparty the entry's event names."""
+  agentId: String
+
+  """The counterparty's name."""
+  agentName: String
+
+  """The cash flow or equity movement row the line is tagged to."""
+  flowElementId: String
+
+  """The management dimension members the line carries."""
+  dimensions: [LineDimension!]!
+}
+
 """The graph's members of its management dimensions, by axis then name."""
 type DimensionList {
   """The members, ordered by axis and then name."""
@@ -2669,39 +2966,6 @@ type LedgerEntry {
 }
 
 """
-One debit/credit line within a journal entry. Always exactly one
-side has a non-zero amount.
-"""
-type LedgerLineItem {
-  id: String!
-  accountId: String!
-  accountName: String
-  accountCode: String
-  debitAmount: Float!
-  creditAmount: Float!
-  description: String
-  lineOrder: Int!
-  flowQname: String
-
-  """
-  The management dimension members the line carries (department, class, location, project); empty when untagged.
-  """
-  dimensions: [LineDimension!]!
-}
-
-"""A member a ledger line carries."""
-type LineDimension {
-  """The member's id."""
-  id: String!
-
-  """The member's axis."""
-  dimensionType: String!
-
-  """The member's label."""
-  name: String!
-}
-
-"""
 Paginated journal listing — entries with their line items expanded.
 
 Pagination counts *entries*, not line-item rows.
@@ -2709,60 +2973,6 @@ Pagination counts *entries*, not line-item rows.
 type LedgerJournalEntryList {
   entries: [LedgerJournalEntry!]!
   pagination: PaginationInfo!
-}
-
-"""
-A posted or draft journal entry, read on its own terms.
-
-Distinct from `LedgerEntryResponse`, which is an entry *underneath* a
-transaction in the detail view. An entry does not need a parent:
-`Entry.transaction_id` is nullable by design (see the model comment on
-`Entry.triggered_by_event_id`), and the schedule engine and event
-handlers create entries with no transaction at all. Those entries are
-invisible to the transaction-centric reads, which is what this shape
-exists to fix — so `transactionId` is projected explicitly, and a
-`None` here means a standalone entry rather than missing data.
-"""
-type LedgerJournalEntry {
-  id: String!
-  number: String
-
-  """
-  Parent transaction, or null for a standalone entry (schedule-derived closing entries and event-handler entries have no parent)
-  """
-  transactionId: String
-
-  """'standard' | 'adjusting' | 'closing' | 'reversing'"""
-  type: String!
-
-  """'draft' | 'posted' | 'reversed'"""
-  status: String!
-  postingDate: Date!
-  memo: String
-
-  """
-  Where the entry came from (ENTRY_PROVENANCE_VALUES): source_sync, ai_generated, manual_entry, schedule_derived, system_computed, event_handler
-  """
-  provenance: String
-
-  """Schedule structure that generated this entry (if any)"""
-  sourceStructureId: String
-
-  """Human-readable name of the source schedule"""
-  sourceStructureName: String
-
-  """Business event that caused this entry (if any)"""
-  triggeredByEventId: String
-
-  """The entry this one reverses (if any)"""
-  reversalOf: String
-  postedAt: DateTime
-  lineItems: [LedgerLineItem!]!
-  totalDebit: Float!
-  totalCredit: Float!
-
-  """True if total_debit == total_credit"""
-  balanced: Boolean!
 }
 
 """Flat list of taxonomy headers. Used by the catalog/picker UIs."""

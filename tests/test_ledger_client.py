@@ -258,6 +258,85 @@ class TestLedgerReads:
     assert variables["endDate"] == "2026-03-31"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_get_account_register(self, mock_execute, mock_config, graph_id):
+    line = {
+      "lineId": "li_1",
+      "entryId": "je_1",
+      "entryNumber": None,
+      "postingDate": "2026-09-03",
+      "entryType": "standard",
+      "provenance": None,
+      "status": "posted",
+      "memo": None,
+      "description": None,
+      "debit": 25.0,
+      "credit": 0.0,
+      "balance": 125.0,
+      "triggeredByEventId": "evt_1",
+      "triggeredByEventType": "sale",
+      "reversalOf": None,
+      "reversedBy": None,
+      "agentId": "agt_acme",
+      "agentName": "Acme",
+      "flowElementId": None,
+      "dimensions": [],
+    }
+    mock_execute.return_value = {
+      "accountRegister": {
+        "account": {
+          "id": "elem_cash",
+          "code": "1000",
+          "name": "Cash",
+          "balanceType": "debit",
+          "trait": "asset",
+          "temporary": False,
+        },
+        "entityId": "ent_sub",
+        "startDate": "2026-09-01",
+        "endDate": "2026-09-30",
+        "openingFrom": None,
+        "openingBalance": 100.0,
+        "totalDebits": 25.0,
+        "totalCredits": 0.0,
+        "closingBalance": 125.0,
+        "lineCount": 1,
+        "pageOpeningBalance": 100.0,
+        "nextCursor": None,
+        "sliced": True,
+        "draftsTruncated": False,
+        "lines": [line],
+        "drafts": [],
+      }
+    }
+    client = LedgerClient(mock_config)
+    register = client.get_account_register(
+      graph_id,
+      "elem_cash",
+      start_date="2026-09-01",
+      end_date="2026-09-30",
+      entity_id="ent_sub",
+      dimension_type="department",
+      dimension_member_id="unallocated",
+      after="cur_1",
+      limit=50,
+    )
+    assert register is not None
+    assert register.closing_balance == 125.0
+    assert register.lines[0].triggered_by_event_type == "sale"
+    variables = mock_execute.call_args[0][2]
+    assert variables == {
+      "accountId": "elem_cash",
+      "startDate": "2026-09-01",
+      "endDate": "2026-09-30",
+      "entityId": "ent_sub",
+      "dimensionType": "department",
+      "dimensionMemberId": "unallocated",
+      "includeDrafts": False,
+      "after": "cur_1",
+      "limit": 50,
+    }
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_list_mappings_unwraps_structures(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
       "mappings": {
@@ -1240,6 +1319,7 @@ class TestLedgerReadsAdditional:
             "sourceStructureId": "struct_1",
             "sourceStructureName": "MacBook Pro Depreciation",
             "triggeredByEventId": None,
+            "triggeredByEventType": None,
             "reversalOf": None,
             "postedAt": "2026-08-01T12:00:00",
             "totalDebit": 42.41,
@@ -1424,6 +1504,20 @@ class TestLedgerReadsAdditional:
         "documentId": "doc_inv_9",
         "createdAt": "2026-03-15T12:00:00Z",
         "createdBy": "user_1",
+        "triggeredEntries": [
+          {
+            "id": "je_1",
+            "number": None,
+            "type": "standard",
+            "status": "posted",
+            "postingDate": "2026-03-15",
+            "memo": None,
+            "provenance": "event_handler",
+            "totalDebit": 500.0,
+            "totalCredit": 500.0,
+            "lineItems": [],
+          }
+        ],
       }
     }
     client = LedgerClient(mock_config)
@@ -1431,6 +1525,7 @@ class TestLedgerReadsAdditional:
     assert result is not None
     assert result.id == "evt_1"
     assert result.document_id == "doc_inv_9"
+    assert [entry.id for entry in result.triggered_entries] == ["je_1"]
     variables = mock_execute.call_args[0][2]
     assert variables["id"] == "evt_1"
 

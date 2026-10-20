@@ -5,5 +5,12 @@ query GetLedgerEventBlock($id: String!) {
     dimensionIds agentId resourceType resourceElementId
     replacedByEventId replacesEventId obligatedByEventId dischargesEventId documentId
     createdAt createdBy
+    triggeredEntries {
+      id number type status postingDate memo provenance totalDebit totalCredit
+      lineItems {
+        id accountId accountName accountCode
+        debitAmount creditAmount description lineOrder
+      }
+    }
   }
 }

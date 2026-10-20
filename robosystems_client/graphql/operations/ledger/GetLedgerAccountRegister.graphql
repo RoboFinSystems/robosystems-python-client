@@ -1,0 +1,44 @@
+query GetLedgerAccountRegister(
+  $accountId: String!
+  $startDate: Date
+  $endDate: Date
+  $entityId: String
+  $dimensionType: String
+  $dimensionMemberId: String
+  $flowElementId: String
+  $includeDrafts: Boolean! = false
+  $after: String
+  $limit: Int
+) {
+  accountRegister(
+    accountId: $accountId
+    startDate: $startDate
+    endDate: $endDate
+    entityId: $entityId
+    dimensionType: $dimensionType
+    dimensionMemberId: $dimensionMemberId
+    flowElementId: $flowElementId
+    includeDrafts: $includeDrafts
+    after: $after
+    limit: $limit
+  ) {
+    account { id code name balanceType trait temporary }
+    entityId startDate endDate openingFrom
+    openingBalance totalDebits totalCredits closingBalance
+    lineCount pageOpeningBalance nextCursor sliced draftsTruncated
+    lines {
+      lineId entryId entryNumber postingDate entryType provenance status
+      memo description debit credit balance
+      triggeredByEventId triggeredByEventType reversalOf reversedBy
+      agentId agentName flowElementId
+      dimensions { id dimensionType name }
+    }
+    drafts {
+      lineId entryId entryNumber postingDate entryType provenance status
+      memo description debit credit balance
+      triggeredByEventId triggeredByEventType reversalOf reversedBy
+      agentId agentName flowElementId
+      dimensions { id dimensionType name }
+    }
+  }
+}
