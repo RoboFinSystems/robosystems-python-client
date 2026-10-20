@@ -1,8 +1,11 @@
 from typing import Any, Optional, Union
 
+from .aged_payables import AgedPayables
+from .aged_receivables import AgedReceivables
 from .base_client import BaseClient
 from .base_model import UNSET, UnsetType
 from .classification_stats import ClassificationStats
+from .discharge_candidates import DischargeCandidates
 from .enums import ReportDownloadFormat, ReportLifecycle
 from .flow_candidates import FlowCandidates
 from .get_information_block import GetInformationBlock
@@ -63,8 +66,12 @@ from .list_library_structures import ListLibraryStructures
 from .list_library_taxonomies import ListLibraryTaxonomies
 from .list_library_taxonomy_arcs import ListLibraryTaxonomyArcs
 from .mapping_candidates import MappingCandidates
+from .open_items_for_agent import OpenItemsForAgent
 from .operations import (
+  AGED_PAYABLES_GQL,
+  AGED_RECEIVABLES_GQL,
   CLASSIFICATION_STATS_GQL,
+  DISCHARGE_CANDIDATES_GQL,
   FLOW_CANDIDATES_GQL,
   GET_INFORMATION_BLOCK_GQL,
   GET_INVESTOR_HOLDINGS_GQL,
@@ -124,6 +131,7 @@ from .operations import (
   LIST_LIBRARY_TAXONOMIES_GQL,
   LIST_LIBRARY_TAXONOMY_ARCS_GQL,
   MAPPING_CANDIDATES_GQL,
+  OPEN_ITEMS_FOR_AGENT_GQL,
   SEARCH_LIBRARY_ELEMENTS_GQL,
 )
 from .search_library_elements import SearchLibraryElements
@@ -249,6 +257,48 @@ class Client(BaseClient):
     data = self.get_data(response)
     return ListInvestorSecurities.model_validate(data)
 
+  def aged_payables(
+    self,
+    scope: str,
+    as_of: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> AgedPayables:
+    variables: dict[str, object] = {
+      "asOf": as_of,
+      "entityId": entity_id,
+      "scope": scope,
+    }
+    response = self.execute(
+      query=AGED_PAYABLES_GQL,
+      operation_name="AgedPayables",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return AgedPayables.model_validate(data)
+
+  def aged_receivables(
+    self,
+    scope: str,
+    as_of: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> AgedReceivables:
+    variables: dict[str, object] = {
+      "asOf": as_of,
+      "entityId": entity_id,
+      "scope": scope,
+    }
+    response = self.execute(
+      query=AGED_RECEIVABLES_GQL,
+      operation_name="AgedReceivables",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return AgedReceivables.model_validate(data)
+
   def classification_stats(
     self, period: str, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
   ) -> ClassificationStats:
@@ -261,6 +311,17 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ClassificationStats.model_validate(data)
+
+  def discharge_candidates(self, event_id: str, **kwargs: Any) -> DischargeCandidates:
+    variables: dict[str, object] = {"eventId": event_id}
+    response = self.execute(
+      query=DISCHARGE_CANDIDATES_GQL,
+      operation_name="DischargeCandidates",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return DischargeCandidates.model_validate(data)
 
   def flow_candidates(
     self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
@@ -999,6 +1060,29 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return MappingCandidates.model_validate(data)
+
+  def open_items_for_agent(
+    self,
+    agent_id: str,
+    kind: str,
+    as_of: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> OpenItemsForAgent:
+    variables: dict[str, object] = {
+      "agentId": agent_id,
+      "kind": kind,
+      "asOf": as_of,
+      "entityId": entity_id,
+    }
+    response = self.execute(
+      query=OPEN_ITEMS_FOR_AGENT_GQL,
+      operation_name="OpenItemsForAgent",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return OpenItemsForAgent.model_validate(data)
 
   def get_library_element(
     self,

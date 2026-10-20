@@ -1,5 +1,8 @@
 __all__ = [
+  "AGED_PAYABLES_GQL",
+  "AGED_RECEIVABLES_GQL",
   "CLASSIFICATION_STATS_GQL",
+  "DISCHARGE_CANDIDATES_GQL",
   "FLOW_CANDIDATES_GQL",
   "GET_INFORMATION_BLOCK_GQL",
   "GET_INVESTOR_HOLDINGS_GQL",
@@ -59,6 +62,7 @@ __all__ = [
   "LIST_LIBRARY_TAXONOMIES_GQL",
   "LIST_LIBRARY_TAXONOMY_ARCS_GQL",
   "MAPPING_CANDIDATES_GQL",
+  "OPEN_ITEMS_FOR_AGENT_GQL",
   "SEARCH_LIBRARY_ELEMENTS_GQL",
 ]
 
@@ -281,6 +285,148 @@ query ListInvestorSecurities($entityId: String, $securityType: String, $isActive
 }
 """
 
+AGED_PAYABLES_GQL = """
+query AgedPayables($asOf: Date, $entityId: String, $scope: String! = "entity") {
+  agedPayables(asOf: $asOf, entityId: $entityId, scope: $scope) {
+    kind
+    asOf
+    scope
+    entityId
+    memberEntityIds
+    buckets {
+      currentCents
+      oneToThirtyCents
+      thirtyOneToSixtyCents
+      sixtyOneToNinetyCents
+      overNinetyCents
+      unappliedCreditCents
+      totalCents
+    }
+    agents {
+      agentId
+      agentName
+      openItemCount
+      oldestDueDate
+      buckets {
+        currentCents
+        oneToThirtyCents
+        thirtyOneToSixtyCents
+        sixtyOneToNinetyCents
+        overNinetyCents
+        unappliedCreditCents
+        totalCents
+      }
+    }
+    defaultedDueDateCount
+    intercompany {
+      eventId
+      entityId
+      agentId
+      occurredOn
+      documentNumber
+      description
+      originalCents
+      settledCents
+      openCents
+      currency
+      dueDate
+      dueDateBasis
+      daysPastDue
+      bucket
+    }
+    pairs {
+      creditorEntityId
+      debtorEntityId
+      receivableCents
+      payableCents
+      differenceCents
+    }
+    tieOuts {
+      entityId
+      accounts {
+        elementId
+        code
+        name
+      }
+      controlBalanceCents
+      openItemsCents
+      differenceCents
+    }
+  }
+}
+"""
+
+AGED_RECEIVABLES_GQL = """
+query AgedReceivables($asOf: Date, $entityId: String, $scope: String! = "entity") {
+  agedReceivables(asOf: $asOf, entityId: $entityId, scope: $scope) {
+    kind
+    asOf
+    scope
+    entityId
+    memberEntityIds
+    buckets {
+      currentCents
+      oneToThirtyCents
+      thirtyOneToSixtyCents
+      sixtyOneToNinetyCents
+      overNinetyCents
+      unappliedCreditCents
+      totalCents
+    }
+    agents {
+      agentId
+      agentName
+      openItemCount
+      oldestDueDate
+      buckets {
+        currentCents
+        oneToThirtyCents
+        thirtyOneToSixtyCents
+        sixtyOneToNinetyCents
+        overNinetyCents
+        unappliedCreditCents
+        totalCents
+      }
+    }
+    defaultedDueDateCount
+    intercompany {
+      eventId
+      entityId
+      agentId
+      occurredOn
+      documentNumber
+      description
+      originalCents
+      settledCents
+      openCents
+      currency
+      dueDate
+      dueDateBasis
+      daysPastDue
+      bucket
+    }
+    pairs {
+      creditorEntityId
+      debtorEntityId
+      receivableCents
+      payableCents
+      differenceCents
+    }
+    tieOuts {
+      entityId
+      accounts {
+        elementId
+        code
+        name
+      }
+      controlBalanceCents
+      openItemsCents
+      differenceCents
+    }
+  }
+}
+"""
+
 CLASSIFICATION_STATS_GQL = """
 query ClassificationStats($period: String!, $entityId: String) {
   classificationStats(period: $period, entityId: $entityId) {
@@ -301,6 +447,33 @@ query ClassificationStats($period: String!, $entityId: String) {
       overridden
       unsuggested
       split
+    }
+  }
+}
+"""
+
+DISCHARGE_CANDIDATES_GQL = """
+query DischargeCandidates($eventId: String!) {
+  dischargeCandidates(eventId: $eventId) {
+    eventId
+    kind
+    amountCents
+    classifiedToControl
+    candidates {
+      eventId
+      entityId
+      agentId
+      occurredOn
+      documentNumber
+      description
+      originalCents
+      settledCents
+      openCents
+      currency
+      dueDate
+      dueDateBasis
+      daysPastDue
+      bucket
     }
   }
 }
@@ -2002,6 +2175,32 @@ query MappingCandidates($classification: String!, $entityId: String) {
     name
     qname
     trait
+  }
+}
+"""
+
+OPEN_ITEMS_FOR_AGENT_GQL = """
+query OpenItemsForAgent($agentId: String!, $kind: String!, $asOf: Date, $entityId: String) {
+  openItemsForAgent(
+    agentId: $agentId
+    kind: $kind
+    asOf: $asOf
+    entityId: $entityId
+  ) {
+    eventId
+    entityId
+    agentId
+    occurredOn
+    documentNumber
+    description
+    originalCents
+    settledCents
+    openCents
+    currency
+    dueDate
+    dueDateBasis
+    daysPastDue
+    bucket
   }
 }
 """

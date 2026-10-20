@@ -1,0 +1,68 @@
+query AgedReceivables($asOf: Date, $entityId: String, $scope: String! = "entity") {
+  agedReceivables(asOf: $asOf, entityId: $entityId, scope: $scope) {
+    kind
+    asOf
+    scope
+    entityId
+    memberEntityIds
+    buckets {
+      currentCents
+      oneToThirtyCents
+      thirtyOneToSixtyCents
+      sixtyOneToNinetyCents
+      overNinetyCents
+      unappliedCreditCents
+      totalCents
+    }
+    agents {
+      agentId
+      agentName
+      openItemCount
+      oldestDueDate
+      buckets {
+        currentCents
+        oneToThirtyCents
+        thirtyOneToSixtyCents
+        sixtyOneToNinetyCents
+        overNinetyCents
+        unappliedCreditCents
+        totalCents
+      }
+    }
+    defaultedDueDateCount
+    intercompany {
+      eventId
+      entityId
+      agentId
+      occurredOn
+      documentNumber
+      description
+      originalCents
+      settledCents
+      openCents
+      currency
+      dueDate
+      dueDateBasis
+      daysPastDue
+      bucket
+    }
+    pairs {
+      creditorEntityId
+      debtorEntityId
+      receivableCents
+      payableCents
+      differenceCents
+    }
+    tieOuts {
+      entityId
+      accounts {
+        elementId
+        code
+        name
+      }
+      controlBalanceCents
+      openItemsCents
+      differenceCents
+    }
+  }
+}
