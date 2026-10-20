@@ -110,6 +110,7 @@ from .create_checkout_request import CreateCheckoutRequest
 from .create_checkout_request_resource_config import CreateCheckoutRequestResourceConfig
 from .create_connection_request import CreateConnectionRequest
 from .create_connection_request_provider import CreateConnectionRequestProvider
+from .create_dimension_request import CreateDimensionRequest
 from .create_document_upload_op import CreateDocumentUploadOp
 from .create_document_upload_op_content_type import CreateDocumentUploadOpContentType
 from .create_entity_request import CreateEntityRequest
@@ -229,6 +230,7 @@ from .detailed_transactions_response_date_range import (
 )
 from .detailed_transactions_response_summary import DetailedTransactionsResponseSummary
 from .dimension import Dimension
+from .dimension_response import DimensionResponse
 from .dimension_type import DimensionType
 from .discharge_allocation import DischargeAllocation
 from .disclosures_request import DisclosuresRequest
@@ -388,6 +390,7 @@ from .invitation_preview_response import InvitationPreviewResponse
 from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
+from .journal_entry_line_dimensions import JournalEntryLineDimensions
 from .journal_entry_line_flow import JournalEntryLineFlow
 from .journal_entry_line_item_input import JournalEntryLineItemInput
 from .journal_entry_line_item_input_metadata_type_0 import (
@@ -580,6 +583,10 @@ from .operation_envelope_describe_filing_response import (
 )
 from .operation_envelope_describe_filing_response_status import (
   OperationEnvelopeDescribeFilingResponseStatus,
+)
+from .operation_envelope_dimension_response import OperationEnvelopeDimensionResponse
+from .operation_envelope_dimension_response_status import (
+  OperationEnvelopeDimensionResponseStatus,
 )
 from .operation_envelope_disclosures_response import (
   OperationEnvelopeDisclosuresResponse,
@@ -1052,6 +1059,9 @@ from .sso_complete_request import SSOCompleteRequest
 from .sso_exchange_request import SSOExchangeRequest
 from .sso_exchange_response import SSOExchangeResponse
 from .sso_token_response import SSOTokenResponse
+from .statement_dimension import StatementDimension
+from .statement_dimension_column import StatementDimensionColumn
+from .statement_dimension_response import StatementDimensionResponse
 from .statement_mechanics import StatementMechanics
 from .storage_item import StorageItem
 from .storage_limits import StorageLimits
@@ -1135,6 +1145,7 @@ from .update_agent_request_classification_mode_type_0 import (
 )
 from .update_agent_request_metadata_patch import UpdateAgentRequestMetadataPatch
 from .update_api_key_request import UpdateAPIKeyRequest
+from .update_dimension_request import UpdateDimensionRequest
 from .update_entity_request import UpdateEntityRequest
 from .update_entity_request_consolidation_method_type_0 import (
   UpdateEntityRequestConsolidationMethodType0,
@@ -1312,6 +1323,7 @@ __all__ = (
   "CreateCheckoutRequestResourceConfig",
   "CreateConnectionRequest",
   "CreateConnectionRequestProvider",
+  "CreateDimensionRequest",
   "CreateDocumentUploadOp",
   "CreateDocumentUploadOpContentType",
   "CreateEntityRequest",
@@ -1405,6 +1417,7 @@ __all__ = (
   "DetailedTransactionsResponseDateRange",
   "DetailedTransactionsResponseSummary",
   "Dimension",
+  "DimensionResponse",
   "DimensionType",
   "DischargeAllocation",
   "DisclosuresRequest",
@@ -1526,6 +1539,7 @@ __all__ = (
   "Invoice",
   "InvoiceLineItem",
   "InvoicesResponse",
+  "JournalEntryLineDimensions",
   "JournalEntryLineFlow",
   "JournalEntryLineItemInput",
   "JournalEntryLineItemInputMetadataType0",
@@ -1633,6 +1647,8 @@ __all__ = (
   "OperationEnvelopeDeleteTaxonomyBlockResponseStatus",
   "OperationEnvelopeDescribeFilingResponse",
   "OperationEnvelopeDescribeFilingResponseStatus",
+  "OperationEnvelopeDimensionResponse",
+  "OperationEnvelopeDimensionResponseStatus",
   "OperationEnvelopeDisclosuresResponse",
   "OperationEnvelopeDisclosuresResponseStatus",
   "OperationEnvelopeEntityTaxonomyResponse",
@@ -1910,6 +1926,9 @@ __all__ = (
   "SSOExchangeRequest",
   "SSOExchangeResponse",
   "SSOTokenResponse",
+  "StatementDimension",
+  "StatementDimensionColumn",
+  "StatementDimensionResponse",
   "StatementMechanics",
   "StorageItem",
   "StorageLimits",
@@ -1969,6 +1988,7 @@ __all__ = (
   "UpdateAgentRequestClassificationModeType0",
   "UpdateAgentRequestMetadataPatch",
   "UpdateAPIKeyRequest",
+  "UpdateDimensionRequest",
   "UpdateEntityRequest",
   "UpdateEntityRequestConsolidationMethodType0",
   "UpdateEntityRequestEntityRoleType0",

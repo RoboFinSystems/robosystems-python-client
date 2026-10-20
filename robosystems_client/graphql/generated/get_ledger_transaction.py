@@ -50,8 +50,17 @@ class GetLedgerTransactionTransactionEntriesLineItems(BaseModel):
   credit_amount: float = Field(alias="creditAmount")
   description: Optional[str]
   line_order: int = Field(alias="lineOrder")
+  flow_qname: Optional[str] = Field(alias="flowQname")
+  dimensions: list["GetLedgerTransactionTransactionEntriesLineItemsDimensions"]
+
+
+class GetLedgerTransactionTransactionEntriesLineItemsDimensions(BaseModel):
+  id: str
+  dimension_type: str = Field(alias="dimensionType")
+  name: str
 
 
 GetLedgerTransaction.model_rebuild()
 GetLedgerTransactionTransaction.model_rebuild()
 GetLedgerTransactionTransactionEntries.model_rebuild()
+GetLedgerTransactionTransactionEntriesLineItems.model_rebuild()

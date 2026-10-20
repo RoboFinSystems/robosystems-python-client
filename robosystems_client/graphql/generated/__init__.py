@@ -197,6 +197,7 @@ from .get_ledger_transaction import (
   GetLedgerTransactionTransaction,
   GetLedgerTransactionTransactionEntries,
   GetLedgerTransactionTransactionEntriesLineItems,
+  GetLedgerTransactionTransactionEntriesLineItemsDimensions,
 )
 from .get_ledger_trial_balance import (
   GetLedgerTrialBalance,
@@ -292,6 +293,11 @@ from .list_ledger_blocked_source_graphs import (
   ListLedgerBlockedSourceGraphsBlockedSourceGraphsBlockedSourceGraphs,
   ListLedgerBlockedSourceGraphsBlockedSourceGraphsPagination,
 )
+from .list_ledger_dimensions import (
+  ListLedgerDimensions,
+  ListLedgerDimensionsDimensions,
+  ListLedgerDimensionsDimensionsDimensions,
+)
 from .list_ledger_elements import (
   ListLedgerElements,
   ListLedgerElementsElements,
@@ -308,6 +314,7 @@ from .list_ledger_journal_entries import (
   ListLedgerJournalEntriesJournalEntries,
   ListLedgerJournalEntriesJournalEntriesEntries,
   ListLedgerJournalEntriesJournalEntriesEntriesLineItems,
+  ListLedgerJournalEntriesJournalEntriesEntriesLineItemsDimensions,
   ListLedgerJournalEntriesJournalEntriesPagination,
 )
 from .list_ledger_mappings import (
@@ -426,6 +433,7 @@ from .operations import (
   LIST_LEDGER_AGENTS_GQL,
   LIST_LEDGER_BANK_ACCOUNTS_GQL,
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
+  LIST_LEDGER_DIMENSIONS_GQL,
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
   LIST_LEDGER_EVENT_BLOCKS_GQL,
@@ -640,6 +648,7 @@ __all__ = [
   "GetLedgerTransactionTransaction",
   "GetLedgerTransactionTransactionEntries",
   "GetLedgerTransactionTransactionEntriesLineItems",
+  "GetLedgerTransactionTransactionEntriesLineItemsDimensions",
   "GetLedgerTrialBalance",
   "GetLedgerTrialBalanceTrialBalance",
   "GetLedgerTrialBalanceTrialBalanceRows",
@@ -673,6 +682,7 @@ __all__ = [
   "LIST_LEDGER_AGENTS_GQL",
   "LIST_LEDGER_BANK_ACCOUNTS_GQL",
   "LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL",
+  "LIST_LEDGER_DIMENSIONS_GQL",
   "LIST_LEDGER_ELEMENTS_GQL",
   "LIST_LEDGER_ENTITIES_GQL",
   "LIST_LEDGER_EVENT_BLOCKS_GQL",
@@ -739,6 +749,9 @@ __all__ = [
   "ListLedgerBlockedSourceGraphsBlockedSourceGraphs",
   "ListLedgerBlockedSourceGraphsBlockedSourceGraphsBlockedSourceGraphs",
   "ListLedgerBlockedSourceGraphsBlockedSourceGraphsPagination",
+  "ListLedgerDimensions",
+  "ListLedgerDimensionsDimensions",
+  "ListLedgerDimensionsDimensionsDimensions",
   "ListLedgerElements",
   "ListLedgerElementsElements",
   "ListLedgerElementsElementsElements",
@@ -751,6 +764,7 @@ __all__ = [
   "ListLedgerJournalEntriesJournalEntries",
   "ListLedgerJournalEntriesJournalEntriesEntries",
   "ListLedgerJournalEntriesJournalEntriesEntriesLineItems",
+  "ListLedgerJournalEntriesJournalEntriesEntriesLineItemsDimensions",
   "ListLedgerJournalEntriesJournalEntriesPagination",
   "ListLedgerMappings",
   "ListLedgerMappingsMappings",

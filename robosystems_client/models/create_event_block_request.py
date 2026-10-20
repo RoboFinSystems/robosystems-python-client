@@ -74,8 +74,8 @@ class CreateEventBlockRequest:
       metadata (CreateEventBlockRequestMetadata | Unset): Free-form payload, opaque to the event surface. When
           `apply_handlers=True`, the matched handler's metadata schema validates this dict — required keys depend on the
           handler registered for `event_type`. Use `preview-event-block` to discover the expected shape without writing.
-      dimension_ids (list[str] | Unset): IDs of dimension members tagging this event (e.g. department, fund, project).
-          Propagate to the GL entries produced by the handler.
+      dimension_ids (list[str] | Unset): Management dimension members tagging this event (department, class, location,
+          project), one per axis. Every line its handler writes carries them on the axes the line does not tag itself.
       obligated_by_event_id (None | str | Unset): Forward-materialization link: the event that scheduled or obligated
           this one (e.g. depreciation entries point at the asset_acquired event).
       discharges_event_id (None | str | Unset): Settlement link: the obligation this event discharges (e.g.

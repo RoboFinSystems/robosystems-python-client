@@ -37,6 +37,9 @@ class JournalEntryLineItemInput:
               counts on its own, cash-effect signed (a credit is an inflow), so an elimination offsets the flow a member's
               line produced, and a tag does not spread to the other side. Refused when it is not a row of the entity's cash
               flow statement.
+          dimension_ids (list[str] | None | Unset): The management dimension members this line carries (department, class,
+              location, project), by id from `dimensions`; at most one per axis. An untagged line is read as the axis's
+              Unallocated.
           metadata (JournalEntryLineItemInputMetadataType0 | None | Unset): Optional per-line metadata stamped on
               `LineItem.metadata_`. Used to carry source-system fields the standard columns don't cover — e.g. an external
               flow-tag code that drives rollforward attribution (`transaction_description_code`), an external memo, or a cost-
@@ -49,6 +52,7 @@ class JournalEntryLineItemInput:
   credit_amount: int | Unset = 0
   description: None | str | Unset = UNSET
   flow_qname: None | str | Unset = UNSET
+  dimension_ids: list[str] | None | Unset = UNSET
   metadata: JournalEntryLineItemInputMetadataType0 | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -75,6 +79,15 @@ class JournalEntryLineItemInput:
     else:
       flow_qname = self.flow_qname
 
+    dimension_ids: list[str] | None | Unset
+    if isinstance(self.dimension_ids, Unset):
+      dimension_ids = UNSET
+    elif isinstance(self.dimension_ids, list):
+      dimension_ids = self.dimension_ids
+
+    else:
+      dimension_ids = self.dimension_ids
+
     metadata: dict[str, Any] | None | Unset
     if isinstance(self.metadata, Unset):
       metadata = UNSET
@@ -98,6 +111,8 @@ class JournalEntryLineItemInput:
       field_dict["description"] = description
     if flow_qname is not UNSET:
       field_dict["flow_qname"] = flow_qname
+    if dimension_ids is not UNSET:
+      field_dict["dimension_ids"] = dimension_ids
     if metadata is not UNSET:
       field_dict["metadata"] = metadata
 
@@ -134,6 +149,23 @@ class JournalEntryLineItemInput:
 
     flow_qname = _parse_flow_qname(d.pop("flow_qname", UNSET))
 
+    def _parse_dimension_ids(data: object) -> list[str] | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, list):
+          raise TypeError()
+        dimension_ids_type_0 = cast(list[str], data)
+
+        return dimension_ids_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(list[str] | None | Unset, data)
+
+    dimension_ids = _parse_dimension_ids(d.pop("dimension_ids", UNSET))
+
     def _parse_metadata(
       data: object,
     ) -> JournalEntryLineItemInputMetadataType0 | None | Unset:
@@ -159,6 +191,7 @@ class JournalEntryLineItemInput:
       credit_amount=credit_amount,
       description=description,
       flow_qname=flow_qname,
+      dimension_ids=dimension_ids,
       metadata=metadata,
     )
 

@@ -49,6 +49,7 @@ from .list_ledger_accounts import ListLedgerAccounts
 from .list_ledger_agents import ListLedgerAgents
 from .list_ledger_bank_accounts import ListLedgerBankAccounts
 from .list_ledger_blocked_source_graphs import ListLedgerBlockedSourceGraphs
+from .list_ledger_dimensions import ListLedgerDimensions
 from .list_ledger_elements import ListLedgerElements
 from .list_ledger_entities import ListLedgerEntities
 from .list_ledger_event_blocks import ListLedgerEventBlocks
@@ -114,6 +115,7 @@ from .operations import (
   LIST_LEDGER_AGENTS_GQL,
   LIST_LEDGER_BANK_ACCOUNTS_GQL,
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
+  LIST_LEDGER_DIMENSIONS_GQL,
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
   LIST_LEDGER_EVENT_BLOCKS_GQL,
@@ -652,12 +654,16 @@ class Client(BaseClient):
     start_date: Union[Optional[str], UnsetType] = UNSET,
     end_date: Union[Optional[str], UnsetType] = UNSET,
     entity_id: Union[Optional[str], UnsetType] = UNSET,
+    dimension_type: Union[Optional[str], UnsetType] = UNSET,
+    dimension_member_id: Union[Optional[str], UnsetType] = UNSET,
     **kwargs: Any,
   ) -> GetLedgerTrialBalance:
     variables: dict[str, object] = {
       "startDate": start_date,
       "endDate": end_date,
       "entityId": entity_id,
+      "dimensionType": dimension_type,
+      "dimensionMemberId": dimension_member_id,
     }
     response = self.execute(
       query=GET_LEDGER_TRIAL_BALANCE_GQL,
@@ -808,6 +814,25 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListLedgerBlockedSourceGraphs.model_validate(data)
+
+  def list_ledger_dimensions(
+    self,
+    include_inactive: bool,
+    dimension_type: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> ListLedgerDimensions:
+    variables: dict[str, object] = {
+      "dimensionType": dimension_type,
+      "includeInactive": include_inactive,
+    }
+    response = self.execute(
+      query=LIST_LEDGER_DIMENSIONS_GQL,
+      operation_name="ListLedgerDimensions",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListLedgerDimensions.model_validate(data)
 
   def list_ledger_elements(
     self,

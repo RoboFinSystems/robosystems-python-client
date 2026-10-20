@@ -81,6 +81,9 @@ from ..api.robo_ledger_information_blocks.compute_metrics import (
 from ..api.robo_ledger_ledger_events.create_agent import (
   sync_detailed as op_create_agent,
 )
+from ..api.robo_ledger_ledger_events.create_dimension import (
+  sync_detailed as op_create_dimension,
+)
 from ..api.robo_ledger_ledger_events.create_event_block import (
   sync_detailed as op_create_event_block,
 )
@@ -110,6 +113,9 @@ from ..api.robo_ledger_ledger_events.accept_suggestions import (
 )
 from ..api.robo_ledger_ledger_events.update_agent import (
   sync_detailed as op_update_agent,
+)
+from ..api.robo_ledger_ledger_events.update_dimension import (
+  sync_detailed as op_update_dimension,
 )
 from ..api.robo_ledger_ledger_events.update_event_block import (
   sync_detailed as op_update_event_block,
@@ -477,6 +483,10 @@ from ..graphql.generated.discharge_candidates import (
   DischargeCandidates,
   DischargeCandidatesDischargeCandidates,
 )
+from ..graphql.generated.list_ledger_dimensions import (
+  ListLedgerDimensions,
+  ListLedgerDimensionsDimensions,
+)
 from ..graphql.generated.open_items_for_agent import (
   OpenItemsForAgent,
   OpenItemsForAgentOpenItemsForAgent,
@@ -512,6 +522,7 @@ from ..graphql.generated.operations import (
   LIST_LEDGER_ACCOUNTS_GQL,
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
   LIST_LEDGER_AGENTS_GQL,
+  LIST_LEDGER_DIMENSIONS_GQL,
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
   LIST_LEDGER_EVENT_BLOCKS_GQL,
@@ -534,6 +545,9 @@ from ..graphql.generated.operations import (
 from ..models.add_publish_list_members_operation import AddPublishListMembersOperation
 from ..models.auto_map_elements_operation import AutoMapElementsOperation
 from ..models.create_agent_request import CreateAgentRequest
+from ..models.create_dimension_request import CreateDimensionRequest
+from ..models.dimension_response import DimensionResponse
+from ..models.update_dimension_request import UpdateDimensionRequest
 from ..models.create_entity_request import CreateEntityRequest
 from ..models.link_bank_account_request import LinkBankAccountRequest
 from ..models.link_bank_account_response import LinkBankAccountResponse
@@ -1261,14 +1275,80 @@ class LedgerClient:
     start_date: str | None = None,
     end_date: str | None = None,
     entity_id: str | None = None,
+    *,
+    dimension_type: str | None = None,
+    dimension_member_id: str | None = None,
   ) -> TrialBalance | None:
-    """Trial balance by raw CoA account."""
+    """Trial balance by raw CoA account. ``dimension_type`` with
+    ``dimension_member_id`` sums one management dimension member's lines
+    (``"unallocated"`` for the lines no member of the axis tags); such a
+    balance need not foot, and says so in ``sliced``."""
     data = self._query(
       graph_id,
       GET_LEDGER_TRIAL_BALANCE_GQL,
-      {"startDate": start_date, "endDate": end_date, "entityId": entity_id},
+      {
+        "startDate": start_date,
+        "endDate": end_date,
+        "entityId": entity_id,
+        "dimensionType": dimension_type,
+        "dimensionMemberId": dimension_member_id,
+      },
     )
     return GetLedgerTrialBalance.model_validate(data).trial_balance
+
+  # ── Management dimensions ─────────────────────────────────────────────
+
+  def get_dimensions(
+    self,
+    graph_id: str,
+    *,
+    dimension_type: str | None = None,
+    include_inactive: bool = False,
+  ) -> ListLedgerDimensionsDimensions | None:
+    """The graph's management dimension members (departments, classes,
+    locations, projects), by axis then name, each with how many lines carry
+    it. ``types`` lists the axes the graph has members on; retired members
+    are left out unless ``include_inactive``."""
+    data = self._query(
+      graph_id,
+      LIST_LEDGER_DIMENSIONS_GQL,
+      {"dimensionType": dimension_type, "includeInactive": include_inactive},
+    )
+    return ListLedgerDimensions.model_validate(data).dimensions
+
+  def create_dimension(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+    idempotency_key: str | None = None,
+  ) -> DimensionResponse:
+    """Add a member to a management dimension (``dimension_type``:
+    department, class, location, project, or an axis of your own). ``value``
+    defaults to a slug of the name; a duplicate key is refused (409)."""
+    request = CreateDimensionRequest.from_dict(body)
+    response = op_create_dimension(
+      graph_id=graph_id,
+      body=request,
+      client=self._get_client(),
+      idempotency_key=idempotency_key if idempotency_key is not None else UNSET,
+    )
+    envelope = self._call_op("Create dimension", response)
+    return self._typed_result("Create dimension", envelope, DimensionResponse)
+
+  def update_dimension(
+    self,
+    graph_id: str,
+    body: dict[str, Any],
+  ) -> DimensionResponse:
+    """Rename a member, or retire it with ``is_active=False``: it stays on the
+    lines that carry it and goes on no new ones. A member synced from
+    QuickBooks keeps QuickBooks's name."""
+    request = UpdateDimensionRequest.from_dict(body)
+    response = op_update_dimension(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Update dimension", response)
+    return self._typed_result("Update dimension", envelope, DimensionResponse)
 
   def get_mapped_trial_balance(
     self,

@@ -48,6 +48,13 @@ class ListLedgerJournalEntriesJournalEntriesEntriesLineItems(BaseModel):
   description: Optional[str]
   line_order: int = Field(alias="lineOrder")
   flow_qname: Optional[str] = Field(alias="flowQname")
+  dimensions: list["ListLedgerJournalEntriesJournalEntriesEntriesLineItemsDimensions"]
+
+
+class ListLedgerJournalEntriesJournalEntriesEntriesLineItemsDimensions(BaseModel):
+  id: str
+  dimension_type: str = Field(alias="dimensionType")
+  name: str
 
 
 class ListLedgerJournalEntriesJournalEntriesPagination(BaseModel):
@@ -60,3 +67,4 @@ class ListLedgerJournalEntriesJournalEntriesPagination(BaseModel):
 ListLedgerJournalEntries.model_rebuild()
 ListLedgerJournalEntriesJournalEntries.model_rebuild()
 ListLedgerJournalEntriesJournalEntriesEntries.model_rebuild()
+ListLedgerJournalEntriesJournalEntriesEntriesLineItems.model_rebuild()
