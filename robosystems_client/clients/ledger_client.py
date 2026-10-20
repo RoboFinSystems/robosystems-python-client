@@ -2043,6 +2043,8 @@ class LedgerClient:
     source: str = "manual",
     idempotency_key: str | None = None,
     entity_id: str | None = None,
+    adjustment_kind: str | None = None,
+    adjusts_entity_id: str | None = None,
   ) -> EventBlockEnvelope:
     """Create a journal entry with balanced line items (DR=CR enforced).
 
@@ -2065,6 +2067,13 @@ class LedgerClient:
     ``entity_id`` names the entity whose books the entry goes into; omitted,
     the group parent's.
 
+    ``adjustment_kind`` tags a consolidating entry in the group's
+    consolidation entity (``elimination_intercompany``, ``manual``, ...), with
+    ``adjusts_entity_id`` the entity whose figures it adjusts (required for
+    every kind but ``manual``). Only that entity's books take one; the
+    consolidation engine counts a tagged entry toward what it already holds,
+    so an elimination posted by hand is not proposed again.
+
     A line dict may carry ``flow_qname``, the cash flow row its cash belongs
     to (a ``qname`` from ``get_flow_candidates``): only for a loan drawn or
     repaid, capital put in or taken out, an asset bought or sold. A flow on
@@ -2082,6 +2091,10 @@ class LedgerClient:
     }
     if transaction_id is not None:
       metadata["transaction_id"] = transaction_id
+    if adjustment_kind is not None:
+      metadata["adjustment_kind"] = adjustment_kind
+    if adjusts_entity_id is not None:
+      metadata["adjusts_entity_id"] = adjusts_entity_id
     body = self._build_event_block_request(
       event_type="journal_entry_recorded",
       event_category="adjustment",
