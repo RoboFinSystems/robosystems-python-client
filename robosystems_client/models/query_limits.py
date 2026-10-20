@@ -14,16 +14,15 @@ class QueryLimits:
   """Query operation limits.
 
   Attributes:
-      max_timeout_seconds (int): Maximum query timeout in seconds
-      chunk_size (int): Maximum chunk size for result streaming
-      max_rows_per_query (int): Maximum rows returned per query
-      concurrent_queries (int): Maximum concurrent queries allowed
+      max_timeout_seconds (int): Per-query time ceiling the graph engine enforces, in seconds
+      chunk_size (int): Default rows per streamed chunk (a request may set chunk_size, 10-10,000)
+      max_rows_per_query (int): Rows a non-streaming Cypher query returns before it stops (the response sets
+          `truncated`); a streamed query returns up to 1,000,000
   """
 
   max_timeout_seconds: int
   chunk_size: int
   max_rows_per_query: int
-  concurrent_queries: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -33,8 +32,6 @@ class QueryLimits:
 
     max_rows_per_query = self.max_rows_per_query
 
-    concurrent_queries = self.concurrent_queries
-
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -42,7 +39,6 @@ class QueryLimits:
         "max_timeout_seconds": max_timeout_seconds,
         "chunk_size": chunk_size,
         "max_rows_per_query": max_rows_per_query,
-        "concurrent_queries": concurrent_queries,
       }
     )
 
@@ -57,13 +53,10 @@ class QueryLimits:
 
     max_rows_per_query = d.pop("max_rows_per_query")
 
-    concurrent_queries = d.pop("concurrent_queries")
-
     query_limits = cls(
       max_timeout_seconds=max_timeout_seconds,
       chunk_size=chunk_size,
       max_rows_per_query=max_rows_per_query,
-      concurrent_queries=concurrent_queries,
     )
 
     query_limits.additional_properties = d

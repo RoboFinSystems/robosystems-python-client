@@ -21,7 +21,7 @@ class GraphTierLimits:
   Attributes:
       monthly_credits (int): Monthly credit allocation
       max_subgraphs (int | None): Maximum subgraphs (null for unlimited)
-      copy_operations (GraphTierCopyOperations): Copy operation limits for a tier.
+      copy_operations (GraphTierCopyOperations): File upload limits for a tier.
       backup (GraphTierBackup): Backup configuration for a tier.
   """
 

@@ -33,11 +33,11 @@ class GraphLimitsResponse:
       subscription_tier (str): Rate-limit tier enforced for requests to this graph
       graph_tier (str): Graph's database tier
       is_shared_repository (bool): Whether this is a shared repository
-      storage (StorageLimits): Storage limits information.
       queries (QueryLimits): Query operation limits.
-      copy_operations (CopyOperationLimits): Copy/ingestion operation limits.
-      backups (BackupLimits): Backup operation limits.
       rate_limits (RateLimits): API rate limits.
+      storage (None | StorageLimits | Unset): Storage limits and usage (user graphs only)
+      copy_operations (CopyOperationLimits | None | Unset): File upload limits (user graphs only)
+      backups (BackupLimits | None | Unset): Backup operation limits (user graphs only)
       credits_ (CreditLimits | None | Unset): AI credit limits (if applicable)
       documents (DocumentLimits | None | Unset): Knowledge-base document usage and tier cap (user graphs only)
       subgraphs (None | SubgraphLimits | Unset): Subgraph count and tier cap (parent user graphs only)
@@ -49,11 +49,11 @@ class GraphLimitsResponse:
   subscription_tier: str
   graph_tier: str
   is_shared_repository: bool
-  storage: StorageLimits
   queries: QueryLimits
-  copy_operations: CopyOperationLimits
-  backups: BackupLimits
   rate_limits: RateLimits
+  storage: None | StorageLimits | Unset = UNSET
+  copy_operations: CopyOperationLimits | None | Unset = UNSET
+  backups: BackupLimits | None | Unset = UNSET
   credits_: CreditLimits | None | Unset = UNSET
   documents: DocumentLimits | None | Unset = UNSET
   subgraphs: None | SubgraphLimits | Unset = UNSET
@@ -62,10 +62,13 @@ class GraphLimitsResponse:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.backup_limits import BackupLimits
     from ..models.content_limits import ContentLimits
+    from ..models.copy_operation_limits import CopyOperationLimits
     from ..models.credit_limits import CreditLimits
     from ..models.document_limits import DocumentLimits
     from ..models.instance_usage import InstanceUsage
+    from ..models.storage_limits import StorageLimits
     from ..models.subgraph_limits import SubgraphLimits
 
     graph_id = self.graph_id
@@ -76,15 +79,33 @@ class GraphLimitsResponse:
 
     is_shared_repository = self.is_shared_repository
 
-    storage = self.storage.to_dict()
-
     queries = self.queries.to_dict()
 
-    copy_operations = self.copy_operations.to_dict()
-
-    backups = self.backups.to_dict()
-
     rate_limits = self.rate_limits.to_dict()
+
+    storage: dict[str, Any] | None | Unset
+    if isinstance(self.storage, Unset):
+      storage = UNSET
+    elif isinstance(self.storage, StorageLimits):
+      storage = self.storage.to_dict()
+    else:
+      storage = self.storage
+
+    copy_operations: dict[str, Any] | None | Unset
+    if isinstance(self.copy_operations, Unset):
+      copy_operations = UNSET
+    elif isinstance(self.copy_operations, CopyOperationLimits):
+      copy_operations = self.copy_operations.to_dict()
+    else:
+      copy_operations = self.copy_operations
+
+    backups: dict[str, Any] | None | Unset
+    if isinstance(self.backups, Unset):
+      backups = UNSET
+    elif isinstance(self.backups, BackupLimits):
+      backups = self.backups.to_dict()
+    else:
+      backups = self.backups
 
     credits_: dict[str, Any] | None | Unset
     if isinstance(self.credits_, Unset):
@@ -134,13 +155,16 @@ class GraphLimitsResponse:
         "subscription_tier": subscription_tier,
         "graph_tier": graph_tier,
         "is_shared_repository": is_shared_repository,
-        "storage": storage,
         "queries": queries,
-        "copy_operations": copy_operations,
-        "backups": backups,
         "rate_limits": rate_limits,
       }
     )
+    if storage is not UNSET:
+      field_dict["storage"] = storage
+    if copy_operations is not UNSET:
+      field_dict["copy_operations"] = copy_operations
+    if backups is not UNSET:
+      field_dict["backups"] = backups
     if credits_ is not UNSET:
       field_dict["credits"] = credits_
     if documents is not UNSET:
@@ -176,15 +200,60 @@ class GraphLimitsResponse:
 
     is_shared_repository = d.pop("is_shared_repository")
 
-    storage = StorageLimits.from_dict(d.pop("storage"))
-
     queries = QueryLimits.from_dict(d.pop("queries"))
 
-    copy_operations = CopyOperationLimits.from_dict(d.pop("copy_operations"))
-
-    backups = BackupLimits.from_dict(d.pop("backups"))
-
     rate_limits = RateLimits.from_dict(d.pop("rate_limits"))
+
+    def _parse_storage(data: object) -> None | StorageLimits | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        storage_type_0 = StorageLimits.from_dict(data)
+
+        return storage_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | StorageLimits | Unset, data)
+
+    storage = _parse_storage(d.pop("storage", UNSET))
+
+    def _parse_copy_operations(data: object) -> CopyOperationLimits | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        copy_operations_type_0 = CopyOperationLimits.from_dict(data)
+
+        return copy_operations_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(CopyOperationLimits | None | Unset, data)
+
+    copy_operations = _parse_copy_operations(d.pop("copy_operations", UNSET))
+
+    def _parse_backups(data: object) -> BackupLimits | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        backups_type_0 = BackupLimits.from_dict(data)
+
+        return backups_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(BackupLimits | None | Unset, data)
+
+    backups = _parse_backups(d.pop("backups", UNSET))
 
     def _parse_credits_(data: object) -> CreditLimits | None | Unset:
       if data is None:
@@ -276,11 +345,11 @@ class GraphLimitsResponse:
       subscription_tier=subscription_tier,
       graph_tier=graph_tier,
       is_shared_repository=is_shared_repository,
-      storage=storage,
       queries=queries,
+      rate_limits=rate_limits,
+      storage=storage,
       copy_operations=copy_operations,
       backups=backups,
-      rate_limits=rate_limits,
       credits_=credits_,
       documents=documents,
       subgraphs=subgraphs,

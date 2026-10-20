@@ -14,19 +14,15 @@ class GraphTierBackup:
   """Backup configuration for a tier.
 
   Attributes:
-      max_backup_size_gb (int): Maximum backup size in GB
       backup_retention_days (int): Backup retention period in days
       max_backups_per_day (int): Maximum backups per day
   """
 
-  max_backup_size_gb: int
   backup_retention_days: int
   max_backups_per_day: int
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    max_backup_size_gb = self.max_backup_size_gb
-
     backup_retention_days = self.backup_retention_days
 
     max_backups_per_day = self.max_backups_per_day
@@ -35,7 +31,6 @@ class GraphTierBackup:
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "max_backup_size_gb": max_backup_size_gb,
         "backup_retention_days": backup_retention_days,
         "max_backups_per_day": max_backups_per_day,
       }
@@ -46,14 +41,11 @@ class GraphTierBackup:
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    max_backup_size_gb = d.pop("max_backup_size_gb")
-
     backup_retention_days = d.pop("backup_retention_days")
 
     max_backups_per_day = d.pop("max_backups_per_day")
 
     graph_tier_backup = cls(
-      max_backup_size_gb=max_backup_size_gb,
       backup_retention_days=backup_retention_days,
       max_backups_per_day=max_backups_per_day,
     )

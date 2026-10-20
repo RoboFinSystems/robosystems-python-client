@@ -38,6 +38,9 @@ class ConsolidationWorksheetResponse:
           the sum. A member outside its membership interval for the period has no column.
       rows (list[WorksheetRow]): The union of every column's lines in the parent's Style order; a line zero in every
           column is left out.
+      omitted_periods (list[PeriodSpec] | Unset): Windows the worksheet does not total, as live-financial-statement
+          leaves them out: before a summed entity's books begin, or, on a cash flow or equity statement, one a member
+          joined or left the group within. When it names `period`, `rows` is empty.
       validation (None | Unset | ValidationCheckResponse): The guard-rail outcome for the consolidated column, the
           same checks live-financial-statement runs.
       unmapped_entity_ids (list[str] | Unset): Entities with no CoA mapping yet, so with no column.
@@ -51,6 +54,7 @@ class ConsolidationWorksheetResponse:
   period: PeriodSpec
   columns: list[WorksheetColumn]
   rows: list[WorksheetRow]
+  omitted_periods: list[PeriodSpec] | Unset = UNSET
   validation: None | Unset | ValidationCheckResponse = UNSET
   unmapped_entity_ids: list[str] | Unset = UNSET
   unmapped_count: int | Unset = 0
@@ -77,6 +81,13 @@ class ConsolidationWorksheetResponse:
     for rows_item_data in self.rows:
       rows_item = rows_item_data.to_dict()
       rows.append(rows_item)
+
+    omitted_periods: list[dict[str, Any]] | Unset = UNSET
+    if not isinstance(self.omitted_periods, Unset):
+      omitted_periods = []
+      for omitted_periods_item_data in self.omitted_periods:
+        omitted_periods_item = omitted_periods_item_data.to_dict()
+        omitted_periods.append(omitted_periods_item)
 
     validation: dict[str, Any] | None | Unset
     if isinstance(self.validation, Unset):
@@ -106,6 +117,8 @@ class ConsolidationWorksheetResponse:
         "rows": rows,
       }
     )
+    if omitted_periods is not UNSET:
+      field_dict["omitted_periods"] = omitted_periods
     if validation is not UNSET:
       field_dict["validation"] = validation
     if unmapped_entity_ids is not UNSET:
@@ -147,6 +160,15 @@ class ConsolidationWorksheetResponse:
 
       rows.append(rows_item)
 
+    _omitted_periods = d.pop("omitted_periods", UNSET)
+    omitted_periods: list[PeriodSpec] | Unset = UNSET
+    if _omitted_periods is not UNSET:
+      omitted_periods = []
+      for omitted_periods_item_data in _omitted_periods:
+        omitted_periods_item = PeriodSpec.from_dict(omitted_periods_item_data)
+
+        omitted_periods.append(omitted_periods_item)
+
     def _parse_validation(data: object) -> None | Unset | ValidationCheckResponse:
       if data is None:
         return data
@@ -177,6 +199,7 @@ class ConsolidationWorksheetResponse:
       period=period,
       columns=columns,
       rows=rows,
+      omitted_periods=omitted_periods,
       validation=validation,
       unmapped_entity_ids=unmapped_entity_ids,
       unmapped_count=unmapped_count,

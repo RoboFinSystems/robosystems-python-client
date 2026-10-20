@@ -23,7 +23,7 @@ class InstanceUsage:
   Covers the parent graph, all subgraphs, DuckDB staging, and vector indexes.
 
       Attributes:
-          limit_gb (float): Soft storage limit for this tier in GB
+          limit_gb (float): Instance storage cap in GB; ingest and materialize are refused above it
           status (str): Instance status: 'healthy' (<80%), 'approaching' (80-100%), 'over_limit' (>100%)
           node_count (int | None | Unset): Current node count (informational, no limit enforced)
           total_storage_gb (float | None | Unset): Total storage used across all databases in GB

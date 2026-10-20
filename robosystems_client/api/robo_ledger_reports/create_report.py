@@ -111,7 +111,10 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeReportResponse]:
   """Create Report
 
-   Generates report facts from the ledger and marks the report as published.
+   Generates report facts from the ledger and marks the report as published. The report is the entity's
+  whose chart `mapping_id` maps from; made from the consolidation entity's mapping it is the group's
+  consolidated statements: every member summed in full with the consolidating entries, under the group
+  parent's Reporting Style. A consolidated column cannot span a member joining or leaving the group.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -165,7 +168,10 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeReportResponse | None:
   """Create Report
 
-   Generates report facts from the ledger and marks the report as published.
+   Generates report facts from the ledger and marks the report as published. The report is the entity's
+  whose chart `mapping_id` maps from; made from the consolidation entity's mapping it is the group's
+  consolidated statements: every member summed in full with the consolidating entries, under the group
+  parent's Reporting Style. A consolidated column cannot span a member joining or leaving the group.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -214,7 +220,10 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeReportResponse]:
   """Create Report
 
-   Generates report facts from the ledger and marks the report as published.
+   Generates report facts from the ledger and marks the report as published. The report is the entity's
+  whose chart `mapping_id` maps from; made from the consolidation entity's mapping it is the group's
+  consolidated statements: every member summed in full with the consolidating entries, under the group
+  parent's Reporting Style. A consolidated column cannot span a member joining or leaving the group.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -266,7 +275,10 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeReportResponse | None:
   """Create Report
 
-   Generates report facts from the ledger and marks the report as published.
+   Generates report facts from the ledger and marks the report as published. The report is the entity's
+  whose chart `mapping_id` maps from; made from the consolidation entity's mapping it is the group's
+  consolidated statements: every member summed in full with the consolidating entries, under the group
+  parent's Reporting Style. A consolidated column cannot span a member joining or leaving the group.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="BackupLimits")
 
@@ -14,48 +16,62 @@ class BackupLimits:
   """Backup operation limits.
 
   Attributes:
-      max_backup_size_gb (float): Maximum backup size in GB
       backup_retention_days (int): Backup retention period in days
-      max_backups_per_day (int): Maximum backups per day
+      max_backups_per_day (int): Maximum user-initiated backups per day (-1 for unlimited)
+      max_downloads_per_month (int | None | Unset): Backup downloads allowed per user per calendar month (UTC)
   """
 
-  max_backup_size_gb: float
   backup_retention_days: int
   max_backups_per_day: int
+  max_downloads_per_month: int | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
-    max_backup_size_gb = self.max_backup_size_gb
-
     backup_retention_days = self.backup_retention_days
 
     max_backups_per_day = self.max_backups_per_day
+
+    max_downloads_per_month: int | None | Unset
+    if isinstance(self.max_downloads_per_month, Unset):
+      max_downloads_per_month = UNSET
+    else:
+      max_downloads_per_month = self.max_downloads_per_month
 
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
       {
-        "max_backup_size_gb": max_backup_size_gb,
         "backup_retention_days": backup_retention_days,
         "max_backups_per_day": max_backups_per_day,
       }
     )
+    if max_downloads_per_month is not UNSET:
+      field_dict["max_downloads_per_month"] = max_downloads_per_month
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     d = dict(src_dict)
-    max_backup_size_gb = d.pop("max_backup_size_gb")
-
     backup_retention_days = d.pop("backup_retention_days")
 
     max_backups_per_day = d.pop("max_backups_per_day")
 
+    def _parse_max_downloads_per_month(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    max_downloads_per_month = _parse_max_downloads_per_month(
+      d.pop("max_downloads_per_month", UNSET)
+    )
+
     backup_limits = cls(
-      max_backup_size_gb=max_backup_size_gb,
       backup_retention_days=backup_retention_days,
       max_backups_per_day=max_backups_per_day,
+      max_downloads_per_month=max_downloads_per_month,
     )
 
     backup_limits.additional_properties = d

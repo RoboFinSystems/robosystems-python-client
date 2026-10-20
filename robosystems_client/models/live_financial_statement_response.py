@@ -38,7 +38,8 @@ class LiveFinancialStatementResponse:
           entity comes last.
       omitted_periods (list[PeriodSpec] | Unset): Columns left out because they reach back before the books begin: on
           books that start from an opening balance, a flow statement column that starts before the first day it covers, or
-          a balance sheet dated before it. They would show a partial figure, not the months before the books.
+          a balance sheet dated before it. They would show a partial figure, not the months before the books. On a group
+          read, also a cash flow or equity statement column a member joined or left the group within.
       validation (None | Unset | ValidationCheckResponse): Guard-rail outcome for the rendered columns — accounting
           equation, net-income equation, totals footing, operating-plug size. Null only when no structure rendered.
       unmapped_count (int | Unset):  Default: 0.
