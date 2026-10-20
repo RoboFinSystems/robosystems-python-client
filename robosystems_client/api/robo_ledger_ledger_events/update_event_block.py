@@ -126,7 +126,10 @@ def sync_detailed(
   patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
   gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
   posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
-  string clears it.
+  string clears it. A payment or bank line records the invoices or bills it settles with
+  `discharge_allocations` (positive cents per document, together at most its amount) or one
+  `discharges_event_id`; each is checked: an invoice for money in, a bill for money out, on its own
+  entity, not voided.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -182,7 +185,10 @@ def sync(
   patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
   gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
   posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
-  string clears it.
+  string clears it. A payment or bank line records the invoices or bills it settles with
+  `discharge_allocations` (positive cents per document, together at most its amount) or one
+  `discharges_event_id`; each is checked: an invoice for money in, a bill for money out, on its own
+  entity, not voided.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -233,7 +239,10 @@ async def asyncio_detailed(
   patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
   gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
   posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
-  string clears it.
+  string clears it. A payment or bank line records the invoices or bills it settles with
+  `discharge_allocations` (positive cents per document, together at most its amount) or one
+  `discharges_event_id`; each is checked: an invoice for money in, a bill for money out, on its own
+  entity, not voided.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -287,7 +296,10 @@ async def asyncio(
   patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
   gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
   posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
-  string clears it.
+  string clears it. A payment or bank line records the invoices or bills it settles with
+  `discharge_allocations` (positive cents per document, together at most its amount) or one
+  `discharges_event_id`; each is checked: an invoice for money in, a bill for money out, on its own
+  entity, not voided.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

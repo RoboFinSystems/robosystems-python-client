@@ -128,9 +128,8 @@ type Query {
   """
   One entity's open AR — total + counterparty count + open invoice count.
   
-  Derived from the event duality chain: sum of unsettled
-  `invoice_issued` / `sales_receipt_recorded` amounts minus
-  discharges pointed at them.
+  Derived from the event duality chain: unsettled `invoice_issued`
+  amounts less the discharges pointed at them.
   """
   openReceivables(
     """The entity whose books to read. Omit for the group parent."""
@@ -154,6 +153,69 @@ type Query {
     """The entity whose books to read. Omit for the group parent."""
     entityId: String = null
   ): [OpenBalanceByAgent!]!
+
+  """
+  Receivables aged at a date: bucket totals, a row per customer, and each
+  entity's tie-out to its receivables accounts.
+  """
+  agedReceivables(
+    """The date to age at. Omit for today."""
+    asOf: Date = null
+
+    """
+    The entity whose books to read, or the group parent for a group. Omit for the group parent.
+    """
+    entityId: String = null
+
+    """
+    `entity` for one entity's books, `group` for the parent and the members consolidated in full, intercompany items set apart.
+    """
+    scope: String! = "entity"
+  ): AgedBalances!
+
+  """Payables aged at a date — symmetric to `agedReceivables`."""
+  agedPayables(
+    """The date to age at. Omit for today."""
+    asOf: Date = null
+
+    """
+    The entity whose books to read, or the group parent for a group. Omit for the group parent.
+    """
+    entityId: String = null
+
+    """`entity` or `group`."""
+    scope: String! = "entity"
+  ): AgedBalances!
+
+  """
+  One counterparty's open invoices or bills at a date, oldest first,
+  each with its due date, age and bucket.
+  """
+  openItemsForAgent(
+    """The counterparty."""
+    agentId: String!
+
+    """`receivables` or `payables`."""
+    kind: String!
+
+    """The date the items are open at. Omit for today."""
+    asOf: Date = null
+
+    """The entity whose books to read. Omit for the group parent."""
+    entityId: String = null
+  ): [OpenItem!]!
+
+  """
+  The open invoices or bills a payment or bank line may settle.
+  
+  Its own entity's and counterparty's, open at its date: an exact amount
+  match first, then the oldest due date. A person picks; the commit records
+  the choice with `discharge_allocations`. Null when there is no such event.
+  """
+  dischargeCandidates(
+    """The payment or bank line."""
+    eventId: String!
+  ): DischargeCandidates
 
   """Fetch a single event block by id."""
   eventBlock(
@@ -1716,6 +1778,238 @@ type OpenBalanceAggregate {
   currency: String!
 }
 
+"""
+Receivables or payables aged at a date: bucket totals, a row per
+counterparty, and each entity's tie-out to its control accounts. For a group,
+the items the members owe each other are set apart, since consolidation
+eliminates them.
+"""
+type AgedBalances {
+  """`receivables` or `payables`."""
+  kind: String!
+
+  """The date the items are aged at."""
+  asOf: Date!
+
+  """`entity` or `group`."""
+  scope: String!
+
+  """The entity read, or the group parent for a group."""
+  entityId: String
+
+  """The entities summed: one, or the parent and its full members."""
+  memberEntityIds: [String!]!
+
+  """The totals by age, intercompany items excluded for a group."""
+  buckets: AgingBuckets!
+
+  """A row per counterparty, largest open balance first."""
+  agents: [AgedAgentRow!]!
+
+  """Open items with no due date of their own, aged as due on receipt."""
+  defaultedDueDateCount: Int!
+
+  """For a group: open items with another summed member as counterparty."""
+  intercompany: [OpenItem!]!
+
+  """
+  For a group: each pair of members, both sides of what they owe each other.
+  """
+  pairs: [IntercompanyPair!]!
+
+  """Each summed entity's open items against its control accounts."""
+  tieOuts: [ControlTieOut!]!
+}
+
+"""
+Open amounts by how far past due they are at the as-of date. An
+overpayment is an unapplied credit, never netted into a bucket.
+"""
+type AgingBuckets {
+  """Not yet due."""
+  currentCents: Int!
+
+  """1 to 30 days past due."""
+  oneToThirtyCents: Int!
+
+  """31 to 60 days past due."""
+  thirtyOneToSixtyCents: Int!
+
+  """61 to 90 days past due."""
+  sixtyOneToNinetyCents: Int!
+
+  """More than 90 days past due."""
+  overNinetyCents: Int!
+
+  """Overpayments, negative: credit owed back or still to apply."""
+  unappliedCreditCents: Int!
+
+  """Every bucket and the unapplied credit together."""
+  totalCents: Int!
+}
+
+"""One counterparty's open items, bucketed."""
+type AgedAgentRow {
+  """The counterparty; null when none."""
+  agentId: String
+
+  """The counterparty's name."""
+  agentName: String
+
+  """Its open amounts by age."""
+  buckets: AgingBuckets!
+
+  """Its open invoices or bills."""
+  openItemCount: Int!
+
+  """The earliest due date among its open items."""
+  oldestDueDate: Date
+}
+
+"""
+One open invoice or bill as of a date: what it was for, what has been
+settled against it by then, and what is left.
+"""
+type OpenItem {
+  """The obligation's event id."""
+  eventId: String!
+
+  """The entity whose books hold it."""
+  entityId: String!
+
+  """The counterparty."""
+  agentId: String
+
+  """The date it was issued or received."""
+  occurredOn: Date!
+
+  """The invoice or bill number, where the source has one."""
+  documentNumber: String
+
+  """The event's description."""
+  description: String
+
+  """The obligation's amount."""
+  originalCents: Int!
+
+  """Settled against it on or before the as-of date."""
+  settledCents: Int!
+
+  """
+  What is left: original less settled. Negative when overpaid, an unapplied credit.
+  """
+  openCents: Int!
+
+  """Currency code."""
+  currency: String!
+
+  """
+  When it falls due: the stated due date, else the date it was issued (due on receipt).
+  """
+  dueDate: Date!
+
+  """
+  `stated` when the obligation carries its own due date; `defaulted` when it has none and is read as due on receipt.
+  """
+  dueDateBasis: String!
+
+  """
+  Days from the due date to the as-of date; zero or negative when not yet due.
+  """
+  daysPastDue: Int!
+
+  """
+  The aging bucket: `current`, `one_to_thirty`, `thirty_one_to_sixty`, `sixty_one_to_ninety`, `over_ninety`, or `unapplied_credit` when overpaid.
+  """
+  bucket: String!
+}
+
+"""
+What one group entity says another owes it, beside what that entity says
+it owes; consolidation eliminates both, so a difference is a disagreement.
+"""
+type IntercompanyPair {
+  """The entity owed."""
+  creditorEntityId: String!
+
+  """The entity that owes."""
+  debtorEntityId: String!
+
+  """The creditor's open receivables from the debtor."""
+  receivableCents: Int!
+
+  """The debtor's open payables to the creditor."""
+  payableCents: Int!
+
+  """Receivable less payable; zero when the two books agree."""
+  differenceCents: Int!
+}
+
+"""
+One entity's open items against its receivables or payables accounts at
+the as-of date. The difference is everything that moved the accounts
+without a document behind it, or a document whose entry has not posted:
+never plugged.
+"""
+type ControlTieOut {
+  """The entity whose books are compared."""
+  entityId: String!
+
+  """
+  The control accounts: those mapped to the receivables or payables concept, and QuickBooks' own A/R or A/P accounts.
+  """
+  accounts: [ControlAccount!]!
+
+  """
+  The accounts' posted balance at the as-of date, in their natural sign; null when the entity has no control account.
+  """
+  controlBalanceCents: Int
+
+  """The entity's open items at the as-of date, intercompany included."""
+  openItemsCents: Int!
+
+  """
+  Open items less the control balance; null when there is no control account to compare with.
+  """
+  differenceCents: Int
+}
+
+"""An account the open items are tied out against."""
+type ControlAccount {
+  """The account's element id."""
+  elementId: String!
+
+  """The account code."""
+  code: String
+
+  """The account name."""
+  name: String!
+}
+
+"""The open invoices or bills a payment may settle, best match first."""
+type DischargeCandidates {
+  """The payment or bank line."""
+  eventId: String!
+
+  """
+  `receivables` for money in, `payables` for money out; null when the line has no amount to say which.
+  """
+  kind: String
+
+  """The payment's magnitude."""
+  amountCents: Int!
+
+  """
+  Whether the line is classified to a receivables or payables control account, where a settlement is expected.
+  """
+  classifiedToControl: Boolean!
+
+  """
+  Open items of the same entity and counterparty at the line's date: an exact amount match first, then the oldest due date.
+  """
+  candidates: [OpenItem!]!
+}
+
 type EventBlock {
   id: String!
   eventType: String!
@@ -1724,6 +2018,7 @@ type EventBlock {
   status: String!
   occurredAt: DateTime!
   effectiveAt: DateTime
+  dueDate: Date
   source: String!
   externalId: String
   externalUrl: String
