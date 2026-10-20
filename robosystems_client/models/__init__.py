@@ -437,6 +437,7 @@ from .live_financial_statement_request_scope_type_0 import (
 )
 from .live_financial_statement_response import LiveFinancialStatementResponse
 from .live_statement_fact_row import LiveStatementFactRow
+from .live_statement_fact_row_origin_type_0 import LiveStatementFactRowOriginType0
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .materialize_op import MaterializeOp
@@ -1063,6 +1064,7 @@ from .statement_dimension import StatementDimension
 from .statement_dimension_column import StatementDimensionColumn
 from .statement_dimension_response import StatementDimensionResponse
 from .statement_mechanics import StatementMechanics
+from .statement_row_source import StatementRowSource
 from .storage_item import StorageItem
 from .storage_limits import StorageLimits
 from .storage_summary import StorageSummary
@@ -1576,6 +1578,7 @@ __all__ = (
   "LiveFinancialStatementRequestScopeType0",
   "LiveFinancialStatementResponse",
   "LiveStatementFactRow",
+  "LiveStatementFactRowOriginType0",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "MaterializeOp",
@@ -1930,6 +1933,7 @@ __all__ = (
   "StatementDimensionColumn",
   "StatementDimensionResponse",
   "StatementMechanics",
+  "StatementRowSource",
   "StorageItem",
   "StorageLimits",
   "StorageSummary",

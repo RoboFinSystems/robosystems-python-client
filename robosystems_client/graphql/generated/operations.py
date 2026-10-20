@@ -9,6 +9,7 @@ __all__ = [
   "GET_INVESTOR_PORTFOLIO_BLOCK_GQL",
   "GET_INVESTOR_POSITION_GQL",
   "GET_INVESTOR_SECURITY_GQL",
+  "GET_LEDGER_ACCOUNT_REGISTER_GQL",
   "GET_LEDGER_ACCOUNT_ROLLUPS_GQL",
   "GET_LEDGER_ACCOUNT_TREE_GQL",
   "GET_LEDGER_AGENT_GQL",
@@ -653,6 +654,97 @@ query GetInformationBlock($id: ID!, $scenarioId: String, $series: Boolean! = fal
 }
 """
 
+GET_LEDGER_ACCOUNT_REGISTER_GQL = """
+query GetLedgerAccountRegister($accountId: String!, $startDate: Date, $endDate: Date, $entityId: String, $dimensionType: String, $dimensionMemberId: String, $flowElementId: String, $includeDrafts: Boolean! = false, $after: String, $limit: Int) {
+  accountRegister(
+    accountId: $accountId
+    startDate: $startDate
+    endDate: $endDate
+    entityId: $entityId
+    dimensionType: $dimensionType
+    dimensionMemberId: $dimensionMemberId
+    flowElementId: $flowElementId
+    includeDrafts: $includeDrafts
+    after: $after
+    limit: $limit
+  ) {
+    account {
+      id
+      code
+      name
+      balanceType
+      trait
+      temporary
+    }
+    entityId
+    startDate
+    endDate
+    openingFrom
+    openingBalance
+    totalDebits
+    totalCredits
+    closingBalance
+    lineCount
+    pageOpeningBalance
+    nextCursor
+    sliced
+    draftsTruncated
+    lines {
+      lineId
+      entryId
+      entryNumber
+      postingDate
+      entryType
+      provenance
+      status
+      memo
+      description
+      debit
+      credit
+      balance
+      triggeredByEventId
+      triggeredByEventType
+      reversalOf
+      reversedBy
+      agentId
+      agentName
+      flowElementId
+      dimensions {
+        id
+        dimensionType
+        name
+      }
+    }
+    drafts {
+      lineId
+      entryId
+      entryNumber
+      postingDate
+      entryType
+      provenance
+      status
+      memo
+      description
+      debit
+      credit
+      balance
+      triggeredByEventId
+      triggeredByEventType
+      reversalOf
+      reversedBy
+      agentId
+      agentName
+      flowElementId
+      dimensions {
+        id
+        dimensionType
+        name
+      }
+    }
+  }
+}
+"""
+
 GET_LEDGER_ACCOUNT_ROLLUPS_GQL = """
 query GetLedgerAccountRollups($mappingId: String, $startDate: Date, $endDate: Date, $entityId: String) {
   accountRollups(
@@ -872,6 +964,27 @@ query GetLedgerEventBlock($id: String!) {
     documentId
     createdAt
     createdBy
+    triggeredEntries {
+      id
+      number
+      type
+      status
+      postingDate
+      memo
+      provenance
+      totalDebit
+      totalCredit
+      lineItems {
+        id
+        accountId
+        accountName
+        accountCode
+        debitAmount
+        creditAmount
+        description
+        lineOrder
+      }
+    }
   }
 }
 """
@@ -1911,6 +2024,7 @@ query ListLedgerJournalEntries($startDate: Date, $endDate: Date, $status: String
       sourceStructureId
       sourceStructureName
       triggeredByEventId
+      triggeredByEventType
       reversalOf
       postedAt
       totalDebit

@@ -28,6 +28,7 @@ class ListLedgerJournalEntriesJournalEntriesEntries(BaseModel):
   source_structure_id: Optional[str] = Field(alias="sourceStructureId")
   source_structure_name: Optional[str] = Field(alias="sourceStructureName")
   triggered_by_event_id: Optional[str] = Field(alias="triggeredByEventId")
+  triggered_by_event_type: Optional[str] = Field(alias="triggeredByEventType")
   reversal_of: Optional[str] = Field(alias="reversalOf")
   posted_at: Optional[str] = Field(alias="postedAt")
   total_debit: float = Field(alias="totalDebit")

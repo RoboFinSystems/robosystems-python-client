@@ -23,7 +23,7 @@ query ListLedgerJournalEntries(
     entries {
       id number transactionId type status postingDate memo
       provenance sourceStructureId sourceStructureName
-      triggeredByEventId reversalOf postedAt
+      triggeredByEventId triggeredByEventType reversalOf postedAt
       totalDebit totalCredit balanced
       lineItems {
         id accountId accountName accountCode

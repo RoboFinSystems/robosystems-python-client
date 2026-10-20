@@ -13,6 +13,7 @@ from .get_investor_holdings import GetInvestorHoldings
 from .get_investor_portfolio_block import GetInvestorPortfolioBlock
 from .get_investor_position import GetInvestorPosition
 from .get_investor_security import GetInvestorSecurity
+from .get_ledger_account_register import GetLedgerAccountRegister
 from .get_ledger_account_rollups import GetLedgerAccountRollups
 from .get_ledger_account_tree import GetLedgerAccountTree
 from .get_ledger_agent import GetLedgerAgent
@@ -79,6 +80,7 @@ from .operations import (
   GET_INVESTOR_PORTFOLIO_BLOCK_GQL,
   GET_INVESTOR_POSITION_GQL,
   GET_INVESTOR_SECURITY_GQL,
+  GET_LEDGER_ACCOUNT_REGISTER_GQL,
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
   GET_LEDGER_ACCOUNT_TREE_GQL,
   GET_LEDGER_AGENT_GQL,
@@ -364,6 +366,41 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return GetInformationBlock.model_validate(data)
+
+  def get_ledger_account_register(
+    self,
+    account_id: str,
+    include_drafts: bool,
+    start_date: Union[Optional[str], UnsetType] = UNSET,
+    end_date: Union[Optional[str], UnsetType] = UNSET,
+    entity_id: Union[Optional[str], UnsetType] = UNSET,
+    dimension_type: Union[Optional[str], UnsetType] = UNSET,
+    dimension_member_id: Union[Optional[str], UnsetType] = UNSET,
+    flow_element_id: Union[Optional[str], UnsetType] = UNSET,
+    after: Union[Optional[str], UnsetType] = UNSET,
+    limit: Union[Optional[int], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> GetLedgerAccountRegister:
+    variables: dict[str, object] = {
+      "accountId": account_id,
+      "startDate": start_date,
+      "endDate": end_date,
+      "entityId": entity_id,
+      "dimensionType": dimension_type,
+      "dimensionMemberId": dimension_member_id,
+      "flowElementId": flow_element_id,
+      "includeDrafts": include_drafts,
+      "after": after,
+      "limit": limit,
+    }
+    response = self.execute(
+      query=GET_LEDGER_ACCOUNT_REGISTER_GQL,
+      operation_name="GetLedgerAccountRegister",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return GetLedgerAccountRegister.model_validate(data)
 
   def get_ledger_account_rollups(
     self,

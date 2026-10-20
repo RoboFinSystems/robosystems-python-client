@@ -380,6 +380,12 @@ from ..graphql.generated.get_ledger_transaction import (
 from ..graphql.generated.get_ledger_transaction import (
   GetLedgerTransactionTransaction as LedgerTransaction,
 )
+from ..graphql.generated.get_ledger_account_register import (
+  GetLedgerAccountRegister,
+)
+from ..graphql.generated.get_ledger_account_register import (
+  GetLedgerAccountRegisterAccountRegister as AccountRegister,
+)
 from ..graphql.generated.get_ledger_trial_balance import (
   GetLedgerTrialBalance,
 )
@@ -493,6 +499,7 @@ from ..graphql.generated.open_items_for_agent import (
 )
 from ..graphql.generated.operations import (
   GET_INFORMATION_BLOCK_GQL,
+  GET_LEDGER_ACCOUNT_REGISTER_GQL,
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
   GET_LEDGER_ACCOUNT_TREE_GQL,
   GET_LEDGER_AGENT_GQL,
@@ -1295,6 +1302,44 @@ class LedgerClient:
       },
     )
     return GetLedgerTrialBalance.model_validate(data).trial_balance
+
+  def get_account_register(
+    self,
+    graph_id: str,
+    account_id: str,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    entity_id: str | None = None,
+    *,
+    dimension_type: str | None = None,
+    dimension_member_id: str | None = None,
+    flow_element_id: str | None = None,
+    include_drafts: bool = False,
+    after: str | None = None,
+    limit: int | None = None,
+  ) -> AccountRegister | None:
+    """One entity's posted lines on one account, oldest first, each with the
+    balance it leaves, between an opening and a closing balance that agree
+    with the trial balance. An income or expense account opens at the fiscal
+    year's start. ``after`` takes the last page's ``next_cursor``; a dimension
+    pair or ``flow_element_id`` reads one slice, and says so in ``sliced``."""
+    data = self._query(
+      graph_id,
+      GET_LEDGER_ACCOUNT_REGISTER_GQL,
+      {
+        "accountId": account_id,
+        "startDate": start_date,
+        "endDate": end_date,
+        "entityId": entity_id,
+        "dimensionType": dimension_type,
+        "dimensionMemberId": dimension_member_id,
+        "flowElementId": flow_element_id,
+        "includeDrafts": include_drafts,
+        "after": after,
+        "limit": limit,
+      },
+    )
+    return GetLedgerAccountRegister.model_validate(data).account_register
 
   # ── Management dimensions ─────────────────────────────────────────────
 
