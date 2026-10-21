@@ -386,6 +386,8 @@ class TestLedgerReads:
         "unpostedSourceEventSample": [],
         "unreconciledAccountCount": 0,
         "unreconciledAccountSample": [],
+        "heldBankLineCount": 0,
+        "heldBankLineSample": [],
         "groupOpenEntities": [],
         "groupPendingAdjustments": [],
         "groupUnexplained": [],
@@ -445,6 +447,8 @@ class TestLedgerReads:
         "unpostedSourceEventSample": ["evt_3", "INV-1042"],
         "unreconciledAccountCount": 1,
         "unreconciledAccountSample": ["Equipment Loan (statement): unreconciled"],
+        "heldBankLineCount": 0,
+        "heldBankLineSample": [],
         "groupOpenEntities": [],
         "groupPendingAdjustments": [],
         "groupUnexplained": [],
@@ -572,6 +576,15 @@ class TestLedgerWrites:
     body = mock_op.call_args.kwargs["body"].to_dict()
     assert body["allow_unexplained_residuals"] is True
     assert body["entity_id"] == "ent_cons"
+
+  @patch("robosystems_client.clients.ledger_client.op_close_period")
+  def test_a_close_can_go_over_held_bank_lines(self, mock_op, mock_config, graph_id):
+    envelope = _envelope("close-period", {"period": "2026-03", "fiscal_calendar": {}})
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    client.close_period(graph_id, "2026-03", allow_held_bank_lines=True)
+    body = mock_op.call_args.kwargs["body"].to_dict()
+    assert body["allow_held_bank_lines"] is True
 
   @patch("robosystems_client.clients.ledger_client.op_close_period")
   def test_close_period_sends_each_override_it_is_given(

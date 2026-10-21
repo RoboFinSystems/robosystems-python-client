@@ -1024,6 +1024,8 @@ query GetLedgerFiscalCalendar($entityId: String) {
     unpostedSourceEventSample
     unreconciledAccountCount
     unreconciledAccountSample
+    heldBankLineCount
+    heldBankLineSample
     groupOpenEntities
     groupPendingAdjustments
     groupUnexplained

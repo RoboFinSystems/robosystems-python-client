@@ -36,6 +36,8 @@ class GetLedgerFiscalCalendarFiscalCalendar(BaseModel):
   unposted_source_event_sample: list[str] = Field(alias="unpostedSourceEventSample")
   unreconciled_account_count: int = Field(alias="unreconciledAccountCount")
   unreconciled_account_sample: list[str] = Field(alias="unreconciledAccountSample")
+  held_bank_line_count: int = Field(alias="heldBankLineCount")
+  held_bank_line_sample: list[str] = Field(alias="heldBankLineSample")
   group_open_entities: list[str] = Field(alias="groupOpenEntities")
   group_pending_adjustments: list[str] = Field(alias="groupPendingAdjustments")
   group_unexplained: list[str] = Field(alias="groupUnexplained")

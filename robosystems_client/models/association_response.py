@@ -37,11 +37,11 @@ class AssociationResponse:
           confidence (float | None | Unset):
           suggested_by (None | str | Unset):
           approved_by (None | str | Unset):
-          replaced_association_id (None | str | Unset): The arc this write removed in the same transaction, when the call
-              named one in `replaces_association_id`.
-          reclassified_periods (list[str] | Unset): Closed months whose live statements now read through this arc while
-              their stamped sets keep the answer as closed. Empty unless the write replaced an arc on an account with landed
-              history in a closed month.
+          replaced_association_id (None | str | Unset): The arc this one replaced, when the write named one in
+              `replaces_association_id`. On a read, set for an arc whose move reached a closed month.
+          reclassified_periods (list[str] | Unset): Closed months whose live statements read through this arc while their
+              stamped sets keep the answer as closed. Empty unless the arc replaced one on an account with landed history in a
+              closed month.
   """
 
   id: str

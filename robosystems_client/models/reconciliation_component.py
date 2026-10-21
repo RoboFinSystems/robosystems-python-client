@@ -21,8 +21,11 @@ class ReconciliationComponent:
       Attributes:
           name (str): The schedule's name, the statement and its date, or the outstanding line's description.
           amount (float): What this part says the account holds, debit-positive.
-          kind (None | str | Unset): `schedule`, `statement`, or `outstanding`: a ledger line on a bank-fed account that
-              did not come from the feed, dated on or before the statement, so the bank had not cleared it.
+          kind (None | str | Unset): `schedule`, `statement`, `outstanding`: a ledger line on a bank-fed account that did
+              not come from the feed, dated on or before the statement, so the bank had not cleared it; or
+              `stale_outstanding`: such a line dated before the statement's cycle, which the bank should have cleared by now.
+              A stale line is listed but not counted toward the balance, so the difference it would explain stays unexplained
+              until it clears, is voided or is re-dated.
           posting_date (datetime.date | None | Unset): An `outstanding` line's posting date.
           entry_id (None | str | Unset): The journal entry an `outstanding` line belongs to.
           structure_id (None | str | Unset): The schedule, for a `schedule_register` part.

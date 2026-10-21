@@ -28,12 +28,7 @@ from .auto_map_elements_operation import AutoMapElementsOperation
 from .available_extension import AvailableExtension
 from .available_extensions_response import AvailableExtensionsResponse
 from .available_graph_tiers_response import AvailableGraphTiersResponse
-from .backfill_period_outcome import BackfillPeriodOutcome
-from .backfill_period_outcome_statement_rule_summary_type_0 import (
-  BackfillPeriodOutcomeStatementRuleSummaryType0,
-)
 from .backfill_plan_history_operation import BackfillPlanHistoryOperation
-from .backfill_plan_history_response import BackfillPlanHistoryResponse
 from .backup_create_request import BackupCreateRequest
 from .backup_download_url_response import BackupDownloadUrlResponse
 from .backup_limits import BackupLimits
@@ -499,12 +494,6 @@ from .operation_envelope_association_response import (
 )
 from .operation_envelope_association_response_status import (
   OperationEnvelopeAssociationResponseStatus,
-)
-from .operation_envelope_backfill_plan_history_response import (
-  OperationEnvelopeBackfillPlanHistoryResponse,
-)
-from .operation_envelope_backfill_plan_history_response_status import (
-  OperationEnvelopeBackfillPlanHistoryResponseStatus,
 )
 from .operation_envelope_bind_text_block_response import (
   OperationEnvelopeBindTextBlockResponse,
@@ -1256,10 +1245,7 @@ __all__ = (
   "AvailableExtension",
   "AvailableExtensionsResponse",
   "AvailableGraphTiersResponse",
-  "BackfillPeriodOutcome",
-  "BackfillPeriodOutcomeStatementRuleSummaryType0",
   "BackfillPlanHistoryOperation",
-  "BackfillPlanHistoryResponse",
   "BackupCreateRequest",
   "BackupDownloadUrlResponse",
   "BackupLimits",
@@ -1622,8 +1608,6 @@ __all__ = (
   "OperationEnvelopeAssertMetricsResponseStatus",
   "OperationEnvelopeAssociationResponse",
   "OperationEnvelopeAssociationResponseStatus",
-  "OperationEnvelopeBackfillPlanHistoryResponse",
-  "OperationEnvelopeBackfillPlanHistoryResponseStatus",
   "OperationEnvelopeBindTextBlockResponse",
   "OperationEnvelopeBindTextBlockResponseStatus",
   "OperationEnvelopeBlockedSourceGraphResponse",

@@ -34,7 +34,8 @@ class CreateAgentRequest:
               'government' | 'lender' | 'self' | 'other'.
           name (str): Display name shown in lists and on transactions.
           legal_name (None | str | Unset): Full registered legal name (when different from `name`).
-          tax_id (None | str | Unset): Tax ID (EIN / SSN / VAT). Used for 1099 / withholding reporting.
+          tax_id (None | str | Unset): Tax ID (EIN / SSN / VAT), kept for 1099 and withholding reporting; no report reads
+              it yet.
           registration_number (None | str | Unset): Registry-issued company number (e.g. state corp file number).
           duns (None | str | Unset): Dun & Bradstreet DUNS number.
           lei (None | str | Unset): Legal Entity Identifier (ISO 17442).
@@ -46,8 +47,8 @@ class CreateAgentRequest:
               integration). Drives reconciliation behavior. Default: 'native'.
           external_id (None | str | Unset): Source system primary key — used to match on subsequent syncs.
           is_active (bool | Unset): Inactive agents stay in history but can't be picked for new txns. Default: True.
-          is_1099_recipient (bool | Unset): Marks a vendor as 1099-eligible. Drives year-end 1099 reporting. Default:
-              False.
+          is_1099_recipient (bool | Unset): Marks a vendor as 1099-eligible: a flag a year-end 1099 summary will read. No
+              report reads it yet. Default: False.
           metadata (CreateAgentRequestMetadata | Unset):
   """
 

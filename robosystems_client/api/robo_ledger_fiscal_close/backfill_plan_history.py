@@ -8,9 +8,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.backfill_plan_history_operation import BackfillPlanHistoryOperation
 from ...models.error_response import ErrorResponse
-from ...models.operation_envelope_backfill_plan_history_response import (
-  OperationEnvelopeBackfillPlanHistoryResponse,
-)
+from ...models.operation_envelope import OperationEnvelope
 from ...types import UNSET, Response, Unset
 
 
@@ -41,13 +39,11 @@ def _get_kwargs(
 
 def _parse_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse | None:
-  if response.status_code == 200:
-    response_200 = OperationEnvelopeBackfillPlanHistoryResponse.from_dict(
-      response.json()
-    )
+) -> ErrorResponse | OperationEnvelope | None:
+  if response.status_code == 202:
+    response_202 = OperationEnvelope.from_dict(response.json())
 
-    return response_200
+    return response_202
 
   if response.status_code == 400:
     response_400 = ErrorResponse.from_dict(response.json())
@@ -97,7 +93,7 @@ def _parse_response(
 
 def _build_response(
   *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   return Response(
     status_code=HTTPStatus(response.status_code),
     content=response.content,
@@ -112,7 +108,7 @@ def sync_detailed(
   client: AuthenticatedClient,
   body: BackfillPlanHistoryOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   """Backfill Plan History
 
    Compile monthly statement history behind the close boundary — the plan's historical columns. Seeds
@@ -122,7 +118,9 @@ def sync_detailed(
   call, oldest first — loop until `remaining_periods` comes back empty. Idempotent: already-stamped
   months are never touched. Months holding draft entries are skipped, never posted. `start_period` is
   clamped to the earliest month with ledger data, so deep-history tenants only backfill what actually
-  exists.
+  exists. Runs on the background worker, since a chunk recloses up to 24 months: returns a `pending`
+  envelope at once, and the result — the outcome per month and `remaining_periods`, or a refusal under
+  `error` — arrives on `/v1/operations/{operation_id}/stream`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -138,7 +136,7 @@ def sync_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -160,7 +158,7 @@ def sync(
   client: AuthenticatedClient,
   body: BackfillPlanHistoryOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse | None:
+) -> ErrorResponse | OperationEnvelope | None:
   """Backfill Plan History
 
    Compile monthly statement history behind the close boundary — the plan's historical columns. Seeds
@@ -170,7 +168,9 @@ def sync(
   call, oldest first — loop until `remaining_periods` comes back empty. Idempotent: already-stamped
   months are never touched. Months holding draft entries are skipped, never posted. `start_period` is
   clamped to the earliest month with ledger data, so deep-history tenants only backfill what actually
-  exists.
+  exists. Runs on the background worker, since a chunk recloses up to 24 months: returns a `pending`
+  envelope at once, and the result — the outcome per month and `remaining_periods`, or a refusal under
+  `error` — arrives on `/v1/operations/{operation_id}/stream`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -186,7 +186,7 @@ def sync(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse
+      ErrorResponse | OperationEnvelope
   """
 
   return sync_detailed(
@@ -203,7 +203,7 @@ async def asyncio_detailed(
   client: AuthenticatedClient,
   body: BackfillPlanHistoryOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> Response[ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse]:
+) -> Response[ErrorResponse | OperationEnvelope]:
   """Backfill Plan History
 
    Compile monthly statement history behind the close boundary — the plan's historical columns. Seeds
@@ -213,7 +213,9 @@ async def asyncio_detailed(
   call, oldest first — loop until `remaining_periods` comes back empty. Idempotent: already-stamped
   months are never touched. Months holding draft entries are skipped, never posted. `start_period` is
   clamped to the earliest month with ledger data, so deep-history tenants only backfill what actually
-  exists.
+  exists. Runs on the background worker, since a chunk recloses up to 24 months: returns a `pending`
+  envelope at once, and the result — the outcome per month and `remaining_periods`, or a refusal under
+  `error` — arrives on `/v1/operations/{operation_id}/stream`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -229,7 +231,7 @@ async def asyncio_detailed(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      Response[ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse]
+      Response[ErrorResponse | OperationEnvelope]
   """
 
   kwargs = _get_kwargs(
@@ -249,7 +251,7 @@ async def asyncio(
   client: AuthenticatedClient,
   body: BackfillPlanHistoryOperation,
   idempotency_key: None | str | Unset = UNSET,
-) -> ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse | None:
+) -> ErrorResponse | OperationEnvelope | None:
   """Backfill Plan History
 
    Compile monthly statement history behind the close boundary — the plan's historical columns. Seeds
@@ -259,7 +261,9 @@ async def asyncio(
   call, oldest first — loop until `remaining_periods` comes back empty. Idempotent: already-stamped
   months are never touched. Months holding draft entries are skipped, never posted. `start_period` is
   clamped to the earliest month with ledger data, so deep-history tenants only backfill what actually
-  exists.
+  exists. Runs on the background worker, since a chunk recloses up to 24 months: returns a `pending`
+  envelope at once, and the result — the outcome per month and `remaining_periods`, or a refusal under
+  `error` — arrives on `/v1/operations/{operation_id}/stream`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -275,7 +279,7 @@ async def asyncio(
       httpx.TimeoutException: If the request takes longer than Client.timeout.
 
   Returns:
-      ErrorResponse | OperationEnvelopeBackfillPlanHistoryResponse
+      ErrorResponse | OperationEnvelope
   """
 
   return (

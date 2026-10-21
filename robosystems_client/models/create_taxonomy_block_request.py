@@ -45,6 +45,9 @@ class CreateTaxonomyBlockRequest:
               `reporting_standard`.
           parent_taxonomy_id (None | str | Unset): Required when `taxonomy_type == 'reporting_extension'` — the id of the
               library `reporting_standard` being extended.
+          entity_id (None | str | Unset): For a `chart_of_accounts`: the entity whose books it keeps, default the group
+              parent. It becomes that entity's primary chart only if the entity has none; otherwise it is linked beside the
+              primary, which stays. Not read by other types.
           version (None | str | Unset):
           description (None | str | Unset):
           standard (None | str | Unset):
@@ -59,6 +62,7 @@ class CreateTaxonomyBlockRequest:
   name: str
   taxonomy_type: CreateTaxonomyBlockRequestTaxonomyType
   parent_taxonomy_id: None | str | Unset = UNSET
+  entity_id: None | str | Unset = UNSET
   version: None | str | Unset = UNSET
   description: None | str | Unset = UNSET
   standard: None | str | Unset = UNSET
@@ -80,6 +84,12 @@ class CreateTaxonomyBlockRequest:
       parent_taxonomy_id = UNSET
     else:
       parent_taxonomy_id = self.parent_taxonomy_id
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
 
     version: None | str | Unset
     if isinstance(self.version, Unset):
@@ -147,6 +157,8 @@ class CreateTaxonomyBlockRequest:
     )
     if parent_taxonomy_id is not UNSET:
       field_dict["parent_taxonomy_id"] = parent_taxonomy_id
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
     if version is not UNSET:
       field_dict["version"] = version
     if description is not UNSET:
@@ -193,6 +205,15 @@ class CreateTaxonomyBlockRequest:
       return cast(None | str | Unset, data)
 
     parent_taxonomy_id = _parse_parent_taxonomy_id(d.pop("parent_taxonomy_id", UNSET))
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
     def _parse_version(data: object) -> None | str | Unset:
       if data is None:
@@ -279,6 +300,7 @@ class CreateTaxonomyBlockRequest:
       name=name,
       taxonomy_type=taxonomy_type,
       parent_taxonomy_id=parent_taxonomy_id,
+      entity_id=entity_id,
       version=version,
       description=description,
       standard=standard,

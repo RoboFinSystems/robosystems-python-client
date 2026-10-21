@@ -36,9 +36,9 @@ class FiscalCalendarResponse:
           Default: False.
       blockers (list[str] | Unset): Structured blocker codes when closeable_now is False: 'sequence_violation',
           'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations',
-          'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts'; on the
-          consolidation entity, whose close is the group's, also 'entity_open', 'adjustments_unposted',
-          'residual_unexplained', 'consolidated_does_not_foot'
+          'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts',
+          'held_bank_lines'; on the consolidation entity, whose close is the group's, also 'entity_open',
+          'adjustments_unposted', 'residual_unexplained', 'consolidated_does_not_foot'
       pending_obligation_count (int | Unset): Number of pending schedule_entry_due events blocking close. Non-zero
           only when `pending_obligations` is in `blockers`. Default: 0.
       pending_obligation_sample (list[PendingObligationDetailResponse] | Unset): Sample of up to 5 pending obligations
@@ -65,6 +65,12 @@ class FiscalCalendarResponse:
           void each, or close over them knowingly with allow_unposted_source_events. Default: 0.
       unposted_source_event_sample (list[str] | Unset): Source identifiers (or event ids) of up to 5 unposted source
           events, so the blocker names what is holding the close.
+      held_bank_line_count (int | Unset): Bank lines a sync held out of an earlier, closed month — dated there,
+          arriving after it closed — that no close has decided on. They block the next close: reopen the month they are
+          dated in, which gives them back to post, or close over them knowingly with allow_held_bank_lines. Listed by
+          list-event-blocks with status='voided' and void_reason 'feed_in_closed_month'. Default: 0.
+      held_bank_line_sample (list[str] | Unset): Up to 5 held lines, oldest first, as 'date: description amount [event
+          id]', so the blocker names what is holding the close.
       unreconciled_account_count (int | Unset): Reconciliations the close waits on that are not reconciled for this
           period, including any never compared for it. Run refresh-reconciliations and clear what it reports, release one
           with set-reconciliation-policy, or close over them knowingly with allow_unreconciled_accounts. Default: 0.
@@ -105,6 +111,8 @@ class FiscalCalendarResponse:
   reconciling_item_sample: list[str] | Unset = UNSET
   unposted_source_event_count: int | Unset = 0
   unposted_source_event_sample: list[str] | Unset = UNSET
+  held_bank_line_count: int | Unset = 0
+  held_bank_line_sample: list[str] | Unset = UNSET
   unreconciled_account_count: int | Unset = 0
   unreconciled_account_sample: list[str] | Unset = UNSET
   group_open_entities: list[str] | Unset = UNSET
@@ -193,6 +201,12 @@ class FiscalCalendarResponse:
     unposted_source_event_sample: list[str] | Unset = UNSET
     if not isinstance(self.unposted_source_event_sample, Unset):
       unposted_source_event_sample = self.unposted_source_event_sample
+
+    held_bank_line_count = self.held_bank_line_count
+
+    held_bank_line_sample: list[str] | Unset = UNSET
+    if not isinstance(self.held_bank_line_sample, Unset):
+      held_bank_line_sample = self.held_bank_line_sample
 
     unreconciled_account_count = self.unreconciled_account_count
 
@@ -289,6 +303,10 @@ class FiscalCalendarResponse:
       field_dict["unposted_source_event_count"] = unposted_source_event_count
     if unposted_source_event_sample is not UNSET:
       field_dict["unposted_source_event_sample"] = unposted_source_event_sample
+    if held_bank_line_count is not UNSET:
+      field_dict["held_bank_line_count"] = held_bank_line_count
+    if held_bank_line_sample is not UNSET:
+      field_dict["held_bank_line_sample"] = held_bank_line_sample
     if unreconciled_account_count is not UNSET:
       field_dict["unreconciled_account_count"] = unreconciled_account_count
     if unreconciled_account_sample is not UNSET:
@@ -415,6 +433,10 @@ class FiscalCalendarResponse:
       list[str], d.pop("unposted_source_event_sample", UNSET)
     )
 
+    held_bank_line_count = d.pop("held_bank_line_count", UNSET)
+
+    held_bank_line_sample = cast(list[str], d.pop("held_bank_line_sample", UNSET))
+
     unreconciled_account_count = d.pop("unreconciled_account_count", UNSET)
 
     unreconciled_account_sample = cast(
@@ -511,6 +533,8 @@ class FiscalCalendarResponse:
       reconciling_item_sample=reconciling_item_sample,
       unposted_source_event_count=unposted_source_event_count,
       unposted_source_event_sample=unposted_source_event_sample,
+      held_bank_line_count=held_bank_line_count,
+      held_bank_line_sample=held_bank_line_sample,
       unreconciled_account_count=unreconciled_account_count,
       unreconciled_account_sample=unreconciled_account_sample,
       group_open_entities=group_open_entities,

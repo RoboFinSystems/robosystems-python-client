@@ -27,6 +27,10 @@ class FactRecord:
       unit (None | str | Unset): Unit of measure (e.g., 'USD')
       entity_ticker (None | str | Unset): Entity ticker; present only when an entity filter was applied
       entity_name (None | str | Unset): Entity name; present only when an entity filter was applied
+      presentation (None | str | Unset): 'as_closed' when the value is the one the period's close stamped, kept as the
+          month closed; null otherwise. A live read of the books (live-financial-statement) can differ from it once a
+          mapping is reclassified after the close.
+      stamped_at (None | str | Unset): When the close stamped the value (ISO 8601); set with 'as_closed'.
   """
 
   element_id: str
@@ -38,6 +42,8 @@ class FactRecord:
   unit: None | str | Unset = UNSET
   entity_ticker: None | str | Unset = UNSET
   entity_name: None | str | Unset = UNSET
+  presentation: None | str | Unset = UNSET
+  stamped_at: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -91,6 +97,18 @@ class FactRecord:
     else:
       entity_name = self.entity_name
 
+    presentation: None | str | Unset
+    if isinstance(self.presentation, Unset):
+      presentation = UNSET
+    else:
+      presentation = self.presentation
+
+    stamped_at: None | str | Unset
+    if isinstance(self.stamped_at, Unset):
+      stamped_at = UNSET
+    else:
+      stamped_at = self.stamped_at
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -114,6 +132,10 @@ class FactRecord:
       field_dict["entity_ticker"] = entity_ticker
     if entity_name is not UNSET:
       field_dict["entity_name"] = entity_name
+    if presentation is not UNSET:
+      field_dict["presentation"] = presentation
+    if stamped_at is not UNSET:
+      field_dict["stamped_at"] = stamped_at
 
     return field_dict
 
@@ -194,6 +216,24 @@ class FactRecord:
 
     entity_name = _parse_entity_name(d.pop("entity_name", UNSET))
 
+    def _parse_presentation(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    presentation = _parse_presentation(d.pop("presentation", UNSET))
+
+    def _parse_stamped_at(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    stamped_at = _parse_stamped_at(d.pop("stamped_at", UNSET))
+
     fact_record = cls(
       element_id=element_id,
       element_name=element_name,
@@ -204,6 +244,8 @@ class FactRecord:
       unit=unit,
       entity_ticker=entity_ticker,
       entity_name=entity_name,
+      presentation=presentation,
+      stamped_at=stamped_at,
     )
 
     fact_record.additional_properties = d

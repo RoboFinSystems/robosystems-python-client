@@ -32,12 +32,15 @@ class EvaluateRulesRequest:
               be scoped to a specific period run once write paths populate the FactSet table on every run.
           period_start (datetime.date | None | Unset): Lower bound on the fact period window (inclusive).
           period_end (datetime.date | None | Unset): Upper bound on the fact period window (inclusive).
+          entity_id (None | str | Unset): The entity whose facts bind, when no `fact_set_id` pins them; default the group
+              parent. On a group, each entity's statements share the structure.
   """
 
   structure_id: str
   fact_set_id: None | str | Unset = UNSET
   period_start: datetime.date | None | Unset = UNSET
   period_end: datetime.date | None | Unset = UNSET
+  entity_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -65,6 +68,12 @@ class EvaluateRulesRequest:
     else:
       period_end = self.period_end
 
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -78,6 +87,8 @@ class EvaluateRulesRequest:
       field_dict["period_start"] = period_start
     if period_end is not UNSET:
       field_dict["period_end"] = period_end
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
 
     return field_dict
 
@@ -129,11 +140,21 @@ class EvaluateRulesRequest:
 
     period_end = _parse_period_end(d.pop("period_end", UNSET))
 
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
     evaluate_rules_request = cls(
       structure_id=structure_id,
       fact_set_id=fact_set_id,
       period_start=period_start,
       period_end=period_end,
+      entity_id=entity_id,
     )
 
     evaluate_rules_request.additional_properties = d
