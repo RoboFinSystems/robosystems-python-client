@@ -24,7 +24,7 @@ query GetLedgerReportPackage($reportId: String!) {
         }
         facts {
           id elementId value textValue factType contentType periodStart periodEnd
-          periodType unit factScope factSetId
+          periodType unit factScope factSetId provenance frozenAt
         }
         rules {
           id ruleCategory rulePattern ruleCheckKind ruleExpression
