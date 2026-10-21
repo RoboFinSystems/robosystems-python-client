@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+  from ..models.fact_lite_provenance_type_0 import FactLiteProvenanceType0
+
 
 T = TypeVar("T", bound="FactLite")
 
@@ -31,6 +35,12 @@ class FactLite:
       period_start (datetime.date | None | Unset):
       unit (str | Unset):  Default: 'USD'.
       fact_set_id (None | str | Unset):
+      provenance (FactLiteProvenanceType0 | None | Unset): The fact's own typed `FactProvenance` descriptor
+          (discriminated on `origin`): a `pivot` names the accounts that foot to it, a `rollup` the concepts and weights
+          it summed, a `derived` value its computations and the amounts by part. Null means unknown, never the set's
+          descriptor.
+      frozen_at (datetime.datetime | None | Unset): When the fact's column froze: its period fully closed, so the
+          value is the record. Null is a live column that follows the books.
   """
 
   id: str
@@ -47,9 +57,13 @@ class FactLite:
   period_start: datetime.date | None | Unset = UNSET
   unit: str | Unset = "USD"
   fact_set_id: None | str | Unset = UNSET
+  provenance: FactLiteProvenanceType0 | None | Unset = UNSET
+  frozen_at: datetime.datetime | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.fact_lite_provenance_type_0 import FactLiteProvenanceType0
+
     id = self.id
 
     element_id = self.element_id
@@ -108,6 +122,22 @@ class FactLite:
     else:
       fact_set_id = self.fact_set_id
 
+    provenance: dict[str, Any] | None | Unset
+    if isinstance(self.provenance, Unset):
+      provenance = UNSET
+    elif isinstance(self.provenance, FactLiteProvenanceType0):
+      provenance = self.provenance.to_dict()
+    else:
+      provenance = self.provenance
+
+    frozen_at: None | str | Unset
+    if isinstance(self.frozen_at, Unset):
+      frozen_at = UNSET
+    elif isinstance(self.frozen_at, datetime.datetime):
+      frozen_at = self.frozen_at.isoformat()
+    else:
+      frozen_at = self.frozen_at
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -137,11 +167,17 @@ class FactLite:
       field_dict["unit"] = unit
     if fact_set_id is not UNSET:
       field_dict["fact_set_id"] = fact_set_id
+    if provenance is not UNSET:
+      field_dict["provenance"] = provenance
+    if frozen_at is not UNSET:
+      field_dict["frozen_at"] = frozen_at
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.fact_lite_provenance_type_0 import FactLiteProvenanceType0
+
     d = dict(src_dict)
     id = d.pop("id")
 
@@ -228,6 +264,40 @@ class FactLite:
 
     fact_set_id = _parse_fact_set_id(d.pop("fact_set_id", UNSET))
 
+    def _parse_provenance(data: object) -> FactLiteProvenanceType0 | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        provenance_type_0 = FactLiteProvenanceType0.from_dict(data)
+
+        return provenance_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(FactLiteProvenanceType0 | None | Unset, data)
+
+    provenance = _parse_provenance(d.pop("provenance", UNSET))
+
+    def _parse_frozen_at(data: object) -> datetime.datetime | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        frozen_at_type_0 = datetime.datetime.fromisoformat(data)
+
+        return frozen_at_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.datetime | None | Unset, data)
+
+    frozen_at = _parse_frozen_at(d.pop("frozen_at", UNSET))
+
     fact_lite = cls(
       id=id,
       element_id=element_id,
@@ -243,6 +313,8 @@ class FactLite:
       period_start=period_start,
       unit=unit,
       fact_set_id=fact_set_id,
+      provenance=provenance,
+      frozen_at=frozen_at,
     )
 
     fact_lite.additional_properties = d

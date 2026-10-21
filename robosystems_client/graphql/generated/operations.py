@@ -553,6 +553,8 @@ query GetInformationBlock($id: ID!, $scenarioId: String, $series: Boolean! = fal
       unit
       factScope
       factSetId
+      provenance
+      frozenAt
     }
     rules {
       id
@@ -1323,6 +1325,8 @@ query GetLedgerReportPackage($reportId: String!) {
           unit
           factScope
           factSetId
+          provenance
+          frozenAt
         }
         rules {
           id
@@ -1648,6 +1652,8 @@ query ListInformationBlocks($blockType: String, $category: String, $limit: Int, 
       unit
       factScope
       factSetId
+      provenance
+      frozenAt
     }
     rules {
       id

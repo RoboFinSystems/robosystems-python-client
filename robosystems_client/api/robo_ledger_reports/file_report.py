@@ -112,7 +112,8 @@ def sync_detailed(
   """File Report
 
    Transitions the Report's filing_status to 'filed' — locks the package. Allowed from 'draft' or
-  'under_review'. Stamps filed_at + filed_by.
+  'under_review', and only once the books are closed through every period the Report states. Stamps
+  filed_at + filed_by.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -160,7 +161,8 @@ def sync(
   """File Report
 
    Transitions the Report's filing_status to 'filed' — locks the package. Allowed from 'draft' or
-  'under_review'. Stamps filed_at + filed_by.
+  'under_review', and only once the books are closed through every period the Report states. Stamps
+  filed_at + filed_by.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -203,7 +205,8 @@ async def asyncio_detailed(
   """File Report
 
    Transitions the Report's filing_status to 'filed' — locks the package. Allowed from 'draft' or
-  'under_review'. Stamps filed_at + filed_by.
+  'under_review', and only once the books are closed through every period the Report states. Stamps
+  filed_at + filed_by.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -249,7 +252,8 @@ async def asyncio(
   """File Report
 
    Transitions the Report's filing_status to 'filed' — locks the package. Allowed from 'draft' or
-  'under_review'. Stamps filed_at + filed_by.
+  'under_review', and only once the books are closed through every period the Report states. Stamps
+  filed_at + filed_by.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

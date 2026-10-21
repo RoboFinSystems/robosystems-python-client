@@ -286,6 +286,7 @@ from .execute_event_block_response_qb_error_type_0 import (
 )
 from .external_connection_config import ExternalConnectionConfig
 from .fact_lite import FactLite
+from .fact_lite_provenance_type_0 import FactLiteProvenanceType0
 from .fact_record import FactRecord
 from .fact_set_lite import FactSetLite
 from .fact_set_lite_provenance_type_0 import FactSetLiteProvenanceType0
@@ -1463,6 +1464,7 @@ __all__ = (
   "ExecuteEventBlockResponseQbErrorType0",
   "ExternalConnectionConfig",
   "FactLite",
+  "FactLiteProvenanceType0",
   "FactRecord",
   "FactSetLite",
   "FactSetLiteProvenanceType0",

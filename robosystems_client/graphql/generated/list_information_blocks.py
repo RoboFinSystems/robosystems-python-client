@@ -87,6 +87,8 @@ class ListInformationBlocksInformationBlocksFacts(BaseModel):
   unit: str
   fact_scope: str = Field(alias="factScope")
   fact_set_id: Optional[str] = Field(alias="factSetId")
+  provenance: Optional[Any]
+  frozen_at: Optional[str] = Field(alias="frozenAt")
 
 
 class ListInformationBlocksInformationBlocksRules(BaseModel):

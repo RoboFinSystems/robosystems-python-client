@@ -1998,6 +1998,8 @@ class TestLedgerReadsAdditional:
             "unit": "USD",
             "factScope": "in_scope",
             "factSetId": None,
+            "provenance": None,
+            "frozenAt": None,
           }
         ],
         "rules": [],
