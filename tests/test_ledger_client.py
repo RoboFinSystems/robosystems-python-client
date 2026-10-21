@@ -3599,6 +3599,67 @@ class TestShareControls:
     assert page.blocked_source_graphs[0].source_graph_id == "kg_sender"
     assert page.pagination.total == 1
 
+  @patch("robosystems_client.clients.ledger_client.LedgerClient._query")
+  def test_list_report_shares(self, mock_query, mock_config, graph_id):
+    mock_query.return_value = {
+      "reportShares": {
+        "reportShares": [
+          {
+            "id": "share_2",
+            "reportId": "rpt_1",
+            "targetGraphId": "kg_recipient",
+            "targetGraphName": "Harbor Fund",
+            "sharedBy": "usr_1",
+            "sharedAt": "2026-10-01T12:00:00Z",
+            "revokedAt": None,
+            "factCount": 47,
+          },
+          {
+            "id": "share_1",
+            "reportId": "rpt_1",
+            "targetGraphId": "kg_recipient",
+            "targetGraphName": "Harbor Fund",
+            "sharedBy": "usr_1",
+            "sharedAt": "2026-09-01T12:00:00Z",
+            "revokedAt": "2026-09-15T12:00:00Z",
+            "factCount": 40,
+          },
+        ],
+        "pagination": {"total": 2, "limit": 100, "offset": 0, "hasMore": False},
+      }
+    }
+    client = LedgerClient(mock_config)
+    page = client.list_report_shares(graph_id, report_id="rpt_1", include_revoked=True)
+    assert page is not None
+    assert [s.id for s in page.report_shares] == ["share_2", "share_1"]
+    assert page.report_shares[0].revoked_at is None
+    assert page.report_shares[1].revoked_at is not None
+    assert page.report_shares[0].fact_count == 47
+    assert page.pagination.total == 2
+    assert mock_query.call_args.args[2] == {
+      "reportId": "rpt_1",
+      "includeRevoked": True,
+      "limit": 100,
+      "offset": 0,
+    }
+
+  @patch("robosystems_client.clients.ledger_client.LedgerClient._query")
+  def test_list_report_shares_defaults_to_live_shares_of_every_report(
+    self, mock_query, mock_config, graph_id
+  ):
+    mock_query.return_value = {
+      "reportShares": {
+        "reportShares": [],
+        "pagination": {"total": 0, "limit": 100, "offset": 0, "hasMore": False},
+      }
+    }
+    client = LedgerClient(mock_config)
+    page = client.list_report_shares(graph_id)
+    assert page is not None
+    assert page.report_shares == []
+    assert mock_query.call_args.args[2]["reportId"] is None
+    assert mock_query.call_args.args[2]["includeRevoked"] is False
+
 
 # ── Chart of accounts ─────────────────────────────────────────────────
 
