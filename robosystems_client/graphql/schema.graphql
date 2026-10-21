@@ -2540,7 +2540,7 @@ type ReconciliationComponent {
   amount: Float!
 
   """
-  `schedule`, `statement`, or `outstanding`: a ledger line on a bank-fed account that did not come from the feed, dated on or before the statement, so the bank had not cleared it.
+  `schedule`, `statement`, `outstanding`: a ledger line on a bank-fed account that did not come from the feed, dated on or before the statement, so the bank had not cleared it; or `stale_outstanding`: such a line dated before the statement's cycle, which the bank should have cleared by now. A stale line is listed but not counted toward the balance, so the difference it would explain stays unexplained until it clears, is voided or is re-dated.
   """
   kind: String
 
@@ -3149,12 +3149,12 @@ type Association {
   approvedBy: String
 
   """
-  The arc this write removed in the same transaction, when the call named one in `replaces_association_id`.
+  The arc this one replaced, when the write named one in `replaces_association_id`. On a read, set for an arc whose move reached a closed month.
   """
   replacedAssociationId: String
 
   """
-  Closed months whose live statements now read through this arc while their stamped sets keep the answer as closed. Empty unless the write replaced an arc on an account with landed history in a closed month.
+  Closed months whose live statements read through this arc while their stamped sets keep the answer as closed. Empty unless the arc replaced one on an account with landed history in a closed month.
   """
   reclassifiedPeriods: [String!]!
 }
@@ -3418,7 +3418,7 @@ type FiscalCalendar {
   closeableNow: Boolean!
 
   """
-  Structured blocker codes when closeable_now is False: 'sequence_violation', 'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations', 'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts'; on the consolidation entity, whose close is the group's, also 'entity_open', 'adjustments_unposted', 'residual_unexplained', 'consolidated_does_not_foot'
+  Structured blocker codes when closeable_now is False: 'sequence_violation', 'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations', 'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts', 'held_bank_lines'; on the consolidation entity, whose close is the group's, also 'entity_open', 'adjustments_unposted', 'residual_unexplained', 'consolidated_does_not_foot'
   """
   blockers: [String!]!
 
@@ -3471,6 +3471,16 @@ type FiscalCalendar {
   Source identifiers (or event ids) of up to 5 unposted source events, so the blocker names what is holding the close.
   """
   unpostedSourceEventSample: [String!]!
+
+  """
+  Bank lines a sync held out of an earlier, closed month — dated there, arriving after it closed — that no close has decided on. They block the next close: reopen the month they are dated in, which gives them back to post, or close over them knowingly with allow_held_bank_lines. Listed by list-event-blocks with status='voided' and void_reason 'feed_in_closed_month'.
+  """
+  heldBankLineCount: Int!
+
+  """
+  Up to 5 held lines, oldest first, as 'date: description amount [event id]', so the blocker names what is holding the close.
+  """
+  heldBankLineSample: [String!]!
 
   """
   Reconciliations the close waits on that are not reconciled for this period, including any never compared for it. Run refresh-reconciliations and clear what it reports, release one with set-reconciliation-policy, or close over them knowingly with allow_unreconciled_accounts.
@@ -4312,6 +4322,14 @@ type InformationBlockRenderingPeriod {
   True when this column comes from a forecast scenario's FactSet — the machine-readable seam marker (labels also carry a '(forecast)' suffix, but consumers should key styling off this flag, not label parsing). None/absent = an actuals column.
   """
   forecast: Boolean
+
+  """
+  'as_closed' when the column's figures are the ones its month's close stamped, kept as the month closed; a live read of the books (live-financial-statement) can differ from them once a mapping is reclassified after the close. None for a report's own snapshot or a forecast column.
+  """
+  presentation: String
+
+  """When the close stamped the column; set with 'as_closed'."""
+  stampedAt: DateTime
 }
 
 """

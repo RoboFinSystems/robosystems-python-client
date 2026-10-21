@@ -64,8 +64,9 @@ class CreateEventHandlerRequest:
               equality map against event.metadata, e.g. {"category": "payroll"} or {"metadata.category": "payroll"}
           priority (int | Unset): Tiebreaker when multiple equally-specific handlers match. Higher = wins. Default: 0.
           is_active (bool | Unset): Inactive handlers are ignored at match time. Default: True.
-          origin (CreateEventHandlerRequestOrigin | Unset): Provenance of the handler. `tenant` = author by graph owner;
-              `hub` = platform-shipped template (immutable for tenants). Default: CreateEventHandlerRequestOrigin.TENANT.
+          origin (CreateEventHandlerRequestOrigin | Unset): Provenance of the handler. `tenant` = authored on this graph,
+              the only value a caller may set; `hub` = platform-shipped template. Default:
+              CreateEventHandlerRequestOrigin.TENANT.
           metadata (CreateEventHandlerRequestMetadata | Unset): Free-form metadata stored alongside the handler.
   """
 

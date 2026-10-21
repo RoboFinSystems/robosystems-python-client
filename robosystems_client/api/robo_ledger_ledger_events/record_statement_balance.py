@@ -119,11 +119,14 @@ def sync_detailed(
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
   the account's statement reconciliation for the period the statement ends in. On an account a bank
   feed keeps, ledger lines that did not come from the feed and are dated on or before the statement
-  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; a
+  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; one
+  dated before the statement's own cycle is listed as `stale_outstanding` and does not, since the bank
+  should have cleared it by now, so the difference stays until it clears, is voided or is re-dated; a
   statement ending before the period's last day is carried to it by the feed's own lines
   (`roll_forward`). Attach the statement as evidence by passing the `document_id` of its stored file
   (create-document-upload, then complete-document-upload); recording it again with another document
-  lapses a sign-off. Writes no books. The first statement recorded for an account creates its
+  lapses a sign-off, and recording it again without one keeps the document already attached (an empty
+  string detaches it). Writes no books. The first statement recorded for an account creates its
   reconciliation, which does not hold the close: turn `required_for_close` on with set-reconciliation-
   policy to make every period's close wait for a statement on that account. Recording the same account
   and date again replaces the earlier balance; when more than one statement ends in a period, the one
@@ -176,11 +179,14 @@ def sync(
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
   the account's statement reconciliation for the period the statement ends in. On an account a bank
   feed keeps, ledger lines that did not come from the feed and are dated on or before the statement
-  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; a
+  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; one
+  dated before the statement's own cycle is listed as `stale_outstanding` and does not, since the bank
+  should have cleared it by now, so the difference stays until it clears, is voided or is re-dated; a
   statement ending before the period's last day is carried to it by the feed's own lines
   (`roll_forward`). Attach the statement as evidence by passing the `document_id` of its stored file
   (create-document-upload, then complete-document-upload); recording it again with another document
-  lapses a sign-off. Writes no books. The first statement recorded for an account creates its
+  lapses a sign-off, and recording it again without one keeps the document already attached (an empty
+  string detaches it). Writes no books. The first statement recorded for an account creates its
   reconciliation, which does not hold the close: turn `required_for_close` on with set-reconciliation-
   policy to make every period's close wait for a statement on that account. Recording the same account
   and date again replaces the earlier balance; when more than one statement ends in a period, the one
@@ -228,11 +234,14 @@ async def asyncio_detailed(
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
   the account's statement reconciliation for the period the statement ends in. On an account a bank
   feed keeps, ledger lines that did not come from the feed and are dated on or before the statement
-  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; a
+  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; one
+  dated before the statement's own cycle is listed as `stale_outstanding` and does not, since the bank
+  should have cleared it by now, so the difference stays until it clears, is voided or is re-dated; a
   statement ending before the period's last day is carried to it by the feed's own lines
   (`roll_forward`). Attach the statement as evidence by passing the `document_id` of its stored file
   (create-document-upload, then complete-document-upload); recording it again with another document
-  lapses a sign-off. Writes no books. The first statement recorded for an account creates its
+  lapses a sign-off, and recording it again without one keeps the document already attached (an empty
+  string detaches it). Writes no books. The first statement recorded for an account creates its
   reconciliation, which does not hold the close: turn `required_for_close` on with set-reconciliation-
   policy to make every period's close wait for a statement on that account. Recording the same account
   and date again replaces the earlier balance; when more than one statement ends in a period, the one
@@ -283,11 +292,14 @@ async def asyncio(
   that date is set beside it, counting the drafts the close will post, and the result is recorded on
   the account's statement reconciliation for the period the statement ends in. On an account a bank
   feed keeps, ledger lines that did not come from the feed and are dated on or before the statement
-  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; a
+  are listed as outstanding and adjust the statement balance, since the bank had not cleared them; one
+  dated before the statement's own cycle is listed as `stale_outstanding` and does not, since the bank
+  should have cleared it by now, so the difference stays until it clears, is voided or is re-dated; a
   statement ending before the period's last day is carried to it by the feed's own lines
   (`roll_forward`). Attach the statement as evidence by passing the `document_id` of its stored file
   (create-document-upload, then complete-document-upload); recording it again with another document
-  lapses a sign-off. Writes no books. The first statement recorded for an account creates its
+  lapses a sign-off, and recording it again without one keeps the document already attached (an empty
+  string detaches it). Writes no books. The first statement recorded for an account creates its
   reconciliation, which does not hold the close: turn `required_for_close` on with set-reconciliation-
   policy to make every period's close wait for a statement on that account. Recording the same account
   and date again replaces the earlier balance; when more than one statement ends in a period, the one

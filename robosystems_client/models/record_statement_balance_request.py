@@ -25,7 +25,8 @@ class RecordStatementBalanceRequest:
       entity_id (None | str | Unset): The entity whose books the account is in, by id. Omit for the group parent. The
           account must be in that entity's chart.
       document_id (None | str | Unset): The statement itself, as a document already added with create-document. Kept
-          on the record as evidence.
+          on the record as evidence. Recording the same account and date again keeps the earlier record's document when
+          this is omitted; an empty string drops it.
       note (None | str | Unset): Anything worth keeping with the recorded balance.
   """
 

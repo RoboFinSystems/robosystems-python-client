@@ -41,6 +41,10 @@ class ClosePeriodOperation:
               reconciliation the close waits on is not reconciled for the period, or was never compared for it. The books are
               then closed without that check. Prefer refresh-reconciliations and clearing what it reports first. The override
               is recorded in the close audit note. Default: False.
+          allow_held_bank_lines (bool | Unset): Override the held-bank-line gate — close even though bank lines a sync
+              held out of an earlier, closed month (dated there, arriving after it closed) are still undecided. Each is
+              recorded as decided by this close and stops blocking; none posts. Prefer reopening the month they are dated in,
+              which gives them back to classify and commit. The override is recorded in the close audit note. Default: False.
           allow_unexplained_residuals (bool | Unset): On the consolidation entity, the group close: close even though a
               residual or an intercompany disagreement is left unexplained. Its difference stays in the consolidated
               statements. Prefer correcting the books or posting the explaining entry with its basis. The override, and each
@@ -55,6 +59,7 @@ class ClosePeriodOperation:
   allow_reconciling_items: bool | Unset = False
   allow_unposted_source_events: bool | Unset = False
   allow_unreconciled_accounts: bool | Unset = False
+  allow_held_bank_lines: bool | Unset = False
   allow_unexplained_residuals: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -83,6 +88,8 @@ class ClosePeriodOperation:
 
     allow_unreconciled_accounts = self.allow_unreconciled_accounts
 
+    allow_held_bank_lines = self.allow_held_bank_lines
+
     allow_unexplained_residuals = self.allow_unexplained_residuals
 
     field_dict: dict[str, Any] = {}
@@ -106,6 +113,8 @@ class ClosePeriodOperation:
       field_dict["allow_unposted_source_events"] = allow_unposted_source_events
     if allow_unreconciled_accounts is not UNSET:
       field_dict["allow_unreconciled_accounts"] = allow_unreconciled_accounts
+    if allow_held_bank_lines is not UNSET:
+      field_dict["allow_held_bank_lines"] = allow_held_bank_lines
     if allow_unexplained_residuals is not UNSET:
       field_dict["allow_unexplained_residuals"] = allow_unexplained_residuals
 
@@ -144,6 +153,8 @@ class ClosePeriodOperation:
 
     allow_unreconciled_accounts = d.pop("allow_unreconciled_accounts", UNSET)
 
+    allow_held_bank_lines = d.pop("allow_held_bank_lines", UNSET)
+
     allow_unexplained_residuals = d.pop("allow_unexplained_residuals", UNSET)
 
     close_period_operation = cls(
@@ -155,6 +166,7 @@ class ClosePeriodOperation:
       allow_reconciling_items=allow_reconciling_items,
       allow_unposted_source_events=allow_unposted_source_events,
       allow_unreconciled_accounts=allow_unreconciled_accounts,
+      allow_held_bank_lines=allow_held_bank_lines,
       allow_unexplained_residuals=allow_unexplained_residuals,
     )
 

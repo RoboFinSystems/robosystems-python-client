@@ -117,17 +117,18 @@ def sync_detailed(
   (description, effective_at, metadata_patch) to an existing event block. Only supplied fields are
   updated. captured → classified records an account choice without posting — for a bank-feed line,
   patch metadata.classified_element_id (or accept_suggestion: true) in the same call. When the
-  transition is captured/classified → committed, the registered Python handler fires against the
-  captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
-  bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
-  (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
-  UI can display the failure reason without retry. A bank line's flow is a second classification
-  beside its account, overriding the account's default flow on the cash flow and equity statements:
-  patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
-  gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
-  posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
-  string clears it. A payment or bank line records the invoices or bills it settles with
-  `discharge_allocations` (positive cents per document, together at most its amount) or one
+  transition is captured/classified → committed, the registered Python handler (else the matching
+  event handler's template) fires against the captured metadata to produce the GL rows, unless it
+  already wrote them when the event was created; an event with a handler cannot skip to pending or
+  fulfilled without rows. A bank-feed line with no account chosen and no matching rule is refused.
+  Errors from the handler (validation, element resolution, closed period, unbalanced lines) surface as
+  422 here so the inbox UI can display the failure reason without retry. A bank line's flow is a
+  second classification beside its account, overriding the account's default flow on the cash flow and
+  equity statements: patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations`
+  part) with an rs-gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line
+  that has already posted, this re-tags its lines in place, in a closed month too, since no balance
+  moves; an empty string clears it. A payment or bank line records the invoices or bills it settles
+  with `discharge_allocations` (positive cents per document, together at most its amount) or one
   `discharges_event_id`; each is checked: an invoice for money in, a bill for money out, on its own
   entity, not voided.
 
@@ -176,17 +177,18 @@ def sync(
   (description, effective_at, metadata_patch) to an existing event block. Only supplied fields are
   updated. captured → classified records an account choice without posting — for a bank-feed line,
   patch metadata.classified_element_id (or accept_suggestion: true) in the same call. When the
-  transition is captured/classified → committed, the registered Python handler fires against the
-  captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
-  bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
-  (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
-  UI can display the failure reason without retry. A bank line's flow is a second classification
-  beside its account, overriding the account's default flow on the cash flow and equity statements:
-  patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
-  gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
-  posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
-  string clears it. A payment or bank line records the invoices or bills it settles with
-  `discharge_allocations` (positive cents per document, together at most its amount) or one
+  transition is captured/classified → committed, the registered Python handler (else the matching
+  event handler's template) fires against the captured metadata to produce the GL rows, unless it
+  already wrote them when the event was created; an event with a handler cannot skip to pending or
+  fulfilled without rows. A bank-feed line with no account chosen and no matching rule is refused.
+  Errors from the handler (validation, element resolution, closed period, unbalanced lines) surface as
+  422 here so the inbox UI can display the failure reason without retry. A bank line's flow is a
+  second classification beside its account, overriding the account's default flow on the cash flow and
+  equity statements: patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations`
+  part) with an rs-gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line
+  that has already posted, this re-tags its lines in place, in a closed month too, since no balance
+  moves; an empty string clears it. A payment or bank line records the invoices or bills it settles
+  with `discharge_allocations` (positive cents per document, together at most its amount) or one
   `discharges_event_id`; each is checked: an invoice for money in, a bill for money out, on its own
   entity, not voided.
 
@@ -230,17 +232,18 @@ async def asyncio_detailed(
   (description, effective_at, metadata_patch) to an existing event block. Only supplied fields are
   updated. captured → classified records an account choice without posting — for a bank-feed line,
   patch metadata.classified_element_id (or accept_suggestion: true) in the same call. When the
-  transition is captured/classified → committed, the registered Python handler fires against the
-  captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
-  bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
-  (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
-  UI can display the failure reason without retry. A bank line's flow is a second classification
-  beside its account, overriding the account's default flow on the cash flow and equity statements:
-  patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
-  gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
-  posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
-  string clears it. A payment or bank line records the invoices or bills it settles with
-  `discharge_allocations` (positive cents per document, together at most its amount) or one
+  transition is captured/classified → committed, the registered Python handler (else the matching
+  event handler's template) fires against the captured metadata to produce the GL rows, unless it
+  already wrote them when the event was created; an event with a handler cannot skip to pending or
+  fulfilled without rows. A bank-feed line with no account chosen and no matching rule is refused.
+  Errors from the handler (validation, element resolution, closed period, unbalanced lines) surface as
+  422 here so the inbox UI can display the failure reason without retry. A bank line's flow is a
+  second classification beside its account, overriding the account's default flow on the cash flow and
+  equity statements: patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations`
+  part) with an rs-gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line
+  that has already posted, this re-tags its lines in place, in a closed month too, since no balance
+  moves; an empty string clears it. A payment or bank line records the invoices or bills it settles
+  with `discharge_allocations` (positive cents per document, together at most its amount) or one
   `discharges_event_id`; each is checked: an invoice for money in, a bill for money out, on its own
   entity, not voided.
 
@@ -287,17 +290,18 @@ async def asyncio(
   (description, effective_at, metadata_patch) to an existing event block. Only supplied fields are
   updated. captured → classified records an account choice without posting — for a bank-feed line,
   patch metadata.classified_element_id (or accept_suggestion: true) in the same call. When the
-  transition is captured/classified → committed, the registered Python handler fires against the
-  captured metadata to produce the GL rows, unless it already wrote them when the event was created; a
-  bank-feed line with no account chosen and no matching rule is refused. Errors from the handler
-  (validation, element resolution, closed period, unbalanced lines) surface as 422 here so the inbox
-  UI can display the failure reason without retry. A bank line's flow is a second classification
-  beside its account, overriding the account's default flow on the cash flow and equity statements:
-  patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations` part) with an rs-
-  gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line that has already
-  posted, this re-tags its lines in place, in a closed month too, since no balance moves; an empty
-  string clears it. A payment or bank line records the invoices or bills it settles with
-  `discharge_allocations` (positive cents per document, together at most its amount) or one
+  transition is captured/classified → committed, the registered Python handler (else the matching
+  event handler's template) fires against the captured metadata to produce the GL rows, unless it
+  already wrote them when the event was created; an event with a handler cannot skip to pending or
+  fulfilled without rows. A bank-feed line with no account chosen and no matching rule is refused.
+  Errors from the handler (validation, element resolution, closed period, unbalanced lines) surface as
+  422 here so the inbox UI can display the failure reason without retry. A bank line's flow is a
+  second classification beside its account, overriding the account's default flow on the cash flow and
+  equity statements: patch `classified_flow_qname` (or `flow_qname` on each `classified_allocations`
+  part) with an rs-gaap flow concept such as `rs-gaap:ProceedsFromIssuanceOfLongTermDebt`. On a line
+  that has already posted, this re-tags its lines in place, in a closed month too, since no balance
+  moves; an empty string clears it. A payment or bank line records the invoices or bills it settles
+  with `discharge_allocations` (positive cents per document, together at most its amount) or one
   `discharges_event_id`; each is checked: an invoice for money in, a bill for money out, on its own
   entity, not voided.
 

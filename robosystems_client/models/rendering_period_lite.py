@@ -23,12 +23,18 @@ class RenderingPeriodLite:
       forecast (bool | None | Unset): True when this column comes from a forecast scenario's FactSet — the machine-
           readable seam marker (labels also carry a '(forecast)' suffix, but consumers should key styling off this flag,
           not label parsing). None/absent = an actuals column.
+      presentation (None | str | Unset): 'as_closed' when the column's figures are the ones its month's close stamped,
+          kept as the month closed; a live read of the books (live-financial-statement) can differ from them once a
+          mapping is reclassified after the close. None for a report's own snapshot or a forecast column.
+      stamped_at (datetime.datetime | None | Unset): When the close stamped the column; set with 'as_closed'.
   """
 
   start: datetime.date
   end: datetime.date
   label: None | str | Unset = UNSET
   forecast: bool | None | Unset = UNSET
+  presentation: None | str | Unset = UNSET
+  stamped_at: datetime.datetime | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -48,6 +54,20 @@ class RenderingPeriodLite:
     else:
       forecast = self.forecast
 
+    presentation: None | str | Unset
+    if isinstance(self.presentation, Unset):
+      presentation = UNSET
+    else:
+      presentation = self.presentation
+
+    stamped_at: None | str | Unset
+    if isinstance(self.stamped_at, Unset):
+      stamped_at = UNSET
+    elif isinstance(self.stamped_at, datetime.datetime):
+      stamped_at = self.stamped_at.isoformat()
+    else:
+      stamped_at = self.stamped_at
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -60,6 +80,10 @@ class RenderingPeriodLite:
       field_dict["label"] = label
     if forecast is not UNSET:
       field_dict["forecast"] = forecast
+    if presentation is not UNSET:
+      field_dict["presentation"] = presentation
+    if stamped_at is not UNSET:
+      field_dict["stamped_at"] = stamped_at
 
     return field_dict
 
@@ -88,11 +112,39 @@ class RenderingPeriodLite:
 
     forecast = _parse_forecast(d.pop("forecast", UNSET))
 
+    def _parse_presentation(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    presentation = _parse_presentation(d.pop("presentation", UNSET))
+
+    def _parse_stamped_at(data: object) -> datetime.datetime | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        stamped_at_type_0 = datetime.datetime.fromisoformat(data)
+
+        return stamped_at_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.datetime | None | Unset, data)
+
+    stamped_at = _parse_stamped_at(d.pop("stamped_at", UNSET))
+
     rendering_period_lite = cls(
       start=start,
       end=end,
       label=label,
       forecast=forecast,
+      presentation=presentation,
+      stamped_at=stamped_at,
     )
 
     rendering_period_lite.additional_properties = d
