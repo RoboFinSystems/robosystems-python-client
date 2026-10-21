@@ -762,8 +762,11 @@ type Query {
   The only way to download a report's bundle. Every format resolves to a
   short-lived presigned S3 URL which the client follows directly — the
   field returns the URL, never the bytes. The holon is stamped at
-  publish time; the Tavi and XBRL are materialized and cached on first
-  request. `expiresIn`
+  publish time; the Tavi, the XBRL and the holon with lineage are
+  materialized and cached on first request. `HOLON_JSONLD_LINEAGE` carries
+  the books behind the report's frozen figures, so it is for this graph's
+  members only: a report shared in from another graph raises
+  `REPORT_BUNDLE_NOT_AVAILABLE` for it. `expiresIn`
   is the URL's lifetime in seconds, bounded 60-3600.
   
   Returns null when the report doesn't exist; raises
@@ -4416,6 +4419,7 @@ type ReportBundleDownload {
 
 enum ReportDownloadFormat {
   HOLON_JSONLD
+  HOLON_JSONLD_LINEAGE
   XBRL_2_1
   TAVI
 }
