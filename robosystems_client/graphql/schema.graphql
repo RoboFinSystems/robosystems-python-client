@@ -815,6 +815,34 @@ type Query {
   ): PublishListDetail
 
   """
+  Where this graph's reports have been shared: each recipient graph, when,
+  by whom, how many facts it received, and whether the share was revoked.
+  
+  The sender's record behind `share-report` and `revoke-report-share`.
+  Revoked shares are history: a recipient shared to, revoked, and shared to
+  again has two rows, one revoked and one live.
+  """
+  reportShares(
+    """One report's shares. Omit for the graph's whole distribution log."""
+    reportId: String = null
+
+    """
+    Also list revoked shares. Off by default, so the list is the copies recipients still hold.
+    """
+    includeRevoked: Boolean! = false
+
+    """
+    Maximum rows to return, 1-1000. Omit to use this field's own default; out of range raises `INVALID_PAGINATION`.
+    """
+    limit: Int = null
+
+    """
+    Rows to skip before returning, 0 or greater. Out of range raises `INVALID_PAGINATION`.
+    """
+    offset: Int = null
+  ): ReportShareList
+
+  """
   Source graphs barred from sharing reports into this graph.
   
   The read side of the recipient's exit from cross-graph sharing; manage the
@@ -4624,6 +4652,44 @@ type PublishListMember {
 
   """When the member was added."""
   addedAt: DateTime!
+}
+
+"""Paginated list of a report's shares, newest first."""
+type ReportShareList {
+  """Shares, newest first."""
+  reportShares: [ReportShare!]!
+
+  """Pagination metadata."""
+  pagination: PaginationInfo!
+}
+
+"""One delivery of a report to a recipient graph."""
+type ReportShare {
+  """Share row identifier (ULID)."""
+  id: String!
+
+  """The shared report's ID in this graph."""
+  reportId: String!
+
+  """The recipient's graph ID."""
+  targetGraphId: String!
+
+  """Display name of the recipient graph (if known)."""
+  targetGraphName: String
+
+  """User ID that shared the report."""
+  sharedBy: String!
+
+  """When the report was shared, or last re-shared."""
+  sharedAt: DateTime!
+
+  """
+  When the share was revoked. Null while the recipient holds the copy; a re-share after a revoke is a new row, so a revoked row stays revoked.
+  """
+  revokedAt: DateTime
+
+  """Number of facts delivered to the recipient on this share."""
+  factCount: Int!
 }
 
 """Paginated list of blocked source graphs."""

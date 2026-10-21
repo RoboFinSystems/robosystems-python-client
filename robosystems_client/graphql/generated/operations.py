@@ -55,6 +55,7 @@ __all__ = [
   "LIST_LEDGER_PUBLISH_LISTS_GQL",
   "LIST_LEDGER_RECONCILIATIONS_GQL",
   "LIST_LEDGER_REPORTS_GQL",
+  "LIST_LEDGER_REPORT_SHARES_GQL",
   "LIST_LEDGER_STRUCTURES_GQL",
   "LIST_LEDGER_TAXONOMIES_GQL",
   "LIST_LEDGER_TRANSACTIONS_GQL",
@@ -2194,6 +2195,34 @@ query ListLedgerReconciliations($period: String!, $entityId: String) {
           feedBalanceReadOn
         }
       }
+    }
+  }
+}
+"""
+
+LIST_LEDGER_REPORT_SHARES_GQL = """
+query ListLedgerReportShares($reportId: String, $includeRevoked: Boolean! = false, $limit: Int! = 100, $offset: Int! = 0) {
+  reportShares(
+    reportId: $reportId
+    includeRevoked: $includeRevoked
+    limit: $limit
+    offset: $offset
+  ) {
+    reportShares {
+      id
+      reportId
+      targetGraphId
+      targetGraphName
+      sharedBy
+      sharedAt
+      revokedAt
+      factCount
+    }
+    pagination {
+      total
+      limit
+      offset
+      hasMore
     }
   }
 }

@@ -58,6 +58,7 @@ from .list_ledger_journal_entries import ListLedgerJournalEntries
 from .list_ledger_mappings import ListLedgerMappings
 from .list_ledger_publish_lists import ListLedgerPublishLists
 from .list_ledger_reconciliations import ListLedgerReconciliations
+from .list_ledger_report_shares import ListLedgerReportShares
 from .list_ledger_reports import ListLedgerReports
 from .list_ledger_structures import ListLedgerStructures
 from .list_ledger_taxonomies import ListLedgerTaxonomies
@@ -125,6 +126,7 @@ from .operations import (
   LIST_LEDGER_MAPPINGS_GQL,
   LIST_LEDGER_PUBLISH_LISTS_GQL,
   LIST_LEDGER_RECONCILIATIONS_GQL,
+  LIST_LEDGER_REPORT_SHARES_GQL,
   LIST_LEDGER_REPORTS_GQL,
   LIST_LEDGER_STRUCTURES_GQL,
   LIST_LEDGER_TAXONOMIES_GQL,
@@ -1015,6 +1017,29 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListLedgerReconciliations.model_validate(data)
+
+  def list_ledger_report_shares(
+    self,
+    include_revoked: bool,
+    limit: int,
+    offset: int,
+    report_id: Union[Optional[str], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> ListLedgerReportShares:
+    variables: dict[str, object] = {
+      "reportId": report_id,
+      "includeRevoked": include_revoked,
+      "limit": limit,
+      "offset": offset,
+    }
+    response = self.execute(
+      query=LIST_LEDGER_REPORT_SHARES_GQL,
+      operation_name="ListLedgerReportShares",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListLedgerReportShares.model_validate(data)
 
   def list_ledger_reports(
     self,

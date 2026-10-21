@@ -352,6 +352,12 @@ from .list_ledger_reconciliations import (
   ListLedgerReconciliationsReconciliationsReconciliationsDifferencesRollForward,
   ListLedgerReconciliationsReconciliationsReconciliationsRollForward,
 )
+from .list_ledger_report_shares import (
+  ListLedgerReportShares,
+  ListLedgerReportSharesReportShares,
+  ListLedgerReportSharesReportSharesPagination,
+  ListLedgerReportSharesReportSharesReportShares,
+)
 from .list_ledger_reports import (
   ListLedgerReports,
   ListLedgerReportsReports,
@@ -456,6 +462,7 @@ from .operations import (
   LIST_LEDGER_MAPPINGS_GQL,
   LIST_LEDGER_PUBLISH_LISTS_GQL,
   LIST_LEDGER_RECONCILIATIONS_GQL,
+  LIST_LEDGER_REPORT_SHARES_GQL,
   LIST_LEDGER_REPORTS_GQL,
   LIST_LEDGER_STRUCTURES_GQL,
   LIST_LEDGER_TAXONOMIES_GQL,
@@ -716,6 +723,7 @@ __all__ = [
   "LIST_LEDGER_PUBLISH_LISTS_GQL",
   "LIST_LEDGER_RECONCILIATIONS_GQL",
   "LIST_LEDGER_REPORTS_GQL",
+  "LIST_LEDGER_REPORT_SHARES_GQL",
   "LIST_LEDGER_STRUCTURES_GQL",
   "LIST_LEDGER_TAXONOMIES_GQL",
   "LIST_LEDGER_TRANSACTIONS_GQL",
@@ -806,6 +814,10 @@ __all__ = [
   "ListLedgerReconciliationsReconciliationsReconciliationsDifferencesComponents",
   "ListLedgerReconciliationsReconciliationsReconciliationsDifferencesRollForward",
   "ListLedgerReconciliationsReconciliationsReconciliationsRollForward",
+  "ListLedgerReportShares",
+  "ListLedgerReportSharesReportShares",
+  "ListLedgerReportSharesReportSharesPagination",
+  "ListLedgerReportSharesReportSharesReportShares",
   "ListLedgerReports",
   "ListLedgerReportsReports",
   "ListLedgerReportsReportsReports",

@@ -412,6 +412,12 @@ from ..graphql.generated.list_ledger_blocked_source_graphs import (
 from ..graphql.generated.list_ledger_blocked_source_graphs import (
   ListLedgerBlockedSourceGraphsBlockedSourceGraphs as BlockedSourceGraphsPage,
 )
+from ..graphql.generated.list_ledger_report_shares import (
+  ListLedgerReportShares,
+)
+from ..graphql.generated.list_ledger_report_shares import (
+  ListLedgerReportSharesReportShares as ReportSharesPage,
+)
 from ..graphql.generated.list_ledger_agents import (
   ListLedgerAgents,
   ListLedgerAgentsAgents,
@@ -528,6 +534,7 @@ from ..graphql.generated.operations import (
   LIST_INFORMATION_BLOCKS_GQL,
   LIST_LEDGER_ACCOUNTS_GQL,
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
+  LIST_LEDGER_REPORT_SHARES_GQL,
   LIST_LEDGER_AGENTS_GQL,
   LIST_LEDGER_DIMENSIONS_GQL,
   LIST_LEDGER_ELEMENTS_GQL,
@@ -3534,6 +3541,34 @@ class LedgerClient:
     return self._typed_result(
       "Revoke report share", envelope, RevokeReportShareResponse
     )
+
+  def list_report_shares(
+    self,
+    graph_id: str,
+    report_id: str | None = None,
+    include_revoked: bool = False,
+    limit: int = 100,
+    offset: int = 0,
+  ) -> ReportSharesPage | None:
+    """Where this graph's reports have been shared — the sender's record
+    behind `share_report` and `revoke_report_share`.
+
+    `report_id` narrows to one report; omitted, the list is the graph's whole
+    distribution log. Revoked shares stay out unless `include_revoked` is set:
+    a recipient shared to, revoked, and shared to again has one revoked row
+    and one live.
+    """
+    data = self._query(
+      graph_id,
+      LIST_LEDGER_REPORT_SHARES_GQL,
+      {
+        "reportId": report_id,
+        "includeRevoked": include_revoked,
+        "limit": limit,
+        "offset": offset,
+      },
+    )
+    return ListLedgerReportShares.model_validate(data).report_shares
 
   # ── Blocked source graphs ────────────────────────────────────────────
   #
