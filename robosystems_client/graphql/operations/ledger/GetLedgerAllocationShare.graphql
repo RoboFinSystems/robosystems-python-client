@@ -1,0 +1,8 @@
+query GetLedgerAllocationShare($entityId: String!, $period: String!) {
+  allocationShare(entityId: $entityId, period: $period) {
+    entityId entityName period consolidationMethod ownershipPct outsidePct
+    monthResult proRataAmount
+    override { period amount percentage basis setBy }
+    effectiveAmount closed
+  }
+}

@@ -17,6 +17,7 @@ from .get_ledger_account_register import GetLedgerAccountRegister
 from .get_ledger_account_rollups import GetLedgerAccountRollups
 from .get_ledger_account_tree import GetLedgerAccountTree
 from .get_ledger_agent import GetLedgerAgent
+from .get_ledger_allocation_share import GetLedgerAllocationShare
 from .get_ledger_closing_book_structures import GetLedgerClosingBookStructures
 from .get_ledger_entity import GetLedgerEntity
 from .get_ledger_event_block import GetLedgerEventBlock
@@ -48,6 +49,7 @@ from .list_investor_positions import ListInvestorPositions
 from .list_investor_securities import ListInvestorSecurities
 from .list_ledger_accounts import ListLedgerAccounts
 from .list_ledger_agents import ListLedgerAgents
+from .list_ledger_allocation_overrides import ListLedgerAllocationOverrides
 from .list_ledger_bank_accounts import ListLedgerBankAccounts
 from .list_ledger_blocked_source_graphs import ListLedgerBlockedSourceGraphs
 from .list_ledger_dimensions import ListLedgerDimensions
@@ -86,6 +88,7 @@ from .operations import (
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
   GET_LEDGER_ACCOUNT_TREE_GQL,
   GET_LEDGER_AGENT_GQL,
+  GET_LEDGER_ALLOCATION_SHARE_GQL,
   GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL,
   GET_LEDGER_ENTITY_GQL,
   GET_LEDGER_EVENT_BLOCK_GQL,
@@ -117,6 +120,7 @@ from .operations import (
   LIST_INVESTOR_SECURITIES_GQL,
   LIST_LEDGER_ACCOUNTS_GQL,
   LIST_LEDGER_AGENTS_GQL,
+  LIST_LEDGER_ALLOCATION_OVERRIDES_GQL,
   LIST_LEDGER_BANK_ACCOUNTS_GQL,
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
   LIST_LEDGER_DIMENSIONS_GQL,
@@ -452,6 +456,19 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return GetLedgerAgent.model_validate(data)
+
+  def get_ledger_allocation_share(
+    self, entity_id: str, period: str, **kwargs: Any
+  ) -> GetLedgerAllocationShare:
+    variables: dict[str, object] = {"entityId": entity_id, "period": period}
+    response = self.execute(
+      query=GET_LEDGER_ALLOCATION_SHARE_GQL,
+      operation_name="GetLedgerAllocationShare",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return GetLedgerAllocationShare.model_validate(data)
 
   def get_ledger_closing_book_structures(
     self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any
@@ -829,6 +846,19 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListLedgerAgents.model_validate(data)
+
+  def list_ledger_allocation_overrides(
+    self, entity_id: str, **kwargs: Any
+  ) -> ListLedgerAllocationOverrides:
+    variables: dict[str, object] = {"entityId": entity_id}
+    response = self.execute(
+      query=LIST_LEDGER_ALLOCATION_OVERRIDES_GQL,
+      operation_name="ListLedgerAllocationOverrides",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListLedgerAllocationOverrides.model_validate(data)
 
   def list_ledger_bank_accounts(
     self, entity_id: Union[Optional[str], UnsetType] = UNSET, **kwargs: Any

@@ -815,6 +815,26 @@ type Query {
   ): PublishListDetail
 
   """
+  The outside owners' share of a member's result for one month: the
+  pro-rata figure its ownership gives, the override set with
+  `set-allocation-override` if any, and the share the consolidating
+  entries use.
+  """
+  allocationShare(
+    """The member."""
+    entityId: String!
+
+    """The month, as YYYY-MM."""
+    period: String!
+  ): AllocationShare
+
+  """Every month a member's allocation override is set for, oldest first."""
+  allocationOverrides(
+    """The member."""
+    entityId: String!
+  ): AllocationOverrideList
+
+  """
   The graph's event handlers — the rules that turn a matching event into
   GL rows — highest priority first, active or not.
   
@@ -4689,6 +4709,77 @@ type PublishListMember {
 
   """When the member was added."""
   addedAt: DateTime!
+}
+
+"""
+The outside owners' share of a member's result for one month: the
+pro-rata figure its ownership gives, the override that replaces it if one
+is set, and the share the consolidating entries use.
+"""
+type AllocationShare {
+  """The member."""
+  entityId: String!
+
+  """The member's name."""
+  entityName: String!
+
+  """The month, as YYYY-MM."""
+  period: String!
+
+  """How the member is consolidated: full, equity, cost or none."""
+  consolidationMethod: String!
+
+  """The parent's ownership, as a percentage."""
+  ownershipPct: Float
+
+  """The outside owners' ownership, as a percentage."""
+  outsidePct: Float!
+
+  """Cents: the member's result for the month, positive for a profit."""
+  monthResult: Int!
+
+  """Cents: the outside owners' percentage of the month's result."""
+  proRataAmount: Int!
+
+  """The month's override, when one is set."""
+  override: AllocationOverrideRecord
+
+  """
+  Cents: the share the consolidating entries use, the override's when set.
+  """
+  effectiveAmount: Int!
+
+  """
+  True when the consolidation entity has closed the month, so the override can no longer change.
+  """
+  closed: Boolean!
+}
+
+"""A member's allocation override for one month, as set."""
+type AllocationOverrideRecord {
+  """The month, as YYYY-MM."""
+  period: String!
+
+  """The share, in cents, when set so."""
+  amount: Int
+
+  """The share as a percentage of the month's result, when set so."""
+  percentage: Float
+
+  """Why it differs from pro rata."""
+  basis: String
+
+  """Who set it."""
+  setBy: String
+}
+
+"""Every month a member's allocation override is set for."""
+type AllocationOverrideList {
+  """The member."""
+  entityId: String!
+
+  """The overrides, oldest month first."""
+  overrides: [AllocationOverrideRecord!]!
 }
 
 """A page of event handlers, highest priority first."""

@@ -1137,6 +1137,34 @@ class TestJournalEntries:
       "clear": False,
     }
 
+  @patch("robosystems_client.clients.ledger_client.op_record_acquisition")
+  def test_record_acquisition(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "record-acquisition",
+      {"entity_id": "ent_cafe", "consideration": 900000, "goodwill": 165000},
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.record_acquisition(
+      graph_id,
+      entity_id="ent_cafe",
+      consideration=900000,
+      basis="Purchase agreement",
+      allocations=[
+        {"concept": "rs-gaap:PropertyPlantAndEquipmentNet", "amount": 50000}
+      ],
+    )
+    assert result["goodwill"] == 165000
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "entity_id": "ent_cafe",
+      "consideration": 900000,
+      "basis": "Purchase agreement",
+      "allocations": [
+        {"concept": "rs-gaap:PropertyPlantAndEquipmentNet", "amount": 50000}
+      ],
+      "confirm_bargain_purchase": False,
+    }
+
 
 # ── Taxonomy / entity linking ───────────────────────────────────────────
 
@@ -3643,6 +3671,58 @@ class TestShareControls:
       "limit": 100,
       "offset": 0,
     }
+
+  @patch("robosystems_client.clients.ledger_client.LedgerClient._query")
+  def test_get_allocation_share(self, mock_query, mock_config, graph_id):
+    mock_query.return_value = {
+      "allocationShare": {
+        "entityId": "ent_cafe",
+        "entityName": "Harbor Café",
+        "period": "2026-08",
+        "consolidationMethod": "full",
+        "ownershipPct": 70.0,
+        "outsidePct": 30.0,
+        "monthResult": 182500,
+        "proRataAmount": 54750,
+        "override": {
+          "period": "2026-08",
+          "amount": 100000,
+          "percentage": None,
+          "basis": "Preferred return",
+          "setBy": "usr_1",
+        },
+        "effectiveAmount": 100000,
+        "closed": False,
+      }
+    }
+    client = LedgerClient(mock_config)
+    share = client.get_allocation_share(graph_id, "ent_cafe", "2026-08")
+    assert share is not None
+    assert (share.pro_rata_amount, share.effective_amount) == (54750, 100000)
+    assert share.override is not None and share.override.basis == "Preferred return"
+    assert mock_query.call_args.args[2] == {"entityId": "ent_cafe", "period": "2026-08"}
+
+  @patch("robosystems_client.clients.ledger_client.LedgerClient._query")
+  def test_list_allocation_overrides(self, mock_query, mock_config, graph_id):
+    mock_query.return_value = {
+      "allocationOverrides": {
+        "entityId": "ent_cafe",
+        "overrides": [
+          {
+            "period": "2026-08",
+            "amount": None,
+            "percentage": 40.0,
+            "basis": "Waterfall",
+            "setBy": "usr_1",
+          }
+        ],
+      }
+    }
+    client = LedgerClient(mock_config)
+    overrides = client.list_allocation_overrides(graph_id, "ent_cafe")
+    assert [o.period for o in overrides] == ["2026-08"]
+    mock_query.return_value = {"allocationOverrides": None}
+    assert client.list_allocation_overrides(graph_id, "ent_cafe") == []
 
   @patch("robosystems_client.clients.ledger_client.LedgerClient._query")
   def test_list_report_shares(self, mock_query, mock_config, graph_id):

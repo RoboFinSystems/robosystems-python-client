@@ -5,6 +5,8 @@ from .accept_suggestion_line_outcome import AcceptSuggestionLineOutcome
 from .accept_suggestions_request import AcceptSuggestionsRequest
 from .accept_suggestions_response import AcceptSuggestionsResponse
 from .account_info import AccountInfo
+from .acquisition_allocation import AcquisitionAllocation
+from .acquisition_response import AcquisitionResponse
 from .add_graph_member_request import AddGraphMemberRequest
 from .add_publish_list_members_operation import AddPublishListMembersOperation
 from .agent_classification import AgentClassification
@@ -91,6 +93,7 @@ from .consolidation_proposal_adjustment_kind import ConsolidationProposalAdjustm
 from .consolidation_proposal_line import ConsolidationProposalLine
 from .consolidation_reconciling_item import ConsolidationReconcilingItem
 from .consolidation_residual import ConsolidationResidual
+from .consolidation_residual_cause import ConsolidationResidualCause
 from .consolidation_worksheet_request import ConsolidationWorksheetRequest
 from .consolidation_worksheet_response import ConsolidationWorksheetResponse
 from .content_limits import ContentLimits
@@ -467,6 +470,12 @@ from .operation_envelope_accept_suggestions_response import (
 )
 from .operation_envelope_accept_suggestions_response_status import (
   OperationEnvelopeAcceptSuggestionsResponseStatus,
+)
+from .operation_envelope_acquisition_response import (
+  OperationEnvelopeAcquisitionResponse,
+)
+from .operation_envelope_acquisition_response_status import (
+  OperationEnvelopeAcquisitionResponseStatus,
 )
 from .operation_envelope_allocation_override_response import (
   OperationEnvelopeAllocationOverrideResponse,
@@ -933,6 +942,7 @@ from .reconciling_item_plan_default_disposition import (
   ReconcilingItemPlanDefaultDisposition,
 )
 from .reconciling_item_regenerated import ReconcilingItemRegenerated
+from .record_acquisition_request import RecordAcquisitionRequest
 from .record_opening_balance_request import RecordOpeningBalanceRequest
 from .record_statement_balance_request import RecordStatementBalanceRequest
 from .recovery_codes_request import RecoveryCodesRequest
@@ -1206,6 +1216,8 @@ __all__ = (
   "AcceptSuggestionsRequest",
   "AcceptSuggestionsResponse",
   "AccountInfo",
+  "AcquisitionAllocation",
+  "AcquisitionResponse",
   "AddGraphMemberRequest",
   "AddPublishListMembersOperation",
   "AgentClassification",
@@ -1282,6 +1294,7 @@ __all__ = (
   "ConsolidationProposalLine",
   "ConsolidationReconcilingItem",
   "ConsolidationResidual",
+  "ConsolidationResidualCause",
   "ConsolidationWorksheetRequest",
   "ConsolidationWorksheetResponse",
   "ContentLimits",
@@ -1579,6 +1592,8 @@ __all__ = (
   "OperationEnvelope",
   "OperationEnvelopeAcceptSuggestionsResponse",
   "OperationEnvelopeAcceptSuggestionsResponseStatus",
+  "OperationEnvelopeAcquisitionResponse",
+  "OperationEnvelopeAcquisitionResponseStatus",
   "OperationEnvelopeAllocationOverrideResponse",
   "OperationEnvelopeAllocationOverrideResponseStatus",
   "OperationEnvelopeAssertMetricsResponse",
@@ -1806,6 +1821,7 @@ __all__ = (
   "ReconcilingItemPlan",
   "ReconcilingItemPlanDefaultDisposition",
   "ReconcilingItemRegenerated",
+  "RecordAcquisitionRequest",
   "RecordOpeningBalanceRequest",
   "RecordStatementBalanceRequest",
   "RecoveryCodesRequest",
