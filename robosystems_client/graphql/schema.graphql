@@ -1816,6 +1816,11 @@ type LedgerEntity {
   """
   leftOn: Date
 
+  """
+  True once the month this entity left the group is over: its months in the group are history, readable under it, and it is no longer current. False for a member still in, and through the month it leaves.
+  """
+  isFormer: Boolean!
+
   """Provenance: 'native' | 'sec' | 'quickbooks' | 'xero' | 'plaid'."""
   source: String!
 
