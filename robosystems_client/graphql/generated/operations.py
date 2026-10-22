@@ -1941,12 +1941,13 @@ query ListLedgerDimensions($dimensionType: String, $includeInactive: Boolean! = 
 """
 
 LIST_LEDGER_ELEMENTS_GQL = """
-query ListLedgerElements($taxonomyId: String, $source: String, $classification: String, $isAbstract: Boolean, $limit: Int! = 100, $offset: Int! = 0) {
+query ListLedgerElements($taxonomyId: String, $source: String, $classification: String, $isAbstract: Boolean, $includeInactive: Boolean! = false, $limit: Int! = 100, $offset: Int! = 0) {
   elements(
     taxonomyId: $taxonomyId
     source: $source
     classification: $classification
     isAbstract: $isAbstract
+    includeInactive: $includeInactive
     limit: $limit
     offset: $offset
   ) {

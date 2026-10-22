@@ -907,6 +907,7 @@ class Client(BaseClient):
 
   def list_ledger_elements(
     self,
+    include_inactive: bool,
     limit: int,
     offset: int,
     taxonomy_id: Union[Optional[str], UnsetType] = UNSET,
@@ -920,6 +921,7 @@ class Client(BaseClient):
       "source": source,
       "classification": classification,
       "isAbstract": is_abstract,
+      "includeInactive": include_inactive,
       "limit": limit,
       "offset": offset,
     }
