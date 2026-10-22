@@ -183,6 +183,9 @@ from ..api.robo_ledger_information_blocks.update_information_block import (
 from ..api.robo_ledger_fiscal_close.rebuild_schedule import (
   sync_detailed as op_rebuild_schedule,
 )
+from ..api.robo_ledger_fiscal_close.preview_schedule import (
+  sync_detailed as op_preview_schedule,
+)
 from ..api.robo_ledger_report_distribution.add_publish_list_members import (
   sync_detailed as op_add_publish_list_members,
 )
@@ -644,6 +647,8 @@ from ..models.delete_forecast_arm import DeleteForecastArm
 from ..models.delete_schedule_arm import DeleteScheduleArm
 from ..models.delete_schedule_request import DeleteScheduleRequest
 from ..models.rebuild_schedule_request import RebuildScheduleRequest
+from ..models.preview_schedule_request import PreviewScheduleRequest
+from ..models.preview_schedule_response import PreviewScheduleResponse
 from ..models.update_legacy_arm import UpdateLegacyArm
 from ..models.update_forecast_arm import UpdateForecastArm
 from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
@@ -1907,56 +1912,62 @@ class LedgerClient:
 
   # ── Schedules ──────────────────────────────────────────────────────
 
-  def create_schedule(
-    self,
-    graph_id: str,
+  @staticmethod
+  def _schedule_payload(
     *,
     name: str,
     element_ids: list[str],
     period_start: str,
     period_end: str,
-    monthly_amount: int,
+    monthly_amount: int | None,
     debit_element_id: str,
     credit_element_id: str,
-    entry_type: str = "closing",
-    memo_template: str = "",
-    taxonomy_id: str | None = None,
-    method: str | None = None,
-    original_amount: int | None = None,
-    residual_value: int | None = None,
-    useful_life_months: int | None = None,
-    asset_element_id: str | None = None,
-    auto_reverse: bool = False,
-    booked_on: str | None = None,
-    entity_id: str | None = None,
-  ) -> InformationBlockEnvelope:
-    """Create a new schedule with pre-generated monthly facts.
-
-    ``booked_on`` (``YYYY-MM-DD``) is the day the schedule's cost went on
-    the books, when that is before its first period. The schedule
-    reconciliation carries the cost from that day.
-
-    ``entity_id`` is the entity whose books the schedule belongs to;
-    ``None`` = the group parent.
-    """
-    payload_dict: dict[str, Any] = {
+    entry_type: str,
+    memo_template: str,
+    taxonomy_id: str | None,
+    method: str | None,
+    original_amount: int | None,
+    residual_value: int | None,
+    useful_life_months: int | None,
+    asset_element_id: str | None,
+    auto_reverse: bool,
+    booked_on: str | None,
+    entity_id: str | None,
+    periodic_amounts: list[int] | None,
+    loan_terms: dict[str, Any] | None,
+    legs: list[dict[str, Any]] | None,
+    dimension_ids: list[str] | None,
+    closed_through: str | None,
+  ) -> dict[str, Any]:
+    """The schedule definition ``create_schedule`` and ``preview_schedule``
+    send, as the request's dict. Only what the caller set is sent, so the
+    server's defaults apply to the rest."""
+    entry_template: dict[str, Any] = {
+      "debit_element_id": debit_element_id,
+      "credit_element_id": credit_element_id,
+      "entry_type": entry_type,
+      "memo_template": memo_template,
+      "auto_reverse": auto_reverse,
+    }
+    if legs:
+      entry_template["legs"] = legs
+    if dimension_ids:
+      entry_template["dimension_ids"] = dimension_ids
+    payload: dict[str, Any] = {
       "name": name,
       "element_ids": element_ids,
       "period_start": period_start,
       "period_end": period_end,
-      "monthly_amount": monthly_amount,
-      "entry_template": {
-        "debit_element_id": debit_element_id,
-        "credit_element_id": credit_element_id,
-        "entry_type": entry_type,
-        "memo_template": memo_template,
-        "auto_reverse": auto_reverse,
-      },
+      "entry_template": entry_template,
     }
+    if monthly_amount is not None:
+      payload["monthly_amount"] = monthly_amount
     if taxonomy_id:
-      payload_dict["taxonomy_id"] = taxonomy_id
+      payload["taxonomy_id"] = taxonomy_id
     if entity_id:
-      payload_dict["entity_id"] = entity_id
+      payload["entity_id"] = entity_id
+    if closed_through is not None:
+      payload["closed_through"] = closed_through
     schedule_metadata: dict[str, Any] = {}
     if method:
       schedule_metadata["method"] = method
@@ -1970,9 +1981,89 @@ class LedgerClient:
       schedule_metadata["asset_element_id"] = asset_element_id
     if booked_on is not None:
       schedule_metadata["booked_on"] = booked_on
+    if periodic_amounts is not None:
+      schedule_metadata["periodic_amounts"] = periodic_amounts
+    if loan_terms is not None:
+      schedule_metadata["loan_terms"] = loan_terms
     if schedule_metadata:
-      payload_dict["schedule_metadata"] = schedule_metadata
+      payload["schedule_metadata"] = schedule_metadata
+    return payload
 
+  def create_schedule(
+    self,
+    graph_id: str,
+    *,
+    name: str,
+    element_ids: list[str],
+    period_start: str,
+    period_end: str,
+    monthly_amount: int | None = None,
+    debit_element_id: str,
+    credit_element_id: str,
+    entry_type: str = "closing",
+    memo_template: str = "",
+    taxonomy_id: str | None = None,
+    method: str | None = None,
+    original_amount: int | None = None,
+    residual_value: int | None = None,
+    useful_life_months: int | None = None,
+    asset_element_id: str | None = None,
+    auto_reverse: bool = False,
+    booked_on: str | None = None,
+    entity_id: str | None = None,
+    periodic_amounts: list[int] | None = None,
+    loan_terms: dict[str, Any] | None = None,
+    legs: list[dict[str, Any]] | None = None,
+    dimension_ids: list[str] | None = None,
+  ) -> InformationBlockEnvelope:
+    """Create a new schedule with pre-generated monthly facts.
+
+    Three methods. Straight-line (the default) spreads ``monthly_amount``
+    over the months, the last absorbing rounding. ``method="custom"`` takes
+    ``periodic_amounts`` instead: one cents value per month, non-negative,
+    summing to ``original_amount`` less ``residual_value``.
+    ``method="effective_interest"`` is a loan: ``loan_terms`` (the fields of
+    :class:`~robosystems_client.models.loan_terms_request.LoanTermsRequest`:
+    ``principal``, ``annual_rate``, ``start_date``, ``note_element_id``, the
+    day count, payment frequency and amount, ``interest_only``,
+    ``maturity_date``) computes the amortization table, and ``legs`` (each
+    ``{"element_id", "side", "amount_source"}``) say which table column each
+    line of the period's entry takes; ``debit_element_id`` names the
+    interest debit leg and ``credit_element_id`` one credit leg.
+
+    ``booked_on`` (``YYYY-MM-DD``) is the day the schedule's cost went on
+    the books, when that is before its first period. The schedule
+    reconciliation carries the cost from that day.
+
+    ``entity_id`` is the entity whose books the schedule belongs to;
+    ``None`` = the group parent. :meth:`preview_schedule` takes the same
+    arguments and shows the roll-forward without creating anything.
+    """
+    payload_dict = self._schedule_payload(
+      name=name,
+      element_ids=element_ids,
+      period_start=period_start,
+      period_end=period_end,
+      monthly_amount=monthly_amount,
+      debit_element_id=debit_element_id,
+      credit_element_id=credit_element_id,
+      entry_type=entry_type,
+      memo_template=memo_template,
+      taxonomy_id=taxonomy_id,
+      method=method,
+      original_amount=original_amount,
+      residual_value=residual_value,
+      useful_life_months=useful_life_months,
+      asset_element_id=asset_element_id,
+      auto_reverse=auto_reverse,
+      booked_on=booked_on,
+      entity_id=entity_id,
+      periodic_amounts=periodic_amounts,
+      loan_terms=loan_terms,
+      legs=legs,
+      dimension_ids=dimension_ids,
+      closed_through=None,
+    )
     payload = CreateScheduleRequest.from_dict(payload_dict)
     body = CreateScheduleArm(block_type="schedule", payload=payload)
     response = op_create_information_block(
@@ -1980,6 +2071,83 @@ class LedgerClient:
     )
     envelope = self._call_op("Create schedule", response)
     return self._typed_result("Create schedule", envelope, InformationBlockEnvelope)
+
+  def preview_schedule(
+    self,
+    graph_id: str,
+    *,
+    name: str,
+    element_ids: list[str],
+    period_start: str,
+    period_end: str,
+    monthly_amount: int | None = None,
+    debit_element_id: str,
+    credit_element_id: str,
+    entry_type: str = "closing",
+    memo_template: str = "",
+    taxonomy_id: str | None = None,
+    method: str | None = None,
+    original_amount: int | None = None,
+    residual_value: int | None = None,
+    useful_life_months: int | None = None,
+    asset_element_id: str | None = None,
+    auto_reverse: bool = False,
+    booked_on: str | None = None,
+    entity_id: str | None = None,
+    periodic_amounts: list[int] | None = None,
+    loan_terms: dict[str, Any] | None = None,
+    legs: list[dict[str, Any]] | None = None,
+    dimension_ids: list[str] | None = None,
+    replaces_structure_id: str | None = None,
+    closed_through: str | None = None,
+  ) -> PreviewScheduleResponse:
+    """Generate a schedule from a definition without keeping it.
+
+    The same generator and guards as :meth:`create_schedule`, run and
+    rolled back. The response carries ``envelope`` (what create would leave;
+    its ids provisional), ``roll_forward`` (the balance the schedule carries
+    period by period, with a loan's interest, payment, principal and current
+    portion) and ``warnings`` naming any active schedule already posting the
+    same accounts in the same months. A definition create would refuse is
+    refused here with the period that breaks. With ``replaces_structure_id``
+    (the schedule being edited or recreated), ``replaces`` says what it has
+    posted and the path the change takes: ``rebuild`` (save through
+    :meth:`rebuild_schedule`) while nothing has posted,
+    ``terminate_and_succeed`` after.
+    """
+    payload_dict = self._schedule_payload(
+      name=name,
+      element_ids=element_ids,
+      period_start=period_start,
+      period_end=period_end,
+      monthly_amount=monthly_amount,
+      debit_element_id=debit_element_id,
+      credit_element_id=credit_element_id,
+      entry_type=entry_type,
+      memo_template=memo_template,
+      taxonomy_id=taxonomy_id,
+      method=method,
+      original_amount=original_amount,
+      residual_value=residual_value,
+      useful_life_months=useful_life_months,
+      asset_element_id=asset_element_id,
+      auto_reverse=auto_reverse,
+      booked_on=booked_on,
+      entity_id=entity_id,
+      periodic_amounts=periodic_amounts,
+      loan_terms=loan_terms,
+      legs=legs,
+      dimension_ids=dimension_ids,
+      closed_through=closed_through,
+    )
+    if replaces_structure_id:
+      payload_dict["replaces_structure_id"] = replaces_structure_id
+    body = PreviewScheduleRequest.from_dict(payload_dict)
+    response = op_preview_schedule(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Preview schedule", response)
+    return self._typed_result("Preview schedule", envelope, PreviewScheduleResponse)
 
   def dispose_schedule(
     self,
@@ -2118,6 +2286,11 @@ class LedgerClient:
     structure_id: str,
     *,
     idempotency_key: str | None = None,
+    period_start: str | None = None,
+    period_end: str | None = None,
+    monthly_amount: int | None = None,
+    entry_template: dict[str, Any] | None = None,
+    schedule_metadata: dict[str, Any] | None = None,
   ) -> ScheduleCreatedResponse:
     """Rebuild a schedule in place — re-run the generator on an existing schedule.
 
@@ -2132,11 +2305,31 @@ class LedgerClient:
     the schedule to today's close state. Use this to pick up a fixed
     generator without orphaning obligations.
 
+    It is also how an edit is saved while nothing has posted:
+    ``period_start``, ``period_end``, ``monthly_amount``, ``entry_template``
+    (replacing the stored one whole) and ``schedule_metadata`` (only the
+    fields named) replace the stored definition before it regenerates, as
+    the schedule's envelope reads them back (``artifact.mechanics``).
+    Omitted fields keep their stored values. Refused once an entry has
+    posted; :meth:`preview_schedule` with ``replaces_structure_id`` says
+    which path an edit takes.
+
     Supply ``idempotency_key`` to make the call safe to retry — replays
     within 24 hours return the same envelope. Reusing the key with a
     different body returns HTTP 409.
     """
-    body = RebuildScheduleRequest(structure_id=structure_id)
+    body_dict: dict[str, Any] = {"structure_id": structure_id}
+    if period_start is not None:
+      body_dict["period_start"] = period_start
+    if period_end is not None:
+      body_dict["period_end"] = period_end
+    if monthly_amount is not None:
+      body_dict["monthly_amount"] = monthly_amount
+    if entry_template is not None:
+      body_dict["entry_template"] = entry_template
+    if schedule_metadata is not None:
+      body_dict["schedule_metadata"] = schedule_metadata
+    body = RebuildScheduleRequest.from_dict(body_dict)
     response = op_rebuild_schedule(
       graph_id=graph_id,
       body=body,
