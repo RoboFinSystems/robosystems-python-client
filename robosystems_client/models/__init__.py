@@ -309,6 +309,7 @@ from .get_operation_status_response_getoperationstatus import (
   GetOperationStatusResponseGetoperationstatus,
 )
 from .graph_capacity_response import GraphCapacityResponse
+from .graph_freshness import GraphFreshness
 from .graph_info import GraphInfo
 from .graph_limits_response import GraphLimitsResponse
 from .graph_member_list_response import GraphMemberListResponse
@@ -1503,6 +1504,7 @@ __all__ = (
   "GetFileInfoResponse",
   "GetOperationStatusResponseGetoperationstatus",
   "GraphCapacityResponse",
+  "GraphFreshness",
   "GraphInfo",
   "GraphLimitsResponse",
   "GraphMemberListResponse",

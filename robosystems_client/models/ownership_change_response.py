@@ -26,16 +26,22 @@ class OwnershipChangeResponse:
           period (str): The first month the new share holds.
           from_pct (float): The parent's share the month before.
           to_pct (float): The parent's share from `period`.
-          consideration (int): Cents paid to the outside owners.
+          consideration (int): Cents paid to the outside owners, or received from them for shares sold.
           book_value (int): Cents: the share bought of the member's capital, which the investment elimination moves from
-              the outside owners to the parent.
+              the outside owners to the parent; negative for a share sold, moved the other way.
           earnings_transferred (int): Cents: the share bought of the member's results since it joined, moved from the
-              outside owners' interest to the parent.
-          equity_adjustment (int): Cents taken from the parent's equity: the price above the carrying amount of what was
-              bought (negative when it paid less).
+              outside owners' interest to the parent; negative for a share sold.
+          equity_adjustment (int): Cents taken from the parent's equity (negative: added to it): for a purchase, the price
+              above the carrying amount of what was bought; for a sale, the carrying amount given up above the price.
           entry (JournalEntryResponse): The common response shape for journal entry write operations.
           premium_transferred (int | Unset): Cents: the share bought of the outside owners' interest beyond their share of
-              book value (from the acquisition at fair value, or its step-ups), moved to the parent. Default: 0.
+              book value (from the acquisition at fair value, or its step-ups), moved to the parent; negative for a share
+              sold. Default: 0.
+          carrying_released (int | Unset): Cents, for a sale: the carrying amount of the shares sold on the parent's
+              books, its cost pro rata, which its sale entry credits against the investment. Zero for a purchase. Default: 0.
+          gain_reversed (int | Unset): Cents, for a sale: the gain (a loss negative) the parent's own books take, the
+              price less the carrying amount released, which the entry reverses — the group has none while control is kept.
+              Zero for a purchase. Default: 0.
           replaced (bool | Unset): True when it replaced an earlier draft for the month. Default: False.
   """
 
@@ -50,6 +56,8 @@ class OwnershipChangeResponse:
   equity_adjustment: int
   entry: JournalEntryResponse
   premium_transferred: int | Unset = 0
+  carrying_released: int | Unset = 0
+  gain_reversed: int | Unset = 0
   replaced: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -76,6 +84,10 @@ class OwnershipChangeResponse:
 
     premium_transferred = self.premium_transferred
 
+    carrying_released = self.carrying_released
+
+    gain_reversed = self.gain_reversed
+
     replaced = self.replaced
 
     field_dict: dict[str, Any] = {}
@@ -96,6 +108,10 @@ class OwnershipChangeResponse:
     )
     if premium_transferred is not UNSET:
       field_dict["premium_transferred"] = premium_transferred
+    if carrying_released is not UNSET:
+      field_dict["carrying_released"] = carrying_released
+    if gain_reversed is not UNSET:
+      field_dict["gain_reversed"] = gain_reversed
     if replaced is not UNSET:
       field_dict["replaced"] = replaced
 
@@ -128,6 +144,10 @@ class OwnershipChangeResponse:
 
     premium_transferred = d.pop("premium_transferred", UNSET)
 
+    carrying_released = d.pop("carrying_released", UNSET)
+
+    gain_reversed = d.pop("gain_reversed", UNSET)
+
     replaced = d.pop("replaced", UNSET)
 
     ownership_change_response = cls(
@@ -142,6 +162,8 @@ class OwnershipChangeResponse:
       equity_adjustment=equity_adjustment,
       entry=entry,
       premium_transferred=premium_transferred,
+      carrying_released=carrying_released,
+      gain_reversed=gain_reversed,
       replaced=replaced,
     )
 
