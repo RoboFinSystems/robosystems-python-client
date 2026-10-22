@@ -815,10 +815,12 @@ type Query {
   ): PublishListDetail
 
   """
-  The outside owners' share of a member's result for one month: the
-  pro-rata figure its ownership gives, the override set with
-  `set-allocation-override` if any, and the share the consolidating
-  entries use.
+  The outside owners' share of a member's result for one month.
+  
+  The pro-rata figure its ownership gives, the override set with
+  `set-allocation-override` if any, and the share the consolidating entries
+  use. Null for an entity that is not a member consolidated in full that
+  month: its outside owners have no share the engine allocates.
   """
   allocationShare(
     """The member."""

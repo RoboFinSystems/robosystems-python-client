@@ -691,6 +691,12 @@ from .operation_envelope_live_financial_statement_response import (
 from .operation_envelope_live_financial_statement_response_status import (
   OperationEnvelopeLiveFinancialStatementResponseStatus,
 )
+from .operation_envelope_ownership_change_response import (
+  OperationEnvelopeOwnershipChangeResponse,
+)
+from .operation_envelope_ownership_change_response_status import (
+  OperationEnvelopeOwnershipChangeResponseStatus,
+)
 from .operation_envelope_portfolio_block_envelope import (
   OperationEnvelopePortfolioBlockEnvelope,
 )
@@ -854,6 +860,7 @@ from .org_usage_response import OrgUsageResponse
 from .org_usage_response_daily_trend_item import OrgUsageResponseDailyTrendItem
 from .org_usage_response_graph_details_item import OrgUsageResponseGraphDetailsItem
 from .org_usage_summary import OrgUsageSummary
+from .ownership_change_response import OwnershipChangeResponse
 from .passkey_delete_request import PasskeyDeleteRequest
 from .passkey_delete_request_assertion_type_0 import PasskeyDeleteRequestAssertionType0
 from .passkey_info import PasskeyInfo
@@ -944,6 +951,7 @@ from .reconciling_item_plan_default_disposition import (
 from .reconciling_item_regenerated import ReconcilingItemRegenerated
 from .record_acquisition_request import RecordAcquisitionRequest
 from .record_opening_balance_request import RecordOpeningBalanceRequest
+from .record_ownership_change_request import RecordOwnershipChangeRequest
 from .record_statement_balance_request import RecordStatementBalanceRequest
 from .recovery_codes_request import RecoveryCodesRequest
 from .recovery_codes_request_assertion_type_0 import RecoveryCodesRequestAssertionType0
@@ -1670,6 +1678,8 @@ __all__ = (
   "OperationEnvelopelistPublishListMemberResponseStatus",
   "OperationEnvelopeLiveFinancialStatementResponse",
   "OperationEnvelopeLiveFinancialStatementResponseStatus",
+  "OperationEnvelopeOwnershipChangeResponse",
+  "OperationEnvelopeOwnershipChangeResponseStatus",
   "OperationEnvelopePortfolioBlockEnvelope",
   "OperationEnvelopePortfolioBlockEnvelopeStatus",
   "OperationEnvelopePreviewConsolidationEntriesResponse",
@@ -1749,6 +1759,7 @@ __all__ = (
   "OrgUsageResponseDailyTrendItem",
   "OrgUsageResponseGraphDetailsItem",
   "OrgUsageSummary",
+  "OwnershipChangeResponse",
   "PasskeyDeleteRequest",
   "PasskeyDeleteRequestAssertionType0",
   "PasskeyInfo",
@@ -1823,6 +1834,7 @@ __all__ = (
   "ReconcilingItemRegenerated",
   "RecordAcquisitionRequest",
   "RecordOpeningBalanceRequest",
+  "RecordOwnershipChangeRequest",
   "RecordStatementBalanceRequest",
   "RecoveryCodesRequest",
   "RecoveryCodesRequestAssertionType0",
