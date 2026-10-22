@@ -1195,6 +1195,30 @@ class TestJournalEntries:
       "basis": "Share purchase agreement",
     }
 
+  @patch("robosystems_client.clients.ledger_client.op_record_deconsolidation")
+  def test_record_deconsolidation(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "record-deconsolidation",
+      {
+        "entity_id": "ent_cafe",
+        "period": "2026-06",
+        "consideration": 6200000,
+        "earnings_restored": 2440000,
+        "gain_loss": -2443412,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.record_deconsolidation(
+      graph_id, entity_id="ent_cafe", consideration=6200000, basis="Sale agreement"
+    )
+    assert result["gain_loss"] == -2443412
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "entity_id": "ent_cafe",
+      "consideration": 6200000,
+      "basis": "Sale agreement",
+    }
+
 
 # ── Taxonomy / entity linking ───────────────────────────────────────────
 

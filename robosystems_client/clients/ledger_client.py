@@ -69,6 +69,9 @@ from ..api.robo_ledger_ledger_events.record_acquisition import (
 from ..api.robo_ledger_ledger_events.record_ownership_change import (
   sync_detailed as op_record_ownership_change,
 )
+from ..api.robo_ledger_ledger_events.record_deconsolidation import (
+  sync_detailed as op_record_deconsolidation,
+)
 from ..api.robo_ledger_ledger_events.record_statement_balance import (
   sync_detailed as op_record_statement_balance,
 )
@@ -630,6 +633,8 @@ from ..models.acquisition_response import AcquisitionResponse
 from ..models.record_acquisition_request import RecordAcquisitionRequest
 from ..models.ownership_change_response import OwnershipChangeResponse
 from ..models.record_ownership_change_request import RecordOwnershipChangeRequest
+from ..models.deconsolidation_response import DeconsolidationResponse
+from ..models.record_deconsolidation_request import RecordDeconsolidationRequest
 from ..models.live_financial_statement_request import LiveFinancialStatementRequest
 from ..models.financial_statement_analysis_response import (
   FinancialStatementAnalysisResponse,
@@ -2718,6 +2723,33 @@ class LedgerClient:
     envelope = self._call_op("Record ownership change", response)
     return self._typed_result(
       "Record ownership change", envelope, OwnershipChangeResponse
+    )
+
+  def record_deconsolidation(
+    self,
+    graph_id: str,
+    *,
+    entity_id: str,
+    consideration: int,
+    basis: str,
+  ) -> DeconsolidationResponse:
+    """Record a member's leaving the group once ``left_on`` is set on it:
+    what the parent received for its shares in cents (0 for a dissolution)
+    and the ``basis``. Writes a draft in the consolidation entity, dated the
+    first day of the month after the member's last, that its close posts:
+    what the entity still held for the member is taken off, a member in full
+    has its results put back into the group's equity, and the difference is
+    the gain or loss on its leaving — the group's adjustment to the parent's
+    own gain (ASC 810)."""
+    body = RecordDeconsolidationRequest(
+      entity_id=entity_id, consideration=consideration, basis=basis
+    )
+    response = op_record_deconsolidation(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Record deconsolidation", response)
+    return self._typed_result(
+      "Record deconsolidation", envelope, DeconsolidationResponse
     )
 
   # ── Event blocks (generic preview + status transitions) ──────────────
