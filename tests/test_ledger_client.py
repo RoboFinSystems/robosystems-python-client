@@ -3600,6 +3600,51 @@ class TestShareControls:
     assert page.pagination.total == 1
 
   @patch("robosystems_client.clients.ledger_client.LedgerClient._query")
+  def test_list_event_handlers(self, mock_query, mock_config, graph_id):
+    mock_query.return_value = {
+      "eventHandlers": {
+        "eventHandlers": [
+          {
+            "id": "hdl_1",
+            "name": "Stripe payouts",
+            "description": None,
+            "eventType": "bank_transaction",
+            "eventCategory": None,
+            "matchSource": "stripe",
+            "matchAgentType": None,
+            "matchResourceType": None,
+            "matchMetadataExpression": None,
+            "transactionTemplate": {"transactions": []},
+            "priority": 10,
+            "isActive": True,
+            "origin": "tenant",
+            "suggestedBy": "ai",
+            "confidence": None,
+            "approvedBy": None,
+            "approvedAt": None,
+            "awaitingApproval": True,
+            "createdAt": None,
+            "updatedAt": None,
+            "createdBy": "usr_1",
+          }
+        ],
+        "pagination": {"total": 1, "limit": 100, "offset": 0, "hasMore": False},
+      }
+    }
+    client = LedgerClient(mock_config)
+    page = client.list_event_handlers(graph_id, awaiting_approval=True)
+    assert page is not None
+    assert page.event_handlers[0].awaiting_approval is True
+    assert page.event_handlers[0].transaction_template == {"transactions": []}
+    assert mock_query.call_args.args[2] == {
+      "eventType": None,
+      "isActive": None,
+      "awaitingApproval": True,
+      "limit": 100,
+      "offset": 0,
+    }
+
+  @patch("robosystems_client.clients.ledger_client.LedgerClient._query")
   def test_list_report_shares(self, mock_query, mock_config, graph_id):
     mock_query.return_value = {
       "reportShares": {

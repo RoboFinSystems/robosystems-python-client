@@ -50,6 +50,7 @@ __all__ = [
   "LIST_LEDGER_ELEMENTS_GQL",
   "LIST_LEDGER_ENTITIES_GQL",
   "LIST_LEDGER_EVENT_BLOCKS_GQL",
+  "LIST_LEDGER_EVENT_HANDLERS_GQL",
   "LIST_LEDGER_JOURNAL_ENTRIES_GQL",
   "LIST_LEDGER_MAPPINGS_GQL",
   "LIST_LEDGER_PUBLISH_LISTS_GQL",
@@ -2004,6 +2005,48 @@ query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status:
     documentId
     createdAt
     createdBy
+  }
+}
+"""
+
+LIST_LEDGER_EVENT_HANDLERS_GQL = """
+query ListLedgerEventHandlers($eventType: String, $isActive: Boolean, $awaitingApproval: Boolean, $limit: Int! = 100, $offset: Int! = 0) {
+  eventHandlers(
+    eventType: $eventType
+    isActive: $isActive
+    awaitingApproval: $awaitingApproval
+    limit: $limit
+    offset: $offset
+  ) {
+    eventHandlers {
+      id
+      name
+      description
+      eventType
+      eventCategory
+      matchSource
+      matchAgentType
+      matchResourceType
+      matchMetadataExpression
+      transactionTemplate
+      priority
+      isActive
+      origin
+      suggestedBy
+      confidence
+      approvedBy
+      approvedAt
+      awaitingApproval
+      createdAt
+      updatedAt
+      createdBy
+    }
+    pagination {
+      total
+      limit
+      offset
+      hasMore
+    }
   }
 }
 """

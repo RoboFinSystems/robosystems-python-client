@@ -54,6 +54,7 @@ from .list_ledger_dimensions import ListLedgerDimensions
 from .list_ledger_elements import ListLedgerElements
 from .list_ledger_entities import ListLedgerEntities
 from .list_ledger_event_blocks import ListLedgerEventBlocks
+from .list_ledger_event_handlers import ListLedgerEventHandlers
 from .list_ledger_journal_entries import ListLedgerJournalEntries
 from .list_ledger_mappings import ListLedgerMappings
 from .list_ledger_publish_lists import ListLedgerPublishLists
@@ -122,6 +123,7 @@ from .operations import (
   LIST_LEDGER_ELEMENTS_GQL,
   LIST_LEDGER_ENTITIES_GQL,
   LIST_LEDGER_EVENT_BLOCKS_GQL,
+  LIST_LEDGER_EVENT_HANDLERS_GQL,
   LIST_LEDGER_JOURNAL_ENTRIES_GQL,
   LIST_LEDGER_MAPPINGS_GQL,
   LIST_LEDGER_PUBLISH_LISTS_GQL,
@@ -945,6 +947,31 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListLedgerEventBlocks.model_validate(data)
+
+  def list_ledger_event_handlers(
+    self,
+    limit: int,
+    offset: int,
+    event_type: Union[Optional[str], UnsetType] = UNSET,
+    is_active: Union[Optional[bool], UnsetType] = UNSET,
+    awaiting_approval: Union[Optional[bool], UnsetType] = UNSET,
+    **kwargs: Any,
+  ) -> ListLedgerEventHandlers:
+    variables: dict[str, object] = {
+      "eventType": event_type,
+      "isActive": is_active,
+      "awaitingApproval": awaiting_approval,
+      "limit": limit,
+      "offset": offset,
+    }
+    response = self.execute(
+      query=LIST_LEDGER_EVENT_HANDLERS_GQL,
+      operation_name="ListLedgerEventHandlers",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListLedgerEventHandlers.model_validate(data)
 
   def list_ledger_journal_entries(
     self,

@@ -412,6 +412,12 @@ from ..graphql.generated.list_ledger_blocked_source_graphs import (
 from ..graphql.generated.list_ledger_blocked_source_graphs import (
   ListLedgerBlockedSourceGraphsBlockedSourceGraphs as BlockedSourceGraphsPage,
 )
+from ..graphql.generated.list_ledger_event_handlers import (
+  ListLedgerEventHandlers,
+)
+from ..graphql.generated.list_ledger_event_handlers import (
+  ListLedgerEventHandlersEventHandlers as EventHandlersPage,
+)
 from ..graphql.generated.list_ledger_report_shares import (
   ListLedgerReportShares,
 )
@@ -535,6 +541,7 @@ from ..graphql.generated.operations import (
   LIST_LEDGER_ACCOUNTS_GQL,
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
   LIST_LEDGER_REPORT_SHARES_GQL,
+  LIST_LEDGER_EVENT_HANDLERS_GQL,
   LIST_LEDGER_AGENTS_GQL,
   LIST_LEDGER_DIMENSIONS_GQL,
   LIST_LEDGER_ELEMENTS_GQL,
@@ -606,14 +613,14 @@ from ..models.update_event_block_request import UpdateEventBlockRequest
 from ..models.update_event_handler_request import UpdateEventHandlerRequest
 from ..models.delete_journal_entry_request import DeleteJournalEntryRequest
 from ..models.create_legacy_arm import CreateLegacyArm
-from ..models.create_rollforward_arm import CreateRollforwardArm
+from ..models.create_forecast_arm import CreateForecastArm
 from ..models.delete_legacy_arm import DeleteLegacyArm
-from ..models.delete_rollforward_arm import DeleteRollforwardArm
+from ..models.delete_forecast_arm import DeleteForecastArm
 from ..models.delete_schedule_arm import DeleteScheduleArm
 from ..models.delete_schedule_request import DeleteScheduleRequest
 from ..models.rebuild_schedule_request import RebuildScheduleRequest
 from ..models.update_legacy_arm import UpdateLegacyArm
-from ..models.update_rollforward_arm import UpdateRollforwardArm
+from ..models.update_forecast_arm import UpdateForecastArm
 from ..models.link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from ..models.update_journal_entry_request import UpdateJournalEntryRequest
 from ..models.opening_balance_input import OpeningBalanceInput
@@ -1812,21 +1819,19 @@ class LedgerClient:
   def create_information_block(
     self,
     graph_id: str,
-    body: CreateLegacyArm | CreateRollforwardArm | CreateScheduleArm,
+    body: CreateForecastArm | CreateLegacyArm | CreateScheduleArm,
     *,
     idempotency_key: str | None = None,
   ) -> InformationBlockEnvelope:
     """Create an Information Block of any registered block_type.
 
     Generic wrapper over ``create-information-block``. Pass a typed
-    arm body (``CreateScheduleArm``, ``CreateRollforwardArm``, or
+    arm body (``CreateScheduleArm``, ``CreateForecastArm``, or
     ``CreateLegacyArm``) — the discriminator routes server-side to
     the correct dispatch handler.
 
     Convenience methods exist for specific block types — e.g.
     ``create_schedule()`` builds + posts a ``CreateScheduleArm``.
-    For block types without a convenience method (currently
-    ``rollforward``), use this generic entry.
     """
     response = op_create_information_block(
       graph_id=graph_id,
@@ -1842,7 +1847,7 @@ class LedgerClient:
   def update_information_block(
     self,
     graph_id: str,
-    body: UpdateLegacyArm | UpdateRollforwardArm | UpdateScheduleArm,
+    body: UpdateForecastArm | UpdateLegacyArm | UpdateScheduleArm,
   ) -> InformationBlockEnvelope:
     """Update an Information Block. Generic wrapper over
     ``update-information-block``."""
@@ -1857,7 +1862,7 @@ class LedgerClient:
   def delete_information_block(
     self,
     graph_id: str,
-    body: DeleteLegacyArm | DeleteRollforwardArm | DeleteScheduleArm,
+    body: DeleteForecastArm | DeleteLegacyArm | DeleteScheduleArm,
   ) -> DeleteInformationBlockResponse:
     """Delete an Information Block. Generic wrapper over
     ``delete-information-block``."""
@@ -2636,6 +2641,34 @@ class LedgerClient:
     return DischargeCandidates.model_validate(data).discharge_candidates
 
   # ── Event handlers (DSL handler registry) ────────────────────────────
+
+  def list_event_handlers(
+    self,
+    graph_id: str,
+    event_type: str | None = None,
+    is_active: bool | None = None,
+    awaiting_approval: bool | None = None,
+    limit: int = 100,
+    offset: int = 0,
+  ) -> EventHandlersPage | None:
+    """The graph's event handlers, highest priority first, active or not.
+
+    ``awaiting_approval=True`` narrows to an AI client's suggestions that no
+    person has approved (they take no part in matching until one does);
+    ``False`` to everything else.
+    """
+    data = self._query(
+      graph_id,
+      LIST_LEDGER_EVENT_HANDLERS_GQL,
+      {
+        "eventType": event_type,
+        "isActive": is_active,
+        "awaitingApproval": awaiting_approval,
+        "limit": limit,
+        "offset": offset,
+      },
+    )
+    return ListLedgerEventHandlers.model_validate(data).event_handlers
 
   def create_event_handler(
     self,

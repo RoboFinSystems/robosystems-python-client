@@ -23,28 +23,34 @@ T = TypeVar("T", bound="EventHandlerResponse")
 
 @_attrs_define
 class EventHandlerResponse:
-  """
+  """A rule that turns a matching event into GL rows.
+
   Attributes:
-      id (str):
-      name (str):
-      event_type (str):
-      transaction_template (EventHandlerResponseTransactionTemplate):
-      priority (int):
-      is_active (bool):
-      origin (str):
-      description (None | str | Unset):
-      event_category (None | str | Unset):
-      match_source (None | str | Unset):
-      match_agent_type (None | str | Unset):
-      match_resource_type (None | str | Unset):
-      match_metadata_expression (EventHandlerResponseMatchMetadataExpressionType0 | None | Unset):
-      suggested_by (None | str | Unset):
-      confidence (float | None | Unset):
-      approved_by (None | str | Unset):
-      approved_at (datetime.datetime | None | Unset):
-      created_at (datetime.datetime | None | Unset):
-      updated_at (datetime.datetime | None | Unset):
-      created_by (None | str | Unset):
+      id (str): Handler id (`hdl_`-prefixed).
+      name (str): Human-readable handler name.
+      event_type (str): The event type the handler matches.
+      transaction_template (EventHandlerResponseTransactionTemplate): The GL rows the handler books: its DSL template,
+          as JSON.
+      priority (int): Among handlers that match, the highest priority wins.
+      is_active (bool): Whether the handler takes part in matching at all.
+      origin (str): `hub` for a platform-shipped handler, `tenant` otherwise.
+      description (None | str | Unset): What the handler is for.
+      event_category (None | str | Unset): Match on the event's category; null matches any.
+      match_source (None | str | Unset): Match on the event's source system; null matches any.
+      match_agent_type (None | str | Unset): Match on the counterparty's role; null matches any.
+      match_resource_type (None | str | Unset): Match on the resource type; null matches any.
+      match_metadata_expression (EventHandlerResponseMatchMetadataExpressionType0 | None | Unset): Equality matches
+          against the event's metadata.
+      suggested_by (None | str | Unset): `ai` when an AI client created the handler or last changed what it matches or
+          books; null when a person did.
+      confidence (float | None | Unset): The suggesting AI's confidence, when it gave one.
+      approved_by (None | str | Unset): The user who approved an AI-suggested handler.
+      approved_at (datetime.datetime | None | Unset): When it was approved.
+      awaiting_approval (bool | Unset): True for an AI-suggested handler no one has approved: it takes no part in
+          matching until a person approves it. Default: False.
+      created_at (datetime.datetime | None | Unset): When it was created.
+      updated_at (datetime.datetime | None | Unset): When it last changed.
+      created_by (None | str | Unset): The user who created it.
   """
 
   id: str
@@ -66,6 +72,7 @@ class EventHandlerResponse:
   confidence: float | None | Unset = UNSET
   approved_by: None | str | Unset = UNSET
   approved_at: datetime.datetime | None | Unset = UNSET
+  awaiting_approval: bool | Unset = False
   created_at: datetime.datetime | None | Unset = UNSET
   updated_at: datetime.datetime | None | Unset = UNSET
   created_by: None | str | Unset = UNSET
@@ -156,6 +163,8 @@ class EventHandlerResponse:
     else:
       approved_at = self.approved_at
 
+    awaiting_approval = self.awaiting_approval
+
     created_at: None | str | Unset
     if isinstance(self.created_at, Unset):
       created_at = UNSET
@@ -211,6 +220,8 @@ class EventHandlerResponse:
       field_dict["approved_by"] = approved_by
     if approved_at is not UNSET:
       field_dict["approved_at"] = approved_at
+    if awaiting_approval is not UNSET:
+      field_dict["awaiting_approval"] = awaiting_approval
     if created_at is not UNSET:
       field_dict["created_at"] = created_at
     if updated_at is not UNSET:
@@ -360,6 +371,8 @@ class EventHandlerResponse:
 
     approved_at = _parse_approved_at(d.pop("approved_at", UNSET))
 
+    awaiting_approval = d.pop("awaiting_approval", UNSET)
+
     def _parse_created_at(data: object) -> datetime.datetime | None | Unset:
       if data is None:
         return data
@@ -421,6 +434,7 @@ class EventHandlerResponse:
       confidence=confidence,
       approved_by=approved_by,
       approved_at=approved_at,
+      awaiting_approval=awaiting_approval,
       created_at=created_at,
       updated_at=updated_at,
       created_by=created_by,

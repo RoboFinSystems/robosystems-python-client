@@ -11,7 +11,7 @@ T = TypeVar("T", bound="EventHandlerResponseTransactionTemplate")
 
 @_attrs_define
 class EventHandlerResponseTransactionTemplate:
-  """ """
+  """The GL rows the handler books: its DSL template, as JSON."""
 
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
