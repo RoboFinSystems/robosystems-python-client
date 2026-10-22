@@ -34,6 +34,8 @@ class OwnershipChangeResponse:
           equity_adjustment (int): Cents taken from the parent's equity: the price above the carrying amount of what was
               bought (negative when it paid less).
           entry (JournalEntryResponse): The common response shape for journal entry write operations.
+          premium_transferred (int | Unset): Cents: the share bought of the outside owners' interest beyond their share of
+              book value (from the acquisition at fair value, or its step-ups), moved to the parent. Default: 0.
           replaced (bool | Unset): True when it replaced an earlier draft for the month. Default: False.
   """
 
@@ -47,6 +49,7 @@ class OwnershipChangeResponse:
   earnings_transferred: int
   equity_adjustment: int
   entry: JournalEntryResponse
+  premium_transferred: int | Unset = 0
   replaced: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -71,6 +74,8 @@ class OwnershipChangeResponse:
 
     entry = self.entry.to_dict()
 
+    premium_transferred = self.premium_transferred
+
     replaced = self.replaced
 
     field_dict: dict[str, Any] = {}
@@ -89,6 +94,8 @@ class OwnershipChangeResponse:
         "entry": entry,
       }
     )
+    if premium_transferred is not UNSET:
+      field_dict["premium_transferred"] = premium_transferred
     if replaced is not UNSET:
       field_dict["replaced"] = replaced
 
@@ -119,6 +126,8 @@ class OwnershipChangeResponse:
 
     entry = JournalEntryResponse.from_dict(d.pop("entry"))
 
+    premium_transferred = d.pop("premium_transferred", UNSET)
+
     replaced = d.pop("replaced", UNSET)
 
     ownership_change_response = cls(
@@ -132,6 +141,7 @@ class OwnershipChangeResponse:
       earnings_transferred=earnings_transferred,
       equity_adjustment=equity_adjustment,
       entry=entry,
+      premium_transferred=premium_transferred,
       replaced=replaced,
     )
 

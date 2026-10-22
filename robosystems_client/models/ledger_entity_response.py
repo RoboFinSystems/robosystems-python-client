@@ -66,6 +66,9 @@ class LedgerEntityResponse:
               member still. The consolidated statements include it through that month and leave it out after. Membership is by
               month: a period column wider than a month that overlaps the interval is summed whole, so a member's books in
               this graph should hold only the months it belonged.
+          is_former (bool | Unset): True once the month this entity left the group is over: its months in the group are
+              history, readable under it, and it is no longer current. False for a member still in, and through the month it
+              leaves. Default: False.
           source (str | Unset): Provenance: 'native' | 'sec' | 'quickbooks' | 'xero' | 'plaid'. Default: 'native'.
           source_id (None | str | Unset): Source-system primary key for sync reconciliation.
           source_graph_id (None | str | Unset): Origin graph for received entities (cross-graph linking, e.g. RoboInvestor
@@ -107,6 +110,7 @@ class LedgerEntityResponse:
   entity_role: str | Unset = "operating"
   joined_on: datetime.date | None | Unset = UNSET
   left_on: datetime.date | None | Unset = UNSET
+  is_former: bool | Unset = False
   source: str | Unset = "native"
   source_id: None | str | Unset = UNSET
   source_graph_id: None | str | Unset = UNSET
@@ -263,6 +267,8 @@ class LedgerEntityResponse:
     else:
       left_on = self.left_on
 
+    is_former = self.is_former
+
     source = self.source
 
     source_id: None | str | Unset
@@ -383,6 +389,8 @@ class LedgerEntityResponse:
       field_dict["joined_on"] = joined_on
     if left_on is not UNSET:
       field_dict["left_on"] = left_on
+    if is_former is not UNSET:
+      field_dict["is_former"] = is_former
     if source is not UNSET:
       field_dict["source"] = source
     if source_id is not UNSET:
@@ -630,6 +638,8 @@ class LedgerEntityResponse:
 
     left_on = _parse_left_on(d.pop("left_on", UNSET))
 
+    is_former = d.pop("is_former", UNSET)
+
     source = d.pop("source", UNSET)
 
     def _parse_source_id(data: object) -> None | str | Unset:
@@ -752,6 +762,7 @@ class LedgerEntityResponse:
       entity_role=entity_role,
       joined_on=joined_on,
       left_on=left_on,
+      is_former=is_former,
       source=source,
       source_id=source_id,
       source_graph_id=source_graph_id,

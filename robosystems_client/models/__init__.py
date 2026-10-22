@@ -179,6 +179,7 @@ from .cypher_statement_request_parameters_type_0 import (
 from .database_health_response import DatabaseHealthResponse
 from .database_info_response import DatabaseInfoResponse
 from .database_storage_entry import DatabaseStorageEntry
+from .deconsolidation_response import DeconsolidationResponse
 from .delete_connection_disposition import DeleteConnectionDisposition
 from .delete_document_op import DeleteDocumentOp
 from .delete_file_op import DeleteFileOp
@@ -202,6 +203,7 @@ from .delete_security_operation import DeleteSecurityOperation
 from .delete_subgraph_op import DeleteSubgraphOp
 from .delete_taxonomy_block_request import DeleteTaxonomyBlockRequest
 from .delete_taxonomy_block_response import DeleteTaxonomyBlockResponse
+from .derecognized_balance import DerecognizedBalance
 from .describe_filing_request import DescribeFilingRequest
 from .describe_filing_response import DescribeFilingResponse
 from .describe_filing_response_counts_type_0 import DescribeFilingResponseCountsType0
@@ -551,6 +553,12 @@ from .operation_envelope_consolidation_worksheet_response import (
 )
 from .operation_envelope_consolidation_worksheet_response_status import (
   OperationEnvelopeConsolidationWorksheetResponseStatus,
+)
+from .operation_envelope_deconsolidation_response import (
+  OperationEnvelopeDeconsolidationResponse,
+)
+from .operation_envelope_deconsolidation_response_status import (
+  OperationEnvelopeDeconsolidationResponseStatus,
 )
 from .operation_envelope_delete_information_block_response import (
   OperationEnvelopeDeleteInformationBlockResponse,
@@ -961,6 +969,7 @@ from .reconciling_item_plan_default_disposition import (
 )
 from .reconciling_item_regenerated import ReconcilingItemRegenerated
 from .record_acquisition_request import RecordAcquisitionRequest
+from .record_deconsolidation_request import RecordDeconsolidationRequest
 from .record_opening_balance_request import RecordOpeningBalanceRequest
 from .record_ownership_change_request import RecordOwnershipChangeRequest
 from .record_statement_balance_request import RecordStatementBalanceRequest
@@ -1388,6 +1397,7 @@ __all__ = (
   "DatabaseHealthResponse",
   "DatabaseInfoResponse",
   "DatabaseStorageEntry",
+  "DeconsolidationResponse",
   "DeleteConnectionDisposition",
   "DeleteDocumentOp",
   "DeleteFileOp",
@@ -1411,6 +1421,7 @@ __all__ = (
   "DeleteSubgraphOp",
   "DeleteTaxonomyBlockRequest",
   "DeleteTaxonomyBlockResponse",
+  "DerecognizedBalance",
   "DescribeFilingRequest",
   "DescribeFilingResponse",
   "DescribeFilingResponseCountsType0",
@@ -1647,6 +1658,8 @@ __all__ = (
   "OperationEnvelopeComputeMetricsResponseStatus",
   "OperationEnvelopeConsolidationWorksheetResponse",
   "OperationEnvelopeConsolidationWorksheetResponseStatus",
+  "OperationEnvelopeDeconsolidationResponse",
+  "OperationEnvelopeDeconsolidationResponseStatus",
   "OperationEnvelopeDeleteInformationBlockResponse",
   "OperationEnvelopeDeleteInformationBlockResponseStatus",
   "OperationEnvelopeDeletePortfolioBlockResponse",
@@ -1858,6 +1871,7 @@ __all__ = (
   "ReconcilingItemPlanDefaultDisposition",
   "ReconcilingItemRegenerated",
   "RecordAcquisitionRequest",
+  "RecordDeconsolidationRequest",
   "RecordOpeningBalanceRequest",
   "RecordOwnershipChangeRequest",
   "RecordStatementBalanceRequest",
