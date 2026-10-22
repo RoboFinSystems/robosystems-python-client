@@ -111,6 +111,11 @@ from .get_ledger_agent import (
   GetLedgerAgentAgentClassification,
   GetLedgerAgentAgentClassifications,
 )
+from .get_ledger_allocation_share import (
+  GetLedgerAllocationShare,
+  GetLedgerAllocationShareAllocationShare,
+  GetLedgerAllocationShareAllocationShareOverride,
+)
 from .get_ledger_closing_book_structures import (
   GetLedgerClosingBookStructures,
   GetLedgerClosingBookStructuresClosingBookStructures,
@@ -296,6 +301,11 @@ from .list_ledger_agents import (
   ListLedgerAgentsAgentsClassification,
   ListLedgerAgentsAgentsClassifications,
 )
+from .list_ledger_allocation_overrides import (
+  ListLedgerAllocationOverrides,
+  ListLedgerAllocationOverridesAllocationOverrides,
+  ListLedgerAllocationOverridesAllocationOverridesOverrides,
+)
 from .list_ledger_bank_accounts import (
   ListLedgerBankAccounts,
   ListLedgerBankAccountsBankAccounts,
@@ -427,6 +437,7 @@ from .operations import (
   GET_LEDGER_ACCOUNT_ROLLUPS_GQL,
   GET_LEDGER_ACCOUNT_TREE_GQL,
   GET_LEDGER_AGENT_GQL,
+  GET_LEDGER_ALLOCATION_SHARE_GQL,
   GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL,
   GET_LEDGER_ENTITY_GQL,
   GET_LEDGER_EVENT_BLOCK_GQL,
@@ -458,6 +469,7 @@ from .operations import (
   LIST_INVESTOR_SECURITIES_GQL,
   LIST_LEDGER_ACCOUNTS_GQL,
   LIST_LEDGER_AGENTS_GQL,
+  LIST_LEDGER_ALLOCATION_OVERRIDES_GQL,
   LIST_LEDGER_BANK_ACCOUNTS_GQL,
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
   LIST_LEDGER_DIMENSIONS_GQL,
@@ -534,6 +546,7 @@ __all__ = [
   "GET_LEDGER_ACCOUNT_ROLLUPS_GQL",
   "GET_LEDGER_ACCOUNT_TREE_GQL",
   "GET_LEDGER_AGENT_GQL",
+  "GET_LEDGER_ALLOCATION_SHARE_GQL",
   "GET_LEDGER_CLOSING_BOOK_STRUCTURES_GQL",
   "GET_LEDGER_ENTITY_GQL",
   "GET_LEDGER_EVENT_BLOCK_GQL",
@@ -614,6 +627,9 @@ __all__ = [
   "GetLedgerAgentAgent",
   "GetLedgerAgentAgentClassification",
   "GetLedgerAgentAgentClassifications",
+  "GetLedgerAllocationShare",
+  "GetLedgerAllocationShareAllocationShare",
+  "GetLedgerAllocationShareAllocationShareOverride",
   "GetLedgerClosingBookStructures",
   "GetLedgerClosingBookStructuresClosingBookStructures",
   "GetLedgerClosingBookStructuresClosingBookStructuresCategories",
@@ -719,6 +735,7 @@ __all__ = [
   "LIST_INVESTOR_SECURITIES_GQL",
   "LIST_LEDGER_ACCOUNTS_GQL",
   "LIST_LEDGER_AGENTS_GQL",
+  "LIST_LEDGER_ALLOCATION_OVERRIDES_GQL",
   "LIST_LEDGER_BANK_ACCOUNTS_GQL",
   "LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL",
   "LIST_LEDGER_DIMENSIONS_GQL",
@@ -783,6 +800,9 @@ __all__ = [
   "ListLedgerAgentsAgents",
   "ListLedgerAgentsAgentsClassification",
   "ListLedgerAgentsAgentsClassifications",
+  "ListLedgerAllocationOverrides",
+  "ListLedgerAllocationOverridesAllocationOverrides",
+  "ListLedgerAllocationOverridesAllocationOverridesOverrides",
   "ListLedgerBankAccounts",
   "ListLedgerBankAccountsBankAccounts",
   "ListLedgerBankAccountsBankAccountsAccounts",

@@ -63,6 +63,9 @@ from ..api.robo_ledger_ledger_events.record_opening_balance import (
 from ..api.robo_ledger_ledger_events.set_allocation_override import (
   sync_detailed as op_set_allocation_override,
 )
+from ..api.robo_ledger_ledger_events.record_acquisition import (
+  sync_detailed as op_record_acquisition,
+)
 from ..api.robo_ledger_ledger_events.record_statement_balance import (
   sync_detailed as op_record_statement_balance,
 )
@@ -415,6 +418,18 @@ from ..graphql.generated.list_ledger_blocked_source_graphs import (
 from ..graphql.generated.list_ledger_event_handlers import (
   ListLedgerEventHandlers,
 )
+from ..graphql.generated.get_ledger_allocation_share import (
+  GetLedgerAllocationShare,
+)
+from ..graphql.generated.get_ledger_allocation_share import (
+  GetLedgerAllocationShareAllocationShare as AllocationShare,
+)
+from ..graphql.generated.list_ledger_allocation_overrides import (
+  ListLedgerAllocationOverrides,
+)
+from ..graphql.generated.list_ledger_allocation_overrides import (
+  ListLedgerAllocationOverridesAllocationOverridesOverrides as AllocationOverride,
+)
 from ..graphql.generated.list_ledger_event_handlers import (
   ListLedgerEventHandlersEventHandlers as EventHandlersPage,
 )
@@ -542,6 +557,8 @@ from ..graphql.generated.operations import (
   LIST_LEDGER_BLOCKED_SOURCE_GRAPHS_GQL,
   LIST_LEDGER_REPORT_SHARES_GQL,
   LIST_LEDGER_EVENT_HANDLERS_GQL,
+  GET_LEDGER_ALLOCATION_SHARE_GQL,
+  LIST_LEDGER_ALLOCATION_OVERRIDES_GQL,
   LIST_LEDGER_AGENTS_GQL,
   LIST_LEDGER_DIMENSIONS_GQL,
   LIST_LEDGER_ELEMENTS_GQL,
@@ -602,6 +619,9 @@ from ..models.propose_consolidation_entries_response import (
   ProposeConsolidationEntriesResponse,
 )
 from ..models.set_allocation_override_request import SetAllocationOverrideRequest
+from ..models.acquisition_allocation import AcquisitionAllocation
+from ..models.acquisition_response import AcquisitionResponse
+from ..models.record_acquisition_request import RecordAcquisitionRequest
 from ..models.live_financial_statement_request import LiveFinancialStatementRequest
 from ..models.financial_statement_analysis_response import (
   FinancialStatementAnalysisResponse,
@@ -2414,6 +2434,60 @@ class LedgerClient:
     return self._typed_result(
       "Set allocation override", envelope, AllocationOverrideResponse
     )
+
+  def get_allocation_share(
+    self, graph_id: str, entity_id: str, period: str
+  ) -> AllocationShare | None:
+    """The outside owners' share of a member's result for ``period``
+    (``YYYY-MM``), in cents: the pro-rata figure, the override if one is set,
+    and the share the consolidating entries use (``effective_amount``)."""
+    data = self._query(
+      graph_id,
+      GET_LEDGER_ALLOCATION_SHARE_GQL,
+      {"entityId": entity_id, "period": period},
+    )
+    return GetLedgerAllocationShare.model_validate(data).allocation_share
+
+  def list_allocation_overrides(
+    self, graph_id: str, entity_id: str
+  ) -> list[AllocationOverride]:
+    """Every month a member's allocation override is set for, oldest first."""
+    data = self._query(
+      graph_id, LIST_LEDGER_ALLOCATION_OVERRIDES_GQL, {"entityId": entity_id}
+    )
+    listed = ListLedgerAllocationOverrides.model_validate(data).allocation_overrides
+    return list(listed.overrides) if listed else []
+
+  def record_acquisition(
+    self,
+    graph_id: str,
+    *,
+    entity_id: str,
+    consideration: int,
+    basis: str,
+    nci_fair_value: int | None = None,
+    allocations: list[dict] | None = None,
+    confirm_bargain_purchase: bool = False,
+  ) -> AcquisitionResponse:
+    """Record a member the parent bought from its owners: the
+    ``consideration`` paid the sellers in cents, with the ``basis``, and
+    optionally the outside owners' fair value and fair-value step-ups
+    (``allocations``, each ``{"concept": qname, "amount": cents}``). Writes a
+    draft in the consolidation entity that its close posts; a bargain
+    purchase needs ``confirm_bargain_purchase``."""
+    body = RecordAcquisitionRequest(
+      entity_id=entity_id,
+      consideration=consideration,
+      basis=basis,
+      nci_fair_value=nci_fair_value if nci_fair_value is not None else UNSET,
+      allocations=[AcquisitionAllocation.from_dict(a) for a in allocations or []],
+      confirm_bargain_purchase=confirm_bargain_purchase,
+    )
+    response = op_record_acquisition(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Record acquisition", response)
+    return self._typed_result("Record acquisition", envelope, AcquisitionResponse)
 
   # ── Event blocks (generic preview + status transitions) ──────────────
 

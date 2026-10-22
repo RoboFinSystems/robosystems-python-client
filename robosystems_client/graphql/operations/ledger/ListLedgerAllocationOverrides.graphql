@@ -1,0 +1,6 @@
+query ListLedgerAllocationOverrides($entityId: String!) {
+  allocationOverrides(entityId: $entityId) {
+    entityId
+    overrides { period amount percentage basis setBy }
+  }
+}
