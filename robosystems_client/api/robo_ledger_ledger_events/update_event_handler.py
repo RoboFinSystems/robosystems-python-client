@@ -115,6 +115,8 @@ def sync_detailed(
 
    Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
   approve an AI-suggested handler; approve=false to revoke approval. Only supplied fields are updated.
+  Through an AI client, approve=true is refused, and a change to what the handler matches or books
+  makes it a suggestion again, out of matching until a person approves it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -162,6 +164,8 @@ def sync(
 
    Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
   approve an AI-suggested handler; approve=false to revoke approval. Only supplied fields are updated.
+  Through an AI client, approve=true is refused, and a change to what the handler matches or books
+  makes it a suggestion again, out of matching until a person approves it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -204,6 +208,8 @@ async def asyncio_detailed(
 
    Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
   approve an AI-suggested handler; approve=false to revoke approval. Only supplied fields are updated.
+  Through an AI client, approve=true is refused, and a change to what the handler matches or books
+  makes it a suggestion again, out of matching until a person approves it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -249,6 +255,8 @@ async def asyncio(
 
    Patch an event handler's match criteria, template, priority, or active state. Pass approve=true to
   approve an AI-suggested handler; approve=false to revoke approval. Only supplied fields are updated.
+  Through an AI client, approve=true is refused, and a change to what the handler matches or books
+  makes it a suggestion again, out of matching until a person approves it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

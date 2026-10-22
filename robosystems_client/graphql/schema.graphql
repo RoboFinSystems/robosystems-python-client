@@ -815,6 +815,43 @@ type Query {
   ): PublishListDetail
 
   """
+  The graph's event handlers — the rules that turn a matching event into
+  GL rows — highest priority first, active or not.
+  
+  A handler an AI client created, or whose match or template an AI client
+  last changed, is a suggestion (`awaitingApproval`): it takes no part in
+  matching until a person approves it with `update-event-handler`.
+  """
+  eventHandlers(
+    """Only handlers for this event type."""
+    eventType: String = null
+
+    """Only active (true) or inactive (false) handlers. Omit for both."""
+    isActive: Boolean = null
+
+    """
+    Only the AI's unapproved suggestions (true), or everything else (false). Omit for both.
+    """
+    awaitingApproval: Boolean = null
+
+    """
+    Maximum rows to return, 1-1000. Omit to use this field's own default; out of range raises `INVALID_PAGINATION`.
+    """
+    limit: Int = null
+
+    """
+    Rows to skip before returning, 0 or greater. Out of range raises `INVALID_PAGINATION`.
+    """
+    offset: Int = null
+  ): EventHandlerList
+
+  """One event handler, or null."""
+  eventHandler(
+    """The handler's id (`hdl_`-prefixed)."""
+    id: String!
+  ): EventHandler
+
+  """
   Where this graph's reports have been shared: each recipient graph, when,
   by whom, how many facts it received, and whether the share was revoked.
   
@@ -4652,6 +4689,85 @@ type PublishListMember {
 
   """When the member was added."""
   addedAt: DateTime!
+}
+
+"""A page of event handlers, highest priority first."""
+type EventHandlerList {
+  """Handlers, highest priority first."""
+  eventHandlers: [EventHandler!]!
+
+  """Pagination metadata."""
+  pagination: PaginationInfo!
+}
+
+"""A rule that turns a matching event into GL rows."""
+type EventHandler {
+  """Handler id (`hdl_`-prefixed)."""
+  id: String!
+
+  """Human-readable handler name."""
+  name: String!
+
+  """What the handler is for."""
+  description: String
+
+  """The event type the handler matches."""
+  eventType: String!
+
+  """Match on the event's category; null matches any."""
+  eventCategory: String
+
+  """Match on the event's source system; null matches any."""
+  matchSource: String
+
+  """Match on the counterparty's role; null matches any."""
+  matchAgentType: String
+
+  """Match on the resource type; null matches any."""
+  matchResourceType: String
+
+  """Equality matches against the event's metadata."""
+  matchMetadataExpression: JSON
+
+  """The GL rows the handler books: its DSL template, as JSON."""
+  transactionTemplate: JSON!
+
+  """Among handlers that match, the highest priority wins."""
+  priority: Int!
+
+  """Whether the handler takes part in matching at all."""
+  isActive: Boolean!
+
+  """`hub` for a platform-shipped handler, `tenant` otherwise."""
+  origin: String!
+
+  """
+  `ai` when an AI client created the handler or last changed what it matches or books; null when a person did.
+  """
+  suggestedBy: String
+
+  """The suggesting AI's confidence, when it gave one."""
+  confidence: Float
+
+  """The user who approved an AI-suggested handler."""
+  approvedBy: String
+
+  """When it was approved."""
+  approvedAt: DateTime
+
+  """
+  True for an AI-suggested handler no one has approved: it takes no part in matching until a person approves it.
+  """
+  awaitingApproval: Boolean!
+
+  """When it was created."""
+  createdAt: DateTime
+
+  """When it last changed."""
+  updatedAt: DateTime
+
+  """The user who created it."""
+  createdBy: String
 }
 
 """Paginated list of a report's shares, newest first."""

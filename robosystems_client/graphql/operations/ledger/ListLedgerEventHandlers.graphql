@@ -1,0 +1,24 @@
+query ListLedgerEventHandlers(
+  $eventType: String
+  $isActive: Boolean
+  $awaitingApproval: Boolean
+  $limit: Int! = 100
+  $offset: Int! = 0
+) {
+  eventHandlers(
+    eventType: $eventType
+    isActive: $isActive
+    awaitingApproval: $awaitingApproval
+    limit: $limit
+    offset: $offset
+  ) {
+    eventHandlers {
+      id name description eventType eventCategory
+      matchSource matchAgentType matchResourceType matchMetadataExpression
+      transactionTemplate priority isActive origin
+      suggestedBy confidence approvedBy approvedAt awaitingApproval
+      createdAt updatedAt createdBy
+    }
+    pagination { total limit offset hasMore }
+  }
+}
