@@ -66,6 +66,9 @@ from ..api.robo_ledger_ledger_events.set_allocation_override import (
 from ..api.robo_ledger_ledger_events.record_acquisition import (
   sync_detailed as op_record_acquisition,
 )
+from ..api.robo_ledger_ledger_events.record_ownership_change import (
+  sync_detailed as op_record_ownership_change,
+)
 from ..api.robo_ledger_ledger_events.record_statement_balance import (
   sync_detailed as op_record_statement_balance,
 )
@@ -622,6 +625,8 @@ from ..models.set_allocation_override_request import SetAllocationOverrideReques
 from ..models.acquisition_allocation import AcquisitionAllocation
 from ..models.acquisition_response import AcquisitionResponse
 from ..models.record_acquisition_request import RecordAcquisitionRequest
+from ..models.ownership_change_response import OwnershipChangeResponse
+from ..models.record_ownership_change_request import RecordOwnershipChangeRequest
 from ..models.live_financial_statement_request import LiveFinancialStatementRequest
 from ..models.financial_statement_analysis_response import (
   FinancialStatementAnalysisResponse,
@@ -2488,6 +2493,36 @@ class LedgerClient:
     )
     envelope = self._call_op("Record acquisition", response)
     return self._typed_result("Record acquisition", envelope, AcquisitionResponse)
+
+  def record_ownership_change(
+    self,
+    graph_id: str,
+    *,
+    entity_id: str,
+    period: str,
+    ownership_pct: float,
+    consideration: int,
+    basis: str,
+  ) -> OwnershipChangeResponse:
+    """Record the parent buying more of a member from its outside owners,
+    staying on full consolidation: the share it holds from ``period``
+    (``YYYY-MM``) and the price paid in cents, with the ``basis``. Sets the
+    member's share from that month and writes a draft in the consolidation
+    entity that its close posts — an equity transaction under ASC 810."""
+    body = RecordOwnershipChangeRequest(
+      entity_id=entity_id,
+      period=period,
+      ownership_pct=ownership_pct,
+      consideration=consideration,
+      basis=basis,
+    )
+    response = op_record_ownership_change(
+      graph_id=graph_id, body=body, client=self._get_client()
+    )
+    envelope = self._call_op("Record ownership change", response)
+    return self._typed_result(
+      "Record ownership change", envelope, OwnershipChangeResponse
+    )
 
   # ── Event blocks (generic preview + status transitions) ──────────────
 

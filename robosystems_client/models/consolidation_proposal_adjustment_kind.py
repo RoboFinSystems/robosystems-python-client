@@ -12,6 +12,7 @@ class ConsolidationProposalAdjustmentKind(str, Enum):
   MANUAL = "manual"
   NCI_ALLOCATION = "nci_allocation"
   NCI_DISTRIBUTION = "nci_distribution"
+  OWNERSHIP_CHANGE = "ownership_change"
   TRANSLATION = "translation"
 
   def __str__(self) -> str:

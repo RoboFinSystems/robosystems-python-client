@@ -1165,6 +1165,36 @@ class TestJournalEntries:
       "confirm_bargain_purchase": False,
     }
 
+  @patch("robosystems_client.clients.ledger_client.op_record_ownership_change")
+  def test_record_ownership_change(self, mock_op, mock_config, graph_id):
+    envelope = _envelope(
+      "record-ownership-change",
+      {
+        "entity_id": "ent_cafe",
+        "from_pct": 70,
+        "to_pct": 80,
+        "equity_adjustment": 41750,
+      },
+    )
+    mock_op.return_value = _mock_response(envelope)
+    client = LedgerClient(mock_config)
+    result = client.record_ownership_change(
+      graph_id,
+      entity_id="ent_cafe",
+      period="2026-02",
+      ownership_pct=80,
+      consideration=150000,
+      basis="Share purchase agreement",
+    )
+    assert result["equity_adjustment"] == 41750
+    assert mock_op.call_args.kwargs["body"].to_dict() == {
+      "entity_id": "ent_cafe",
+      "period": "2026-02",
+      "ownership_pct": 80,
+      "consideration": 150000,
+      "basis": "Share purchase agreement",
+    }
+
 
 # ── Taxonomy / entity linking ───────────────────────────────────────────
 
