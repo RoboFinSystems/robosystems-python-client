@@ -1,0 +1,273 @@
+from __future__ import annotations
+
+import datetime
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, TypeVar, cast
+
+from attrs import define as _attrs_define
+from attrs import field as _attrs_field
+
+from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+  from ..models.entry_template_request import EntryTemplateRequest
+  from ..models.schedule_metadata_request import ScheduleMetadataRequest
+
+
+T = TypeVar("T", bound="PreviewScheduleRequest")
+
+
+@_attrs_define
+class PreviewScheduleRequest:
+  """A schedule's definition, generated without being kept.
+
+  Attributes:
+      name (str): Schedule name
+      element_ids (list[str]): CoA element ids the schedule touches (the `id` from get-unmapped-elements, not taxonomy
+          qnames) — typically the same debit + credit ids used in entry_template.
+      period_start (datetime.date): First period start
+      period_end (datetime.date): Last period end
+      entry_template (EntryTemplateRequest):
+      entity_id (None | str | Unset): The entity whose books the schedule belongs to, by id. Omit for the group
+          parent. Its facts, obligations and closing entries land in that entity's books, against that entity's own
+          accounts.
+      taxonomy_id (None | str | Unset): Taxonomy ID (auto-creates if omitted)
+      monthly_amount (int | Unset): Monthly amount in cents. Required for a straight-line schedule; a custom or loan
+          schedule takes its amounts from its curve. Default: 0.
+      schedule_metadata (None | ScheduleMetadataRequest | Unset):
+      closed_through (datetime.date | None | Unset): Watermark for onboarding. Facts with period_end ≤ this date are
+          flagged 'historical' and their schedule_entry_due obligations are emitted 'voided', so the close workflow starts
+          drafting at the first open period. Defaults to the calendar's history end: the last day of its closed_through
+          month (calendar '2026-05' → '2026-05-31'), or the day before its first month when nothing has closed yet. An
+          earlier date is raised to it, since an obligation there could never post; set a later one only to treat more
+          months as already booked.
+      source_transaction_id (None | str | Unset): Free-form reference to the originating GL transaction (e.g. an
+          import ID, ledger entry ID, or external system key). Stored in artifact_mechanics for audit; no FK constraint.
+      replaces_structure_id (None | str | Unset): The schedule this definition would replace, when editing or
+          recreating one: the preview then says what its posted entries mean for the change.
+  """
+
+  name: str
+  element_ids: list[str]
+  period_start: datetime.date
+  period_end: datetime.date
+  entry_template: EntryTemplateRequest
+  entity_id: None | str | Unset = UNSET
+  taxonomy_id: None | str | Unset = UNSET
+  monthly_amount: int | Unset = 0
+  schedule_metadata: None | ScheduleMetadataRequest | Unset = UNSET
+  closed_through: datetime.date | None | Unset = UNSET
+  source_transaction_id: None | str | Unset = UNSET
+  replaces_structure_id: None | str | Unset = UNSET
+  additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+
+  def to_dict(self) -> dict[str, Any]:
+    from ..models.schedule_metadata_request import ScheduleMetadataRequest
+
+    name = self.name
+
+    element_ids = self.element_ids
+
+    period_start = self.period_start.isoformat()
+
+    period_end = self.period_end.isoformat()
+
+    entry_template = self.entry_template.to_dict()
+
+    entity_id: None | str | Unset
+    if isinstance(self.entity_id, Unset):
+      entity_id = UNSET
+    else:
+      entity_id = self.entity_id
+
+    taxonomy_id: None | str | Unset
+    if isinstance(self.taxonomy_id, Unset):
+      taxonomy_id = UNSET
+    else:
+      taxonomy_id = self.taxonomy_id
+
+    monthly_amount = self.monthly_amount
+
+    schedule_metadata: dict[str, Any] | None | Unset
+    if isinstance(self.schedule_metadata, Unset):
+      schedule_metadata = UNSET
+    elif isinstance(self.schedule_metadata, ScheduleMetadataRequest):
+      schedule_metadata = self.schedule_metadata.to_dict()
+    else:
+      schedule_metadata = self.schedule_metadata
+
+    closed_through: None | str | Unset
+    if isinstance(self.closed_through, Unset):
+      closed_through = UNSET
+    elif isinstance(self.closed_through, datetime.date):
+      closed_through = self.closed_through.isoformat()
+    else:
+      closed_through = self.closed_through
+
+    source_transaction_id: None | str | Unset
+    if isinstance(self.source_transaction_id, Unset):
+      source_transaction_id = UNSET
+    else:
+      source_transaction_id = self.source_transaction_id
+
+    replaces_structure_id: None | str | Unset
+    if isinstance(self.replaces_structure_id, Unset):
+      replaces_structure_id = UNSET
+    else:
+      replaces_structure_id = self.replaces_structure_id
+
+    field_dict: dict[str, Any] = {}
+    field_dict.update(self.additional_properties)
+    field_dict.update(
+      {
+        "name": name,
+        "element_ids": element_ids,
+        "period_start": period_start,
+        "period_end": period_end,
+        "entry_template": entry_template,
+      }
+    )
+    if entity_id is not UNSET:
+      field_dict["entity_id"] = entity_id
+    if taxonomy_id is not UNSET:
+      field_dict["taxonomy_id"] = taxonomy_id
+    if monthly_amount is not UNSET:
+      field_dict["monthly_amount"] = monthly_amount
+    if schedule_metadata is not UNSET:
+      field_dict["schedule_metadata"] = schedule_metadata
+    if closed_through is not UNSET:
+      field_dict["closed_through"] = closed_through
+    if source_transaction_id is not UNSET:
+      field_dict["source_transaction_id"] = source_transaction_id
+    if replaces_structure_id is not UNSET:
+      field_dict["replaces_structure_id"] = replaces_structure_id
+
+    return field_dict
+
+  @classmethod
+  def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.entry_template_request import EntryTemplateRequest
+    from ..models.schedule_metadata_request import ScheduleMetadataRequest
+
+    d = dict(src_dict)
+    name = d.pop("name")
+
+    element_ids = cast(list[str], d.pop("element_ids"))
+
+    period_start = datetime.date.fromisoformat(d.pop("period_start"))
+
+    period_end = datetime.date.fromisoformat(d.pop("period_end"))
+
+    entry_template = EntryTemplateRequest.from_dict(d.pop("entry_template"))
+
+    def _parse_entity_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
+    def _parse_taxonomy_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    taxonomy_id = _parse_taxonomy_id(d.pop("taxonomy_id", UNSET))
+
+    monthly_amount = d.pop("monthly_amount", UNSET)
+
+    def _parse_schedule_metadata(
+      data: object,
+    ) -> None | ScheduleMetadataRequest | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        schedule_metadata_type_0 = ScheduleMetadataRequest.from_dict(data)
+
+        return schedule_metadata_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | ScheduleMetadataRequest | Unset, data)
+
+    schedule_metadata = _parse_schedule_metadata(d.pop("schedule_metadata", UNSET))
+
+    def _parse_closed_through(data: object) -> datetime.date | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        closed_through_type_0 = datetime.date.fromisoformat(data)
+
+        return closed_through_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.date | None | Unset, data)
+
+    closed_through = _parse_closed_through(d.pop("closed_through", UNSET))
+
+    def _parse_source_transaction_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    source_transaction_id = _parse_source_transaction_id(
+      d.pop("source_transaction_id", UNSET)
+    )
+
+    def _parse_replaces_structure_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    replaces_structure_id = _parse_replaces_structure_id(
+      d.pop("replaces_structure_id", UNSET)
+    )
+
+    preview_schedule_request = cls(
+      name=name,
+      element_ids=element_ids,
+      period_start=period_start,
+      period_end=period_end,
+      entry_template=entry_template,
+      entity_id=entity_id,
+      taxonomy_id=taxonomy_id,
+      monthly_amount=monthly_amount,
+      schedule_metadata=schedule_metadata,
+      closed_through=closed_through,
+      source_transaction_id=source_transaction_id,
+      replaces_structure_id=replaces_structure_id,
+    )
+
+    preview_schedule_request.additional_properties = d
+    return preview_schedule_request
+
+  @property
+  def additional_keys(self) -> list[str]:
+    return list(self.additional_properties.keys())
+
+  def __getitem__(self, key: str) -> Any:
+    return self.additional_properties[key]
+
+  def __setitem__(self, key: str, value: Any) -> None:
+    self.additional_properties[key] = value
+
+  def __delitem__(self, key: str) -> None:
+    del self.additional_properties[key]
+
+  def __contains__(self, key: str) -> bool:
+    return key in self.additional_properties

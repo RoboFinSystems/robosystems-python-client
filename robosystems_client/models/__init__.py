@@ -428,6 +428,9 @@ from .live_financial_statement_request_scope_type_0 import (
 from .live_financial_statement_response import LiveFinancialStatementResponse
 from .live_statement_fact_row import LiveStatementFactRow
 from .live_statement_fact_row_origin_type_0 import LiveStatementFactRowOriginType0
+from .loan_terms_request import LoanTermsRequest
+from .loan_terms_request_day_count import LoanTermsRequestDayCount
+from .loan_terms_request_payment_frequency import LoanTermsRequestPaymentFrequency
 from .login_request import LoginRequest
 from .logout_user_response_logoutuser import LogoutUserResponseLogoutuser
 from .materialize_op import MaterializeOp
@@ -715,6 +718,12 @@ from .operation_envelope_preview_event_block_response import (
 from .operation_envelope_preview_event_block_response_status import (
   OperationEnvelopePreviewEventBlockResponseStatus,
 )
+from .operation_envelope_preview_schedule_response import (
+  OperationEnvelopePreviewScheduleResponse,
+)
+from .operation_envelope_preview_schedule_response_status import (
+  OperationEnvelopePreviewScheduleResponseStatus,
+)
 from .operation_envelope_promote_obligations_response import (
   OperationEnvelopePromoteObligationsResponse,
 )
@@ -906,6 +915,8 @@ from .preview_event_block_response_handler_metadata import (
 from .preview_reconciliations_request import PreviewReconciliationsRequest
 from .preview_reconciliations_request_method import PreviewReconciliationsRequestMethod
 from .preview_reconciling_item_request import PreviewReconcilingItemRequest
+from .preview_schedule_request import PreviewScheduleRequest
+from .preview_schedule_response import PreviewScheduleResponse
 from .promote_obligations_request import PromoteObligationsRequest
 from .promote_obligations_response import PromoteObligationsResponse
 from .promote_obligations_response_errors_item import (
@@ -998,8 +1009,15 @@ from .schedule_created_response import ScheduleCreatedResponse
 from .schedule_created_response_rule_summary_type_0 import (
   ScheduleCreatedResponseRuleSummaryType0,
 )
+from .schedule_leg_request import ScheduleLegRequest
+from .schedule_leg_request_amount_source import ScheduleLegRequestAmountSource
+from .schedule_leg_request_side import ScheduleLegRequestSide
 from .schedule_mechanics import ScheduleMechanics
 from .schedule_metadata_request import ScheduleMetadataRequest
+from .schedule_replacement_summary import ScheduleReplacementSummary
+from .schedule_replacement_summary_path import ScheduleReplacementSummaryPath
+from .schedule_roll_forward_row import ScheduleRollForwardRow
+from .schedule_roll_forward_row_scope import ScheduleRollForwardRowScope
 from .schema_export_response import SchemaExportResponse
 from .schema_export_response_data_stats_type_0 import SchemaExportResponseDataStatsType0
 from .schema_export_response_schema_definition_type_0 import (
@@ -1565,6 +1583,9 @@ __all__ = (
   "LiveFinancialStatementResponse",
   "LiveStatementFactRow",
   "LiveStatementFactRowOriginType0",
+  "LoanTermsRequest",
+  "LoanTermsRequestDayCount",
+  "LoanTermsRequestPaymentFrequency",
   "LoginRequest",
   "LogoutUserResponseLogoutuser",
   "MaterializeOp",
@@ -1686,6 +1707,8 @@ __all__ = (
   "OperationEnvelopePreviewConsolidationEntriesResponseStatus",
   "OperationEnvelopePreviewEventBlockResponse",
   "OperationEnvelopePreviewEventBlockResponseStatus",
+  "OperationEnvelopePreviewScheduleResponse",
+  "OperationEnvelopePreviewScheduleResponseStatus",
   "OperationEnvelopePromoteObligationsResponse",
   "OperationEnvelopePromoteObligationsResponseStatus",
   "OperationEnvelopeProposeConsolidationEntriesResponse",
@@ -1799,6 +1822,8 @@ __all__ = (
   "PreviewReconciliationsRequest",
   "PreviewReconciliationsRequestMethod",
   "PreviewReconcilingItemRequest",
+  "PreviewScheduleRequest",
+  "PreviewScheduleResponse",
   "PromoteObligationsRequest",
   "PromoteObligationsResponse",
   "PromoteObligationsResponseErrorsItem",
@@ -1871,8 +1896,15 @@ __all__ = (
   "RuleVariableLite",
   "ScheduleCreatedResponse",
   "ScheduleCreatedResponseRuleSummaryType0",
+  "ScheduleLegRequest",
+  "ScheduleLegRequestAmountSource",
+  "ScheduleLegRequestSide",
   "ScheduleMechanics",
   "ScheduleMetadataRequest",
+  "ScheduleReplacementSummary",
+  "ScheduleReplacementSummaryPath",
+  "ScheduleRollForwardRow",
+  "ScheduleRollForwardRowScope",
   "SchemaExportResponse",
   "SchemaExportResponseDataStatsType0",
   "SchemaExportResponseSchemaDefinitionType0",

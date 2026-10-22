@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+  from ..models.loan_terms_request import LoanTermsRequest
+
 
 T = TypeVar("T", bound="ScheduleMetadataRequest")
 
@@ -18,8 +22,11 @@ class ScheduleMetadataRequest:
   Attributes:
       method (str | Unset): Calculation method. 'straight_line' (default) distributes `monthly_amount` evenly across
           periods with the final period absorbing rounding. 'custom' requires `periodic_amounts` — the generator uses
-          those values verbatim instead of computing. Other strings are labels only; fact values still come from
+          those values verbatim instead of computing. 'effective_interest' requires `loan_terms` and the template's
+          `legs`: the generator computes the amortization table (opening balance, interest, payment, principal, closing
+          balance) and drafts the legs from it. Other strings are labels only; fact values still come from
           `monthly_amount` or `periodic_amounts`. Default: 'straight_line'.
+      loan_terms (LoanTermsRequest | None | Unset): The loan's terms, for `method='effective_interest'`.
       original_amount (int | Unset): Cost basis in cents Default: 0.
       residual_value (int | Unset): Salvage value in cents. The schedule expenses `original_amount` less this; net
           book value ends at it. Default: 0.
@@ -39,6 +46,7 @@ class ScheduleMetadataRequest:
   """
 
   method: str | Unset = "straight_line"
+  loan_terms: LoanTermsRequest | None | Unset = UNSET
   original_amount: int | Unset = 0
   residual_value: int | Unset = 0
   useful_life_months: int | Unset = 0
@@ -48,7 +56,17 @@ class ScheduleMetadataRequest:
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.loan_terms_request import LoanTermsRequest
+
     method = self.method
+
+    loan_terms: dict[str, Any] | None | Unset
+    if isinstance(self.loan_terms, Unset):
+      loan_terms = UNSET
+    elif isinstance(self.loan_terms, LoanTermsRequest):
+      loan_terms = self.loan_terms.to_dict()
+    else:
+      loan_terms = self.loan_terms
 
     original_amount = self.original_amount
 
@@ -84,6 +102,8 @@ class ScheduleMetadataRequest:
     field_dict.update({})
     if method is not UNSET:
       field_dict["method"] = method
+    if loan_terms is not UNSET:
+      field_dict["loan_terms"] = loan_terms
     if original_amount is not UNSET:
       field_dict["original_amount"] = original_amount
     if residual_value is not UNSET:
@@ -101,8 +121,27 @@ class ScheduleMetadataRequest:
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.loan_terms_request import LoanTermsRequest
+
     d = dict(src_dict)
     method = d.pop("method", UNSET)
+
+    def _parse_loan_terms(data: object) -> LoanTermsRequest | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        loan_terms_type_0 = LoanTermsRequest.from_dict(data)
+
+        return loan_terms_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(LoanTermsRequest | None | Unset, data)
+
+    loan_terms = _parse_loan_terms(d.pop("loan_terms", UNSET))
 
     original_amount = d.pop("original_amount", UNSET)
 
@@ -155,6 +194,7 @@ class ScheduleMetadataRequest:
 
     schedule_metadata_request = cls(
       method=method,
+      loan_terms=loan_terms,
       original_amount=original_amount,
       residual_value=residual_value,
       useful_life_months=useful_life_months,
