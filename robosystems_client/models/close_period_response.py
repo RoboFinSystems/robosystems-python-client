@@ -57,7 +57,7 @@ class ClosePeriodResponse:
           posting. Always 0 outside shadow. Default: 0.
       gate_findings (list[str] | Unset): Blocker codes a shadow close recorded instead of enforcing: sync_stale,
           pending_obligations, stranded_obligations, reconciling_items, unposted_source_events, unreconciled_accounts,
-          held_bank_lines. Empty outside shadow.
+          unmapped_accounts, held_bank_lines. Empty outside shadow.
       gate_finding_counts (ClosePeriodResponseGateFindingCounts | Unset): Each finding's size: days stale for
           sync_stale, a count for the rest.
       statement_stamp_note (None | str | Unset): Soft-skip reason when statements_stamped is false: no_coa_mapping |

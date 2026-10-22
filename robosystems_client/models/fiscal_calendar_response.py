@@ -37,8 +37,8 @@ class FiscalCalendarResponse:
       blockers (list[str] | Unset): Structured blocker codes when closeable_now is False: 'sequence_violation',
           'period_incomplete', 'sync_stale', 'calendar_not_initialized', 'period_already_closed', 'pending_obligations',
           'stranded_obligations', 'reconciling_items', 'unposted_source_events', 'unreconciled_accounts',
-          'held_bank_lines'; on the consolidation entity, whose close is the group's, also 'entity_open',
-          'adjustments_unposted', 'residual_unexplained', 'consolidated_does_not_foot'
+          'unmapped_accounts', 'held_bank_lines'; on the consolidation entity, whose close is the group's, also
+          'entity_open', 'adjustments_unposted', 'residual_unexplained', 'consolidated_does_not_foot'
       pending_obligation_count (int | Unset): Number of pending schedule_entry_due events blocking close. Non-zero
           only when `pending_obligations` is in `blockers`. Default: 0.
       pending_obligation_sample (list[PendingObligationDetailResponse] | Unset): Sample of up to 5 pending obligations
@@ -76,6 +76,11 @@ class FiscalCalendarResponse:
           with set-reconciliation-policy, or close over them knowingly with allow_unreconciled_accounts. Default: 0.
       unreconciled_account_sample (list[str] | Unset): Name and status of up to 5 of those reconciliations, so the
           blocker names what is holding the close.
+      unmapped_account_count (int | Unset): Accounts in this entity's chart with postings through the period that its
+          mapping does not map to a reporting concept. Their balances are in no statement, so the month cannot be stated
+          until each is mapped: suggest-mapping, then create-mapping-association. No override lifts it. Default: 0.
+      unmapped_account_sample (list[str] | Unset): Code and name of up to 5 of those accounts, so the blocker names
+          what is holding the close.
       group_open_entities (list[str] | Unset): The group close: the entities the month consolidates, the parent and
           its equity-method members included, that have not closed it. Close each first.
       group_pending_adjustments (list[str] | Unset): The group close: the consolidating entries the consolidation
@@ -115,6 +120,8 @@ class FiscalCalendarResponse:
   held_bank_line_sample: list[str] | Unset = UNSET
   unreconciled_account_count: int | Unset = 0
   unreconciled_account_sample: list[str] | Unset = UNSET
+  unmapped_account_count: int | Unset = 0
+  unmapped_account_sample: list[str] | Unset = UNSET
   group_open_entities: list[str] | Unset = UNSET
   group_pending_adjustments: list[str] | Unset = UNSET
   group_unexplained: list[str] | Unset = UNSET
@@ -214,6 +221,12 @@ class FiscalCalendarResponse:
     if not isinstance(self.unreconciled_account_sample, Unset):
       unreconciled_account_sample = self.unreconciled_account_sample
 
+    unmapped_account_count = self.unmapped_account_count
+
+    unmapped_account_sample: list[str] | Unset = UNSET
+    if not isinstance(self.unmapped_account_sample, Unset):
+      unmapped_account_sample = self.unmapped_account_sample
+
     group_open_entities: list[str] | Unset = UNSET
     if not isinstance(self.group_open_entities, Unset):
       group_open_entities = self.group_open_entities
@@ -311,6 +324,10 @@ class FiscalCalendarResponse:
       field_dict["unreconciled_account_count"] = unreconciled_account_count
     if unreconciled_account_sample is not UNSET:
       field_dict["unreconciled_account_sample"] = unreconciled_account_sample
+    if unmapped_account_count is not UNSET:
+      field_dict["unmapped_account_count"] = unmapped_account_count
+    if unmapped_account_sample is not UNSET:
+      field_dict["unmapped_account_sample"] = unmapped_account_sample
     if group_open_entities is not UNSET:
       field_dict["group_open_entities"] = group_open_entities
     if group_pending_adjustments is not UNSET:
@@ -443,6 +460,10 @@ class FiscalCalendarResponse:
       list[str], d.pop("unreconciled_account_sample", UNSET)
     )
 
+    unmapped_account_count = d.pop("unmapped_account_count", UNSET)
+
+    unmapped_account_sample = cast(list[str], d.pop("unmapped_account_sample", UNSET))
+
     group_open_entities = cast(list[str], d.pop("group_open_entities", UNSET))
 
     group_pending_adjustments = cast(
@@ -537,6 +558,8 @@ class FiscalCalendarResponse:
       held_bank_line_sample=held_bank_line_sample,
       unreconciled_account_count=unreconciled_account_count,
       unreconciled_account_sample=unreconciled_account_sample,
+      unmapped_account_count=unmapped_account_count,
+      unmapped_account_sample=unmapped_account_sample,
       group_open_entities=group_open_entities,
       group_pending_adjustments=group_pending_adjustments,
       group_unexplained=group_unexplained,
