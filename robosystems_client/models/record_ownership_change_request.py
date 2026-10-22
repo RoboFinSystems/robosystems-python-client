@@ -11,18 +11,18 @@ T = TypeVar("T", bound="RecordOwnershipChangeRequest")
 
 @_attrs_define
 class RecordOwnershipChangeRequest:
-  """The parent buys more of a member from its outside owners, staying on the
-  same consolidation method: the share it holds from a month, and what it
-  paid. ASC 810 makes it an equity transaction, never a gain or loss.
+  """The parent buys more of a member from its outside owners, or sells some
+  of it to them while keeping control: the share it holds from a month, and
+  the price. ASC 810 makes it an equity transaction, never a gain or loss.
 
       Attributes:
           entity_id (str): The member, consolidated in full.
           period (str): The month, as YYYY-MM.
-          ownership_pct (float): The parent's share from `period`, as a percentage: above its share the month before, and
-              50 or more, so the member stays consolidated in full.
-          consideration (int): Cents the parent paid the outside owners for the shares. Its line names them, not the
-              member, which is why it is given here.
-          basis (str): The purchase agreement, or what sets the price.
+          ownership_pct (float): The parent's share from `period`, as a percentage: above its share the month before for a
+              purchase, below it for a sale, and 50 or more either way, so the member stays consolidated in full.
+          consideration (int): Cents the parent paid the outside owners for the shares, or received from them for shares
+              sold. Its line names them, not the member, which is why it is given here.
+          basis (str): The purchase or sale agreement, or what sets the price.
   """
 
   entity_id: str

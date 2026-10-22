@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+  from ..models.graph_freshness import GraphFreshness
+
 
 T = TypeVar("T", bound="ViewMetadata")
 
@@ -23,6 +27,8 @@ class ViewMetadata:
       period_end (None | str | Unset): Period end date
       truncated (bool | Unset): True when more facts matched than `limit` allowed. The returned facts are the most
           recent by period; narrow the filters or raise `limit` to see the rest. Default: False.
+      graph_freshness (GraphFreshness | None | Unset): On a ledger's graph, whether the graph is current with the
+          books; null on shared repositories, which are not rebuilt from a ledger.
   """
 
   view_id: str
@@ -32,9 +38,12 @@ class ViewMetadata:
   period_start: None | str | Unset = UNSET
   period_end: None | str | Unset = UNSET
   truncated: bool | Unset = False
+  graph_freshness: GraphFreshness | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.graph_freshness import GraphFreshness
+
     view_id = self.view_id
 
     facts_processed = self.facts_processed
@@ -57,6 +66,14 @@ class ViewMetadata:
 
     truncated = self.truncated
 
+    graph_freshness: dict[str, Any] | None | Unset
+    if isinstance(self.graph_freshness, Unset):
+      graph_freshness = UNSET
+    elif isinstance(self.graph_freshness, GraphFreshness):
+      graph_freshness = self.graph_freshness.to_dict()
+    else:
+      graph_freshness = self.graph_freshness
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -73,11 +90,15 @@ class ViewMetadata:
       field_dict["period_end"] = period_end
     if truncated is not UNSET:
       field_dict["truncated"] = truncated
+    if graph_freshness is not UNSET:
+      field_dict["graph_freshness"] = graph_freshness
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    from ..models.graph_freshness import GraphFreshness
+
     d = dict(src_dict)
     view_id = d.pop("view_id")
 
@@ -107,6 +128,23 @@ class ViewMetadata:
 
     truncated = d.pop("truncated", UNSET)
 
+    def _parse_graph_freshness(data: object) -> GraphFreshness | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        graph_freshness_type_0 = GraphFreshness.from_dict(data)
+
+        return graph_freshness_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(GraphFreshness | None | Unset, data)
+
+    graph_freshness = _parse_graph_freshness(d.pop("graph_freshness", UNSET))
+
     view_metadata = cls(
       view_id=view_id,
       facts_processed=facts_processed,
@@ -115,6 +153,7 @@ class ViewMetadata:
       period_start=period_start,
       period_end=period_end,
       truncated=truncated,
+      graph_freshness=graph_freshness,
     )
 
     view_metadata.additional_properties = d

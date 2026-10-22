@@ -10,6 +10,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
   from ..models.analytical_statement_fact_row import AnalyticalStatementFactRow
+  from ..models.graph_freshness import GraphFreshness
   from ..models.resolved_report_info import ResolvedReportInfo
 
 
@@ -28,6 +29,8 @@ class FinancialStatementAnalysisResponse:
       ticker (None | str | Unset):
       report_id (None | str | Unset):
       resolved_report (None | ResolvedReportInfo | Unset):
+      graph_freshness (GraphFreshness | None | Unset): On a ledger's graph, whether the graph is current with the
+          books; null on shared repositories, which are not rebuilt from a ledger.
   """
 
   graph_id: str
@@ -37,9 +40,11 @@ class FinancialStatementAnalysisResponse:
   ticker: None | str | Unset = UNSET
   report_id: None | str | Unset = UNSET
   resolved_report: None | ResolvedReportInfo | Unset = UNSET
+  graph_freshness: GraphFreshness | None | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
+    from ..models.graph_freshness import GraphFreshness
     from ..models.resolved_report_info import ResolvedReportInfo
 
     graph_id = self.graph_id
@@ -73,6 +78,14 @@ class FinancialStatementAnalysisResponse:
     else:
       resolved_report = self.resolved_report
 
+    graph_freshness: dict[str, Any] | None | Unset
+    if isinstance(self.graph_freshness, Unset):
+      graph_freshness = UNSET
+    elif isinstance(self.graph_freshness, GraphFreshness):
+      graph_freshness = self.graph_freshness.to_dict()
+    else:
+      graph_freshness = self.graph_freshness
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -89,12 +102,15 @@ class FinancialStatementAnalysisResponse:
       field_dict["report_id"] = report_id
     if resolved_report is not UNSET:
       field_dict["resolved_report"] = resolved_report
+    if graph_freshness is not UNSET:
+      field_dict["graph_freshness"] = graph_freshness
 
     return field_dict
 
   @classmethod
   def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
     from ..models.analytical_statement_fact_row import AnalyticalStatementFactRow
+    from ..models.graph_freshness import GraphFreshness
     from ..models.resolved_report_info import ResolvedReportInfo
 
     d = dict(src_dict)
@@ -146,6 +162,23 @@ class FinancialStatementAnalysisResponse:
 
     resolved_report = _parse_resolved_report(d.pop("resolved_report", UNSET))
 
+    def _parse_graph_freshness(data: object) -> GraphFreshness | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, dict):
+          raise TypeError()
+        graph_freshness_type_0 = GraphFreshness.from_dict(data)
+
+        return graph_freshness_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(GraphFreshness | None | Unset, data)
+
+    graph_freshness = _parse_graph_freshness(d.pop("graph_freshness", UNSET))
+
     financial_statement_analysis_response = cls(
       graph_id=graph_id,
       statement_type=statement_type,
@@ -154,6 +187,7 @@ class FinancialStatementAnalysisResponse:
       ticker=ticker,
       report_id=report_id,
       resolved_report=resolved_report,
+      graph_freshness=graph_freshness,
     )
 
     financial_statement_analysis_response.additional_properties = d
