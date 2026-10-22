@@ -2296,8 +2296,190 @@ class TestScheduleAdditionalOps:
     client.rebuild_schedule(graph_id, "str_sched_1", idempotency_key="key-123")
     assert mock_op.call_args.kwargs["idempotency_key"] == "key-123"
 
+  # ── Period close additional ops ─────────────────────────────────────────
 
-# ── Period close additional ops ─────────────────────────────────────────
+  @patch("robosystems_client.clients.ledger_client.op_create_information_block")
+  def test_create_schedule_with_a_custom_curve(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope("create-information-block", {"id": "str_curve"})
+    )
+    client = LedgerClient(mock_config)
+    client.create_schedule(
+      graph_id,
+      name="Software licence",
+      element_ids=["elem_exp", "elem_prepaid"],
+      period_start="2026-01-01",
+      period_end="2026-03-31",
+      debit_element_id="elem_exp",
+      credit_element_id="elem_prepaid",
+      method="custom",
+      original_amount=30000,
+      periodic_amounts=[10000, 10000, 10000],
+    )
+    payload = mock_op.call_args.kwargs["body"].payload.to_dict()
+    assert "monthly_amount" not in payload
+    assert payload["schedule_metadata"]["method"] == "custom"
+    assert payload["schedule_metadata"]["original_amount"] == 30000
+    assert payload["schedule_metadata"]["periodic_amounts"] == [10000, 10000, 10000]
+
+  @patch("robosystems_client.clients.ledger_client.op_create_information_block")
+  def test_create_schedule_as_a_loan(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope("create-information-block", {"id": "str_loan"})
+    )
+    client = LedgerClient(mock_config)
+    client.create_schedule(
+      graph_id,
+      name="Line of credit",
+      element_ids=["elem_interest", "elem_accrued", "elem_note"],
+      period_start="2026-08-01",
+      period_end="2027-07-31",
+      debit_element_id="elem_interest",
+      credit_element_id="elem_accrued",
+      method="effective_interest",
+      loan_terms={
+        "principal": 8_000_000,
+        "annual_rate": 0.099,
+        "start_date": "2026-08-05",
+        "day_count": "actual/360",
+        "interest_only": True,
+        "note_element_id": "elem_note",
+      },
+      legs=[
+        {"element_id": "elem_interest", "side": "debit", "amount_source": "interest"},
+        {"element_id": "elem_accrued", "side": "credit", "amount_source": "interest"},
+      ],
+    )
+    payload = mock_op.call_args.kwargs["body"].payload.to_dict()
+    assert "monthly_amount" not in payload
+    terms = payload["schedule_metadata"]["loan_terms"]
+    assert terms["principal"] == 8_000_000
+    assert terms["annual_rate"] == 0.099
+    assert terms["start_date"] == "2026-08-05"
+    assert terms["day_count"] == "actual/360"
+    assert terms["interest_only"] is True
+    assert terms["note_element_id"] == "elem_note"
+    legs = payload["entry_template"]["legs"]
+    assert [leg["element_id"] for leg in legs] == ["elem_interest", "elem_accrued"]
+    assert [leg["side"] for leg in legs] == ["debit", "credit"]
+    assert {leg["amount_source"] for leg in legs} == {"interest"}
+
+  @patch("robosystems_client.clients.ledger_client.op_preview_schedule")
+  def test_preview_schedule_sends_the_definition_and_what_it_replaces(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "preview-schedule",
+        {
+          "envelope": {"id": "struct_preview", "name": "Line of credit"},
+          "roll_forward": [
+            {
+              "period_start": "2026-08-01",
+              "period_end": "2026-08-31",
+              "opening": 80000.0,
+              "amount": 594.0,
+              "closing": 80000.0,
+              "scope": "historical",
+              "interest": 594.0,
+            }
+          ],
+          "warnings": [],
+          "replaces": {
+            "structure_id": "str_old",
+            "name": "Old line",
+            "posted_entry_count": 0,
+            "path": "rebuild",
+          },
+        },
+      )
+    )
+    client = LedgerClient(mock_config)
+    result = client.preview_schedule(
+      graph_id,
+      name="Line of credit",
+      element_ids=["elem_interest", "elem_accrued", "elem_note"],
+      period_start="2026-08-01",
+      period_end="2027-07-31",
+      debit_element_id="elem_interest",
+      credit_element_id="elem_accrued",
+      method="effective_interest",
+      loan_terms={
+        "principal": 8_000_000,
+        "annual_rate": 0.099,
+        "start_date": "2026-08-05",
+        "day_count": "actual/360",
+        "interest_only": True,
+        "note_element_id": "elem_note",
+      },
+      legs=[
+        {"element_id": "elem_interest", "side": "debit", "amount_source": "interest"},
+        {"element_id": "elem_accrued", "side": "credit", "amount_source": "interest"},
+      ],
+      replaces_structure_id="str_old",
+    )
+    assert result["roll_forward"][0]["amount"] == 594.0
+    assert result["replaces"]["path"] == "rebuild"
+    assert mock_op.call_args.kwargs["graph_id"] == graph_id
+    body = mock_op.call_args.kwargs["body"].to_dict()
+    assert body["replaces_structure_id"] == "str_old"
+    assert body["schedule_metadata"]["loan_terms"]["annual_rate"] == 0.099
+    assert body["entry_template"]["legs"][0]["amount_source"] == "interest"
+
+  @patch("robosystems_client.clients.ledger_client.op_preview_schedule")
+  def test_preview_schedule_omits_what_was_not_asked(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(
+      _envelope("preview-schedule", {"envelope": {}, "roll_forward": []})
+    )
+    client = LedgerClient(mock_config)
+    client.preview_schedule(
+      graph_id,
+      name="Prepaid rent",
+      element_ids=["elem_rent", "elem_prepaid"],
+      period_start="2026-01-01",
+      period_end="2026-12-31",
+      monthly_amount=100000,
+      debit_element_id="elem_rent",
+      credit_element_id="elem_prepaid",
+    )
+    body = mock_op.call_args.kwargs["body"].to_dict()
+    assert body["monthly_amount"] == 100000
+    assert "replaces_structure_id" not in body
+    assert "schedule_metadata" not in body
+    assert "legs" not in body["entry_template"]
+
+  @patch("robosystems_client.clients.ledger_client.op_rebuild_schedule")
+  def test_rebuild_schedule_saves_an_edited_definition(
+    self, mock_op, mock_config, graph_id
+  ):
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "rebuild-schedule", {"structure_id": "str_sched_1", "total_periods": 18}
+      )
+    )
+    client = LedgerClient(mock_config)
+    client.rebuild_schedule(
+      graph_id,
+      "str_sched_1",
+      period_end="2027-06-30",
+      monthly_amount=12500,
+      entry_template={
+        "debit_element_id": "elem_rent",
+        "credit_element_id": "elem_prepaid",
+        "memo_template": "Prepaid rent",
+      },
+      schedule_metadata={"original_amount": 225000},
+    )
+    body = mock_op.call_args.kwargs["body"].to_dict()
+    assert body["structure_id"] == "str_sched_1"
+    assert body["period_end"] == "2027-06-30"
+    assert body["monthly_amount"] == 12500
+    assert body["entry_template"]["memo_template"] == "Prepaid rent"
+    assert body["schedule_metadata"]["original_amount"] == 225000
+    assert "period_start" not in body
+    assert "method" not in body["schedule_metadata"]
 
 
 @pytest.mark.unit
