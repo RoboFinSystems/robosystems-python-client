@@ -119,7 +119,13 @@ def sync_detailed(
   regenerates fresh forward facts + a fresh obligation chain from the schedule's stored definition
   (entry_template / schedule_metadata / monthly_amount / period bounds). The historical-vs-in-scope
   split is re-derived from the CURRENT fiscal calendar closed_through. Use this to pick up a fixed
-  generator (e.g. the roll-forward direction fix) without orphaning obligations.
+  generator (e.g. the roll-forward direction fix) without orphaning obligations. It is also how an
+  edit is saved while nothing has posted: pass the definition fields to change (period_start,
+  period_end, monthly_amount, entry_template, schedule_metadata), read back from the schedule's
+  envelope (artifact.mechanics), and the schedule regenerates from them; omitted fields keep their
+  stored values. Refused once an entry has posted (the envelope's posted_periods and edit_warning say
+  so in advance): terminate the schedule and create a successor instead. Run preview-schedule with the
+  new definition first to see the roll-forward.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -142,6 +148,11 @@ def sync_detailed(
           month, are history), so a rebuild re-scopes the schedule to today's
           close state. Use this to pick up a fixed generator (e.g. the
           roll-forward direction fix) without orphaning obligations.
+
+          It is also how an edit is saved while nothing has posted: the fields below
+          replace the stored definition before it regenerates, as the schedule's
+          envelope reads them back (`artifact.mechanics`). Omitted fields keep their
+          stored values, inside `schedule_metadata` too.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -179,7 +190,13 @@ def sync(
   regenerates fresh forward facts + a fresh obligation chain from the schedule's stored definition
   (entry_template / schedule_metadata / monthly_amount / period bounds). The historical-vs-in-scope
   split is re-derived from the CURRENT fiscal calendar closed_through. Use this to pick up a fixed
-  generator (e.g. the roll-forward direction fix) without orphaning obligations.
+  generator (e.g. the roll-forward direction fix) without orphaning obligations. It is also how an
+  edit is saved while nothing has posted: pass the definition fields to change (period_start,
+  period_end, monthly_amount, entry_template, schedule_metadata), read back from the schedule's
+  envelope (artifact.mechanics), and the schedule regenerates from them; omitted fields keep their
+  stored values. Refused once an entry has posted (the envelope's posted_periods and edit_warning say
+  so in advance): terminate the schedule and create a successor instead. Run preview-schedule with the
+  new definition first to see the roll-forward.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -202,6 +219,11 @@ def sync(
           month, are history), so a rebuild re-scopes the schedule to today's
           close state. Use this to pick up a fixed generator (e.g. the
           roll-forward direction fix) without orphaning obligations.
+
+          It is also how an edit is saved while nothing has posted: the fields below
+          replace the stored definition before it regenerates, as the schedule's
+          envelope reads them back (`artifact.mechanics`). Omitted fields keep their
+          stored values, inside `schedule_metadata` too.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -234,7 +256,13 @@ async def asyncio_detailed(
   regenerates fresh forward facts + a fresh obligation chain from the schedule's stored definition
   (entry_template / schedule_metadata / monthly_amount / period bounds). The historical-vs-in-scope
   split is re-derived from the CURRENT fiscal calendar closed_through. Use this to pick up a fixed
-  generator (e.g. the roll-forward direction fix) without orphaning obligations.
+  generator (e.g. the roll-forward direction fix) without orphaning obligations. It is also how an
+  edit is saved while nothing has posted: pass the definition fields to change (period_start,
+  period_end, monthly_amount, entry_template, schedule_metadata), read back from the schedule's
+  envelope (artifact.mechanics), and the schedule regenerates from them; omitted fields keep their
+  stored values. Refused once an entry has posted (the envelope's posted_periods and edit_warning say
+  so in advance): terminate the schedule and create a successor instead. Run preview-schedule with the
+  new definition first to see the roll-forward.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -257,6 +285,11 @@ async def asyncio_detailed(
           month, are history), so a rebuild re-scopes the schedule to today's
           close state. Use this to pick up a fixed generator (e.g. the
           roll-forward direction fix) without orphaning obligations.
+
+          It is also how an edit is saved while nothing has posted: the fields below
+          replace the stored definition before it regenerates, as the schedule's
+          envelope reads them back (`artifact.mechanics`). Omitted fields keep their
+          stored values, inside `schedule_metadata` too.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -292,7 +325,13 @@ async def asyncio(
   regenerates fresh forward facts + a fresh obligation chain from the schedule's stored definition
   (entry_template / schedule_metadata / monthly_amount / period bounds). The historical-vs-in-scope
   split is re-derived from the CURRENT fiscal calendar closed_through. Use this to pick up a fixed
-  generator (e.g. the roll-forward direction fix) without orphaning obligations.
+  generator (e.g. the roll-forward direction fix) without orphaning obligations. It is also how an
+  edit is saved while nothing has posted: pass the definition fields to change (period_start,
+  period_end, monthly_amount, entry_template, schedule_metadata), read back from the schedule's
+  envelope (artifact.mechanics), and the schedule regenerates from them; omitted fields keep their
+  stored values. Refused once an entry has posted (the envelope's posted_periods and edit_warning say
+  so in advance): terminate the schedule and create a successor instead. Run preview-schedule with the
+  new definition first to see the roll-forward.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -315,6 +354,11 @@ async def asyncio(
           month, are history), so a rebuild re-scopes the schedule to today's
           close state. Use this to pick up a fixed generator (e.g. the
           roll-forward direction fix) without orphaning obligations.
+
+          It is also how an edit is saved while nothing has posted: the fields below
+          replace the stored definition before it regenerates, as the schedule's
+          envelope reads them back (`artifact.mechanics`). Omitted fields keep their
+          stored values, inside `schedule_metadata` too.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

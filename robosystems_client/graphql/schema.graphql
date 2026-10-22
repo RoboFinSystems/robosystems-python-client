@@ -560,6 +560,11 @@ type Query {
     isAbstract: Boolean = null
 
     """
+    Include retired accounts (`isActive: false`), so one can be found and reactivated. Omit for active elements only.
+    """
+    includeInactive: Boolean! = false
+
+    """
     Maximum rows to return, 1-1000. Omit to use this field's own default; out of range raises `INVALID_PAGINATION`.
     """
     limit: Int = null

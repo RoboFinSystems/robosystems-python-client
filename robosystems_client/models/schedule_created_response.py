@@ -29,6 +29,8 @@ class ScheduleCreatedResponse:
       rule_summary (None | ScheduleCreatedResponseRuleSummaryType0 | Unset):
       schedule_created_event_id (None | str | Unset):
       pending_event_count (int | Unset):  Default: 0.
+      warnings (list[str] | Unset): What the write went ahead with that deserves a look: another active schedule
+          posting to the same accounts over the same months.
   """
 
   structure_id: str
@@ -39,6 +41,7 @@ class ScheduleCreatedResponse:
   rule_summary: None | ScheduleCreatedResponseRuleSummaryType0 | Unset = UNSET
   schedule_created_event_id: None | str | Unset = UNSET
   pending_event_count: int | Unset = 0
+  warnings: list[str] | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -72,6 +75,10 @@ class ScheduleCreatedResponse:
 
     pending_event_count = self.pending_event_count
 
+    warnings: list[str] | Unset = UNSET
+    if not isinstance(self.warnings, Unset):
+      warnings = self.warnings
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -89,6 +96,8 @@ class ScheduleCreatedResponse:
       field_dict["schedule_created_event_id"] = schedule_created_event_id
     if pending_event_count is not UNSET:
       field_dict["pending_event_count"] = pending_event_count
+    if warnings is not UNSET:
+      field_dict["warnings"] = warnings
 
     return field_dict
 
@@ -141,6 +150,8 @@ class ScheduleCreatedResponse:
 
     pending_event_count = d.pop("pending_event_count", UNSET)
 
+    warnings = cast(list[str], d.pop("warnings", UNSET))
+
     schedule_created_response = cls(
       structure_id=structure_id,
       name=name,
@@ -150,6 +161,7 @@ class ScheduleCreatedResponse:
       rule_summary=rule_summary,
       schedule_created_event_id=schedule_created_event_id,
       pending_event_count=pending_event_count,
+      warnings=warnings,
     )
 
     schedule_created_response.additional_properties = d

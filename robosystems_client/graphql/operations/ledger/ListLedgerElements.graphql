@@ -3,6 +3,7 @@ query ListLedgerElements(
   $source: String
   $classification: String
   $isAbstract: Boolean
+  $includeInactive: Boolean! = false
   $limit: Int! = 100
   $offset: Int! = 0
 ) {
@@ -11,6 +12,7 @@ query ListLedgerElements(
     source: $source
     classification: $classification
     isAbstract: $isAbstract
+    includeInactive: $includeInactive
     limit: $limit
     offset: $offset
   ) {

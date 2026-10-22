@@ -1565,10 +1565,12 @@ class LedgerClient:
     source: str | None = None,
     classification: str | None = None,
     is_abstract: bool | None = None,
+    include_inactive: bool = False,
     limit: int = 100,
     offset: int = 0,
   ) -> LedgerElementsPage | None:
-    """List elements (CoA accounts, GAAP concepts, etc.) with filters."""
+    """List elements (CoA accounts, GAAP concepts, etc.) with filters;
+    ``include_inactive`` adds retired accounts, to reactivate one."""
     data = self._query(
       graph_id,
       LIST_LEDGER_ELEMENTS_GQL,
@@ -1577,6 +1579,7 @@ class LedgerClient:
         "source": source,
         "classification": classification,
         "isAbstract": is_abstract,
+        "includeInactive": include_inactive,
         "limit": limit,
         "offset": offset,
       },

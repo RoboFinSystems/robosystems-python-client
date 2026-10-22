@@ -1841,6 +1841,7 @@ class TestLedgerReadsAdditional:
     variables = mock_execute.call_args[0][2]
     assert variables["taxonomyId"] == "tax_coa_1"
     assert variables["classification"] == "asset"
+    assert variables["includeInactive"] is False
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_list_unmapped_elements(self, mock_execute, mock_config, graph_id):
