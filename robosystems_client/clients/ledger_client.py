@@ -786,6 +786,7 @@ _FILENAME_PATTERN = re.compile(r'filename="?([^";]+)"?', re.IGNORECASE)
 # ``ReportDownloadFormat`` enum names used as query variables.
 _DOWNLOAD_FORMAT_ALIASES = {
   "holon-jsonld": "HOLON_JSONLD",
+  "holon-jsonld-lineage": "HOLON_JSONLD_LINEAGE",
   "xbrl-2.1": "XBRL_2_1",
   "tavi": "TAVI",
 }
@@ -3782,8 +3783,12 @@ class LedgerClient:
         format: Serialization flavor — ``"holon-jsonld"`` (default, the
             dataset-form scene/boundary/projection holon, which carries
             the whole report and is stamped at publish), ``"tavi"`` (the
-            Project Tavi compiled model), or ``"xbrl-2.1"``. The enum names ``"TAVI"`` /
-            ``"HOLON_JSONLD"`` / ``"XBRL_2_1"`` are also accepted.
+            Project Tavi compiled model), ``"xbrl-2.1"``, or
+            ``"holon-jsonld-lineage"`` (the holon with its ``#lineage`` graph:
+            the ledger lines, entries and events behind every frozen figure,
+            for this graph's own members). The enum names ``"TAVI"`` /
+            ``"HOLON_JSONLD"`` / ``"HOLON_JSONLD_LINEAGE"`` / ``"XBRL_2_1"``
+            are also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
             written file.
@@ -3830,6 +3835,7 @@ class LedgerClient:
     default_ext = {
       "XBRL_2_1": "zip",
       "HOLON_JSONLD": "holon.jsonld",
+      "HOLON_JSONLD_LINEAGE": "lineage.holon.jsonld",
     }.get(gql_format, "tavi.json")
     filename = (
       _parse_filename(artifact.headers.get("content-disposition", ""))
