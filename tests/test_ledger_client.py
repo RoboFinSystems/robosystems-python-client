@@ -3253,6 +3253,28 @@ class TestDownloadReportBundle:
     assert mock_client.get.call_args.args[0].startswith("https://s3.example.com/")
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_lineage_download_takes_the_short_alias(
+    self, mock_client_cls, mock_config, graph_id
+  ):
+    """``holon-jsonld-lineage`` names the lineage holon; with no filename from
+    the server it lands as ``.lineage.holon.jsonld``, never ``.tavi.json``."""
+    artifact = self._mock_artifact(b'{"@graph": []}', "")
+    artifact.headers = {}
+    self._patch_httpx(mock_client_cls, artifact)
+    with patch.object(
+      LedgerClient,
+      "_query",
+      return_value=self._gql_data("application/ld+json", "holon-jsonld-lineage", gen=3),
+    ) as mock_query:
+      result = LedgerClient(mock_config).download_report_bundle(
+        graph_id, "rpt_01", format="holon-jsonld-lineage"
+      )
+
+    assert mock_query.call_args.args[2]["format"] == "HOLON_JSONLD_LINEAGE"
+    assert result.format == "holon-jsonld-lineage"
+    assert result.filename == "rpt_01-g3.lineage.holon.jsonld"
+
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
   def test_xbrl_download_follows_presigned_url(
     self, mock_client_cls, mock_config, graph_id
   ):
