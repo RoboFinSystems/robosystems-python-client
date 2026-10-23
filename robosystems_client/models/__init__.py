@@ -421,6 +421,7 @@ from .link_entity_taxonomy_request import LinkEntityTaxonomyRequest
 from .link_entity_taxonomy_request_basis import LinkEntityTaxonomyRequestBasis
 from .list_connections_provider_type_0 import ListConnectionsProviderType0
 from .list_graph_mutations_surface_type_0 import ListGraphMutationsSurfaceType0
+from .list_operator_runs_status_type_0 import ListOperatorRunsStatusType0
 from .list_org_graphs_response_200_item import ListOrgGraphsResponse200Item
 from .list_subgraphs_response import ListSubgraphsResponse
 from .list_table_files_response import ListTableFilesResponse
@@ -860,6 +861,17 @@ from .operator_response import OperatorResponse
 from .operator_response_error_details_type_0 import OperatorResponseErrorDetailsType0
 from .operator_response_metadata_type_0 import OperatorResponseMetadataType0
 from .operator_response_tokens_used_type_0 import OperatorResponseTokensUsedType0
+from .operator_run_detail import OperatorRunDetail
+from .operator_run_detail_history_item import OperatorRunDetailHistoryItem
+from .operator_run_detail_result import OperatorRunDetailResult
+from .operator_run_detail_status import OperatorRunDetailStatus
+from .operator_run_detail_transcript_item import OperatorRunDetailTranscriptItem
+from .operator_run_list_response import OperatorRunListResponse
+from .operator_run_summary import OperatorRunSummary
+from .operator_run_summary_status import OperatorRunSummaryStatus
+from .operator_thread_list_response import OperatorThreadListResponse
+from .operator_thread_summary import OperatorThreadSummary
+from .operator_thread_summary_last_status import OperatorThreadSummaryLastStatus
 from .org_detail_response import OrgDetailResponse
 from .org_detail_response_graphs_item import OrgDetailResponseGraphsItem
 from .org_detail_response_limits_type_0 import OrgDetailResponseLimitsType0
@@ -1588,6 +1600,7 @@ __all__ = (
   "LinkEntityTaxonomyRequestBasis",
   "ListConnectionsProviderType0",
   "ListGraphMutationsSurfaceType0",
+  "ListOperatorRunsStatusType0",
   "ListOrgGraphsResponse200Item",
   "ListSubgraphsResponse",
   "ListTableFilesResponse",
@@ -1779,6 +1792,17 @@ __all__ = (
   "OperatorResponseErrorDetailsType0",
   "OperatorResponseMetadataType0",
   "OperatorResponseTokensUsedType0",
+  "OperatorRunDetail",
+  "OperatorRunDetailHistoryItem",
+  "OperatorRunDetailResult",
+  "OperatorRunDetailStatus",
+  "OperatorRunDetailTranscriptItem",
+  "OperatorRunListResponse",
+  "OperatorRunSummary",
+  "OperatorRunSummaryStatus",
+  "OperatorThreadListResponse",
+  "OperatorThreadSummary",
+  "OperatorThreadSummaryLastStatus",
   "OrgDetailResponse",
   "OrgDetailResponseGraphsItem",
   "OrgDetailResponseLimitsType0",

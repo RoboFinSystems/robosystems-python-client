@@ -24,7 +24,12 @@ class OperatorRequest:
 
   Attributes:
       message (str): The query or message to process
-      history (list[OperatorMessage] | Unset): Conversation history
+      history (list[OperatorMessage] | Unset): Conversation history. Omit it on a threaded request and the run is
+          seeded from the thread's own record instead
+      thread_id (None | str | Unset): Groups this run with the earlier runs of one conversation. A caller mints the id
+          (any ULID or UUID) on the first question and sends it with each follow-up; the run is recorded under it, and
+          with no `history` given, the thread's last exchanges are the history. Runs list by thread at `GET
+          /v1/graphs/{graph_id}/audit/runs`
       context (None | OperatorRequestContextType0 | Unset): Additional context for analysis (e.g., enable_rag,
           include_schema)
       mode (None | OperatorMode | Unset): Execution mode Default: OperatorMode.STANDARD.
@@ -40,6 +45,7 @@ class OperatorRequest:
 
   message: str
   history: list[OperatorMessage] | Unset = UNSET
+  thread_id: None | str | Unset = UNSET
   context: None | OperatorRequestContextType0 | Unset = UNSET
   mode: None | OperatorMode | Unset = OperatorMode.STANDARD
   operator_type: None | str | Unset = UNSET
@@ -62,6 +68,12 @@ class OperatorRequest:
       for history_item_data in self.history:
         history_item = history_item_data.to_dict()
         history.append(history_item)
+
+    thread_id: None | str | Unset
+    if isinstance(self.thread_id, Unset):
+      thread_id = UNSET
+    else:
+      thread_id = self.thread_id
 
     context: dict[str, Any] | None | Unset
     if isinstance(self.context, Unset):
@@ -114,6 +126,8 @@ class OperatorRequest:
     )
     if history is not UNSET:
       field_dict["history"] = history
+    if thread_id is not UNSET:
+      field_dict["thread_id"] = thread_id
     if context is not UNSET:
       field_dict["context"] = context
     if mode is not UNSET:
@@ -150,6 +164,15 @@ class OperatorRequest:
         history_item = OperatorMessage.from_dict(history_item_data)
 
         history.append(history_item)
+
+    def _parse_thread_id(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    thread_id = _parse_thread_id(d.pop("thread_id", UNSET))
 
     def _parse_context(data: object) -> None | OperatorRequestContextType0 | Unset:
       if data is None:
@@ -229,6 +252,7 @@ class OperatorRequest:
     operator_request = cls(
       message=message,
       history=history,
+      thread_id=thread_id,
       context=context,
       mode=mode,
       operator_type=operator_type,

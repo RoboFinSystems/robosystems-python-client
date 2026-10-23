@@ -44,6 +44,11 @@ class OperatorQueryRequest:
   mode: Optional[str] = None  # 'quick', 'standard', 'extended', 'streaming'
   enable_rag: Optional[bool] = None
   force_extended_analysis: Optional[bool] = None
+  # Groups the run with the earlier runs of one conversation. Mint any
+  # URL-safe token (a UUID) on the first question and send it with each
+  # follow-up; with no `history` given, the server seeds the run from the
+  # thread's own record. Runs list by thread under the graph's audit.
+  thread_id: Optional[str] = None
 
 
 @dataclass
@@ -75,9 +80,14 @@ class OperatorResult:
   # response (credit pre-flight, operator timeouts, cancelled runs); `content`
   # then carries the explanation rather than an answer.
   error_details: Optional[Dict[str, Any]] = None
+  # The run's operation id: the key of its record under the graph's audit
+  # (`get_operator_run`) and of every mutation it made.
+  operation_id: Optional[str] = None
 
 
-def _operator_result(data: Dict[str, Any]) -> OperatorResult:
+def _operator_result(
+  data: Dict[str, Any], operation_id: Optional[str] = None
+) -> OperatorResult:
   """Shape an operator payload into the public result.
 
   The `operator_completed` event, the generic completion event's `result`,
@@ -94,6 +104,7 @@ def _operator_result(data: Dict[str, Any]) -> OperatorResult:
     execution_time=data.get("execution_time"),
     timestamp=data.get("timestamp") or datetime.now().isoformat(),
     error_details=data.get("error_details"),
+    operation_id=operation_id or data.get("operation_id"),
   )
 
 
@@ -258,6 +269,7 @@ class OperatorClient:
       mode=request.mode,
       enable_rag=request.enable_rag,
       force_extended_analysis=request.force_extended_analysis,
+      thread_id=request.thread_id if request.thread_id is not None else UNSET,
     )
 
     # Execute through the generated client, with the credential current now
@@ -297,6 +309,7 @@ class OperatorClient:
       mode=request.mode,
       enable_rag=request.enable_rag,
       force_extended_analysis=request.force_extended_analysis,
+      thread_id=request.thread_id if request.thread_id is not None else UNSET,
     )
 
     # Execute through the generated client, with the credential current now
@@ -382,14 +395,14 @@ class OperatorClient:
 
     def on_operator_completed(data):
       nonlocal result, completed
-      result = _operator_result(data)
+      result = _operator_result(data, operation_id)
       completed = True
 
     def on_completed(data):
       nonlocal result, completed
       if not result:
         # Fallback to generic completion event
-        result = _operator_result(data.get("result") or data)
+        result = _operator_result(data.get("result") or data, operation_id)
         completed = True
 
     def on_error(err):
@@ -508,7 +521,7 @@ class OperatorClient:
 
       state = status.get("status")
       if state == "completed":
-        return _operator_result(status.get("result") or {})
+        return _operator_result(status.get("result") or {}, operation_id)
       if state == "failed":
         raise OperatorRunError(
           status.get("error") or status.get("message") or "Operator run failed",

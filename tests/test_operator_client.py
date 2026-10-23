@@ -34,6 +34,24 @@ class TestOperatorDataclasses:
     assert request.enable_rag is True
     assert request.force_extended_analysis is False
 
+  def test_operator_query_request_threads(self):
+    request = OperatorQueryRequest(message="and August?", thread_id="thr_01ABC")
+    assert request.thread_id == "thr_01ABC"
+    assert OperatorQueryRequest(message="hi").thread_id is None
+
+  def test_operator_result_names_its_run(self):
+    from robosystems_client.clients.operator_client import _operator_result
+
+    assert (
+      OperatorResult(content="c", operator_used="o", mode_used="m").operation_id is None
+    )
+    carried = _operator_result({"content": "c", "operator_used": "o"}, "op_1")
+    assert carried.operation_id == "op_1"
+    from_body = _operator_result(
+      {"content": "c", "operator_used": "o", "operation_id": "op_2"}
+    )
+    assert from_body.operation_id == "op_2"
+
   def test_operator_query_request_defaults(self):
     """Test OperatorQueryRequest default values."""
     request = OperatorQueryRequest(message="Simple query")

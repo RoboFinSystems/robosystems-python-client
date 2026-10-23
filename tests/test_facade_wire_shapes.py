@@ -731,3 +731,49 @@ class TestLedgerParity:
     payload = json.loads(httpx_mock.get_requests()[0].content)
     assert payload["variables"] == {"scenarioId": "str_fc"}
     assert "$scenarioId: String" in payload["query"]
+
+
+# ── Threaded runs ────────────────────────────────────────────────────
+
+
+@pytest.mark.unit
+class TestThreadedOperatorRuns:
+  def test_the_thread_id_rides_the_request_and_the_result_names_the_run(
+    self, httpx_mock
+  ):
+    httpx_mock.add_response(
+      method="POST", url=OPERATOR_URL, status_code=202, json=OPERATOR_QUEUED
+    )
+    httpx_mock.add_response(
+      url=_stream_url(),
+      headers={"content-type": "text/event-stream"},
+      content=_sse(
+        ("operation_completed", {"message": "done", "result": OPERATOR_RESULT}),
+      ),
+    )
+
+    result = OperatorClient(CONFIG).execute_query(
+      GRAPH, OperatorQueryRequest(message="and August?", thread_id="thr_01ABC")
+    )
+
+    sent = json.loads(httpx_mock.get_requests()[0].content)
+    assert sent["thread_id"] == "thr_01ABC"
+    assert "history" not in sent or sent["history"] == []
+    assert result.operation_id == OP
+
+  def test_an_unthreaded_request_sends_no_thread(self, httpx_mock):
+    httpx_mock.add_response(
+      method="POST",
+      url=OPERATOR_URL,
+      status_code=200,
+      json={**OPERATOR_RESULT, "operation_id": OP},
+    )
+
+    result = OperatorClient(CONFIG).execute_query(
+      GRAPH, OperatorQueryRequest(message="burn?"), OperatorOptions(mode="sync")
+    )
+
+    sent = json.loads(httpx_mock.get_requests()[0].content)
+    assert "thread_id" not in sent
+    # A sync answer names its run from the body.
+    assert result.operation_id == OP
