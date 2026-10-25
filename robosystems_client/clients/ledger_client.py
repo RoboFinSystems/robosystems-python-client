@@ -3029,8 +3029,10 @@ class LedgerClient:
     graph_id: str,
     body: dict[str, Any],
   ) -> EventHandlerResponse:
-    """Update a registered event handler. Pass ``approve=True`` in the body
-    to flip an AI-suggested handler from unapproved to active.
+    """Update a registered event handler. Pass ``approve=True`` with
+    ``expected_updated_at`` (the handler's ``updated_at`` as the person saw it)
+    to flip an AI-suggested handler from unapproved to active; the API answers
+    409 if it changed since.
     """
     request = UpdateEventHandlerRequest.from_dict(body)
     response = op_update_event_handler(
