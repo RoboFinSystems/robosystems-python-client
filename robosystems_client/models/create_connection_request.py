@@ -25,7 +25,8 @@ class CreateConnectionRequest:
 
   Attributes:
       provider (CreateConnectionRequestProvider): Connection provider type
-      entity_id (None | str | Unset): Entity identifier. Required for QuickBooks.
+      entity_id (None | str | Unset): QuickBooks: the entity whose books it keeps, which can only be the group parent;
+          omit it. A bank feed names its entity on its own config.
       quickbooks_config (None | QuickBooksConnectionConfig | Unset):
       external_config (ExternalConnectionConfig | None | Unset):
       mercury_config (MercuryConnectionConfig | None | Unset):

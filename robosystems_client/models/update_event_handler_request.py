@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
@@ -46,7 +47,10 @@ class UpdateEventHandlerRequest:
           is_active (bool | None | Unset): Toggle activation. False removes the handler from match-time consideration
               without deleting it.
           approve (bool | None | Unset): Approval shortcut: True stamps approved_by/approved_at to the current user; False
-              clears both.
+              clears both. Approving an AI-suggested handler also needs `expected_updated_at`.
+          expected_updated_at (datetime.datetime | None | Unset): The handler's `updated_at` as shown when it was
+              reviewed. Required with `approve=true` on an AI-suggested handler, so the approval covers exactly that version;
+              a mismatch is refused with 409.
           metadata_patch (UpdateEventHandlerRequestMetadataPatch | Unset): Deep-merged into the existing handler.metadata.
               Pass `{}` to leave metadata unchanged.
   """
@@ -65,6 +69,7 @@ class UpdateEventHandlerRequest:
   priority: int | None | Unset = UNSET
   is_active: bool | None | Unset = UNSET
   approve: bool | None | Unset = UNSET
+  expected_updated_at: datetime.datetime | None | Unset = UNSET
   metadata_patch: UpdateEventHandlerRequestMetadataPatch | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -149,6 +154,14 @@ class UpdateEventHandlerRequest:
     else:
       approve = self.approve
 
+    expected_updated_at: None | str | Unset
+    if isinstance(self.expected_updated_at, Unset):
+      expected_updated_at = UNSET
+    elif isinstance(self.expected_updated_at, datetime.datetime):
+      expected_updated_at = self.expected_updated_at.isoformat()
+    else:
+      expected_updated_at = self.expected_updated_at
+
     metadata_patch: dict[str, Any] | Unset = UNSET
     if not isinstance(self.metadata_patch, Unset):
       metadata_patch = self.metadata_patch.to_dict()
@@ -182,6 +195,8 @@ class UpdateEventHandlerRequest:
       field_dict["is_active"] = is_active
     if approve is not UNSET:
       field_dict["approve"] = approve
+    if expected_updated_at is not UNSET:
+      field_dict["expected_updated_at"] = expected_updated_at
     if metadata_patch is not UNSET:
       field_dict["metadata_patch"] = metadata_patch
 
@@ -327,6 +342,25 @@ class UpdateEventHandlerRequest:
 
     approve = _parse_approve(d.pop("approve", UNSET))
 
+    def _parse_expected_updated_at(data: object) -> datetime.datetime | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        expected_updated_at_type_0 = datetime.datetime.fromisoformat(data)
+
+        return expected_updated_at_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(datetime.datetime | None | Unset, data)
+
+    expected_updated_at = _parse_expected_updated_at(
+      d.pop("expected_updated_at", UNSET)
+    )
+
     _metadata_patch = d.pop("metadata_patch", UNSET)
     metadata_patch: UpdateEventHandlerRequestMetadataPatch | Unset
     if isinstance(_metadata_patch, Unset):
@@ -347,6 +381,7 @@ class UpdateEventHandlerRequest:
       priority=priority,
       is_active=is_active,
       approve=approve,
+      expected_updated_at=expected_updated_at,
       metadata_patch=metadata_patch,
     )
 
