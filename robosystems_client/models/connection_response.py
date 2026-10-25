@@ -26,7 +26,9 @@ class ConnectionResponse:
       status (str): Connection status
       created_at (datetime.datetime | str): Creation timestamp
       metadata (ConnectionResponseMetadata): Provider-specific metadata
-      entity_id (None | str | Unset): Entity identifier
+      entity_id (None | str | Unset): The entity whose books the connection keeps: the group parent for QuickBooks,
+          the entity a bank feed was connected for (each of its accounts can move to another entity later), none for an
+          external source, whose events name their own.
       updated_at (datetime.datetime | None | str | Unset): Last update timestamp
       last_sync (datetime.datetime | None | str | Unset): Last sync timestamp
       write_policy (None | str | Unset): Source-of-truth write policy: 'native' (RoboSystems is authoritative; no

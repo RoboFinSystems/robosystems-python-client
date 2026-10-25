@@ -127,7 +127,7 @@ def sync_detailed(
 
   Args:
       graph_id (str):
-      entity_id (None | str | Unset): Filter by entity ID
+      entity_id (None | str | Unset): Only the connections that keep this entity's books
       provider (ListConnectionsProviderType0 | None | Unset): Filter by provider type
 
   Raises:
@@ -162,7 +162,7 @@ def sync(
 
   Args:
       graph_id (str):
-      entity_id (None | str | Unset): Filter by entity ID
+      entity_id (None | str | Unset): Only the connections that keep this entity's books
       provider (ListConnectionsProviderType0 | None | Unset): Filter by provider type
 
   Raises:
@@ -192,7 +192,7 @@ async def asyncio_detailed(
 
   Args:
       graph_id (str):
-      entity_id (None | str | Unset): Filter by entity ID
+      entity_id (None | str | Unset): Only the connections that keep this entity's books
       provider (ListConnectionsProviderType0 | None | Unset): Filter by provider type
 
   Raises:
@@ -225,7 +225,7 @@ async def asyncio(
 
   Args:
       graph_id (str):
-      entity_id (None | str | Unset): Filter by entity ID
+      entity_id (None | str | Unset): Only the connections that keep this entity's books
       provider (ListConnectionsProviderType0 | None | Unset): Filter by provider type
 
   Raises:

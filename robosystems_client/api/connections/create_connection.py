@@ -115,7 +115,9 @@ def sync_detailed(
   Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
   bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
   omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
-  keeps; QuickBooks is refused (409) when the group parent's books are already native.
+  keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and naming a
+  subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's books are
+  already native. Every connection's `entity_id` is the entity whose books it keeps.
 
   Args:
       graph_id (str):
@@ -157,7 +159,9 @@ def sync(
   Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
   bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
   omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
-  keeps; QuickBooks is refused (409) when the group parent's books are already native.
+  keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and naming a
+  subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's books are
+  already native. Every connection's `entity_id` is the entity whose books it keeps.
 
   Args:
       graph_id (str):
@@ -194,7 +198,9 @@ async def asyncio_detailed(
   Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
   bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
   omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
-  keeps; QuickBooks is refused (409) when the group parent's books are already native.
+  keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and naming a
+  subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's books are
+  already native. Every connection's `entity_id` is the entity whose books it keeps.
 
   Args:
       graph_id (str):
@@ -234,7 +240,9 @@ async def asyncio(
   Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
   bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
   omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
-  keeps; QuickBooks is refused (409) when the group parent's books are already native.
+  keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and naming a
+  subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's books are
+  already native. Every connection's `entity_id` is the entity whose books it keeps.
 
   Args:
       graph_id (str):

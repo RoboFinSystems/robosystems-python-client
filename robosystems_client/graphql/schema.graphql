@@ -1848,7 +1848,6 @@ type Agent {
   agentType: String!
   name: String!
   legalName: String
-  taxId: String
   registrationNumber: String
   duns: String
   lei: String
@@ -1864,6 +1863,7 @@ type Agent {
   createdAt: DateTime
   updatedAt: DateTime
   createdBy: String
+  taxId: String
   openReceivable: OpenBalanceByAgent
   openPayable: OpenBalanceByAgent
 }

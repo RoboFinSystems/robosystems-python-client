@@ -114,9 +114,12 @@ def sync_detailed(
    Permanently destroys a user graph and cancels its subscription. Two modes via the `at_period_end`
   body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
   graph usable through the current billing period and tear it down at the period boundary via the
-  existing suspend → deprovision pipeline. Requires `confirm` to equal the URL `graph_id`. Caller must
-  be both org owner (billing authority) and admin on the graph (operational authority). Not allowed on
-  shared repositories.
+  existing suspend → deprovision pipeline. An immediate delete credits the unused part of the billed
+  period; it is not refunded. On a card-billed plan the credit goes to the organization's account
+  balance and is applied to its next invoice; on an invoiced plan it is a credit line on that period's
+  invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to equal the
+  URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
+  (operational authority). Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -130,7 +133,11 @@ def sync_detailed(
 
           - **Immediate** (default): subscription canceled now (`ends_at = now`) and
             fast-path deprovisioning fires within ~10 minutes. Use when you want
-            the data gone and the slot freed right away.
+            the data gone and the slot freed right away. The unused part of the
+            billed period is credited, not refunded: on a card-billed plan to the
+            organization's account balance, applied to its next invoice; on an
+            invoiced plan as a credit on that period's invoice, or a separate credit
+            invoice if it is already paid.
           - **At period end** (`at_period_end=true`): subscription canceled but
             `ends_at = current_period_end` so the graph stays usable through the
             paid period. The existing suspend → deprovision sensor pipeline tears
@@ -172,9 +179,12 @@ def sync(
    Permanently destroys a user graph and cancels its subscription. Two modes via the `at_period_end`
   body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
   graph usable through the current billing period and tear it down at the period boundary via the
-  existing suspend → deprovision pipeline. Requires `confirm` to equal the URL `graph_id`. Caller must
-  be both org owner (billing authority) and admin on the graph (operational authority). Not allowed on
-  shared repositories.
+  existing suspend → deprovision pipeline. An immediate delete credits the unused part of the billed
+  period; it is not refunded. On a card-billed plan the credit goes to the organization's account
+  balance and is applied to its next invoice; on an invoiced plan it is a credit line on that period's
+  invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to equal the
+  URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
+  (operational authority). Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -188,7 +198,11 @@ def sync(
 
           - **Immediate** (default): subscription canceled now (`ends_at = now`) and
             fast-path deprovisioning fires within ~10 minutes. Use when you want
-            the data gone and the slot freed right away.
+            the data gone and the slot freed right away. The unused part of the
+            billed period is credited, not refunded: on a card-billed plan to the
+            organization's account balance, applied to its next invoice; on an
+            invoiced plan as a credit on that period's invoice, or a separate credit
+            invoice if it is already paid.
           - **At period end** (`at_period_end=true`): subscription canceled but
             `ends_at = current_period_end` so the graph stays usable through the
             paid period. The existing suspend → deprovision sensor pipeline tears
@@ -225,9 +239,12 @@ async def asyncio_detailed(
    Permanently destroys a user graph and cancels its subscription. Two modes via the `at_period_end`
   body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
   graph usable through the current billing period and tear it down at the period boundary via the
-  existing suspend → deprovision pipeline. Requires `confirm` to equal the URL `graph_id`. Caller must
-  be both org owner (billing authority) and admin on the graph (operational authority). Not allowed on
-  shared repositories.
+  existing suspend → deprovision pipeline. An immediate delete credits the unused part of the billed
+  period; it is not refunded. On a card-billed plan the credit goes to the organization's account
+  balance and is applied to its next invoice; on an invoiced plan it is a credit line on that period's
+  invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to equal the
+  URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
+  (operational authority). Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -241,7 +258,11 @@ async def asyncio_detailed(
 
           - **Immediate** (default): subscription canceled now (`ends_at = now`) and
             fast-path deprovisioning fires within ~10 minutes. Use when you want
-            the data gone and the slot freed right away.
+            the data gone and the slot freed right away. The unused part of the
+            billed period is credited, not refunded: on a card-billed plan to the
+            organization's account balance, applied to its next invoice; on an
+            invoiced plan as a credit on that period's invoice, or a separate credit
+            invoice if it is already paid.
           - **At period end** (`at_period_end=true`): subscription canceled but
             `ends_at = current_period_end` so the graph stays usable through the
             paid period. The existing suspend → deprovision sensor pipeline tears
@@ -281,9 +302,12 @@ async def asyncio(
    Permanently destroys a user graph and cancels its subscription. Two modes via the `at_period_end`
   body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
   graph usable through the current billing period and tear it down at the period boundary via the
-  existing suspend → deprovision pipeline. Requires `confirm` to equal the URL `graph_id`. Caller must
-  be both org owner (billing authority) and admin on the graph (operational authority). Not allowed on
-  shared repositories.
+  existing suspend → deprovision pipeline. An immediate delete credits the unused part of the billed
+  period; it is not refunded. On a card-billed plan the credit goes to the organization's account
+  balance and is applied to its next invoice; on an invoiced plan it is a credit line on that period's
+  invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to equal the
+  URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
+  (operational authority). Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -297,7 +321,11 @@ async def asyncio(
 
           - **Immediate** (default): subscription canceled now (`ends_at = now`) and
             fast-path deprovisioning fires within ~10 minutes. Use when you want
-            the data gone and the slot freed right away.
+            the data gone and the slot freed right away. The unused part of the
+            billed period is credited, not refunded: on a card-billed plan to the
+            organization's account balance, applied to its next invoice; on an
+            invoiced plan as a credit on that period's invoice, or a separate credit
+            invoice if it is already paid.
           - **At period end** (`at_period_end=true`): subscription canceled but
             `ends_at = current_period_end` so the graph stays usable through the
             paid period. The existing suspend → deprovision sensor pipeline tears
