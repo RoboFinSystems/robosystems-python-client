@@ -20,7 +20,8 @@ class SSOExchangeRequest:
       target_app (str): Target application identifier
       return_url (None | str | Unset): Optional return URL after authentication
       browser_nonce_hash (None | str | Unset): SHA-256 (hex) of a nonce the target app minted in the browser that is
-          signing in. Completion must present the nonce, so the handoff cannot be redeemed by any other browser.
+          signing in. Completion must present the nonce, so the handoff cannot be redeemed by any other browser; a session
+          exchanged without one cannot be completed.
   """
 
   token: str

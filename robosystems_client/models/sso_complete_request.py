@@ -18,7 +18,7 @@ class SSOCompleteRequest:
   Attributes:
       session_id (str): Temporary session ID from secure handoff
       browser_nonce (None | str | Unset): The nonce this browser minted when it started the bridge; its SHA-256 was
-          passed through the exchange as browser_nonce_hash.
+          passed through the exchange as browser_nonce_hash. Required to complete a handoff.
   """
 
   session_id: str
