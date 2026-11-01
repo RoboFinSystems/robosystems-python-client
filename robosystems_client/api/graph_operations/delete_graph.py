@@ -115,10 +115,12 @@ def sync_detailed(
   body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
   graph usable through the current billing period and tear it down at the period boundary via the
   existing suspend → deprovision pipeline. An immediate delete credits the unused part of the billed
-  period; it is not refunded. On a card-billed plan the credit goes to the organization's account
-  balance and is applied to its next invoice; on an invoiced plan it is a credit line on that period's
-  invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to equal the
-  URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
+  period; it is not refunded. A period buys time and AI credits, so the credit is the smaller unused
+  share of the two: credits used ahead of the time elapsed reduce it. On a card-billed plan the credit
+  lands on the organization's account balance at once and is applied to its next invoice, so a graph
+  created right after is charged the difference; on an invoiced plan it is a credit line on that
+  period's invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to
+  equal the URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
   (operational authority). Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
@@ -180,10 +182,12 @@ def sync(
   body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
   graph usable through the current billing period and tear it down at the period boundary via the
   existing suspend → deprovision pipeline. An immediate delete credits the unused part of the billed
-  period; it is not refunded. On a card-billed plan the credit goes to the organization's account
-  balance and is applied to its next invoice; on an invoiced plan it is a credit line on that period's
-  invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to equal the
-  URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
+  period; it is not refunded. A period buys time and AI credits, so the credit is the smaller unused
+  share of the two: credits used ahead of the time elapsed reduce it. On a card-billed plan the credit
+  lands on the organization's account balance at once and is applied to its next invoice, so a graph
+  created right after is charged the difference; on an invoiced plan it is a credit line on that
+  period's invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to
+  equal the URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
   (operational authority). Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
@@ -240,10 +244,12 @@ async def asyncio_detailed(
   body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
   graph usable through the current billing period and tear it down at the period boundary via the
   existing suspend → deprovision pipeline. An immediate delete credits the unused part of the billed
-  period; it is not refunded. On a card-billed plan the credit goes to the organization's account
-  balance and is applied to its next invoice; on an invoiced plan it is a credit line on that period's
-  invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to equal the
-  URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
+  period; it is not refunded. A period buys time and AI credits, so the credit is the smaller unused
+  share of the two: credits used ahead of the time elapsed reduce it. On a card-billed plan the credit
+  lands on the organization's account balance at once and is applied to its next invoice, so a graph
+  created right after is charged the difference; on an invoiced plan it is a credit line on that
+  period's invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to
+  equal the URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
   (operational authority). Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
@@ -303,10 +309,12 @@ async def asyncio(
   body flag: omit it (or pass `false`) to tear down immediately (~10 min); pass `true` to keep the
   graph usable through the current billing period and tear it down at the period boundary via the
   existing suspend → deprovision pipeline. An immediate delete credits the unused part of the billed
-  period; it is not refunded. On a card-billed plan the credit goes to the organization's account
-  balance and is applied to its next invoice; on an invoiced plan it is a credit line on that period's
-  invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to equal the
-  URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
+  period; it is not refunded. A period buys time and AI credits, so the credit is the smaller unused
+  share of the two: credits used ahead of the time elapsed reduce it. On a card-billed plan the credit
+  lands on the organization's account balance at once and is applied to its next invoice, so a graph
+  created right after is charged the difference; on an invoiced plan it is a credit line on that
+  period's invoice, or a separate credit invoice if that one is already paid. Requires `confirm` to
+  equal the URL `graph_id`. Caller must be both org owner (billing authority) and admin on the graph
   (operational authority). Not allowed on shared repositories.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours

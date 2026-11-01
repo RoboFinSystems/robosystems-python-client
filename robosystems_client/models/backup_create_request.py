@@ -15,7 +15,7 @@ class BackupCreateRequest:
   """Request model for creating a backup.
 
   Attributes:
-      backup_format (str | Unset): Backup format - only 'full_dump' is supported (complete .lbug database file)
+      backup_format (str | Unset): Backup format - only 'full_dump' is supported (complete .lbdb database file)
           Default: 'full_dump'.
       backup_type (str | Unset): Backup type - only 'full' is supported Default: 'full'.
       retention_days (int | Unset): Retention period in days, further capped to the graph tier's maximum (7/30/90). 90

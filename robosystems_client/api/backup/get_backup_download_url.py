@@ -88,8 +88,8 @@ def sync_detailed(
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup. The filename carries the extension listed as
-  `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
-  `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
+  `download_extension` on the backup: `.lbdb.zip` is a ZIP holding the LadybugDB database file
+  `{graph_id}.lbdb`; `.lbdb.zst` (shared repository snapshots) is a single zstd-compressed database
   file; decompress it with `zstd -d`.
 
   Args:
@@ -128,8 +128,8 @@ def sync(
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup. The filename carries the extension listed as
-  `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
-  `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
+  `download_extension` on the backup: `.lbdb.zip` is a ZIP holding the LadybugDB database file
+  `{graph_id}.lbdb`; `.lbdb.zst` (shared repository snapshots) is a single zstd-compressed database
   file; decompress it with `zstd -d`.
 
   Args:
@@ -163,8 +163,8 @@ async def asyncio_detailed(
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup. The filename carries the extension listed as
-  `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
-  `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
+  `download_extension` on the backup: `.lbdb.zip` is a ZIP holding the LadybugDB database file
+  `{graph_id}.lbdb`; `.lbdb.zst` (shared repository snapshots) is a single zstd-compressed database
   file; decompress it with `zstd -d`.
 
   Args:
@@ -201,8 +201,8 @@ async def asyncio(
   """Get temporary download URL for backup
 
    Generate a temporary download URL for a backup. The filename carries the extension listed as
-  `download_extension` on the backup: `.lbug.zip` is a ZIP holding the LadybugDB database file
-  `{graph_id}.lbug`; `.lbug.zst` (shared repository snapshots) is a single zstd-compressed database
+  `download_extension` on the backup: `.lbdb.zip` is a ZIP holding the LadybugDB database file
+  `{graph_id}.lbdb`; `.lbdb.zst` (shared repository snapshots) is a single zstd-compressed database
   file; decompress it with `zstd -d`.
 
   Args:
