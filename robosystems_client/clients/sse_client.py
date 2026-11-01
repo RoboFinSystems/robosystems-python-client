@@ -74,6 +74,18 @@ class EventType(Enum):
   QUEUE_UPDATE = "queue_update"
 
 
+# Sent on every open and while idle, so neither shows the stream got anywhere.
+_NO_PROGRESS_EVENTS = {"connected", "keepalive"}
+
+
+class _StreamInterrupted(Exception):
+  """The stream ended or failed before the server said it was finished."""
+
+
+def _is_retryable_status(status: int) -> bool:
+  return status == 429 or status >= 500
+
+
 def event_error_message(err: Any) -> str:
   """Text of an ``error`` payload, whichever shape the stream emitted.
 
@@ -104,6 +116,7 @@ class SSEClient:
     self.closed = False
     self.listeners: Dict[str, Set[Callable]] = {}
     self._response = None
+    self._stream_ended = False
 
   def connect(self, operation_id: str, from_sequence: int = 0) -> None:
     """Connect to SSE stream for the given operation"""
@@ -126,6 +139,10 @@ class SSEClient:
       if self._response.status_code != 200:
         status = self._response.status_code
         body = self._response.read().decode("utf-8", errors="replace")[:500]
+        if _is_retryable_status(status):
+          raise _StreamInterrupted(
+            f"SSE connection failed: HTTP {status} {body}".strip()
+          )
         self._context_manager.__exit__(None, None, None)
         self._context_manager = None
         self._response = None
@@ -136,11 +153,14 @@ class SSEClient:
         )
         return
 
-      self.reconnect_attempts = 0
       self.emit("connected", None)
 
       # Start processing events
       self._process_events()
+
+      # A deploy can close the stream cleanly while the operation runs on.
+      if not self.closed and not self._stream_ended:
+        raise _StreamInterrupted("SSE stream ended before the operation finished")
 
     except Exception as error:
       if not self.closed:
@@ -200,9 +220,9 @@ class SSEClient:
       if event_buffer["data"] or event_buffer["event"]:
         self._dispatch_event(event_buffer)
 
-    except Exception as error:
+    except Exception:
       if not self.closed:
-        self.emit("error", error)
+        raise
 
   def _dispatch_event(self, event_buffer: Dict[str, Any]) -> None:
     """Dispatch a complete SSE event"""
@@ -213,6 +233,11 @@ class SSEClient:
       return  # Skip empty events
 
     event_type = event_buffer["event"] or "message"
+
+    if event_type == "stream_end":
+      self._stream_ended = True
+    if event_type not in _NO_PROGRESS_EVENTS:
+      self.reconnect_attempts = 0
 
     # Parse JSON data if possible
     parsed_data = data_str
@@ -251,6 +276,8 @@ class SSEClient:
     """Handle connection errors with retry logic"""
     if self.closed:
       return
+
+    self._release_transport()
 
     if self.reconnect_attempts < self.config.max_retries:
       self.reconnect_attempts += 1
@@ -308,10 +335,8 @@ class SSEClient:
           # Log error but don't stop other listeners
           print(f"Error in event listener for {event}: {e}")
 
-  def close(self):
-    """Close the SSE connection"""
-    self.closed = True
-
+  def _release_transport(self) -> None:
+    """Drop the current connection, leaving the client able to reconnect."""
     if hasattr(self, "_context_manager") and self._context_manager:
       try:
         self._context_manager.__exit__(None, None, None)
@@ -324,6 +349,10 @@ class SSEClient:
       self.client.close()
       self.client = None
 
+  def close(self):
+    """Close the SSE connection"""
+    self.closed = True
+    self._release_transport()
     self.emit("closed", None)
     self.listeners.clear()
 
@@ -348,6 +377,7 @@ class AsyncSSEClient:
     self.closed = False
     self.listeners: Dict[str, Set[Callable]] = {}
     self._response = None
+    self._stream_ended = False
 
   async def connect(self, operation_id: str, from_sequence: int = 0) -> None:
     """Connect to SSE stream for the given operation (async)"""
@@ -370,6 +400,10 @@ class AsyncSSEClient:
       if self._response.status_code != 200:
         status = self._response.status_code
         body = (await self._response.aread()).decode("utf-8", errors="replace")[:500]
+        if _is_retryable_status(status):
+          raise _StreamInterrupted(
+            f"SSE connection failed: HTTP {status} {body}".strip()
+          )
         await self._context_manager.__aexit__(None, None, None)
         self._context_manager = None
         self._response = None
@@ -380,11 +414,14 @@ class AsyncSSEClient:
         )
         return
 
-      self.reconnect_attempts = 0
       self.emit("connected", None)
 
       # Start processing events
       await self._process_events()
+
+      # A deploy can close the stream cleanly while the operation runs on.
+      if not self.closed and not self._stream_ended:
+        raise _StreamInterrupted("SSE stream ended before the operation finished")
 
     except Exception as error:
       if not self.closed:
@@ -444,9 +481,9 @@ class AsyncSSEClient:
       if event_buffer["data"] or event_buffer["event"]:
         self._dispatch_event(event_buffer)
 
-    except Exception as error:
+    except Exception:
       if not self.closed:
-        self.emit("error", error)
+        raise
 
   def _dispatch_event(self, event_buffer: Dict[str, Any]):
     """Dispatch a complete SSE event (same as sync version)"""
@@ -457,6 +494,11 @@ class AsyncSSEClient:
       return  # Skip empty events
 
     event_type = event_buffer["event"] or "message"
+
+    if event_type == "stream_end":
+      self._stream_ended = True
+    if event_type not in _NO_PROGRESS_EVENTS:
+      self.reconnect_attempts = 0
 
     # Parse JSON data if possible
     parsed_data = data_str
@@ -496,6 +538,8 @@ class AsyncSSEClient:
     if self.closed:
       return
 
+    await self._release_transport()
+
     if self.reconnect_attempts < self.config.max_retries:
       self.reconnect_attempts += 1
       delay_ms = self.config.retry_delay * (2 ** (self.reconnect_attempts - 1))
@@ -511,6 +555,10 @@ class AsyncSSEClient:
       )
 
       await asyncio.sleep(delay_seconds)
+
+      # A close() during the backoff ends the reconnect.
+      if self.closed:
+        return
 
       resume_from = 0
       if self.last_event_id:
@@ -546,10 +594,8 @@ class AsyncSSEClient:
         except Exception as e:
           print(f"Error in event listener for {event}: {e}")
 
-  async def close(self):
-    """Close the SSE connection (async)"""
-    self.closed = True
-
+  async def _release_transport(self) -> None:
+    """Drop the current connection, leaving the client able to reconnect."""
     if hasattr(self, "_context_manager") and self._context_manager:
       try:
         await self._context_manager.__aexit__(None, None, None)
@@ -562,6 +608,10 @@ class AsyncSSEClient:
       await self.client.aclose()
       self.client = None
 
+  async def close(self):
+    """Close the SSE connection (async)"""
+    self.closed = True
+    await self._release_transport()
     self.emit("closed", None)
     self.listeners.clear()
 
