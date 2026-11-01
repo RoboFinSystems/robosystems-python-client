@@ -9,6 +9,8 @@ parses as ``None``, or a body shape the facade misread, went unnoticed.
 import json
 import re
 
+from unittest.mock import patch
+
 import pytest
 
 from robosystems_client.clients import OperatorRunError
@@ -442,16 +444,47 @@ class TestOperationMonitoring:
 
     assert result.status == OperationStatus.CANCELLED
 
-  def test_stream_ending_without_a_verdict_raises(self, httpx_mock):
+  def test_stream_end_without_a_verdict_raises(self, httpx_mock):
     httpx_mock.add_response(
       url=_stream_url(),
       content=_sse(
-        ("operation_progress", {"message": "Working", "progress_percent": 5})
+        ("operation_awaiting_input", {"prompt": "Confirm?"}),
+        ("stream_end", {"status": "awaiting_input"}),
       ),
     )
 
     with pytest.raises(Exception, match="ended before a terminal event"):
       OperationClient(CONFIG).monitor_operation(OP)
+
+  def test_a_stream_that_keeps_closing_gives_up_after_its_retries(self, httpx_mock):
+    httpx_mock.add_response(
+      url=_stream_url(),
+      content=_sse(("connected", {})),
+      is_reusable=True,
+    )
+
+    with patch("robosystems_client.clients.sse_client.time.sleep"):
+      result = OperationClient(CONFIG).monitor_operation(OP)
+
+    assert result.status == OperationStatus.FAILED
+    assert "ended before the operation finished" in result.error
+    assert len(httpx_mock.get_requests()) == 6
+
+  def test_a_closed_stream_reconnects_and_reaches_the_verdict(self, httpx_mock):
+    httpx_mock.add_response(
+      url=_stream_url(),
+      content=_sse(("operation_progress", {"message": "Working"})),
+    )
+    httpx_mock.add_response(
+      url=_stream_url(),
+      content=_sse(("operation_completed", {"result": {"ok": True}})),
+    )
+
+    with patch("robosystems_client.clients.sse_client.time.sleep"):
+      result = OperationClient(CONFIG).monitor_operation(OP)
+
+    assert result.status == OperationStatus.COMPLETED
+    assert result.result == {"ok": True}
 
   def test_progress_reads_progress_percent(self, httpx_mock):
     httpx_mock.add_response(

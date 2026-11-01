@@ -246,7 +246,13 @@ class OperatorClient:
 
   def _sse_config(self) -> SSEConfig:
     """Stream config for one connect; headers carry the credential current now."""
-    return SSEConfig(base_url=self.base_url, headers=resolve_auth_headers(self.config))
+    # No stream retries: `/status` polling already covers a lost stream, and
+    # retrying first would only delay it.
+    return SSEConfig(
+      base_url=self.base_url,
+      headers=resolve_auth_headers(self.config),
+      max_retries=0,
+    )
 
   def execute_query(
     self,

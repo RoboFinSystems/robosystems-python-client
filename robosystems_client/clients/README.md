@@ -114,9 +114,9 @@ result = clients.monitor_operation(operation_id, on_progress)
 print(result.status.value, result.result, result.error)
 ```
 
-`status` is an `OperationStatus`. `FAILED` can also mean the stream connection failed while the operation was still running, with the transport error in `error`. `get_operation_status(operation_id)` returns the server's view as a dict, and `cancel_operation(operation_id)` returns a bool. To set a limit, call `clients.operations.monitor_operation(operation_id, MonitorOptions(timeout=600))`, which raises `TimeoutError`.
+`status` is an `OperationStatus`. A dropped stream reconnects, so a brief outage doesn't change the result. `FAILED` can still mean the reconnects ran out while the operation was running, with the transport error in `error`. `get_operation_status(operation_id)` returns the server's view as a dict, and `cancel_operation(operation_id)` returns a bool. To set a limit, call `clients.operations.monitor_operation(operation_id, MonitorOptions(timeout=600))`, which raises `TimeoutError`.
 
-For custom event handling, use `create_sse_client()`, which copies the configured headers. An `SSEConfig` you build yourself needs credentials in `headers`, because the stream endpoint returns 401 without them. `connect` reports problems through the `error` event rather than raising. It retries with backoff only when opening the connection raises; a non-200 response or a drop mid-stream emits `error` and returns.
+For custom event handling, use `create_sse_client()`, which copies the configured headers. An `SSEConfig` you build yourself needs credentials in `headers`, because the stream endpoint returns 401 without them. `connect` reports problems through events rather than raising. A dropped stream, a clean close before the operation finishes, or a `429` or `5xx` response reconnects with backoff at the original `from_sequence`, so a running operation's events during the gap are lost and a finished one replays. The attempts reset only when a real event arrives, and `max_retries_exceeded` fires when they run out. Any other non-200 response emits `error` and returns. `stream_end` ends the connection without a reconnect.
 
 ```python
 from robosystems_client.clients import EventType

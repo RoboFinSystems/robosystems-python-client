@@ -5,9 +5,14 @@ completion-event auto-close, and close/cleanup. Dataclass and listener
 tests already exist in extensions/tests/test_unit.py.
 """
 
+import asyncio
+import json
+
+import httpx
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from robosystems_client.clients.sse_client import (
+  AsyncSSEClient,
   SSEClient,
   SSEConfig,
 )
@@ -536,3 +541,167 @@ class TestListenerErrors:
     """Test emitting to an event with no listeners doesn't raise."""
     client = SSEClient(sse_config)
     client.emit("nonexistent", "data")  # Should not raise
+
+
+def _sse(*events):
+  """Encode (name, payload) pairs as a raw SSE body."""
+  return b"".join(
+    f"event: {name}\ndata: {json.dumps(data)}\n\n".encode() for name, data in events
+  )
+
+
+class _DroppingStream(httpx.SyncByteStream, httpx.AsyncByteStream):
+  """Yields a body, then fails the way a dropped connection does."""
+
+  def __init__(self, body):
+    self.body = body
+
+  def __iter__(self):
+    yield self.body
+    raise httpx.RemoteProtocolError("peer closed connection")
+
+  async def __aiter__(self):
+    yield self.body
+    raise httpx.RemoteProtocolError("peer closed connection")
+
+
+COMPLETED = _sse(("connected", {}), ("operation_completed", {"result": {"ok": True}}))
+
+
+def _responses(*scripted):
+  """A handler replaying scripted responses, recording each request."""
+  remaining = list(scripted)
+  seen = []
+
+  def handler(request):
+    seen.append(request)
+    return remaining.pop(0) if len(remaining) > 1 else remaining[0]
+
+  return handler, seen
+
+
+@pytest.fixture
+def fast_config():
+  return SSEConfig(base_url="https://api.test", max_retries=3, retry_delay=1)
+
+
+def _run_sync(config, handler):
+  real_client = httpx.Client
+  with patch(
+    "robosystems_client.clients.sse_client.httpx.Client",
+    side_effect=lambda **kw: real_client(transport=httpx.MockTransport(handler), **kw),
+  ):
+    client = SSEClient(config)
+    events = {"completed": [], "errors": [], "exhausted": [], "reconnecting": []}
+    client.on("operation_completed", events["completed"].append)
+    client.on("error", events["errors"].append)
+    client.on("max_retries_exceeded", events["exhausted"].append)
+    client.on("reconnecting", events["reconnecting"].append)
+    client.connect("op_1")
+    return events
+
+
+class TestStreamInterruption:
+  """A broken stream says nothing about the operation behind it."""
+
+  def test_a_dropped_stream_reconnects_and_reaches_the_result(self, fast_config):
+    handler, seen = _responses(
+      httpx.Response(200, stream=_DroppingStream(_sse(("operation_progress", {})))),
+      httpx.Response(200, content=COMPLETED),
+    )
+
+    events = _run_sync(fast_config, handler)
+
+    assert len(seen) == 2
+    assert events["completed"] == [{"result": {"ok": True}}]
+    assert events["errors"] == []
+
+  def test_a_clean_close_before_the_end_reconnects(self, fast_config):
+    handler, seen = _responses(
+      httpx.Response(200, content=_sse(("operation_progress", {}))),
+      httpx.Response(200, content=COMPLETED),
+    )
+
+    events = _run_sync(fast_config, handler)
+
+    assert len(seen) == 2
+    assert len(events["completed"]) == 1
+
+  def test_a_503_while_reconnecting_is_retried(self, fast_config):
+    handler, seen = _responses(
+      httpx.Response(200, stream=_DroppingStream(_sse(("operation_progress", {})))),
+      httpx.Response(503, content=b"unavailable"),
+      httpx.Response(200, content=COMPLETED),
+    )
+
+    events = _run_sync(fast_config, handler)
+
+    assert len(seen) == 3
+    assert len(events["completed"]) == 1
+    assert events["errors"] == []
+
+  def test_a_refused_credential_is_not_retried(self, fast_config):
+    handler, seen = _responses(httpx.Response(401, content=b"denied"))
+
+    events = _run_sync(fast_config, handler)
+
+    assert len(seen) == 1
+    assert "401" in str(events["errors"][0])
+    assert events["reconnecting"] == []
+
+  def test_stream_end_stops_without_reconnecting(self, fast_config):
+    body = _sse(("operation_awaiting_input", {}), ("stream_end", {"status": "paused"}))
+    handler, seen = _responses(httpx.Response(200, content=body))
+
+    events = _run_sync(fast_config, handler)
+
+    assert len(seen) == 1
+    assert events["reconnecting"] == []
+
+  def test_reopening_without_progress_does_not_reset_the_budget(self, fast_config):
+    handler, seen = _responses(
+      httpx.Response(200, stream=_DroppingStream(_sse(("connected", {}))))
+    )
+
+    events = _run_sync(fast_config, handler)
+
+    assert len(seen) == fast_config.max_retries + 1
+    assert len(events["exhausted"]) == 1
+
+  def test_progress_resets_the_budget(self, fast_config):
+    dropping = [
+      httpx.Response(200, stream=_DroppingStream(_sse(("operation_progress", {}))))
+      for _ in range(fast_config.max_retries + 2)
+    ]
+    handler, seen = _responses(*dropping, httpx.Response(200, content=COMPLETED))
+
+    events = _run_sync(fast_config, handler)
+
+    assert len(seen) == fast_config.max_retries + 3
+    assert events["exhausted"] == []
+    assert len(events["completed"]) == 1
+
+  def test_the_async_client_reconnects_too(self, fast_config):
+    handler, seen = _responses(
+      httpx.Response(200, stream=_DroppingStream(_sse(("operation_progress", {})))),
+      httpx.Response(503, content=b"unavailable"),
+      httpx.Response(200, content=COMPLETED),
+    )
+    real_client = httpx.AsyncClient
+    completed = []
+
+    async def run():
+      with patch(
+        "robosystems_client.clients.sse_client.httpx.AsyncClient",
+        side_effect=lambda **kw: real_client(
+          transport=httpx.MockTransport(handler), **kw
+        ),
+      ):
+        client = AsyncSSEClient(fast_config)
+        client.on("operation_completed", completed.append)
+        await client.connect("op_1")
+
+    asyncio.run(run())
+
+    assert len(seen) == 3
+    assert completed == [{"result": {"ok": True}}]
