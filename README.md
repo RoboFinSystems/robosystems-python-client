@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/robosystems-client.svg)](https://pypi.org/project/robosystems-client/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Official Python client for the RoboSystems financial intelligence platform — accounting, financial reporting, and investment management over a knowledge graph API. Type-safe and async-ready, generated from the OpenAPI spec, with GraphQL reads and idempotent operation writes.
+Official Python client for the RoboSystems financial intelligence platform — accounting, financial reporting, and investment management over a knowledge graph API. Type-safe, generated from the OpenAPI spec, with GraphQL reads and idempotent operation writes.
 
 ## Features
 
