@@ -38,7 +38,7 @@ class BackupResponse:
           backups taken before memory was included, which make no claim either way — distinct from false, which means the
           graph had none.
       download_extension (None | str | Unset): Extension the download will carry, and therefore how to unpack it:
-          '.lbug.zip' is a ZIP holding the LadybugDB database file, '.lbug.zst' is zstd-compressed (`zstd -d`). Null only
+          '.lbdb.zip' is a ZIP holding the LadybugDB database file, '.lbdb.zst' is zstd-compressed (`zstd -d`). Null only
           when the backup has no stored object yet.
   """
 
