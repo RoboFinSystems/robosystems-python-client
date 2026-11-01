@@ -10,7 +10,7 @@ Official Python client for the RoboSystems financial intelligence platform — a
 - **Type-safe API client** with full type hints and typed models
 - **Async/await support** for high-performance applications
 - **Parquet file uploads** for table ingestion
-- **Streaming support** for memory-efficient processing of large result sets
+- **Row iteration** over query results with `stream_query`, which collects the full result before yielding rows
 - **AI Operator** integration for natural language financial analysis
 - **Comprehensive error handling** with typed exceptions
 
