@@ -28,7 +28,8 @@ class RoboSystemsClientConfig:
   max_retries: int = 5
   retry_delay: int = 1000
   timeout: int = 30
-  s3_endpoint_url: Optional[str] = None  # Override S3 endpoint (e.g., for LocalStack)
+  # Where the client reaches S3 when that is not the host the API signed for.
+  s3_endpoint_url: Optional[str] = None
   # Zero-arg callable returning the current auth credential, consulted
   # on every request by the GraphQL-backed facades (ledger / investor /
   # library). Wins over the static token when set — use it when the

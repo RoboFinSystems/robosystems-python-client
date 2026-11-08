@@ -294,14 +294,15 @@ class TestFileUpload:
   def test_upload_with_s3_endpoint_override(
     self, mock_create, mock_update, mock_config, graph_id
   ):
-    """Test upload rewrites S3 URL when s3_endpoint_url is set."""
-    mock_config["s3_endpoint_url"] = "http://localhost:4566"
+    """The connection goes to the override; the Host header stays the signed
+    one, since SigV4 binds it and the server checks the signature against it."""
+    mock_config["s3_endpoint_url"] = "http://host.docker.internal:8333"
 
     mock_create_resp = Mock()
     mock_create_resp.status_code = 200
     mock_create_resp.parsed = Mock(
       result={
-        "upload_url": "https://s3.amazonaws.com/bucket/file.parquet?sig=abc",
+        "upload_url": "http://localhost:8333/bucket/file.parquet?X-Amz-Signature=abc",
         "file_id": "file-s3-override",
       }
     )
@@ -318,9 +319,46 @@ class TestFileUpload:
 
     client.upload(graph_id, "Entity", BytesIO(b"data"))
 
-    # Verify S3 PUT was called with overridden URL
     put_url = client._http_client.put.call_args[0][0]
-    assert "localhost:4566" in put_url
+    put_headers = client._http_client.put.call_args.kwargs["headers"]
+    assert put_url == (
+      "http://host.docker.internal:8333/bucket/file.parquet?X-Amz-Signature=abc"
+    )
+    assert put_headers["Host"] == "localhost:8333"
+    assert put_headers["Content-Type"] == "application/x-parquet"
+
+  @patch("robosystems_client.clients.file_client.ingest_file")
+  @patch("robosystems_client.clients.file_client.create_file_upload")
+  def test_upload_without_override_sends_no_host_header(
+    self, mock_create, mock_update, mock_config, graph_id
+  ):
+    """Without an override the presigned URL is used as signed and the
+    client sets no Host header of its own."""
+    mock_create_resp = Mock()
+    mock_create_resp.status_code = 200
+    mock_create_resp.parsed = Mock(
+      result={
+        "upload_url": "https://bucket.s3.amazonaws.com/file.parquet?X-Amz-Signature=abc",
+        "file_id": "file-plain",
+      }
+    )
+    mock_create.return_value = mock_create_resp
+
+    mock_update_resp = Mock()
+    mock_update_resp.status_code = 200
+    mock_update_resp.parsed = Mock(result={"file_size_bytes": 100, "row_count": 5})
+    mock_update.return_value = mock_update_resp
+
+    client = FileClient(mock_config)
+    client._http_client = Mock()
+    client._http_client.put.return_value = Mock(status_code=200)
+
+    client.upload(graph_id, "Entity", BytesIO(b"data"))
+
+    put_url = client._http_client.put.call_args[0][0]
+    put_headers = client._http_client.put.call_args.kwargs["headers"]
+    assert put_url == "https://bucket.s3.amazonaws.com/file.parquet?X-Amz-Signature=abc"
+    assert "Host" not in put_headers
 
 
 @pytest.mark.unit
