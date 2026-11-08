@@ -109,7 +109,7 @@ class FileClient:
         graph_id: Graph database identifier
         table_name: Table to associate file with
         file_or_buffer: File path, Path object, BytesIO, or file-like object
-        options: Upload options (progress callback, LocalStack URL fix, auto-ingest)
+        options: Upload options (progress callback, auto-ingest)
 
     Returns:
         FileUploadResult with file metadata and status
@@ -184,13 +184,15 @@ class FileClient:
       upload_url = upload_data.get("upload_url")
       file_id = upload_data.get("file_id")
 
-      # Override S3 endpoint if configured (e.g., for LocalStack)
+      # The client may reach S3 by a different name than the API signed for
+      # (a container reaching a dev stack through host.docker.internal). SigV4
+      # binds the Host header, so the request keeps the signed one.
+      upload_headers = {"Content-Type": "application/x-parquet"}
       if self.s3_endpoint_url:
         from urllib.parse import urlparse, urlunparse
 
         parsed_url = urlparse(upload_url)
         override_parsed = urlparse(self.s3_endpoint_url)
-        # Replace scheme, host, and port with the override endpoint
         upload_url = urlunparse(
           (
             override_parsed.scheme or parsed_url.scheme,
@@ -201,6 +203,7 @@ class FileClient:
             parsed_url.fragment,
           )
         )
+        upload_headers["Host"] = parsed_url.netloc
 
       # Step 2: Upload file to S3
       if options.on_progress:
@@ -209,7 +212,7 @@ class FileClient:
       s3_response = self._http_client.put(
         upload_url,
         content=file_content,
-        headers={"Content-Type": "application/x-parquet"},
+        headers=upload_headers,
       )
 
       if s3_response.status_code not in [200, 204]:

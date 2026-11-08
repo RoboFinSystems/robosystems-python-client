@@ -68,7 +68,7 @@ The package reads no environment variables on its own. `extract_token_from_envir
 | `max_retries` | `5` | Replays of a `429` response; reconnect attempts for `create_sse_client()` |
 | `retry_delay` | `1000` | Base backoff in milliseconds for both of the above |
 | `timeout` | `30` | Seconds, for ledger, investor and library GraphQL reads and `create_sse_client()`. Other REST calls set no client timeout |
-| `s3_endpoint_url` | `None` | Rewrites the host of file upload URLs, for example for LocalStack |
+| `s3_endpoint_url` | `None` | Where the client connects for file uploads when it reaches S3 by a different name than the API signed for (a container reaching a dev stack through `host.docker.internal`). The signed `Host` header is kept, as SigV4 requires |
 | `token_provider` | `None` | Callable returning the current credential |
 
 ## Cypher queries
