@@ -21,9 +21,11 @@ class AcceptSuggestionLine:
       outcome (AcceptSuggestionLineOutcome): What happened to it.
       reason (None | str | Unset): Why a skipped line was not taken: `not_open` (already classified, posted or
           retracted), `no_suggestion` (nothing to take, or a name that matches no account), `source_changed` (the feed
-          changed it after capture), `suggestion_changed` (a line taken earlier in the batch moved the counterparty's
-          default, so this one's suggestion is not the one selected; review it again), `closed_period`, `locked` (another
-          process holds it; retry), or `refused` (the handler would not post the choice).
+          changed it after capture), `needs_review` (the suggestion carries a caution, such as an amount far above the
+          counterparty's usual; classify the line on its own), `suggestion_changed` (a line taken earlier in the batch
+          moved the counterparty's default, so this one's suggestion is not the one selected; review it again),
+          `closed_period`, `locked` (another process holds it; retry), or `refused` (the handler would not post the
+          choice).
       detail (None | str | Unset): The refusal's own words, when there was one.
       element_id (None | str | Unset): The account the suggestion names.
       description (None | str | Unset): The line's description.
