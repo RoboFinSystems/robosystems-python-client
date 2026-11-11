@@ -31,9 +31,10 @@ class ConnectionResponse:
           external source, whose events name their own.
       updated_at (datetime.datetime | None | str | Unset): Last update timestamp
       last_sync (datetime.datetime | None | str | Unset): Last sync timestamp
-      write_policy (None | str | Unset): Source-of-truth write policy: 'native' (RoboSystems is authoritative; no
-          outbound write-back) or 'qb_authoritative' (QuickBooks is authoritative; RoboSystems-originated entries publish
-          to QB). Set via the write-policy endpoint.
+      write_policy (None | str | Unset): Outbound write policy: 'qb_authoritative' (QuickBooks is the book of record
+          and RoboSystems-originated entries publish to it at close), 'shadow' (QuickBooks is the book of record, nothing
+          is written to it and the close posts nothing locally), or 'native' (no external ledger; what severing leaves).
+          Set via the write-policy endpoint.
       source_name (None | str | Unset): External-provider registered source slug — the value the integration stamps on
           the events it emits. Null for platform providers.
   """

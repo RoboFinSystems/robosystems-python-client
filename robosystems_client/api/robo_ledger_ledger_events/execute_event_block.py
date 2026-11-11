@@ -118,7 +118,7 @@ def sync_detailed(
   the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
   'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
   is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
-  record.
+  record. Only the group parent's books are QuickBooks': an event on a subsidiary's books is refused.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -175,7 +175,7 @@ def sync(
   the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
   'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
   is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
-  record.
+  record. Only the group parent's books are QuickBooks': an event on a subsidiary's books is refused.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -227,7 +227,7 @@ async def asyncio_detailed(
   the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
   'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
   is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
-  record.
+  record. Only the group parent's books are QuickBooks': an event on a subsidiary's books is refused.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -282,7 +282,7 @@ async def asyncio(
   the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
   'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
   is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
-  record.
+  record. Only the group parent's books are QuickBooks': an event on a subsidiary's books is refused.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

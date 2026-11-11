@@ -113,14 +113,14 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeDescribeFilingResponse]:
   """Describe Filing
 
-   How one filing is laid out: entity, periods, statements and disclosures by role, axes, and its text
-  — the Items of a 10-K or 10-Q and its largest text blocks, each with the character offset `read-
-  text` pages from. On the SEC shared repository the filing is read from its public folder — its own
-  document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed by
-  `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings release
-  and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand in for
-  the ticker). SEC only: a ledger files no document, and its sections read through `disclosures` and
-  `information-block`.
+   How one filing is laid out: entity, periods, statements by role and notes by name, axes, and its
+  text — the Items of a 10-K or 10-Q and its largest text blocks, each with the character offset
+  `read-text` pages from. On the SEC shared repository the filing is read from its public folder — its
+  own document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed
+  by `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings
+  release and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand
+  in for the ticker). SEC only: a ledger files no document, and its sections read through
+  `disclosures` and `information-block`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -161,14 +161,14 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeDescribeFilingResponse | None:
   """Describe Filing
 
-   How one filing is laid out: entity, periods, statements and disclosures by role, axes, and its text
-  — the Items of a 10-K or 10-Q and its largest text blocks, each with the character offset `read-
-  text` pages from. On the SEC shared repository the filing is read from its public folder — its own
-  document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed by
-  `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings release
-  and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand in for
-  the ticker). SEC only: a ledger files no document, and its sections read through `disclosures` and
-  `information-block`.
+   How one filing is laid out: entity, periods, statements by role and notes by name, axes, and its
+  text — the Items of a 10-K or 10-Q and its largest text blocks, each with the character offset
+  `read-text` pages from. On the SEC shared repository the filing is read from its public folder — its
+  own document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed
+  by `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings
+  release and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand
+  in for the ticker). SEC only: a ledger files no document, and its sections read through
+  `disclosures` and `information-block`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -204,14 +204,14 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeDescribeFilingResponse]:
   """Describe Filing
 
-   How one filing is laid out: entity, periods, statements and disclosures by role, axes, and its text
-  — the Items of a 10-K or 10-Q and its largest text blocks, each with the character offset `read-
-  text` pages from. On the SEC shared repository the filing is read from its public folder — its own
-  document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed by
-  `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings release
-  and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand in for
-  the ticker). SEC only: a ledger files no document, and its sections read through `disclosures` and
-  `information-block`.
+   How one filing is laid out: entity, periods, statements by role and notes by name, axes, and its
+  text — the Items of a 10-K or 10-Q and its largest text blocks, each with the character offset
+  `read-text` pages from. On the SEC shared repository the filing is read from its public folder — its
+  own document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed
+  by `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings
+  release and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand
+  in for the ticker). SEC only: a ledger files no document, and its sections read through
+  `disclosures` and `information-block`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -250,14 +250,14 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeDescribeFilingResponse | None:
   """Describe Filing
 
-   How one filing is laid out: entity, periods, statements and disclosures by role, axes, and its text
-  — the Items of a 10-K or 10-Q and its largest text blocks, each with the character offset `read-
-  text` pages from. On the SEC shared repository the filing is read from its public folder — its own
-  document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed by
-  `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings release
-  and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand in for
-  the ticker). SEC only: a ledger files no document, and its sections read through `disclosures` and
-  `information-block`.
+   How one filing is laid out: entity, periods, statements by role and notes by name, axes, and its
+  text — the Items of a 10-K or 10-Q and its largest text blocks, each with the character offset
+  `read-text` pages from. On the SEC shared repository the filing is read from its public folder — its
+  own document, from any processed year — and a `ticker` picks it: the latest annual report, narrowed
+  by `fiscal_year` / `period_type`, or one `accession`, or with `form: 8-K` the latest earnings
+  release and its exhibits (`fiscal_year` is then the calendar year it was filed, and a CIK may stand
+  in for the ticker). SEC only: a ledger files no document, and its sections read through
+  `disclosures` and `information-block`.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

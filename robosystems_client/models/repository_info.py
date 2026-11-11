@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..types import UNSET, Unset
+
 if TYPE_CHECKING:
   from ..models.offering_repository_plan import OfferingRepositoryPlan
 
@@ -24,6 +26,8 @@ class RepositoryInfo:
       enabled (bool): Whether repository is enabled
       coming_soon (bool): Whether repository is coming soon
       plans (list[OfferingRepositoryPlan]): Available plans
+      trial_days (int | Unset): Length in days of the free trial a first subscription opens with; 0 when the
+          repository offers none Default: 0.
   """
 
   type_: str
@@ -32,6 +36,7 @@ class RepositoryInfo:
   enabled: bool
   coming_soon: bool
   plans: list[OfferingRepositoryPlan]
+  trial_days: int | Unset = 0
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -50,6 +55,8 @@ class RepositoryInfo:
       plans_item = plans_item_data.to_dict()
       plans.append(plans_item)
 
+    trial_days = self.trial_days
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -62,6 +69,8 @@ class RepositoryInfo:
         "plans": plans,
       }
     )
+    if trial_days is not UNSET:
+      field_dict["trial_days"] = trial_days
 
     return field_dict
 
@@ -87,6 +96,8 @@ class RepositoryInfo:
 
       plans.append(plans_item)
 
+    trial_days = d.pop("trial_days", UNSET)
+
     repository_info = cls(
       type_=type_,
       name=name,
@@ -94,6 +105,7 @@ class RepositoryInfo:
       enabled=enabled,
       coming_soon=coming_soon,
       plans=plans,
+      trial_days=trial_days,
     )
 
     repository_info.additional_properties = d

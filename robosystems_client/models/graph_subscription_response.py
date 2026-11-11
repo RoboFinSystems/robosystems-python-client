@@ -31,6 +31,8 @@ class GraphSubscriptionResponse:
       current_period_end (None | str | Unset): Current billing period end
       started_at (None | str | Unset): Subscription start date
       canceled_at (None | str | Unset): Cancellation date
+      trial_ends_at (None | str | Unset): When the free trial ends and the first charge is made. Null for a
+          subscription that opened without a trial; kept after the trial is over.
       ends_at (None | str | Unset): Subscription end date (when access will be revoked, especially relevant for
           cancelled subscriptions)
       operation_id (None | str | Unset): Operation ID for tracking async tier changes via SSE
@@ -50,6 +52,7 @@ class GraphSubscriptionResponse:
   current_period_end: None | str | Unset = UNSET
   started_at: None | str | Unset = UNSET
   canceled_at: None | str | Unset = UNSET
+  trial_ends_at: None | str | Unset = UNSET
   ends_at: None | str | Unset = UNSET
   operation_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -103,6 +106,12 @@ class GraphSubscriptionResponse:
     else:
       canceled_at = self.canceled_at
 
+    trial_ends_at: None | str | Unset
+    if isinstance(self.trial_ends_at, Unset):
+      trial_ends_at = UNSET
+    else:
+      trial_ends_at = self.trial_ends_at
+
     ends_at: None | str | Unset
     if isinstance(self.ends_at, Unset):
       ends_at = UNSET
@@ -140,6 +149,8 @@ class GraphSubscriptionResponse:
       field_dict["started_at"] = started_at
     if canceled_at is not UNSET:
       field_dict["canceled_at"] = canceled_at
+    if trial_ends_at is not UNSET:
+      field_dict["trial_ends_at"] = trial_ends_at
     if ends_at is not UNSET:
       field_dict["ends_at"] = ends_at
     if operation_id is not UNSET:
@@ -215,6 +226,15 @@ class GraphSubscriptionResponse:
 
     canceled_at = _parse_canceled_at(d.pop("canceled_at", UNSET))
 
+    def _parse_trial_ends_at(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    trial_ends_at = _parse_trial_ends_at(d.pop("trial_ends_at", UNSET))
+
     def _parse_ends_at(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -248,6 +268,7 @@ class GraphSubscriptionResponse:
       current_period_end=current_period_end,
       started_at=started_at,
       canceled_at=canceled_at,
+      trial_ends_at=trial_ends_at,
       ends_at=ends_at,
       operation_id=operation_id,
     )
