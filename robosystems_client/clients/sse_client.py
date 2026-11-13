@@ -77,6 +77,9 @@ class EventType(Enum):
 # Sent on every open and while idle, so neither shows the stream got anywhere.
 _NO_PROGRESS_EVENTS = {"connected", "keepalive"}
 
+# The server ends a stream it will not serve with an event of this name.
+_SERVER_ERROR = "error"
+
 
 class _StreamInterrupted(Exception):
   """The stream ended or failed before the server said it was finished."""
@@ -262,11 +265,15 @@ class SSEClient:
     self.emit(event_type, parsed_data)
 
     # Check for completion events - just set flag, don't close from within loop
-    # The loop will break on next iteration and close() will be called in finally
+    # The loop will break on next iteration and close() will be called in finally.
+    # The server's own `error` event is its answer for this stream (the
+    # per-user connection cap, a stream it refuses): reconnecting would only
+    # be answered the same way again.
     if event_type in [
       EventType.OPERATION_COMPLETED.value,
       EventType.OPERATION_ERROR.value,
       EventType.OPERATION_CANCELLED.value,
+      _SERVER_ERROR,
     ]:
       self.closed = True
 
@@ -523,11 +530,15 @@ class AsyncSSEClient:
     self.emit(event_type, parsed_data)
 
     # Check for completion events - just set flag, don't close from within loop
-    # The loop will break on next iteration and close() will be called in finally
+    # The loop will break on next iteration and close() will be called in finally.
+    # The server's own `error` event is its answer for this stream (the
+    # per-user connection cap, a stream it refuses): reconnecting would only
+    # be answered the same way again.
     if event_type in [
       EventType.OPERATION_COMPLETED.value,
       EventType.OPERATION_ERROR.value,
       EventType.OPERATION_CANCELLED.value,
+      _SERVER_ERROR,
     ]:
       self.closed = True
 

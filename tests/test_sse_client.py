@@ -658,6 +658,42 @@ class TestStreamInterruption:
     assert len(seen) == 1
     assert events["reconnecting"] == []
 
+  def test_the_servers_own_error_is_final(self, fast_config):
+    """A stream the server answers with `event: error` is not reopened: every
+    reconnect would get the same answer, and a caller with no timeout would
+    never get a verdict."""
+    body = _sse(("connected", {}), ("error", {"error": "Too many connections"}))
+    handler, seen = _responses(httpx.Response(200, content=body))
+
+    events = _run_sync(fast_config, handler)
+
+    assert len(seen) == 1
+    assert events["errors"] == [{"error": "Too many connections"}]
+    assert events["reconnecting"] == []
+    assert events["exhausted"] == []
+
+  def test_the_servers_own_error_is_final_for_the_async_client(self, fast_config):
+    body = _sse(("connected", {}), ("error", {"error": "Too many connections"}))
+    handler, seen = _responses(httpx.Response(200, content=body))
+    real_client = httpx.AsyncClient
+    errors = []
+
+    async def run():
+      with patch(
+        "robosystems_client.clients.sse_client.httpx.AsyncClient",
+        side_effect=lambda **kw: real_client(
+          transport=httpx.MockTransport(handler), **kw
+        ),
+      ):
+        client = AsyncSSEClient(fast_config)
+        client.on("error", errors.append)
+        await client.connect("op_1")
+
+    asyncio.run(run())
+
+    assert len(seen) == 1
+    assert errors == [{"error": "Too many connections"}]
+
   def test_reopening_without_progress_does_not_reset_the_budget(self, fast_config):
     handler, seen = _responses(
       httpx.Response(200, stream=_DroppingStream(_sse(("connected", {}))))
