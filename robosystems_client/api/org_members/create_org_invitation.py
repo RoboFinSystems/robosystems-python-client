@@ -115,7 +115,8 @@ def sync_detailed(
 
    Invite a new user to the organization by email. Disabled by default
   (ORG_MEMBER_INVITATIONS_ENABLED=false); returns 501 when disabled. Requires admin or owner role.
-  Only emails without an existing account can be invited.
+  Only emails without an existing account can be invited. Requires a signed-in session; API keys are
+  not accepted.
 
   Args:
       org_id (str):
@@ -151,7 +152,8 @@ def sync(
 
    Invite a new user to the organization by email. Disabled by default
   (ORG_MEMBER_INVITATIONS_ENABLED=false); returns 501 when disabled. Requires admin or owner role.
-  Only emails without an existing account can be invited.
+  Only emails without an existing account can be invited. Requires a signed-in session; API keys are
+  not accepted.
 
   Args:
       org_id (str):
@@ -182,7 +184,8 @@ async def asyncio_detailed(
 
    Invite a new user to the organization by email. Disabled by default
   (ORG_MEMBER_INVITATIONS_ENABLED=false); returns 501 when disabled. Requires admin or owner role.
-  Only emails without an existing account can be invited.
+  Only emails without an existing account can be invited. Requires a signed-in session; API keys are
+  not accepted.
 
   Args:
       org_id (str):
@@ -216,7 +219,8 @@ async def asyncio(
 
    Invite a new user to the organization by email. Disabled by default
   (ORG_MEMBER_INVITATIONS_ENABLED=false); returns 501 when disabled. Requires admin or owner role.
-  Only emails without an existing account can be invited.
+  Only emails without an existing account can be invited. Requires a signed-in session; API keys are
+  not accepted.
 
   Args:
       org_id (str):

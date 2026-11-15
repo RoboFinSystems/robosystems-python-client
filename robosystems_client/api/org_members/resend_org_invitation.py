@@ -102,7 +102,7 @@ def sync_detailed(
   """Resend Invitation
 
    Requires admin or owner role. Rotates the invitation token, extends its expiry, and re-sends the
-  email.
+  email. Requires a signed-in session; API keys are not accepted.
 
   Args:
       org_id (str):
@@ -137,7 +137,7 @@ def sync(
   """Resend Invitation
 
    Requires admin or owner role. Rotates the invitation token, extends its expiry, and re-sends the
-  email.
+  email. Requires a signed-in session; API keys are not accepted.
 
   Args:
       org_id (str):
@@ -167,7 +167,7 @@ async def asyncio_detailed(
   """Resend Invitation
 
    Requires admin or owner role. Rotates the invitation token, extends its expiry, and re-sends the
-  email.
+  email. Requires a signed-in session; API keys are not accepted.
 
   Args:
       org_id (str):
@@ -200,7 +200,7 @@ async def asyncio(
   """Resend Invitation
 
    Requires admin or owner role. Rotates the invitation token, extends its expiry, and re-sends the
-  email.
+  email. Requires a signed-in session; API keys are not accepted.
 
   Args:
       org_id (str):

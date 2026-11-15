@@ -118,8 +118,9 @@ def sync_detailed(
    Switch the reporting entity's Reporting Style — how its statements are laid out (equity-form, close-
   target concept, per-statement Networks). Validates that the target Style has a complete composition
   in the tenant schema, then flips `entities.reporting_style_id`. Omit `entity_id` to target the
-  graph's primary entity. Filed Reports are unaffected (their FactSet rows pin their structures at
-  create-time); new reports use the new Style. Idempotent on the same id.
+  graph's primary entity. A group's consolidation entity follows the parent's Style: changing the
+  parent's changes both, and it cannot be set on its own. Filed Reports are unaffected (their FactSet
+  rows pin their structures at create-time); new reports use the new Style. Idempotent on the same id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -167,8 +168,9 @@ def sync(
    Switch the reporting entity's Reporting Style — how its statements are laid out (equity-form, close-
   target concept, per-statement Networks). Validates that the target Style has a complete composition
   in the tenant schema, then flips `entities.reporting_style_id`. Omit `entity_id` to target the
-  graph's primary entity. Filed Reports are unaffected (their FactSet rows pin their structures at
-  create-time); new reports use the new Style. Idempotent on the same id.
+  graph's primary entity. A group's consolidation entity follows the parent's Style: changing the
+  parent's changes both, and it cannot be set on its own. Filed Reports are unaffected (their FactSet
+  rows pin their structures at create-time); new reports use the new Style. Idempotent on the same id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -211,8 +213,9 @@ async def asyncio_detailed(
    Switch the reporting entity's Reporting Style — how its statements are laid out (equity-form, close-
   target concept, per-statement Networks). Validates that the target Style has a complete composition
   in the tenant schema, then flips `entities.reporting_style_id`. Omit `entity_id` to target the
-  graph's primary entity. Filed Reports are unaffected (their FactSet rows pin their structures at
-  create-time); new reports use the new Style. Idempotent on the same id.
+  graph's primary entity. A group's consolidation entity follows the parent's Style: changing the
+  parent's changes both, and it cannot be set on its own. Filed Reports are unaffected (their FactSet
+  rows pin their structures at create-time); new reports use the new Style. Idempotent on the same id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -258,8 +261,9 @@ async def asyncio(
    Switch the reporting entity's Reporting Style — how its statements are laid out (equity-form, close-
   target concept, per-statement Networks). Validates that the target Style has a complete composition
   in the tenant schema, then flips `entities.reporting_style_id`. Omit `entity_id` to target the
-  graph's primary entity. Filed Reports are unaffected (their FactSet rows pin their structures at
-  create-time); new reports use the new Style. Idempotent on the same id.
+  graph's primary entity. A group's consolidation entity follows the parent's Style: changing the
+  parent's changes both, and it cannot be set on its own. Filed Reports are unaffected (their FactSet
+  rows pin their structures at create-time); new reports use the new Style. Idempotent on the same id.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
