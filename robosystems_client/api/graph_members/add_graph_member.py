@@ -103,7 +103,8 @@ def sync_detailed(
 ) -> Response[ErrorResponse | GraphMemberResponse | HTTPValidationError]:
   """Add Graph Member
 
-   Grant a member of the graph's organization access at a chosen role. Requires graph admin.
+   Grant a member of the graph's organization access at a chosen role. Requires graph admin. Requires a
+  signed-in session; API keys are not accepted.
 
   Args:
       graph_id (str): Graph identifier
@@ -137,7 +138,8 @@ def sync(
 ) -> ErrorResponse | GraphMemberResponse | HTTPValidationError | None:
   """Add Graph Member
 
-   Grant a member of the graph's organization access at a chosen role. Requires graph admin.
+   Grant a member of the graph's organization access at a chosen role. Requires graph admin. Requires a
+  signed-in session; API keys are not accepted.
 
   Args:
       graph_id (str): Graph identifier
@@ -166,7 +168,8 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | GraphMemberResponse | HTTPValidationError]:
   """Add Graph Member
 
-   Grant a member of the graph's organization access at a chosen role. Requires graph admin.
+   Grant a member of the graph's organization access at a chosen role. Requires graph admin. Requires a
+  signed-in session; API keys are not accepted.
 
   Args:
       graph_id (str): Graph identifier
@@ -198,7 +201,8 @@ async def asyncio(
 ) -> ErrorResponse | GraphMemberResponse | HTTPValidationError | None:
   """Add Graph Member
 
-   Grant a member of the graph's organization access at a chosen role. Requires graph admin.
+   Grant a member of the graph's organization access at a chosen role. Requires graph admin. Requires a
+  signed-in session; API keys are not accepted.
 
   Args:
       graph_id (str): Graph identifier

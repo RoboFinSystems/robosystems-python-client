@@ -93,7 +93,8 @@ def sync_detailed(
 ) -> Response[CreateAPIKeyResponse | ErrorResponse | HTTPValidationError]:
   """Create API Key
 
-   The raw key value is only returned once at creation time and cannot be retrieved again.
+   The raw key value is only returned once at creation time and cannot be retrieved again. Requires a
+  signed-in session; API keys are not accepted.
 
   Args:
       body (CreateAPIKeyRequest): Request model for creating a new API key.
@@ -124,7 +125,8 @@ def sync(
 ) -> CreateAPIKeyResponse | ErrorResponse | HTTPValidationError | None:
   """Create API Key
 
-   The raw key value is only returned once at creation time and cannot be retrieved again.
+   The raw key value is only returned once at creation time and cannot be retrieved again. Requires a
+  signed-in session; API keys are not accepted.
 
   Args:
       body (CreateAPIKeyRequest): Request model for creating a new API key.
@@ -150,7 +152,8 @@ async def asyncio_detailed(
 ) -> Response[CreateAPIKeyResponse | ErrorResponse | HTTPValidationError]:
   """Create API Key
 
-   The raw key value is only returned once at creation time and cannot be retrieved again.
+   The raw key value is only returned once at creation time and cannot be retrieved again. Requires a
+  signed-in session; API keys are not accepted.
 
   Args:
       body (CreateAPIKeyRequest): Request model for creating a new API key.
@@ -179,7 +182,8 @@ async def asyncio(
 ) -> CreateAPIKeyResponse | ErrorResponse | HTTPValidationError | None:
   """Create API Key
 
-   The raw key value is only returned once at creation time and cannot be retrieved again.
+   The raw key value is only returned once at creation time and cannot be retrieved again. Requires a
+  signed-in session; API keys are not accepted.
 
   Args:
       body (CreateAPIKeyRequest): Request model for creating a new API key.

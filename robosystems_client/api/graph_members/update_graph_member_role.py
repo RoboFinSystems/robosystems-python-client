@@ -107,7 +107,7 @@ def sync_detailed(
   """Update Graph Member Role
 
    Change an explicit member's graph role. Requires graph admin. Implicit org owner/admin access is
-  managed through org roles.
+  managed through org roles. Requires a signed-in session; API keys are not accepted.
 
   Args:
       graph_id (str): Graph identifier
@@ -145,7 +145,7 @@ def sync(
   """Update Graph Member Role
 
    Change an explicit member's graph role. Requires graph admin. Implicit org owner/admin access is
-  managed through org roles.
+  managed through org roles. Requires a signed-in session; API keys are not accepted.
 
   Args:
       graph_id (str): Graph identifier
@@ -178,7 +178,7 @@ async def asyncio_detailed(
   """Update Graph Member Role
 
    Change an explicit member's graph role. Requires graph admin. Implicit org owner/admin access is
-  managed through org roles.
+  managed through org roles. Requires a signed-in session; API keys are not accepted.
 
   Args:
       graph_id (str): Graph identifier
@@ -214,7 +214,7 @@ async def asyncio(
   """Update Graph Member Role
 
    Change an explicit member's graph role. Requires graph admin. Implicit org owner/admin access is
-  managed through org roles.
+  managed through org roles. Requires a signed-in session; API keys are not accepted.
 
   Args:
       graph_id (str): Graph identifier

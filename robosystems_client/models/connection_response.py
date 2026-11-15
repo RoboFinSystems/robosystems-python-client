@@ -29,12 +29,16 @@ class ConnectionResponse:
       entity_id (None | str | Unset): The entity whose books the connection keeps: the group parent for QuickBooks,
           the entity a bank feed was connected for (each of its accounts can move to another entity later), none for an
           external source, whose events name their own.
+      keeps_books (bool | Unset): Whether this connection is the ledger of record for `entity_id`: its books are kept
+          in the connected system, and `write_policy` says whether entries are written back to it or only mirrored. False
+          for a bank feed or an external event source. Default: False.
       updated_at (datetime.datetime | None | str | Unset): Last update timestamp
       last_sync (datetime.datetime | None | str | Unset): Last sync timestamp
       write_policy (None | str | Unset): Outbound write policy: 'qb_authoritative' (QuickBooks is the book of record
           and RoboSystems-originated entries publish to it at close), 'shadow' (QuickBooks is the book of record, nothing
           is written to it and the close posts nothing locally), or 'native' (no external ledger; what severing leaves).
-          Set via the write-policy endpoint.
+          It governs the books of `entity_id`, and only on the connection that keeps them. Set via the write-policy
+          endpoint.
       source_name (None | str | Unset): External-provider registered source slug — the value the integration stamps on
           the events it emits. Null for platform providers.
   """
@@ -45,6 +49,7 @@ class ConnectionResponse:
   created_at: datetime.datetime | str
   metadata: ConnectionResponseMetadata
   entity_id: None | str | Unset = UNSET
+  keeps_books: bool | Unset = False
   updated_at: datetime.datetime | None | str | Unset = UNSET
   last_sync: datetime.datetime | None | str | Unset = UNSET
   write_policy: None | str | Unset = UNSET
@@ -71,6 +76,8 @@ class ConnectionResponse:
       entity_id = UNSET
     else:
       entity_id = self.entity_id
+
+    keeps_books = self.keeps_books
 
     updated_at: None | str | Unset
     if isinstance(self.updated_at, Unset):
@@ -113,6 +120,8 @@ class ConnectionResponse:
     )
     if entity_id is not UNSET:
       field_dict["entity_id"] = entity_id
+    if keeps_books is not UNSET:
+      field_dict["keeps_books"] = keeps_books
     if updated_at is not UNSET:
       field_dict["updated_at"] = updated_at
     if last_sync is not UNSET:
@@ -158,6 +167,8 @@ class ConnectionResponse:
       return cast(None | str | Unset, data)
 
     entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
+
+    keeps_books = d.pop("keeps_books", UNSET)
 
     def _parse_updated_at(data: object) -> datetime.datetime | None | str | Unset:
       if data is None:
@@ -218,6 +229,7 @@ class ConnectionResponse:
       created_at=created_at,
       metadata=metadata,
       entity_id=entity_id,
+      keeps_books=keeps_books,
       updated_at=updated_at,
       last_sync=last_sync,
       write_policy=write_policy,

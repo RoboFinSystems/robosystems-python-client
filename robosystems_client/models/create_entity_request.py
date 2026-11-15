@@ -36,7 +36,8 @@ class CreateEntityRequest:
               `non_profit`. Picks the default Reporting Style (partnership and llc have equity-form Styles of their own;
               anything else is corporate) and the equity rows of a chart template.
           reporting_style_id (None | str | Unset): Structure id of the Reporting Style to present under, validated in the
-              graph like change-reporting-style. Omit to derive it from `entity_type`.
+              graph like change-reporting-style. Omit to derive it from `entity_type`. A consolidation entity always takes the
+              group parent's.
           parent_entity_id (None | str | Unset): The entity this one is held under. Omit for the group parent; name a
               subsidiary to nest a sub-group under it.
           ownership_pct (float | None | Unset): The parent's share of this entity, as a percent (100 = wholly owned). Omit

@@ -107,7 +107,7 @@ def sync_detailed(
   """Update Member Role
 
    Requires admin or owner role. Owner promotion/demotion requires a dedicated ownership transfer
-  workflow.
+  workflow. Requires a signed-in session; API keys are not accepted.
 
   Args:
       org_id (str):
@@ -145,7 +145,7 @@ def sync(
   """Update Member Role
 
    Requires admin or owner role. Owner promotion/demotion requires a dedicated ownership transfer
-  workflow.
+  workflow. Requires a signed-in session; API keys are not accepted.
 
   Args:
       org_id (str):
@@ -178,7 +178,7 @@ async def asyncio_detailed(
   """Update Member Role
 
    Requires admin or owner role. Owner promotion/demotion requires a dedicated ownership transfer
-  workflow.
+  workflow. Requires a signed-in session; API keys are not accepted.
 
   Args:
       org_id (str):
@@ -214,7 +214,7 @@ async def asyncio(
   """Update Member Role
 
    Requires admin or owner role. Owner promotion/demotion requires a dedicated ownership transfer
-  workflow.
+  workflow. Requires a signed-in session; API keys are not accepted.
 
   Args:
       org_id (str):
