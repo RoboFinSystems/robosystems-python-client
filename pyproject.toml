@@ -1,7 +1,7 @@
 [project]
 name = "robosystems-client"
 version = "2.38.0"
-description = "Python client library for the RoboSystems financial intelligence platform"
+description = "Python SDK for RoboSystems, the open-source knowledge graph for finance"
 readme = "README.md"
 requires-python = ">=3.12"
 authors = [
