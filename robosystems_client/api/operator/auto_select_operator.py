@@ -130,12 +130,12 @@ def sync_detailed(
 
    Routes to the best operator for your query. Operators: `analyst` (answers natural-language questions
   over the graph — curated financial reads, documents, memory, and read-only Cypher; supports `quick`,
-  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (autonomous Chart of
-  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
-  /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
-  usage, not a fixed price per mode. The run executes on the background worker: the default answer is
-  202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits up to 50s and answers
-  200 with the result.
+  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (automatic Chart of
+  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `author` makes writes, so it
+  is never chosen here: call it by name. `GET /v1/graphs/{graph_id}/operator` lists what is
+  registered. Credits are consumed by actual token usage, not a fixed price per mode. The run executes
+  on the background worker: the default answer is 202 with the operation's `_links` (stream, status,
+  cancel); `?mode=sync` waits up to 50s and answers 200 with the result.
 
   Args:
       graph_id (str):
@@ -177,12 +177,12 @@ def sync(
 
    Routes to the best operator for your query. Operators: `analyst` (answers natural-language questions
   over the graph — curated financial reads, documents, memory, and read-only Cypher; supports `quick`,
-  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (autonomous Chart of
-  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
-  /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
-  usage, not a fixed price per mode. The run executes on the background worker: the default answer is
-  202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits up to 50s and answers
-  200 with the result.
+  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (automatic Chart of
+  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `author` makes writes, so it
+  is never chosen here: call it by name. `GET /v1/graphs/{graph_id}/operator` lists what is
+  registered. Credits are consumed by actual token usage, not a fixed price per mode. The run executes
+  on the background worker: the default answer is 202 with the operation's `_links` (stream, status,
+  cancel); `?mode=sync` waits up to 50s and answers 200 with the result.
 
   Args:
       graph_id (str):
@@ -219,12 +219,12 @@ async def asyncio_detailed(
 
    Routes to the best operator for your query. Operators: `analyst` (answers natural-language questions
   over the graph — curated financial reads, documents, memory, and read-only Cypher; supports `quick`,
-  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (autonomous Chart of
-  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
-  /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
-  usage, not a fixed price per mode. The run executes on the background worker: the default answer is
-  202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits up to 50s and answers
-  200 with the result.
+  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (automatic Chart of
+  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `author` makes writes, so it
+  is never chosen here: call it by name. `GET /v1/graphs/{graph_id}/operator` lists what is
+  registered. Credits are consumed by actual token usage, not a fixed price per mode. The run executes
+  on the background worker: the default answer is 202 with the operation's `_links` (stream, status,
+  cancel); `?mode=sync` waits up to 50s and answers 200 with the result.
 
   Args:
       graph_id (str):
@@ -264,12 +264,12 @@ async def asyncio(
 
    Routes to the best operator for your query. Operators: `analyst` (answers natural-language questions
   over the graph — curated financial reads, documents, memory, and read-only Cypher; supports `quick`,
-  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (autonomous Chart of
-  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `GET
-  /v1/graphs/{graph_id}/operator` lists what is registered. Credits are consumed by actual token
-  usage, not a fixed price per mode. The run executes on the background worker: the default answer is
-  202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits up to 50s and answers
-  200 with the result.
+  `standard`, `extended`; `cypher` is accepted as its former name) and `mapping` (automatic Chart of
+  Accounts → rs-gaap mapping; roboledger graphs only, `extended` only). `author` makes writes, so it
+  is never chosen here: call it by name. `GET /v1/graphs/{graph_id}/operator` lists what is
+  registered. Credits are consumed by actual token usage, not a fixed price per mode. The run executes
+  on the background worker: the default answer is 202 with the operation's `_links` (stream, status,
+  cancel); `?mode=sync` waits up to 50s and answers 200 with the result.
 
   Args:
       graph_id (str):

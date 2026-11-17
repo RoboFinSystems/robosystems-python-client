@@ -113,13 +113,17 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeComputeForecastResponse]:
   """Compute Forecast for a Forecast Block
 
-   Walks a forecast block's driver cascade month-by-month forward from its base period: lever-driven
-  rs-driver Derive rules in dependency order, carry-forward for unmodeled income-statement lines,
-  calc-DAG subtotals — upserting one scenario income-statement FactSet (plus a working-capital
-  balance-sheet set) per forward month, all keyed by the block's scenario_id (NULL = actuals; scenario
-  reads pass it as a filter). Re-running replaces each month's values. Rules with missing lever months
-  or unbound operands are skipped with a reason (their targets fall back to carry-forward), never
-  errored. Deterministic and non-AI — no credits consumed.
+   Walks a forecast block's driver cascade month-by-month forward from its anchor (with
+  base_anchor='seam', the default, the newest closed month inside the horizon; with 'fixed', the
+  block's base_period): lever-driven rs-driver Derive rules in dependency order, carry-forward for
+  unmodeled income-statement lines, calc-DAG subtotals — upserting per forward month a scenario
+  income-statement FactSet, a balance-sheet set (the full roll when the anchor month has an actual
+  balance sheet, else only the rule-driven working-capital instants) and a derived cash-flow set when
+  an actual one exists, all keyed by the block's scenario_id (NULL = actuals; scenario reads pass it
+  as a filter). Re-running replaces each month's values. Rules with missing lever months or unbound
+  operands are skipped with a reason (their targets fall back to carry-forward). Each month's sets are
+  verified; a month that fails halts the walk there (halted_at), since every later month would be
+  derived from it. Deterministic and non-AI — no credits consumed.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -129,14 +133,18 @@ def sync_detailed(
       idempotency_key (None | str | Unset):
       body (ComputeForecastRequest): Request body for the `compute-forecast` operation.
 
-          Walks the scenario's driver cascade month-by-month forward from the
-          forecast block's `base_period`: lever-driven Derive rules in
-          dependency order, carry-forward for unmodeled IS lines, calc-DAG
-          subtotals — upserting one scenario IS FactSet (+ a working-capital BS
-          set) per forward month, all keyed by the forecast block's
-          `scenario_id`. Re-running replaces each month's values (the
-          compute-metrics drift semantics). Deterministic and non-AI — no
-          credits consumed.
+          Walks the scenario's driver cascade month-by-month forward from its
+          anchor — the newest closed month inside the horizon under
+          `base_anchor='seam'` (the default), the block's `base_period` under
+          `'fixed'`: lever-driven Derive rules in dependency order, carry-forward
+          for unmodeled IS lines, calc-DAG subtotals — upserting per forward
+          month a scenario IS FactSet, a BS set (the full roll when the anchor
+          month has an actual balance sheet, else the rule-driven working-capital
+          instants) and a derived CF set when an actual one exists, all keyed by
+          the forecast block's `scenario_id`. Re-running replaces each month's
+          values (the compute-metrics drift semantics). A month that fails
+          verification halts the walk (`halted_at`). Deterministic and non-AI —
+          no credits consumed.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -168,13 +176,17 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeComputeForecastResponse | None:
   """Compute Forecast for a Forecast Block
 
-   Walks a forecast block's driver cascade month-by-month forward from its base period: lever-driven
-  rs-driver Derive rules in dependency order, carry-forward for unmodeled income-statement lines,
-  calc-DAG subtotals — upserting one scenario income-statement FactSet (plus a working-capital
-  balance-sheet set) per forward month, all keyed by the block's scenario_id (NULL = actuals; scenario
-  reads pass it as a filter). Re-running replaces each month's values. Rules with missing lever months
-  or unbound operands are skipped with a reason (their targets fall back to carry-forward), never
-  errored. Deterministic and non-AI — no credits consumed.
+   Walks a forecast block's driver cascade month-by-month forward from its anchor (with
+  base_anchor='seam', the default, the newest closed month inside the horizon; with 'fixed', the
+  block's base_period): lever-driven rs-driver Derive rules in dependency order, carry-forward for
+  unmodeled income-statement lines, calc-DAG subtotals — upserting per forward month a scenario
+  income-statement FactSet, a balance-sheet set (the full roll when the anchor month has an actual
+  balance sheet, else only the rule-driven working-capital instants) and a derived cash-flow set when
+  an actual one exists, all keyed by the block's scenario_id (NULL = actuals; scenario reads pass it
+  as a filter). Re-running replaces each month's values. Rules with missing lever months or unbound
+  operands are skipped with a reason (their targets fall back to carry-forward). Each month's sets are
+  verified; a month that fails halts the walk there (halted_at), since every later month would be
+  derived from it. Deterministic and non-AI — no credits consumed.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -184,14 +196,18 @@ def sync(
       idempotency_key (None | str | Unset):
       body (ComputeForecastRequest): Request body for the `compute-forecast` operation.
 
-          Walks the scenario's driver cascade month-by-month forward from the
-          forecast block's `base_period`: lever-driven Derive rules in
-          dependency order, carry-forward for unmodeled IS lines, calc-DAG
-          subtotals — upserting one scenario IS FactSet (+ a working-capital BS
-          set) per forward month, all keyed by the forecast block's
-          `scenario_id`. Re-running replaces each month's values (the
-          compute-metrics drift semantics). Deterministic and non-AI — no
-          credits consumed.
+          Walks the scenario's driver cascade month-by-month forward from its
+          anchor — the newest closed month inside the horizon under
+          `base_anchor='seam'` (the default), the block's `base_period` under
+          `'fixed'`: lever-driven Derive rules in dependency order, carry-forward
+          for unmodeled IS lines, calc-DAG subtotals — upserting per forward
+          month a scenario IS FactSet, a BS set (the full roll when the anchor
+          month has an actual balance sheet, else the rule-driven working-capital
+          instants) and a derived CF set when an actual one exists, all keyed by
+          the forecast block's `scenario_id`. Re-running replaces each month's
+          values (the compute-metrics drift semantics). A month that fails
+          verification halts the walk (`halted_at`). Deterministic and non-AI —
+          no credits consumed.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -218,13 +234,17 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeComputeForecastResponse]:
   """Compute Forecast for a Forecast Block
 
-   Walks a forecast block's driver cascade month-by-month forward from its base period: lever-driven
-  rs-driver Derive rules in dependency order, carry-forward for unmodeled income-statement lines,
-  calc-DAG subtotals — upserting one scenario income-statement FactSet (plus a working-capital
-  balance-sheet set) per forward month, all keyed by the block's scenario_id (NULL = actuals; scenario
-  reads pass it as a filter). Re-running replaces each month's values. Rules with missing lever months
-  or unbound operands are skipped with a reason (their targets fall back to carry-forward), never
-  errored. Deterministic and non-AI — no credits consumed.
+   Walks a forecast block's driver cascade month-by-month forward from its anchor (with
+  base_anchor='seam', the default, the newest closed month inside the horizon; with 'fixed', the
+  block's base_period): lever-driven rs-driver Derive rules in dependency order, carry-forward for
+  unmodeled income-statement lines, calc-DAG subtotals — upserting per forward month a scenario
+  income-statement FactSet, a balance-sheet set (the full roll when the anchor month has an actual
+  balance sheet, else only the rule-driven working-capital instants) and a derived cash-flow set when
+  an actual one exists, all keyed by the block's scenario_id (NULL = actuals; scenario reads pass it
+  as a filter). Re-running replaces each month's values. Rules with missing lever months or unbound
+  operands are skipped with a reason (their targets fall back to carry-forward). Each month's sets are
+  verified; a month that fails halts the walk there (halted_at), since every later month would be
+  derived from it. Deterministic and non-AI — no credits consumed.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -234,14 +254,18 @@ async def asyncio_detailed(
       idempotency_key (None | str | Unset):
       body (ComputeForecastRequest): Request body for the `compute-forecast` operation.
 
-          Walks the scenario's driver cascade month-by-month forward from the
-          forecast block's `base_period`: lever-driven Derive rules in
-          dependency order, carry-forward for unmodeled IS lines, calc-DAG
-          subtotals — upserting one scenario IS FactSet (+ a working-capital BS
-          set) per forward month, all keyed by the forecast block's
-          `scenario_id`. Re-running replaces each month's values (the
-          compute-metrics drift semantics). Deterministic and non-AI — no
-          credits consumed.
+          Walks the scenario's driver cascade month-by-month forward from its
+          anchor — the newest closed month inside the horizon under
+          `base_anchor='seam'` (the default), the block's `base_period` under
+          `'fixed'`: lever-driven Derive rules in dependency order, carry-forward
+          for unmodeled IS lines, calc-DAG subtotals — upserting per forward
+          month a scenario IS FactSet, a BS set (the full roll when the anchor
+          month has an actual balance sheet, else the rule-driven working-capital
+          instants) and a derived CF set when an actual one exists, all keyed by
+          the forecast block's `scenario_id`. Re-running replaces each month's
+          values (the compute-metrics drift semantics). A month that fails
+          verification halts the walk (`halted_at`). Deterministic and non-AI —
+          no credits consumed.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -271,13 +295,17 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeComputeForecastResponse | None:
   """Compute Forecast for a Forecast Block
 
-   Walks a forecast block's driver cascade month-by-month forward from its base period: lever-driven
-  rs-driver Derive rules in dependency order, carry-forward for unmodeled income-statement lines,
-  calc-DAG subtotals — upserting one scenario income-statement FactSet (plus a working-capital
-  balance-sheet set) per forward month, all keyed by the block's scenario_id (NULL = actuals; scenario
-  reads pass it as a filter). Re-running replaces each month's values. Rules with missing lever months
-  or unbound operands are skipped with a reason (their targets fall back to carry-forward), never
-  errored. Deterministic and non-AI — no credits consumed.
+   Walks a forecast block's driver cascade month-by-month forward from its anchor (with
+  base_anchor='seam', the default, the newest closed month inside the horizon; with 'fixed', the
+  block's base_period): lever-driven rs-driver Derive rules in dependency order, carry-forward for
+  unmodeled income-statement lines, calc-DAG subtotals — upserting per forward month a scenario
+  income-statement FactSet, a balance-sheet set (the full roll when the anchor month has an actual
+  balance sheet, else only the rule-driven working-capital instants) and a derived cash-flow set when
+  an actual one exists, all keyed by the block's scenario_id (NULL = actuals; scenario reads pass it
+  as a filter). Re-running replaces each month's values. Rules with missing lever months or unbound
+  operands are skipped with a reason (their targets fall back to carry-forward). Each month's sets are
+  verified; a month that fails halts the walk there (halted_at), since every later month would be
+  derived from it. Deterministic and non-AI — no credits consumed.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -287,14 +315,18 @@ async def asyncio(
       idempotency_key (None | str | Unset):
       body (ComputeForecastRequest): Request body for the `compute-forecast` operation.
 
-          Walks the scenario's driver cascade month-by-month forward from the
-          forecast block's `base_period`: lever-driven Derive rules in
-          dependency order, carry-forward for unmodeled IS lines, calc-DAG
-          subtotals — upserting one scenario IS FactSet (+ a working-capital BS
-          set) per forward month, all keyed by the forecast block's
-          `scenario_id`. Re-running replaces each month's values (the
-          compute-metrics drift semantics). Deterministic and non-AI — no
-          credits consumed.
+          Walks the scenario's driver cascade month-by-month forward from its
+          anchor — the newest closed month inside the horizon under
+          `base_anchor='seam'` (the default), the block's `base_period` under
+          `'fixed'`: lever-driven Derive rules in dependency order, carry-forward
+          for unmodeled IS lines, calc-DAG subtotals — upserting per forward
+          month a scenario IS FactSet, a BS set (the full roll when the anchor
+          month has an actual balance sheet, else the rule-driven working-capital
+          instants) and a derived CF set when an actual one exists, all keyed by
+          the forecast block's `scenario_id`. Re-running replaces each month's
+          values (the compute-metrics drift semantics). A month that fails
+          verification halts the walk (`halted_at`). Deterministic and non-AI —
+          no credits consumed.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

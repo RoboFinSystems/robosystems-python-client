@@ -123,8 +123,8 @@ def sync_detailed(
   """Delete Information Block
 
    Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
-  block_type / name). Block types whose Structures are library-seeded cannot be deleted per tenant and
-  surface 501.
+  block_type / name). Only schedule and forecast blocks delete here; statement, disclosure, metric and
+  reconciliation blocks surface 501 with a hint naming the operation that manages them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -135,8 +135,8 @@ def sync_detailed(
       body (DeleteForecastArm | DeleteLegacyArm | DeleteScheduleArm): Delete an Information
           Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
-          arm carries a fully typed delete payload; statement and metric arms
-          return HTTP 501.
+          and forecast arms carry fully typed delete payloads; the remaining
+          arms return HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -169,8 +169,8 @@ def sync(
   """Delete Information Block
 
    Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
-  block_type / name). Block types whose Structures are library-seeded cannot be deleted per tenant and
-  surface 501.
+  block_type / name). Only schedule and forecast blocks delete here; statement, disclosure, metric and
+  reconciliation blocks surface 501 with a hint naming the operation that manages them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -181,8 +181,8 @@ def sync(
       body (DeleteForecastArm | DeleteLegacyArm | DeleteScheduleArm): Delete an Information
           Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
-          arm carries a fully typed delete payload; statement and metric arms
-          return HTTP 501.
+          and forecast arms carry fully typed delete payloads; the remaining
+          arms return HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -210,8 +210,8 @@ async def asyncio_detailed(
   """Delete Information Block
 
    Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
-  block_type / name). Block types whose Structures are library-seeded cannot be deleted per tenant and
-  surface 501.
+  block_type / name). Only schedule and forecast blocks delete here; statement, disclosure, metric and
+  reconciliation blocks surface 501 with a hint naming the operation that manages them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -222,8 +222,8 @@ async def asyncio_detailed(
       body (DeleteForecastArm | DeleteLegacyArm | DeleteScheduleArm): Delete an Information
           Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
-          arm carries a fully typed delete payload; statement and metric arms
-          return HTTP 501.
+          and forecast arms carry fully typed delete payloads; the remaining
+          arms return HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -254,8 +254,8 @@ async def asyncio(
   """Delete Information Block
 
    Generic Information Block deletion entry. Returns a thin confirmation (deleted / structure_id /
-  block_type / name). Block types whose Structures are library-seeded cannot be deleted per tenant and
-  surface 501.
+  block_type / name). Only schedule and forecast blocks delete here; statement, disclosure, metric and
+  reconciliation blocks surface 501 with a hint naming the operation that manages them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -266,8 +266,8 @@ async def asyncio(
       body (DeleteForecastArm | DeleteLegacyArm | DeleteScheduleArm): Delete an Information
           Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
-          arm carries a fully typed delete payload; statement and metric arms
-          return HTTP 501.
+          and forecast arms carry fully typed delete payloads; the remaining
+          arms return HTTP 501.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

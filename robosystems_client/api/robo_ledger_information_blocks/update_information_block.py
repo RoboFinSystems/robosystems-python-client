@@ -121,8 +121,9 @@ def sync_detailed(
   """Update Information Block
 
    Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
-  handler. Block types whose Structures are library-seeded and immutable (statement family) surface
-  501.
+  handler. Only schedule and forecast blocks update here; the statement family (library-seeded and
+  immutable), disclosure, metric and reconciliation blocks surface 501 with a hint naming the
+  operation that changes them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -133,9 +134,9 @@ def sync_detailed(
       body (UpdateForecastArm | UpdateLegacyArm | UpdateScheduleArm): Update an Information
           Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
-          arm carries a fully typed update payload; statement and metric arms
-          return HTTP 501 (statements are library-seeded; metric updates are
-          pending).
+          and forecast arms carry fully typed update payloads; the remaining
+          arms return HTTP 501 (statements are library-seeded; the others
+          change through their own operations).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -168,8 +169,9 @@ def sync(
   """Update Information Block
 
    Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
-  handler. Block types whose Structures are library-seeded and immutable (statement family) surface
-  501.
+  handler. Only schedule and forecast blocks update here; the statement family (library-seeded and
+  immutable), disclosure, metric and reconciliation blocks surface 501 with a hint naming the
+  operation that changes them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -180,9 +182,9 @@ def sync(
       body (UpdateForecastArm | UpdateLegacyArm | UpdateScheduleArm): Update an Information
           Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
-          arm carries a fully typed update payload; statement and metric arms
-          return HTTP 501 (statements are library-seeded; metric updates are
-          pending).
+          and forecast arms carry fully typed update payloads; the remaining
+          arms return HTTP 501 (statements are library-seeded; the others
+          change through their own operations).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -210,8 +212,9 @@ async def asyncio_detailed(
   """Update Information Block
 
    Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
-  handler. Block types whose Structures are library-seeded and immutable (statement family) surface
-  501.
+  handler. Only schedule and forecast blocks update here; the statement family (library-seeded and
+  immutable), disclosure, metric and reconciliation blocks surface 501 with a hint naming the
+  operation that changes them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -222,9 +225,9 @@ async def asyncio_detailed(
       body (UpdateForecastArm | UpdateLegacyArm | UpdateScheduleArm): Update an Information
           Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
-          arm carries a fully typed update payload; statement and metric arms
-          return HTTP 501 (statements are library-seeded; metric updates are
-          pending).
+          and forecast arms carry fully typed update payloads; the remaining
+          arms return HTTP 501 (statements are library-seeded; the others
+          change through their own operations).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -255,8 +258,9 @@ async def asyncio(
   """Update Information Block
 
    Generic Information Block update entry. Dispatches by `block_type` to the registered mutation
-  handler. Block types whose Structures are library-seeded and immutable (statement family) surface
-  501.
+  handler. Only schedule and forecast blocks update here; the statement family (library-seeded and
+  immutable), disclosure, metric and reconciliation blocks surface 501 with a hint naming the
+  operation that changes them.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -267,9 +271,9 @@ async def asyncio(
       body (UpdateForecastArm | UpdateLegacyArm | UpdateScheduleArm): Update an Information
           Block. The body is a discriminated union on
           `block_type` mirroring `CreateInformationBlockRequest`. The schedule
-          arm carries a fully typed update payload; statement and metric arms
-          return HTTP 501 (statements are library-seeded; metric updates are
-          pending).
+          and forecast arms carry fully typed update payloads; the remaining
+          arms return HTTP 501 (statements are library-seeded; the others
+          change through their own operations).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

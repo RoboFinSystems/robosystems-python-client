@@ -148,7 +148,12 @@ class GraphClient:
     use_sse: bool = True,
   ) -> str:
     """
-    Create a graph and wait for completion.
+    Create an entity graph and wait for completion.
+
+    This method always creates an entity graph, whose data comes from the
+    extensions pipeline (connectors and the ledger operations) and which
+    refuses file uploads. A custom graph for file ingestion is created with
+    a ``custom_schema`` through ``robosystems_client.api.graphs.create_graph``.
 
     Uses SSE (Server-Sent Events) for real-time progress updates with
     automatic fallback to polling if SSE connection fails.
@@ -156,8 +161,8 @@ class GraphClient:
     Args:
         metadata: Graph metadata
         initial_entity: Initial entity data (required — entity graphs must have an entity)
-        create_entity: Whether to populate entity data on creation (default True).
-            Set False to defer population for file-based ingestion workflows.
+        create_entity: Whether to create the entity node and its initial data
+            on creation (default True).
         timeout: Maximum time to wait in seconds
         poll_interval: Time between status checks in seconds (for polling fallback)
         on_progress: Callback for progress updates
@@ -322,6 +327,8 @@ class GraphClient:
     """
     Materialize graph from staging tables or extensions OLTP.
 
+    The source follows the graph's type: an entity graph rebuilds from the
+    extensions OLTP database, a custom graph from its staged files.
     Submits a materialization job and monitors progress via SSE.
     The operation runs asynchronously on the server but this method waits
     for completion and returns the final result.
@@ -697,7 +704,8 @@ class GraphClient:
   ) -> Dict[str, Any]:
     """
     Permanently delete a graph by canceling its subscription and triggering
-    deprovisioning.
+    deprovisioning. The caller must be the organization's owner and an
+    admin on the graph.
 
     Two modes:
 
@@ -717,7 +725,8 @@ class GraphClient:
     Returns:
         The ``result`` field of the operation envelope. For immediate:
         ``{"graph_id", "subscription_id", "status": "deprovisioning_queued",
-        "message"}``. For period-end: includes ``ends_at`` instead.
+        "message"}``. For period-end, ``status`` is
+        ``"scheduled_for_deprovision"`` and ``ends_at`` is included.
 
     Raises:
         RuntimeError: If the deletion request fails.

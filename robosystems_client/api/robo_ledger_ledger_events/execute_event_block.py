@@ -116,9 +116,10 @@ def sync_detailed(
    For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the event's
   draft GL entries to the source-of-truth system (QuickBooks), each as its own JournalEntry. Records
   the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
-  'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
-  is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
-  record. Only the group parent's books are QuickBooks': an event on a subsidiary's books is refused.
+  'posted'; the event goes 'fulfilled' once no draft remains. On rejection what landed is kept, the
+  status is unchanged and the error is stamped on event.metadata.last_outbound_error (and returned as
+  qb_error). Events on 'native' or 'shadow' books pass through with no QB write. Only the group
+  parent's books are QuickBooks': an event on a subsidiary's books is refused.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -134,11 +135,11 @@ def sync_detailed(
           each draft entry posts as its own JournalEntry, with the entry id as
           the RequestId, and its QuickBooks id is recorded per entry on
           `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
-          draft remains, or `pending` when QuickBooks rejects an entry (what
-          landed is kept).
+          draft remains. When QuickBooks rejects an entry, what landed is kept,
+          the status is unchanged, and the error is stamped on
+          `event.metadata.last_outbound_error` and returned as `qb_error`.
 
-          `'native'`-policy events fast-path through with no QB write —
-          RoboSystems IS the source of truth, no outbound publish needed.
+          Events on `'native'` or `'shadow'` books pass through with no QB write.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -173,9 +174,10 @@ def sync(
    For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the event's
   draft GL entries to the source-of-truth system (QuickBooks), each as its own JournalEntry. Records
   the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
-  'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
-  is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
-  record. Only the group parent's books are QuickBooks': an event on a subsidiary's books is refused.
+  'posted'; the event goes 'fulfilled' once no draft remains. On rejection what landed is kept, the
+  status is unchanged and the error is stamped on event.metadata.last_outbound_error (and returned as
+  qb_error). Events on 'native' or 'shadow' books pass through with no QB write. Only the group
+  parent's books are QuickBooks': an event on a subsidiary's books is refused.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -191,11 +193,11 @@ def sync(
           each draft entry posts as its own JournalEntry, with the entry id as
           the RequestId, and its QuickBooks id is recorded per entry on
           `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
-          draft remains, or `pending` when QuickBooks rejects an entry (what
-          landed is kept).
+          draft remains. When QuickBooks rejects an entry, what landed is kept,
+          the status is unchanged, and the error is stamped on
+          `event.metadata.last_outbound_error` and returned as `qb_error`.
 
-          `'native'`-policy events fast-path through with no QB write —
-          RoboSystems IS the source of truth, no outbound publish needed.
+          Events on `'native'` or `'shadow'` books pass through with no QB write.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -225,9 +227,10 @@ async def asyncio_detailed(
    For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the event's
   draft GL entries to the source-of-truth system (QuickBooks), each as its own JournalEntry. Records
   the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
-  'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
-  is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
-  record. Only the group parent's books are QuickBooks': an event on a subsidiary's books is refused.
+  'posted'; the event goes 'fulfilled' once no draft remains. On rejection what landed is kept, the
+  status is unchanged and the error is stamped on event.metadata.last_outbound_error (and returned as
+  qb_error). Events on 'native' or 'shadow' books pass through with no QB write. Only the group
+  parent's books are QuickBooks': an event on a subsidiary's books is refused.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -243,11 +246,11 @@ async def asyncio_detailed(
           each draft entry posts as its own JournalEntry, with the entry id as
           the RequestId, and its QuickBooks id is recorded per entry on
           `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
-          draft remains, or `pending` when QuickBooks rejects an entry (what
-          landed is kept).
+          draft remains. When QuickBooks rejects an entry, what landed is kept,
+          the status is unchanged, and the error is stamped on
+          `event.metadata.last_outbound_error` and returned as `qb_error`.
 
-          `'native'`-policy events fast-path through with no QB write —
-          RoboSystems IS the source of truth, no outbound publish needed.
+          Events on `'native'` or `'shadow'` books pass through with no QB write.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -280,9 +283,10 @@ async def asyncio(
    For events on a connection with write_policy='qb_authoritative' or 'hybrid', publish the event's
   draft GL entries to the source-of-truth system (QuickBooks), each as its own JournalEntry. Records
   the QuickBooks ids per entry on event.metadata.qb_entry_ids and promotes the published entries to
-  'posted'; the event goes 'fulfilled' once no draft remains, or 'pending' on rejection (what landed
-  is kept). Native-policy events fast-path through with no QB write — RoboSystems is the system of
-  record. Only the group parent's books are QuickBooks': an event on a subsidiary's books is refused.
+  'posted'; the event goes 'fulfilled' once no draft remains. On rejection what landed is kept, the
+  status is unchanged and the error is stamped on event.metadata.last_outbound_error (and returned as
+  qb_error). Events on 'native' or 'shadow' books pass through with no QB write. Only the group
+  parent's books are QuickBooks': an event on a subsidiary's books is refused.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -298,11 +302,11 @@ async def asyncio(
           each draft entry posts as its own JournalEntry, with the entry id as
           the RequestId, and its QuickBooks id is recorded per entry on
           `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
-          draft remains, or `pending` when QuickBooks rejects an entry (what
-          landed is kept).
+          draft remains. When QuickBooks rejects an entry, what landed is kept,
+          the status is unchanged, and the error is stamped on
+          `event.metadata.last_outbound_error` and returned as `qb_error`.
 
-          `'native'`-policy events fast-path through with no QB write —
-          RoboSystems IS the source of truth, no outbound publish needed.
+          Events on `'native'` or `'shadow'` books pass through with no QB write.
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

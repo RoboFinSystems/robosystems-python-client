@@ -230,7 +230,10 @@ class InvestorClient:
   def get_portfolio_block(
     self, graph_id: str, portfolio_id: str
   ) -> PortfolioBlock | None:
-    """Get the full portfolio block (portfolio + positions + securities). Returns None if not found."""
+    """Get the portfolio block: the portfolio with its active positions, their
+    securities and issuing entities (disposed positions are left out; list
+    them with ``list_positions(status="disposed")``). Returns None if not
+    found."""
     data = self._query(
       graph_id, GET_INVESTOR_PORTFOLIO_BLOCK_GQL, {"portfolioId": portfolio_id}
     )
@@ -319,7 +322,10 @@ class InvestorClient:
     return GetInvestorSecurity.model_validate(data).security
 
   def create_security(self, graph_id: str, body: dict[str, Any]) -> SecurityResponse:
-    """Create a new security. Auto-links to an entity when `source_graph_id` is set."""
+    """Create a new security in this graph's registry. Its ``entity_id`` is
+    the issuer, not the holder. Without ``entity_id``, ``source_graph_id``
+    links it to the entity already linked from the issuer's graph, or, when
+    there is none yet, once a report from that graph arrives."""
     request = CreateSecurityRequest.from_dict(body)
     response = op_create_security(
       graph_id=graph_id, body=request, client=self._get_client()
@@ -386,7 +392,7 @@ class InvestorClient:
   # ── Holdings (aggregation) ─────────────────────────────────────────
 
   def get_holdings(self, graph_id: str, portfolio_id: str) -> InvestorHoldings | None:
-    """Get portfolio holdings grouped by entity."""
+    """One portfolio's active positions, grouped by issuing entity."""
     data = self._query(
       graph_id, GET_INVESTOR_HOLDINGS_GQL, {"portfolioId": portfolio_id}
     )

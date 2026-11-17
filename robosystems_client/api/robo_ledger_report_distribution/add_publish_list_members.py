@@ -115,8 +115,8 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopelistPublishListMemberResponse]:
   """Add Members to Publish List
 
-   Add one or more recipient graphs to a publish list. Targets must exist and have the same extension
-  enabled (e.g. roboledger). Self-graph rejected (422); already-member rejected (409).
+   Add one or more recipient graphs to a publish list. Targets must exist and carry the roboledger or
+  roboinvestor extension. Self-graph rejected (422); already-member rejected (409).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -156,8 +156,8 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopelistPublishListMemberResponse | None:
   """Add Members to Publish List
 
-   Add one or more recipient graphs to a publish list. Targets must exist and have the same extension
-  enabled (e.g. roboledger). Self-graph rejected (422); already-member rejected (409).
+   Add one or more recipient graphs to a publish list. Targets must exist and carry the roboledger or
+  roboinvestor extension. Self-graph rejected (422); already-member rejected (409).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -192,8 +192,8 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopelistPublishListMemberResponse]:
   """Add Members to Publish List
 
-   Add one or more recipient graphs to a publish list. Targets must exist and have the same extension
-  enabled (e.g. roboledger). Self-graph rejected (422); already-member rejected (409).
+   Add one or more recipient graphs to a publish list. Targets must exist and carry the roboledger or
+  roboinvestor extension. Self-graph rejected (422); already-member rejected (409).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -231,8 +231,8 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopelistPublishListMemberResponse | None:
   """Add Members to Publish List
 
-   Add one or more recipient graphs to a publish list. Targets must exist and have the same extension
-  enabled (e.g. roboledger). Self-graph rejected (422); already-member rejected (409).
+   Add one or more recipient graphs to a publish list. Targets must exist and carry the roboledger or
+  roboinvestor extension. Self-graph rejected (422); already-member rejected (409).
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

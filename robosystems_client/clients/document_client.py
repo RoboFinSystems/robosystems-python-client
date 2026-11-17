@@ -244,13 +244,18 @@ class DocumentClient:
     date_to: Optional[str] = None,
     size: int = 10,
   ) -> SearchResponse:
-    """Search documents with hybrid (BM25 + KNN) search.
+    """Search documents by keyword (BM25).
+
+    The facade does not set the request's ``semantic`` flag, so the
+    server's BM25-only default applies; for hybrid (BM25 + KNN) search,
+    call ``robosystems_client.api.search.search_documents`` with
+    ``SearchRequest(semantic=True)``.
 
     Args:
         graph_id: Target graph ID.
         query: Search query string.
         source_type: Filter by source type (xbrl_textblock, narrative_section,
-            ixbrl_disclosure, uploaded_doc, memory).
+            ixbrl_disclosure, uploaded_doc, connection_doc).
         entity: Filter by entity ticker/CIK/name.
         form_type: Filter by SEC form type (10-K, 10-Q).
         section: Filter by section ID (item_1, item_1a, item_7, etc.).

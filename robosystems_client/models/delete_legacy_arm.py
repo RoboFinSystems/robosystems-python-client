@@ -22,12 +22,15 @@ class DeleteLegacyArm:
   a typed delete path at the API boundary.
 
   Statement-family blocks cannot be deleted per tenant (the underlying
-  Report should be archived via the report APIs instead). Metric
-  deletion is not yet implemented. Calls return HTTP 501.
+  Report should be archived via the report APIs instead). Disclosure
+  and metric structures are removed through the taxonomy-block
+  operations; a reconciliation stops holding the close through
+  `set-reconciliation-policy`. Calls return HTTP 501.
 
       Attributes:
-          block_type (DeleteLegacyArmBlockType): Statement-family or metric block type. Deletion returns 501 — statements
-              are library-seeded (archive the underlying Report instead); metric deletion is pending.
+          block_type (DeleteLegacyArmBlockType): Statement-family, disclosure, metric or reconciliation block type.
+              Deletion returns 501 — statements are library-seeded (archive the underlying Report instead); the others are
+              managed through their own operations, named in the 501's hint.
           payload (DeleteLegacyArmPayload | Unset): Untyped payload — typed-arm validation is skipped because the dispatch
               handler raises 501 before the payload is consumed.
   """

@@ -30,8 +30,7 @@ class PositionBlock:
           quantity (float): Quantity held in `quantity_type` units.
           quantity_type (str): Unit basis (`shares`, `units`, `principal`).
           cost_basis_dollars (float): Cost basis in dollars (pre-converted from cents).
-          status (str): Lifecycle state (`active`, `disposed`, `archived`). See `PositionResponse.status` for the full
-              vocabulary.
+          status (str): Lifecycle state (`active`, `disposed`). See `PositionResponse.status` for the full vocabulary.
           security (SecurityLite): Lightweight security projection for embedding in position
               envelopes. Skips `terms`, `outstanding_shares`, etc. — fetch the
               full `SecurityResponse` when those are needed.

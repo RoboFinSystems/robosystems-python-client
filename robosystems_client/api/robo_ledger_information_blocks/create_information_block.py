@@ -121,8 +121,9 @@ def sync_detailed(
   """Create Information Block
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
-  `payload` is validated against that type's creation schema at dispatch. Schedule dispatches to the
-  existing Schedule machinery; statement block types raise 501 (use create-report instead). Authoring
+  `payload` is validated against that type's creation schema at dispatch. Only schedule and forecast
+  are constructed here; the other block types raise 501 with a hint naming their own operation
+  (statements: create-report; disclosure and metric structures: create-taxonomy-block). Authoring
   schedules for a close? Call `get-close-playbook` (mode='initiate') first — one schedule is a single
   debit/credit element pair, so multi-line entries become multiple schedules, and element ids must be
   real (discover via get-graph-schema / get-unmapped-elements / suggest-mapping).
@@ -136,10 +137,11 @@ def sync_detailed(
       body (CreateForecastArm | CreateLegacyArm | CreateScheduleArm): Create an Information
           Block. The body is a discriminated union on
           `block_type`: pick the arm matching the block type you want to
-          create. The schedule arm carries a fully typed payload; statement
-          and metric arms accept an untyped payload but currently return HTTP
-          501 (statements are constructed via `create-report`; metric
-          construction is pending).
+          create. The schedule and forecast arms carry fully typed payloads;
+          the remaining arms accept an untyped payload and return HTTP 501
+          with a hint naming the operation that constructs them (statements
+          via `create-report`, disclosure and metric structures via
+          `create-taxonomy-block`).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -172,8 +174,9 @@ def sync(
   """Create Information Block
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
-  `payload` is validated against that type's creation schema at dispatch. Schedule dispatches to the
-  existing Schedule machinery; statement block types raise 501 (use create-report instead). Authoring
+  `payload` is validated against that type's creation schema at dispatch. Only schedule and forecast
+  are constructed here; the other block types raise 501 with a hint naming their own operation
+  (statements: create-report; disclosure and metric structures: create-taxonomy-block). Authoring
   schedules for a close? Call `get-close-playbook` (mode='initiate') first — one schedule is a single
   debit/credit element pair, so multi-line entries become multiple schedules, and element ids must be
   real (discover via get-graph-schema / get-unmapped-elements / suggest-mapping).
@@ -187,10 +190,11 @@ def sync(
       body (CreateForecastArm | CreateLegacyArm | CreateScheduleArm): Create an Information
           Block. The body is a discriminated union on
           `block_type`: pick the arm matching the block type you want to
-          create. The schedule arm carries a fully typed payload; statement
-          and metric arms accept an untyped payload but currently return HTTP
-          501 (statements are constructed via `create-report`; metric
-          construction is pending).
+          create. The schedule and forecast arms carry fully typed payloads;
+          the remaining arms accept an untyped payload and return HTTP 501
+          with a hint naming the operation that constructs them (statements
+          via `create-report`, disclosure and metric structures via
+          `create-taxonomy-block`).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -218,8 +222,9 @@ async def asyncio_detailed(
   """Create Information Block
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
-  `payload` is validated against that type's creation schema at dispatch. Schedule dispatches to the
-  existing Schedule machinery; statement block types raise 501 (use create-report instead). Authoring
+  `payload` is validated against that type's creation schema at dispatch. Only schedule and forecast
+  are constructed here; the other block types raise 501 with a hint naming their own operation
+  (statements: create-report; disclosure and metric structures: create-taxonomy-block). Authoring
   schedules for a close? Call `get-close-playbook` (mode='initiate') first — one schedule is a single
   debit/credit element pair, so multi-line entries become multiple schedules, and element ids must be
   real (discover via get-graph-schema / get-unmapped-elements / suggest-mapping).
@@ -233,10 +238,11 @@ async def asyncio_detailed(
       body (CreateForecastArm | CreateLegacyArm | CreateScheduleArm): Create an Information
           Block. The body is a discriminated union on
           `block_type`: pick the arm matching the block type you want to
-          create. The schedule arm carries a fully typed payload; statement
-          and metric arms accept an untyped payload but currently return HTTP
-          501 (statements are constructed via `create-report`; metric
-          construction is pending).
+          create. The schedule and forecast arms carry fully typed payloads;
+          the remaining arms accept an untyped payload and return HTTP 501
+          with a hint naming the operation that constructs them (statements
+          via `create-report`, disclosure and metric structures via
+          `create-taxonomy-block`).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -267,8 +273,9 @@ async def asyncio(
   """Create Information Block
 
    Generic Information Block construction entry. `block_type` selects the registered block type;
-  `payload` is validated against that type's creation schema at dispatch. Schedule dispatches to the
-  existing Schedule machinery; statement block types raise 501 (use create-report instead). Authoring
+  `payload` is validated against that type's creation schema at dispatch. Only schedule and forecast
+  are constructed here; the other block types raise 501 with a hint naming their own operation
+  (statements: create-report; disclosure and metric structures: create-taxonomy-block). Authoring
   schedules for a close? Call `get-close-playbook` (mode='initiate') first — one schedule is a single
   debit/credit element pair, so multi-line entries become multiple schedules, and element ids must be
   real (discover via get-graph-schema / get-unmapped-elements / suggest-mapping).
@@ -282,10 +289,11 @@ async def asyncio(
       body (CreateForecastArm | CreateLegacyArm | CreateScheduleArm): Create an Information
           Block. The body is a discriminated union on
           `block_type`: pick the arm matching the block type you want to
-          create. The schedule arm carries a fully typed payload; statement
-          and metric arms accept an untyped payload but currently return HTTP
-          501 (statements are constructed via `create-report`; metric
-          construction is pending).
+          create. The schedule and forecast arms carry fully typed payloads;
+          the remaining arms accept an untyped payload and return HTTP 501
+          with a hint naming the operation that constructs them (statements
+          via `create-report`, disclosure and metric structures via
+          `create-taxonomy-block`).
 
   Raises:
       errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

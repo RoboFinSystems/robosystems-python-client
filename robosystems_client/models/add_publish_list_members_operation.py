@@ -14,8 +14,8 @@ class AddPublishListMembersOperation:
   """Add recipient graphs to a publish list.
 
   Attributes:
-      target_graph_ids (list[str]): Graph IDs to add. Each must exist and have the same extension (roboledger /
-          roboinvestor) enabled. Self-graph rejected.
+      target_graph_ids (list[str]): Graph IDs to add. Each must exist and carry the roboledger or roboinvestor
+          extension. Self-graph rejected.
       list_id (str): The publish list to add members to.
   """
 
