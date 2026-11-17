@@ -221,16 +221,20 @@ metadata = GraphMetadata(graph_name="Example Holdings")
 entity = InitialEntityData(name="Example Holdings LLC", uri="https://example.com")
 graph_id = clients.graphs.create_graph_and_wait(metadata, entity, timeout=120)
 
-uploaded = clients.files.upload(graph_id, "Entity", "entity.parquet")
-staged = clients.tables.query(graph_id, "SELECT * FROM Entity", limit=5)
-done = clients.graphs.materialize(graph_id)
-print(uploaded.success, staged.rows, done.total_rows)
-
 clients.documents.upload(graph_id, title="Close memo", content="# March\n\nNotes.")
 hits = clients.documents.search(graph_id, "close memo", size=5).hits
 ```
 
-`upload`, `tables.query` and `materialize` report failure through `success` and `error` on their results. `MaterializationOptions` sets `rebuild`, `force`, `on_progress` and `timeout`. `files.upload` reads the whole file into memory and sends it as Parquet. Its `row_count` is 0 when a large file stages asynchronously. `change_tier` takes `ladybug-standard`, `ladybug-large` or `ladybug-xlarge`. `delete_graph` cancels the subscription and starts deprovisioning, which `at_period_end=True` defers.
+`create_graph_and_wait` always creates an entity graph. Its data comes from the extensions pipeline, and `materialize` rebuilds it from there. File uploads are refused on it. Files and staging tables are for a custom graph, which you create with a `custom_schema` through `robosystems_client.api.graphs.create_graph`:
+
+```python
+uploaded = clients.files.upload(custom_graph_id, "Customer", "customer.parquet")
+staged = clients.tables.query(custom_graph_id, "SELECT * FROM Customer", limit=5)
+done = clients.graphs.materialize(custom_graph_id)
+print(uploaded.success, staged.rows, done.total_rows)
+```
+
+`upload`, `tables.query` and `materialize` report failure through `success` and `error` on their results. `MaterializationOptions` sets `rebuild`, `force`, `materialize_embeddings`, `on_progress` and `timeout`. `files.upload` reads the whole file into memory and sends it as Parquet. Its `row_count` is 0 when a large file stages asynchronously. `change_tier` takes `ladybug-standard`, `ladybug-large` or `ladybug-xlarge`. `delete_graph` cancels the subscription and starts deprovisioning, which `at_period_end=True` defers; it needs the organization's owner who is also an admin on the graph. `documents.search` is keyword (BM25) search, since it does not set the request's `semantic` flag.
 
 Subgraphs and backups have no facade method. `AuthenticatedClients` and `TokenClients` expose `authenticated_client` for the generated functions in `robosystems_client.api`, such as `sync_detailed(graph_id, client=clients.authenticated_client, body=body)` from `robosystems_client.api.graph_operations.create_subgraph`. Calls through it do not replay `429` responses.
 

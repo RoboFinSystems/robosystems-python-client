@@ -28,8 +28,8 @@ class ExecuteEventBlockResponse:
       event_id (str): Echo of the event ID.
       status (str): The event's status after the call. Unchanged when no write fired (native policy, a source that
           does not publish) or when drafts in a later period are still unpublished. `'fulfilled'` once every draft entry
-          of the event is in QuickBooks and posted. `'pending'` when QuickBooks rejected an entry — see `qb_error`; retry
-          after fixing the underlying issue.
+          of the event is in QuickBooks and posted. Also unchanged when QuickBooks rejected an entry — see `qb_error`;
+          retry after fixing the underlying issue.
       qb_external_id (None | str | Unset): QuickBooks JournalEntry ID of the first entry this call published. Null
           when nothing was published. When a call publishes several entries, `qb_entry_ids` holds them all.
       qb_entry_ids (ExecuteEventBlockResponseQbEntryIdsType0 | None | Unset): Every entry of the event now in

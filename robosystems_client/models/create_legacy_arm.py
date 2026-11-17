@@ -18,22 +18,24 @@ T = TypeVar("T", bound="CreateLegacyArm")
 
 @_attrs_define
 class CreateLegacyArm:
-  """Create-information-block body for block types that don't yet have
-  a typed construction path at the API boundary.
+  """Create-information-block body for block types constructed through
+  another operation.
 
   Statement-family blocks (balance_sheet, income_statement,
   cash_flow_statement, equity_statement, comprehensive_income) are
   constructed via `create-report`, not this endpoint. Disclosure
   structures (regulatory_disclosure) are vocabulary, authored via
   `create-taxonomy-block`; their facts land when `create-report`
-  picks them. Metric blocks are recognized but their evaluator has
-  not shipped. Calling this endpoint with one of these block types
-  returns HTTP 501 with a hint pointing to the correct construction
-  path.
+  picks them. Metric structures are authored via
+  `create-taxonomy-block` and their facts written by `compute-metrics`
+  or `assert-metrics`. Reconciliation blocks are created by
+  `refresh-reconciliations`. Calling this endpoint with one of these
+  block types returns HTTP 501 with a hint pointing to the correct
+  construction path.
 
       Attributes:
-          block_type (CreateLegacyArmBlockType): Statement-family or metric block type. The endpoint returns 501 for these
-              values — statements are constructed via `create-report`; metric construction is pending.
+          block_type (CreateLegacyArmBlockType): Statement-family, disclosure, metric or reconciliation block type. The
+              endpoint returns 501 for these values with a hint naming the operation that constructs each.
           payload (CreateLegacyArmPayload | Unset): Untyped payload — typed-arm validation is skipped because the dispatch
               handler raises 501 before the payload is consumed.
   """

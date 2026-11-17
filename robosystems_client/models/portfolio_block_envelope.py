@@ -31,9 +31,8 @@ class PortfolioBlockEnvelope:
           id (str): Portfolio ID (`port_*` ULID).
           name (str): Display name.
           base_currency (str): ISO 4217 currency code for portfolio aggregates.
-          positions (list[PositionBlock]): All positions in this portfolio, including disposed ones (filter by `status`
-              for active-only display).
-          total_cost_basis_dollars (float): Sum of `cost_basis_dollars` across every position.
+          positions (list[PositionBlock]): The portfolio's active positions; disposed ones are not included.
+          total_cost_basis_dollars (float): Sum of `cost_basis_dollars` across the active positions.
           active_position_count (int): Count of positions with `status='active'`.
           created_at (datetime.datetime): Row creation timestamp (UTC).
           updated_at (datetime.datetime): Last-modified timestamp (UTC).
@@ -41,8 +40,8 @@ class PortfolioBlockEnvelope:
           strategy (None | str | Unset): Free-text strategy classification.
           inception_date (datetime.date | None | Unset): Date the portfolio was established.
           owner (EntityLite | None | Unset): Embedded owning entity, when set. `null` for unattributed portfolios.
-          total_current_value_dollars (float | None | Unset): Sum of `current_value_dollars` across every position. `null`
-              when any active position lacks a mark.
+          total_current_value_dollars (float | None | Unset): Sum of `current_value_dollars` across the marked active
+              positions; an unmarked one adds nothing. `null` only when no active position has a mark.
   """
 
   id: str

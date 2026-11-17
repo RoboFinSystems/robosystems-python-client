@@ -81,7 +81,8 @@ class OperatorResult:
   # then carries the explanation rather than an answer.
   error_details: Optional[Dict[str, Any]] = None
   # The run's operation id: the key of its record under the graph's audit
-  # (`get_operator_run`) and of every mutation it made.
+  # (`robosystems_client.api.graph_audit.get_operator_run`) and of every
+  # mutation it made.
   operation_id: Optional[str] = None
 
 
@@ -273,8 +274,12 @@ class OperatorClient:
       ],
       context=request.context,
       mode=request.mode,
-      enable_rag=request.enable_rag,
-      force_extended_analysis=request.force_extended_analysis,
+      enable_rag=request.enable_rag if request.enable_rag is not None else UNSET,
+      force_extended_analysis=(
+        request.force_extended_analysis
+        if request.force_extended_analysis is not None
+        else UNSET
+      ),
       thread_id=request.thread_id if request.thread_id is not None else UNSET,
     )
 
@@ -313,8 +318,12 @@ class OperatorClient:
       ],
       context=request.context,
       mode=request.mode,
-      enable_rag=request.enable_rag,
-      force_extended_analysis=request.force_extended_analysis,
+      enable_rag=request.enable_rag if request.enable_rag is not None else UNSET,
+      force_extended_analysis=(
+        request.force_extended_analysis
+        if request.force_extended_analysis is not None
+        else UNSET
+      ),
       thread_id=request.thread_id if request.thread_id is not None else UNSET,
     )
 

@@ -37,7 +37,7 @@ class CreateForecastRequest:
               display/filtering, not machinery. All kinds compute identically. Default:
               CreateForecastRequestScenarioKind.FORECAST.
           horizon_months (int | Unset): Forward months to project past the base period. Default: 12.
-          base_period (None | str | Unset): Seed month (`YYYY-MM`) the walk projects forward from. Defaults to the fiscal
+          base_period (None | str | Unset): Origin month (`YYYY-MM`) of the authored window. Defaults to the fiscal
               calendar's closed-through period, else the newest actual report month. Resolved and stored at create time, and
               it never moves afterwards — every lever is keyed to a month inside `base_period + 1 … + horizon_months`, so
               moving it would mean restating all of them. `base_anchor` decides whether the walk still *seeds* here once

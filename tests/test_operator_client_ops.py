@@ -291,3 +291,39 @@ class TestOperatorSyncResponse:
 
     rest_client = mock_auto.call_args.kwargs["client"]
     assert rest_client._headers == {"X-API-Key": "rfs_fresh"}
+
+
+@pytest.mark.unit
+class TestOperatorRequestBody:
+  """Unset booleans are left out of the body: the server types them as
+  true/false with their own defaults, and a JSON null is a 422."""
+
+  @patch("robosystems_client.clients.operator_client.auto_select_operator")
+  def test_default_request_omits_unset_flags(self, mock_auto, mock_config, graph_id):
+    resp = Mock()
+    resp.parsed = {"content": "ok", "operator_used": "analyst", "mode_used": "quick"}
+    mock_auto.return_value = resp
+
+    _run(OperatorClient(mock_config), graph_id)
+
+    body = mock_auto.call_args.kwargs["body"].to_dict()
+    assert "enable_rag" not in body
+    assert "force_extended_analysis" not in body
+
+  @patch("robosystems_client.clients.operator_client.execute_specific_operator")
+  def test_set_flags_are_sent(self, mock_exec, mock_config, graph_id):
+    resp = Mock()
+    resp.parsed = {"content": "ok", "operator_used": "analyst", "mode_used": "quick"}
+    mock_exec.return_value = resp
+
+    OperatorClient(mock_config).execute_operator(
+      graph_id,
+      "analyst",
+      OperatorQueryRequest(
+        message="burn?", enable_rag=False, force_extended_analysis=True
+      ),
+    )
+
+    body = mock_exec.call_args.kwargs["body"].to_dict()
+    assert body["enable_rag"] is False
+    assert body["force_extended_analysis"] is True

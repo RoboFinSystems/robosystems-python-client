@@ -15,8 +15,10 @@ schedules, and period close.
   the ledger: setup, taxonomy, information blocks, ledger events,
   fiscal close, reports, distribution, analytical views). Each command
   returns an `OperationEnvelope`; the facade unwraps
-  `envelope.result` and returns either a dict or, for async dispatches
-  (e.g. auto-map, create-report), a small ack dict.
+  `envelope.result` and returns the operation's result. The one async
+  dispatch, `auto_map_elements`, returns a small ack dict with the
+  operation id instead; every other write, `create_report` included,
+  completes before it returns.
 
 Reports, statements, and publish lists are included on this client —
 same backend surface as the ledger operations.
@@ -996,11 +998,11 @@ class LedgerClient:
     ``occurred_at`` accepts either a date string (``YYYY-MM-DD``) — which
     is normalized to midnight UTC — or a full ISO-8601 timestamp.
 
-    ``source`` describes who fired the event — must match the server's
-    CHECK constraint set: ``manual`` (user-initiated, the default),
-    ``schedule`` (recurring schedule fired), ``system`` (internal
-    automation), or one of the adapter-driven values
-    (``quickbooks`` / ``xero`` / ``plaid``) for sync ingestion.
+    ``source`` describes who fired the event: ``manual`` (user-initiated,
+    the default), ``schedule`` (recurring schedule fired), ``system``
+    (internal automation), or the provider of a connection registered on
+    the graph (``quickbooks``, ``plaid``, ...) or the ``source_name`` of an
+    ``external`` one. The server refuses any other value.
     """
     if "T" not in occurred_at:
       occurred_dt = datetime.datetime.fromisoformat(f"{occurred_at}T00:00:00+00:00")
@@ -1075,7 +1077,8 @@ class LedgerClient:
   def get_summary(
     self, graph_id: str, entity_id: str | None = None
   ) -> LedgerSummary | None:
-    """Ledger rollup counts + QB sync metadata.
+    """One entity's ledger counts and date range, with the graph's
+    connection count and last sync time.
 
     Returns the codegen-typed ``LedgerSummary`` model (attribute access,
     snake_case) rather than a dict.
@@ -1678,7 +1681,8 @@ class LedgerClient:
     account's default flow on the cash flow and equity statements — and this
     is the set the write path accepts, so a picker built from it never
     offers a row the statement cannot present. The ``qname`` is what a bank
-    line's ``classified_flow_qname`` takes.
+    line's ``classified_flow_qname`` and a journal-entry line's
+    ``flow_qname`` take.
     """
     data = self._query(graph_id, FLOW_CANDIDATES_GQL, {"entityId": entity_id})
     return FlowCandidates.model_validate(data).flow_candidates
@@ -1722,7 +1726,9 @@ class LedgerClient:
     )
 
   def auto_map_elements(self, graph_id: str, mapping_id: str) -> dict[str, Any]:
-    """Trigger the AI MappingAgent (async). Returns an operation ack."""
+    """Start the AI mapping operator on a mapping (async, on the background
+    worker). Returns an operation ack: ``operation_id`` and ``status``;
+    follow it with ``monitor_operation``."""
     body = AutoMapElementsOperation(mapping_id=mapping_id)
     response = op_auto_map_elements(
       graph_id=graph_id, body=body, client=self._get_client()
@@ -1746,7 +1752,7 @@ class LedgerClient:
     """Fetch an Information Block envelope by id — the cross-block-type read.
 
     Returns ``None`` when the block doesn't exist or its type isn't
-    registered. See ``information-block.md`` for the envelope contract.
+    registered.
 
     ``scenario_id`` selects the FactSet slice: ``None`` = actuals; a
     forecast block's structure id = that scenario's parallel universe
@@ -2808,10 +2814,14 @@ class LedgerClient:
   ) -> EventBlockEnvelope:
     """Apply a status transition and/or field corrections to an event block.
 
-    Use for posting drafts (``classified`` → ``committed`` → ``fulfilled``),
-    voiding, superseding (correction chains), or patching ``description``,
-    ``effective_at``, ``metadata``, ``obligated_by_event_id``, or
-    ``discharges_event_id``.
+    Use for moving an event along its lifecycle (``transition_to``: a bank
+    line goes ``captured`` → ``classified`` → ``committed``, and the commit
+    fires its handler), voiding, superseding (correction chains), or
+    patching ``description``, ``effective_at``, ``due_date``,
+    ``metadata_patch`` (merged into the existing metadata),
+    ``obligated_by_event_id``, ``discharges_event_id``,
+    ``discharge_allocations`` or ``document_id``. A retraction is refused
+    once the event's ledger rows have posted; reverse the entries instead.
     """
     request = UpdateEventBlockRequest.from_dict(body)
     response = op_update_event_block(
@@ -3041,17 +3051,27 @@ class LedgerClient:
     envelope = self._call_op("Update event handler", response)
     return self._typed_result("Update event handler", envelope, EventHandlerResponse)
 
-  # ── Financial statements (graph-backed) ──────────────────────────────
+  # ── Financial statements ─────────────────────────────────────────────
 
   def live_financial_statement(
     self,
     graph_id: str,
     body: dict[str, Any],
   ) -> LiveFinancialStatementResponse:
-    """Live financial statement — pulls facts directly from the graph for
-    an explicit period window (or fiscal year) and returns the statement
-    shape without a persisted Report row. Useful for ad-hoc previews and
-    dashboards.
+    """Live financial statement — read from the ledger itself (the
+    extensions database, not the graph) for an explicit period window or a
+    fiscal year, without a persisted Report row. Useful for ad-hoc previews
+    and dashboards.
+
+    ``body`` takes the fields of
+    :class:`~robosystems_client.models.live_financial_statement_request.LiveFinancialStatementRequest`.
+    ``scope`` is ``entity`` (the default: one entity's books), ``combined``
+    or ``consolidated`` (both read on the group parent: every member
+    consolidated in full summed, and ``consolidated`` adds the consolidation
+    entity's adjustments). ``consolidated: True`` is the older spelling of
+    ``scope: "consolidated"``; ``scope`` wins when both are given.
+    ``dimension`` slices an income statement by a management dimension, and
+    ``include_sources`` adds the accounts behind each figure.
     """
     request = LiveFinancialStatementRequest.from_dict(body)
     response = op_live_financial_statement(
@@ -3067,7 +3087,8 @@ class LedgerClient:
     graph_id: str,
     body: dict[str, Any],
   ) -> ConsolidationWorksheetResponse:
-    """The group's statement for one window with the entity as the column:
+    """The group's statement for one window, read from the ledger, with the
+    entity as the column:
     each member consolidated in full, their combined sum, the consolidation
     entity's adjustments, the consolidated total, and each equity-method or
     cost member beside the sum. Read on the group parent.
@@ -3104,7 +3125,9 @@ class LedgerClient:
     graph_id: str,
     body: dict[str, Any],
   ) -> FinancialStatementAnalysisResponse:
-    """Run a financial statement analysis against an existing report.
+    """Run a financial statement analysis against an existing report. A
+    graph read (LadybugDB), so a tenant's figures are as of its last
+    materialization.
 
     On shared-repo graphs (e.g. SEC), ``ticker`` is required; on tenant
     graphs it's ignored. Either pass an explicit ``report_id`` or let the
@@ -3134,8 +3157,8 @@ class LedgerClient:
     ``request`` accepts any fields of
     ``robosystems_client.models.create_view_request.CreateViewRequest``:
     ``elements`` (qnames), ``canonical_concepts``, ``periods``,
-    ``entities``, ``form``, ``fiscal_year``, ``fiscal_period``,
-    ``period_type``, ``include_summary``, ``view_config``. The legacy
+    ``entity``, ``entities``, ``form``, ``fiscal_year``, ``fiscal_period``,
+    ``period_type``, ``include_summary``, ``limit``, ``view_config``. The legacy
     model name ``CreateViewRequest`` is a holdover from when fact grids
     were exposed under a ``/views`` route; the shape is unchanged.
     """
@@ -3178,7 +3201,11 @@ class LedgerClient:
     auto_seed_schedules: bool | None = None,
     note: str | None = None,
   ) -> InitializeLedgerResponse:
-    """One-time ledger initialization — seed fiscal calendar + periods."""
+    """One-time setup of an entity's fiscal calendar: creates it, seeds its
+    months from ``earliest_data_period`` (default 24 months back) through
+    the current month, and marks those on or before ``closed_through`` as
+    closed. A second call is refused (409). ``entity_id`` omitted means the
+    group parent."""
     body = InitializeLedgerRequest(
       entity_id=entity_id if entity_id is not None else UNSET,
       closed_through=closed_through if closed_through is not None else UNSET,
@@ -3218,11 +3245,15 @@ class LedgerClient:
     """One-time chart of accounts from a shipped template — the fresh-company
     path to native books.
 
-    ``template`` is one of `list_chart_templates` (``saas`` / ``services`` /
-    ``product``). Refused (409) once the graph has any chart of accounts — a
-    QuickBooks-synced tenant never needs this. ``entity_type`` (corporation /
-    llc / partnership) picks the equity mapping; it defaults to the graph's
-    primary entity, then corporation.
+    ``template`` is one of `list_chart_templates`: ``saas``, ``services``,
+    ``product``, or ``consolidation`` (a group's consolidation entity: the
+    eliminations and noncontrolling-interest rows, never an operating
+    company's chart). Each entity keeps its own chart; ``entity_id`` names
+    the one to give a chart to, omitted the group parent. Refused (409)
+    when that entity already has one — a QuickBooks-synced tenant never
+    needs this. ``entity_type`` (corporation / llc / partnership) picks the
+    equity mapping; it defaults to the graph's primary entity, then
+    corporation.
     """
     body = InitializeChartOfAccountsRequest(
       template=InitializeChartOfAccountsRequestTemplate(template),
@@ -3300,8 +3331,11 @@ class LedgerClient:
     or on the entity ``entity_id`` names. Each entity closes on its own.
 
     Each ``allow_*`` flag closes despite one blocker and is recorded in the
-    close audit note; prefer clearing the blocker.
+    close audit note; prefer clearing the blocker. ``period`` must be the
+    month after ``closed_through``: periods close in order.
 
+    - ``allow_stale_sync``: the source system's data for the period is not
+      known to be current (sync the connection first).
     - ``allow_unreconciled_accounts``: a reconciliation the close waits on
       is not reconciled for the period (`refresh_reconciliations`).
     - ``allow_stranded_obligations``: matured obligations that were never
@@ -3346,7 +3380,10 @@ class LedgerClient:
     *,
     entity_id: str | None = None,
   ) -> FiscalCalendarResponse:
-    """Reopen a closed fiscal period. Requires a reason for the audit log."""
+    """Reopen a closed fiscal period. Requires a reason for the audit log.
+    Only the latest closed period can be reopened, which moves
+    ``closed_through`` back one month; reach an earlier one by reopening
+    the later ones first."""
     body = ReopenPeriodOperation(
       period=period,
       reason=reason,
@@ -3775,8 +3812,8 @@ class LedgerClient:
     A download is a read, so the presigned URL is resolved through the
     GraphQL ``reportDownloadUrl`` field (the REST download route was
     retired). Every flavor resolves to a short-lived presigned S3 URL —
-    the holon is stamped at publish time; the Tavi model and XBRL are
-    materialized + cached on first request. The client follows the URL
+    the holon is stamped at publish time; the Tavi model, the XBRL and the
+    holon with lineage are materialized + cached on first request. The client follows the URL
     and pulls the bytes.
 
     Args:
@@ -3860,8 +3897,9 @@ class LedgerClient:
   def file_report(self, graph_id: str, report_id: str) -> ReportResponse:
     """Transition a Report's filing_status to 'filed' — locks the package.
 
-    Allowed from 'draft' or 'under_review'. Stamps filed_at + filed_by from
-    the auth context + server clock.
+    Allowed from 'draft' or 'under_review', and only once the books are
+    closed through every period the Report states. Stamps filed_at +
+    filed_by from the auth context + server clock.
     """
     body = FileReportRequest(report_id=report_id)
     response = op_file_report(graph_id=graph_id, body=body, client=self._get_client())

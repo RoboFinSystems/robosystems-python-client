@@ -18,20 +18,17 @@ T = TypeVar("T", bound="ViewProjections")
 
 @_attrs_define
 class ViewProjections:
-  """The six `type-of` View projections of an Information Block (Rendering,
-  FactTable, ModelStructure, VerificationResults, ReportElements,
-  BusinessRules), surfaced at the envelope boundary.
+  """The server-computed View projections of an Information Block,
+  surfaced at the envelope boundary.
 
-  Each projection is computed server-side at envelope-build time when
-  its source data is available. The frontend's `BlockView` dispatcher
-  routes to the projection component matching the user's selected view
-  mode; missing projections render as empty states without breaking the
-  dispatcher.
-
-  Today: `rendering` is computed for the statement family, and
-  `chart` (panel/series config over the rendering's rows and periods)
-  for metric blocks. Projections without backend support yet are empty;
-  `fact_table` is derivable from `InformationBlockEnvelope.facts`.
+  Two are computed at envelope-build time when their source data is
+  available: `rendering` (the rendered rows and periods) for the
+  statement family, disclosures, metrics, forecasts and reconciliations,
+  and `chart` (panel/series config over the rendering's rows and
+  periods) for metric blocks. The other views a client shows are
+  derived from the envelope itself — a fact table from
+  `InformationBlockEnvelope.facts`, rule outcomes from its rules and
+  verification results.
 
       Attributes:
           rendering (None | RenderingLite | Unset):

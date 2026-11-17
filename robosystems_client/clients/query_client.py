@@ -552,13 +552,17 @@ class QueryClient:
     chunk_size: int = 1000,
     on_progress: Optional[Callable[[int, int], None]] = None,
   ) -> Generator[Any, None, None]:
-    """Stream query results for large datasets with progress tracking
+    """Iterate a query's rows, with progress tracking.
+
+    Not incremental: the whole result is collected first, from the NDJSON
+    response or a queued query's SSE stream, and then yielded row by row,
+    so memory use is the size of the full result.
 
     Args:
         graph_id: Graph ID to query
         cypher: Cypher query string
         parameters: Query parameters
-        chunk_size: Number of records per chunk
+        chunk_size: Rows per chunk the server sends, and how often on_progress fires
         on_progress: Callback for progress updates (current, total)
 
     Yields:

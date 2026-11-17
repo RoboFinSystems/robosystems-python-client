@@ -122,8 +122,8 @@ def sync_detailed(
   should fall, legs that do not balance) is refused here with the period that breaks. `warnings` names
   any active schedule already posting the same accounts in the same months. With
   `replaces_structure_id`, `replaces` says what the schedule being edited or recreated has posted, by
-  month, and the path the change takes: `rebuild` (rebuild-schedule with the new definition) while
-  nothing has posted, `terminate_and_succeed` after.
+  month, and the path the change takes: `rebuild` (the schedule regenerated in place from the new
+  definition) while nothing has posted, `terminate_and_succeed` after.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -172,8 +172,8 @@ def sync(
   should fall, legs that do not balance) is refused here with the period that breaks. `warnings` names
   any active schedule already posting the same accounts in the same months. With
   `replaces_structure_id`, `replaces` says what the schedule being edited or recreated has posted, by
-  month, and the path the change takes: `rebuild` (rebuild-schedule with the new definition) while
-  nothing has posted, `terminate_and_succeed` after.
+  month, and the path the change takes: `rebuild` (the schedule regenerated in place from the new
+  definition) while nothing has posted, `terminate_and_succeed` after.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -217,8 +217,8 @@ async def asyncio_detailed(
   should fall, legs that do not balance) is refused here with the period that breaks. `warnings` names
   any active schedule already posting the same accounts in the same months. With
   `replaces_structure_id`, `replaces` says what the schedule being edited or recreated has posted, by
-  month, and the path the change takes: `rebuild` (rebuild-schedule with the new definition) while
-  nothing has posted, `terminate_and_succeed` after.
+  month, and the path the change takes: `rebuild` (the schedule regenerated in place from the new
+  definition) while nothing has posted, `terminate_and_succeed` after.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -265,8 +265,8 @@ async def asyncio(
   should fall, legs that do not balance) is refused here with the period that breaks. `warnings` names
   any active schedule already posting the same accounts in the same months. With
   `replaces_structure_id`, `replaces` says what the schedule being edited or recreated has posted, by
-  month, and the path the change takes: `rebuild` (rebuild-schedule with the new definition) while
-  nothing has posted, `terminate_and_succeed` after.
+  month, and the path the change takes: `rebuild` (the schedule regenerated in place from the new
+  definition) while nothing has posted, `terminate_and_succeed` after.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

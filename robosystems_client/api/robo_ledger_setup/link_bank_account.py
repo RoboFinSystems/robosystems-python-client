@@ -121,8 +121,8 @@ def sync_detailed(
   where they were posted. An account another connection already feeds is refused, as is an entity
   whose books QuickBooks keeps (the group parent, while QuickBooks is connected). An account the feed
   created and then left stays on its chart as an ordinary account. A sync already in flight when the
-  link moves can still land a line or two on the old account; running this again moves them. Read the
-  group's accounts with the `bankAccounts` GraphQL field.
+  link moves can still land a line or two on the old account; running this again moves them. The
+  group's accounts are `list-bank-accounts` over MCP and the `bankAccounts` GraphQL field.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -176,8 +176,8 @@ def sync(
   where they were posted. An account another connection already feeds is refused, as is an entity
   whose books QuickBooks keeps (the group parent, while QuickBooks is connected). An account the feed
   created and then left stays on its chart as an ordinary account. A sync already in flight when the
-  link moves can still land a line or two on the old account; running this again moves them. Read the
-  group's accounts with the `bankAccounts` GraphQL field.
+  link moves can still land a line or two on the old account; running this again moves them. The
+  group's accounts are `list-bank-accounts` over MCP and the `bankAccounts` GraphQL field.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -226,8 +226,8 @@ async def asyncio_detailed(
   where they were posted. An account another connection already feeds is refused, as is an entity
   whose books QuickBooks keeps (the group parent, while QuickBooks is connected). An account the feed
   created and then left stays on its chart as an ordinary account. A sync already in flight when the
-  link moves can still land a line or two on the old account; running this again moves them. Read the
-  group's accounts with the `bankAccounts` GraphQL field.
+  link moves can still land a line or two on the old account; running this again moves them. The
+  group's accounts are `list-bank-accounts` over MCP and the `bankAccounts` GraphQL field.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -279,8 +279,8 @@ async def asyncio(
   where they were posted. An account another connection already feeds is refused, as is an entity
   whose books QuickBooks keeps (the group parent, while QuickBooks is connected). An account the feed
   created and then left stays on its chart as an ordinary account. A sync already in flight when the
-  link moves can still land a line or two on the old account; running this again moves them. Read the
-  group's accounts with the `bankAccounts` GraphQL field.
+  link moves can still land a line or two on the old account; running this again moves them. The
+  group's accounts are `list-bank-accounts` over MCP and the `bankAccounts` GraphQL field.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -133,10 +133,13 @@ def sync_detailed(
 
    Available: `analyst` (natural-language questions over the graph — curated financial reads,
   documents, memory, and read-only Cypher; RAG retrieval is one of its capabilities, not a separate
-  operator; `cypher` is accepted as its former name) and `mapping` (Chart of Accounts → rs-gaap
-  mapping, roboledger graphs only). `GET /v1/graphs/{graph_id}/operator` lists what is registered. The
-  run executes on the background worker: the default answer is 202 with the operation's `_links`
-  (stream, status, cancel); `?mode=sync` waits up to 50s and answers 200 with the result.
+  operator; `cypher` is accepted as its former name), `mapping` (Chart of Accounts → rs-gaap mapping,
+  roboledger graphs only) and `author` (makes the change a request asks for, such as metric and
+  forecast blocks, counterparties, memories, draft reports and inbox classifications, through writes
+  that are reversible or wait on a person's step; needs write access to the graph). `GET
+  /v1/graphs/{graph_id}/operator` lists what is registered. The run executes on the background worker:
+  the default answer is 202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits
+  up to 50s and answers 200 with the result.
 
   Args:
       graph_id (str):
@@ -181,10 +184,13 @@ def sync(
 
    Available: `analyst` (natural-language questions over the graph — curated financial reads,
   documents, memory, and read-only Cypher; RAG retrieval is one of its capabilities, not a separate
-  operator; `cypher` is accepted as its former name) and `mapping` (Chart of Accounts → rs-gaap
-  mapping, roboledger graphs only). `GET /v1/graphs/{graph_id}/operator` lists what is registered. The
-  run executes on the background worker: the default answer is 202 with the operation's `_links`
-  (stream, status, cancel); `?mode=sync` waits up to 50s and answers 200 with the result.
+  operator; `cypher` is accepted as its former name), `mapping` (Chart of Accounts → rs-gaap mapping,
+  roboledger graphs only) and `author` (makes the change a request asks for, such as metric and
+  forecast blocks, counterparties, memories, draft reports and inbox classifications, through writes
+  that are reversible or wait on a person's step; needs write access to the graph). `GET
+  /v1/graphs/{graph_id}/operator` lists what is registered. The run executes on the background worker:
+  the default answer is 202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits
+  up to 50s and answers 200 with the result.
 
   Args:
       graph_id (str):
@@ -224,10 +230,13 @@ async def asyncio_detailed(
 
    Available: `analyst` (natural-language questions over the graph — curated financial reads,
   documents, memory, and read-only Cypher; RAG retrieval is one of its capabilities, not a separate
-  operator; `cypher` is accepted as its former name) and `mapping` (Chart of Accounts → rs-gaap
-  mapping, roboledger graphs only). `GET /v1/graphs/{graph_id}/operator` lists what is registered. The
-  run executes on the background worker: the default answer is 202 with the operation's `_links`
-  (stream, status, cancel); `?mode=sync` waits up to 50s and answers 200 with the result.
+  operator; `cypher` is accepted as its former name), `mapping` (Chart of Accounts → rs-gaap mapping,
+  roboledger graphs only) and `author` (makes the change a request asks for, such as metric and
+  forecast blocks, counterparties, memories, draft reports and inbox classifications, through writes
+  that are reversible or wait on a person's step; needs write access to the graph). `GET
+  /v1/graphs/{graph_id}/operator` lists what is registered. The run executes on the background worker:
+  the default answer is 202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits
+  up to 50s and answers 200 with the result.
 
   Args:
       graph_id (str):
@@ -270,10 +279,13 @@ async def asyncio(
 
    Available: `analyst` (natural-language questions over the graph — curated financial reads,
   documents, memory, and read-only Cypher; RAG retrieval is one of its capabilities, not a separate
-  operator; `cypher` is accepted as its former name) and `mapping` (Chart of Accounts → rs-gaap
-  mapping, roboledger graphs only). `GET /v1/graphs/{graph_id}/operator` lists what is registered. The
-  run executes on the background worker: the default answer is 202 with the operation's `_links`
-  (stream, status, cancel); `?mode=sync` waits up to 50s and answers 200 with the result.
+  operator; `cypher` is accepted as its former name), `mapping` (Chart of Accounts → rs-gaap mapping,
+  roboledger graphs only) and `author` (makes the change a request asks for, such as metric and
+  forecast blocks, counterparties, memories, draft reports and inbox classifications, through writes
+  that are reversible or wait on a person's step; needs write access to the graph). `GET
+  /v1/graphs/{graph_id}/operator` lists what is registered. The run executes on the background worker:
+  the default answer is 202 with the operation's `_links` (stream, status, cancel); `?mode=sync` waits
+  up to 50s and answers 200 with the result.
 
   Args:
       graph_id (str):

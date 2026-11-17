@@ -18,16 +18,18 @@ T = TypeVar("T", bound="UpdateLegacyArm")
 
 @_attrs_define
 class UpdateLegacyArm:
-  """Update-information-block body for block types that don't yet have
-  a typed update path at the API boundary.
+  """Update-information-block body for block types updated through
+  another operation.
 
-  Statement-family blocks are library-seeded and immutable. Metric
-  block updates are not yet implemented. Calling this endpoint with
-  one of these block types returns HTTP 501.
+  Statement-family blocks are library-seeded and immutable. Disclosure
+  and metric structures change through the taxonomy-block operations;
+  a reconciliation's policy through `set-reconciliation-policy`.
+  Calling this endpoint with one of these block types returns HTTP 501.
 
       Attributes:
-          block_type (UpdateLegacyArmBlockType): Statement-family or metric block type. Updates return 501 — statement
-              Structures are library-seeded; metric updates are pending.
+          block_type (UpdateLegacyArmBlockType): Statement-family, disclosure, metric or reconciliation block type.
+              Updates return 501 — statement Structures are library-seeded; the others change through their own operations,
+              named in the 501's hint.
           payload (UpdateLegacyArmPayload | Unset): Untyped payload — typed-arm validation is skipped because the dispatch
               handler raises 501 before the payload is consumed.
   """

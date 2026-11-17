@@ -29,22 +29,22 @@ class JournalEntryLineItemInput:
           debit_amount (int | Unset): Debit amount in cents. Must be 0 if `credit_amount` > 0. Default: 0.
           credit_amount (int | Unset): Credit amount in cents. Must be 0 if `debit_amount` > 0. Default: 0.
           description (None | str | Unset): Per-line memo (overrides the entry-level memo on this line).
-          flow_qname (None | str | Unset): The cash flow row this line's cash belongs to, an rs-gaap flow qname
-              (`flowCandidates(entityId)` lists the rows this company's statement offers). Only for a loan drawn or repaid,
-              capital put in or taken out, an asset bought or sold; omitted, the account's default flow applies. A flow set on
-              one side of the entry tags the untagged lines on the other: the cash flow statement reads the cash line and the
-              roll-forwards read the account line. On the group's consolidation entity, which moves no cash, every tagged line
-              counts on its own, cash-effect signed (a credit is an inflow), so an elimination offsets the flow a member's
-              line produced, and a tag does not spread to the other side. Refused when it is not a row of the entity's cash
-              flow statement.
+          flow_qname (None | str | Unset): The cash flow row this line's cash belongs to, an rs-gaap flow qname (`list-
+              flow-candidates` over MCP and `flowCandidates` over GraphQL list the rows this company's statement offers). Only
+              for a loan drawn or repaid, capital put in or taken out, an asset bought or sold; omitted, the account's default
+              flow applies. A flow set on one side of the entry tags the untagged lines on the other: the cash flow statement
+              reads the cash line and the roll-forwards read the account line. On the group's consolidation entity, which
+              moves no cash, every tagged line counts on its own, cash-effect signed (a credit is an inflow), so an
+              elimination offsets the flow a member's line produced, and a tag does not spread to the other side. Refused when
+              it is not a row of the entity's cash flow statement.
           dimension_ids (list[str] | None | Unset): The management dimension members this line carries (department, class,
               location, project), by id from `dimensions`; at most one per axis. An untagged line is read as the axis's
               Unallocated.
           metadata (JournalEntryLineItemInputMetadataType0 | None | Unset): Optional per-line metadata stamped on
               `LineItem.metadata_`. Used to carry source-system fields the standard columns don't cover — e.g. an external
-              flow-tag code that drives rollforward attribution (`transaction_description_code`), an external memo, or a cost-
-              center hint. Pass-through is non-validating; the renderer / filter engine reads keys it knows about and ignores
-              the rest. `None` is normalized to `{}` at persist time.
+              memo or a cost-center hint. A flow tag goes in `flow_qname`, not here. Pass-through is non-validating; the
+              renderer / filter engine reads keys it knows about and ignores the rest. `None` is normalized to `{}` at persist
+              time.
   """
 
   element_id: str

@@ -9,7 +9,7 @@ Part of RoboSystems, the open-source knowledge graph for finance. The official P
 
 - **Type-safe API client** with full type hints and typed models
 - **Async client** for queries and operations
-- **Parquet file uploads** for table ingestion
+- **Parquet file uploads** for table ingestion into custom graphs
 - **Row iteration** over query results with `stream_query`, which collects the full result before yielding rows
 - **AI Operator** integration for natural language financial analysis
 - **Typed errors** for GraphQL reads and queued work

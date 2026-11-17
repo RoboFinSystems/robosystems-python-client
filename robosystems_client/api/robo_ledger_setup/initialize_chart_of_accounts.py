@@ -121,13 +121,13 @@ def sync_detailed(
   books. Use when the graph has NO chart (a QuickBooks-synced tenant never needs this: its chart
   arrives with the sync and stays after a sever) and before connecting a bank feed, which needs a
   chart to resolve against. Templates: `saas` (subscription software), `services` (professional
-  services), `product` (inventory and COGS) — the `chartTemplates` GraphQL field lists them with names
-  and account counts. Creates the chart, its `coa_mapping` structure and the template's CoA → rs-gaap
-  mapping associations in one transaction, with the equity rows mapped by the entity's legal form
-  (`entity_type`, defaulting to the entity's). Each entity of the group keeps its own chart:
-  `entity_id` names a subsidiary, omitted means the group parent. One-time per entity: 409 once that
-  entity has a chart — a chart is never replaced. Customize afterwards with update-taxonomy-block;
-  accounts that carry activity are never deleted.
+  services), `product` (inventory and COGS), `consolidation` (a group's consolidation entity — the
+  adjustments column, never an operating company's chart). Creates the chart, its `coa_mapping`
+  structure and the template's CoA → rs-gaap mapping associations in one transaction, with the equity
+  rows mapped by the entity's legal form (`entity_type`, defaulting to the entity's). Each entity of
+  the group keeps its own chart: `entity_id` names a subsidiary, omitted means the group parent. One-
+  time per entity: 409 once that entity has a chart — a chart is never replaced. Customize afterwards
+  with update-taxonomy-block; accounts that carry activity are never deleted.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -179,13 +179,13 @@ def sync(
   books. Use when the graph has NO chart (a QuickBooks-synced tenant never needs this: its chart
   arrives with the sync and stays after a sever) and before connecting a bank feed, which needs a
   chart to resolve against. Templates: `saas` (subscription software), `services` (professional
-  services), `product` (inventory and COGS) — the `chartTemplates` GraphQL field lists them with names
-  and account counts. Creates the chart, its `coa_mapping` structure and the template's CoA → rs-gaap
-  mapping associations in one transaction, with the equity rows mapped by the entity's legal form
-  (`entity_type`, defaulting to the entity's). Each entity of the group keeps its own chart:
-  `entity_id` names a subsidiary, omitted means the group parent. One-time per entity: 409 once that
-  entity has a chart — a chart is never replaced. Customize afterwards with update-taxonomy-block;
-  accounts that carry activity are never deleted.
+  services), `product` (inventory and COGS), `consolidation` (a group's consolidation entity — the
+  adjustments column, never an operating company's chart). Creates the chart, its `coa_mapping`
+  structure and the template's CoA → rs-gaap mapping associations in one transaction, with the equity
+  rows mapped by the entity's legal form (`entity_type`, defaulting to the entity's). Each entity of
+  the group keeps its own chart: `entity_id` names a subsidiary, omitted means the group parent. One-
+  time per entity: 409 once that entity has a chart — a chart is never replaced. Customize afterwards
+  with update-taxonomy-block; accounts that carry activity are never deleted.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -232,13 +232,13 @@ async def asyncio_detailed(
   books. Use when the graph has NO chart (a QuickBooks-synced tenant never needs this: its chart
   arrives with the sync and stays after a sever) and before connecting a bank feed, which needs a
   chart to resolve against. Templates: `saas` (subscription software), `services` (professional
-  services), `product` (inventory and COGS) — the `chartTemplates` GraphQL field lists them with names
-  and account counts. Creates the chart, its `coa_mapping` structure and the template's CoA → rs-gaap
-  mapping associations in one transaction, with the equity rows mapped by the entity's legal form
-  (`entity_type`, defaulting to the entity's). Each entity of the group keeps its own chart:
-  `entity_id` names a subsidiary, omitted means the group parent. One-time per entity: 409 once that
-  entity has a chart — a chart is never replaced. Customize afterwards with update-taxonomy-block;
-  accounts that carry activity are never deleted.
+  services), `product` (inventory and COGS), `consolidation` (a group's consolidation entity — the
+  adjustments column, never an operating company's chart). Creates the chart, its `coa_mapping`
+  structure and the template's CoA → rs-gaap mapping associations in one transaction, with the equity
+  rows mapped by the entity's legal form (`entity_type`, defaulting to the entity's). Each entity of
+  the group keeps its own chart: `entity_id` names a subsidiary, omitted means the group parent. One-
+  time per entity: 409 once that entity has a chart — a chart is never replaced. Customize afterwards
+  with update-taxonomy-block; accounts that carry activity are never deleted.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -288,13 +288,13 @@ async def asyncio(
   books. Use when the graph has NO chart (a QuickBooks-synced tenant never needs this: its chart
   arrives with the sync and stays after a sever) and before connecting a bank feed, which needs a
   chart to resolve against. Templates: `saas` (subscription software), `services` (professional
-  services), `product` (inventory and COGS) — the `chartTemplates` GraphQL field lists them with names
-  and account counts. Creates the chart, its `coa_mapping` structure and the template's CoA → rs-gaap
-  mapping associations in one transaction, with the equity rows mapped by the entity's legal form
-  (`entity_type`, defaulting to the entity's). Each entity of the group keeps its own chart:
-  `entity_id` names a subsidiary, omitted means the group parent. One-time per entity: 409 once that
-  entity has a chart — a chart is never replaced. Customize afterwards with update-taxonomy-block;
-  accounts that carry activity are never deleted.
+  services), `product` (inventory and COGS), `consolidation` (a group's consolidation entity — the
+  adjustments column, never an operating company's chart). Creates the chart, its `coa_mapping`
+  structure and the template's CoA → rs-gaap mapping associations in one transaction, with the equity
+  rows mapped by the entity's legal form (`entity_type`, defaulting to the entity's). Each entity of
+  the group keeps its own chart: `entity_id` names a subsidiary, omitted means the group parent. One-
+  time per entity: 409 once that entity has a chart — a chart is never replaced. Customize afterwards
+  with update-taxonomy-block; accounts that carry activity are never deleted.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

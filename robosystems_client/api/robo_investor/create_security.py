@@ -113,9 +113,10 @@ def sync_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeSecurityResponse]:
   """Create Security
 
-   Register a security (common stock, preferred stock, warrant, convertible note, etc.) owned by this
-  graph's entity. Optionally cross-links to an issuing entity in another graph via `source_graph_id`
-  for mutual-handshake attribution.
+   Register a security (common stock, preferred stock, warrant, convertible note, etc.) in this graph's
+  registry. Its `entity_id` is the issuer, not the holder; a portfolio's `entity_id` is the owner.
+  Optionally cross-links to the issuer's own graph via `source_graph_id` for mutual-handshake
+  attribution.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -160,9 +161,10 @@ def sync(
 ) -> ErrorResponse | OperationEnvelopeSecurityResponse | None:
   """Create Security
 
-   Register a security (common stock, preferred stock, warrant, convertible note, etc.) owned by this
-  graph's entity. Optionally cross-links to an issuing entity in another graph via `source_graph_id`
-  for mutual-handshake attribution.
+   Register a security (common stock, preferred stock, warrant, convertible note, etc.) in this graph's
+  registry. Its `entity_id` is the issuer, not the holder; a portfolio's `entity_id` is the owner.
+  Optionally cross-links to the issuer's own graph via `source_graph_id` for mutual-handshake
+  attribution.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -202,9 +204,10 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | OperationEnvelopeSecurityResponse]:
   """Create Security
 
-   Register a security (common stock, preferred stock, warrant, convertible note, etc.) owned by this
-  graph's entity. Optionally cross-links to an issuing entity in another graph via `source_graph_id`
-  for mutual-handshake attribution.
+   Register a security (common stock, preferred stock, warrant, convertible note, etc.) in this graph's
+  registry. Its `entity_id` is the issuer, not the holder; a portfolio's `entity_id` is the owner.
+  Optionally cross-links to the issuer's own graph via `source_graph_id` for mutual-handshake
+  attribution.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -247,9 +250,10 @@ async def asyncio(
 ) -> ErrorResponse | OperationEnvelopeSecurityResponse | None:
   """Create Security
 
-   Register a security (common stock, preferred stock, warrant, convertible note, etc.) owned by this
-  graph's entity. Optionally cross-links to an issuing entity in another graph via `source_graph_id`
-  for mutual-handshake attribution.
+   Register a security (common stock, preferred stock, warrant, convertible note, etc.) in this graph's
+  registry. Its `entity_id` is the issuer, not the holder; a portfolio's `entity_id` is the owner.
+  Optionally cross-links to the issuer's own graph via `source_graph_id` for mutual-handshake
+  attribution.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

@@ -599,9 +599,9 @@ type Query {
   
   A flow is a second classification beside the account: it overrides the
   account's default flow on the cash flow and equity statements (a bank
-  line's `classified_flow_qname`, a journal-entry line's
-  `transaction_description_code`). These are the leaf investing and
-  financing rows of the entity's cash flow statement under its Reporting
+  line's `classified_flow_qname`, a journal-entry line's `flow_qname`).
+  These are the leaf investing and financing rows of the entity's cash
+  flow statement under its Reporting
   Style - the set the write path accepts - so a picker built from them
   never offers a row the statement cannot present. By section, investing
   then financing, and by name within each.
@@ -1487,7 +1487,7 @@ type Position {
   dispositionDate: Date
 
   """
-  Lifecycle state. One of: `active` (currently held), `disposed` (soft-deleted via `update-portfolio-block` dispose), `archived` (historical record only).
+  Lifecycle state. One of: `active` (currently held), `disposed` (soft-deleted via `update-portfolio-block` dispose).
   """
   status: String!
 
@@ -1501,7 +1501,7 @@ type Position {
   updatedAt: DateTime!
 }
 
-"""Aggregated holdings across all of the caller's portfolios."""
+"""One portfolio's active positions, grouped by issuing entity."""
 type HoldingsList {
   """One row per issuing entity."""
   holdings: [Holding!]!
@@ -1513,10 +1513,7 @@ type HoldingsList {
   totalPositions: Int!
 }
 
-"""
-All securities held in a single entity, rolled up across the
-caller's portfolios.
-"""
+"""All securities one portfolio holds in a single issuing entity."""
 type Holding {
   """Issuing entity ID."""
   entityId: String!
@@ -1524,7 +1521,9 @@ type Holding {
   """Display name of the entity."""
   entityName: String!
 
-  """Pre-association tenant graph, when set on the securities."""
+  """
+  The issuer's tenant graph as recorded on the issuing entity, when set. Null for the unlinked group.
+  """
   sourceGraphId: String
 
   """One row per security held in this entity."""
@@ -1534,7 +1533,7 @@ type Holding {
   totalCostBasisDollars: Float!
 
   """
-  Sum of current value across all securities, in dollars. `null` if any security lacks a mark.
+  Sum of current value across the marked securities, in dollars; an unmarked one adds nothing. `null` only when none has a mark.
   """
   totalCurrentValueDollars: Float
 
@@ -1542,7 +1541,7 @@ type Holding {
   positionCount: Int!
 }
 
-"""One security held by an entity, rolled up across portfolios."""
+"""One security held in the portfolio, issued by the holding's entity."""
 type HoldingSecuritySummary {
   """Security ID."""
   securityId: String!
@@ -1553,18 +1552,16 @@ type HoldingSecuritySummary {
   """Instrument family (e.g. `common_stock`, `warrant`)."""
   securityType: String!
 
-  """Total quantity held in `quantityType` units."""
+  """Quantity held in `quantityType` units."""
   quantity: Float!
 
   """Unit basis (`shares`, `units`, `principal`)."""
   quantityType: String!
 
-  """Aggregate cost basis in dollars, summed across all positions."""
+  """Cost basis in dollars."""
   costBasisDollars: Float!
 
-  """
-  Aggregate current value in dollars, or `null` if any underlying position lacks a mark.
-  """
+  """Current value in dollars, or `null` if the position has no mark."""
   currentValueDollars: Float
 }
 
@@ -1599,16 +1596,14 @@ type PortfolioBlock {
   """Embedded owning entity, when set. `null` for unattributed portfolios."""
   owner: EntityLite
 
-  """
-  All positions in this portfolio, including disposed ones (filter by `status` for active-only display).
-  """
+  """The portfolio's active positions; disposed ones are not included."""
   positions: [PositionBlock!]!
 
-  """Sum of `cost_basis_dollars` across every position."""
+  """Sum of `cost_basis_dollars` across the active positions."""
   totalCostBasisDollars: Float!
 
   """
-  Sum of `current_value_dollars` across every position. `null` when any active position lacks a mark.
+  Sum of `current_value_dollars` across the marked active positions; an unmarked one adds nothing. `null` only when no active position has a mark.
   """
   totalCurrentValueDollars: Float
 
@@ -1676,7 +1671,7 @@ type PositionBlock {
   acquisitionDate: Date
 
   """
-  Lifecycle state (`active`, `disposed`, `archived`). See `PositionResponse.status` for the full vocabulary.
+  Lifecycle state (`active`, `disposed`). See `PositionResponse.status` for the full vocabulary.
   """
   status: String!
 
@@ -3144,7 +3139,7 @@ type FlowCandidate {
   elementId: String!
 
   """
-  The flow's qname, the value a bank line's `classified_flow_qname` and a journal-entry line's `transaction_description_code` take.
+  The flow's qname, the value a bank line's `classified_flow_qname` and a journal-entry line's `flow_qname` take.
   """
   qname: String!
 
@@ -3188,7 +3183,8 @@ One structure header — a renderable section within a taxonomy
 
 `blockType` drives presentation: 'balance_sheet',
 'income_statement', 'cash_flow_statement', 'equity_statement',
-'schedule', 'chart_of_accounts', 'coa_mapping', 'rollforward', etc.
+'schedule', 'forecast', 'metric', 'reconciliation', 'chart_of_accounts',
+'coa_mapping', etc.
 """
 type Structure {
   id: String!
@@ -4024,7 +4020,7 @@ type InformationBlock {
 """The block's intrinsic shape — concept + member arrangement patterns."""
 type InformationModel {
   """
-  roll_up | roll_forward | variance | adjustment | set | arithmetic | textblock. Null for block types where the concept arrangement is implicit in their mechanics.
+  A Concept Arrangement Pattern: set | roll_up | roll_forward | roll_forward_info | adjustment | variance | arithmetic | text_block, a text-block or detail level (level1_textblock … level4_detail, table_equivalent_textblock), or grid | compound_fact. Null for block types where the concept arrangement is implicit in their mechanics.
   """
   conceptArrangement: String
 
@@ -4350,20 +4346,17 @@ type InformationBlockVerificationCategorySummary {
 }
 
 """
-The six `type-of` View projections of an Information Block (Rendering,
-FactTable, ModelStructure, VerificationResults, ReportElements,
-BusinessRules), surfaced at the envelope boundary.
+The server-computed View projections of an Information Block,
+surfaced at the envelope boundary.
 
-Each projection is computed server-side at envelope-build time when
-its source data is available. The frontend's `BlockView` dispatcher
-routes to the projection component matching the user's selected view
-mode; missing projections render as empty states without breaking the
-dispatcher.
-
-Today: `rendering` is computed for the statement family, and
-`chart` (panel/series config over the rendering's rows and periods)
-for metric blocks. Projections without backend support yet are empty;
-`fact_table` is derivable from `InformationBlockEnvelope.facts`.
+Two are computed at envelope-build time when their source data is
+available: `rendering` (the rendered rows and periods) for the
+statement family, disclosures, metrics, forecasts and reconciliations,
+and `chart` (panel/series config over the rendering's rows and
+periods) for metric blocks. The other views a client shows are
+derived from the envelope itself — a fact table from
+`InformationBlockEnvelope.facts`, rule outcomes from its rules and
+verification results.
 """
 type InformationBlockViewProjections {
   rendering: InformationBlockRendering
@@ -4389,10 +4382,12 @@ type InformationBlockRendering {
 """
 One row of a server-side rendered statement.
 
-Mirrors :class:`FactRow` in
+Drawn from :class:`FactRow` in
 :mod:`robosystems.operations.roboledger.reports.fact_grid`, restated at the
-API boundary so envelope consumers don't depend on that module. `values`
-holds one entry per period column in :class:`RenderingLite.periods`.
+API boundary so envelope consumers don't depend on that module. It does not
+carry FactRow's `is_abstract`, `position` or `period_role` (the start/end
+role that tells a roll-forward's two balance rows apart).
+`values` holds one entry per period column in :class:`RenderingLite.periods`.
 """
 type InformationBlockRenderingRow {
   elementId: String!

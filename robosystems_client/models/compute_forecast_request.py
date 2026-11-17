@@ -15,14 +15,18 @@ T = TypeVar("T", bound="ComputeForecastRequest")
 class ComputeForecastRequest:
   """Request body for the `compute-forecast` operation.
 
-  Walks the scenario's driver cascade month-by-month forward from the
-  forecast block's `base_period`: lever-driven Derive rules in
-  dependency order, carry-forward for unmodeled IS lines, calc-DAG
-  subtotals — upserting one scenario IS FactSet (+ a working-capital BS
-  set) per forward month, all keyed by the forecast block's
-  `scenario_id`. Re-running replaces each month's values (the
-  compute-metrics drift semantics). Deterministic and non-AI — no
-  credits consumed.
+  Walks the scenario's driver cascade month-by-month forward from its
+  anchor — the newest closed month inside the horizon under
+  `base_anchor='seam'` (the default), the block's `base_period` under
+  `'fixed'`: lever-driven Derive rules in dependency order, carry-forward
+  for unmodeled IS lines, calc-DAG subtotals — upserting per forward
+  month a scenario IS FactSet, a BS set (the full roll when the anchor
+  month has an actual balance sheet, else the rule-driven working-capital
+  instants) and a derived CF set when an actual one exists, all keyed by
+  the forecast block's `scenario_id`. Re-running replaces each month's
+  values (the compute-metrics drift semantics). A month that fails
+  verification halts the walk (`halted_at`). Deterministic and non-AI —
+  no credits consumed.
 
       Attributes:
           structure_id (str): Forecast block structure (block_type='forecast') to compute.

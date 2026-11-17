@@ -20,11 +20,11 @@ class ExecuteEventBlockRequest:
   each draft entry posts as its own JournalEntry, with the entry id as
   the RequestId, and its QuickBooks id is recorded per entry on
   `event.metadata.qb_entry_ids`. The event goes `fulfilled` once no
-  draft remains, or `pending` when QuickBooks rejects an entry (what
-  landed is kept).
+  draft remains. When QuickBooks rejects an entry, what landed is kept,
+  the status is unchanged, and the error is stamped on
+  `event.metadata.last_outbound_error` and returned as `qb_error`.
 
-  `'native'`-policy events fast-path through with no QB write —
-  RoboSystems IS the source of truth, no outbound publish needed.
+  Events on `'native'` or `'shadow'` books pass through with no QB write.
 
       Attributes:
           event_id (str): Event ID (`evt_*` ULID) to publish. The event's `metadata.connection_id` determines which QB

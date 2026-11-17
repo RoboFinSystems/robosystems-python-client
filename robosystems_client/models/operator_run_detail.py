@@ -47,8 +47,9 @@ class OperatorRunDetail:
           history (list[OperatorRunDetailHistoryItem] | Unset): The prior turns the run was given, as role/content pairs
           transcript (list[OperatorRunDetailTranscriptItem] | Unset): One entry per model call, in order: the input added
               since the previous call (the question, then each turn's tool results), the model's output blocks (text and tool
-              calls), stop reason, token usage and credits. The first entry also carries the system prompt's SHA-256 and size
-              and the tool names offered; later entries repeat them only when they change
+              calls), stop reason, token usage, credits and sampling settings. The first entry also carries the SHA-256 and
+              size of the system prompt and the SHA-256 and names of the tools offered; later entries repeat them only when
+              they change
           result (OperatorRunDetailResult | Unset): The response envelope's metadata without its result rows: tokens,
               credits, the Cypher run, the writes made, confidence and loop flags
   """
