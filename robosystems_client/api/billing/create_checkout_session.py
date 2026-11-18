@@ -99,7 +99,8 @@ def sync_detailed(
 
    Initiates a Stripe checkout session for payment collection. Creates a pending subscription; the
   webhook activates it and provisions the resource after payment completes. Returns
-  billing_disabled=true with no URL when billing is off. Requires org owner role.
+  billing_disabled=true with no URL when billing is off. Requires org owner role. A repository's free
+  trial asks for no card but needs a verified email: an unverified account starting one gets 403.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -132,7 +133,8 @@ def sync(
 
    Initiates a Stripe checkout session for payment collection. Creates a pending subscription; the
   webhook activates it and provisions the resource after payment completes. Returns
-  billing_disabled=true with no URL when billing is off. Requires org owner role.
+  billing_disabled=true with no URL when billing is off. Requires org owner role. A repository's free
+  trial asks for no card but needs a verified email: an unverified account starting one gets 403.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -160,7 +162,8 @@ async def asyncio_detailed(
 
    Initiates a Stripe checkout session for payment collection. Creates a pending subscription; the
   webhook activates it and provisions the resource after payment completes. Returns
-  billing_disabled=true with no URL when billing is off. Requires org owner role.
+  billing_disabled=true with no URL when billing is off. Requires org owner role. A repository's free
+  trial asks for no card but needs a verified email: an unverified account starting one gets 403.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.
@@ -191,7 +194,8 @@ async def asyncio(
 
    Initiates a Stripe checkout session for payment collection. Creates a pending subscription; the
   webhook activates it and provisions the resource after payment completes. Returns
-  billing_disabled=true with no URL when billing is off. Requires org owner role.
+  billing_disabled=true with no URL when billing is off. Requires org owner role. A repository's free
+  trial asks for no card but needs a verified email: an unverified account starting one gets 403.
 
   Args:
       body (CreateCheckoutRequest): Request to create a checkout session for payment collection.

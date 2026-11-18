@@ -95,7 +95,8 @@ def sync_detailed(
 
    End your free trial of a shared repository now and start the paid plan. The first period is charged
   to the payment method on file; raw queries, the AI analyst and the plan's credits open once the
-  payment clears, usually within a minute. Returns 400 when the subscription is not on a trial.
+  payment clears, usually within a minute. Returns 400 when the subscription is not on a trial, or
+  when no payment method is on file yet.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec')
@@ -128,7 +129,8 @@ def sync(
 
    End your free trial of a shared repository now and start the paid plan. The first period is charged
   to the payment method on file; raw queries, the AI analyst and the plan's credits open once the
-  payment clears, usually within a minute. Returns 400 when the subscription is not on a trial.
+  payment clears, usually within a minute. Returns 400 when the subscription is not on a trial, or
+  when no payment method is on file yet.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec')
@@ -156,7 +158,8 @@ async def asyncio_detailed(
 
    End your free trial of a shared repository now and start the paid plan. The first period is charged
   to the payment method on file; raw queries, the AI analyst and the plan's credits open once the
-  payment clears, usually within a minute. Returns 400 when the subscription is not on a trial.
+  payment clears, usually within a minute. Returns 400 when the subscription is not on a trial, or
+  when no payment method is on file yet.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec')
@@ -187,7 +190,8 @@ async def asyncio(
 
    End your free trial of a shared repository now and start the paid plan. The first period is charged
   to the payment method on file; raw queries, the AI analyst and the plan's credits open once the
-  payment clears, usually within a minute. Returns 400 when the subscription is not on a trial.
+  payment clears, usually within a minute. Returns 400 when the subscription is not on a trial, or
+  when no payment method is on file yet.
 
   Args:
       graph_id (str): Repository name (e.g., 'sec')
