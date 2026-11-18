@@ -31,8 +31,9 @@ class GraphSubscriptionResponse:
       current_period_end (None | str | Unset): Current billing period end
       started_at (None | str | Unset): Subscription start date
       canceled_at (None | str | Unset): Cancellation date
-      trial_ends_at (None | str | Unset): When the free trial ends and the first charge is made. Null for a
-          subscription that opened without a trial; kept after the trial is over.
+      trial_ends_at (None | str | Unset): When the free trial ends: the first charge is made then to a card on file,
+          and with none the subscription ends. Null for a subscription that opened without a trial; kept after the trial
+          is over.
       ends_at (None | str | Unset): Subscription end date (when access will be revoked, especially relevant for
           cancelled subscriptions)
       operation_id (None | str | Unset): Operation ID for tracking async tier changes via SSE
