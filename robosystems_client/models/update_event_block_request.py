@@ -67,6 +67,9 @@ class UpdateEventBlockRequest:
               MCP and `dischargeCandidates` over GraphQL.
           document_id (None | str | Unset): Set or replace the stored document the event rests on; an empty string
               detaches it. Must be a document on this graph. Unset = unchanged.
+          source_retracted (bool | Unset): With `transition_to: voided`, for an event from the external ledger that keeps
+              the entity's books: the source no longer holds this record, so its posted entries are taken out of the books and
+              the event is voided, in an open period. Refused for any other event. Default: False.
   """
 
   event_id: str
@@ -81,6 +84,7 @@ class UpdateEventBlockRequest:
   discharges_event_id: None | str | Unset = UNSET
   discharge_allocations: list[DischargeAllocation] | None | Unset = UNSET
   document_id: None | str | Unset = UNSET
+  source_retracted: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -166,6 +170,8 @@ class UpdateEventBlockRequest:
     else:
       document_id = self.document_id
 
+    source_retracted = self.source_retracted
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -195,6 +201,8 @@ class UpdateEventBlockRequest:
       field_dict["discharge_allocations"] = discharge_allocations
     if document_id is not UNSET:
       field_dict["document_id"] = document_id
+    if source_retracted is not UNSET:
+      field_dict["source_retracted"] = source_retracted
 
     return field_dict
 
@@ -364,6 +372,8 @@ class UpdateEventBlockRequest:
 
     document_id = _parse_document_id(d.pop("document_id", UNSET))
 
+    source_retracted = d.pop("source_retracted", UNSET)
+
     update_event_block_request = cls(
       event_id=event_id,
       transition_to=transition_to,
@@ -377,6 +387,7 @@ class UpdateEventBlockRequest:
       discharges_event_id=discharges_event_id,
       discharge_allocations=discharge_allocations,
       document_id=document_id,
+      source_retracted=source_retracted,
     )
 
     update_event_block_request.additional_properties = d

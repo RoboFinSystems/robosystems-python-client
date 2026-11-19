@@ -1025,6 +1025,9 @@ from .report_rows_input_labels import ReportRowsInputLabels
 from .report_rows_input_namespaces import ReportRowsInputNamespaces
 from .report_section_row import ReportSectionRow
 from .report_section_row_layout_type_0 import ReportSectionRowLayoutType0
+from .report_sync_request import ReportSyncRequest
+from .report_sync_request_counts import ReportSyncRequestCounts
+from .report_sync_request_status import ReportSyncRequestStatus
 from .repository_info import RepositoryInfo
 from .repository_subscriptions import RepositorySubscriptions
 from .resend_verification_email_response_resendverificationemail import (
@@ -1958,6 +1961,9 @@ __all__ = (
   "ReportRowsInputNamespaces",
   "ReportSectionRow",
   "ReportSectionRowLayoutType0",
+  "ReportSyncRequest",
+  "ReportSyncRequestCounts",
+  "ReportSyncRequestStatus",
   "RepositoryInfo",
   "RepositorySubscriptions",
   "ResendVerificationEmailResponseResendverificationemail",

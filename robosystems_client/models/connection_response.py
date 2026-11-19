@@ -27,18 +27,18 @@ class ConnectionResponse:
       created_at (datetime.datetime | str): Creation timestamp
       metadata (ConnectionResponseMetadata): Provider-specific metadata
       entity_id (None | str | Unset): The entity whose books the connection keeps: the group parent for QuickBooks,
-          the entity a bank feed was connected for (each of its accounts can move to another entity later), none for an
-          external source, whose events name their own.
+          the entity a bank feed was connected for (each of its accounts can move to another entity later), the entity an
+          external ledger source was registered for, and none for any other external source, whose events name their own.
       keeps_books (bool | Unset): Whether this connection is the ledger of record for `entity_id`: its books are kept
           in the connected system, and `write_policy` says whether entries are written back to it or only mirrored. False
-          for a bank feed or an external event source. Default: False.
+          for a bank feed or an external source that is not a ledger. Default: False.
       updated_at (datetime.datetime | None | str | Unset): Last update timestamp
       last_sync (datetime.datetime | None | str | Unset): Last sync timestamp
       write_policy (None | str | Unset): Outbound write policy: 'qb_authoritative' (QuickBooks is the book of record
-          and RoboSystems-originated entries publish to it at close), 'shadow' (QuickBooks is the book of record, nothing
-          is written to it and the close posts nothing locally), or 'native' (no external ledger; what severing leaves).
-          It governs the books of `entity_id`, and only on the connection that keeps them. Set via the write-policy
-          endpoint.
+          and RoboSystems-originated entries publish to it at close), 'shadow' (the connected ledger is the book of
+          record, nothing is written to it and the close posts nothing locally; the only policy an external ledger source
+          can hold), or 'native' (no external ledger; what severing leaves). It governs the books of `entity_id`, and only
+          on the connection that keeps them. Set via the write-policy endpoint.
       source_name (None | str | Unset): External-provider registered source slug — the value the integration stamps on
           the events it emits. Null for platform providers.
   """
