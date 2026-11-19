@@ -23,6 +23,8 @@ class GetInvestorPortfolioBlockPortfolioBlock(BaseModel):
   total_cost_basis_dollars: float = Field(alias="totalCostBasisDollars")
   total_current_value_dollars: Optional[float] = Field(alias="totalCurrentValueDollars")
   active_position_count: int = Field(alias="activePositionCount")
+  marked_position_count: int = Field(alias="markedPositionCount")
+  current_value_is_partial: bool = Field(alias="currentValueIsPartial")
   created_at: str = Field(alias="createdAt")
   updated_at: str = Field(alias="updatedAt")
 

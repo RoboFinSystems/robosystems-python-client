@@ -42,6 +42,11 @@ class PortfolioBlockEnvelope:
           owner (EntityLite | None | Unset): Embedded owning entity, when set. `null` for unattributed portfolios.
           total_current_value_dollars (float | None | Unset): Sum of `current_value_dollars` across the marked active
               positions; an unmarked one adds nothing. `null` only when no active position has a mark.
+          marked_position_count (int | Unset): How many active positions have a mark, and so how many
+              `total_current_value_dollars` covers. Default: 0.
+          current_value_is_partial (bool | Unset): True when some active positions have a mark and some do not:
+              `total_current_value_dollars` then leaves the unmarked ones out and is not comparable with
+              `total_cost_basis_dollars`, which covers them all. Default: False.
   """
 
   id: str
@@ -57,6 +62,8 @@ class PortfolioBlockEnvelope:
   inception_date: datetime.date | None | Unset = UNSET
   owner: EntityLite | None | Unset = UNSET
   total_current_value_dollars: float | None | Unset = UNSET
+  marked_position_count: int | Unset = 0
+  current_value_is_partial: bool | Unset = False
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
@@ -115,6 +122,10 @@ class PortfolioBlockEnvelope:
     else:
       total_current_value_dollars = self.total_current_value_dollars
 
+    marked_position_count = self.marked_position_count
+
+    current_value_is_partial = self.current_value_is_partial
+
     field_dict: dict[str, Any] = {}
     field_dict.update(self.additional_properties)
     field_dict.update(
@@ -139,6 +150,10 @@ class PortfolioBlockEnvelope:
       field_dict["owner"] = owner
     if total_current_value_dollars is not UNSET:
       field_dict["total_current_value_dollars"] = total_current_value_dollars
+    if marked_position_count is not UNSET:
+      field_dict["marked_position_count"] = marked_position_count
+    if current_value_is_partial is not UNSET:
+      field_dict["current_value_is_partial"] = current_value_is_partial
 
     return field_dict
 
@@ -232,6 +247,10 @@ class PortfolioBlockEnvelope:
       d.pop("total_current_value_dollars", UNSET)
     )
 
+    marked_position_count = d.pop("marked_position_count", UNSET)
+
+    current_value_is_partial = d.pop("current_value_is_partial", UNSET)
+
     portfolio_block_envelope = cls(
       id=id,
       name=name,
@@ -246,6 +265,8 @@ class PortfolioBlockEnvelope:
       inception_date=inception_date,
       owner=owner,
       total_current_value_dollars=total_current_value_dollars,
+      marked_position_count=marked_position_count,
+      current_value_is_partial=current_value_is_partial,
     )
 
     portfolio_block_envelope.additional_properties = d

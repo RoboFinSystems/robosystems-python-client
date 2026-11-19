@@ -146,6 +146,8 @@ class TestPortfolioReads:
         "totalCostBasisDollars": 0,
         "totalCurrentValueDollars": None,
         "activePositionCount": 0,
+        "markedPositionCount": 0,
+        "currentValueIsPartial": False,
         "createdAt": "2024-01-01T00:00:00Z",
         "updatedAt": "2024-01-01T00:00:00Z",
       }
@@ -405,6 +407,8 @@ class TestHoldings:
             "totalCostBasisDollars": 2000,
             "totalCurrentValueDollars": 2500,
             "positionCount": 2,
+            "markedPositionCount": 1,
+            "currentValueIsPartial": True,
             "securities": [
               {
                 "securityId": "sec_1",

@@ -84,6 +84,8 @@ query GetInvestorHoldings($portfolioId: String!) {
       totalCostBasisDollars
       totalCurrentValueDollars
       positionCount
+      markedPositionCount
+      currentValueIsPartial
       securities {
         securityId
         securityName
@@ -140,6 +142,8 @@ query GetInvestorPortfolioBlock($portfolioId: String!) {
     totalCostBasisDollars
     totalCurrentValueDollars
     activePositionCount
+    markedPositionCount
+    currentValueIsPartial
     createdAt
     updatedAt
   }
