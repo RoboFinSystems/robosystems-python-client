@@ -22,6 +22,9 @@ from __future__ import annotations
 from http import HTTPStatus
 from typing import Any
 
+from ..api.robo_investor.create_issuer import (
+  sync_detailed as op_create_issuer,
+)
 from ..api.robo_investor.create_portfolio_block import (
   sync_detailed as op_create_portfolio_block,
 )
@@ -33,6 +36,9 @@ from ..api.robo_investor.delete_portfolio_block import (
 )
 from ..api.robo_investor.delete_security import (
   sync_detailed as op_delete_security,
+)
+from ..api.robo_investor.ingest_report import (
+  sync_detailed as op_ingest_report,
 )
 from ..api.robo_investor.update_portfolio_block import (
   sync_detailed as op_update_portfolio_block,
@@ -99,12 +105,16 @@ from ..graphql.generated.operations import (
   LIST_INVESTOR_POSITIONS_GQL,
   LIST_INVESTOR_SECURITIES_GQL,
 )
+from ..models.create_issuer_request import CreateIssuerRequest
 from ..models.create_portfolio_block_request import CreatePortfolioBlockRequest
 from ..models.create_security_request import CreateSecurityRequest
 from ..models.delete_portfolio_block_operation import DeletePortfolioBlockOperation
 from ..models.delete_portfolio_block_response import DeletePortfolioBlockResponse
 from ..models.delete_result import DeleteResult
 from ..models.delete_security_operation import DeleteSecurityOperation
+from ..models.ingest_report_request import IngestReportRequest
+from ..models.ingest_report_response import IngestReportResponse
+from ..models.issuer_response import IssuerResponse
 from ..models.portfolio_block_envelope import PortfolioBlockEnvelope
 from ..models.security_response import SecurityResponse
 from ..models.update_portfolio_block_operation import UpdatePortfolioBlockOperation
@@ -332,6 +342,32 @@ class InvestorClient:
     )
     envelope = self._call_op("Create security", response)
     return self._typed_result("Create security", envelope, SecurityResponse)
+
+  # ── Issuers and received reports ────────────────────────────────────
+
+  def create_issuer(self, graph_id: str, body: dict[str, Any]) -> IssuerResponse:
+    """Add a company the fund holds or follows that keeps its books
+    elsewhere. The issuer is an entity in this graph: pass its ``id`` to
+    ``create_security`` as ``entity_id`` and to ``ingest_report``."""
+    request = CreateIssuerRequest.from_dict(body)
+    response = op_create_issuer(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Create issuer", response)
+    return self._typed_result("Create issuer", envelope, IssuerResponse)
+
+  def ingest_report(self, graph_id: str, body: dict[str, Any]) -> IngestReportResponse:
+    """Load a report a company sent onto its entity. ``body`` names the
+    ``entity_id`` and gives the report as exactly one of ``holon``, ``tavi``
+    or ``report`` (rows read from a PDF or a workbook). Set ``dry_run`` to
+    check it and write nothing. A report that does not check is refused with
+    each reason."""
+    request = IngestReportRequest.from_dict(body)
+    response = op_ingest_report(
+      graph_id=graph_id, body=request, client=self._get_client()
+    )
+    envelope = self._call_op("Ingest report", response)
+    return self._typed_result("Ingest report", envelope, IngestReportResponse)
 
   def update_security(
     self,

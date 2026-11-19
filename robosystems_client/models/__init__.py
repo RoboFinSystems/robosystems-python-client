@@ -139,6 +139,7 @@ from .create_forecast_request_base_anchor import CreateForecastRequestBaseAnchor
 from .create_forecast_request_scenario_kind import CreateForecastRequestScenarioKind
 from .create_graph_request import CreateGraphRequest
 from .create_invitation_request import CreateInvitationRequest
+from .create_issuer_request import CreateIssuerRequest
 from .create_legacy_arm import CreateLegacyArm
 from .create_legacy_arm_block_type import CreateLegacyArmBlockType
 from .create_legacy_arm_payload import CreateLegacyArmPayload
@@ -368,6 +369,8 @@ from .information_block_response_text_type_0_item import (
 )
 from .information_model_response import InformationModelResponse
 from .ingest_file_op import IngestFileOp
+from .ingest_report_request import IngestReportRequest
+from .ingest_report_response import IngestReportResponse
 from .initial_entity_data import InitialEntityData
 from .initialize_chart_of_accounts_request import InitializeChartOfAccountsRequest
 from .initialize_chart_of_accounts_request_template import (
@@ -384,6 +387,7 @@ from .invitation_preview_response import InvitationPreviewResponse
 from .invoice import Invoice
 from .invoice_line_item import InvoiceLineItem
 from .invoices_response import InvoicesResponse
+from .issuer_response import IssuerResponse
 from .journal_entry_line_dimensions import JournalEntryLineDimensions
 from .journal_entry_line_flow import JournalEntryLineFlow
 from .journal_entry_line_item_input import JournalEntryLineItemInput
@@ -656,6 +660,12 @@ from .operation_envelope_information_block_response import (
 from .operation_envelope_information_block_response_status import (
   OperationEnvelopeInformationBlockResponseStatus,
 )
+from .operation_envelope_ingest_report_response import (
+  OperationEnvelopeIngestReportResponse,
+)
+from .operation_envelope_ingest_report_response_status import (
+  OperationEnvelopeIngestReportResponseStatus,
+)
 from .operation_envelope_initialize_chart_of_accounts_response import (
   OperationEnvelopeInitializeChartOfAccountsResponse,
 )
@@ -667,6 +677,10 @@ from .operation_envelope_initialize_ledger_response import (
 )
 from .operation_envelope_initialize_ledger_response_status import (
   OperationEnvelopeInitializeLedgerResponseStatus,
+)
+from .operation_envelope_issuer_response import OperationEnvelopeIssuerResponse
+from .operation_envelope_issuer_response_status import (
+  OperationEnvelopeIssuerResponseStatus,
 )
 from .operation_envelope_journal_entry_response import (
   OperationEnvelopeJournalEntryResponse,
@@ -999,8 +1013,18 @@ from .rendering_lite import RenderingLite
 from .rendering_period_lite import RenderingPeriodLite
 from .rendering_row_lite import RenderingRowLite
 from .reopen_period_operation import ReopenPeriodOperation
+from .report_concept_row import ReportConceptRow
+from .report_departure import ReportDeparture
+from .report_departure_kind import ReportDepartureKind
+from .report_fact_row import ReportFactRow
+from .report_line_row import ReportLineRow
 from .report_response import ReportResponse
 from .report_response_rule_summary_type_0 import ReportResponseRuleSummaryType0
+from .report_rows_input import ReportRowsInput
+from .report_rows_input_labels import ReportRowsInputLabels
+from .report_rows_input_namespaces import ReportRowsInputNamespaces
+from .report_section_row import ReportSectionRow
+from .report_section_row_layout_type_0 import ReportSectionRowLayoutType0
 from .repository_info import RepositoryInfo
 from .repository_subscriptions import RepositorySubscriptions
 from .resend_verification_email_response_resendverificationemail import (
@@ -1378,6 +1402,7 @@ __all__ = (
   "CreateForecastRequestScenarioKind",
   "CreateGraphRequest",
   "CreateInvitationRequest",
+  "CreateIssuerRequest",
   "CreateLegacyArm",
   "CreateLegacyArmBlockType",
   "CreateLegacyArmPayload",
@@ -1559,6 +1584,8 @@ __all__ = (
   "InformationBlockResponseTextType0Item",
   "InformationModelResponse",
   "IngestFileOp",
+  "IngestReportRequest",
+  "IngestReportResponse",
   "InitialEntityData",
   "InitializeChartOfAccountsRequest",
   "InitializeChartOfAccountsRequestTemplate",
@@ -1571,6 +1598,7 @@ __all__ = (
   "Invoice",
   "InvoiceLineItem",
   "InvoicesResponse",
+  "IssuerResponse",
   "JournalEntryLineDimensions",
   "JournalEntryLineFlow",
   "JournalEntryLineItemInput",
@@ -1709,10 +1737,14 @@ __all__ = (
   "OperationEnvelopeInformationBlockEnvelopeStatus",
   "OperationEnvelopeInformationBlockResponse",
   "OperationEnvelopeInformationBlockResponseStatus",
+  "OperationEnvelopeIngestReportResponse",
+  "OperationEnvelopeIngestReportResponseStatus",
   "OperationEnvelopeInitializeChartOfAccountsResponse",
   "OperationEnvelopeInitializeChartOfAccountsResponseStatus",
   "OperationEnvelopeInitializeLedgerResponse",
   "OperationEnvelopeInitializeLedgerResponseStatus",
+  "OperationEnvelopeIssuerResponse",
+  "OperationEnvelopeIssuerResponseStatus",
   "OperationEnvelopeJournalEntryResponse",
   "OperationEnvelopeJournalEntryResponseStatus",
   "OperationEnvelopeLearnClassificationDefaultsResponse",
@@ -1914,8 +1946,18 @@ __all__ = (
   "RenderingPeriodLite",
   "RenderingRowLite",
   "ReopenPeriodOperation",
+  "ReportConceptRow",
+  "ReportDeparture",
+  "ReportDepartureKind",
+  "ReportFactRow",
+  "ReportLineRow",
   "ReportResponse",
   "ReportResponseRuleSummaryType0",
+  "ReportRowsInput",
+  "ReportRowsInputLabels",
+  "ReportRowsInputNamespaces",
+  "ReportSectionRow",
+  "ReportSectionRowLayoutType0",
   "RepositoryInfo",
   "RepositorySubscriptions",
   "ResendVerificationEmailResponseResendverificationemail",

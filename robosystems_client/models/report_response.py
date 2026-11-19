@@ -60,6 +60,9 @@ class ReportResponse:
               not carried across with `filing_status` and `filed_at`.
           supersedes_id (None | str | Unset): When this report restates an earlier filing, the predecessor's report ID.
           superseded_by_id (None | str | Unset): When this report has been restated, the successor's report ID.
+          origin (str | Unset): How the report came to be in this graph: `authored` from its own books, `shared` in from
+              another graph, or `uploaded` as a file. Anything but `authored` is a received report: read-only, and served as
+              the artifact that arrived. Default: 'authored'.
           source_graph_id (None | str | Unset): Origin graph for received (shared) reports — populated only on the
               recipient's copy.
           source_report_id (None | str | Unset): Origin report ID for received (shared) reports — populated only on the
@@ -90,6 +93,7 @@ class ReportResponse:
   filed_by: None | str | Unset = UNSET
   supersedes_id: None | str | Unset = UNSET
   superseded_by_id: None | str | Unset = UNSET
+  origin: str | Unset = "authored"
   source_graph_id: None | str | Unset = UNSET
   source_report_id: None | str | Unset = UNSET
   shared_at: datetime.datetime | None | Unset = UNSET
@@ -206,6 +210,8 @@ class ReportResponse:
     else:
       superseded_by_id = self.superseded_by_id
 
+    origin = self.origin
+
     source_graph_id: None | str | Unset
     if isinstance(self.source_graph_id, Unset):
       source_graph_id = UNSET
@@ -275,6 +281,8 @@ class ReportResponse:
       field_dict["supersedes_id"] = supersedes_id
     if superseded_by_id is not UNSET:
       field_dict["superseded_by_id"] = superseded_by_id
+    if origin is not UNSET:
+      field_dict["origin"] = origin
     if source_graph_id is not UNSET:
       field_dict["source_graph_id"] = source_graph_id
     if source_report_id is not UNSET:
@@ -466,6 +474,8 @@ class ReportResponse:
 
     superseded_by_id = _parse_superseded_by_id(d.pop("superseded_by_id", UNSET))
 
+    origin = d.pop("origin", UNSET)
+
     def _parse_source_graph_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -542,6 +552,7 @@ class ReportResponse:
       filed_by=filed_by,
       supersedes_id=supersedes_id,
       superseded_by_id=superseded_by_id,
+      origin=origin,
       source_graph_id=source_graph_id,
       source_report_id=source_report_id,
       shared_at=shared_at,

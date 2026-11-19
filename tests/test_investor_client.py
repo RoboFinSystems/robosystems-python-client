@@ -293,6 +293,56 @@ class TestSecurities:
     assert result["id"] == "sec_new"
 
 
+# ── Issuers and received reports ───────────────────────────────────────
+
+
+@pytest.mark.unit
+class TestReceivedReports:
+  @patch("robosystems_client.clients.investor_client.op_create_issuer")
+  def test_create_issuer(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope("create-issuer", {"id": "ent_new", "name": "Acme Co"})
+    )
+    client = InvestorClient(mock_config)
+    result = client.create_issuer(graph_id, {"name": "Acme Co"})
+    assert result["id"] == "ent_new"
+    assert mock_op.call_args.kwargs["body"].name == "Acme Co"
+
+  @patch("robosystems_client.clients.investor_client.op_ingest_report")
+  def test_ingest_report(self, mock_op, mock_config, graph_id):
+    mock_op.return_value = _mock_response(
+      _envelope(
+        "ingest-report",
+        {"dry_run": True, "entity_id": "ent_new", "fact_count": 2},
+      )
+    )
+    client = InvestorClient(mock_config)
+    result = client.ingest_report(
+      graph_id,
+      {
+        "entity_id": "ent_new",
+        "dry_run": True,
+        "report": {
+          "period_end": "2026-10-31",
+          "kind": "monthly-package",
+          "sections": [{"name": "Balance Sheet", "block_type": "balance_sheet"}],
+          "facts": [
+            {
+              "concept": "rs-gaap:Assets",
+              "value": 1,
+              "end": "2026-10-31",
+              "unit": "USD",
+            }
+          ],
+        },
+      },
+    )
+    assert result["fact_count"] == 2
+    sent = mock_op.call_args.kwargs["body"]
+    assert sent.entity_id == "ent_new"
+    assert sent.to_dict()["report"]["facts"][0]["concept"] == "rs-gaap:Assets"
+
+
 # ── Positions (read-only) ──────────────────────────────────────────────
 
 
