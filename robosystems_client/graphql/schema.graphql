@@ -1539,6 +1539,16 @@ type Holding {
 
   """Number of distinct active positions backing these holdings."""
   positionCount: Int!
+
+  """
+  How many of those positions have a mark, and so how many `totalCurrentValueDollars` covers.
+  """
+  markedPositionCount: Int!
+
+  """
+  True when some positions have a mark and some do not: `totalCurrentValueDollars` then leaves the unmarked ones out and is not comparable with `totalCostBasisDollars`, which covers them all.
+  """
+  currentValueIsPartial: Boolean!
 }
 
 """One security held in the portfolio, issued by the holding's entity."""
@@ -1609,6 +1619,16 @@ type PortfolioBlock {
 
   """Count of positions with `status='active'`."""
   activePositionCount: Int!
+
+  """
+  How many active positions have a mark, and so how many `totalCurrentValueDollars` covers.
+  """
+  markedPositionCount: Int!
+
+  """
+  True when some active positions have a mark and some do not: `totalCurrentValueDollars` then leaves the unmarked ones out and is not comparable with `totalCostBasisDollars`, which covers them all.
+  """
+  currentValueIsPartial: Boolean!
 
   """Row creation timestamp (UTC)."""
   createdAt: DateTime!

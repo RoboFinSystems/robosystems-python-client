@@ -22,6 +22,8 @@ class GetInvestorHoldingsHoldingsHoldings(BaseModel):
   total_cost_basis_dollars: float = Field(alias="totalCostBasisDollars")
   total_current_value_dollars: Optional[float] = Field(alias="totalCurrentValueDollars")
   position_count: int = Field(alias="positionCount")
+  marked_position_count: int = Field(alias="markedPositionCount")
+  current_value_is_partial: bool = Field(alias="currentValueIsPartial")
   securities: list["GetInvestorHoldingsHoldingsHoldingsSecurities"]
 
 

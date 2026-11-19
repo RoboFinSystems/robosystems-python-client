@@ -17,6 +17,7 @@ query GetInvestorPortfolioBlock($portfolioId: String!) {
     }
     totalCostBasisDollars totalCurrentValueDollars
     activePositionCount
+    markedPositionCount currentValueIsPartial
     createdAt updatedAt
   }
 }
