@@ -3894,6 +3894,11 @@ type Report {
   supersededById: String
 
   """
+  How the report came to be in this graph: `authored` from its own books, `shared` in from another graph, or `uploaded` as a file. Anything but `authored` is a received report: read-only, and served as the artifact that arrived.
+  """
+  origin: String!
+
+  """
   Origin graph for received (shared) reports — populated only on the recipient's copy.
   """
   sourceGraphId: String
@@ -3973,6 +3978,7 @@ type ReportPackage {
   filedBy: String
   supersedesId: String
   supersededById: String
+  origin: String!
   sourceGraphId: String
   sourceReportId: String
   sharedAt: DateTime

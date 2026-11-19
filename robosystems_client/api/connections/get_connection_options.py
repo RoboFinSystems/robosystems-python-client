@@ -94,8 +94,9 @@ def sync_detailed(
   """List Connection Options
 
    Returns available providers and their requirements. Only enabled providers are included (gated by
-  feature flags). QuickBooks and Mercury require OAuth 2.0; Plaid authorizes through Plaid Link
-  (auth_type `link`); external connections require no auth.
+  feature flags). QuickBooks requires OAuth 2.0; Mercury connects over OAuth 2.0, or with a personal
+  API token (auth_type `api_key`) on a deployment with no Mercury OAuth client that allows tokens;
+  Plaid authorizes through Plaid Link (auth_type `link`); external connections require no auth.
 
   Args:
       graph_id (str):
@@ -127,8 +128,9 @@ def sync(
   """List Connection Options
 
    Returns available providers and their requirements. Only enabled providers are included (gated by
-  feature flags). QuickBooks and Mercury require OAuth 2.0; Plaid authorizes through Plaid Link
-  (auth_type `link`); external connections require no auth.
+  feature flags). QuickBooks requires OAuth 2.0; Mercury connects over OAuth 2.0, or with a personal
+  API token (auth_type `api_key`) on a deployment with no Mercury OAuth client that allows tokens;
+  Plaid authorizes through Plaid Link (auth_type `link`); external connections require no auth.
 
   Args:
       graph_id (str):
@@ -155,8 +157,9 @@ async def asyncio_detailed(
   """List Connection Options
 
    Returns available providers and their requirements. Only enabled providers are included (gated by
-  feature flags). QuickBooks and Mercury require OAuth 2.0; Plaid authorizes through Plaid Link
-  (auth_type `link`); external connections require no auth.
+  feature flags). QuickBooks requires OAuth 2.0; Mercury connects over OAuth 2.0, or with a personal
+  API token (auth_type `api_key`) on a deployment with no Mercury OAuth client that allows tokens;
+  Plaid authorizes through Plaid Link (auth_type `link`); external connections require no auth.
 
   Args:
       graph_id (str):
@@ -186,8 +189,9 @@ async def asyncio(
   """List Connection Options
 
    Returns available providers and their requirements. Only enabled providers are included (gated by
-  feature flags). QuickBooks and Mercury require OAuth 2.0; Plaid authorizes through Plaid Link
-  (auth_type `link`); external connections require no auth.
+  feature flags). QuickBooks requires OAuth 2.0; Mercury connects over OAuth 2.0, or with a personal
+  API token (auth_type `api_key`) on a deployment with no Mercury OAuth client that allows tokens;
+  Plaid authorizes through Plaid Link (auth_type `link`); external connections require no auth.
 
   Args:
       graph_id (str):
