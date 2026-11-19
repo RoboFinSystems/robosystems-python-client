@@ -5,7 +5,7 @@ query GetLedgerReportPackage($reportId: String!) {
     generationStatus lastGenerated
     filingStatus filedAt filedBy
     supersedesId supersededById
-    sourceGraphId sourceReportId sharedAt
+    sourceGraphId sourceReportId sharedAt origin
     entityName aiGenerated createdAt createdBy
     items {
       factSetId structureId displayOrder
