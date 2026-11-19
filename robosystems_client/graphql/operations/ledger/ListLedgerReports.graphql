@@ -4,7 +4,7 @@ query ListLedgerReports($lifecycle: ReportLifecycle, $entityId: String) {
       id entityId name taxonomyId generationStatus filingStatus periodType
       periodStart periodEnd comparative mappingId aiGenerated
       createdAt lastGenerated entityName
-      sourceGraphId sourceReportId sharedAt
+      sourceGraphId sourceReportId sharedAt origin
       periods { start end label }
       structures { id name blockType }
     }

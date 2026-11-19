@@ -1250,6 +1250,7 @@ query GetLedgerReport($reportId: String!) {
     sourceGraphId
     sourceReportId
     sharedAt
+    origin
     periods {
       start
       end
@@ -1296,6 +1297,7 @@ query GetLedgerReportPackage($reportId: String!) {
     sourceGraphId
     sourceReportId
     sharedAt
+    origin
     entityName
     aiGenerated
     createdAt
@@ -2335,6 +2337,7 @@ query ListLedgerReports($lifecycle: ReportLifecycle, $entityId: String) {
       sourceGraphId
       sourceReportId
       sharedAt
+      origin
       periods {
         start
         end

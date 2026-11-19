@@ -32,6 +32,7 @@ class ListLedgerReportsReportsReports(BaseModel):
   source_graph_id: Optional[str] = Field(alias="sourceGraphId")
   source_report_id: Optional[str] = Field(alias="sourceReportId")
   shared_at: Optional[str] = Field(alias="sharedAt")
+  origin: str
   periods: Optional[list["ListLedgerReportsReportsReportsPeriods"]]
   structures: list["ListLedgerReportsReportsReportsStructures"]
 

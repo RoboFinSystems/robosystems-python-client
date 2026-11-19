@@ -29,6 +29,7 @@ class GetLedgerReportPackageReportPackage(BaseModel):
   source_graph_id: Optional[str] = Field(alias="sourceGraphId")
   source_report_id: Optional[str] = Field(alias="sourceReportId")
   shared_at: Optional[str] = Field(alias="sharedAt")
+  origin: str
   entity_name: Optional[str] = Field(alias="entityName")
   ai_generated: bool = Field(alias="aiGenerated")
   created_at: str = Field(alias="createdAt")
