@@ -66,6 +66,11 @@ class CreateEventBlockRequest:
       external_id (None | str | Unset): Source-system dedup key. (source, external_id) is enforced unique when
           external_id is provided, so retries from external adapters are idempotent at the DB level.
       external_url (None | str | Unset): Deep link back to source-system record
+      source_version (int | None | Unset): The source's revision of this record: a number that only grows, such as a
+          revision counter or a last-modified timestamp. It matters for a `journal_entry_recorded` event from the external
+          ledger that keeps the entity's books (a connection registered with `ledger`): sending the same `external_id`
+          again with a higher version replaces the entry in the books, in an open period. An equal or lower version, or
+          none, is the 409 of a repeat delivery. From any other source it is stored and has no effect.
       amount (int | None | Unset): Economic value of the event in **cents** of `currency`, signed. Sign convention
           follows the perspective of the entity that owns the graph: inflows positive, outflows negative. `null` for non-
           economic events (e.g. `event_class='support'`).
@@ -104,6 +109,7 @@ class CreateEventBlockRequest:
   terms_days: int | None | Unset = UNSET
   external_id: None | str | Unset = UNSET
   external_url: None | str | Unset = UNSET
+  source_version: int | None | Unset = UNSET
   amount: int | None | Unset = UNSET
   currency: str | Unset = "USD"
   description: None | str | Unset = UNSET
@@ -196,6 +202,12 @@ class CreateEventBlockRequest:
     else:
       external_url = self.external_url
 
+    source_version: int | None | Unset
+    if isinstance(self.source_version, Unset):
+      source_version = UNSET
+    else:
+      source_version = self.source_version
+
     amount: int | None | Unset
     if isinstance(self.amount, Unset):
       amount = UNSET
@@ -270,6 +282,8 @@ class CreateEventBlockRequest:
       field_dict["external_id"] = external_id
     if external_url is not UNSET:
       field_dict["external_url"] = external_url
+    if source_version is not UNSET:
+      field_dict["source_version"] = source_version
     if amount is not UNSET:
       field_dict["amount"] = amount
     if currency is not UNSET:
@@ -441,6 +455,15 @@ class CreateEventBlockRequest:
 
     external_url = _parse_external_url(d.pop("external_url", UNSET))
 
+    def _parse_source_version(data: object) -> int | None | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(int | None | Unset, data)
+
+    source_version = _parse_source_version(d.pop("source_version", UNSET))
+
     def _parse_amount(data: object) -> int | None | Unset:
       if data is None:
         return data
@@ -519,6 +542,7 @@ class CreateEventBlockRequest:
       terms_days=terms_days,
       external_id=external_id,
       external_url=external_url,
+      source_version=source_version,
       amount=amount,
       currency=currency,
       description=description,

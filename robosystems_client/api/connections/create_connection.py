@@ -109,15 +109,18 @@ def sync_detailed(
 
    QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
   may instead connect at once with a personal API token where the deployment allows it). External:
-  registers a source namespace for an integration that writes through the public API. One connection
-  allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
-  allows one per bank login (a connection still waiting on Link is returned instead of a second).
-  Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
-  bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
-  omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
-  keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and naming a
-  subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's books are
-  already native. Every connection's `entity_id` is the entity whose books it keeps.
+  registers a source namespace for an integration that writes through the public API; with `ledger` it
+  is the general ledger that keeps an entity's books, mirrored read-only (the entries it sends land
+  posted, nothing else posts to those books, and the close stamps the period without posting), and is
+  refused (409) when another ledger keeps that entity's books or the entity has books of its own. One
+  connection allowed per provider per graph, except 'external' which allows one per source_name and
+  'plaid' which allows one per bank login (a connection still waiting on Link is returned instead of a
+  second). Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid
+  Link. A bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group
+  parent when omitted) and is refused (409) when that entity has no chart of accounts or is the one
+  QuickBooks keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and
+  naming a subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's
+  books are already native. Every connection's `entity_id` is the entity whose books it keeps.
 
   Args:
       graph_id (str):
@@ -153,15 +156,18 @@ def sync(
 
    QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
   may instead connect at once with a personal API token where the deployment allows it). External:
-  registers a source namespace for an integration that writes through the public API. One connection
-  allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
-  allows one per bank login (a connection still waiting on Link is returned instead of a second).
-  Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
-  bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
-  omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
-  keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and naming a
-  subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's books are
-  already native. Every connection's `entity_id` is the entity whose books it keeps.
+  registers a source namespace for an integration that writes through the public API; with `ledger` it
+  is the general ledger that keeps an entity's books, mirrored read-only (the entries it sends land
+  posted, nothing else posts to those books, and the close stamps the period without posting), and is
+  refused (409) when another ledger keeps that entity's books or the entity has books of its own. One
+  connection allowed per provider per graph, except 'external' which allows one per source_name and
+  'plaid' which allows one per bank login (a connection still waiting on Link is returned instead of a
+  second). Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid
+  Link. A bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group
+  parent when omitted) and is refused (409) when that entity has no chart of accounts or is the one
+  QuickBooks keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and
+  naming a subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's
+  books are already native. Every connection's `entity_id` is the entity whose books it keeps.
 
   Args:
       graph_id (str):
@@ -192,15 +198,18 @@ async def asyncio_detailed(
 
    QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
   may instead connect at once with a personal API token where the deployment allows it). External:
-  registers a source namespace for an integration that writes through the public API. One connection
-  allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
-  allows one per bank login (a connection still waiting on Link is returned instead of a second).
-  Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
-  bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
-  omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
-  keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and naming a
-  subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's books are
-  already native. Every connection's `entity_id` is the entity whose books it keeps.
+  registers a source namespace for an integration that writes through the public API; with `ledger` it
+  is the general ledger that keeps an entity's books, mirrored read-only (the entries it sends land
+  posted, nothing else posts to those books, and the close stamps the period without posting), and is
+  refused (409) when another ledger keeps that entity's books or the entity has books of its own. One
+  connection allowed per provider per graph, except 'external' which allows one per source_name and
+  'plaid' which allows one per bank login (a connection still waiting on Link is returned instead of a
+  second). Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid
+  Link. A bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group
+  parent when omitted) and is refused (409) when that entity has no chart of accounts or is the one
+  QuickBooks keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and
+  naming a subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's
+  books are already native. Every connection's `entity_id` is the entity whose books it keeps.
 
   Args:
       graph_id (str):
@@ -234,15 +243,18 @@ async def asyncio(
 
    QuickBooks and Mercury: returns a pending connection — complete the OAuth flow to activate (Mercury
   may instead connect at once with a personal API token where the deployment allows it). External:
-  registers a source namespace for an integration that writes through the public API. One connection
-  allowed per provider per graph, except 'external' which allows one per source_name and 'plaid' which
-  allows one per bank login (a connection still waiting on Link is returned instead of a second).
-  Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid Link. A
-  bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group parent when
-  omitted) and is refused (409) when that entity has no chart of accounts or is the one QuickBooks
-  keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and naming a
-  subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's books are
-  already native. Every connection's `entity_id` is the entity whose books it keeps.
+  registers a source namespace for an integration that writes through the public API; with `ledger` it
+  is the general ledger that keeps an entity's books, mirrored read-only (the entries it sends land
+  posted, nothing else posts to those books, and the close stamps the period without posting), and is
+  refused (409) when another ledger keeps that entity's books or the entity has books of its own. One
+  connection allowed per provider per graph, except 'external' which allows one per source_name and
+  'plaid' which allows one per bank login (a connection still waiting on Link is returned instead of a
+  second). Plaid: returns a pending connection — `POST /oauth/init` returns a `link_token` for Plaid
+  Link. A bank feed (Mercury, Plaid) names the entity its accounts book to (`entity_id`, the group
+  parent when omitted) and is refused (409) when that entity has no chart of accounts or is the one
+  QuickBooks keeps. QuickBooks keeps the group parent's books only: `entity_id` may be omitted, and
+  naming a subsidiary is refused (409 PARENT_ONLY); it is refused (409) too when the group parent's
+  books are already native. Every connection's `entity_id` is the entity whose books it keeps.
 
   Args:
       graph_id (str):

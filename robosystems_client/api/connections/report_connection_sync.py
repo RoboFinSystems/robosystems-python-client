@@ -1,0 +1,271 @@
+from http import HTTPStatus
+from typing import Any
+from urllib.parse import quote
+
+import httpx
+
+from ... import errors
+from ...client import AuthenticatedClient, Client
+from ...models.connection_response import ConnectionResponse
+from ...models.error_response import ErrorResponse
+from ...models.http_validation_error import HTTPValidationError
+from ...models.report_sync_request import ReportSyncRequest
+from ...types import Response
+
+
+def _get_kwargs(
+  graph_id: str,
+  connection_id: str,
+  *,
+  body: ReportSyncRequest,
+) -> dict[str, Any]:
+  headers: dict[str, Any] = {}
+
+  _kwargs: dict[str, Any] = {
+    "method": "post",
+    "url": "/v1/graphs/{graph_id}/connections/{connection_id}/sync-report".format(
+      graph_id=quote(str(graph_id), safe=""),
+      connection_id=quote(str(connection_id), safe=""),
+    ),
+  }
+
+  _kwargs["json"] = body.to_dict()
+
+  headers["Content-Type"] = "application/json"
+
+  _kwargs["headers"] = headers
+  return _kwargs
+
+
+def _parse_response(
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
+  if response.status_code == 200:
+    response_200 = ConnectionResponse.from_dict(response.json())
+
+    return response_200
+
+  if response.status_code == 400:
+    response_400 = ErrorResponse.from_dict(response.json())
+
+    return response_400
+
+  if response.status_code == 401:
+    response_401 = ErrorResponse.from_dict(response.json())
+
+    return response_401
+
+  if response.status_code == 403:
+    response_403 = ErrorResponse.from_dict(response.json())
+
+    return response_403
+
+  if response.status_code == 404:
+    response_404 = ErrorResponse.from_dict(response.json())
+
+    return response_404
+
+  if response.status_code == 422:
+    response_422 = HTTPValidationError.from_dict(response.json())
+
+    return response_422
+
+  if response.status_code == 429:
+    response_429 = ErrorResponse.from_dict(response.json())
+
+    return response_429
+
+  if response.status_code == 500:
+    response_500 = ErrorResponse.from_dict(response.json())
+
+    return response_500
+
+  if client.raise_on_unexpected_status:
+    raise errors.UnexpectedStatus(response.status_code, response.content)
+  else:
+    return None
+
+
+def _build_response(
+  *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
+  return Response(
+    status_code=HTTPStatus(response.status_code),
+    content=response.content,
+    headers=response.headers,
+    parsed=_parse_response(client=client, response=response),
+  )
+
+
+def sync_detailed(
+  graph_id: str,
+  connection_id: str,
+  *,
+  client: AuthenticatedClient,
+  body: ReportSyncRequest,
+) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
+  """Report an External Sync
+
+   For an external connection: the integration reports a run it just finished. The platform runs no
+  sync for an external source, so this is how the connection's `last_sync` moves. A 'succeeded' report
+  sets it to now; a 'failed' one records the outcome and leaves it. For an external ledger that keeps
+  an entity's books, a period close reads `last_sync` to tell whether the books it mirrors are
+  current. Refused (400) for a connection the platform syncs itself.
+
+  Args:
+      graph_id (str):
+      connection_id (str): Unique connection identifier
+      body (ReportSyncRequest): An external integration's report of a run it just finished.
+
+          The platform runs no sync for an external source, so the integration says
+          when its last run was: a successful report is the connection's
+          `last_sync`, which a period close reads to tell whether the books it
+          mirrors are current.
+
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+  Returns:
+      Response[ConnectionResponse | ErrorResponse | HTTPValidationError]
+  """
+
+  kwargs = _get_kwargs(
+    graph_id=graph_id,
+    connection_id=connection_id,
+    body=body,
+  )
+
+  response = client.get_httpx_client().request(
+    **kwargs,
+  )
+
+  return _build_response(client=client, response=response)
+
+
+def sync(
+  graph_id: str,
+  connection_id: str,
+  *,
+  client: AuthenticatedClient,
+  body: ReportSyncRequest,
+) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
+  """Report an External Sync
+
+   For an external connection: the integration reports a run it just finished. The platform runs no
+  sync for an external source, so this is how the connection's `last_sync` moves. A 'succeeded' report
+  sets it to now; a 'failed' one records the outcome and leaves it. For an external ledger that keeps
+  an entity's books, a period close reads `last_sync` to tell whether the books it mirrors are
+  current. Refused (400) for a connection the platform syncs itself.
+
+  Args:
+      graph_id (str):
+      connection_id (str): Unique connection identifier
+      body (ReportSyncRequest): An external integration's report of a run it just finished.
+
+          The platform runs no sync for an external source, so the integration says
+          when its last run was: a successful report is the connection's
+          `last_sync`, which a period close reads to tell whether the books it
+          mirrors are current.
+
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+  Returns:
+      ConnectionResponse | ErrorResponse | HTTPValidationError
+  """
+
+  return sync_detailed(
+    graph_id=graph_id,
+    connection_id=connection_id,
+    client=client,
+    body=body,
+  ).parsed
+
+
+async def asyncio_detailed(
+  graph_id: str,
+  connection_id: str,
+  *,
+  client: AuthenticatedClient,
+  body: ReportSyncRequest,
+) -> Response[ConnectionResponse | ErrorResponse | HTTPValidationError]:
+  """Report an External Sync
+
+   For an external connection: the integration reports a run it just finished. The platform runs no
+  sync for an external source, so this is how the connection's `last_sync` moves. A 'succeeded' report
+  sets it to now; a 'failed' one records the outcome and leaves it. For an external ledger that keeps
+  an entity's books, a period close reads `last_sync` to tell whether the books it mirrors are
+  current. Refused (400) for a connection the platform syncs itself.
+
+  Args:
+      graph_id (str):
+      connection_id (str): Unique connection identifier
+      body (ReportSyncRequest): An external integration's report of a run it just finished.
+
+          The platform runs no sync for an external source, so the integration says
+          when its last run was: a successful report is the connection's
+          `last_sync`, which a period close reads to tell whether the books it
+          mirrors are current.
+
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+  Returns:
+      Response[ConnectionResponse | ErrorResponse | HTTPValidationError]
+  """
+
+  kwargs = _get_kwargs(
+    graph_id=graph_id,
+    connection_id=connection_id,
+    body=body,
+  )
+
+  response = await client.get_async_httpx_client().request(**kwargs)
+
+  return _build_response(client=client, response=response)
+
+
+async def asyncio(
+  graph_id: str,
+  connection_id: str,
+  *,
+  client: AuthenticatedClient,
+  body: ReportSyncRequest,
+) -> ConnectionResponse | ErrorResponse | HTTPValidationError | None:
+  """Report an External Sync
+
+   For an external connection: the integration reports a run it just finished. The platform runs no
+  sync for an external source, so this is how the connection's `last_sync` moves. A 'succeeded' report
+  sets it to now; a 'failed' one records the outcome and leaves it. For an external ledger that keeps
+  an entity's books, a period close reads `last_sync` to tell whether the books it mirrors are
+  current. Refused (400) for a connection the platform syncs itself.
+
+  Args:
+      graph_id (str):
+      connection_id (str): Unique connection identifier
+      body (ReportSyncRequest): An external integration's report of a run it just finished.
+
+          The platform runs no sync for an external source, so the integration says
+          when its last run was: a successful report is the connection's
+          `last_sync`, which a period close reads to tell whether the books it
+          mirrors are current.
+
+  Raises:
+      errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+      httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+  Returns:
+      ConnectionResponse | ErrorResponse | HTTPValidationError
+  """
+
+  return (
+    await asyncio_detailed(
+      graph_id=graph_id,
+      connection_id=connection_id,
+      client=client,
+      body=body,
+    )
+  ).parsed
