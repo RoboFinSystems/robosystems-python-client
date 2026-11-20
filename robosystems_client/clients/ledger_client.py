@@ -3824,8 +3824,8 @@ class LedgerClient:
         graph_id: Graph identifier owning the Report.
         report_id: Report identifier (``rpt_``-prefixed ULID).
         format: Serialization flavor — ``"holon-jsonld"`` (default, the
-            dataset-form scene/boundary/projection holon, which carries
-            the whole report and is stamped at publish), ``"tavi"`` (the
+            dataset-form scene/boundary/projection holon, the primary
+            serialization, stamped at publish), ``"tavi"`` (the
             Project Tavi compiled model), ``"xbrl-2.1"``, or
             ``"holon-jsonld-lineage"`` (the holon with its ``#lineage`` graph:
             the ledger lines, entries and events behind every frozen figure,
