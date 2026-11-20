@@ -1571,6 +1571,18 @@ class TestLedgerReadsAdditional:
     assert "isReconcilingItem: $isReconcilingItem" in query
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_event_blocks_finds_the_event_a_source_sent(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {"eventBlocks": []}
+    client = LedgerClient(mock_config)
+    client.list_event_blocks(graph_id, source="netsuite-uk", external_id="JE-1")
+    query, variables = mock_execute.call_args[0][1:3]
+    assert variables["source"] == "netsuite-uk"
+    assert variables["externalId"] == "JE-1"
+    assert "externalId: $externalId" in query
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_get_event_block(self, mock_execute, mock_config, graph_id):
     mock_execute.return_value = {
       "eventBlock": {

@@ -253,8 +253,15 @@ type Query {
     """Filter to events involving one counterparty."""
     agentId: String = null
 
-    """Filter by originating system: `quickbooks`, `schedule` or `manual`."""
+    """
+    Filter by originating system: `quickbooks`, `schedule`, `manual`, or a source name registered by an external connection.
+    """
     source: String = null
+
+    """
+    Filter to the event a source sent under this id of its own. With `source` it names at most one event, which is how an integration finds the event for a record it sent earlier.
+    """
+    externalId: String = null
 
     """
     True returns the post-sync reconciliation worklist - committed events whose upstream payload changed after posting.

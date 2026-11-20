@@ -2016,13 +2016,14 @@ query ListLedgerEntities($source: String) {
 """
 
 LIST_LEDGER_EVENT_BLOCKS_GQL = """
-query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status: String, $agentId: String, $source: String, $isReconcilingItem: Boolean, $limit: Int! = 50, $offset: Int! = 0, $entityId: String) {
+query ListLedgerEventBlocks($eventType: String, $eventCategory: String, $status: String, $agentId: String, $source: String, $externalId: String, $isReconcilingItem: Boolean, $limit: Int! = 50, $offset: Int! = 0, $entityId: String) {
   eventBlocks(
     eventType: $eventType
     eventCategory: $eventCategory
     status: $status
     agentId: $agentId
     source: $source
+    externalId: $externalId
     isReconcilingItem: $isReconcilingItem
     limit: $limit
     offset: $offset

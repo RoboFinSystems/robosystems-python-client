@@ -1269,11 +1269,14 @@ class LedgerClient:
     offset: int = 0,
     is_reconciling_item: bool | None = None,
     entity_id: str | None = None,
+    external_id: str | None = None,
   ) -> list[ListLedgerEventBlocksEventBlocks]:
     """List captured event blocks (inbox surface).
 
     ``is_reconciling_item=True`` narrows to posted events whose source
-    payload changed afterwards and that await a decision.
+    payload changed afterwards and that await a decision. ``external_id``
+    with ``source`` names at most one event: the one a source sent under
+    that id of its own.
     """
     data = self._query(
       graph_id,
@@ -1284,6 +1287,7 @@ class LedgerClient:
         "status": status,
         "agentId": agent_id,
         "source": source,
+        "externalId": external_id,
         "isReconcilingItem": is_reconciling_item,
         "limit": limit,
         "offset": offset,
