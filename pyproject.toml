@@ -128,3 +128,8 @@ type = "str"
 
 [tool.ariadne-codegen.scalars.JSON]
 type = "typing.Any"
+
+# A whole number of any size (an amount in cents, a count of shares), sent as
+# a JSON number: the same int these fields were as GraphQL's 32-bit Int.
+[tool.ariadne-codegen.scalars.BigInt]
+type = "int"

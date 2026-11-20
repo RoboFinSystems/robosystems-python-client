@@ -1409,8 +1409,8 @@ type Security {
   securitySubtype: String
   terms: JSON!
   isActive: Boolean!
-  authorizedShares: Int
-  outstandingShares: Int
+  authorizedShares: BigInt
+  outstandingShares: BigInt
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -1419,6 +1419,11 @@ type Security {
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
 """
 scalar JSON
+
+"""
+A whole number of any size, sent as a JSON number: an amount in cents, or a count of shares. GraphQL's `Int` stops at 2,147,483,647.
+"""
+scalar BigInt
 
 """Paginated list of positions."""
 type PositionList {
@@ -1461,7 +1466,7 @@ type Position {
   quantityType: String!
 
   """Cost basis in **cents** of `currency`. Authoritative."""
-  costBasis: Int!
+  costBasis: BigInt!
 
   """
   Cost basis pre-converted to dollars (`cost_basis / 100`). Convenience for display; `costBasis` is the source of truth.
@@ -1472,7 +1477,7 @@ type Position {
   currency: String!
 
   """Latest mark-to-market value in **cents**, or `null` if unmarked."""
-  currentValue: Int
+  currentValue: BigInt
 
   """
   Current value in dollars (`current_value / 100`). `null` when `currentValue` is null.
@@ -1937,7 +1942,7 @@ type OpenBalanceByAgent {
   """
   Unsettled originating-event amounts minus discharges, in minor currency units. Positive for normal AR/AP; negative when overpaid.
   """
-  openBalanceCents: Int!
+  openBalanceCents: BigInt!
 
   """Number of originating events with nonzero balance for this agent."""
   openEventCount: Int!
@@ -1955,7 +1960,7 @@ breakdown — out of scope for v1).
 """
 type OpenBalanceAggregate {
   """Sum of unsettled balances in minor currency units."""
-  totalOpenCents: Int!
+  totalOpenCents: BigInt!
 
   """Distinct agents with at least one open balance."""
   counterpartyCount: Int!
@@ -2016,25 +2021,25 @@ overpayment is an unapplied credit, never netted into a bucket.
 """
 type AgingBuckets {
   """Not yet due."""
-  currentCents: Int!
+  currentCents: BigInt!
 
   """1 to 30 days past due."""
-  oneToThirtyCents: Int!
+  oneToThirtyCents: BigInt!
 
   """31 to 60 days past due."""
-  thirtyOneToSixtyCents: Int!
+  thirtyOneToSixtyCents: BigInt!
 
   """61 to 90 days past due."""
-  sixtyOneToNinetyCents: Int!
+  sixtyOneToNinetyCents: BigInt!
 
   """More than 90 days past due."""
-  overNinetyCents: Int!
+  overNinetyCents: BigInt!
 
   """Overpayments, negative: credit owed back or still to apply."""
-  unappliedCreditCents: Int!
+  unappliedCreditCents: BigInt!
 
   """Every bucket and the unapplied credit together."""
-  totalCents: Int!
+  totalCents: BigInt!
 }
 
 """One counterparty's open items, bucketed."""
@@ -2079,15 +2084,15 @@ type OpenItem {
   description: String
 
   """The obligation's amount."""
-  originalCents: Int!
+  originalCents: BigInt!
 
   """Settled against it on or before the as-of date."""
-  settledCents: Int!
+  settledCents: BigInt!
 
   """
   What is left: original less settled. Negative when overpaid, an unapplied credit.
   """
-  openCents: Int!
+  openCents: BigInt!
 
   """Currency code."""
   currency: String!
@@ -2125,13 +2130,13 @@ type IntercompanyPair {
   debtorEntityId: String!
 
   """The creditor's open receivables from the debtor."""
-  receivableCents: Int!
+  receivableCents: BigInt!
 
   """The debtor's open payables to the creditor."""
-  payableCents: Int!
+  payableCents: BigInt!
 
   """Receivable less payable; zero when the two books agree."""
-  differenceCents: Int!
+  differenceCents: BigInt!
 }
 
 """
@@ -2152,15 +2157,15 @@ type ControlTieOut {
   """
   The accounts' posted balance at the as-of date, in their natural sign; null when the entity has no control account.
   """
-  controlBalanceCents: Int
+  controlBalanceCents: BigInt
 
   """The entity's open items at the as-of date, intercompany included."""
-  openItemsCents: Int!
+  openItemsCents: BigInt!
 
   """
   Open items less the control balance; null when there is no control account to compare with.
   """
-  differenceCents: Int
+  differenceCents: BigInt
 }
 
 """An account the open items are tied out against."""
@@ -2186,7 +2191,7 @@ type DischargeCandidates {
   kind: String
 
   """The payment's magnitude."""
-  amountCents: Int!
+  amountCents: BigInt!
 
   """
   Whether the line is classified to a receivables or payables control account, where a settlement is expected.
@@ -2211,7 +2216,7 @@ type EventBlock {
   source: String!
   externalId: String
   externalUrl: String
-  amount: Int
+  amount: BigInt
   currency: String!
   description: String
   metadata: JSON!
@@ -3698,10 +3703,10 @@ type PeriodDrafts {
   draftCount: Int!
 
   """Sum across all drafts, in cents"""
-  totalDebit: Int!
+  totalDebit: BigInt!
 
   """Sum across all drafts, in cents"""
-  totalCredit: Int!
+  totalCredit: BigInt!
 
   """True if every draft entry has debit == credit"""
   allBalanced: Boolean!
@@ -3754,10 +3759,10 @@ type DraftEntry {
   lineItems: [DraftLineItem!]!
 
   """Sum of debit amounts in cents"""
-  totalDebit: Int!
+  totalDebit: BigInt!
 
   """Sum of credit amounts in cents"""
-  totalCredit: Int!
+  totalCredit: BigInt!
 
   """True if total_debit == total_credit"""
   balanced: Boolean!
@@ -3781,10 +3786,10 @@ type DraftLineItem {
   elementName: String!
 
   """Debit amount in cents"""
-  debitAmount: Int!
+  debitAmount: BigInt!
 
   """Credit amount in cents"""
-  creditAmount: Int!
+  creditAmount: BigInt!
   description: String
 }
 
@@ -4786,10 +4791,10 @@ type AllocationShare {
   outsidePct: Float!
 
   """Cents: the member's result for the month, positive for a profit."""
-  monthResult: Int!
+  monthResult: BigInt!
 
   """Cents: the outside owners' percentage of the month's result."""
-  proRataAmount: Int!
+  proRataAmount: BigInt!
 
   """The month's override, when one is set."""
   override: AllocationOverrideRecord
@@ -4797,7 +4802,7 @@ type AllocationShare {
   """
   Cents: the share the consolidating entries use, the override's when set.
   """
-  effectiveAmount: Int!
+  effectiveAmount: BigInt!
 
   """
   True when the consolidation entity has closed the month, so the override can no longer change.
@@ -4811,7 +4816,7 @@ type AllocationOverrideRecord {
   period: String!
 
   """The share, in cents, when set so."""
-  amount: Int
+  amount: BigInt
 
   """The share as a percentage of the month's result, when set so."""
   percentage: Float
