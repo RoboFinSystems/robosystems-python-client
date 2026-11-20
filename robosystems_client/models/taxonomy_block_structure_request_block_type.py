@@ -13,7 +13,6 @@ class TaxonomyBlockStructureRequestBlockType(str, Enum):
   POLICY = "policy"
   RECONCILIATION = "reconciliation"
   REGULATORY_DISCLOSURE = "regulatory_disclosure"
-  ROLLFORWARD = "rollforward"
   SCHEDULE = "schedule"
 
   def __str__(self) -> str:
