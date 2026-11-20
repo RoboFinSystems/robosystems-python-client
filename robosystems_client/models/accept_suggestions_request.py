@@ -21,8 +21,9 @@ class AcceptSuggestionsRequest:
           one that cannot be taken. The other filters still narrow them.
       source (None | str | Unset): Only lines from this feed (`plaid`, `mercury`).
       agent_id (None | str | Unset): Only one counterparty's lines.
-      suggestion_source (None | str | Unset): Only lines whose suggestion came from here: `agent_default` (the
-          counterparty's learned default), `tier0` (the bank's category) or `ai`.
+      suggestion_source (None | str | Unset): Only lines whose suggestion came from here: `open_item` (an open bill or
+          invoice the line pays exactly), `agent_default` (the counterparty's learned default) or `tier0` (the bank's
+          category).
       occurred_from (datetime.date | None | Unset): Only lines dated on or after this day.
       occurred_to (datetime.date | None | Unset): Only lines dated on or before this day.
       commit (bool | Unset): Post each taken line as well (captured → committed). Off, the lines are classified and
