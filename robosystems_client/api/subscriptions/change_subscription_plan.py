@@ -105,7 +105,7 @@ def sync_detailed(
 
    For repositories: synchronous tier change. For user graphs: use `POST
   /v1/graphs/{graph_id}/operations/change-tier` instead — this endpoint rejects graph tier changes.
-  Requires org owner role.
+  Members change their own seat; org owners and admins can change any member's by passing `user_id`.
 
   Args:
       graph_id (str): Graph ID or repository name
@@ -141,7 +141,7 @@ def sync(
 
    For repositories: synchronous tier change. For user graphs: use `POST
   /v1/graphs/{graph_id}/operations/change-tier` instead — this endpoint rejects graph tier changes.
-  Requires org owner role.
+  Members change their own seat; org owners and admins can change any member's by passing `user_id`.
 
   Args:
       graph_id (str): Graph ID or repository name
@@ -172,7 +172,7 @@ async def asyncio_detailed(
 
    For repositories: synchronous tier change. For user graphs: use `POST
   /v1/graphs/{graph_id}/operations/change-tier` instead — this endpoint rejects graph tier changes.
-  Requires org owner role.
+  Members change their own seat; org owners and admins can change any member's by passing `user_id`.
 
   Args:
       graph_id (str): Graph ID or repository name
@@ -206,7 +206,7 @@ async def asyncio(
 
    For repositories: synchronous tier change. For user graphs: use `POST
   /v1/graphs/{graph_id}/operations/change-tier` instead — this endpoint rejects graph tier changes.
-  Requires org owner role.
+  Members change their own seat; org owners and admins can change any member's by passing `user_id`.
 
   Args:
       graph_id (str): Graph ID or repository name
