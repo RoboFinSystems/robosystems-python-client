@@ -3287,6 +3287,32 @@ class TestDownloadReportBundle:
     assert result.filename == "rpt_01-g3.lineage.holon.jsonld"
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_databook_download_takes_the_short_alias(
+    self, mock_client_cls, mock_config, graph_id, tmp_path
+  ):
+    """``databook`` names the DataBook; it is Markdown, written to disk as the
+    bytes that arrived, and with no filename from the server it lands as
+    ``.databook.md``, never ``.tavi.json``."""
+    body = "---\nid: x\n---\n\n# Acme — 10-K\n".encode()
+    artifact = self._mock_artifact(body, "")
+    artifact.headers = {}
+    self._patch_httpx(mock_client_cls, artifact)
+    with patch.object(
+      LedgerClient,
+      "_query",
+      return_value=self._gql_data("text/markdown; charset=utf-8", "databook", gen=3),
+    ) as mock_query:
+      result = LedgerClient(mock_config).download_report_bundle(
+        graph_id, "rpt_01", format="databook", to=tmp_path / "report.databook.md"
+      )
+
+    assert mock_query.call_args.args[2]["format"] == "DATABOOK"
+    assert result.format == "databook"
+    assert result.content_type == "text/markdown; charset=utf-8"
+    assert result.filename == "rpt_01-g3.databook.md"
+    assert (tmp_path / "report.databook.md").read_bytes() == body
+
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
   def test_xbrl_download_follows_presigned_url(
     self, mock_client_cls, mock_config, graph_id
   ):
