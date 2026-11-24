@@ -119,7 +119,8 @@ def sync_detailed(
   `consolidation_method` overrides the treatment the share implies (a new share re-derives it unless
   both are given), `entity_role: consolidation` marks the group's entity for consolidating entries,
   and `joined_on` / `left_on` bound its membership by month — set `left_on` when a subsidiary leaves
-  the group and its history stays readable under it.
+  the group and its history stays readable under it. `industry` is an id from the industry
+  classification, refused (422) with the closest ids when unknown; an explicit null clears it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -171,7 +172,8 @@ def sync(
   `consolidation_method` overrides the treatment the share implies (a new share re-derives it unless
   both are given), `entity_role: consolidation` marks the group's entity for consolidating entries,
   and `joined_on` / `left_on` bound its membership by month — set `left_on` when a subsidiary leaves
-  the group and its history stays readable under it.
+  the group and its history stays readable under it. `industry` is an id from the industry
+  classification, refused (422) with the closest ids when unknown; an explicit null clears it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -218,7 +220,8 @@ async def asyncio_detailed(
   `consolidation_method` overrides the treatment the share implies (a new share re-derives it unless
   both are given), `entity_role: consolidation` marks the group's entity for consolidating entries,
   and `joined_on` / `left_on` bound its membership by month — set `left_on` when a subsidiary leaves
-  the group and its history stays readable under it.
+  the group and its history stays readable under it. `industry` is an id from the industry
+  classification, refused (422) with the closest ids when unknown; an explicit null clears it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -268,7 +271,8 @@ async def asyncio(
   `consolidation_method` overrides the treatment the share implies (a new share re-derives it unless
   both are given), `entity_role: consolidation` marks the group's entity for consolidating entries,
   and `joined_on` / `left_on` bound its membership by month — set `left_on` when a subsidiary leaves
-  the group and its history stays readable under it.
+  the group and its history stays readable under it. `industry` is an id from the industry
+  classification, refused (422) with the closest ids when unknown; an explicit null clears it.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

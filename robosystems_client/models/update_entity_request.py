@@ -43,7 +43,9 @@ class UpdateEntityRequest:
           fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD (e.g. '12-31', '06-30').
           tax_id (None | str | Unset):
           lei (None | str | Unset):
-          industry (None | str | Unset):
+          industry (None | str | Unset): Industry, as an id from the industry classification (the `industries` GraphQL
+              field), at any level: `technology`, `health-care/biotechnology`, `technology/software/application/payroll-and-
+              hcm`. An unknown value is refused with the closest ids.
           entity_type (None | str | Unset):
           phone (None | str | Unset):
           website (None | str | Unset):

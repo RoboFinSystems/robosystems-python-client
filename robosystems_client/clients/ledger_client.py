@@ -316,6 +316,12 @@ from ..graphql.generated.list_ledger_reconciliations import (
 from ..graphql.generated.list_chart_templates import (
   ListChartTemplates,
 )
+from ..graphql.generated.list_industries import (
+  ListIndustries,
+)
+from ..graphql.generated.list_industries import (
+  ListIndustriesIndustries as Industry,
+)
 from ..graphql.generated.list_chart_templates import (
   ListChartTemplatesChartTemplates as ChartTemplate,
 )
@@ -547,6 +553,7 @@ from ..graphql.generated.operations import (
   GET_LEDGER_EVENT_BLOCK_GQL,
   GET_LEDGER_FISCAL_CALENDAR_GQL,
   LIST_CHART_TEMPLATES_GQL,
+  LIST_INDUSTRIES_GQL,
   LIST_LEDGER_RECONCILIATIONS_GQL,
   GET_LEDGER_MAPPED_TRIAL_BALANCE_GQL,
   GET_LEDGER_MAPPING_COVERAGE_GQL,
@@ -3229,6 +3236,16 @@ class LedgerClient:
     )
     envelope = self._call_op("Initialize ledger", response)
     return self._typed_result("Initialize ledger", envelope, InitializeLedgerResponse)
+
+  def list_industries(self, graph_id: str) -> list[Industry]:
+    """The industry classification an entity's ``industry`` is chosen from.
+
+    Every node, parents before children; the same list for every graph. Pass
+    a node's ``id`` as ``industry`` to `create_entity` or `update_entity`, at
+    any level. An unknown value is refused with the closest ids.
+    """
+    data = self._query(graph_id, LIST_INDUSTRIES_GQL)
+    return ListIndustries.model_validate(data).industries
 
   # ── Chart of accounts ───────────────────────────────────────────────────
 

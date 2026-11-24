@@ -37,7 +37,8 @@ class LedgerEntityResponse:
           fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD (e.g. '12-31', '06-30').
           tax_id (None | str | Unset): Tax ID (EIN / SSN).
           lei (None | str | Unset): Legal Entity Identifier (ISO 17442).
-          industry (None | str | Unset): Free-form industry label.
+          industry (None | str | Unset): Industry, as an id from the industry classification (the `industries` field). An
+              entity set before the classification may still hold free text.
           entity_type (None | str | Unset): Legal form (e.g. 'corporation', 'llc', 'lp').
           reporting_style_id (None | str | Unset): Active Reporting Style (Structure id) governing this entity's statement
               layout. Change it via the change-reporting-style operation.
