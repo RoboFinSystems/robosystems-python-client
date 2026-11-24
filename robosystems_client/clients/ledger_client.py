@@ -796,6 +796,7 @@ _FILENAME_PATTERN = re.compile(r'filename="?([^";]+)"?', re.IGNORECASE)
 _DOWNLOAD_FORMAT_ALIASES = {
   "holon-jsonld": "HOLON_JSONLD",
   "holon-jsonld-lineage": "HOLON_JSONLD_LINEAGE",
+  "databook": "DATABOOK",
   "xbrl-2.1": "XBRL_2_1",
   "tavi": "TAVI",
 }
@@ -3833,9 +3834,9 @@ class LedgerClient:
     A download is a read, so the presigned URL is resolved through the
     GraphQL ``reportDownloadUrl`` field (the REST download route was
     retired). Every flavor resolves to a short-lived presigned S3 URL —
-    the holon is stamped at publish time; the Tavi model, the XBRL and the
-    holon with lineage are materialized + cached on first request. The client follows the URL
-    and pulls the bytes.
+    the holon is stamped at publish time; the Tavi model, the XBRL, the
+    DataBook and the holon with lineage are materialized + cached on first
+    request. The client follows the URL and pulls the bytes.
 
     Args:
         graph_id: Graph identifier owning the Report.
@@ -3846,9 +3847,12 @@ class LedgerClient:
             Project Tavi compiled model), ``"xbrl-2.1"``, or
             ``"holon-jsonld-lineage"`` (the holon with its ``#lineage`` graph:
             the ledger lines, entries and events behind every frozen figure,
-            for this graph's own members). The enum names ``"TAVI"`` /
-            ``"HOLON_JSONLD"`` / ``"HOLON_JSONLD_LINEAGE"`` / ``"XBRL_2_1"``
-            are also accepted.
+            for this graph's own members), or ``"databook"`` (the holon as
+            a Markdown document a person reads: each value links to its fact
+            in the holon, which it names as its source; to the holon what
+            inline XBRL is to XBRL). The enum names ``"TAVI"`` /
+            ``"HOLON_JSONLD"`` / ``"HOLON_JSONLD_LINEAGE"`` / ``"DATABOOK"`` /
+            ``"XBRL_2_1"`` are also accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
             written file.
@@ -3896,6 +3900,7 @@ class LedgerClient:
       "XBRL_2_1": "zip",
       "HOLON_JSONLD": "holon.jsonld",
       "HOLON_JSONLD_LINEAGE": "lineage.holon.jsonld",
+      "DATABOOK": "databook.md",
     }.get(gql_format, "tavi.json")
     filename = (
       _parse_filename(artifact.headers.get("content-disposition", ""))
