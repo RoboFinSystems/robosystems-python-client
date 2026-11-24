@@ -4061,6 +4061,39 @@ class TestShareControls:
 
 
 @pytest.mark.unit
+class TestIndustries:
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_industries(self, mock_execute, mock_config, graph_id):
+    mock_execute.return_value = {
+      "industries": [
+        {
+          "id": "technology",
+          "parentId": None,
+          "level": "sector",
+          "label": "Technology",
+          "path": ["Technology"],
+          "carried": False,
+          "replacedBy": None,
+        },
+        {
+          "id": "technology/software",
+          "parentId": "technology",
+          "level": "subsector",
+          "label": "Software",
+          "path": ["Technology", "Software"],
+          "carried": False,
+          "replacedBy": None,
+        },
+      ]
+    }
+    client = LedgerClient(mock_config)
+    industries = client.list_industries(graph_id)
+    assert [i.id for i in industries] == ["technology", "technology/software"]
+    assert industries[1].parent_id == "technology"
+    assert industries[1].path == ["Technology", "Software"]
+
+
+@pytest.mark.unit
 class TestChartOfAccountsOps:
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_list_chart_templates(self, mock_execute, mock_config, graph_id):

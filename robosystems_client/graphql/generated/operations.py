@@ -38,6 +38,7 @@ __all__ = [
   "GET_LIBRARY_ELEMENT_GQL",
   "GET_LIBRARY_TAXONOMY_GQL",
   "LIST_CHART_TEMPLATES_GQL",
+  "LIST_INDUSTRIES_GQL",
   "LIST_INFORMATION_BLOCKS_GQL",
   "LIST_INFORMATION_BLOCK_SUMMARIES_GQL",
   "LIST_INVESTOR_PORTFOLIOS_GQL",
@@ -1599,6 +1600,20 @@ query ListChartTemplates {
     displayName
     description
     accountCount
+  }
+}
+"""
+
+LIST_INDUSTRIES_GQL = """
+query ListIndustries {
+  industries {
+    id
+    parentId
+    level
+    label
+    path
+    carried
+    replacedBy
   }
 }
 """

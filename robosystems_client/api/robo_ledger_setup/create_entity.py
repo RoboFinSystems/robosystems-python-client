@@ -124,7 +124,9 @@ def sync_detailed(
   access to it sees every entity. `ownership_pct` implies the `consolidation_method` (50 and above
   full, 20 to 50 equity, below 20 cost) unless one is given; `entity_role: consolidation` makes this
   the group's entity for consolidating entries, read by the consolidated statements only; `joined_on`
-  dates an acquired subsidiary's membership.
+  dates an acquired subsidiary's membership. `industry` is an id from the industry classification, at
+  any level (`technology`, `health-care/biotechnology`); an unknown value is refused (422) with the
+  closest ids.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -182,7 +184,9 @@ def sync(
   access to it sees every entity. `ownership_pct` implies the `consolidation_method` (50 and above
   full, 20 to 50 equity, below 20 cost) unless one is given; `entity_role: consolidation` makes this
   the group's entity for consolidating entries, read by the consolidated statements only; `joined_on`
-  dates an acquired subsidiary's membership.
+  dates an acquired subsidiary's membership. `industry` is an id from the industry classification, at
+  any level (`technology`, `health-care/biotechnology`); an unknown value is refused (422) with the
+  closest ids.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -235,7 +239,9 @@ async def asyncio_detailed(
   access to it sees every entity. `ownership_pct` implies the `consolidation_method` (50 and above
   full, 20 to 50 equity, below 20 cost) unless one is given; `entity_role: consolidation` makes this
   the group's entity for consolidating entries, read by the consolidated statements only; `joined_on`
-  dates an acquired subsidiary's membership.
+  dates an acquired subsidiary's membership. `industry` is an id from the industry classification, at
+  any level (`technology`, `health-care/biotechnology`); an unknown value is refused (422) with the
+  closest ids.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.
@@ -291,7 +297,9 @@ async def asyncio(
   access to it sees every entity. `ownership_pct` implies the `consolidation_method` (50 and above
   full, 20 to 50 equity, below 20 cost) unless one is given; `entity_role: consolidation` makes this
   the group's entity for consolidating entries, read by the consolidated statements only; `joined_on`
-  dates an acquired subsidiary's membership.
+  dates an acquired subsidiary's membership. `industry` is an id from the industry classification, at
+  any level (`technology`, `health-care/biotechnology`); an unknown value is refused (422) with the
+  closest ids.
 
   **Idempotency**: supply an `Idempotency-Key` header to make safe retries; replays within 24 hours
   return the same envelope. Reusing the key with a different body returns HTTP 409 Conflict.

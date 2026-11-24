@@ -91,6 +91,12 @@ type Query {
     entityId: String = null
   ): LedgerEntity
 
+  """
+  The industry classification: every node an entity's `industry` can name,
+  parents before children. One list for every graph.
+  """
+  industries: [Industry!]!
+
   """List entities for a graph, optionally filtered by source."""
   entities(
     """Filter by the system an entity came from, e.g. `quickbooks`."""
@@ -1796,7 +1802,9 @@ type LedgerEntity {
   """Legal Entity Identifier (ISO 17442)."""
   lei: String
 
-  """Free-form industry label."""
+  """
+  Industry, as an id from the industry classification (the `industries` field). An entity set before the classification may still hold free text.
+  """
   industry: String
 
   """Legal form (e.g. 'corporation', 'llc', 'lp')."""
@@ -1868,6 +1876,34 @@ type LedgerEntity {
   addressCountry: String
   createdAt: String
   updatedAt: String
+}
+
+"""One node of the industry classification."""
+type Industry {
+  """The node's slug path; its ancestors are its id's prefixes."""
+  id: String!
+
+  """The parent node; null on a sector."""
+  parentId: String
+
+  """`sector`, `subsector`, `industry` or `sub-industry`."""
+  level: String!
+
+  """The node's own name."""
+  label: String!
+
+  """The names from the sector down to this node, for display."""
+  path: [String!]!
+
+  """
+  True on the single industry of a subsector nobody has divided; it repeats the subsector's name and `path` shows it once.
+  """
+  carried: Boolean!
+
+  """
+  Set on a retired node: the id that stands for it now. Not offered for new choices.
+  """
+  replacedBy: String
 }
 
 type Agent {

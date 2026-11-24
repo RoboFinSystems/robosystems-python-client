@@ -42,6 +42,7 @@ from .get_library_element_classifications import GetLibraryElementClassification
 from .get_library_element_equivalents import GetLibraryElementEquivalents
 from .get_library_taxonomy import GetLibraryTaxonomy
 from .list_chart_templates import ListChartTemplates
+from .list_industries import ListIndustries
 from .list_information_block_summaries import ListInformationBlockSummaries
 from .list_information_blocks import ListInformationBlocks
 from .list_investor_portfolios import ListInvestorPortfolios
@@ -113,6 +114,7 @@ from .operations import (
   GET_LIBRARY_ELEMENT_GQL,
   GET_LIBRARY_TAXONOMY_GQL,
   LIST_CHART_TEMPLATES_GQL,
+  LIST_INDUSTRIES_GQL,
   LIST_INFORMATION_BLOCK_SUMMARIES_GQL,
   LIST_INFORMATION_BLOCKS_GQL,
   LIST_INVESTOR_PORTFOLIOS_GQL,
@@ -742,6 +744,17 @@ class Client(BaseClient):
     )
     data = self.get_data(response)
     return ListChartTemplates.model_validate(data)
+
+  def list_industries(self, **kwargs: Any) -> ListIndustries:
+    variables: dict[str, object] = {}
+    response = self.execute(
+      query=LIST_INDUSTRIES_GQL,
+      operation_name="ListIndustries",
+      variables=variables,
+      **kwargs,
+    )
+    data = self.get_data(response)
+    return ListIndustries.model_validate(data)
 
   def list_information_block_summaries(
     self,
