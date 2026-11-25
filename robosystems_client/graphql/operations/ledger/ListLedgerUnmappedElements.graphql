@@ -2,5 +2,6 @@ query ListLedgerUnmappedElements($mappingId: String) {
   unmappedElements(mappingId: $mappingId) {
     id code name trait balanceType externalSource
     suggestedTargets { elementId qname name confidence }
+    netsAgainst { elementId qname name confidence }
   }
 }

@@ -401,6 +401,7 @@ from .list_ledger_transactions import (
 from .list_ledger_unmapped_elements import (
   ListLedgerUnmappedElements,
   ListLedgerUnmappedElementsUnmappedElements,
+  ListLedgerUnmappedElementsUnmappedElementsNetsAgainst,
   ListLedgerUnmappedElementsUnmappedElementsSuggestedTargets,
 )
 from .list_library_elements import (
@@ -872,6 +873,7 @@ __all__ = [
   "ListLedgerTransactionsTransactionsTransactions",
   "ListLedgerUnmappedElements",
   "ListLedgerUnmappedElementsUnmappedElements",
+  "ListLedgerUnmappedElementsUnmappedElementsNetsAgainst",
   "ListLedgerUnmappedElementsUnmappedElementsSuggestedTargets",
   "ListLibraryElements",
   "ListLibraryElementsLibraryElements",

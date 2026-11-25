@@ -1898,6 +1898,7 @@ class TestLedgerReadsAdditional:
               "confidence": 0.9,
             }
           ],
+          "netsAgainst": None,
         }
       ]
     }
@@ -1906,8 +1907,37 @@ class TestLedgerReadsAdditional:
     assert len(result) == 1
     assert result[0].code == "4500"
     assert result[0].suggested_targets[0].confidence == 0.9
+    assert result[0].nets_against is None
     variables = mock_execute.call_args[0][2]
     assert variables["mappingId"] == "map_1"
+
+  @patch("robosystems_client.graphql.client.GraphQLClient.execute")
+  def test_list_unmapped_elements_names_the_concept_a_contra_nets_against(
+    self, mock_execute, mock_config, graph_id
+  ):
+    mock_execute.return_value = {
+      "unmappedElements": [
+        {
+          "id": "elem_3",
+          "code": "1420",
+          "name": "Accumulated Amortization",
+          "trait": "contraAsset",
+          "balanceType": "credit",
+          "externalSource": "qb",
+          "suggestedTargets": [],
+          "netsAgainst": {
+            "elementId": "elem_intangibles",
+            "qname": "rs-gaap:IntangibleAssetsNetExcludingGoodwill",
+            "name": "Intangible Assets, Net (Excluding Goodwill)",
+            "confidence": None,
+          },
+        }
+      ]
+    }
+    client = LedgerClient(mock_config)
+    (contra,) = client.list_unmapped_elements(graph_id)
+    assert contra.nets_against is not None
+    assert contra.nets_against.qname == "rs-gaap:IntangibleAssetsNetExcludingGoodwill"
 
   @patch("robosystems_client.graphql.client.GraphQLClient.execute")
   def test_list_structures(self, mock_execute, mock_config, graph_id):
