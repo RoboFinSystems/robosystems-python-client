@@ -2460,6 +2460,12 @@ query ListLedgerUnmappedElements($mappingId: String) {
       name
       confidence
     }
+    netsAgainst {
+      elementId
+      qname
+      name
+      confidence
+    }
   }
 }
 """

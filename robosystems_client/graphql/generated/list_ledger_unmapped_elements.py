@@ -21,9 +21,19 @@ class ListLedgerUnmappedElementsUnmappedElements(BaseModel):
   suggested_targets: list[
     "ListLedgerUnmappedElementsUnmappedElementsSuggestedTargets"
   ] = Field(alias="suggestedTargets")
+  nets_against: Optional["ListLedgerUnmappedElementsUnmappedElementsNetsAgainst"] = (
+    Field(alias="netsAgainst")
+  )
 
 
 class ListLedgerUnmappedElementsUnmappedElementsSuggestedTargets(BaseModel):
+  element_id: str = Field(alias="elementId")
+  qname: str
+  name: str
+  confidence: Optional[float]
+
+
+class ListLedgerUnmappedElementsUnmappedElementsNetsAgainst(BaseModel):
   element_id: str = Field(alias="elementId")
   qname: str
   name: str
