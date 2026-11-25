@@ -10,7 +10,7 @@ authors = [
 license = {text = "MIT"}
 keywords = ["client", "robosystems", "financial", "graph", "api", "sdk", "knowledge-graph"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Framework :: AsyncIO",
     "Framework :: Pydantic",
     "Framework :: Pydantic :: 2",

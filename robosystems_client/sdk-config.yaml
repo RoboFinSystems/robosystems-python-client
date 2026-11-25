@@ -1,5 +1,4 @@
 class_name: RoboSystemsClient
 package_name: robosystems_client
-project_name: robosystems-sdk
-package_description: "Python Client for RoboSystems financial graph database API"
-package_version: "0.1.0"
+project_name: robosystems-client
+package_description: "Python client for RoboSystems, the open-source knowledge graph for finance"
