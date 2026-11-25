@@ -61,6 +61,10 @@ class TestGraphClient:
     assert entity.sic == "7372"
     assert entity.sic_description == "Prepackaged Software"
 
+  def test_initial_entity_data_needs_only_a_name(self):
+    """The website is optional: RoboSystems assigns the entity's own URI."""
+    assert InitialEntityData(name="Basic Entity").uri is None
+
   def test_initial_entity_data_defaults(self):
     """Test InitialEntityData default values."""
     entity = InitialEntityData(name="Basic Entity", uri="https://example.com")

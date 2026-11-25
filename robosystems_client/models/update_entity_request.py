@@ -13,6 +13,9 @@ from ..models.update_entity_request_consolidation_method_type_0 import (
 from ..models.update_entity_request_entity_role_type_0 import (
   UpdateEntityRequestEntityRoleType0,
 )
+from ..models.update_entity_request_entity_type_type_0 import (
+  UpdateEntityRequestEntityTypeType0,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="UpdateEntityRequest")
@@ -32,28 +35,27 @@ class UpdateEntityRequest:
               default.
           name (None | str | Unset):
           legal_name (None | str | Unset):
-          uri (None | str | Unset):
-          cik (None | str | Unset):
+          cik (None | str | Unset): SEC Central Index Key: up to 10 digits.
           ticker (None | str | Unset):
           exchange (None | str | Unset):
           sic (None | str | Unset):
           sic_description (None | str | Unset):
           category (None | str | Unset):
           state_of_incorporation (None | str | Unset):
-          fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD (e.g. '12-31', '06-30').
           tax_id (None | str | Unset):
-          lei (None | str | Unset):
+          lei (None | str | Unset): Legal Entity Identifier (ISO 17442): 20 letters and digits.
           industry (None | str | Unset): Industry, as an id from the industry classification (the `industries` GraphQL
               field), at any level: `technology`, `health-care/biotechnology`, `technology/software/application/payroll-and-
               hcm`. An unknown value is refused with the closest ids.
-          entity_type (None | str | Unset):
+          entity_type (None | Unset | UpdateEntityRequestEntityTypeType0): Legal form: `corporation`, `llc`,
+              `partnership`, `sole_proprietorship` or `non_profit`. Changing it leaves the Reporting Style as it is.
           phone (None | str | Unset):
           website (None | str | Unset):
           address_line1 (None | str | Unset):
           address_city (None | str | Unset):
           address_state (None | str | Unset):
           address_postal_code (None | str | Unset):
-          address_country (None | str | Unset):
+          address_country (None | str | Unset): ISO 3166-1 alpha-2 country code.
           ownership_pct (float | None | Unset): The parent's share of this entity, as a percent. Refused on the group
               parent, which has no owner in the graph. A new share re-derives `consolidation_method` unless that is given too.
           consolidation_method (None | Unset | UpdateEntityRequestConsolidationMethodType0): How the group's consolidated
@@ -83,7 +85,6 @@ class UpdateEntityRequest:
   entity_id: None | str | Unset = UNSET
   name: None | str | Unset = UNSET
   legal_name: None | str | Unset = UNSET
-  uri: None | str | Unset = UNSET
   cik: None | str | Unset = UNSET
   ticker: None | str | Unset = UNSET
   exchange: None | str | Unset = UNSET
@@ -91,11 +92,10 @@ class UpdateEntityRequest:
   sic_description: None | str | Unset = UNSET
   category: None | str | Unset = UNSET
   state_of_incorporation: None | str | Unset = UNSET
-  fiscal_year_end: None | str | Unset = UNSET
   tax_id: None | str | Unset = UNSET
   lei: None | str | Unset = UNSET
   industry: None | str | Unset = UNSET
-  entity_type: None | str | Unset = UNSET
+  entity_type: None | Unset | UpdateEntityRequestEntityTypeType0 = UNSET
   phone: None | str | Unset = UNSET
   website: None | str | Unset = UNSET
   address_line1: None | str | Unset = UNSET
@@ -130,12 +130,6 @@ class UpdateEntityRequest:
       legal_name = UNSET
     else:
       legal_name = self.legal_name
-
-    uri: None | str | Unset
-    if isinstance(self.uri, Unset):
-      uri = UNSET
-    else:
-      uri = self.uri
 
     cik: None | str | Unset
     if isinstance(self.cik, Unset):
@@ -179,12 +173,6 @@ class UpdateEntityRequest:
     else:
       state_of_incorporation = self.state_of_incorporation
 
-    fiscal_year_end: None | str | Unset
-    if isinstance(self.fiscal_year_end, Unset):
-      fiscal_year_end = UNSET
-    else:
-      fiscal_year_end = self.fiscal_year_end
-
     tax_id: None | str | Unset
     if isinstance(self.tax_id, Unset):
       tax_id = UNSET
@@ -206,6 +194,8 @@ class UpdateEntityRequest:
     entity_type: None | str | Unset
     if isinstance(self.entity_type, Unset):
       entity_type = UNSET
+    elif isinstance(self.entity_type, UpdateEntityRequestEntityTypeType0):
+      entity_type = self.entity_type.value
     else:
       entity_type = self.entity_type
 
@@ -300,8 +290,6 @@ class UpdateEntityRequest:
       field_dict["name"] = name
     if legal_name is not UNSET:
       field_dict["legal_name"] = legal_name
-    if uri is not UNSET:
-      field_dict["uri"] = uri
     if cik is not UNSET:
       field_dict["cik"] = cik
     if ticker is not UNSET:
@@ -316,8 +304,6 @@ class UpdateEntityRequest:
       field_dict["category"] = category
     if state_of_incorporation is not UNSET:
       field_dict["state_of_incorporation"] = state_of_incorporation
-    if fiscal_year_end is not UNSET:
-      field_dict["fiscal_year_end"] = fiscal_year_end
     if tax_id is not UNSET:
       field_dict["tax_id"] = tax_id
     if lei is not UNSET:
@@ -384,15 +370,6 @@ class UpdateEntityRequest:
 
     legal_name = _parse_legal_name(d.pop("legal_name", UNSET))
 
-    def _parse_uri(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    uri = _parse_uri(d.pop("uri", UNSET))
-
     def _parse_cik(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -458,15 +435,6 @@ class UpdateEntityRequest:
       d.pop("state_of_incorporation", UNSET)
     )
 
-    def _parse_fiscal_year_end(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    fiscal_year_end = _parse_fiscal_year_end(d.pop("fiscal_year_end", UNSET))
-
     def _parse_tax_id(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -494,12 +462,22 @@ class UpdateEntityRequest:
 
     industry = _parse_industry(d.pop("industry", UNSET))
 
-    def _parse_entity_type(data: object) -> None | str | Unset:
+    def _parse_entity_type(
+      data: object,
+    ) -> None | Unset | UpdateEntityRequestEntityTypeType0:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(None | str | Unset, data)
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        entity_type_type_0 = UpdateEntityRequestEntityTypeType0(data)
+
+        return entity_type_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(None | Unset | UpdateEntityRequestEntityTypeType0, data)
 
     entity_type = _parse_entity_type(d.pop("entity_type", UNSET))
 
@@ -655,7 +633,6 @@ class UpdateEntityRequest:
       entity_id=entity_id,
       name=name,
       legal_name=legal_name,
-      uri=uri,
       cik=cik,
       ticker=ticker,
       exchange=exchange,
@@ -663,7 +640,6 @@ class UpdateEntityRequest:
       sic_description=sic_description,
       category=category,
       state_of_incorporation=state_of_incorporation,
-      fiscal_year_end=fiscal_year_end,
       tax_id=tax_id,
       lei=lei,
       industry=industry,

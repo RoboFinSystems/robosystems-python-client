@@ -780,13 +780,14 @@ type Query {
   The only way to download a report's bundle. Every format resolves to a
   short-lived presigned S3 URL which the client follows directly — the
   field returns the URL, never the bytes. The holon is stamped at
-  publish time; the Tavi, the XBRL, the DataBook and the holon with lineage
-  are materialized and cached on first request. `DATABOOK` is the report as
-  Markdown a person reads, written from the holon and pointing back at it. `HOLON_JSONLD_LINEAGE` carries
-  the books behind the report's frozen figures, so it is for this graph's
-  members only: a report shared in from another graph raises
-  `REPORT_BUNDLE_NOT_AVAILABLE` for it. `expiresIn`
-  is the URL's lifetime in seconds, bounded 60-3600.
+  publish time; the Tavi, the XBRL, the DataBook, the workbook and the holon
+  with lineage are materialized and cached on first request. `DATABOOK` is
+  the report as Markdown a person reads, written from the holon and pointing
+  back at it. `WORKBOOK` is the report as an Excel file, a sheet per section.
+  `HOLON_JSONLD_LINEAGE` carries the books behind the report's frozen
+  figures, so it is for this graph's members only: a report shared in from
+  another graph raises `REPORT_BUNDLE_NOT_AVAILABLE` for it. `expiresIn` is
+  the URL's lifetime in seconds, bounded 60-3600.
   
   Returns null when the report doesn't exist; raises
   `REPORT_BUNDLE_NOT_AVAILABLE` when it exists but has no published
@@ -1770,7 +1771,9 @@ type LedgerEntity {
   """Full registered legal name (when different from `name`)."""
   legalName: String
 
-  """Canonical URL / external identifier."""
+  """
+  The entity's URI, assigned by RoboSystems: `https://robosystems.ai/entities#<id>`.
+  """
   uri: String
 
   """SEC CIK (Central Index Key)."""
@@ -1794,7 +1797,9 @@ type LedgerEntity {
   """US state or country of incorporation."""
   stateOfIncorporation: String
 
-  """Fiscal year-end as MM-DD (e.g. '12-31', '06-30')."""
+  """
+  Fiscal year-end as MM-DD, from the entity's fiscal calendar; null before the calendar is set up. Change it through the calendar.
+  """
   fiscalYearEnd: String
 
   """Tax ID (EIN / SSN)."""
@@ -1808,7 +1813,9 @@ type LedgerEntity {
   """
   industry: String
 
-  """Legal form (e.g. 'corporation', 'llc', 'lp')."""
+  """
+  Legal form: `corporation`, `llc`, `partnership`, `sole_proprietorship` or `non_profit`. An entity set before the list may hold other text.
+  """
   entityType: String
 
   """
@@ -4582,7 +4589,7 @@ Presigned-URL response for a published Report's serialization bundle.
 
 Every flavor resolves to a short-lived presigned URL pointing at the
 bundle in S3 — the holon is stamped at publish time; the Tavi, the
-XBRL 2.1 and the DataBook are materialized on first download and cached by
+XBRL 2.1, the DataBook and the workbook are materialized on first download and cached by
 `generationCount`.
 The client follows `downloadUrl` to fetch the artifact directly
 from S3 (the API never streams the bytes). Mirrors the
@@ -4616,6 +4623,7 @@ enum ReportDownloadFormat {
   HOLON_JSONLD
   HOLON_JSONLD_LINEAGE
   DATABOOK
+  WORKBOOK
   XBRL_2_1
   TAVI
 }

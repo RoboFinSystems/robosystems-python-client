@@ -13,6 +13,9 @@ from ..models.create_entity_request_consolidation_method_type_0 import (
 from ..models.create_entity_request_entity_role_type_0 import (
   CreateEntityRequestEntityRoleType0,
 )
+from ..models.create_entity_request_entity_type_type_0 import (
+  CreateEntityRequestEntityTypeType0,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CreateEntityRequest")
@@ -32,9 +35,9 @@ class CreateEntityRequest:
       Attributes:
           name (str): Display name.
           legal_name (None | str | Unset): Registered legal name. Defaults to `name`.
-          entity_type (None | str | Unset): Legal form: `corporation`, `llc`, `partnership`, `sole_proprietorship`,
-              `non_profit`. Picks the default Reporting Style (partnership and llc have equity-form Styles of their own;
-              anything else is corporate) and the equity rows of a chart template.
+          entity_type (CreateEntityRequestEntityTypeType0 | None | Unset): Legal form: `corporation`, `llc`,
+              `partnership`, `sole_proprietorship`, `non_profit`. Picks the default Reporting Style (partnership and llc have
+              equity-form Styles of their own; anything else is corporate) and the equity rows of a chart template.
           reporting_style_id (None | str | Unset): Structure id of the Reporting Style to present under, validated in the
               graph like change-reporting-style. Omit to derive it from `entity_type`. A consolidation entity always takes the
               group parent's.
@@ -64,16 +67,13 @@ class CreateEntityRequest:
               consolidation entity.
           ticker (None | str | Unset): Short symbol, unique in the graph; it prefixes the entity's account names
               (`coa-<ticker>:1000`). Derived from the name's initials when omitted.
-          uri (None | str | Unset): Canonical URL / external identifier.
-          cik (None | str | Unset):
+          cik (None | str | Unset): SEC Central Index Key: up to 10 digits.
           sic (None | str | Unset):
           sic_description (None | str | Unset):
           category (None | str | Unset):
           state_of_incorporation (None | str | Unset):
-          fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD. Defaults to the parent's: a graph has one fiscal
-              cadence, and every entity's calendar follows it.
           tax_id (None | str | Unset):
-          lei (None | str | Unset):
+          lei (None | str | Unset): Legal Entity Identifier (ISO 17442): 20 letters and digits.
           industry (None | str | Unset): Industry, as an id from the industry classification (the `industries` GraphQL
               field), at any level: `technology`, `health-care/biotechnology`, `technology/software/application/payroll-and-
               hcm`. An unknown value is refused with the closest ids.
@@ -83,12 +83,12 @@ class CreateEntityRequest:
           address_city (None | str | Unset):
           address_state (None | str | Unset):
           address_postal_code (None | str | Unset):
-          address_country (None | str | Unset):
+          address_country (None | str | Unset): ISO 3166-1 alpha-2 country code.
   """
 
   name: str
   legal_name: None | str | Unset = UNSET
-  entity_type: None | str | Unset = UNSET
+  entity_type: CreateEntityRequestEntityTypeType0 | None | Unset = UNSET
   reporting_style_id: None | str | Unset = UNSET
   parent_entity_id: None | str | Unset = UNSET
   ownership_pct: float | None | Unset = UNSET
@@ -98,13 +98,11 @@ class CreateEntityRequest:
   entity_role: CreateEntityRequestEntityRoleType0 | None | Unset = UNSET
   joined_on: datetime.date | None | Unset = UNSET
   ticker: None | str | Unset = UNSET
-  uri: None | str | Unset = UNSET
   cik: None | str | Unset = UNSET
   sic: None | str | Unset = UNSET
   sic_description: None | str | Unset = UNSET
   category: None | str | Unset = UNSET
   state_of_incorporation: None | str | Unset = UNSET
-  fiscal_year_end: None | str | Unset = UNSET
   tax_id: None | str | Unset = UNSET
   lei: None | str | Unset = UNSET
   industry: None | str | Unset = UNSET
@@ -129,6 +127,8 @@ class CreateEntityRequest:
     entity_type: None | str | Unset
     if isinstance(self.entity_type, Unset):
       entity_type = UNSET
+    elif isinstance(self.entity_type, CreateEntityRequestEntityTypeType0):
+      entity_type = self.entity_type.value
     else:
       entity_type = self.entity_type
 
@@ -182,12 +182,6 @@ class CreateEntityRequest:
     else:
       ticker = self.ticker
 
-    uri: None | str | Unset
-    if isinstance(self.uri, Unset):
-      uri = UNSET
-    else:
-      uri = self.uri
-
     cik: None | str | Unset
     if isinstance(self.cik, Unset):
       cik = UNSET
@@ -217,12 +211,6 @@ class CreateEntityRequest:
       state_of_incorporation = UNSET
     else:
       state_of_incorporation = self.state_of_incorporation
-
-    fiscal_year_end: None | str | Unset
-    if isinstance(self.fiscal_year_end, Unset):
-      fiscal_year_end = UNSET
-    else:
-      fiscal_year_end = self.fiscal_year_end
 
     tax_id: None | str | Unset
     if isinstance(self.tax_id, Unset):
@@ -309,8 +297,6 @@ class CreateEntityRequest:
       field_dict["joined_on"] = joined_on
     if ticker is not UNSET:
       field_dict["ticker"] = ticker
-    if uri is not UNSET:
-      field_dict["uri"] = uri
     if cik is not UNSET:
       field_dict["cik"] = cik
     if sic is not UNSET:
@@ -321,8 +307,6 @@ class CreateEntityRequest:
       field_dict["category"] = category
     if state_of_incorporation is not UNSET:
       field_dict["state_of_incorporation"] = state_of_incorporation
-    if fiscal_year_end is not UNSET:
-      field_dict["fiscal_year_end"] = fiscal_year_end
     if tax_id is not UNSET:
       field_dict["tax_id"] = tax_id
     if lei is not UNSET:
@@ -360,12 +344,22 @@ class CreateEntityRequest:
 
     legal_name = _parse_legal_name(d.pop("legal_name", UNSET))
 
-    def _parse_entity_type(data: object) -> None | str | Unset:
+    def _parse_entity_type(
+      data: object,
+    ) -> CreateEntityRequestEntityTypeType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(None | str | Unset, data)
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        entity_type_type_0 = CreateEntityRequestEntityTypeType0(data)
+
+        return entity_type_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(CreateEntityRequestEntityTypeType0 | None | Unset, data)
 
     entity_type = _parse_entity_type(d.pop("entity_type", UNSET))
 
@@ -462,15 +456,6 @@ class CreateEntityRequest:
 
     ticker = _parse_ticker(d.pop("ticker", UNSET))
 
-    def _parse_uri(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    uri = _parse_uri(d.pop("uri", UNSET))
-
     def _parse_cik(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -517,15 +502,6 @@ class CreateEntityRequest:
     state_of_incorporation = _parse_state_of_incorporation(
       d.pop("state_of_incorporation", UNSET)
     )
-
-    def _parse_fiscal_year_end(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    fiscal_year_end = _parse_fiscal_year_end(d.pop("fiscal_year_end", UNSET))
 
     def _parse_tax_id(data: object) -> None | str | Unset:
       if data is None:
@@ -630,13 +606,11 @@ class CreateEntityRequest:
       entity_role=entity_role,
       joined_on=joined_on,
       ticker=ticker,
-      uri=uri,
       cik=cik,
       sic=sic,
       sic_description=sic_description,
       category=category,
       state_of_incorporation=state_of_incorporation,
-      fiscal_year_end=fiscal_year_end,
       tax_id=tax_id,
       lei=lei,
       industry=industry,

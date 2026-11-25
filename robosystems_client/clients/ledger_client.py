@@ -797,6 +797,7 @@ _DOWNLOAD_FORMAT_ALIASES = {
   "holon-jsonld": "HOLON_JSONLD",
   "holon-jsonld-lineage": "HOLON_JSONLD_LINEAGE",
   "databook": "DATABOOK",
+  "workbook": "WORKBOOK",
   "xbrl-2.1": "XBRL_2_1",
   "tavi": "TAVI",
 }
@@ -3835,8 +3836,8 @@ class LedgerClient:
     GraphQL ``reportDownloadUrl`` field (the REST download route was
     retired). Every flavor resolves to a short-lived presigned S3 URL —
     the holon is stamped at publish time; the Tavi model, the XBRL, the
-    DataBook and the holon with lineage are materialized + cached on first
-    request. The client follows the URL and pulls the bytes.
+    DataBook, the workbook and the holon with lineage are materialized +
+    cached on first request. The client follows the URL and pulls the bytes.
 
     Args:
         graph_id: Graph identifier owning the Report.
@@ -3850,9 +3851,12 @@ class LedgerClient:
             for this graph's own members), or ``"databook"`` (the holon as
             a Markdown document a person reads: each value links to its fact
             in the holon, which it names as its source; to the holon what
-            inline XBRL is to XBRL). The enum names ``"TAVI"`` /
-            ``"HOLON_JSONLD"`` / ``"HOLON_JSONLD_LINEAGE"`` / ``"DATABOOK"`` /
-            ``"XBRL_2_1"`` are also accepted.
+            inline XBRL is to XBRL), or ``"workbook"`` (the holon as an
+            Excel file: a sheet per section, each line's breakdowns beneath
+            it, every number the reported fact and no formulas). The enum
+            names ``"TAVI"`` / ``"HOLON_JSONLD"`` / ``"HOLON_JSONLD_LINEAGE"``
+            / ``"DATABOOK"`` / ``"WORKBOOK"`` / ``"XBRL_2_1"`` are also
+            accepted.
         to: Optional file path to write the bytes to. When set, the
             returned ``ReportBundleDownload.path`` points at the
             written file.
@@ -3901,6 +3905,7 @@ class LedgerClient:
       "HOLON_JSONLD": "holon.jsonld",
       "HOLON_JSONLD_LINEAGE": "lineage.holon.jsonld",
       "DATABOOK": "databook.md",
+      "WORKBOOK": "xlsx",
     }.get(gql_format, "tavi.json")
     filename = (
       _parse_filename(artifact.headers.get("content-disposition", ""))
