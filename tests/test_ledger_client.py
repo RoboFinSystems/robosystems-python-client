@@ -3313,6 +3313,30 @@ class TestDownloadReportBundle:
     assert (tmp_path / "report.databook.md").read_bytes() == body
 
   @patch("robosystems_client.clients.ledger_client.httpx.Client")
+  def test_workbook_download_takes_the_short_alias(
+    self, mock_client_cls, mock_config, graph_id, tmp_path
+  ):
+    """``workbook`` names the Excel file; it is written to disk as the bytes
+    that arrived, and with no filename from the server it lands as ``.xlsx``."""
+    xlsx = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    body = b"PK\x03\x04 the workbook"
+    artifact = self._mock_artifact(body, "")
+    artifact.headers = {}
+    self._patch_httpx(mock_client_cls, artifact)
+    with patch.object(
+      LedgerClient, "_query", return_value=self._gql_data(xlsx, "workbook", gen=3)
+    ) as mock_query:
+      result = LedgerClient(mock_config).download_report_bundle(
+        graph_id, "rpt_01", format="workbook", to=tmp_path / "report.xlsx"
+      )
+
+    assert mock_query.call_args.args[2]["format"] == "WORKBOOK"
+    assert result.format == "workbook"
+    assert result.content_type == xlsx
+    assert result.filename == "rpt_01-g3.xlsx"
+    assert (tmp_path / "report.xlsx").read_bytes() == body
+
+  @patch("robosystems_client.clients.ledger_client.httpx.Client")
   def test_xbrl_download_follows_presigned_url(
     self, mock_client_cls, mock_config, graph_id
   ):

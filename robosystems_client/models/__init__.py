@@ -115,6 +115,7 @@ from .create_entity_request_consolidation_method_type_0 import (
   CreateEntityRequestConsolidationMethodType0,
 )
 from .create_entity_request_entity_role_type_0 import CreateEntityRequestEntityRoleType0
+from .create_entity_request_entity_type_type_0 import CreateEntityRequestEntityTypeType0
 from .create_event_block_request import CreateEventBlockRequest
 from .create_event_block_request_event_action_type_0 import (
   CreateEventBlockRequestEventActionType0,
@@ -372,7 +373,11 @@ from .ingest_file_op import IngestFileOp
 from .ingest_report_request import IngestReportRequest
 from .ingest_report_response import IngestReportResponse
 from .initial_entity_data import InitialEntityData
+from .initial_entity_data_entity_type_type_0 import InitialEntityDataEntityTypeType0
 from .initialize_chart_of_accounts_request import InitializeChartOfAccountsRequest
+from .initialize_chart_of_accounts_request_entity_type_type_0 import (
+  InitializeChartOfAccountsRequestEntityTypeType0,
+)
 from .initialize_chart_of_accounts_request_template import (
   InitializeChartOfAccountsRequestTemplate,
 )
@@ -1217,6 +1222,7 @@ from .update_entity_request_consolidation_method_type_0 import (
   UpdateEntityRequestConsolidationMethodType0,
 )
 from .update_entity_request_entity_role_type_0 import UpdateEntityRequestEntityRoleType0
+from .update_entity_request_entity_type_type_0 import UpdateEntityRequestEntityTypeType0
 from .update_event_block_request import UpdateEventBlockRequest
 from .update_event_block_request_event_action_type_0 import (
   UpdateEventBlockRequestEventActionType0,
@@ -1389,6 +1395,7 @@ __all__ = (
   "CreateEntityRequest",
   "CreateEntityRequestConsolidationMethodType0",
   "CreateEntityRequestEntityRoleType0",
+  "CreateEntityRequestEntityTypeType0",
   "CreateEventBlockRequest",
   "CreateEventBlockRequestEventActionType0",
   "CreateEventBlockRequestEventCategory",
@@ -1590,7 +1597,9 @@ __all__ = (
   "IngestReportRequest",
   "IngestReportResponse",
   "InitialEntityData",
+  "InitialEntityDataEntityTypeType0",
   "InitializeChartOfAccountsRequest",
+  "InitializeChartOfAccountsRequestEntityTypeType0",
   "InitializeChartOfAccountsRequestTemplate",
   "InitializeChartOfAccountsResponse",
   "InitializeChartOfAccountsResponseTemplate",
@@ -2105,6 +2114,7 @@ __all__ = (
   "UpdateEntityRequest",
   "UpdateEntityRequestConsolidationMethodType0",
   "UpdateEntityRequestEntityRoleType0",
+  "UpdateEntityRequestEntityTypeType0",
   "UpdateEventBlockRequest",
   "UpdateEventBlockRequestEventActionType0",
   "UpdateEventBlockRequestMetadataPatch",

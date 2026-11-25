@@ -6,6 +6,9 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.initialize_chart_of_accounts_request_entity_type_type_0 import (
+  InitializeChartOfAccountsRequestEntityTypeType0,
+)
 from ..models.initialize_chart_of_accounts_request_template import (
   InitializeChartOfAccountsRequestTemplate,
 )
@@ -33,14 +36,15 @@ class InitializeChartOfAccountsRequest:
               interest and its share of income — the adjustments column, never an operating company's chart).
           entity_id (None | str | Unset): The entity to give a chart to, by id. Omit for the group parent. A sibling
               already having one is no bar.
-          entity_type (None | str | Unset): Legal form for the equity mapping: `corporation`, `llc` or `partnership`.
-              Defaults to the graph's primary entity, then to corporation.
+          entity_type (InitializeChartOfAccountsRequestEntityTypeType0 | None | Unset): Legal form for the equity mapping:
+              `corporation`, `llc` or `partnership` have rows of their own; any other form maps as a corporation. Defaults to
+              the graph's primary entity, then to corporation.
           name (None | str | Unset): Chart display name. Defaults to 'Chart of Accounts'.
   """
 
   template: InitializeChartOfAccountsRequestTemplate
   entity_id: None | str | Unset = UNSET
-  entity_type: None | str | Unset = UNSET
+  entity_type: InitializeChartOfAccountsRequestEntityTypeType0 | None | Unset = UNSET
   name: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -56,6 +60,8 @@ class InitializeChartOfAccountsRequest:
     entity_type: None | str | Unset
     if isinstance(self.entity_type, Unset):
       entity_type = UNSET
+    elif isinstance(self.entity_type, InitializeChartOfAccountsRequestEntityTypeType0):
+      entity_type = self.entity_type.value
     else:
       entity_type = self.entity_type
 
@@ -95,12 +101,22 @@ class InitializeChartOfAccountsRequest:
 
     entity_id = _parse_entity_id(d.pop("entity_id", UNSET))
 
-    def _parse_entity_type(data: object) -> None | str | Unset:
+    def _parse_entity_type(
+      data: object,
+    ) -> InitializeChartOfAccountsRequestEntityTypeType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(None | str | Unset, data)
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        entity_type_type_0 = InitializeChartOfAccountsRequestEntityTypeType0(data)
+
+        return entity_type_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(InitializeChartOfAccountsRequestEntityTypeType0 | None | Unset, data)
 
     entity_type = _parse_entity_type(d.pop("entity_type", UNSET))
 

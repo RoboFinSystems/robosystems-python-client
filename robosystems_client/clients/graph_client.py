@@ -48,10 +48,14 @@ class GraphMetadata:
 
 @dataclass
 class InitialEntityData:
-  """Initial entity data for graph creation"""
+  """Initial entity data for graph creation.
+
+  ``uri`` is the entity's website and is optional: the entity's own URI is
+  assigned by RoboSystems.
+  """
 
   name: str
-  uri: str
+  uri: Optional[str] = None
   category: Optional[str] = None
   sic: Optional[str] = None
   sic_description: Optional[str] = None
@@ -186,10 +190,9 @@ class GraphClient:
 
     initial_entity_dict = None
     if initial_entity:
-      initial_entity_dict = {
-        "name": initial_entity.name,
-        "uri": initial_entity.uri,
-      }
+      initial_entity_dict = {"name": initial_entity.name}
+      if initial_entity.uri:
+        initial_entity_dict["uri"] = initial_entity.uri
       if initial_entity.category:
         initial_entity_dict["category"] = initial_entity.category
       if initial_entity.sic:

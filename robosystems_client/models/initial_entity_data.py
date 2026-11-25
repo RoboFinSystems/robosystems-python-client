@@ -6,6 +6,9 @@ from typing import Any, TypeVar, cast
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.initial_entity_data_entity_type_type_0 import (
+  InitialEntityDataEntityTypeType0,
+)
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="InitialEntityData")
@@ -20,7 +23,8 @@ class InitialEntityData:
 
       Attributes:
           name (str): Entity name
-          uri (str): Entity website or URI
+          uri (None | str | Unset): The entity's website, kept when it is an http(s) address. The entity's URI is assigned
+              by RoboSystems.
           ticker (None | str | Unset): Entity symbol/ticker (e.g., 'HARB', 'NVDA'). Auto-generated from name if not
               provided.
           cik (None | str | Unset): CIK number for SEC filings
@@ -28,10 +32,9 @@ class InitialEntityData:
           sic_description (None | str | Unset): SIC description
           category (None | str | Unset): Business category
           state_of_incorporation (None | str | Unset): State of incorporation
-          fiscal_year_end (None | str | Unset): Fiscal year end (MMDD)
           ein (None | str | Unset): Employer Identification Number
-          entity_type (None | str | Unset): Entity legal form (e.g. 'corporation', 'llc' / 'limited_liability_company',
-              'partnership', 'sole_proprietorship', 'non_profit'). Drives the graph's default Reporting Style at creation —
+          entity_type (InitialEntityDataEntityTypeType0 | None | Unset): Entity legal form: 'corporation', 'llc',
+              'partnership', 'sole_proprietorship' or 'non_profit'. Drives the graph's default Reporting Style at creation —
               partnership and llc get dedicated equity-form Styles; everything else defaults to corporate. Blank falls back to
               corporate.
           reporting_style_id (None | str | Unset): Optional explicit Reporting Style Structure id to pin on the entity,
@@ -40,23 +43,26 @@ class InitialEntityData:
   """
 
   name: str
-  uri: str
+  uri: None | str | Unset = UNSET
   ticker: None | str | Unset = UNSET
   cik: None | str | Unset = UNSET
   sic: None | str | Unset = UNSET
   sic_description: None | str | Unset = UNSET
   category: None | str | Unset = UNSET
   state_of_incorporation: None | str | Unset = UNSET
-  fiscal_year_end: None | str | Unset = UNSET
   ein: None | str | Unset = UNSET
-  entity_type: None | str | Unset = UNSET
+  entity_type: InitialEntityDataEntityTypeType0 | None | Unset = UNSET
   reporting_style_id: None | str | Unset = UNSET
   additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
   def to_dict(self) -> dict[str, Any]:
     name = self.name
 
-    uri = self.uri
+    uri: None | str | Unset
+    if isinstance(self.uri, Unset):
+      uri = UNSET
+    else:
+      uri = self.uri
 
     ticker: None | str | Unset
     if isinstance(self.ticker, Unset):
@@ -94,12 +100,6 @@ class InitialEntityData:
     else:
       state_of_incorporation = self.state_of_incorporation
 
-    fiscal_year_end: None | str | Unset
-    if isinstance(self.fiscal_year_end, Unset):
-      fiscal_year_end = UNSET
-    else:
-      fiscal_year_end = self.fiscal_year_end
-
     ein: None | str | Unset
     if isinstance(self.ein, Unset):
       ein = UNSET
@@ -109,6 +109,8 @@ class InitialEntityData:
     entity_type: None | str | Unset
     if isinstance(self.entity_type, Unset):
       entity_type = UNSET
+    elif isinstance(self.entity_type, InitialEntityDataEntityTypeType0):
+      entity_type = self.entity_type.value
     else:
       entity_type = self.entity_type
 
@@ -123,9 +125,10 @@ class InitialEntityData:
     field_dict.update(
       {
         "name": name,
-        "uri": uri,
       }
     )
+    if uri is not UNSET:
+      field_dict["uri"] = uri
     if ticker is not UNSET:
       field_dict["ticker"] = ticker
     if cik is not UNSET:
@@ -138,8 +141,6 @@ class InitialEntityData:
       field_dict["category"] = category
     if state_of_incorporation is not UNSET:
       field_dict["state_of_incorporation"] = state_of_incorporation
-    if fiscal_year_end is not UNSET:
-      field_dict["fiscal_year_end"] = fiscal_year_end
     if ein is not UNSET:
       field_dict["ein"] = ein
     if entity_type is not UNSET:
@@ -154,7 +155,14 @@ class InitialEntityData:
     d = dict(src_dict)
     name = d.pop("name")
 
-    uri = d.pop("uri")
+    def _parse_uri(data: object) -> None | str | Unset:
+      if data is None:
+        return data
+      if isinstance(data, Unset):
+        return data
+      return cast(None | str | Unset, data)
+
+    uri = _parse_uri(d.pop("uri", UNSET))
 
     def _parse_ticker(data: object) -> None | str | Unset:
       if data is None:
@@ -212,15 +220,6 @@ class InitialEntityData:
       d.pop("state_of_incorporation", UNSET)
     )
 
-    def _parse_fiscal_year_end(data: object) -> None | str | Unset:
-      if data is None:
-        return data
-      if isinstance(data, Unset):
-        return data
-      return cast(None | str | Unset, data)
-
-    fiscal_year_end = _parse_fiscal_year_end(d.pop("fiscal_year_end", UNSET))
-
     def _parse_ein(data: object) -> None | str | Unset:
       if data is None:
         return data
@@ -230,12 +229,22 @@ class InitialEntityData:
 
     ein = _parse_ein(d.pop("ein", UNSET))
 
-    def _parse_entity_type(data: object) -> None | str | Unset:
+    def _parse_entity_type(
+      data: object,
+    ) -> InitialEntityDataEntityTypeType0 | None | Unset:
       if data is None:
         return data
       if isinstance(data, Unset):
         return data
-      return cast(None | str | Unset, data)
+      try:
+        if not isinstance(data, str):
+          raise TypeError()
+        entity_type_type_0 = InitialEntityDataEntityTypeType0(data)
+
+        return entity_type_type_0
+      except (TypeError, ValueError, AttributeError, KeyError):
+        pass
+      return cast(InitialEntityDataEntityTypeType0 | None | Unset, data)
 
     entity_type = _parse_entity_type(d.pop("entity_type", UNSET))
 
@@ -257,7 +266,6 @@ class InitialEntityData:
       sic_description=sic_description,
       category=category,
       state_of_incorporation=state_of_incorporation,
-      fiscal_year_end=fiscal_year_end,
       ein=ein,
       entity_type=entity_type,
       reporting_style_id=reporting_style_id,

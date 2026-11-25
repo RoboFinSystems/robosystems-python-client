@@ -26,7 +26,7 @@ class LedgerEntityResponse:
           id (str): Entity identifier (ULID).
           name (str): Display name shown in UI.
           legal_name (None | str | Unset): Full registered legal name (when different from `name`).
-          uri (None | str | Unset): Canonical URL / external identifier.
+          uri (None | str | Unset): The entity's URI, assigned by RoboSystems: `https://robosystems.ai/entities#<id>`.
           cik (None | str | Unset): SEC CIK (Central Index Key).
           ticker (None | str | Unset): Stock ticker symbol.
           exchange (None | str | Unset): Listing exchange (e.g. 'NASDAQ', 'NYSE').
@@ -34,12 +34,14 @@ class LedgerEntityResponse:
           sic_description (None | str | Unset): SIC code description.
           category (None | str | Unset): Filer category (e.g. 'Large Accelerated Filer').
           state_of_incorporation (None | str | Unset): US state or country of incorporation.
-          fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD (e.g. '12-31', '06-30').
+          fiscal_year_end (None | str | Unset): Fiscal year-end as MM-DD, from the entity's fiscal calendar; null before
+              the calendar is set up. Change it through the calendar.
           tax_id (None | str | Unset): Tax ID (EIN / SSN).
           lei (None | str | Unset): Legal Entity Identifier (ISO 17442).
           industry (None | str | Unset): Industry, as an id from the industry classification (the `industries` field). An
               entity set before the classification may still hold free text.
-          entity_type (None | str | Unset): Legal form (e.g. 'corporation', 'llc', 'lp').
+          entity_type (None | str | Unset): Legal form: `corporation`, `llc`, `partnership`, `sole_proprietorship` or
+              `non_profit`. An entity set before the list may hold other text.
           reporting_style_id (None | str | Unset): Active Reporting Style (Structure id) governing this entity's statement
               layout. Change it via the change-reporting-style operation.
           phone (None | str | Unset):
