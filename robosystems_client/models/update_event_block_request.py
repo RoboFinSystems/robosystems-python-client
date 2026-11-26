@@ -63,8 +63,9 @@ class UpdateEventBlockRequest:
               document: one row per invoice or bill with the positive cents applied to it, together at most the payment's
               amount (the rest is unapplied). Replaces any held; an empty list clears them, and the settlement link becomes
               the first row's. Each must be an obligation of this event's entity, not voided: an invoice for money in, a bill
-              for money out. A person chooses them; the open items a bank line may settle are `list-discharge-candidates` over
-              MCP and `dischargeCandidates` over GraphQL.
+              for money out; a journal entry, which moves no cash, may settle either (bills converted into a note). A person
+              chooses them; the open items a bank line may settle are `list-discharge-candidates` over MCP and
+              `dischargeCandidates` over GraphQL.
           document_id (None | str | Unset): Set or replace the stored document the event rests on; an empty string
               detaches it. Must be a document on this graph. Unset = unchanged.
           source_retracted (bool | Unset): With `transition_to: voided`, for an event from the external ledger that keeps
