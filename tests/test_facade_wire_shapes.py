@@ -810,3 +810,24 @@ class TestThreadedOperatorRuns:
     assert "thread_id" not in sent
     # A sync answer names its run from the body.
     assert result.operation_id == OP
+
+
+def test_no_facade_builds_a_closed_request_with_from_dict():
+  """A model with no ``additional_properties`` drops the keys it lacks, so a
+  facade that takes a dict for one has to refuse them itself."""
+  import importlib
+  from pathlib import Path
+
+  import robosystems_client.clients as clients
+  import robosystems_client.models as models
+
+  offenders = []
+  for path in sorted(Path(clients.__file__).parent.glob("*.py")):
+    for name in set(re.findall(r"\b([A-Z]\w+)\.from_dict\(", path.read_text())):
+      model = getattr(models, name, None)
+      if model is None or not name.endswith(("Request", "Operation")):
+        continue
+      module = importlib.import_module(model.__module__)
+      if "additional_properties" not in Path(module.__file__).read_text():
+        offenders.append(f"{path.name}: {name}")
+  assert offenders == []
