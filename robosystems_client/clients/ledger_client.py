@@ -810,6 +810,16 @@ def _as_date(value: str | datetime.date) -> datetime.date:
   return datetime.date.fromisoformat(value)
 
 
+def _closed_request(model: Any, body: dict[str, Any]) -> Any:
+  """Build a request whose model takes no extra fields, refusing a key it
+  lacks: ``from_dict`` would drop it, and the call would run without it."""
+  request = model.from_dict(body)
+  unknown = sorted(set(body) - set(request.to_dict()))
+  if unknown:
+    raise ValueError(f"{model.__name__} has no field {', '.join(unknown)}")
+  return request
+
+
 def _parse_filename(content_disposition: str) -> str | None:
   """Extract the ``filename`` value from a Content-Disposition header.
 
@@ -2916,7 +2926,7 @@ class LedgerClient:
     be taken comes back ``skipped`` with its reason, never forced; the
     result carries the counts, ``truncated``, and every line looked at.
     """
-    request = AcceptSuggestionsRequest.from_dict(body or {})
+    request = _closed_request(AcceptSuggestionsRequest, body or {})
     response = op_accept_suggestions(
       graph_id=graph_id, body=request, client=self._get_client()
     )

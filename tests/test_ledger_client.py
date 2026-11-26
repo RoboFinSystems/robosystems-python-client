@@ -3008,6 +3008,16 @@ class TestAgentOps:
     assert sent["commit"] is True
 
   @patch("robosystems_client.clients.ledger_client.op_accept_suggestions")
+  def test_accept_suggestions_refuses_a_misspelled_field(
+    self, mock_op, mock_config, graph_id
+  ):
+    """A misspelled ``dry_run`` must not become a real run."""
+    client = LedgerClient(mock_config)
+    with pytest.raises(ValueError, match="dryrun"):
+      client.accept_suggestions(graph_id, {"dryrun": True, "commit": True})
+    mock_op.assert_not_called()
+
+  @patch("robosystems_client.clients.ledger_client.op_accept_suggestions")
   def test_accept_suggestions_with_nothing_named(self, mock_op, mock_config, graph_id):
     """No filters: every open suggested line of the group parent, classified
     only — the server's own defaults."""
