@@ -61,7 +61,7 @@ Semantic versioning in two tiers. **Stable**: the facades, the root exports, the
 
 - **API reference**: [robosystems.ai/docs/api](https://robosystems.ai/docs/api) · [OpenAPI specification](https://api.robosystems.ai/openapi.json)
 - **Technical docs**: [robosystems.ai/docs/technical](https://robosystems.ai/docs/technical)
-- **Related**: [RoboSystems](https://github.com/RoboFinSystems/robosystems) · [TypeScript client](https://github.com/RoboFinSystems/robosystems-typescript-client) · [MCP client](https://github.com/RoboFinSystems/robosystems-mcp-client)
+- **Related**: [RoboSystems](https://github.com/RoboFinSystems/robosystems) · [TypeScript client](https://github.com/RoboFinSystems/robosystems-typescript-client) · [MCP bridge](https://github.com/RoboFinSystems/robosystems-mcp-bridge)
 
 ## Support
 
